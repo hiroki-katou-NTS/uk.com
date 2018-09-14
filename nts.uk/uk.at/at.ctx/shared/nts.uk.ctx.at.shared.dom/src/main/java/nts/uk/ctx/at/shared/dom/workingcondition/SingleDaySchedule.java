@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -58,7 +60,9 @@ public class SingleDaySchedule extends DomainObject {
 	public SingleDaySchedule(String workTypeCode, List<TimeZone> workingHours,
 			Optional<String> workTimeCode) {
 		super();
-		this.workTypeCode = new WorkTypeCode(workTypeCode);
+		if (StringUtils.isNotEmpty(workTypeCode)){
+			this.workTypeCode = new WorkTypeCode(workTypeCode);
+		}
 		this.workingHours = workingHours;
 		this.workTimeCode = Optional.empty();
 		if (workTimeCode.isPresent()){

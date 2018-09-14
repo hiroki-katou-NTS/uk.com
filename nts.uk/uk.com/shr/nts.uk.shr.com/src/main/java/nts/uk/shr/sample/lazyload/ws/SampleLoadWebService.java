@@ -30,4 +30,13 @@ public class SampleLoadWebService {
 		});
 		return items;
 	}
+	
+	@POST
+	@Path("process")
+	public List<Item> get(Item item) {
+		List<Item> items = new ArrayList<>();
+		items.add(new Item(item.getId(), "time", "10:00"));
+		items.add(new Item(item.getId(), "header3", "999"));
+		return items;
+	}
 }

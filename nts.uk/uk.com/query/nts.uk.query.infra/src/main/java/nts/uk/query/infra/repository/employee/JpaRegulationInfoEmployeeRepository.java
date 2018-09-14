@@ -79,8 +79,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			+ " AND wh.strD <= :refDate"
 			+ " AND wh.endD >= :refDate";
 
-	private List<EmployeeDataView> resultList = new ArrayList<>();
-	private int countParameter = 0;
+	private static final String EMPTY_LIST = "EMPTY_LIST";
+	private static final Integer ELEMENT_300 = 300;
+	private static final Integer ELEMENT_2000 = 2000;
 	
 	/*
 	 * (non-Javadoc)
@@ -91,6 +92,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 */
 	@Override
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery) {
+		// max paramenter count = 2100
+		int countParameter = 0;
+		
 		// Return empty list if all status of employee = 対象外
 		if (!paramQuery.getIncludeIncumbents() && !paramQuery.getIncludeOccupancy() && !paramQuery.getIncludeRetirees()
 				&& !paramQuery.getIncludeWorkersOnLeave()) {
@@ -101,16 +105,16 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
 		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
-		
 
 		// Constructing condition.
-		List<Predicate> conditions = new ArrayList<Predicate>();
-		List<String> employmentCodes = paramQuery.getEmploymentCodes();
-		List<String> workplaceCodes = paramQuery.getWorkplaceCodes();
-		List<String> classificationCodes = paramQuery.getClassificationCodes();
-		List<String> jobTitleCodes = paramQuery.getJobTitleCodes();
-		List<String> worktypeCodes = paramQuery.getWorktypeCodes();
-		List<Integer> closureIds = paramQuery.getClosureIds();
+		List<Predicate> conditions = new ArrayList<>();
+		List<String> employmentCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getEmploymentCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> workplaceCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorkplaceCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> classificationCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getClassificationCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> jobTitleCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getJobTitleCodes()).orElse(Collections.EMPTY_LIST));
+		List<String> worktypeCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorktypeCodes()).orElse(Collections.EMPTY_LIST));
+		List<Integer> closureIds = new ArrayList<>(Optional.ofNullable(paramQuery.getClosureIds()).orElse(Collections.EMPTY_LIST));
+		GeneralDateTime baseDate = paramQuery.getBaseDate();
 		
 		// Add company condition 
 		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
@@ -127,12 +131,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			}
 
 			// update query conditions
-//			conditions.add(root.get(EmployeeDataView_.empCd).in(employmentCodes));
 			conditions
-					.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate), paramQuery.getBaseDate()));
+					.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate), baseDate));
 			conditions.add(
-					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate), paramQuery.getBaseDate()));
-			countParameter += 2;
+					cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate), baseDate));
+			countParameter += 2;				
 		}
 		// workplace condition
 		if (paramQuery.getFilterByWorkplace()) {
@@ -142,15 +145,14 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			}
 
 			// update query conditions
-//			conditions.add(root.get(EmployeeDataView_.workplaceId).in(workplaceCodes));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), paramQuery.getBaseDate()));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), paramQuery.getBaseDate()));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplInfoStrDate), paramQuery.getBaseDate()));
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), baseDate));
+			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), baseDate));
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplInfoStrDate), baseDate));
 			conditions
-					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplInfoEndDate), paramQuery.getBaseDate()));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), paramQuery.getBaseDate()));
+					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplInfoEndDate), baseDate));
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), baseDate));
 			conditions
-					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), paramQuery.getBaseDate()));
+					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), baseDate));
 			countParameter += 6;
 		}
 		// classification condition
@@ -161,9 +163,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			}
 
 			// update query conditions
-//			conditions.add(root.get(EmployeeDataView_.classificationCode).in(classificationCodes));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.classStrDate), paramQuery.getBaseDate()));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.classEndDate), paramQuery.getBaseDate()));
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.classStrDate), baseDate));
+			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.classEndDate), baseDate));
 			countParameter += 2;
 		}
 		// jobtitle condition
@@ -174,12 +175,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			}
 
 			// update query conditions
-//			conditions.add(root.get(EmployeeDataView_.jobTitleId).in(jobTitleCodes));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobStrDate), paramQuery.getBaseDate()));
-			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobEndDate), paramQuery.getBaseDate()));
-			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobInfoStrDate), paramQuery.getBaseDate()));
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobStrDate), baseDate));
+			conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobEndDate), baseDate));
+			conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobInfoStrDate), baseDate));
 			conditions
-					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), paramQuery.getBaseDate()));
+					.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), baseDate));
 			countParameter += 4;
 		}
 		if (paramQuery.getSystemType() == CCG001SystemType.EMPLOYMENT.value) {
@@ -192,9 +192,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				// update query conditions
 				conditions.add(root.get(EmployeeDataView_.workTypeCd).in(worktypeCodes));
 				conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.workTypeStrDate),
-						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+						GeneralDate.localDate(baseDate.toLocalDate())));
 				conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.workTypeEndDate),
-						GeneralDate.localDate(paramQuery.getBaseDate().toLocalDate())));
+						GeneralDate.localDate(baseDate.toLocalDate())));
 				countParameter += 2 + worktypeCodes.size();
 			}
 			if (paramQuery.getFilterByClosure()) {
@@ -210,9 +210,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				// check exist before add employment conditions
 				if (!paramQuery.getFilterByEmployment()) {
 					conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate),
-							paramQuery.getBaseDate()));
+							baseDate));
 					conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate),
-							paramQuery.getBaseDate()));
+							baseDate));
 					countParameter += 2;
 				}
 			}
@@ -277,16 +277,29 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 					this.toSortingConditionQueryModel(sortConditions));
 			cq.orderBy(orders);
 		}
-		
+		List<EmployeeDataView> resultList = new ArrayList<>();
+		int countParameterFinal = countParameter; 
 		// Fix bug #100057
+		if (CollectionUtil.isEmpty(employmentCodes)) {
+			employmentCodes.add(EMPTY_LIST);
+		}
+		if (CollectionUtil.isEmpty(jobTitleCodes)) {
+			jobTitleCodes.add(EMPTY_LIST);
+		}
+		if (CollectionUtil.isEmpty(classificationCodes)) {
+			classificationCodes.add(EMPTY_LIST);
+		}
+		if (CollectionUtil.isEmpty(workplaceCodes)) {
+			workplaceCodes.add(EMPTY_LIST);
+		}
 		// employment condition
-		CollectionUtil.split(employmentCodes, 300, splitEmploymentCodes -> {
+		CollectionUtil.split(employmentCodes, ELEMENT_300, splitEmploymentCodes -> {
 			// workplace condition
-			CollectionUtil.split(jobTitleCodes, 300, splitJobTitleCodes -> {
+			CollectionUtil.split(jobTitleCodes, ELEMENT_300, splitJobTitleCodes -> {
 				// classification condition
-				CollectionUtil.split(classificationCodes, 300, splitClassificationCodes -> {
+				CollectionUtil.split(classificationCodes, ELEMENT_300, splitClassificationCodes -> {
 					// jobtitle condition
-					CollectionUtil.split(workplaceCodes, 2000 - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() - countParameter), splitWorkplaceCodes -> {
+					CollectionUtil.split(workplaceCodes, ELEMENT_2000 - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() - countParameterFinal), splitWorkplaceCodes -> {
 						resultList.addAll(executeQuery(paramQuery.getFilterByEmployment(), splitEmploymentCodes, 
 								paramQuery.getFilterByWorkplace(), splitWorkplaceCodes, 
 								paramQuery.getFilterByClassification(), splitClassificationCodes, 
@@ -295,29 +308,12 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				});
 			});
 		});
-		
-	/*	List<EmployeeDataView> resultList = new ArrayList<>();
-		cq.where(conditions.toArray(new Predicate[] {}));
-
-		// getSortConditions
-		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
-				paramQuery.getSortOrderNo());
-
-		// sort
-		if (paramQuery.getSystemType() != CCG001SystemType.ADMINISTRATOR.value) {
-			List<Order> orders = this.getOrders(paramQuery.getSystemType(), NAME_TYPE,
-					this.toSortingConditionQueryModel(sortConditions));
-			cq.orderBy(orders);
-		}
-
-		// execute query & add to resultList
-		resultList.addAll(em.createQuery(cq).getResultList());*/
 
 		// Distinct employee in result list.
-		resultList = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
+		List<EmployeeDataView> resultListDistinct = resultList.stream().filter(this.distinctByKey(EmployeeDataView::getSid))
 				.collect(Collectors.toList());
 
-		return resultList.stream().map(entity -> RegulationInfoEmployee.builder()
+		return resultListDistinct.stream().map(entity -> RegulationInfoEmployee.builder()
 				.classificationCode(Optional.ofNullable(entity.getClassificationCode())).employeeCode(entity.getScd())
 				.employeeID(entity.getSid()).employmentCode(Optional.ofNullable(entity.getEmpCd()))
 				.hireDate(Optional.ofNullable(entity.getComStrDate()))
@@ -650,6 +646,26 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Execute query.
+	 *
+	 * @param getFilterByEmployment the get filter by employment
+	 * @param splitEmploymentCodes the split employment codes
+	 * @param getFilterByWorkplace the get filter by workplace
+	 * @param splitWorkplaceCodes the split workplace codes
+	 * @param getFilterByClassification the get filter by classification
+	 * @param splitClassificationCodes the split classification codes
+	 * @param getFilterByJobTitle the get filter by job title
+	 * @param splitJobTitleCodes the split job title codes
+	 * @param conditions the conditions
+	 * @param cb the cb
+	 * @param cq the cq
+	 * @param comId the com id
+	 * @param paramQuery the param query
+	 * @param em the em
+	 * @param root the root
+	 * @return the list
+	 */
 	private List<EmployeeDataView> executeQuery(boolean getFilterByEmployment, List<String> splitEmploymentCodes, 
 								boolean getFilterByWorkplace, List<String> splitWorkplaceCodes, 
 								boolean getFilterByClassification, List<String> splitClassificationCodes, 
@@ -659,44 +675,44 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 								) {
 		int countFilterTrue = 0;
 		
-		
 		// employment condition
 		if (getFilterByEmployment) {
+			if (splitEmploymentCodes.size() == 1 && splitEmploymentCodes.get(0).compareTo(EMPTY_LIST) == 0) {
+				splitEmploymentCodes.clear();
+			}
 			conditions.add(root.get(EmployeeDataView_.empCd).in(splitEmploymentCodes));
 			countFilterTrue++;
 		}
 		
 		// workplace condition
 		if (getFilterByWorkplace) {
+			if (splitWorkplaceCodes.size() == 1 && splitWorkplaceCodes.get(0).compareTo(EMPTY_LIST) == 0) {
+				splitWorkplaceCodes.clear();
+			}
 			conditions.add(root.get(EmployeeDataView_.workplaceId).in(splitWorkplaceCodes));
 			countFilterTrue++;
 		}
 		
 		// classification condition
 		if (getFilterByClassification) {
+			if (splitClassificationCodes.size() == 1 && splitClassificationCodes.get(0).compareTo(EMPTY_LIST) == 0) {
+				splitClassificationCodes.clear();
+			}
 			conditions.add(root.get(EmployeeDataView_.classificationCode).in(splitClassificationCodes));
 			countFilterTrue++;
 		}
 		
 		// jobtitle condition
 		if (getFilterByJobTitle) { 
+			if (splitJobTitleCodes.size() == 1 && splitJobTitleCodes.get(0).compareTo(EMPTY_LIST) == 0) {
+				splitJobTitleCodes.clear();
+			}
 			conditions.add(root.get(EmployeeDataView_.jobTitleId).in(splitJobTitleCodes));
 			countFilterTrue++;
 		}
 		
 		List<EmployeeDataView> resultListInFunc = new ArrayList<>();
 		cq.where(conditions.toArray(new Predicate[] {}));
-
-//		// getSortConditions
-//		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, paramQuery.getSystemType(),
-//				paramQuery.getSortOrderNo());
-//
-//		// sort
-//		if (paramQuery.getSystemType() != CCG001SystemType.ADMINISTRATOR.value) {
-//			List<Order> orders = this.getOrders(paramQuery.getSystemType(), NAME_TYPE,
-//					this.toSortingConditionQueryModel(sortConditions));
-//			cq.orderBy(orders);
-//		}
 
 		// execute query & add to resultListInFunc
 		resultListInFunc.addAll(em.createQuery(cq).getResultList());

@@ -52,24 +52,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.start(undefined);
             
             self.initSettingId.subscribe(function(value: string) {
-              
-               self.currentCategory().itemList.removeAll();
+                error.clearAll();
                 self.currentCategory().setData({
-                    settingCode: "",
-                    settingName: "",
+                    settingCode: null,
+                    settingName: " ",
                     ctgList: []
                 });
-                nts.uk.ui.errors.clearAll();
-                if (nts.uk.text.isNullOrEmpty(value))  return;
+                self.currentCategory().itemList.removeAll();
+                if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetail(value); 
         
-
             });
 
             self.currentItemId.subscribe(function(value: string) {
                 nts.uk.ui.errors.clearAll();
                 if (nts.uk.text.isNullOrEmpty(value))  return; 
-                
+                $('#date1').trigger('validate');
                 self.getItemList(self.initSettingId(), value);
 
             });
@@ -174,9 +172,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         _.defer(() => {
                              let ctrl = $("#ctgName"),
                                 str = ctrl.val();
-
-                            ctrl.focus().val('').val(str);
-                             $("#ctgName").trigger("validate"); 
+                            if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                                ctrl.focus().val('').val(str);
+                                $("#ctgName").trigger("validate");
+                            }
                         });
                     });
                 } else {
@@ -187,8 +186,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                              let ctrl = $("#ctgName"),
                                 str = ctrl.val();
 
-                            ctrl.focus().val('').val(str);
-                           $("#ctgName").trigger("validate"); 
+                            if ($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0) {
+                                ctrl.focus().val('').val(str);
+                                $("#ctgName").trigger("validate");
+                            }
                         });
                     });
                 }
@@ -250,7 +251,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingColums = ko.observableArray([
                 { headerText: 'settingId', key: 'settingId', width: 100, hidden: true },
                 { headerText: text('CPS009_10'), key: 'settingCode', width: 80 },
-                { headerText: text('CPS009_11'), key: 'settingName', width: 160 }
+                { headerText: text('CPS009_11'), key: 'settingName', width: 160, formatter: _.escape }
             ]);
 
             self.itemValueLst = ko.observableArray([
@@ -431,7 +432,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 itemListSetting: Array<any> = _.filter(self.currentCategory().itemList(), function(item) {
                     return item.selectedRuleCode() == 2;
                 });
-            
+            $('#date1').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
@@ -974,6 +975,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
+                if (value !== 2) {
+                    error.clearAll();
+                }
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
@@ -1337,17 +1341,22 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         setData(childData: IChildData, itemChilds: Array<any>, checkStartEnd: boolean, mutiTime: boolean) {
-            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList();
-            for (let i: number = 0; i < itemChilds.length; i++) {
-                vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
-                vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
-                vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
-                vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
-                vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
-                vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
-                vm[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
-                i = i + 3;
+            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
+                itemlength: number = itemChilds.length; 
+            for (let i: number = 0; i < itemlength; i++) {
+                if (itemlength <= 2) {
+                    vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
+                    vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
+                    vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
+                    vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
+                    i = i + 1;
+                } else {
+                    vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                    vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                    vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
+                    vm[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
+                    i = i + 3;
+                }
             }
 
         }

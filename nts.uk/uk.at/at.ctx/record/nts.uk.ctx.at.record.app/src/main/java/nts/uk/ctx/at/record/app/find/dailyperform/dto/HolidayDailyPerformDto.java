@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -48,6 +52,17 @@ public class HolidayDailyPerformDto implements ItemConst {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer absence;
 	
+	@Override
+	public HolidayDailyPerformDto clone() {
+		return new HolidayDailyPerformDto(annualLeave == null ? null : annualLeave.clone(), 
+											specialHoliday == null ? null : specialHoliday.clone(), 
+											excessSalaries == null ? null : excessSalaries.clone(), 
+											compensatoryLeave == null ? null : compensatoryLeave.clone(), 
+											retentionYearly, 
+											timeDigestionVacation == null ? null : timeDigestionVacation.clone(), 
+											absence);
+	}
+	
 	public static HolidayDailyPerformDto from(HolidayOfDaily domain) {
 		return domain == null ? null : 
 			new HolidayDailyPerformDto(HolidayUseTimeDto.from(domain.getAnnual()), 
@@ -60,13 +75,24 @@ public class HolidayDailyPerformDto implements ItemConst {
 	}
 
 	public HolidayOfDaily toDomain() {
-		return new HolidayOfDaily(absence == null ? null : new AbsenceOfDaily(new AttendanceTime(absence)),
-				timeDigestionVacation == null ? null : timeDigestionVacation.toDomain(),
-				retentionYearly == null ? null : new YearlyReservedOfDaily(new AttendanceTime(retentionYearly)),
-				compensatoryLeave == null ? null : compensatoryLeave.toSubstituteHoliday(),
-				excessSalaries == null ? null : excessSalaries.toOverSalary(), 
-				specialHoliday == null ? null : specialHoliday.toSpecialHoliday(),
-				annualLeave == null ? null : annualLeave.toAnnualOfDaily());
+		return new HolidayOfDaily(new AbsenceOfDaily(absence == null ? AttendanceTime.ZERO : new AttendanceTime(absence)),
+				timeDigestionVacation == null ? TimeDigestionVacationDailyPerformDto.defaultDomain() : timeDigestionVacation.toDomain(),
+				new YearlyReservedOfDaily(retentionYearly == null ? AttendanceTime.ZERO : new AttendanceTime(retentionYearly)),
+				compensatoryLeave == null ? new SubstituteHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) 
+						: compensatoryLeave.toSubstituteHoliday(),
+				excessSalaries == null ? new OverSalaryOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : excessSalaries.toOverSalary(), 
+				specialHoliday == null ? new SpecialHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : specialHoliday.toSpecialHoliday(),
+				annualLeave == null ? new AnnualOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) : annualLeave.toAnnualOfDaily());
+	}
+	
+	public static HolidayOfDaily defaulDomain() {
+		return new HolidayOfDaily(new AbsenceOfDaily(AttendanceTime.ZERO),
+									TimeDigestionVacationDailyPerformDto.defaultDomain(),
+									new YearlyReservedOfDaily(AttendanceTime.ZERO),
+									new SubstituteHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO) ,
+									new OverSalaryOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO), 
+									new SpecialHolidayOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO),
+									new AnnualOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO));
 	}
 	
 	private static Integer fromTime(AttendanceTime time) {

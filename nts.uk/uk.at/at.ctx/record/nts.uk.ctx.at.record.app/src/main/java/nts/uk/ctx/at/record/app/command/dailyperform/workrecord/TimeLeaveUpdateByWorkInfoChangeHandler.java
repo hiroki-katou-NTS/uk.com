@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,14 +60,14 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 	protected EventHandleResult<TimeLeavingOfDailyPerformance> handle(CommandHandlerContext<TimeLeaveUpdateByWorkInfoChangeCommand> context) {
 		TimeLeaveUpdateByWorkInfoChangeCommand command = context.getCommand();
 
-		WorkInfoOfDailyPerformance wi = command.cachedWorkInfo.orElse(getDefaultWorkInfo(command));
+		WorkInfoOfDailyPerformance wi = getWithDefaul(command.cachedWorkInfo, () -> getDefaultWorkInfo(command));
 		if(wi == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
 		};
 		
-		String companyId = command.companyId.orElse(AppContexts.user().companyId());
+		String companyId = getWithDefaul(command.companyId, () -> AppContexts.user().companyId());
 		
-		WorkType wt = command.cachedWorkType.orElse(getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
+		WorkType wt = getWithDefaul(command.cachedWorkType, () -> getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
 		if(wt == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
 		}
@@ -75,7 +76,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		if (wt.isWokingDay()) {
 			val wts = wt.getWorkTypeSetAvailable();
 			if (wts.getAttendanceTime() == WorkTypeSetCheck.CHECK  || wts.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-				TimeLeavingOfDailyPerformance tlo = command.cachedTimeLeave.orElse(getTimeLeaveDefault(command));
+				TimeLeavingOfDailyPerformance tlo = getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command));
 				TimeLeavingOfDailyPerformance tl = null;
 				if (tlo != null) {
 					tl = mergeWithEditStates(command, tlo, wts);
@@ -115,7 +116,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 
 	private List<EditStateOfDailyPerformance> getEditStateByItems(TimeLeaveUpdateByWorkInfoChangeCommand command) {
 		List<Integer> needCheckItems = mergeItems();
-		return command.cachedEditState.orElse(getDefaultEditStates(command, needCheckItems))
+		return getWithDefaul(command.cachedEditState, () -> getDefaultEditStates(command, needCheckItems))
 											.stream().filter(e -> needCheckItems.contains(e.getAttendanceItemId()))
 											.collect(Collectors.toList());
 	}
@@ -182,7 +183,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 
 	/** 日別実績の出退勤を削除する */
 	private TimeLeavingOfDailyPerformance deleteTimeLeave(boolean isSPR, TimeLeaveUpdateByWorkInfoChangeCommand command) {
-		TimeLeavingOfDailyPerformance tl = command.cachedTimeLeave.orElse(getTimeLeaveDefault(command));
+		TimeLeavingOfDailyPerformance tl = getWithDefaul(command.cachedTimeLeave, () -> getTimeLeaveDefault(command));
 		if(tl != null) {
 			if (isSPR) {
 				tl.getTimeLeavingWorks().stream().forEach(tlw -> {
@@ -216,7 +217,6 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 					});
 				});
 			}
-
 
 			if(!command.actionOnCache){
 				this.timeLeaveRepo.update(tl);
@@ -261,4 +261,10 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		return this.editStateRepo.findByItems(command.employeeId, command.targetDate, needCheckItems);
 	}
 
+	private <T> T getWithDefaul(Optional<T> target, Supplier<T> defaultVal){
+		if(target.isPresent()){
+			return target.get();
+		}
+		return defaultVal.get();
+	}
 }

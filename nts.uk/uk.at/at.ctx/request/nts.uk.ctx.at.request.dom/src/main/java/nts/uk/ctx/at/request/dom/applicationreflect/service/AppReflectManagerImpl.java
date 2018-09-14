@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -47,6 +50,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplyTi
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ReflectScheDto;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.WorkScheduleReflectService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.WorkRecordReflectService;
 
 @Stateless
@@ -71,8 +75,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	private AbsenceLeaveAppRepository absenceLeaveRepo;
 	@Inject
 	private RecruitmentAppRepository recruitmentRepo;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRegister;
 	@Override
-	public void reflectEmployeeOfApp(Application_New appInfor) {
+	public ReflectResult reflectEmployeeOfApp(Application_New appInfor) {
+		ReflectResult outData = new ReflectResult(true, true);
 		GobackReflectPara appGobackTmp = null;
 		OvertimeReflectPara overTimeTmp = null;
 		CommonReflectPara workchangeData = null;
@@ -98,57 +105,57 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {
 			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getFullAppOvertime(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
-				return;
+				return outData;
 			}
 			AppOverTime appOvertimeInfor = getFullAppOvertime.get();			
 			overTimeTmp = this.getOverTimeReflect(appInfor, appOvertimeInfor);
 			if(overTimeTmp == null) {
-				return;
+				return outData;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 			Optional<GoBackDirectly> optGobackInfo = gobackRepo.findByApplicationID(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optGobackInfo.isPresent()) {
-				return;
+				return outData;
 			}
 			GoBackDirectly gobackInfo = optGobackInfo.get();
 			reflectScheParam.setGoBackDirectly(gobackInfo);
 			appGobackTmp = this.getGobackReflectPara(appInfor, gobackInfo);
 			if(appGobackTmp == null) {
-				return;
+				return outData;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 			Optional<AppAbsence> optAbsence = absenceRepo.getAbsenceByAppId(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!optAbsence.isPresent()) {
-				return;
+				return outData;
 			}
 			AppAbsence absenceAppData = optAbsence.get();
 			reflectScheParam.setForLeave(absenceAppData);
 			absenceData = this.getAbsence(appInfor, absenceAppData);
 			if(absenceData == null) {
-				return;
+				return outData;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION
 				&& appInfor.getPrePostAtr() == PrePostAtr.PREDICT) {			
 			Optional<AppHolidayWork> getFullAppHolidayWork = holidayWorkRepo.getFullAppHolidayWork(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getFullAppHolidayWork.isPresent()) {
-				return;
+				return outData;
 			}
 			AppHolidayWork holidayWorkData = getFullAppHolidayWork.get();
 			reflectScheParam.setHolidayWork(holidayWorkData);
 			holidayworkInfor = this.getHolidayWork(appInfor, holidayWorkData);
 			if(holidayworkInfor == null) {
-				return;
+				return outData;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
 			Optional<AppWorkChange> getAppworkChangeById = workChangeRepo.getAppworkChangeById(appInfor.getCompanyID(), appInfor.getAppID());
 			if(!getAppworkChangeById.isPresent()) {
-				return;
+				return outData;
 			}
 			AppWorkChange workChange = getAppworkChangeById.get();
 			reflectScheParam.setWorkChange(workChange);
 			workchangeData = this.getWorkChange(appInfor, workChange);
 			if(workchangeData == null) {
-				return;
+				return outData;
 			}
 		} else if (appInfor.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 			Optional<AbsenceLeaveApp> optAbsenceLeaveData = absenceLeaveRepo.findByAppId(appInfor.getAppID());
@@ -166,11 +173,12 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			}
 		} 
 		else {
-			return;
+			return outData;
 		}
 		//TODO 反映するかどうか判断 (Xác định để phản ánh)
-		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)		
-		if(scheReflect.workscheReflect(reflectScheParam)) {
+		//勤務予定へ反映処理	(Xử lý phản ánh đến kế hoạch công việc)
+		ReflectInformationResult scheResult = scheReflect.workscheReflect(reflectScheParam);
+		if(scheResult == ReflectInformationResult.DONE) {
 			appInfor.getReflectionInformation().setStateReflection(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReason(Optional.of(ReasonNotReflect_New.WORK_CONFIRMED));
 		}
@@ -183,11 +191,30 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				absenceData,
 				absenceLeaveAppInfor,
 				recruitmentInfor);
-		if(workRecordReflect.workRecordreflect(appPara)) {
+		ReflectInformationResult recordResult = workRecordReflect.workRecordreflect(appPara);
+		if(recordResult == ReflectInformationResult.DONE) {
 			appInfor.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
 			appInfor.getReflectionInformation().setNotReasonReal(Optional.of(ReasonNotReflectDaily_New.ACTUAL_CONFIRMED));
 		}
-		appRepo.updateWithVersion(appInfor);
+		outData.setRecordResult(recordResult == ReflectInformationResult.DONE  || recordResult == ReflectInformationResult.CHECKFALSE ? true : false);
+		outData.setScheResult(scheResult == ReflectInformationResult.DONE || scheResult == ReflectInformationResult.CHECKFALSE ? true
+				: false);
+		if(outData.isRecordResult() || outData.isScheResult()) {
+			//暫定データの登録
+			List<GeneralDate> lstDate = new ArrayList<>();
+			if(appInfor.getStartDate().isPresent() && appInfor.getEndDate().isPresent()) {
+				for(int i = 0; appInfor.getStartDate().get().daysTo(appInfor.getEndDate().get()) - i >= 0; i++){
+					GeneralDate loopDate = appInfor.getStartDate().get().addDays(i);
+					lstDate.add(loopDate);
+				}
+			} else {
+				lstDate.add(appInfor.getAppDate());	
+			}			
+			interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);
+			appRepo.updateWithVersion(appInfor);
+		}
+		
+		return outData;
 	}
 	
 	private CommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange) {

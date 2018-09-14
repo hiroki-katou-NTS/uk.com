@@ -108,26 +108,33 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                 startYm: null, endYm: null, 
                 startY: null, endY: null
             };
-            
-            switch (self.params.functionId) {
-                case FUNCTION_ID.Schedule:
-                case FUNCTION_ID.Daily:
-                    _params.startYmd = moment.utc(self.params.period.startDate, "YYYY/MM/DD").toISOString();
-                    _params.endYmd = moment.utc(self.params.period.endDate, "YYYY/MM/DD").toISOString();
-                    return _params;
-                case FUNCTION_ID.Monthly:
-                case FUNCTION_ID.Any_period:
-                case FUNCTION_ID.Salary:
-                case FUNCTION_ID.Bonus:
-                case FUNCTION_ID.Monthly_calculation:
-                case FUNCTION_ID.Raising_rising_back:
-                    _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
-                    _params.endYm = parseInt(moment.utc(self.params.period.endDate, "YYYY/MM").format("YYYYMM"), 10);
-                    return _params;
-                default:
-                    _params.startY = parseInt(self.params.period.startDate, 10);
-                    _params.endY = parseInt(self.params.period.endDate, 10);
-                    return _params;
+            if (self.params.period2 == null) {
+                switch (self.params.functionId) {
+                    case FUNCTION_ID.Schedule:
+                    case FUNCTION_ID.Daily:
+                        _params.startYmd = moment.utc(self.params.period.startDate, "YYYY/MM/DD").toISOString();
+                        _params.endYmd = moment.utc(self.params.period.endDate, "YYYY/MM/DD").toISOString();
+                        return _params;
+                    case FUNCTION_ID.Monthly:
+                    case FUNCTION_ID.Any_period:
+                    case FUNCTION_ID.Salary:
+                    case FUNCTION_ID.Bonus:
+                    case FUNCTION_ID.Monthly_calculation:
+                    case FUNCTION_ID.Raising_rising_back:
+                        _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
+                        _params.endYm = parseInt(moment.utc(self.params.period.endDate, "YYYY/MM").format("YYYYMM"), 10);
+                        return _params;
+                    default:
+                        _params.startY = parseInt(self.params.period.startDate, 10);
+                        _params.endY = parseInt(self.params.period.endDate, 10);
+                        return _params;
+                }
+            } else {
+                _params.startYmd = moment.utc(self.params.period2.startDate, "YYYY/MM/DD").toISOString();
+                _params.endYmd = moment.utc(self.params.period2.endDate, "YYYY/MM/DD").toISOString();
+                _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
+                _params.endYm = parseInt(moment.utc(self.params.period.endDate, "YYYY/MM").format("YYYYMM"), 10);
+                return _params;
             }
         }
         

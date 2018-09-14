@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 
 @Data
 /** 集計外出 */
@@ -68,10 +67,24 @@ public class AggregateGoOutDto implements ItemConst {
 	}
 
 	public AggregateGoOut toDomain(){
-		return AggregateGoOut.of(ConvertHelper.getEnum(attr, GoingOutReason.class),  
+		return AggregateGoOut.of(reason(),  
 					new AttendanceTimesMonth(times), 
 					legalTime == null ? new TimeMonthWithCalculation() : legalTime.toDomain(), 
 					illegalTime == null ? new TimeMonthWithCalculation() : illegalTime.toDomain(), 
 					totalTime == null ? new TimeMonthWithCalculation() : totalTime.toDomain());
+	}
+	
+	public GoingOutReason reason() {
+		switch (this.attr) {
+		case 0:
+			return GoingOutReason.PRIVATE;
+		case 1:
+			return GoingOutReason.PUBLIC;
+		case 2:
+			return GoingOutReason.COMPENSATION;
+		case 3:
+		default:
+			return GoingOutReason.UNION;
+		}
 	}
 }

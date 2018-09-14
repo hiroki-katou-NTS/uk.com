@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,10 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 
 	private static final String GET_BY_EMPLOYEE_ID = "SELECT c from KrcdtIdentificationStatus c "
 			+ " WHERE c.krcdtIdentificationStatusPK.employeeId = :employeeId "
+			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
+	
+	private static final String GET_BY_LIST_EMPLOYEE_ID = "SELECT c from KrcdtIdentificationStatus c "
+			+ " WHERE c.krcdtIdentificationStatusPK.employeeId IN :employeeIds "
 			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
 
 	private static final String GET_BY_CODE = "SELECT c from KrcdtIdentificationStatus c "
@@ -48,6 +54,13 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 				.setParameter("employeeId", employeeID).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
 	}
+	
+	@Override
+	public List<Identification> findByListEmployeeID(List<String> employeeIDs,GeneralDate startDate,GeneralDate endDate) {
+		return this.queryProxy().query(GET_BY_LIST_EMPLOYEE_ID, KrcdtIdentificationStatus.class)
+				.setParameter("employeeIds", employeeIDs).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList(c -> c.toDomain());
+	}
 
 	@Override
 	public Optional<Identification> findByCode(String employeeID, GeneralDate processingYmd) {
@@ -72,9 +85,18 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 
 	@Override
 	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE, KrcdtIdentificationStatus.class)
-		.setParameter("employeeId", employeeId).setParameter("processingYmd", processingYmd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_CONFIRMATION_DAY Where SID = " + "'" + employeeId + "'" + " and PROCESSING_YMD = " + "'" + processingYmd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE, KrcdtIdentificationStatus.class)
+//		.setParameter("employeeId", employeeId).setParameter("processingYmd", processingYmd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override

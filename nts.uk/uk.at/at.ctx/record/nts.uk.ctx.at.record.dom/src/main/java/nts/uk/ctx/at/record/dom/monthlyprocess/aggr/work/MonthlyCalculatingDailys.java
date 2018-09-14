@@ -110,32 +110,17 @@ public class MonthlyCalculatingDailys {
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
+		// 期間内の全データ読み込み
+		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories);
 		
-		// 取得期間を　開始日-1月～開始日-1日、終了日+1日～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
-		DatePeriod prevPeriod = new DatePeriod(period.start().addMonths(-1), period.start().addDays(-1));
-		DatePeriod nextPeriod = new DatePeriod(period.end().addDays(1), period.end().addMonths(1));
+		// 日別実績の勤怠時間リストの指定がない時、終了
+		if (attendanceTimeOfDailys.size() <= 0) return result;
 		
-		// 日別実績の勤怠時間
-		val prevAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
-		for (val attendanceTimeOfDaily : prevAttendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+		// 日別実績の勤怠時間を反映する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			val ymd = attendanceTimeOfDaily.getYmd();
+			result.attendanceTimeOfDailyMap.put(ymd, attendanceTimeOfDaily);
 		}
-		val nextAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
-		for (val attendanceTimeOfDaily : nextAttendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-		}
-		
-		// 日別実績の勤怠時間
-		val attendanceTimeOfDailyList = attendanceTimeOfDailys;
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-		}
-		
-		// 共通処理
-		result.loadDataCommon(employeeId, period, repositories);
 		
 		return result;
 	}
@@ -154,112 +139,79 @@ public class MonthlyCalculatingDailys {
 			Optional<List<IntegrationOfDaily>> dailyWorksOpt,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		// 日別実績(WORK)指定がない時、全データ読み込み
-		if (!dailyWorksOpt.isPresent()) return MonthlyCalculatingDailys.loadData(employeeId, period, repositories);
-		
-		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
+		// 期間内の全データ読み込み
+		MonthlyCalculatingDailys result = MonthlyCalculatingDailys.loadData(employeeId, period, repositories);
+
+		// 日別実績(WORK)指定がない時、終了
+		if (!dailyWorksOpt.isPresent()) return result;
 		
 		for (val dailyWork : dailyWorksOpt.get()){
 			
-			// 日別実績の勤怠時間がない日は、集計しない
+			// 日別実績の勤怠時間がない日は、反映しない
 			if (!dailyWork.getAttendanceTimeOfDailyPerformance().isPresent()) continue;
 			
 			// 日別実績の勤怠時間
 			val attendanceTimeOfDaily = dailyWork.getAttendanceTimeOfDailyPerformance().get();
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+			val ymd = attendanceTimeOfDaily.getYmd();
+			result.attendanceTimeOfDailyMap.put(ymd, attendanceTimeOfDaily);
 			
 			// 日別実績の出退勤
 			if (dailyWork.getAttendanceLeave().isPresent()){
 				val timeLeaveOfDaily = dailyWork.getAttendanceLeave().get();
-				result.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
+				result.timeLeaveOfDailyMap.put(ymd, timeLeaveOfDaily);
 			}
 			
 			// 日別実績の勤務情報
 			if (dailyWork.getWorkInformation() != null){
 				val workInfoOfDaily = dailyWork.getWorkInformation();
-				result.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
+				result.workInfoOfDailyMap.put(ymd, workInfoOfDaily);
 			}
 			
 			// 日別実績の臨時出退勤
 			if (dailyWork.getTempTime().isPresent()){
 				val temporaryTimeOfDaily = dailyWork.getTempTime().get();
-				result.temporaryTimeOfDailyMap.putIfAbsent(temporaryTimeOfDaily.getYmd(), temporaryTimeOfDaily);
+				result.temporaryTimeOfDailyMap.put(ymd, temporaryTimeOfDaily);
 			}
 			
 			// 日別実績の特定日区分
 			if (dailyWork.getSpecDateAttr().isPresent()){
 				val specificDateAttrOfDaily = dailyWork.getSpecDateAttr().get();
-				result.specificDateAttrOfDailyMap.putIfAbsent(specificDateAttrOfDaily.getYmd(), specificDateAttrOfDaily);
+				result.specificDateAttrOfDailyMap.put(ymd, specificDateAttrOfDaily);
 			}
 			
 			// 社員の日別実績エラー一覧
 			if (dailyWork.getEmployeeError() != null){
+				val itrPerError = result.employeeDailyPerErrorList.listIterator();
+				while (itrPerError.hasNext()){
+					val perError = itrPerError.next();
+					if (perError == null){
+						itrPerError.remove();
+						continue;
+					}
+					if (perError.getDate() == null) continue;
+					if (perError.getDate().compareTo(ymd) != 0) continue;
+					itrPerError.remove();
+				}
 				result.employeeDailyPerErrorList.addAll(dailyWork.getEmployeeError());
 			}
 			
 			// 日別実績の任意項目
 			if (dailyWork.getAnyItemValue().isPresent()){
+				val itrAnyItem = result.anyItemValueOfDailyList.listIterator();
+				while (itrAnyItem.hasNext()){
+					val anyItem = itrAnyItem.next();
+					if (anyItem.getYmd().compareTo(ymd) != 0) continue;
+					itrAnyItem.remove();
+				}
 				result.anyItemValueOfDailyList.add(dailyWork.getAnyItemValue().get());
 			}
 			
 			// PCログオン情報
 			if (dailyWork.getPcLogOnInfo().isPresent()){
 				val pcLogonInfo = dailyWork.getPcLogOnInfo().get();
-				result.pcLogonInfoMap.putIfAbsent(pcLogonInfo.getYmd(), pcLogonInfo);
+				result.pcLogonInfoMap.put(pcLogonInfo.getYmd(), pcLogonInfo);
 			}
 		}
-		
-		// 取得期間を　開始日-1月～開始日-1日、終了日+1日～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
-		DatePeriod prevPeriod = new DatePeriod(period.start().addMonths(-1), period.start().addDays(-1));
-		DatePeriod nextPeriod = new DatePeriod(period.end().addDays(1), period.end().addMonths(1));
-		
-		// 日別実績の勤怠時間
-		val prevAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
-		for (val attendanceTimeOfDaily : prevAttendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-		}
-		val nextAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
-		for (val attendanceTimeOfDaily : nextAttendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-		}
-		
-		// 日別実績の出退勤
-		val prevTimeLeaveOfDailyList =
-				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, prevPeriod);
-		for (val timeLeaveOfDaily : prevTimeLeaveOfDailyList){
-			result.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
-		}
-		val nextTimeLeaveOfDailyList =
-				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, nextPeriod);
-		for (val timeLeaveOfDaily : nextTimeLeaveOfDailyList){
-			result.timeLeaveOfDailyMap.putIfAbsent(timeLeaveOfDaily.getYmd(), timeLeaveOfDaily);
-		}
-		
-		// 日別実績の勤務情報
-		val prevWorkInfoOfDailyList =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
-		for (val workInfoOfDaily : prevWorkInfoOfDailyList){
-			result.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
-		}
-		val nextWorkInfoOfDailyList =
-				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
-		for (val workInfoOfDaily : nextWorkInfoOfDailyList){
-			result.workInfoOfDailyMap.putIfAbsent(workInfoOfDaily.getYmd(), workInfoOfDaily);
-		}
-		
-		// ※　以下は、期間外の配慮不要。
-
-		// 年休付与残数データリスト
-		result.grantRemainingDatas =
-				repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
-						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
-		
-		// 積立年休付与残数データリスト
-		result.rsvGrantRemainingDatas =
-				repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null).stream()
-						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
 		return result;
 	}
@@ -312,6 +264,11 @@ public class MonthlyCalculatingDailys {
 		// 社員の日別実績エラー一覧
 		this.employeeDailyPerErrorList =
 				repositories.getEmployeeDailyError().findByPeriodOrderByYmd(employeeId, period);
+		val itrPerError = this.employeeDailyPerErrorList.listIterator();
+		while (itrPerError.hasNext()){
+			val perError = itrPerError.next();
+			if (perError == null) itrPerError.remove();
+		}
 		
 		// 日別実績の任意項目
 		this.anyItemValueOfDailyList = repositories.getAnyItemValueOfDaily().finds(employeeIds, period);
@@ -380,26 +337,19 @@ public class MonthlyCalculatingDailys {
 		
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
+		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addMonths(1));
+		
 		// 日別実績の勤怠時間
-		val attendanceTimeOfDailyList = attendanceTimeOfDailys;
+		val attendanceTimeOfDailyList =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, findPeriod);
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyList){
 			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
-		
-		// 取得期間を　開始日-1月～開始日-1日、終了日+1日～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
-		DatePeriod prevPeriod = new DatePeriod(period.start().addMonths(-1), period.start().addDays(-1));
-		DatePeriod nextPeriod = new DatePeriod(period.end().addDays(1), period.end().addMonths(1));
-		
-		// 日別実績の勤怠時間
-		val prevAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, prevPeriod);
-		for (val attendanceTimeOfDaily : prevAttendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
-		}
-		val nextAttendanceTimeOfDailyList =
-				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, nextPeriod);
-		for (val attendanceTimeOfDaily : nextAttendanceTimeOfDailyList){
-			result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
+
+		// 指定の日別実績の勤怠時間リストを上書き反映する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			result.attendanceTimeOfDailyMap.put(attendanceTimeOfDaily.getYmd(), attendanceTimeOfDaily);
 		}
 		
 		// データ取得共通処理　（36協定時間用）

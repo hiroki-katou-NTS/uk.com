@@ -22,4 +22,9 @@ public class FlexTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = BEFOR_APPLICATION)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer beforeApplicationTime;
+	
+	@Override
+	public FlexTimeDto clone() {
+		return new FlexTimeDto(flexTime == null ? null : flexTime.clone(), beforeApplicationTime);
+	}
 }
