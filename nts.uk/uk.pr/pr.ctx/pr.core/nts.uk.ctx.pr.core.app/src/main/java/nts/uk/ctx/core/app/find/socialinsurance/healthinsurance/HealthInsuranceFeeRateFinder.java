@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.app.find.socialinsurance.healthinsurance;
 
 import lombok.val;
+import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistoryRepository;
@@ -47,15 +48,15 @@ public class HealthInsuranceFeeRateFinder {
      *
      * @return List<HealthInsuranceFeeRateHistoryDto>
      */
-    public List<HealthInsuranceFeeRateHistoryDto> getHealthInsuranceFeeRateByCompanyId() {
-        List<HealthInsuranceFeeRateHistoryDto> healthDtoList = new ArrayList<>();
+    public List<SocialInsuranceOfficeDto> getHealthInsuranceFeeRateByCompanyId() {
+        List<SocialInsuranceOfficeDto> healthDtoList = new ArrayList<>();
         String companyId = AppContexts.user().companyId();
         //ドメインモデル「社会保険事業所」を全て取得する
         List<SocialInsuranceOffice> socialInsuranceOfficeList = this.socialInsuranceOfficeRepository.findByCid(companyId);
 
         socialInsuranceOfficeList.forEach(office -> {
             Optional<HealthInsuranceFeeRateHistory> healthInsuranceFeeRateHistory = healthInsuranceFeeRateHistoryRepository.getHealthInsuranceFeeRateHistoryByCid(companyId, office.getCode().v());
-            healthDtoList.add(HealthInsuranceFeeRateHistoryDto.fromDomain(healthInsuranceFeeRateHistory, office.getName().v()));
+            healthDtoList.add(new SocialInsuranceOfficeDto(office.getCode().v(), office.getName().v(), HealthInsuranceFeeRateHistoryDto.fromDomain(healthInsuranceFeeRateHistory)));
         });
 
         return healthDtoList;

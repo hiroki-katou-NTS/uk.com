@@ -2,7 +2,7 @@ package nts.uk.ctx.core.ws.socialinsurance.healthinsurance;
 
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceDto;
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateFinder;
-import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistoryDto;
+import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -20,7 +20,7 @@ public class HealthInsuranceWebservice {
 
     @POST
     @Path("getByCompanyId")
-    public List<HealthInsuranceFeeRateHistoryDto> getHealthInsuranceFeeRateByCompanyId() {
+    public List<SocialInsuranceOfficeDto> getHealthInsuranceFeeRateByCompanyId() {
         return healthInsuranceFeeRateFinder.getHealthInsuranceFeeRateByCompanyId();
     }
 
