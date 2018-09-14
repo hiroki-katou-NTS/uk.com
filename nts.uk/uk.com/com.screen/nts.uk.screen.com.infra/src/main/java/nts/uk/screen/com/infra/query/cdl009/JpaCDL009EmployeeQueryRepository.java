@@ -73,19 +73,20 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 
 		return employees.parallelStream().filter(employee -> input.getEmpStatus().stream().anyMatch(status -> {
 			GeneralDate refDate = input.getReferenceDate();
+			GeneralDate comStart = (GeneralDate) employee[4];
 			GeneralDate comEnd = (GeneralDate) employee[5];
 			GeneralDate absStart = (GeneralDate) employee[6];
 			GeneralDate absEnd = (GeneralDate) employee[7];
 			Integer absNo = (Integer) employee[8];
 
-			Boolean isWorking = absStart == null || (absStart.afterOrEquals(refDate) || absEnd.beforeOrEquals(refDate));
+			Boolean isWorking = (comStart.beforeOrEquals(refDate) && comEnd.afterOrEquals(refDate)) && (absStart == null || (absStart.afterOrEquals(refDate) || absEnd.beforeOrEquals(refDate)));
 			switch (StatusOfEmployment.valueOf(status)) {
 	        case INCUMBENT:
 	            return isWorking;
 	        case HOLIDAY:
-	            return !isWorking && absNo != LEAVE_ABSENCE_QUOTA_NO;
+	            return !isWorking && comEnd.afterOrEquals(refDate) && absNo != LEAVE_ABSENCE_QUOTA_NO;
 	        case LEAVE_OF_ABSENCE:
-	            return !isWorking && absNo == LEAVE_ABSENCE_QUOTA_NO;
+	            return !isWorking && comEnd.afterOrEquals(refDate) && absNo == LEAVE_ABSENCE_QUOTA_NO;
 	        case RETIREMENT:
 	            return comEnd.before(refDate);
 	        default:
