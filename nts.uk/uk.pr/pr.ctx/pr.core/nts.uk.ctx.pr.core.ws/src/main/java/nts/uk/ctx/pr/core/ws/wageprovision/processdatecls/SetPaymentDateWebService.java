@@ -1,6 +1,9 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.processdatecls;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.AddPaymentDateSettingCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.PaymentDateSettingListCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.UpdatePaymentDateSettingCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.*;
 
 import javax.inject.Inject;
@@ -26,6 +29,12 @@ public class SetPaymentDateWebService extends WebService {
 
     @Inject
     ValPayDateSetFinder valPayDateSetFinder;
+
+    @Inject
+    AddPaymentDateSettingCommandHandler addPaymentDateSettingCommandHandler;
+
+    @Inject
+    UpdatePaymentDateSettingCommandHandler updatePaymentDateSettingCommandHandler;
 
     @POST
     @Path("/getProcessInfomation/{processCateNo}")
@@ -54,6 +63,19 @@ public class SetPaymentDateWebService extends WebService {
     public ValPayDateSetDto getValPayDateSet(
             @PathParam("processCateNo") int processCateNo) {
         return valPayDateSetFinder.getValPayDateSet(processCateNo);
+    }
+
+
+    @POST
+    @Path("/addDomainModel")
+    public void addDomainModel(PaymentDateSettingListCommand command) {
+        addPaymentDateSettingCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("/updateDomainModel")
+    public void updateDomainModel(PaymentDateSettingListCommand command) {
+        updatePaymentDateSettingCommandHandler.handle(command);
     }
 
 }

@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
+        valPayDateSet: any;
         processingClassification: KnockoutObservable<string>;
         processingYearAD: KnockoutObservable<string>;
         treatmentYearJapaneseCalendar: KnockoutObservable<string>;
@@ -26,9 +27,6 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         enable: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-
-
-
             // E2_3
             self.reflectionStartMonthList = ko.observableArray([]);
             let tempMonth:Array<any> = [];
@@ -57,9 +55,11 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
+            var self = this;
             var dfd = $.Deferred();
             let params = getShared("QMM005bParams");
             service.findReflectSystemReferenceDateInfo(params.processCateNo, params.processingYear).done(function (data) {
+                self.valPayDateSet = data;
                 let tranferModel = {
                     E1_3_0 : 'processingDivision',
                     E1_3_1 : 'ProcessingDivisionBasicInformation',
@@ -125,9 +125,9 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         reflect(){
             var self = this;
             setShared("QMM005eReflect", true);
+            setShared("QMM005eValPayDateSet", self.valPayDateSet);
             setShared("QMM005estartMonth", self.reflectionStartMonth);
             setShared("QMM005eParams",self.referenceDateInformation);
-
         }
 
         cancel(){

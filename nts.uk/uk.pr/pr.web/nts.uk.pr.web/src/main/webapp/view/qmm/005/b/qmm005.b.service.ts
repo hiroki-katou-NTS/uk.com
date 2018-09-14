@@ -7,7 +7,9 @@ module nts.uk.pr.view.qmm005.b.service {
         getSetDaySupport: "ctx/pr/core/wageprovision/processdatecls/getSetDaySupport/{0}",
         getSelectProcessingYear: "ctx/pr/core/wageprovision/processdatecls/getSelectProcessingYear/{0}",
         getValPayDateSet: "ctx/pr/core/wageprovision/processdatecls/getValPayDateSet/{0}",
-        processingYear: "ctx/pr/core/wageprovision/processdatecls/processingYear/{0}/{1}"
+        processingYear: "ctx/pr/core/wageprovision/processdatecls/processingYear/{0}/{1}",
+        addDomainModel: "ctx/pr/core/wageprovision/processdatecls/addDomainModel",
+        updateDomainModel: "ctx/pr/core/wageprovision/processdatecls/updateDomainModel"
 
     }
 
@@ -31,8 +33,11 @@ module nts.uk.pr.view.qmm005.b.service {
         return ajax(_path);
     }
 
-    export function getProcessingYear(processCateNo: string, year: string): JQueryPromise<any> {
-        let _path = format(this.paths.getProcessingDivisionName, processCateNo, year);
-        return ajax(_path);
+    export function addDomainModel(command): JQueryPromise<any> {
+        return ajax(this.paths.addDomainModel, command);
+    }
+
+    export function updateDomainModel(command): JQueryPromise<any> {
+        return ajax(this.paths.updateDomainModel, command);
     }
 }
