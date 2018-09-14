@@ -8,10 +8,16 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
     export class ScreenModel {
 
+        enableCloseDate: KnockoutObservable<boolean>;
+        screenMode: number;
+
         valPayDateSet: model.ValPayDateSet;
         basicSetting: model.BasicSetting;
         advancedSetting: model.AdvancedSetting;
         processInfomation: model.ProcessInfomation;
+
+
+
 
 
         processCategoryNo: number;
@@ -56,7 +62,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         disposalDaySelectedCode: KnockoutObservable<number>;
 
 
-        processName: string;
+        processName: KnockoutObservable<string>;
         //D3_3
         datePayment: KnockoutObservableArray<model.ItemModel>;
         datePaymentSelectedCode: KnockoutObservable<number>;
@@ -131,10 +137,13 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         constructor() {
 
             var self = this;
-            self.numberOfWorkingDays = ko.observable(20);
 
+            self.processCategoryNo=1;
+
+            self.numberOfWorkingDays = ko.observable(20);
+            self.enableCloseDate = ko.observable(false);
             //d2_2
-            self.processName = getText('QMM005_48');
+            self.processName = ko.observable('');
 
             self.DiscontinueThisProcessClassification = ko.observableArray([
                 new model.ItemModel(model.Abolition.Abolition, 'Abolition'),
@@ -259,6 +268,12 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.TimeCloseDateClassification.APART_FROM_DATE, 'APART_FROM_DATE')
             ]);
             self.timeCloseDateSelectedCode = ko.observable(0);
+            self.timeCloseDateSelectedCode.subscribe(function () {
+                if (self.timeCloseDateSelectedCode() == 0)
+                    self.enableCloseDate(false);
+                else
+                    self.enableCloseDate(true);
+            });
 
             //D4_9
             self.monthsCollected = ko.observableArray([
@@ -316,13 +331,13 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.guaranteedBaseMonthSelectedCode = ko.observable(0);
 
 
-            // self.pushDaytoList(self.disposalDay, model.DateSelectClassification);
-            // self.pushDaytoList(self.datePayment, model.DateSelectClassification);
-            // self.pushDaytoList(self.refeDate, model.DateSelectClassification);
-            // self.pushDaytoList(self.employmentInsuranceStandardDate, model.DateSelectClassification);
-            // self.pushDaytoList(self.timeReferenceStandardDay, model.DateSelectClassification);
-            // self.pushDaytoList(self.guaranteedBaseDate, model.DateSelectClassification);
-            // self.pushDaytoList(self.incomeTaxBaseDate, model.DateSelectClassification);
+            self.pushDaytoList(self.disposalDay, model.DateSelectClassification);
+            self.pushDaytoList(self.datePayment, model.DateSelectClassification);
+            self.pushDaytoList(self.refeDate, model.DateSelectClassification);
+            self.pushDaytoList(self.employmentInsuranceStandardDate, model.DateSelectClassification);
+            self.pushDaytoList(self.timeReferenceStandardDay, model.DateSelectClassification);
+            self.pushDaytoList(self.guaranteedBaseDate, model.DateSelectClassification);
+            self.pushDaytoList(self.incomeTaxBaseDate, model.DateSelectClassification);
 
             self.selectedId = ko.observable(0);
             self.labelRequired = ko.observable(true);
@@ -362,7 +377,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.advancedSetting = new model.AdvancedSetting(advancedSettingParam);
 
             let ValPayDateSetParam = {
-                cid: '',
+
                 processCategoryNo: self.processCategoryNo,
                 basicSetting: self.basicSetting,
                 advancedSetting: self.advancedSetting
@@ -371,9 +386,9 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.valPayDateSet = new model.ValPayDateSet(ValPayDateSetParam);
 
             let processInfomationParam = {
-                cid: '',
+
                 processCategoryNO: self.processCategoryNo,
-                processingName: self.processName,
+                processingName: self.processName(),
                 deprecatCategory: self.DiscontinueThisProcessClassificationSelectedCode()
             }
 
@@ -384,10 +399,16 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         }
 
         saveCharacterSetting(): void {
+            let self = this;
+            service.registerprocessingsegment({
+                processInformation: ko.toJS(self.processInfomation),
+                valPayDateSet: ko.toJS(self.valPayDateSet)
+            });
 
         }
 
         cancelCharacterSetting(): void {
+
         }
 
 
@@ -402,16 +423,16 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
         //初期表示処理
         onInitScreen(): void {
-            service.
+
         }
 
 
-        pushDaytoList(itemList:KnockoutObservableArray<model.ItemModel>,codeEnum:any):void{
-                let items=itemList;
-                let code=codeEnum;
+        pushDaytoList(itemList: KnockoutObservableArray<model.ItemModel>, codeEnum: any): void {
+            let items = itemList;
+            let code = codeEnum;
 
-                let i = 1;
-                for (let data in codeEnum) {
+            let i = 1;
+            for (let data in codeEnum) {
                 if (isNaN(data)) continue;
                 itemList.push(new model.ItemModel(data, i + '日'));
                 i++;

@@ -11,8 +11,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm005.d.start.js" />
-			<com:scriptfile path="qmm005.d.service.js" />
 			<com:scriptfile path="qmm005.d.vm.js" />
+			<com:scriptfile path="qmm005.d.service.js" />
 			<com:stylefile path="qmm005.d.style.css" />
 		</ui:define>
 		<ui:define name="content">
@@ -150,10 +150,10 @@
 								<div data-bind="ntsComboBox: {
 											name: 'Sample List',
 											 width:100 ,
-											options: processMonth,
+											options: processingMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 2,
-											value: processMonthSelectedCode,
+											value: processingMonthSelectedCode,
 											optionsText: 'name',
 											columns: [												
 												{ prop: 'name', length: 5 },
@@ -343,7 +343,7 @@
 											options: employmentInsuranceStandardDate,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
-											value: employmentInsuranceStandardMonthSelectedCode,
+											value: employmentInsuranceStandardDateSelectedCode,
 											optionsText: 'name',
 											columns: [
 												
@@ -396,6 +396,7 @@
 											visibleItemsCount: 8,
 											value:  timeBaseYearSelectedCode,
 											optionsText: 'name',
+											enable:enableCloseDate,
 											columns: [
 												
 												{ prop: 'name', length: 5 },
@@ -410,6 +411,7 @@
 											visibleItemsCount: 8,
 											value: timeClosingStandardMonthSelectedCode,
 											optionsText: 'name',
+											enable:enableCloseDate,
 											columns: [
 												
 												{ prop: 'name', length: 5 },
@@ -424,6 +426,7 @@
 											visibleItemsCount: 8,
 											value: timeReferenceStandardDaySelectedCode,
 											optionsText: 'name',
+											enable:enableCloseDate,
 											columns: [
 												
 												{ prop: 'name', length: 5 },
@@ -441,10 +444,10 @@
 							<td>
 								<div data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
-											options: incomeTaxBaseYear,
+											options: yearSelectClassification,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
-											value: incomeTaxBaseYearSelectedCode,
+											value: yearSelectClassificationSelectedCode,
 											optionsText: 'name',
 
 											columns: [

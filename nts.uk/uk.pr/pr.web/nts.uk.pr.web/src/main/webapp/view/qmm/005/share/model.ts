@@ -115,7 +115,6 @@ module nts.uk.pr.view.qmm005.share.model {
 
 
     export interface ISetDaySupport{
-        cid:string,
         processCategoryNO:number,
         socialInsurCollecMonth:number,
         processDate:number,
@@ -132,7 +131,6 @@ module nts.uk.pr.view.qmm005.share.model {
 
 
     export class SetDaySupport{
-        cid:string;
         processCategoryNO:number;
         socialInsurCollecMonth:number;
         processDate:number;
@@ -145,7 +143,6 @@ module nts.uk.pr.view.qmm005.share.model {
         payMentDate:string;
         numberWorkDay:number;
         constructor(params:ISetDaySupport){
-            this.cid=params.cid;
             this.processCategoryNO=params.processCategoryNO;
             this.socialInsurCollecMonth=ko.observable(params.socialInsurCollecMonth);
             this.processDate=ko.observable(params.processDate);
@@ -168,36 +165,31 @@ module nts.uk.pr.view.qmm005.share.model {
     }
 
     export interface IProcessInfomation {
-        cid: string,
-        processCategoryNO: number,
+        processCateNo: number,
         processingName: string,
-        deprecatCategory: Abolition
+        deprecatCate: Abolition
     }
 
 
     export class ProcessInfomation{
-        cid:string;
-        processCategoryNO:number;
+        processCateNo:number;
         processName:string;
-        deprecatCategory:Abolition;
+        deprecatCate:Abolition;
 
         constructor(params:IProcessInfomation){
-            this.cid=params.cid;
-            this.processCategoryNO=params.processCategoryNO;
+            this.processCateNo=params.processCateNo;
             this.processName=params.processingName;
-            this.deprecatCategory=params.deprecatCategory;
+            this.deprecatCate=params.deprecatCate;
         }
     }
 
 
 
     export class SpecPrintYmSet{
-        cid:string;
         processCategoryNO:string;
         processDate:KnockoutObservable<string>;
         printDate:KnockoutObservable<string>;
         constructor(spec:ISpecPrintYmSet){
-            this.cid=spec.cid;
             this.processCategoryNO=spec.processCategoryNO;
             this.processDate=ko.observable(spec.printDate);
             this.printDate=ko.observable(spec.printDate);
@@ -205,7 +197,6 @@ module nts.uk.pr.view.qmm005.share.model {
     }
 
     export interface ISpecPrintYmSet{
-        cid:string
         processCategoryNO:string;
         processDate:string;
         printDate:string;
@@ -213,18 +204,18 @@ module nts.uk.pr.view.qmm005.share.model {
 
 
     export class MonthlyPaymentDate{
-        datePayment:DateSelectClassification;
+        datePayMent:DateSelectClassification;
         constructor(datePayment:DateSelectClassification){
-            this.datePayment=datePayment;
+            this.datePayMent=datePayment;
         }
     }
 
     export class EmployeeExtractionReferenceDate{
         refeDate:DateSelectClassification;
-        referMonth:PreviousMonthClassification;
+        refeMonth:PreviousMonthClassification;
         constructor(refeDate:DateSelectClassification, referMonth:PreviousMonthClassification){
             this.refeDate=refeDate;
-            this.referMonth=referMonth
+            this.refeMonth=referMonth
         }
     }
 
@@ -249,21 +240,21 @@ module nts.uk.pr.view.qmm005.share.model {
 
 
     export class SalaryInsuranceCollecMonth{
-        monthsCollected:SocialInsuColleMonth;
+        monthCollected:SocialInsuColleMonth;
         constructor(monthsCollected:SocialInsuColleMonth){
-            this.monthsCollected=monthsCollected;
+            this.monthCollected=monthsCollected;
         }
     }
 
     export class SocialInsuranceStanDate {
         baseYear: YearSelectClassification;
         baseMonth: InsuranceStanMonthClassSification;
-        baseDate: DateSelectClassification;
+        refeDate: DateSelectClassification;
 
         constructor(baseYear: YearSelectClassification,
                     baseMonth: InsuranceStanMonthClassSification,
                     baseDate: DateSelectClassification) {
-            this.baseDate = baseDate;
+            this.refeDate = baseDate;
             this.baseMonth = baseMonth;
             this.baseYear = baseYear
         }
@@ -272,7 +263,7 @@ module nts.uk.pr.view.qmm005.share.model {
     export class CloseDate {
         timeCloseDate: TimeCloseDateClassification;
         baseYear: YearSelectClassification;
-        RefeDate: DateSelectClassification;
+        refeDate: DateSelectClassification;
         baseMonth: SocialInsuColleMonth;
 
         constructor(timeCloseDate: TimeCloseDateClassification,
@@ -281,7 +272,7 @@ module nts.uk.pr.view.qmm005.share.model {
                     baseMonth: SocialInsuColleMonth) {
             this.timeCloseDate = timeCloseDate;
             this.baseYear = baseYear;
-            this.RefeDate = RefeDate;
+            this.refeDate = RefeDate;
             this.baseMonth = baseMonth;
         }
     }
@@ -303,23 +294,23 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export interface IBasicSetting{
         monthlyPaymentDate: MonthlyPaymentDate;
-        employeeExtractionreferenceDate: EmployeeExtractionReferenceDate;
+        employeeExtractionReferenceDate: EmployeeExtractionReferenceDate;
         accountingClosureDate: AccountingClosureDate;
-        numberOfWorkingDays: number;
+        workDay: number;
     }
 
     //基本的な設定
     export class BasicSetting {
         monthlyPaymentDate: MonthlyPaymentDate;
-        employeeExtractionreferenceDate: EmployeeExtractionReferenceDate;
+        employeeExtractionReferenceDate: EmployeeExtractionReferenceDate;
         accountingClosureDate: AccountingClosureDate;
-        numberOfWorkingDays: number;
+        workDay: number;
 
         constructor(param:IBasicSetting) {
             this.monthlyPaymentDate = param.monthlyPaymentDate;
-            this.employeeExtractionreferenceDate = param.employeeExtractionreferenceDate;
+            this.employeeExtractionReferenceDate = param.employeeExtractionReferenceDate;
             this.accountingClosureDate = param.accountingClosureDate;
-            this.numberOfWorkingDays = param.numberOfWorkingDays;
+            this.workDay = param.workDay;
         }
     }
 
@@ -335,43 +326,37 @@ module nts.uk.pr.view.qmm005.share.model {
     }
 
     export class CurrentProcessDate {
-        cid: string;
         processCategoryNo: string;
         salaryCurrentProcessingDate: number;
 
-        constructor(cid: string,
+        constructor(
                     processCategoryNo: string,
                     salaryCurrentProcessingDate: number) {
-            this.cid = cid;
             this.processCategoryNo = processCategoryNo;
             this.salaryCurrentProcessingDate = this.salaryCurrentProcessingDate;
         }
 
     }
 
-    export class EmploymentTiedProcessYear {
-        cid: string;
-        processCategoryNo: string;
-        employeeCode: Array<string>;
+    export class EmpTiedProYear {
+        processCateNo: string;
+        employmentCodes: Array<string>;
 
-        constructor(cid: string,
+        constructor(
                     processCategoryNo: string,
                     employeeCode: Array<string>) {
-            this.cid = cid;
-            this.processCategoryNo = processCategoryNo;
-            this.employeeCode = employeeCode;
+            this.processCateNo = processCategoryNo;
+            this.employmentCodes = employeeCode;
         }
     }
 
     export class Employment {
-        cid: string;
         employmentCode: string;
         employmentName: string;
 
-        constructor(cid: string,
+        constructor(
                     employmentCode: string,
                     employmentName: string) {
-            this.cid=cid;
             this.employmentCode=employmentCode;
             this.employmentName=employmentName;
 
@@ -381,34 +366,33 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export interface IAdvancedSetting{
         closeDate:CloseDate;
-        incomeTaxBaseYear:IncomeTaxBaseYear;
-        detailPrintingMonth:DetailPrintingMonth;
-        socialInsuranceStanDate:SocialInsuranceStanDate;
-        salaryInsuranceCollecMonth:SalaryInsuranceCollecMonth;
-        employmentInsuranceStanDate:EmploymentInsuranceStanDate;
+        incomTaxBaseYear:IncomeTaxBaseYear;
+        detailPrintingMon:DetailPrintingMonth;
+        sociInsuStanDate:SocialInsuranceStanDate;
+        salaryInsuColMon:SalaryInsuranceCollecMonth;
+        empInsurStanDate:EmploymentInsuranceStanDate;
     }
 
     //高度な設定
     export class AdvancedSetting{
         closeDate:CloseDate;
-        incomeTaxBaseYear:IncomeTaxBaseYear;
-        detailPrintingMonth:DetailPrintingMonth;
-        socialInsuranceStanDate:SocialInsuranceStanDate;
-        salaryInsuranceCollecMonth:SalaryInsuranceCollecMonth;
-        employmentInsuranceStanDate:EmploymentInsuranceStanDate;
+        incomTaxBaseYear:IncomeTaxBaseYear;
+        detailPrintingMon:DetailPrintingMonth;
+        sociInsuStanDate:SocialInsuranceStanDate;
+        salaryInsuColMon:SalaryInsuranceCollecMonth;
+        empInsurStanDate:EmploymentInsuranceStanDate;
         constructor(param:IAdvancedSetting){
             this.closeDate=param.closeDate;
-            this.incomeTaxBaseYear=param.incomeTaxBaseYear;
-            this.detailPrintingMonth=param.detailPrintingMonth;
-            this.socialInsuranceStanDate=param.socialInsuranceStanDate;
-            this.salaryInsuranceCollecMonth=param.salaryInsuranceCollecMonth;
-            this.employmentInsuranceStanDate=param.employmentInsuranceStanDate;
+            this.incomTaxBaseYear=param.incomTaxBaseYear;
+            this.detailPrintingMon=param.detailPrintingMon;
+            this.sociInsuStanDate=param.sociInsuStanDate;
+            this.salaryInsuColMon=param.salaryInsuColMon;
+            this.empInsurStanDate=param.empInsurStanDate;
         }
     }
 
 
     export interface IValPayDateSet{
-        cid: string,
         processCategoryNo: number,
         basicSetting: BasicSetting,
         advancedSetting: AdvancedSetting
@@ -416,13 +400,11 @@ module nts.uk.pr.view.qmm005.share.model {
 
     //支払日の設定の規定値
     export class ValPayDateSet {
-        cid: string;
         processCategoryNo: number;
         basicSetting: BasicSetting;
         advancedSetting: AdvancedSetting;
 
         constructor(param: IValPayDateSet) {
-            this.cid = param.cid;
             this.processCategoryNo = param.processCategoryNo;
             this.advancedSetting = param.advancedSetting;
             this.basicSetting = param.basicSetting;

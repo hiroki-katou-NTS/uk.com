@@ -31,7 +31,7 @@ public enum DateSelectClassification {
 	DAY_27(27,"Enum_DateSelectClassification_DAY_27"),
 	DAY_28(28,"Enum_DateSelectClassification_DAY_28"),
 	DAY_29(29,"Enum_DateSelectClassification_DAY_29"),
-	DAY_30(30,"Enum_DateSelectClassification_DAY_29"),
+	DAY_30(30,"Enum_DateSelectClassification_DAY_30"),
 	LAST_DAY_MONTH(31,"Enum_DateSelectClassification_LAST_DAY_MONTH");
 	public final int value;
 

@@ -4,12 +4,18 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.SetDaySupportDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.SetDaySupportFinder;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.*;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 @Transactional
@@ -33,13 +39,18 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
     @Inject
     EmpTiedProYearRepository empTiedProYearRepository;
 
+    @Inject
+    private SetDaySupportFinder setDaySupportFinder;
+
+    String cid=AppContexts.user().companyId();
 
     @Override
     protected void handle(CommandHandlerContext<ProcessingSegmentCommand> commandHandlerContext) {
+
         ProcessingSegmentCommand addCommand = commandHandlerContext.getCommand();
 
         this.valPayDateSetRepository.add(new ValPayDateSet(
-                        addCommand.getValPayDateSet().getCid(),
+                        cid,
                         addCommand.getValPayDateSet().getProcessCateNo(),
                         addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),
                         addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getDisposalDay(),
@@ -66,7 +77,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
 
         this.processInformationRepository.add(new ProcessInformation(
-                        addCommand.getProcessInformation().getCid(),
+                        cid,
                         addCommand.getProcessInformation().getProcessCateNo(),
                         addCommand.getProcessInformation().getDeprecatCate(),
                         addCommand.getProcessInformation().getProcessDivisionName()
@@ -74,8 +85,8 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
         );
 
         addSpecPrintYmSet(addCommand);
-
-
+        addSetDaySupport(addCommand);
+        addCurrProcessDate(addCommand);
 
 
 
@@ -83,7 +94,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
 
     public void addSpecPrintYmSet(ProcessingSegmentCommand addCommand) {
-        String cid = addCommand.getValPayDateSet().getCid();
+
         int processCateNo = addCommand.getValPayDateSet().getProcessCateNo();
         int currentYear = GeneralDate.today().year();
 
@@ -92,38 +103,183 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
         if (montOption == PreviousMonthClassification.THIS_MONTH.value) {
             for (int i = 1; i < 13; i++) {
-                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + i,currentYear * 100 + i));
+                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + i, currentYear * 100 + i));
 
-                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid,processCateNo,(currentYear + 1) * 100 + i,(currentYear + 1) * 100 + i));
+                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, (currentYear + 1) * 100 + i, (currentYear + 1) * 100 + i));
 
             }
         }
 
 
         if (montOption == PreviousMonthClassification.LAST_MONTH.value) {
-            this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo,currentYear*100+1, (currentYear - 1) * 100 + 12));
+            this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + 1, (currentYear - 1) * 100 + 12));
             for (int i = 1; i < 12; i++) {
-                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, currentYear*100+1+i,currentYear * 100 + i));
+                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + 1 + i, currentYear * 100 + i));
             }
-            this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo,(currentYear+1)*100+1, (currentYear ) * 100 + 12));
+            this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, (currentYear + 1) * 100 + 1, (currentYear) * 100 + 12));
             for (int i = 1; i < 12; i++) {
-                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo,(currentYear+1)*100+i+1, (currentYear + 1) * 100 + i));
+                this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, (currentYear + 1) * 100 + i + 1, (currentYear + 1) * 100 + i));
             }
 
         }
     }
 
 
+    public void addSetDaySupport(ProcessingSegmentCommand addCommand) {
+        int currentYear = GeneralDate.today().year();
 
-    public void addSetDaySupport(ProcessingSegmentCommand addCommand){
-        String cid=addCommand.getValPayDateSet().getCid();
         int processCateNo = addCommand.getValPayDateSet().getProcessCateNo();
+        //basic
+        int payMentDate = addCommand.getValPayDateSet().getBasicSetting().getMonthlyPaymentDate().getDatePayMent();
+        int refeDate=addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate();
+        int refeMonth=addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth();
+        int disposalDay=addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getDisposalDay();
+        int processMonth=addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth();
+        //advanc
+        int monthCollected=addCommand.getValPayDateSet().getAdvancedSetting().getSalaryInsuColMon().getMonthCollected();
+
+        int baseYear=addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseYear();
+        int baseMonth=addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseMonth();
+        int baseDate=addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getRefeDate();
+
+
+        int referDateEmploymentInsuranceStanDate=addCommand.getValPayDateSet().getAdvancedSetting().getEmpInsurStanDate().getRefeDate();
+        int baseMonthEmploymentInsuranceStanDate=addCommand.getValPayDateSet().getAdvancedSetting().getEmpInsurStanDate().getBaseMonth();
+
+        int timeCloseDate=addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate();
+        int refeDateClose=addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getRefeDate();
+        int baseMonthClose=addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseMonth();
+        int baseYearClose=addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseYear();
+
+
+        int inComRefeMonth=addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getBaseMonth();
+        int inComRefeYear=addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getBaseYear();
+        int inComRefeDate=addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getRefeDate();
+
+        String numberWorkDay=addCommand.getValPayDateSet().getBasicSetting().getWorkDay().toString();
 
 
 
 
 
-        //this.setDaySupportRepository.add(new SetDaySupport());
+
+
+        for (int i = 1; i < 25; i++) {
+
+
+
+
+
+            GeneralDate empInsurdStanDate=GeneralDate.ymd(currentYear, i, (referDateEmploymentInsuranceStanDate == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : referDateEmploymentInsuranceStanDate);
+            if(baseMonthEmploymentInsuranceStanDate>i) {
+                empInsurdStanDate.addYears(-1);
+                empInsurdStanDate=GeneralDate.ymd(empInsurdStanDate.year(),baseMonthEmploymentInsuranceStanDate,empInsurdStanDate.day());
+            }
+            GeneralDate closureDateAccounting=convertDate(GeneralDate.ymd(currentYear, i, (disposalDay == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : disposalDay));
+            if(processMonth==PreviousMonthClassification.LAST_MONTH.value){
+                closureDateAccounting.addMonths(-1);
+                convertDate(closureDateAccounting);
+            }
+
+            GeneralDate paymentDate=convertDate(GeneralDate.ymd(currentYear, i, (payMentDate == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : payMentDate));
+
+            GeneralDate empExtraRefeDate=convertDate(GeneralDate.ymd(currentYear, i, (refeDate == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : refeDate));
+            if(refeMonth==PreviousMonthClassification.LAST_MONTH.value){
+                empExtraRefeDate.addMonths(-1);
+                convertDate(empExtraRefeDate);
+            }
+
+            GeneralDate socialInsurdStanDate=GeneralDate.ymd(currentYear, i, (baseDate == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : baseDate);
+            if(baseMonth==InsuranceStanMonthClassification.LAST_MONTH.value)
+                socialInsurdStanDate.addMonths(-1);
+            else if(baseMonth==InsuranceStanMonthClassification.MONTH.value)
+                socialInsurdStanDate.addMonths(0);
+            else
+                socialInsurdStanDate=GeneralDate.ymd(currentYear, baseMonth-1, (baseDate == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : baseDate);;
+
+
+
+
+            YearMonth socialInsurdCollecMonth=YearMonth.of(currentYear,i);
+            socialInsurdCollecMonth.addMonths(monthCollected-2);
+
+
+            GeneralDate closeDateTime=empExtraRefeDate;
+            if(timeCloseDate==1){
+                closeDateTime.addYears(baseYearClose-1);
+                closeDateTime.addMonths(baseMonthClose-2);
+                closeDateTime=GeneralDate.ymd(closeDateTime.year(), closeDateTime.month(), (refeDateClose == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : refeDateClose);
+            }
+
+
+            GeneralDate incomeTaxDate=GeneralDate.ymd(currentYear,inComRefeMonth,(inComRefeDate == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : inComRefeDate);
+            incomeTaxDate.addYears(inComRefeYear-1);
+
+            YearMonth processDate=new YearMonth(currentYear*100+1);
+            if(i!=1){
+                processDate.addMonths(1);
+            }
+
+
+
+            this.setDaySupportRepository.add(new SetDaySupport(
+                            cid,
+                            processCateNo,
+                            processDate.v(),
+                            closeDateTime,
+                            empInsurdStanDate,
+                            closureDateAccounting,
+                            paymentDate,
+                            empExtraRefeDate,
+                            socialInsurdStanDate,
+                            socialInsurdCollecMonth.v(),
+                            incomeTaxDate,
+                            numberWorkDay
+                    )
+            );
+        }
+
     }
+
+
+    public void addCurrProcessDate(ProcessingSegmentCommand addCommand){
+        List<SetDaySupportDto> setDaySupportDtoList=this.setDaySupportFinder.getAllSetDaySupport();
+        GeneralDate currentDay = GeneralDate.today();
+        int currTreatYear=0;
+        for(int i=0;i<setDaySupportDtoList.size();i++){
+
+            if(setDaySupportDtoList.get(i).getPaymentDate().yearMonth().v()==currentDay.yearMonth().v() && currentDay.day()<setDaySupportDtoList.get(i).getPaymentDate().day())
+                currTreatYear=currentDay.yearMonth().v();
+        }
+        String cid=addCommand.getValPayDateSet().getCid();
+        int processCateNo=addCommand.getValPayDateSet().getProcessCateNo();
+        this.currProcessDateRepository.add(new CurrProcessDate(cid,processCateNo,currTreatYear));
+
+    }
+
+
+
+    public void addEmpTiedProYear(ProcessingSegmentCommand addCommand){
+        String cid=addCommand.getValPayDateSet().getCid();
+        int processCateNo=addCommand.getValPayDateSet().getProcessCateNo();
+
+        this.empTiedProYearRepository.add(new EmpTiedProYear(cid,processCateNo,new ArrayList<EmploymentCode>()));
+
+    }
+
+
+
+
+    public GeneralDate convertDate(GeneralDate convertDate) {
+
+        if (convertDate.dayOfWeek() == 6)
+            return convertDate.addDays(-1);
+        else if (convertDate.dayOfWeek() == 7)
+            return convertDate.addDays(-2);
+        else
+            return convertDate;
+
+    }
+
 
 }
