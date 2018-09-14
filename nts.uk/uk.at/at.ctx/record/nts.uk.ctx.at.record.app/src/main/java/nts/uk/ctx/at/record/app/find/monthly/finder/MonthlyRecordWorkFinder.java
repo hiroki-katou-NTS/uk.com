@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnnLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyCareHdRemainDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyChildCareHdRemainDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
@@ -59,6 +61,12 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	@Inject
 	private MonthlyRemarksFinder remarksFinder;
 	
+	@Inject
+	private MonthlyCareRemainFinder careFinder;
+	
+	@Inject
+	private MonthlyChildCareRemainFinder childCareFinder;
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public MonthlyRecordWorkDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
@@ -77,6 +85,8 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		dto.setAbsenceLeave(absenceLeaveFinder.find(employeeId, yearMonth, closureId, closureDate));
 		dto.setSpecialHoliday(specialHolidayFinder.finds(employeeId, yearMonth, closureId, closureDate));
 		dto.setRemarks(remarksFinder.finds(employeeId, yearMonth, closureId, closureDate));
+		dto.setCare(careFinder.find(employeeId, yearMonth, closureId, closureDate));
+		dto.setChildCare(childCareFinder.find(employeeId, yearMonth, closureId, closureDate));
 		return dto;
 	}
 
@@ -107,6 +117,8 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		List<AbsenceLeaveRemainDataDto> absenceLeave = absenceLeaveFinder.find(employeeId, yearMonth);
 		List<SpecialHolidayRemainDataDto> specialHoliday = specialHolidayFinder.find(employeeId, yearMonth);
 		List<MonthlyRemarksDto> remarks = remarksFinder.find(employeeId, yearMonth);
+		List<MonthlyCareHdRemainDto> care = remarksFinder.find(employeeId, yearMonth);
+		List<MonthlyChildCareHdRemainDto> childCare = remarksFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());
@@ -122,6 +134,8 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 			dto.setAbsenceLeave(filterItem(absenceLeave, a));
 			dto.setSpecialHoliday(filterItems(specialHoliday, a));
 			dto.setRemarks(filterItems(remarks, a));
+			dto.setCare(filterItem(care, a));
+			dto.setChildCare(filterItem(childCare, a));
 			return dto;
 		}).collect(Collectors.toList());
 	}
