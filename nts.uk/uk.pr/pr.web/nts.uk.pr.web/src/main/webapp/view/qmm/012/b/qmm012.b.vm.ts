@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm012.b {
                                                     timeItemSet: null
                                                     }); 
                 }
-                self.statementItemDataSelected(new StatementItemData(self.statementItemDataList()[0], self));
+                self.statementItemDataSelected(new StatementItemData(null, self));
                 
                 self.gridColumns = [
                                         { headerText: '', key: 'salaryItemId', width: 0, formatter: _.escape, hidden: true },
@@ -123,6 +123,10 @@ module nts.uk.pr.view.qmm012.b {
             statementItemDisplaySet: KnockoutObservable<StatementItemDisplaySet>;
             itemRangeSet: KnockoutObservable<ItemRangeSet>;
             deductionItemSet: KnockoutObservable<DeductionItemSet>;
+            timeItemSet: KnockoutObservable<TimeItemSet>;
+            
+            // mode of screen
+            checkCreate: KnockoutObservable<boolean> = ko.observable(true);
             
             constructor(data: IStatementItemData, screenModel: ScreenModel) {
                 let self = this;
@@ -132,13 +136,25 @@ module nts.uk.pr.view.qmm012.b {
                     self.salaryItemId = ko.observable(data.salaryItemId);
                     self.statementItem = ko.observable(new StatementItem(data.statementItem));
                     self.statementItemName = ko.observable(new StatementItemName(data.statementItemName));
-                    self.paymentItemSet = ko.observable(new PaymentItemSet(data.paymentItemSet));
+                    self.paymentItemSet = ko.observable(new PaymentItemSet(data.paymentItemSet, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(data.statementItemDisplaySet));
                     self.itemRangeSet = ko.observable(new ItemRangeSet(data.itemRangeSet));
                     self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet));
+                    self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet));
+                    
+                    self.checkCreate = ko.observable(false);
                 } else {
-                    //TODO
-                    console.log("Xử lý đi em");
+                    self.cid = "";
+                    self.salaryItemId = ko.observable("");
+                    self.statementItem = ko.observable(new StatementItem(null));
+                    self.statementItemName = ko.observable(new StatementItemName(null));
+                    self.paymentItemSet = ko.observable(new PaymentItemSet(null, screenModel));
+                    self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(null));
+                    self.itemRangeSet = ko.observable(new ItemRangeSet(null));
+                    self.deductionItemSet = ko.observable(new DeductionItemSet(null));
+                    self.timeItemSet = ko.observable(new TimeItemSet(null));
+                    
+                    self.checkCreate = ko.observable(true);
                 }
                 
                 self.salaryItemId.subscribe(x => {
@@ -149,13 +165,23 @@ module nts.uk.pr.view.qmm012.b {
                         
                         self.statementItem(new StatementItem(data.statementItem));
                         self.statementItemName(new StatementItemName(data.statementItemName));
-                        self.paymentItemSet(new PaymentItemSet(data.paymentItemSet));
+                        self.paymentItemSet(new PaymentItemSet(data.paymentItemSet, screenModel));
                         self.statementItemDisplaySet(new StatementItemDisplaySet(data.statementItemDisplaySet));
                         self.itemRangeSet(new ItemRangeSet(data.itemRangeSet));
                         self.deductionItemSet(new DeductionItemSet(data.deductionItemSet));
+                        self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet));
+                        
+                        self.checkCreate(false);
                     } else {
-                        //TODO
-                        console.log("Xử lý đi em");
+                        self.statementItem(new StatementItem(null));
+                        self.statementItemName(new StatementItemName(null));
+                        self.paymentItemSet(new PaymentItemSet(null, screenModel));
+                        self.statementItemDisplaySet(new StatementItemDisplaySet(null));
+                        self.itemRangeSet(new ItemRangeSet(null));
+                        self.deductionItemSet(new DeductionItemSet(null));
+                        self.timeItemSet = ko.observable(new TimeItemSet(null));
+                        
+                        self.checkCreate(true);
                     }
                 });
             }
@@ -192,7 +218,8 @@ module nts.uk.pr.view.qmm012.b {
                     self.socialInsuaEditableAtr = ko.observable(data.socialInsuaEditableAtr);
                     self.intergrateCd = ko.observable(data.intergrateCd);
                 } else {
-                    //TODO lấy category đang được chọn
+                    //TODO lấy category đang được chọn từ màn A
+                    self.categoryAtr = model.CategoryAtr.PAYMENT_ITEM;
 //                    self.categoryAtr = data.categoryAtr;
 //                    
 //                    if(data.categoryAtr == model.CategoryAtr.PAYMENT_ITEM) {
@@ -272,7 +299,7 @@ module nts.uk.pr.view.qmm012.b {
             // taxableAmountClassification  switch button
             taxableAmountList: KnockoutObservableArray<model.BoxModel>;
             
-            constructor(data: IPaymentItemSet) {
+            constructor(data: IPaymentItemSet, screenModel: ScreenModel) {
                 let self = this;
                 
                 self.taxList = ko.observableArray([
@@ -345,6 +372,28 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxLimitAmountCode = ko.observable(null);
                     self.note = ko.observable(null);
                 }
+                
+                // mapping 2 thuộc tính của 2 domain từ cùng 1 item
+                self.averageWageAtr.subscribe(x => {
+                    if(x) {
+                        screenModel.statementItemDataSelected().timeItemSet().averageWageAtr(x);
+                    }
+                });
+                
+                // mapping 2 thuộc tính của 2 domain từ cùng 1 item
+                self.breakdownItemUseAtr.subscribe(x => {
+                    if(x) {
+                        screenModel.statementItemDataSelected().deductionItemSet().breakdownItemUseAtr(x);
+                    }
+                });
+                
+                // mapping 3 thuộc tính của 3 domain từ cùng 1 item
+                self.note.subscribe(x => {
+                    if(x) {
+                        screenModel.statementItemDataSelected().deductionItemSet().note(x);
+                        screenModel.statementItemDataSelected().timeItemSet().note(x);
+                    }
+                });
             }
         }
         
@@ -412,7 +461,7 @@ module nts.uk.pr.view.qmm012.b {
             alarmLowerLimitSettingAtrCus: KnockoutObservable<boolean>;
             
             // option for numberEditor binding
-            numberEditorOption: KnockoutObservable<any>;
+            numberEditorOption: any;
             
             constructor(data: IItemRangeSet) {
                 let self = this;
@@ -503,21 +552,23 @@ module nts.uk.pr.view.qmm012.b {
         }
         
         class DeductionItemSet {
-            deductionItemAtr: number;
-            breakdownItemUseAtr: number;
-            note: string;
+            deductionItemAtr: KnockoutObservable<number>;
+            breakdownItemUseAtr: KnockoutObservable<number>;
+            note: KnockoutObservable<string>;
             
-            // breakdownItemUse switch button
-            breakdownItemUseList: KnockoutObservableArray<model.ItemModel>;
+            // deductionItemList switch button
+            deductionItemList: KnockoutObservableArray<model.ItemModel>;
             
             constructor(data: IDeductionItemSet) {
                 let self = this;
                 
-                self.breakdownItemUseList = ko.observableArray([
-                    new model.ItemModel(model.BreakdownItemUseAtr.USE.toString(), getText('QMM012_72')),
-                    new model.ItemModel(model.BreakdownItemUseAtr.NOT_USE.toString(), getText('QMM012_73'))
+                self.deductionItemList = ko.observableArray([
+                    new model.ItemModel(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM.toString(), getText('QMM012_y')),
+                    new model.ItemModel(model.DeductionItemAtr.SOCIAL_INSURANCE_ITEM.toString(), getText('QMM012_y')),
+                    new model.ItemModel(model.DeductionItemAtr.INCOME_TAX_ITEM.toString(), getText('QMM012_y')),
+                    new model.ItemModel(model.DeductionItemAtr.INHABITANT_TAX_ITEM.toString(), getText('QMM012_y'))
                 ]);
-            
+                
                 if (data) {
                     self.deductionItemAtr = ko.observable(data.deductionItemAtr);
                     self.breakdownItemUseAtr = ko.observable(data.breakdownItemUseAtr);
@@ -525,6 +576,45 @@ module nts.uk.pr.view.qmm012.b {
                 } else {
                     self.deductionItemAtr = ko.observable(null);
                     self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
+                    self.note = ko.observable(null);
+                }
+            }
+        }
+        
+        class TimeItemSet {
+            averageWageAtr: KnockoutObservable<number>;
+            workingDaysPerYear: KnockoutObservable<number>;
+            timeCountAtr: KnockoutObservable<number>;
+            note: KnockoutObservable<string>;
+            
+            // timeCountList switch button
+            timeCountList: KnockoutObservableArray<model.ItemModel>;
+            
+            // coveredList switch button
+            coveredList: KnockoutObservableArray<model.ItemModel>;
+            
+            constructor(data: ITimeItemSet) {
+                let self = this;
+                
+                self.timeCountList = ko.observableArray([
+                    new model.ItemModel(model.TimeCountAtr.TIME.toString(), getText('QMM012_88')),
+                    new model.ItemModel(model.TimeCountAtr.TIMES.toString(), getText('QMM012_89'))
+                ]);
+                
+                self.coveredList = ko.observableArray([
+                    new model.ItemModel(model.CoveredAtr.COVERED.toString(), getText('QMM012_41')),
+                    new model.ItemModel(model.CoveredAtr.NOT_COVERED.toString(), getText('QMM012_42'))
+                ]);
+                
+                if (data) {
+                    self.averageWageAtr = ko.observable(data.averageWageAtr);
+                    self.workingDaysPerYear = ko.observable(data.workingDaysPerYear);
+                    self.timeCountAtr = ko.observable(data.timeCountAtr);
+                    self.note = ko.observable(data.note);
+                } else {
+                    self.averageWageAtr = ko.observable(null);
+                    self.workingDaysPerYear = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.timeCountAtr = ko.observable(model.TimeCountAtr.TIME);
                     self.note = ko.observable(null);
                 }
             }

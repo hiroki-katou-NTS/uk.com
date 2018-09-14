@@ -1,0 +1,18 @@
+.table tr td {
+	display: inline-flex;
+	padding-bottom: 10px;
+}
+
+.table > tbody > tr > td:nth-child(1) {
+	width: 200px;
+}
+
+.span-middle {
+	margin-top: 5px;
+}
+
+.month-checkbox {
+	margin-right: 10px;
+	margin-bottom: 5px;
+	width: 70px
+}

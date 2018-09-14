@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+            var dialogSize = {
+                width: 900,
+                height: 600
+            };
+        	</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm012.h.start.js" />
+			<com:scriptfile path="qmm012.h.vm.js" />
+			<com:scriptfile path="qmm012.h.service.js" />
+			<com:stylefile path="qmm012.h.style.css" />
+			<com:ValidatorScript>
+		        nts.uk.shr.com.time.calendar.Year
+		    </com:ValidatorScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="label" style="margin-bottom: 10px">#{i18n.getText('QMM012_62')}</div>
+				<div class="label" style="margin-bottom: 20px">#{i18n.getText('QMM012_63')}</div>
+				<table class="table">
+					<tr>
+						<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_3')}</div></td>
+						<td><span class="label" data-bind="text: itemAtr"></span></td>
+					</tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_17')}</div></td>
+						<td><span class="label" data-bind="text: itemNameCode"></span>
+							<span class="label" data-bind="text: itemName"></span></td>
+					</tr>
+				</table>
+
+				<hr />
+
+				<table class="table" data-bind="with: currentSetting">
+					<tr>
+						<td><div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_64')}</div></td>
+						<td>
+							<div class="cf" tabindex="1"
+								data-bind="ntsSwitchButton: {
+									options: $parent.validityPeriodAtrList,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: periodAtr ,
+									enable: true }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input tabindex="2"
+							data-bind="ntsTextEditor: {
+			                                 name: '#[QMM012_66]',
+			                                 value: yearPeriodStart,
+			                                 constraint: 'Year',
+			                                 option: {width: '50px'}}" />
+							<span class="label span-middle" data-bind="text: startYearJpn"></span>
+							<span　class="label span-middle">～</span>
+							<input tabindex="3"
+							data-bind="ntsTextEditor: {
+			                                 name: '#[QMM012_67]',
+			                                 value: yearPeriodEnd,
+			                                 constraint: 'Year',
+			                                 option: {width: '50px'}}" />
+							<span class="label span-middle" data-bind="text: endYearJpn"></span></td>
+					</tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_68')}</div></td>
+						<td>
+							<div class="cf" tabindex="4"
+								data-bind="ntsSwitchButton: {
+									options: $parent.cycleSettingAtrList,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: cycleSettingAtr ,
+									enable: true }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><div class="label">#{i18n.getText('QMM012_70')}</div></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: january, style: 'button'}">#{i18n.getText('QMM012_71')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: february, style:'button'}">#{i18n.getText('QMM012_72')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: march, style: 'button'}">#{i18n.getText('QMM012_73')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: april, style: 'button'}">#{i18n.getText('QMM012_74')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: may, style: 'button'}">#{i18n.getText('QMM012_75')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: june, style: 'button'}">#{i18n.getText('QMM012_76')}</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: july, style: 'button'}">#{i18n.getText('QMM012_77')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: august, style: 'button'}">#{i18n.getText('QMM012_78')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked:september, style:'button'}">#{i18n.getText('QMM012_79')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: october, style: 'button'}">#{i18n.getText('QMM012_80')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: november, style:'button'}">#{i18n.getText('QMM012_81')}</div>
+							<div class="month-checkbox" data-bind="ntsCheckBox: {checked: december, style:'button'}">#{i18n.getText('QMM012_82')}</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="functions-area-bottom">
+				<!--H4_1-->
+				<button class="x-large proceed" tabindex="17"
+					data-bind="click: execution">#{i18n.getText('QMM012_101')}</button>
+				<!--H4_2-->
+				<button tabindex="18" data-bind="click: cancel">#{i18n.getText('QMM012_9')}</button>
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

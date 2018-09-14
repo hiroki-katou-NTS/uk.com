@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset;
  */
 public enum CycleSettingAtr {
 
-	DO_NOT(0, "しない"), 
-	TO(1, "する");
+	NOT_USE(0, "しない"), 
+	USE(1, "する");
 
 	/** The value. */
 	public final int value;
