@@ -503,14 +503,13 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
 			String sID) {
-		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
-		if (isSaveAbs(command.getComType()) && isCheck) {
-			String wkTypeCD = absCmd.getWkTypeCD();
+		if (isSaveBothApp(command.getComType()) && isCheck) {
+			String wkTypeCD = command.getAbsCmd().getWkTypeCD();
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr absHolidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
-			GeneralDate appDate = absCmd.getAppDate();
+			GeneralDate appDate = command.getRecCmd().getAppDate();
 			// アルゴリズム「実績の取得」を実行する
 			AchievementOutput achievement = afinder.getAchievement(companyID, sID, appDate);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
@@ -522,7 +521,6 @@ public class SaveHolidayShipmentCommandHandler
 				String nameId = achievementHolidayType != null ? achievementHolidayType.nameId : "設定なし";
 				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), nameId);
 			}
-
 		}
 
 	}

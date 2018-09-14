@@ -472,4 +472,8 @@ public class WithinStatutoryTimeOfDaily {
 		}
 	}
 	
+	public static WithinStatutoryTimeOfDaily defaultValue(){
+		return new WithinStatutoryTimeOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, 
+				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue()));
+	}
 }

@@ -112,9 +112,8 @@ public class CreScheWithBusinessDayCalService {
 			String workTimeCode, boolean isHoliday, String workTypeCode, List<WorkType> listWorkType,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<DeductionTime> listScheTimeZones) {
-		BusinessDayCal data = new BusinessDayCal();
-		List<DeductionTime> listDeductionTime =  new ArrayList<DeductionTime>();
-		BusinessDayCal result = new BusinessDayCal();
+		
+		final BusinessDayCal data;
 
 		// 「就業時間帯勤務区分. 就業時間帯の設定方法」を判断
 		// EA修正履歴　No2104
@@ -129,29 +128,29 @@ public class CreScheWithBusinessDayCalService {
 			
 			if (isHoliday) {
 				// 固定勤務設定. 休日勤務時間帯. 休憩時間帯
-				data.setTimezones(fixedWorkSettingDto.getListOffdayWorkTimezone().stream()
+				data = new BusinessDayCal(fixedWorkSettingDto.getListOffdayWorkTimezone().stream()
 						.map(x -> new DeductionTime(x.getStart(), x.getEnd())).collect(Collectors.toList()));
 			} else {
 				// EA修正履歴　No2283
 				// 「固定勤務設定. 平日勤務時間帯. 休憩時間帯」
 				switch (this.basicScheduleService.checkWorkDayByList(workTypeCode, listWorkType)) {
 				case MORNING_WORK:
-					data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone()
+					data = new BusinessDayCal(fixedWorkSettingDto.getListHalfDayWorkTimezone()
 							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.AM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case AFTERNOON_WORK:
-					data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone()
+					data = new BusinessDayCal(fixedWorkSettingDto.getListHalfDayWorkTimezone()
 							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.PM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case ONE_DAY_WORK:
-					data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone()
+					data = new BusinessDayCal(fixedWorkSettingDto.getListHalfDayWorkTimezone()
 							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.ONE_DAY)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				default:
-					data.setTimezones(Collections.emptyList());
+					data = new BusinessDayCal(Collections.emptyList());
 					break;
 				}
 				
@@ -166,12 +165,12 @@ public class CreScheWithBusinessDayCalService {
 
 			if (isHoliday) {
 				// 流動勤務設定. 休日勤務時間帯. 休憩時間帯. 固定休憩時間帯
-				data.setTimezones(flowWorkSettingDto.getListOffdayWorkTimezone().stream()
+				data = new BusinessDayCal(flowWorkSettingDto.getListOffdayWorkTimezone().stream()
 						.map(x -> new DeductionTime(x.getStart(), x.getEnd())).collect(Collectors.toList()));
 			} else {
 				// EA修正履歴　No2283
 				// 流動勤務設定. 平日勤務時間帯. 休憩時間帯. 固定休憩時間帯」
-				data.setTimezones(flowWorkSettingDto.getListHalfDayWorkTimezone().stream()
+				data = new BusinessDayCal(flowWorkSettingDto.getListHalfDayWorkTimezone().stream()
 						.map(x -> new DeductionTime(x.getStart(), x.getEnd())).collect(Collectors.toList()));
 			}
 
@@ -186,48 +185,52 @@ public class CreScheWithBusinessDayCalService {
 
 			if (isHoliday) {
 				// 「時差勤務設定. 休日勤務時間帯. 休憩時間帯」
-				data.setTimezones(diffTimeWorkSettingDto.getListOffdayWorkTimezone().stream()
+				data = new BusinessDayCal(diffTimeWorkSettingDto.getListOffdayWorkTimezone().stream()
 						.map(x -> new DeductionTime(x.getStart(), x.getEnd())).collect(Collectors.toList()));
 			} else {
 				// EA修正履歴　No2283
 				// 「時差勤務設定. 平日勤務時間帯. 休憩時間帯」
 				switch (this.basicScheduleService.checkWorkDayByList(workTypeCode, listWorkType)) {
 				case MORNING_WORK:
-					data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
+					data = new BusinessDayCal(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
 							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.AM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case AFTERNOON_WORK:
-					data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
+					data = new BusinessDayCal(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
 							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.PM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case ONE_DAY_WORK:
-					data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
+					data = new BusinessDayCal(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
 							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.ONE_DAY)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				default:
-					data.setTimezones(Collections.emptyList());
+					data = new BusinessDayCal(Collections.emptyList());
 					break;
 				}
 			}
 
 			break;
+			
+		default:
+			throw new RuntimeException("unknown value: " + workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet());
 		}
 		
 		// 午前出勤系、午後出勤系の場合に、休憩時間帯の補正を行う
 		DeductionTime timezoneK1 = listScheTimeZones.get(0);
 		Optional<DeductionTime> timezoneK2 = (listScheTimeZones.size() == 2 ? Optional.of(listScheTimeZones.get(1)) : Optional.empty());
-		data.timezones.forEach(deductionTime -> {
+
+		List<DeductionTime> listDeductionTime =  new ArrayList<DeductionTime>();
+		data.getTimezones().forEach(deductionTime -> {
 			if(timezoneK2.isPresent()){
 				this.setDataForListTimeZone(timezoneK2.get(), deductionTime, listDeductionTime);
 			}
 			this.setDataForListTimeZone(timezoneK1, deductionTime, listDeductionTime);
 		});
 		
-		result.setTimezones(listDeductionTime);
-		return result;
+		return new BusinessDayCal(listDeductionTime);
 	}
 	
 	private void setDataForListTimeZone(DeductionTime timezone, DeductionTime deductionTime, List<DeductionTime> listDeductionTime){

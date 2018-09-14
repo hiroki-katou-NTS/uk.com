@@ -116,7 +116,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.fixColGrid = ko.observableArray([]);
             
             if(!_.isEmpty(queryString.items)){
-                self.initMode(Number(queryString.items["approve"]));
+                self.initMode(Number(queryString.items["initmode"]));
             }
 
             self.monthlyParam({
@@ -447,6 +447,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             nts.uk.request.jumpToTopPage();
                         });
                         dfd.reject();
+                    });
+                } else if (error.errors.length > 0) {
+                    nts.uk.ui.dialog.bundledErrors({ errors: error.errors }).then(function() {
+                        nts.uk.request.jumpToTopPage();
                     });
                 } else {
                     nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
@@ -841,9 +845,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     let yearMonthNew: any = +moment.utc(dataList.periodEnd, 'YYYYMMDD').format('YYYYMM'),
                         yearMonthOld = self.yearMonth();
                     self.yearMonth(yearMonthNew);
-                    if(yearMonthNew == yearMonthOld){
-                        self.yearMonth.valueHasMutated();                        
-                    }
+                    if (yearMonthNew == yearMonthOld) {
+                        self.yearMonth.valueHasMutated();
+                    }                        
                 },
             }
         };
@@ -1620,11 +1624,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 $('#ccg001').hide();
             } else if(initMode == 2){
                 $('#cbClosureInfo').show();
+                //A4_7
                 self.available_A4_7(true);
                 self.available_A1_11(false);
                 //A2_1
                 $('#ccg001').hide();
+                //A4_2
                 self.available_A4_2(false);
+                
+                /**
+                 *Tu Test
+                 **/
+                //A1_1,A1_2
+                self.enable_A1_1(true);
+                self.enable_A1_2(true);
+                //A5_4
+                self.enable_A5_4(actualTimeState == 1 || actualTimeState == 2);
             }
             self.prevData = data;
             self.prevInitMode = initMode;

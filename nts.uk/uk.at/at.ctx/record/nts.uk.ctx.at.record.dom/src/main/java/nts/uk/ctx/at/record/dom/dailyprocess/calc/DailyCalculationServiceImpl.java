@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -15,12 +17,20 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ParallelWithContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -31,12 +41,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class DailyCalculationServiceImpl implements DailyCalculationService {
 
 	/** リポジトリ：就業計算と集計実行ログ */
-	@Inject
-	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	//@Inject
+	//private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	/** リポジトリ：対象者ログ */
 	//@Inject
 	//private TargetPersonRepository targetPersonRepository;
-	
+	/*リポジトリ：実行ログ*/
+	@Inject
+	private ExecutionLogRepository executionLogRepository;
 	/** ドメインサービス：日別計算　（社員の日別実績を計算） */
 	@Inject
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
@@ -75,7 +87,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		ExecutionType reCalcAtr = executionLog.get().getDailyCalSetInfo().get().getExecutionType();
 		
 		// ログ情報更新（実行ログ）　→　処理中
-		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
+		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.PROCESSING.value);
 		
 		
@@ -105,8 +117,11 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
 		
 		// 完了処理
-		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
-				ExecutionStatus.DONE.value);
+		//実行ログ
+		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,ExecutionStatus.DONE.value);
+		//就業計算と集計ログ
+		//this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
+		//		ExecutionStatus.DONE.value);
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();

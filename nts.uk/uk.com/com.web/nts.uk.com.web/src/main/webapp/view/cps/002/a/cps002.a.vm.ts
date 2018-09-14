@@ -744,6 +744,9 @@ module cps002.a.vm {
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
+            
+            // reload data
+            self.layoutData.refresh();
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
             command.categoryName = nts.uk.resource.getText("CPS001_152");

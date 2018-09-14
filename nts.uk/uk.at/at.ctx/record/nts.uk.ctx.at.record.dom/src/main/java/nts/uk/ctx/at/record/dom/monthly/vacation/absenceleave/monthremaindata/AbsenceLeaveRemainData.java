@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
  * @author do_dt
  *
  */
+@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

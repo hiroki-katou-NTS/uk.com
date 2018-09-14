@@ -100,6 +100,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 月別実績データストアドプロシージャ */
 //	@Inject
 //	private ProcMonthlyData procMonthlyData;
+	
 	@Inject
 	private StoredProcdureProcess storedProcedureProcess;
 	
@@ -253,35 +254,63 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			// 計算結果と同月データ・締めID違い かつ 期間重複データの削除
 			val attendanceTimeOlds = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
 			for (val oldData : attendanceTimeOlds){
+				val oldClosureId = oldData.getClosureId();
+				val oldClosureDate = oldData.getClosureDate();
+				
 				if (!this.periodCompareEx(oldData.getDatePeriod(), datePeriod)) continue;
 				boolean isTarget = false;
-				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (oldClosureId.value != closureId.value) isTarget = true;
+				if (oldClosureDate.getClosureDay().v() != closureDate.getClosureDay().v()) isTarget = true;
+				if (oldClosureDate.getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
 				if (!isTarget) continue;
 				this.attendanceTimeRepository.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.affiliationInfoRepository.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.anyItemRepository.removeByMonthlyAndClosure(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.annLeaRemNumEachMonthRepo.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.rsvLeaRemNumEachMonthRepo.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.absLeaRemRepo.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.monDayoffRemRepo.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-				this.spcLeaRemRepo.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+						employeeId, yearMonth, oldClosureId, oldClosureDate);
+				
+				if (this.affiliationInfoRepository.find(
+						employeeId, yearMonth, oldClosureId, oldClosureDate).isPresent()){
+					this.affiliationInfoRepository.remove(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
+				if (this.anyItemRepository.findByMonthlyAndClosure(
+						employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
+					this.anyItemRepository.removeByMonthlyAndClosure(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
+				if (this.annLeaRemNumEachMonthRepo.find(
+						employeeId, yearMonth, oldClosureId, oldClosureDate).isPresent()){
+					this.annLeaRemNumEachMonthRepo.remove(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
+				if (this.rsvLeaRemNumEachMonthRepo.find(
+						employeeId, yearMonth, oldClosureId, oldClosureDate).isPresent()){
+					this.rsvLeaRemNumEachMonthRepo.remove(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
+				if (this.absLeaRemRepo.find(employeeId, yearMonth, oldClosureId, oldClosureDate).isPresent()){
+					this.absLeaRemRepo.remove(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
+				if (this.monDayoffRemRepo.find(employeeId, yearMonth, oldClosureId, oldClosureDate).isPresent()){
+					this.monDayoffRemRepo.remove(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
+				if (this.spcLeaRemRepo.find(employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
+					this.spcLeaRemRepo.remove(
+							employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+				}
 			}
 			
 			// 登録する
 			if (value.getAttendanceTime().isPresent()){
-				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get());
+				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get(), value.getAffiliationInfo() );
 			}
-			if (value.getAffiliationInfo().isPresent()){
-				this.affiliationInfoRepository.persistAndUpdate(value.getAffiliationInfo().get());
-			}
+			
 			for (val anyItem : value.getAnyItemList()){
 				this.anyItemRepository.persistAndUpdate(anyItem);
 			}

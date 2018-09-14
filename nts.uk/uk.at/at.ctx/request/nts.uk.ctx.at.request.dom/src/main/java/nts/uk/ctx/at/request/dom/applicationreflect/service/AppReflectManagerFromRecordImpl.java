@@ -71,6 +71,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		int count = 0;
 		for (TargetPersonImport targetPersonImport : lstPerson) {
+			count += 1;
+			dataSetter.updateData("reflectApprovalCount", count);
 			//社員に対応する締め開始日を取得する
 			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(targetPersonImport.getEmployeeId());
 			if(!closure.isPresent()) {
@@ -87,7 +89,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 					optRequesSetting.get(), aprResult, dataSetter)) {
 				return ProcessStateReflect.INTERRUPTION;
 			}
-			dataSetter.updateData("reflectApprovalCount", count);
+			
 		}
 		//処理した社員の実行状況を「完了」にする
 		return ProcessStateReflect.SUCCESS;
@@ -128,7 +130,15 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		for (Application_New appData : lstApp) {
 			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData);
 			//データ更新
-			if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
+			//状態確認
+			Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
+			//処理した社員の実行状況を「完了」にする
+			execuLog.updateLogInfo(sid, workId, 2, 0);
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);
+			if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
+				return false;
+			}
+			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
 				
 				//状態確認
@@ -145,7 +155,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 					dataSetter.updateData("reflectApprovalHasError", ErrorPresent.HAS_ERROR.nameId);
 					countError = true;
 				}
-			}
+			}*/
 		}
 		return true;
 	}
