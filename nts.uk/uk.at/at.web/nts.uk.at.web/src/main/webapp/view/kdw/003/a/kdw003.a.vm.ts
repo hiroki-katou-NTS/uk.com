@@ -4056,18 +4056,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.nameAbsentDeductionTime = getText('KDW003_79');
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
-                let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
-                    if (val != self.noOfHolidaysOld()) {
+                    if (Number(val) != Number(self.noOfHolidaysOld())) {
                         self.calc();
                     }
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
-                let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
-                    if (val != self.absentDeductionTimeOld()) {
+                    if (Number(val) != Number(self.absentDeductionTimeOld())) {
                         self.calc();
                     }
                 }
@@ -4117,7 +4115,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 __viewContext.vm.valueUpdateMonth = {};
                 if (__viewContext.vm.itemMonth.length > 0) {
                     let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
-                        items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
+                        items = _.map(__viewContext.vm.itemMonth, value => {
                             if (value.itemId == 189) {
                                 value.value = self.noOfHolidays();
                             }
