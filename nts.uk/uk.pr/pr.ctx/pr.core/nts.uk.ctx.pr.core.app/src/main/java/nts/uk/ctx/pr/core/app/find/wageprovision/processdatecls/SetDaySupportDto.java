@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -71,12 +73,12 @@ public class SetDaySupportDto
     /**
     * 要勤務日数
     */
-    private String numberWorkDay;
+    private BigDecimal numberWorkDay;
     
     
 	public static SetDaySupportDto fromDomain(SetDaySupport domain)
     {
-        return new SetDaySupportDto(domain.getCid(), domain.getProcessCateNo(), domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(), domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(), domain.getSocialInsurdCollecMonth(), domain.getProcessDate().v(), domain.getIncomeTaxDate(), domain.getNumberWorkDay());
+        return new SetDaySupportDto(domain.getCid(), domain.getProcessCateNo(), domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(), domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(), domain.getSocialInsurdCollecMonth(), domain.getProcessDate().v(), domain.getIncomeTaxDate(), domain.getNumberWorkDay().v());
     }
     
 }

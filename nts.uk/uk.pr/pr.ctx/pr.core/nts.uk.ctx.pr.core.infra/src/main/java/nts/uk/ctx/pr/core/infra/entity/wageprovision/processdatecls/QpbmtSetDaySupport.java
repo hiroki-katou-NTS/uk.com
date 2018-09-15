@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -84,7 +85,6 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 	 * 処理年月
 	 */
 
-
 	/**
 	 * 所得税基準日
 	 */
@@ -97,7 +97,7 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "NUMBER_WORK_DAY")
-	public String numberWorkDay;
+	public BigDecimal numberWorkDay;
 
 	@Override
 	protected Object getKey() {
@@ -105,19 +105,19 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 	}
 
 	public SetDaySupport toDomain() {
-		return new SetDaySupport(this.setDaySupportPk.cid, this.setDaySupportPk.processCateNo,this.setDaySupportPk.processDate, this.closeDateTime,
-				this.empInsurdStanDate, this.closureDateAccounting, this.paymentDate, this.empExtraRefeDate,
-				this.socialInsurdStanDate, this.socialInsurdCollecMonth,  this.incomeTaxDate,
-				this.numberWorkDay);
+		return new SetDaySupport(this.setDaySupportPk.cid, this.setDaySupportPk.processCateNo,
+				this.setDaySupportPk.processDate, this.closeDateTime, this.empInsurdStanDate,
+				this.closureDateAccounting, this.paymentDate, this.empExtraRefeDate, this.socialInsurdStanDate,
+				this.socialInsurdCollecMonth, this.incomeTaxDate, this.numberWorkDay);
 	}
 
 	public static QpbmtSetDaySupport toEntity(SetDaySupport domain) {
 		return new QpbmtSetDaySupport(
-				new QpbmtSetDaySupportPk(domain.getCid(), domain.getProcessCateNo(),domain.getProcessDate().v().intValue()),
+				new QpbmtSetDaySupportPk(domain.getCid(), domain.getProcessCateNo(),
+						domain.getProcessDate().v().intValue()),
 				domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(),
 				domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(),
-				domain.getSocialInsurdCollecMonth(), domain.getIncomeTaxDate(),
-				domain.getNumberWorkDay());
+				domain.getSocialInsurdCollecMonth(), domain.getIncomeTaxDate(), domain.getNumberWorkDay().v());
 	}
 
 }

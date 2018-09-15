@@ -45,9 +45,10 @@ public class InitialDisplayRegisterProcessingFinder {
 				List<SetDaySupport> optSetDaySupport = finderSetDaySupport.getSetDaySupportById(cid, processCateNo);
 				List<CurrProcessDate> optCurrProcessDate = finderCurrProcessDate.getCurrProcessDateById(cid,
 						processCateNo);
-				Optional<EmpTiedProYear> optEmpTiedProYear = finderEmpTiedProYear.getEmpTiedProYearById(cid, processCateNo);
+				Optional<EmpTiedProYear> optEmpTiedProYear = finderEmpTiedProYear.getEmpTiedProYearById(cid,
+						processCateNo);
 				// TODO //ドメインモデル「雇用」を取得する
-				List<EmpCdNameImport>  employeeList = syEmploymentAdapter.findAll(cid);
+				List<EmpCdNameImport> employeeList = syEmploymentAdapter.findAll(cid);
 
 				List<ProcessInformationDto> informationDto = optProcessInformation.stream()
 						.map(item -> ProcessInformationDto.fromDomain(item)).collect(Collectors.toList());
@@ -56,10 +57,13 @@ public class InitialDisplayRegisterProcessingFinder {
 
 				List<CurrProcessDateDto> currProcessDateDto = optCurrProcessDate.stream()
 						.map(item -> CurrProcessDateDto.fromDomain(item)).collect(Collectors.toList());
-				EmpTiedProYearDto empTiedProYearDto = optEmpTiedProYear.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(), x.getEmploymentCodes().stream().map(item->item.v()).collect(Collectors.toList()))).orElse(null);
+				EmpTiedProYearDto empTiedProYearDto = optEmpTiedProYear
+						.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(),
+								x.getEmploymentCodes().stream().map(item -> item.v()).collect(Collectors.toList())))
+						.orElse(null);
 
 				InitialDisplayRegisterProcessingDto returnData = new InitialDisplayRegisterProcessingDto(informationDto,
-						setDaySupportDto, currProcessDateDto, empTiedProYearDto);
+						setDaySupportDto, currProcessDateDto, empTiedProYearDto, employeeList);
 
 				return returnData;
 			}

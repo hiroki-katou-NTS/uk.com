@@ -393,19 +393,19 @@ module nts.uk.pr.view.qmm005.share.model {
 
 
     export interface IValPayDateSet{
-        processCategoryNo: number,
+        processCateNo: number,
         basicSetting: BasicSetting,
         advancedSetting: AdvancedSetting
     }
 
     //支払日の設定の規定値
     export class ValPayDateSet {
-        processCategoryNo: number;
+        processCateNo: number;
         basicSetting: BasicSetting;
         advancedSetting: AdvancedSetting;
 
         constructor(param: IValPayDateSet) {
-            this.processCategoryNo = param.processCategoryNo;
+            this.processCateNo = param.processCateNo;
             this.advancedSetting = param.advancedSetting;
             this.basicSetting = param.basicSetting;
         }

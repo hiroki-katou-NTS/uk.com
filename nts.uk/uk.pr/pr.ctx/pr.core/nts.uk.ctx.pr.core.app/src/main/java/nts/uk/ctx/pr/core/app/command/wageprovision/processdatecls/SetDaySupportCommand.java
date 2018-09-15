@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
@@ -66,7 +68,7 @@ public class SetDaySupportCommand {
     /**
      * 要勤務日数
      */
-    private String numberWorkDay;
+    private BigDecimal numberWorkDay;
 
     SetDaySupport fromCommandToDomain() {
         String cId = AppContexts.user().companyId();

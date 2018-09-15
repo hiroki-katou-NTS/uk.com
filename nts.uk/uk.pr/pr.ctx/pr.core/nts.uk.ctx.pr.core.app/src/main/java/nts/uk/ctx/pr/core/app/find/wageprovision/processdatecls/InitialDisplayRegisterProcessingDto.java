@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
 
 @AllArgsConstructor
 @Value
@@ -16,4 +17,6 @@ public class InitialDisplayRegisterProcessingDto {
 	private List<CurrProcessDateDto> currProcessDateDto;
 
 	private EmpTiedProYearDto empTiedProYearDto;
+	
+	private List<EmpCdNameImport> empCdNameImports;
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -71,21 +73,12 @@ public class SetDaySupport extends AggregateRoot {
 	/**
 	 * 要勤務日数
 	 */
-	private String numberWorkDay;
+	private ReqStandardWorkingDays numberWorkDay;
 
-	public SetDaySupport(
-			String cid,
-			int processCateNo,
-			int processDate,
-			GeneralDate closeDateTime,
-			GeneralDate empInsurdStanDate,
-			GeneralDate closureDateAccounting,
-			GeneralDate paymentDate,
-			GeneralDate empExtraRefeDate,
-			GeneralDate socialInsurdStanDate,
-			int socialInsurdCollecMonth,
-			GeneralDate incomeTaxDate,
-			String numberWorkDay) {
+	public SetDaySupport(String cid, int processCateNo, int processDate, GeneralDate closeDateTime,
+			GeneralDate empInsurdStanDate, GeneralDate closureDateAccounting, GeneralDate paymentDate,
+			GeneralDate empExtraRefeDate, GeneralDate socialInsurdStanDate, int socialInsurdCollecMonth,
+			GeneralDate incomeTaxDate, BigDecimal numberWorkDay) {
 		super();
 		this.cid = cid;
 		this.processCateNo = processCateNo;
@@ -98,7 +91,7 @@ public class SetDaySupport extends AggregateRoot {
 		this.socialInsurdCollecMonth = socialInsurdCollecMonth;
 		this.processDate = new YearMonth(processDate);
 		this.incomeTaxDate = incomeTaxDate;
-		this.numberWorkDay = numberWorkDay;
+		this.numberWorkDay = new ReqStandardWorkingDays(numberWorkDay);
 	}
 
 }

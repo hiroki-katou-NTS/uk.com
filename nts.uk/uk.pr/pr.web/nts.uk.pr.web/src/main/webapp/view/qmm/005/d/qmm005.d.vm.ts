@@ -389,7 +389,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             let ValPayDateSetParam = {
 
-                processCategoryNo: self.processCategoryNo,
+                processCateNo: self.processCategoryNo,
                 basicSetting: self.basicSetting,
                 advancedSetting: self.advancedSetting
             }
@@ -440,13 +440,16 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         pushDaytoList(itemList: KnockoutObservableArray<model.ItemModel>, codeEnum: any): void {
             let items = itemList;
             let code = codeEnum;
-
-            let i = 1;
-            for (let data in codeEnum) {
-                if (isNaN(data)) continue;
-                itemList.push(new model.ItemModel(data, i + '日'));
-                i++;
+            for(let i=1;i<32;i++){
+                itemList.push(new model.ItemModel(i,i+'日'));
             }
+
+//            let i = 1;
+//            for (let data in codeEnum) {
+//                if (isNaN(data)) continue;
+//                itemList.push(new model.ItemModel(data, i + '日'));
+//                i++;
+//            }
         }
 
 
