@@ -3,8 +3,7 @@ module nts.uk.pr.view.qmm005.a.service {
     import format = nts.uk.text.format;
 
     let paths = {
-        findDisplayRegister: "nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/findDisplayRegister/{0}",
-        getSetDaySupports: "xxx/getSetDaySupports",
+        findDisplayRegister: "nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/findDisplayRegister/{0}",       
         registerProcessing :"nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/registerProcessing"
     };
 
