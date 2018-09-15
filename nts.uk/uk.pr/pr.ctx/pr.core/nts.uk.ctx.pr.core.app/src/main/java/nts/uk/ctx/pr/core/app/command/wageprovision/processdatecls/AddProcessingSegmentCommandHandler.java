@@ -12,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
@@ -49,32 +50,11 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
         ProcessingSegmentCommand addCommand = commandHandlerContext.getCommand();
 
-        this.valPayDateSetRepository.add(new ValPayDateSet(
-                        cid,
-                        addCommand.getValPayDateSet().getProcessCateNo(),
-                        addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),
-                        addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getDisposalDay(),
-                        addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth(),
-                        addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate(),
-                        addCommand.getValPayDateSet().getBasicSetting().getMonthlyPaymentDate().getDatePayMent(),
-                        addCommand.getValPayDateSet().getBasicSetting().getWorkDay(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getDetailPrintingMon().getPrintingMonth(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getSalaryInsuColMon().getMonthCollected(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getEmpInsurStanDate().getRefeDate(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getEmpInsurStanDate().getBaseMonth(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getRefeDate(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getBaseYear(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getBaseMonth(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseMonth(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseYear(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getRefeDate(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseMonth(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseYear(),
-                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getRefeDate()
-                )
-        );
-
+//        System.out.println(addCommand.getValPayDateSet().getBasicSetting().toString());
+//
+//        System.out.println(addCommand.getProcessInformation().toString());
+//
+//        System.out.println(addCommand.getValPayDateSet().getAdvancedSetting().toString());
 
         this.processInformationRepository.add(new ProcessInformation(
                         cid,
@@ -83,10 +63,41 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
                         addCommand.getProcessInformation().getProcessDivisionName()
                 )
         );
-
-        addSpecPrintYmSet(addCommand);
-        addSetDaySupport(addCommand);
-        addCurrProcessDate(addCommand);
+//
+//        this.valPayDateSetRepository.add(new ValPayDateSet(
+//                        cid,
+//                        addCommand.getValPayDateSet().getProcessCateNo(),
+//                        addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),
+//                        addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getDisposalDay(),
+//                        addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth(),
+//                        addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate(),
+//                        addCommand.getValPayDateSet().getBasicSetting().getMonthlyPaymentDate().getDatePayMent(),
+//                         addCommand.getValPayDateSet().getBasicSetting().getWorkDay(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getDetailPrintingMon().getPrintingMonth(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getSalaryInsuColMon().getMonthCollected(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getEmpInsurStanDate().getRefeDate(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getEmpInsurStanDate().getBaseMonth(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getRefeDate(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getBaseYear(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getIncomTaxBaseYear().getBaseMonth(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseMonth(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseYear(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getRefeDate(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseMonth(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseYear(),
+//                        addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getRefeDate()
+//                )
+//        );
+//
+//
+//
+//
+//
+//
+//        addSpecPrintYmSet(addCommand);
+//        addSetDaySupport(addCommand);
+//        addCurrProcessDate(addCommand);
 
 
 

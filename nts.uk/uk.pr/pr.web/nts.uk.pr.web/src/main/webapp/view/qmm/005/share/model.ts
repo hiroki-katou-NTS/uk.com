@@ -166,19 +166,19 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export interface IProcessInfomation {
         processCateNo: number,
-        processingName: string,
+        processDivisionName: string,
         deprecatCate: Abolition
     }
 
 
     export class ProcessInfomation{
         processCateNo:number;
-        processName:string;
+        processDivisionName:string;
         deprecatCate:Abolition;
 
         constructor(params:IProcessInfomation){
             this.processCateNo=params.processCateNo;
-            this.processName=params.processingName;
+            this.processDivisionName=params.processDivisionName;
             this.deprecatCate=params.deprecatCate;
         }
     }

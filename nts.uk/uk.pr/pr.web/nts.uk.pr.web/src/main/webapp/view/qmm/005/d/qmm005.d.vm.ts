@@ -344,6 +344,14 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.isEnable = ko.observable(true);
             self.enableChecckBox = ko.observable(true);
 
+
+
+        }
+
+        saveCharacterSetting(): void {
+            let self = this;
+
+
             //basic
             self.monthlyPaymentDate = new model.MonthlyPaymentDate(self.datePaymentSelectedCode());
             self.employeeExtractionReferenceDate = new model.EmployeeExtractionReferenceDate(self.refeDateSelectedCode(), self.refeMonthSelectedCode());
@@ -359,18 +367,21 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             let advancedSettingParam = {
                 closeDate: self.closeDate,
-                incomeTaxBaseYear: self.incomeTaxBaseYear,
-                detailPrintingMonth: self.detailPrintingMonth,
-                socialInsuranceStanDate: self.socialInsuranceStanDate,
-                salaryInsuranceCollecMonth: self.salaryInsuranceCollecMonth,
-                employmentInsuranceStanDate: self.employmentInsuranceStanDate
+                incomTaxBaseYear: self.incomeTaxBaseYear,
+                detailPrintingMon: self.detailPrintingMonth,
+                sociInsuStanDate: self.socialInsuranceStanDate,
+                salaryInsuColMon: self.salaryInsuranceCollecMonth,
+                empInsurStanDate: self.employmentInsuranceStanDate,
+
             }
 
             let bassicSettingParam = {
                 monthlyPaymentDate: self.monthlyPaymentDate,
-                employeeExtractionreferenceDate: self.employeeExtractionReferenceDate,
+                employeeExtractionReferenceDate: self.employeeExtractionReferenceDate,
                 accountingClosureDate: self.accountingClosureDate,
-                numberOfWorkingDays: self.numberOfWorkingDays()
+                workDay: self.numberOfWorkingDays()
+
+
             }
 
             self.basicSetting = new model.BasicSetting(bassicSettingParam);
@@ -387,23 +398,22 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             let processInfomationParam = {
 
-                processCategoryNO: self.processCategoryNo,
-                processingName: self.processName(),
-                deprecatCategory: self.DiscontinueThisProcessClassificationSelectedCode()
+                processCateNo: self.processCategoryNo,
+                processDivisionName: self.processName(),
+                deprecatCate: self.DiscontinueThisProcessClassificationSelectedCode()
+
             }
 
 
+
             self.processInfomation = new model.ProcessInfomation(processInfomationParam);
-
-
-        }
-
-        saveCharacterSetting(): void {
-            let self = this;
+            console.log(self.processInfomation);
+            console.log(self.valPayDateSet);
             service.registerprocessingsegment({
                 processInformation: ko.toJS(self.processInfomation),
                 valPayDateSet: ko.toJS(self.valPayDateSet)
             });
+
 
         }
 

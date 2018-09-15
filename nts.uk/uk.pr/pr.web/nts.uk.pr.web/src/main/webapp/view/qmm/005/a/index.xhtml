@@ -64,52 +64,54 @@
                         <!--content-->
                         <td>
                             <!--A2_7 処理区分NO-->
-                            <div class="label" data-bind="processInfomations.processCateNo"></div>
+                            <div class="label" data-bind="text:processInfomations.processCateNo"></div>
                         </td>
 
                         <td>
                             <!--A2_8 処理区分名称-->
-                            <!--<div class="label" data-bind="text: $root.processInfomations.processCategoryNO"></div>-->
+                            <div class="label" data-bind="text: processInfomations.processDivisionName"></div>
                             <!--A2_9 編集-->
-                            <button class="">#{i18n.getText('QMM005_11')}</button>
+                            <!--<com:ko-if bind="selectedTitleAtr() == 1">-->
+                                <button class="">#{i18n.getText('QMM005_11')}</button>
+                            <!--</com:ko-if>-->
                         </td>
 
-                        <td>
-                            <!--A2_10 詳細設定-->
-                            <button class="">#{i18n.getText('QMM005_12')}</button>
-                        </td>
+                        <!--<td>-->
+                            <!--&lt;!&ndash;A2_10 詳細設定&ndash;&gt;-->
+                            <!--<button class="">#{i18n.getText('QMM005_12')}</button>-->
+                        <!--</td>-->
 
-                        <td>
-                            <!--A2_11 処理年一覧-->
-                            <div id="combo-box" data-bind="ntsComboBox: {
-                            name: 'Sample List', width:80,
-                            options: $root.setDaySupports,
-                            optionsValue: 'processCategoryNO',
-                            visibleItemsCount: 5,
-                            value: $root.code,
-                            optionsText: 'empExtraRefeDate',
-                            columns: [
+                        <!--<td>-->
+                            <!--&lt;!&ndash;A2_11 処理年一覧&ndash;&gt;-->
+                            <!--<div id="combo-box" data-bind="ntsComboBox: {-->
+                            <!--name: 'Sample List', width:80,-->
+                            <!--options: $root.setDaySupports,-->
+                            <!--optionsValue: 'processCategoryNO',-->
+                            <!--visibleItemsCount: 5,-->
+                            <!--value: $root.code,-->
+                            <!--optionsText: 'empExtraRefeDate',-->
+                            <!--columns: [-->
 
-                                { prop: 'empExtraRefeDate', length: 10 },
-                            ]}"></div>
-                            <!--A2_13 キャレット-->
-                            <span class="caret-right caret-inline"></span>
+                                <!--{ prop: 'empExtraRefeDate', length: 10 },-->
+                            <!--]}"></div>-->
+                            <!--&lt;!&ndash;A2_13 キャレット&ndash;&gt;-->
+                            <!--<span class="caret-right caret-inline"></span>-->
 
-                            <!--A2_14 次回給与支払日-->
-                            <div data-bind="ntsComboBox: {
-                            name: 'Sample List', width:200,
-                            options:  $root.setDaySupports,
-                            optionsValue: 'processCategoryNO',
-                            visibleItemsCount: 5,
-                            value: $root.code,
-                            optionsText: 'payMentDate',
-                            columns: [
+                            <!--&lt;!&ndash;A2_14 次回給与支払日&ndash;&gt;-->
+                            <!--<div data-bind="ntsComboBox: {-->
+                            <!--name: 'Sample List', width:200,-->
+                            <!--options:  $root.setDaySupports,-->
+                            <!--optionsValue: 'processCategoryNO',-->
+                            <!--visibleItemsCount: 5,-->
+                            <!--value: $root.code,-->
+                            <!--optionsText: 'payMentDate',-->
+                            <!--columns: [-->
 
-                                { prop: 'payMentDate', length: 10 },
-                            ]}"></div>
+                                <!--{ prop: 'payMentDate', length: 10 },-->
+                            <!--]}"></div>-->
 
 
-                        </td>
+                        <!--</td>-->
 
 
 
