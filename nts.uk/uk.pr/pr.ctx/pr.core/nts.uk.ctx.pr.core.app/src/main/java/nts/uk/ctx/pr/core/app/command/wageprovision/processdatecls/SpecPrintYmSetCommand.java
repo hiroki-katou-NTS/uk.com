@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
 import lombok.Value;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SpecPrintYmSet;
+import nts.uk.shr.com.context.AppContexts;
 
 @Value
 public class SpecPrintYmSetCommand
@@ -26,6 +28,9 @@ public class SpecPrintYmSetCommand
     */
     private int printDate;
     
-
+    SpecPrintYmSet fromCommandToDomain(){
+        String cid = AppContexts.user().companyId();
+        return new SpecPrintYmSet(cid, processCateNo, this.processDate, this.printDate);
+    }
 
 }

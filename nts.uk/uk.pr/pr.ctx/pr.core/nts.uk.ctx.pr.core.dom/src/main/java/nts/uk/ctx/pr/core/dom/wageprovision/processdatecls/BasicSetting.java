@@ -12,7 +12,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class BasicSetting extends DomainObject {
 	/**
-	 * 毎月の支払日
+	 * 経理締め日
 	 */
 	private AccountingClosureDate accountingClosureDate;
 
@@ -22,7 +22,7 @@ public class BasicSetting extends DomainObject {
 	private EmployeeExtractionReferenceDate employeeExtractionReferenceDate;
 
 	/**
-	 * 経理締め日
+	 * 毎月の支払日
 	 */
 	private MonthlyPaymentDate monthlyPaymentDate;
 

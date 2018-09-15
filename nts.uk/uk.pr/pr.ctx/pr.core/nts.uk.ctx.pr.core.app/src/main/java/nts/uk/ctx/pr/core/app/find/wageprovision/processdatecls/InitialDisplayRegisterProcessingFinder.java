@@ -10,12 +10,14 @@ import javax.inject.Inject;
 //import nts.uk.com.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYear;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYearRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformationRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SyEmploymentAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -31,18 +33,21 @@ public class InitialDisplayRegisterProcessingFinder {
 	/*
 	 * @Inject private EmploymentRepository finderEmployment;
 	 */
+	@Inject
+	private SyEmploymentAdapter syEmploymentAdapter;
 
 	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing() {
 		String cid = AppContexts.user().companyId();
 		List<ProcessInformation> optProcessInformation = finderProcessInformation.getProcessInformationByCid(cid);
 		if (!optProcessInformation.isEmpty()) {
-			for (int i = 0; i < optProcessInformation.size(); i++) {
+			for (int i = 1; i < optProcessInformation.size() + 1; i++) {
 				int processCateNo = optProcessInformation.get(i).getProcessCateNo();
 				List<SetDaySupport> optSetDaySupport = finderSetDaySupport.getSetDaySupportById(cid, processCateNo);
 				List<CurrProcessDate> optCurrProcessDate = finderCurrProcessDate.getCurrProcessDateById(cid,
 						processCateNo);
 				Optional<EmpTiedProYear> optEmpTiedProYear = finderEmpTiedProYear.getEmpTiedProYearById(cid, processCateNo);
 				// TODO //ドメインモデル「雇用」を取得する
+				List<EmpCdNameImport>  employeeList = syEmploymentAdapter.findAll(cid);
 
 				List<ProcessInformationDto> informationDto = optProcessInformation.stream()
 						.map(item -> ProcessInformationDto.fromDomain(item)).collect(Collectors.toList());
