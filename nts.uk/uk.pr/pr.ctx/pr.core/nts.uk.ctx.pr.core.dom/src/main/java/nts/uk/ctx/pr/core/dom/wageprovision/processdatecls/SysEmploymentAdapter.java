@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
 import java.util.List;
 
-public interface SyEmploymentAdapter {
+public interface SysEmploymentAdapter {
 	/**
 	 * RequestList89
 	 * 

@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformationRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SyEmploymentAdapter;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SysEmploymentAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -34,7 +34,7 @@ public class InitialDisplayRegisterProcessingFinder {
 	 * @Inject private EmploymentRepository finderEmployment;
 	 */
 	@Inject
-	private SyEmploymentAdapter syEmploymentAdapter;
+	private SysEmploymentAdapter syEmploymentAdapter;
 
 	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing() {
 		String cid = AppContexts.user().companyId();
