@@ -53,62 +53,68 @@ public class OverDayEnd {
 	/**
 	 * 残業用の0時跨ぎ処理
 	 * @param beforeWorkType 
+	 * @param zeroTime 
 	 * @return
 	 */
-	public static OverDayEnd forOverTime(boolean zeroHStraddCalculateSet,List<OverTimeFrameTimeSheetForCalc> overTimeFrameList, WorkType beforeWorkType,WorkType afterWorkType,
-										 Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo) {
+	public static OverDayEnd forOverTime(boolean zeroHStraddCalculateSet,List<OverTimeFrameTimeSheetForCalc> overTimeFrameList, WorkType beforeWorkType,WorkType nowWorkType,WorkType afterWorkType,
+										 Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo, ZeroTime zeroTime) {
+		//会社共通のマスタ参照して跨ぎ計算判定
+		if(zeroTime.getCalcFromZeroTime() == 0) return new OverDayEnd(overTimeFrameList, new ArrayList<>());
+		//就業時間帯を見て跨ぎ計算判定
 		if(!zeroHStraddCalculateSet) return new OverDayEnd(overTimeFrameList, new ArrayList<>());
 		List<OverDayEnd> returnValue = new ArrayList<>();
 		overTimeFrameList.forEach(tc ->{
-			returnValue.add(perTimeSheetForOverTime(tc, beforeWorkType, afterWorkType,beforeInfo,afterInfo));
+			returnValue.add(perTimeSheetForOverTime(tc, beforeWorkType, nowWorkType, afterWorkType,beforeInfo,afterInfo,zeroTime));
 		});
 		List<OverTimeFrameTimeSheetForCalc> returnOverList = returnValue.stream().flatMap(tc -> tc.getOverTimeList().stream()).collect(Collectors.toList());
 		List<HolidayWorkFrameTimeSheetForCalc> returnHolWorkList = returnValue.stream().flatMap(tc -> tc.getHolList().stream()).collect(Collectors.toList());
 		return new OverDayEnd(returnOverList, returnHolWorkList);
 	}
 	
-	public static OverDayEnd perTimeSheetForOverTime(OverTimeFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType, WorkType afterWorkType, Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo){
+	public static OverDayEnd perTimeSheetForOverTime(OverTimeFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType, WorkType toDayWorkType, WorkType afterWorkType, 
+													 Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo, ZeroTime zeroTime){
 		//前日分割
-		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan(),beforeInfo)) {
+		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan(),beforeInfo,zeroTime, beforeWorkType, toDayWorkType)) {
 			//前日の0時跨ぎ処理
-			return splitFromOverWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType,true);
+			return splitFromOverWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType,true,zeroTime);
 		}
 		//翌日分割
-		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan(),afterInfo)) {
+		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan(),afterInfo,zeroTime, toDayWorkType, afterWorkType)) {
 			//翌日の0時跨ぎ処理
-			return splitFromOverWork(timeSheet,new TimeWithDayAttr(1440),afterWorkType,false);
+			return splitFromOverWork(timeSheet,new TimeWithDayAttr(1440),afterWorkType,false,zeroTime);
 		}
 		return new OverDayEnd(Arrays.asList(timeSheet), new ArrayList<>());
 	}
 	
 	/**
 	 * 休出用の0時跨ぎ処理
+	 * @param zeroTime 
 	 * @return
 	 */
-	public static OverDayEnd forHolidayWorkTime(boolean zeroHStraddCalculateSet,List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameList,WorkType beforeWorkType, WorkType afterWorkType,
-												Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo) {
+	public static OverDayEnd forHolidayWorkTime(boolean zeroHStraddCalculateSet,List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameList,WorkType beforeWorkType, WorkType nowWorkType ,WorkType afterWorkType,
+												Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo, ZeroTime zeroTime) {
 		List<OverDayEnd> returnValue = new ArrayList<>();
 		if(!zeroHStraddCalculateSet) return new OverDayEnd(new ArrayList<>(), holidayWorkFrameList);
 		holidayWorkFrameList.forEach(tc -> {
-			returnValue.add(perTimeSheetForHolidayWorkTime(tc,beforeWorkType,afterWorkType,beforeInfo,afterInfo));
+			returnValue.add(perTimeSheetForHolidayWorkTime(tc,beforeWorkType,nowWorkType,afterWorkType,beforeInfo,afterInfo,zeroTime));
 		});
 		List<OverTimeFrameTimeSheetForCalc> returnOverList = returnValue.stream().flatMap(tc -> tc.getOverTimeList().stream()).collect(Collectors.toList());
 		List<HolidayWorkFrameTimeSheetForCalc> returnHolWorkList = returnValue.stream().flatMap(tc -> tc.getHolList().stream()).collect(Collectors.toList());
 		return new OverDayEnd(returnOverList, returnHolWorkList);
 	}
 	
-	public static OverDayEnd perTimeSheetForHolidayWorkTime(HolidayWorkFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType, WorkType afterWorkType,
-															Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo){
+	public static OverDayEnd perTimeSheetForHolidayWorkTime(HolidayWorkFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType, WorkType toDayWorkType,
+															WorkType afterWorkType,
+															Optional<WorkInformation> beforeInfo, Optional<WorkInformation> afterInfo, ZeroTime zeroTime){
 		//前日分割
-		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan(),beforeInfo)) {
+		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan(),beforeInfo,zeroTime, beforeWorkType, toDayWorkType)) {
 			//前日の0時跨ぎ処理
-			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType,true);
-			
+			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType,true,zeroTime);
 		}
 		//翌日分割
-		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan(),afterInfo)) {
+		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan(),afterInfo,zeroTime, toDayWorkType, afterWorkType)) {
 			//翌日の0時跨ぎ処理
-			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(1440),afterWorkType,false);
+			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(1440),afterWorkType,false,zeroTime);
 		}
 		return new OverDayEnd(new ArrayList<>(), Arrays.asList(timeSheet));
 	}
@@ -116,15 +122,17 @@ public class OverDayEnd {
 	/*-----------------------------------前日系-------------------------------------*/
 	/**
 	 * 前日0時跨ぎ判断処理
+	 * @param zeroTime 
 	 * @return
 	 */
-	public static boolean decisionStraddleForBeforeDay(TimeSpanForCalc timeSpan,Optional<WorkInformation> beforeInfo) {
+	public static boolean decisionStraddleForBeforeDay(TimeSpanForCalc timeSpan,Optional<WorkInformation> beforeInfo, ZeroTime zeroTime,
+													   WorkType beforeWorkType, WorkType nowWorkType) {
 		//当日0:00よりも過去かどうか
 		if(overBaseOclock(timeSpan,0)) return false;
 		//前日の実績が存在するか
 		if(!beforeInfo.isPresent()) return false;
 		//前日の勤種から跨ぎ計算するか判定 マスタ必須
-		
+		if(!zeroTime.isCalcOneOverYesterDayToDay(beforeWorkType, nowWorkType)) return false;
 		return true;
 	}
 	
@@ -141,17 +149,17 @@ public class OverDayEnd {
 	/**
 	 * 翌日0時跨ぎ判断処理
 	 * @param timeSpan
+	 * @param zeroTime 
 	 * @return 
 	 */
-	public static boolean decisionStraddleForNextDay(TimeSpanForCalc timeSpan,Optional<WorkInformation> afterInfo) {
+	public static boolean decisionStraddleForNextDay(TimeSpanForCalc timeSpan,Optional<WorkInformation> afterInfo, ZeroTime zeroTime,
+													 WorkType nowWorkType, WorkType afterWorkType) {
 		//翌日0:00より手前に存在するか
 		if(lessBaseOclock(timeSpan,1440)) return false;
-		
 		//翌日の実績が存在しているか
 		if(!afterInfo.isPresent()) return false;
 		//翌日の勤務種類から跨ぎ計算するか判定　マスタ必須
-		
-		
+		if(!zeroTime.isCalcOneOverToDayTomorrow(afterWorkType, nowWorkType)) return false;		
 		return true;
 	}
 	/**
@@ -198,15 +206,17 @@ public class OverDayEnd {
 		/**
 		 * 0時またぎ分割処理(当日平日)
 		 * @param isBefore 前日～当日の跨ぎである
+		 * @param zeroTime 
 		 */
-		private static OverDayEnd splitFromOverWork(OverTimeFrameTimeSheetForCalc overTimeSheet,TimeWithDayAttr baseTime,WorkType notTargetDayWorkType,boolean isBefore) {
+		private static OverDayEnd splitFromOverWork(OverTimeFrameTimeSheetForCalc overTimeSheet,TimeWithDayAttr baseTime,WorkType notTargetDayWorkType,boolean isBefore, 
+													ZeroTime zeroTime) {
 			List<OverTimeFrameTimeSheetForCalc> overTimeFrames = new ArrayList<>();
 			List<HolidayWorkFrameTimeSheetForCalc> holidayTimeFrames = new ArrayList<>();
 			Optional<HolidayAtr> atr = notTargetDayWorkType.getHolidayAtr();
 			//当日0時を含んでいない baseTime(当日0時or翌日0時)
 			if(!overTimeSheet.getTimeSheet().getTimeSpan().contains(baseTime)) {
 				/*残業時間帯から休出時間帯作成*/
-				holidayTimeFrames.add(convertHolidayWorkTimeSheet(overTimeSheet,atr));
+				holidayTimeFrames.add(convertHolidayWorkTimeSheet(overTimeSheet,atr,zeroTime));
 			}
 			//当日0時を含んでいる(残業時間帯と休出時間帯が作成されるパターン)
 			else {
@@ -228,7 +238,8 @@ public class OverDayEnd {
 																	overTimeSheet.getPayOrder(),
 																	overTimeSheet.getAdjustTime());
 					
-					HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),//0時跨ぎマスタから埋めるべき値を取得する
+					val frameNo = zeroTime.getWeekdayHoliday().stream().filter(tc -> tc.getOverworkFrameNo().intValue() == overTimeSheet.getFrameTime().getOverWorkFrameNo().v().intValue()).findFirst();
+					HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(frameNo.get().useFrameNo(atr.get())),//0時跨ぎマスタから埋めるべき値を取得する
 																			  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 																			  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 																			  Finally.of(new AttendanceTime(0)));
@@ -296,7 +307,8 @@ public class OverDayEnd {
 																								 overTimeSheet.getPayOrder(),
 																								 overTimeSheet.getAdjustTime());
 
-					HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),//0時跨ぎマスタから埋めるべき値を取得する
+					val frameNo = zeroTime.getWeekdayHoliday().stream().filter(tc -> tc.getOverworkFrameNo().intValue() == overTimeSheet.getFrameTime().getOverWorkFrameNo().v().intValue()).findFirst();
+					HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(frameNo.get().useFrameNo(atr.get())),//0時跨ぎマスタから埋めるべき値を取得する
 																  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 																  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 																  Finally.of(new AttendanceTime(0)));
@@ -322,12 +334,14 @@ public class OverDayEnd {
 		/**
 		 * 残業時間帯へから休日出勤時間帯への変換
 		 * @param atr 
+		 * @param zeroTime 
 		 * @param weekDaySet 平日出勤の0時跨ぎの設定
 		 * @param timeSpan 時間帯
 		 * @return　休出時間帯
 		 */
-		private static HolidayWorkFrameTimeSheetForCalc convertHolidayWorkTimeSheet(OverTimeFrameTimeSheetForCalc overTimeSheet, Optional<HolidayAtr> atr) {
-			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10), //0時跨ぎマスタから埋めるべき値を取得する
+		private static HolidayWorkFrameTimeSheetForCalc convertHolidayWorkTimeSheet(OverTimeFrameTimeSheetForCalc overTimeSheet, Optional<HolidayAtr> atr, ZeroTime zeroTime) {
+			val frameNo = zeroTime.getWeekdayHoliday().stream().filter(tc -> tc.getOverworkFrameNo().intValue() == overTimeSheet.getFrameTime().getOverWorkFrameNo().v().intValue()).findFirst();
+			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(frameNo.get().useFrameNo(atr.get())), //0時跨ぎマスタから埋めるべき値を取得する
 					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 					  												  Finally.of(new AttendanceTime(0)));
@@ -350,7 +364,8 @@ public class OverDayEnd {
 		 * @param baseTime　基準時間
 		 * @param isBefore 前日～当日の0時跨ぎである
 		 */
-		private static OverDayEnd splitFromHolidayWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet,TimeWithDayAttr baseTime,WorkType notTargetDayWorkType,boolean isBefore) {
+		private static OverDayEnd splitFromHolidayWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet,TimeWithDayAttr baseTime,
+													   WorkType notTargetDayWorkType,boolean isBefore,ZeroTime zeroTime) {
 			List<OverTimeFrameTimeSheetForCalc> overTimeFrames = new ArrayList<>();
 			List<HolidayWorkFrameTimeSheetForCalc> holidayTimeFrames = new ArrayList<>();
 			Optional<HolidayAtr> atr = notTargetDayWorkType.getHolidayAtr();
@@ -360,13 +375,12 @@ public class OverDayEnd {
 				if(notTargetDayWorkType.getDailyWork().isHolidayWork() 
 				 ||notTargetDayWorkType.getDailyWork().isOneDayHoliday()) {
 					/*休出時間帯へ変換*/
-					holidayTimeFrames.add(convertDifferenceHolidayWork(holidayWorkTimeSheet,atr));
+					holidayTimeFrames.add(convertDifferenceHolidayWork(holidayWorkTimeSheet,atr,zeroTime));
 				}
 				else {
 					/*残業時間帯へ変換*/
-					overTimeFrames.add(convertOverTimeWork(holidayWorkTimeSheet));
+					overTimeFrames.add(convertOverTimeWork(holidayWorkTimeSheet,zeroTime));
 				}
-				/*残業時間帯クリア*/
 			}
 			//休出時間帯が、一部他の休出残業時間帯へ変化するパティーン
 			else {
@@ -391,11 +405,11 @@ public class OverDayEnd {
 					if(notTargetDayWorkType.getDailyWork().isHolidayWork() 
 					 ||notTargetDayWorkType.getDailyWork().isOneDayHoliday()) {
 						/*休出時間帯へ変換*/
-						holidayTimeFrames.add(convertDifferenceHolidayWork(beforeitem,atr));
+						holidayTimeFrames.add(convertDifferenceHolidayWork(beforeitem,atr, zeroTime));
 					}
 					else {
 						/*残業時間帯へ変換*/
-						overTimeFrames.add(convertOverTimeWork(beforeitem));
+						overTimeFrames.add(convertOverTimeWork(beforeitem, zeroTime));
 					}
 					
 					//当日分の休出時間帯作成
@@ -447,11 +461,11 @@ public class OverDayEnd {
 					if(notTargetDayWorkType.getDailyWork().isHolidayWork() 
 					 ||notTargetDayWorkType.getDailyWork().isOneDayHoliday()) {
 						/*休出時間帯へ変換*/
-						holidayTimeFrames.add(convertDifferenceHolidayWork(noTargetitem,atr));
+						holidayTimeFrames.add(convertDifferenceHolidayWork(noTargetitem,atr, zeroTime));
 					}
 					else {
 						/*残業時間帯へ変換*/
-						overTimeFrames.add(convertOverTimeWork(noTargetitem));
+						overTimeFrames.add(convertOverTimeWork(noTargetitem, zeroTime));
 					}
 				}
 			}
@@ -465,8 +479,9 @@ public class OverDayEnd {
 		 * @param holidayWorkTimeSheet 変換する休出時間帯
 		 * @return　残業時間帯
 		 */
-		public static OverTimeFrameTimeSheetForCalc convertOverTimeWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet) {
-			OverTimeFrameTime frameTime = new OverTimeFrameTime(new OverTimeFrameNo(10),//0時跨ぎマスタの設定を基にここを埋めるように変更する
+		public static OverTimeFrameTimeSheetForCalc convertOverTimeWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet,ZeroTime zeroTime) {
+			val getframe = zeroTime.getOverdayHolidayAtten().stream().filter(tc -> tc.getHolidayWorkFrameNo() == holidayWorkTimeSheet.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
+			OverTimeFrameTime frameTime = new OverTimeFrameTime(new OverTimeFrameNo(getframe.get().getOverWorkNo().intValue()),//0時跨ぎマスタの設定を基にここを埋めるように変更する
 																TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
 																TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
 																new AttendanceTime(0),
@@ -492,11 +507,13 @@ public class OverDayEnd {
 		 * 休日出勤から休日出勤への変換
 		 * @param holidayWorkTimeSheet 変換する休出時間帯
 		 * @param atr 
+		 * @param zeroTime 
 		 * @return　休出時間帯
 		 */
-		public static HolidayWorkFrameTimeSheetForCalc convertDifferenceHolidayWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet, Optional<HolidayAtr> atr) {
+		public static HolidayWorkFrameTimeSheetForCalc convertDifferenceHolidayWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet, Optional<HolidayAtr> atr, ZeroTime zeroTime) {
 			
-			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),//0時跨ぎマスタの設定を基にここを埋めるように変更する
+			val getframe = zeroTime.getOverdayCalcHoliday().stream().filter(tc -> tc.getHolidayWorkFrameNo() == holidayWorkTimeSheet.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
+			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(getframe.get().useFrameNo(atr.get())),//0時跨ぎマスタの設定を基にここを埋めるように変更する
 					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
 					  												  Finally.of(new AttendanceTime(0)));
