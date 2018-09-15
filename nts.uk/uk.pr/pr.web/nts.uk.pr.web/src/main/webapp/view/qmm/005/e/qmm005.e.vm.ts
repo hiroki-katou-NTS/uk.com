@@ -1,5 +1,7 @@
 module nts.uk.pr.view.qmm005.e.viewmodel {
     import model = nts.uk.pr.view.qmm005.share.model;
+    import format = nts.uk.text.format;
+    import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
@@ -60,30 +62,32 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             let params = getShared("QMM005bParams");
             service.findReflectSystemReferenceDateInfo(params.processCateNo, params.processingYear).done(function (data) {
                 self.valPayDateSet = data;
+                var basicSetting = data.basicSetting;
+                var advancedSetting = data.advancedSetting;
                 let tranferModel = {
-                    E1_3_0 : 'processingDivision',
-                    E1_3_1 : 'ProcessingDivisionBasicInformation',
-                    E1_5_0 : 'Standard information reflection target _ processing year',
-                    E2_2 : 'Standard information reflection target _ processing year',
-                    E2_8_0 : 'Daily payment date',
-                    E2_10_0 : 'Employee extraction reference date_Reference month',
-                    E2_10_1 : 'Employee extraction reference date_Reference date',
-                    E2_12_0 : 'monthsCollected: socialInsuColleMonth',
-                    E2_14_0 : 'detailPrintingMonth->printingMonth',
-                    E4_2_0 : 'basicsetting -> Number of working days',
-                    E2_17_0 : 'socialInsuranceStanDate->Base year',
-                    E2_17_1 : 'socialInsuranceStanDate->Standard month',
-                    E2_17_2 : 'socialInsuranceStanDate->Reference date',
-                    E2_19_0 : 'employmentInsuranceStanDate->base month',
-                    E2_19_1 : 'employmentInsuranceStanDate->Reference date',
-                    E2_21_0 : 'closeDate->Base year',
-                    E2_21_1 : 'closeDate->base month',
-                    E2_21_2 : 'closeDate->Reference date',
-                    E2_23_0 : 'IncomeTaxBaseYear->Reference date',
-                    E2_23_1 : 'IncomeTaxBaseYear->Reference date',
-                    E2_23_2 : 'IncomeTaxBaseYear->Reference date',
-                    E2_25_0 : 'Processing month',
-                    E2_25_1 : 'disposal day',
+                    E1_3_0 : params.processCateNo,
+                    E1_3_1 : params.processInfomation.processDivisionName,
+                    E1_5_0 : params.processingYear,
+                    E2_2 : params.processingYear,
+                    E2_8_0 : basicSetting.monthlyPaymentDate.datePayMent,
+                    E2_10_0 : basicSetting.employeeExtractionReferenceDate.refeMonth,
+                    E2_10_1 : basicSetting.employeeExtractionReferenceDate.refeDate,
+                    E2_12_0 : advancedSetting.salaryInsuColMon.monthCollected,
+                    E2_14_0 : advancedSetting.detailPrintingMon.printingMonth,
+                    E4_2_0 : basicSetting.workDay,
+                    E2_17_0 : advancedSetting.sociInsuStanDate.baseYear,
+                    E2_17_1 : advancedSetting.sociInsuStanDate.baseMonth,
+                    E2_17_2 : advancedSetting.sociInsuStanDate.refeDate,
+                    E2_19_0 : advancedSetting.empInsurStanDate.baseMonth,
+                    E2_19_1 : advancedSetting.empInsurStanDate.refeDate,
+                    E2_21_0 : advancedSetting.closeDate.baseYear,
+                    E2_21_1 : advancedSetting.closeDate.baseMonth,
+                    E2_21_2 : advancedSetting. closeDate.refeDate,
+                    E2_23_0 : advancedSetting.incomTaxBaseYear.baseYear,
+                    E2_23_1 : advancedSetting.incomTaxBaseYear.baseMonth,
+                    E2_23_2 : advancedSetting.incomTaxBaseYear.refeDate,
+                    E2_25_0 : basicSetting.accountingClosureDate.processMonth,
+                    E2_25_1 : basicSetting.accountingClosureDate.disposalDay,
                 }
                 dfd.resolve();
             });
@@ -93,33 +97,33 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         mapLabel(tranferModel){
             var self = this;
             // E1_3
-            self.processingClassification = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_97"), tranferModel.E1_3_0, tranferModel.E1_3_1));
+            self.processingClassification = ko.observable(format(getText("#QMM005_97"), tranferModel.E1_3_0, tranferModel.E1_3_1));
             // E1_5
-            self.processingYearAD = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_109"), tranferModel.E1_5_0));
+            self.processingYearAD = ko.observable(format(getText("#QMM005_109"), tranferModel.E1_5_0));
             // E1_6
             self.treatmentYearJapaneseCalendar = ko.observable('heisei calendar');
             // E2_2
             self.reflectionStartYear = ko.observable(tranferModel.E2_2);
             // E2_8
-            self.paymentDateSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_102"), tranferModel.E2_8_0));
+            self.paymentDateSetting = ko.observable(format(getText("#QMM005_102"), tranferModel.E2_8_0));
             //E2_10
-            self.employeeExtractionBaseDateSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_102"), tranferModel.E2_10_0, tranferModel.E2_10_1));
+            self.employeeExtractionBaseDateSetting = ko.observable(format(getText("#QMM005_102"), tranferModel.E2_10_0, tranferModel.E2_10_1));
             // E2_12
-            self.socialInsuranceCollectionMonthSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_104"), tranferModel.E2_12_0));
+            self.socialInsuranceCollectionMonthSetting = ko.observable(format(getText("#QMM005_104"), tranferModel.E2_12_0));
             // E2_14
-            self.specificationPrintoutYearMonthSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_104"), tranferModel.E2_14_0));
+            self.specificationPrintoutYearMonthSetting = ko.observable(format(getText("#QMM005_104"), tranferModel.E2_14_0));
             //E4_2
-            self.numberOfWorkingDaysSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_108"),tranferModel.E4_2_0));
+            self.numberOfWorkingDaysSetting = ko.observable(format(getText("#QMM005_108"),tranferModel.E4_2_0));
             //E2_17
-            self.socialInsuranceStandardDateSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_106"), tranferModel.E2_17_0, tranferModel.E2_17_1, tranferModel.E2_17_2));
+            self.socialInsuranceStandardDateSetting = ko.observable(format(getText("#QMM005_106"), tranferModel.E2_17_0, tranferModel.E2_17_1, tranferModel.E2_17_2));
             //E2_19
-            self.employmentInsuranceStandardDateSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_107"), tranferModel.E2_19_0, tranferModel.E2_19_1));
+            self.employmentInsuranceStandardDateSetting = ko.observable(format(getText("#QMM005_107"), tranferModel.E2_19_0, tranferModel.E2_19_1));
             // E2_21
-            self.settingOfStandardReferenceDayForClosingTime = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_106"), tranferModel.E2_21_0, tranferModel.E2_21_1, tranferModel.E2_21_2));
+            self.settingOfStandardReferenceDayForClosingTime = ko.observable(format(getText("#QMM005_106"), tranferModel.E2_21_0, tranferModel.E2_21_1, tranferModel.E2_21_2));
             //E2_23
-            self.incomeTaxBaseDateSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_106"), tranferModel.E2_23_0, tranferModel.E2_23_1, tranferModel.E2_23_2));
+            self.incomeTaxBaseDateSetting = ko.observable(format(getText("#QMM005_106"), tranferModel.E2_23_0, tranferModel.E2_23_1, tranferModel.E2_23_2));
             //E2_25
-            self.accountingClosingDateSetting = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_103"), tranferModel.E2_25_0, tranferModel.E2_25_1));
+            self.accountingClosingDateSetting = ko.observable(format(getText("#QMM005_103"), tranferModel.E2_25_0, tranferModel.E2_25_1));
         }
 
         reflect(){

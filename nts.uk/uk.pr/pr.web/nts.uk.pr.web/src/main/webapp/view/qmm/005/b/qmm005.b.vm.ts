@@ -1,4 +1,3 @@
-import forEach = require("lodash/forEach");
 module nts.uk.pr.view.qmm005.b.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
@@ -15,7 +14,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         setDaySupportDtoList: any;
         processingYear: KnockoutObservable<number>;
         processingDivisionName: KnockoutObservable<string>;
-        listSettingPayment: KnockoutObservableArray<model.PaymentDateItem>;
+        settingPaymentList: KnockoutObservableArray<model.PaymentDateItem>;
         processingYearList: KnockoutObservableArray<model.ItemModel>;
         btnText: any;
         isNewMode: KnockoutObservable<boolean>;
@@ -26,8 +25,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         constructor() {
             var self = this;
-            self.listSettingPayment = ko.observableArray([]);
-            self.show = ko.observable(true);
+            self.processCateNo = 333;
+            self.processingDivisionName = ko.observable();
+            self.settingPaymentList = ko.observableArray([]);
+            self.processingYearList = ko.observableArray([]);
+            self.show = ko.observable(false);
             self.btnText = ko.computed(function () {
                 if (self.show()) return "-";
                 return "+";
@@ -40,6 +42,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             ]);
             this.enable = ko.observable(true);
             self.processingYearListSelectedCode = ko.observable(-1);
+            self.processingYear = ko.observable(2018);
             self.processingYear.subscribe(function (newValue) {
                 self.selectProcessingYear(newValue);
             })
@@ -50,7 +53,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             this.show(!this.show());
         }
 
-        cancelScreen(): void {
+        cancel() {
+            var self = this;
+            if (self.processingYearList().length > 0){
+                self.selectProcessingYear(self.processingYearList()[0].code);
+            }
         }
 
         startPage(params): JQueryPromise<any> {
@@ -62,12 +69,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         }
 
         startupScreen() {
-            // gọi vào domain 処理区分基本情報 (ProcessInfomation), 給与支払日設定 (SetDaySupport)
+            // get domain 処理区分基本情報 (ProcessInfomation), 給与支払日設定 (SetDaySupport)
             var self = this;
             service.getProcessInfomation(self.processCateNo).done(function (data) {
-                self.processInfomationDto = data;
-                // B3_2
-                self.processingDivisionName = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_97"), self.processCateNo, data.processDivisionName));
+                if (data) {
+                    self.processInfomationDto = data;
+                    // B3_2
+                    self.processingDivisionName = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_97"), self.processCateNo, data.processDivisionName));
+                }
             });
             service.getSetDaySupport(self.processCateNo).done(function (data) {
                 // B2_2
@@ -97,7 +106,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 _.forEach(data.setDaySupportDtoList, function (setDaySupport) {
                     var obj = {};
                     // B4_10 支払年月日
-                    obj["paymentDate"] = ko.observable(setDaySupport.processDate);
+                    obj["paymentDate"] = ko.observable(setDaySupport.paymentDate);
                     // B4_11 支払曜日
                     // B4_12				社員抽出基準日
                     obj["employeeExtractionReferenceDate"] = ko.observable(setDaySupport.empExtraRefeDate);
@@ -125,15 +134,15 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 for (i = 0; i < firstArray.length; i++) {
                     firstArray[i]["specificationPrintDate"] = secondArray[i]["specificationPrintDate"];
                 }
-                self.listSettingPayment(firstArray);
+                self.settingPaymentList(firstArray);
             });
         }
 
-        creatNewProcessYear(): void {
+        creatNewProcessYear() {
             var self = this;
-            self.isNewMode = ko.observable(true);
+            self.isNewMode(true);
             self.processingYear = ko.observable();
-            self.listSettingPayment();
+            self.reflectionPressingProcess();
         }
 
         //反映ボタン押下時処理
@@ -162,18 +171,19 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         }
                     }
                 );
-                self.listSettingPayment(array);
-                setShared("QMM005bParams", {processCateNo: self.processCateNo, processingYear: self.processingYear()});
-                modal("/view/qmm/005/e/index.xhtml").onClosed(() => {
-                    self.eScreenReflect();
-                });
+                self.settingPaymentList(array);
+                self.reflectSystemReference();
             }
         }
 
         //screen E mode update
         reflectSystemReference() {
             var self = this;
-            setShared("QMM005bParams", {processCateNo: self.processCateNo, processingYear: self.processingYear()});
+            setShared("QMM005bParams", {
+                processCateNo: self.processCateNo(),
+                processingYear: self.processingYear(),
+                processInfomation: self.processInfomationDto()
+            });
             modal("/view/qmm/005/e/index.xhtml").onClosed(() => {
                 self.eScreenReflect();
             });
@@ -185,7 +195,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             if (reflect) {
                 var params = getShared("QMM005eParams");
                 var valPayDateSet = getShared("QMM005eValPayDateSet");
-                _.forEach(self.listSettingPayment, function (settingPayment) {
+                _.forEach(self.settingPaymentList, function (settingPayment) {
                     var index = 0;
                     var startMonth = getShared("QMM005estartMonth");
                     if (++index >= startMonth) {
@@ -258,40 +268,41 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         registration() {
             var self = this;
+            //    check input year valid
+            var command = []
+            var index = 0;
+            _.forEach(self.settingPaymentList(), function (setting) {
+                index++;
+                command.push({
+                    setDaySupportCommand: {
+                        processCateNo: self.processCateNo,
+                        paymentDate: setting.paymentDate(),
+                        processDate: self.processingYear() + (index < 10 ? '0' + index : index),
+                        closeDateTime: setting.timeClosingDate(),
+                        empInsurdStanDate: setting.employmentInsuranceStandardDate(),
+                        closureDateAccounting: setting.accountingClosureDate(),
+                        empExtraRefeDate: setting.employeeExtractionReferenceDate(),
+                        socialInsurdStanDate: setting.socialInsuranceStandardDate(),
+                        socialInsurdCollecMonth: setting.socialInsuranceCollectionMonth(),
+                        incomeTaxDate: setting.incomeTaxReferenceDate(),
+                        numberWorkDay: setting.numberOfWorkingDays()
+                    },
+                    specPrintYmSetCommand: {
+                        printDate: setting.printDate()
+                    }
+                })
+            });
             if (self.isNewMode()) {
-                //    check input year valid
-                var array = [];
-                _.forEach(self.listSettingPayment(), function (setting) {
-                    array.push({
-                        setDaySupportCommand: {
-                            processCateNo: self.processCateNo,
-                            processDate: setting.paymentDate(),
-                            closeDateTime: setting.timeClosingDate(),
-                            empInsurdStanDate: setting.employmentInsuranceStandardDate(),
-                            closureDateAccounting: setting.accountingClosureDate(),
-                            paymentDate: setting.paymentDate(),
-                            empExtraRefeDate: setting.employeeExtractionReferenceDate(),
-                            socialInsurdStanDate: setting.socialInsuranceStandardDate(),
-                            socialInsurdCollecMonth: setting.socialInsuranceCollectionMonth(),
-                            incomeTaxDate: setting.incomeTaxReferenceDate(),
-                            numberWorkDay: setting.numberOfWorkingDays()
-                        },
-                        specPrintYmSetCommand: {
-                            printDate: setting.printDate
-                        }
-                    })
-                });
-
-                var command = []
                 service.addDomainModel(command).done(function () {
                     self.transactionSuccess();
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
             } else {
-                var command;
                 service.updateDomainModel(command).done(function () {
                     self.transactionSuccess();
+                }).fail(function (error) {
+                    nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
             }
         }

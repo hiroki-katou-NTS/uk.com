@@ -2,7 +2,7 @@ module nts.uk.pr.view.qmm005.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
 
-    var servicePath = {
+    var paths = {
         getProcessInfomation: "ctx/pr/core/wageprovision/processdatecls/getProcessInfomation/{0}",
         getSetDaySupport: "ctx/pr/core/wageprovision/processdatecls/getSetDaySupport/{0}",
         getSelectProcessingYear: "ctx/pr/core/wageprovision/processdatecls/getSelectProcessingYear/{0}",
@@ -14,30 +14,30 @@ module nts.uk.pr.view.qmm005.b.service {
     }
 
     export function getProcessInfomation (processCateNo: string): JQueryPromise<any> {
-        let _path = format(this.paths.getProcessInfomation, processCateNo);
+        let _path = format(paths.getProcessInfomation, processCateNo);
         return ajax(_path);
     }
 
     export function getSetDaySupport (processCateNo: string): JQueryPromise<any> {
-        let _path = format(this.paths.getSetDaySupport, processCateNo);
+        let _path = format(paths.getSetDaySupport, processCateNo);
         return ajax(_path);
     }
 
     export function getSelectProcessingYear (processCateNo: string, year: string): JQueryPromise<any> {
-        let _path = format(this.paths.getSelectProcessingYear, processCateNo, year);
+        let _path = format(paths.getSelectProcessingYear, processCateNo, year);
         return ajax(_path);
     }
 
     export function getValPayDateSet (processingIndicatorNO: string): JQueryPromise<any> {
-        let _path = format(this.paths.getValPayDateSet, processingIndicatorNO);
+        let _path = format(paths.getValPayDateSet, processingIndicatorNO);
         return ajax(_path);
     }
 
     export function addDomainModel(command): JQueryPromise<any> {
-        return ajax(this.paths.addDomainModel, command);
+        return ajax(paths.addDomainModel, command);
     }
 
     export function updateDomainModel(command): JQueryPromise<any> {
-        return ajax(this.paths.updateDomainModel, command);
+        return ajax(paths.updateDomainModel, command);
     }
 }

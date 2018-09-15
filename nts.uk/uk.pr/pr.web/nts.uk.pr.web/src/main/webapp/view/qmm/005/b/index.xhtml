@@ -10,15 +10,15 @@
         <div id="functions-area">
             <!--B1_1	新規-->
             <button class=""
-                    data-bind="click: newCharacterSetting, enable=!isNewMode()">#{i18n.getText('QMM005_22')}</button>
+                    data-bind="click: creatNewProcessYear, enable=!isNewMode()">#{i18n.getText('QMM005_22')}</button>
 
             <!--B1_2	登録-->
             <button class="proceed "
-                    data-bind="click: saveCharacterSetting">#{i18n.getText('QMM005_1')}</button>
+                    data-bind="click: registration">#{i18n.getText('QMM005_1')}</button>
 
             <!--B1_3	閉じる-->
             <button class=""
-                    data-bind="click: cancelCharacterSetting">#{i18n.getText('QMM005_23')}</button>
+                    data-bind="click: cancel">#{i18n.getText('QMM005_23')}</button>
         </div>
         <!--B2_4	処理年-->
         <!--B4_1	支払日設定一覧-->
@@ -54,16 +54,15 @@
                             <!--B3_3	処理年-->
                             <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
                             <!--B3_4	処理年-->
-                            <input class="number-editor"
-                                   data-bind="ntsDatePicker: {value: processingYear, dateFormat: 'YYYY'}"/>
+                            <div data-bind="ntsDatePicker: {value: processingYear, dateFormat: 'YYYY', enable: isNewMode()}"></div>
                             <!--B3_5	処理年和暦-->
                             <span><label>????</label></span>
                             <!--B3_6	反映-->
                             <button class=""
-                                    data-bind="click: reflect, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
+                                    data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
                             <!--B3_7	システム基準日情報反映-->
                             <button class=""
-                                    data-bind="click: reflectSystemReferenceDateInformation, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
+                                    data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
                         </div>
                         <table id="expand-example">
                             <tbody>
@@ -104,7 +103,7 @@
                                 <!--B6_6	経理締め日-->
                                 <th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_47')}</th>
                             </tr>
-                            <com:ko-foreach bind="listSettingPayment">
+                            <com:ko-foreach bind="settingPaymentList">
                                 <tr>
                                     <td>
                                         <!--B4_8	対象月-->
