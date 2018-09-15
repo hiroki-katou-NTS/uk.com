@@ -155,7 +155,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         }
         enableFixedValue() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE);
         }
         nullValueReplaceItemcls() {
             var self = this;
