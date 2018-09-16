@@ -289,7 +289,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId,optApprovalProcessingUseSetting.get(),listEmployeeIds,companyId);
 
-			
+			//アルゴリズム「締め情報の表示」を実行する       move 実績期間の表示
+			this.displayClosureInfo( screenDto,  companyId,  closureId,
+					yearMonth);
 		}
 		// 「月別実績の承認」からの場合
 		else {
