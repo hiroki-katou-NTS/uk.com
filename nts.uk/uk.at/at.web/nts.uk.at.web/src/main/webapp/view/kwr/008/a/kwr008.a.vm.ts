@@ -137,10 +137,6 @@ module nts.uk.at.view.kwr008.a {
                 });
                 return dfd.promise();
             }
-            checkInput(): boolean {
-                var self = this;
-                return self.dateValue().startDate && self.dateValue().endDate && self.selectedOutputItem();
-            }
 
             exportReport() {
                 var self = this;
@@ -380,6 +376,8 @@ module nts.uk.at.view.kwr008.a {
                 let self = this;
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
+                }else{
+                    $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
@@ -412,7 +410,7 @@ module nts.uk.at.view.kwr008.a {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };

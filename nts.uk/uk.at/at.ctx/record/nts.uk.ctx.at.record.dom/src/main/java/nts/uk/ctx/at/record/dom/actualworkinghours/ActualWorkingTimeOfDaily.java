@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -141,7 +142,6 @@ public class ActualWorkingTimeOfDaily {
     public ActualWorkingTimeOfDaily inssertTotalWorkingTime(TotalWorkingTime time) {
     	return new ActualWorkingTimeOfDaily(this.constraintDifferenceTime,this.constraintTime,this.timeDifferenceWorkingHours,time,this.divTime,this.premiumTimeOfDailyPerformance);
     }
-    
     
 	/**
 	 * 日別実績の実働時間の計算
@@ -343,7 +343,7 @@ public class ActualWorkingTimeOfDaily {
 									TotalWorkingTime totalWorkingTime,
 									WorkType workType
 									) {
-		if(recordClass.getCalculatable()) return totalWorkingTime;
+		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() != null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
 		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork())&&recordClass.getOotsukaFixedWorkSet().isPresent()&& !workType.getDailyWork().isHolidayWork()) {
 			//休憩未取得時間の計算
 			AttendanceTime unUseBreakTime = recordClass.getPersonalInfo().getWorkingSystem().isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(recordClass.getFixRestTimeSetting().get(),recordClass.getIntegrationOfDaily().getAttendanceLeave().get()):new AttendanceTime(0);
@@ -360,9 +360,20 @@ public class ActualWorkingTimeOfDaily {
 						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork()),
 						recordClass.getOotsukaFixedWorkSet(),
 						recordClass.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
-						recordClass.getDailyUnit()
+						recordClass.getDailyUnit(),
+						recordClass.getFixRestTimeSetting(),
+						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet()
 						);
 				
+			}
+			
+			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
+			if(recordClass.getOotsukaFixedWorkSet() != null
+			   && recordClass.getOotsukaFixedWorkSet().isPresent()
+			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak() != null
+			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod() != null
+			   && !recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
+				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
 			}
 			
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
@@ -374,16 +385,6 @@ public class ActualWorkingTimeOfDaily {
 					totalWorkingTime.setWithinWorkTime(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay());
 				}
 			}
-
-			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
-			if(recordClass.getOotsukaFixedWorkSet() != null
-			   && recordClass.getOotsukaFixedWorkSet().isPresent()
-			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak() != null
-			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod() != null
-			   && !recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
-				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
-			}
-			
 
 		}
 		return totalWorkingTime;
@@ -511,5 +512,10 @@ public class ActualWorkingTimeOfDaily {
 	}
 	
 	/////****************************************************:大塚専用:********************************************************/////
-
+	public static ActualWorkingTimeOfDaily defaultValue(){
+		return new ActualWorkingTimeOfDaily(AttendanceTime.ZERO, ConstraintTime.defaultValue(), AttendanceTime.ZERO, 
+											TotalWorkingTime.createAllZEROInstance(), 
+											new DivergenceTimeOfDaily(new ArrayList<>()), 
+											new PremiumTimeOfDailyPerformance(new ArrayList<>()));
+	}
 }

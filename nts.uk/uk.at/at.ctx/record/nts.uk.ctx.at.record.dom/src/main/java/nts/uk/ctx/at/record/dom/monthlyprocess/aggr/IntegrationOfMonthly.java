@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
@@ -55,6 +56,9 @@ public class IntegrationOfMonthly {
 	private List<AttendanceTimeOfWeekly> attendanceTimeOfWeekList;
 	/** 社員の月別実績エラー一覧 */
 	private List<EmployeeMonthlyPerError> employeeMonthlyPerErrorList;
+	/** 月別実績の備考 */
+	@Setter
+	private List<RemarksMonthlyRecord> remarks;
 	
 	public IntegrationOfMonthly(){
 		this.attendanceTime = Optional.empty();
@@ -91,7 +95,8 @@ public class IntegrationOfMonthly {
 			Optional<RsvLeaRemNumEachMonth> reserveLeaveRemain,
 			Optional<AbsenceLeaveRemainData> absenceLeaveRemain,
 			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain,
-			List<SpecialHolidayRemainData> specialLeaveRemainList){
+			List<SpecialHolidayRemainData> specialLeaveRemainList,
+			List<RemarksMonthlyRecord> remarks){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
@@ -102,5 +107,6 @@ public class IntegrationOfMonthly {
 		this.absenceLeaveRemain = absenceLeaveRemain;
 		this.monthlyDayoffRemain = monthlyDayoffRemain;
 		this.specialLeaveRemainList = specialLeaveRemainList;
+		this.remarks = remarks;
 	}
 }

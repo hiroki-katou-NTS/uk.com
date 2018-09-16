@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.monthlyattditem;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface MonthlyAttendanceItemRepository.
@@ -44,4 +45,24 @@ public interface MonthlyAttendanceItemRepository {
 	 * @return the list
 	 */
 	List<MonthlyAttendanceItem> findByAtrPrimitiveValue(String companyId, MonthlyAttendanceItemAtr itemAtr);
+	
+	/**
+	 * Find
+	 * @param companyId the company id
+	 * @param attendanceItemId
+	 * @return the object
+	 */
+	Optional<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, int attendanceItemId);
+	
+	void update(MonthlyAttendanceItem domain);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param attendanceItemIds
+	 * @param itemAtrs
+	 * @return
+	 */
+	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds, 
+			List<Integer> itemAtrs);
 }

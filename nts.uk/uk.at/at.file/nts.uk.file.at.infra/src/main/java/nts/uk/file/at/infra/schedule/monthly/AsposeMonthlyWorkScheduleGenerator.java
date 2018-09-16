@@ -68,6 +68,9 @@ import nts.uk.ctx.at.shared.app.find.attendance.AttItemDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -163,6 +166,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	@Inject
 	private MonthlyAttendanceItemFinder monthlyAttendanceItemFinder;
+	
+	@Inject
+	private MonthlyItemControlByAuthRepository monthlyItemControlByAuthRepository;
 
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "report/KWR006.xlsx";
@@ -332,12 +338,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
 			
+			// Create print area
+			createPrintArea(currentRow, sheet);
+			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
 			else {
-				// Create print area
-				createPrintArea(currentRow, sheet);
 				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
 			}
 
@@ -360,7 +367,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			headerData.companyName = optCompany.get().getCompanyName().v();
 		else
 			headerData.companyName = "";
-		if (condition.getOutputType() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
+		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.YEARMONTH);
 		} else {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.PERSONAL_NAME);
@@ -379,8 +386,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<MonthlyAttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
 		headerData.setLstOutputItemSettingCode(new ArrayList<>());
 		
-		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
+		List<Integer> lstAttendanceId = getListAttendanceIdAuth(lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList()));
 		List<AttdItemDto> lstMonthlyAttendanceItem = monthlyAttendanceItemFinder.findAll();
+		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
 			AttdItemDto attendanceItem = lstMonthlyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
@@ -778,7 +786,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		//MonthlyWorkScheduleCondition condition = query.getCondition();
 		
 		// Always has item because this has passed error check
-		//TODO: domain man C
 		OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, query.getCode()).get();
 		
 		// Get all data from query data container
@@ -892,14 +899,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Optional<WorkplaceMonthlyReportData> optDailyWorkplaceData = reportData.getMonthlyReportData().getLstMonthlyReportData().stream().filter(x -> x.getYearMonth().compareTo(date) == 0).findFirst();
 				MonthlyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), endDate, lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
 				if (dailyWorkplaceData != null) {
-					MonthlyPersonalPerformanceData personalPerformanceDate = new MonthlyPersonalPerformanceData();
-					if (optEmployeeDto.isPresent())
-						personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
-					dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
+					
 					
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getYearMonth().compareTo(date) == 0) && 
 							StringUtils.equalsAnyIgnoreCase(x.getEmployeeId(), employeeId)).forEach(x -> {
 						YearMonth workingDate = x.getYearMonth();
+						
+						MonthlyPersonalPerformanceData personalPerformanceDate = new MonthlyPersonalPerformanceData();
+						if (optEmployeeDto.isPresent())
+							personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
+						dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
 						
 						// Closure date
 						ClosureDate closureDate = x.getClosureDate();
@@ -1211,10 +1220,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						int totalValueType = totalValue.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
 						if (valueTypeEnum.isIntegerCountable()) {
-							totalValue.setValue(String.valueOf((int) totalWorkplaceValue.value() + (int) actualValue.value()));
+							totalWorkplaceValue.setValue(String.valueOf((int) totalWorkplaceValue.value() + (int) actualValue.value()));
 						}
 						if (valueTypeEnum.isDoubleCountable()) {
-							totalValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
+							totalWorkplaceValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
 						}
 					}
 					else {
@@ -1404,6 +1413,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							sheet.getHorizontalPageBreaks().add(currentRow);
 							rowPageTracker.resetRemainingRow();
 						}
+						
+						// A5_1
+						Cell dateCell = cells.get(currentRow, 0);
+						YearMonth yearMonth = detailedDailyPerformanceReportData.getYearMonth();
+						String yearMonthStr = yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month());
+						Cell prevYearMonthCell = cells.get(currentRow - dataRowCount, 0);
+						if (prevYearMonthCell.getValue() != null && yearMonthStr.equals(prevYearMonthCell.getValue())) {
+							colorWhite = !colorWhite;
+						}
+						
 						if (colorWhite) // White row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
 						else // Light blue row
@@ -1419,16 +1438,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							rowPageTracker.useRemainingRow(dataRowCount);
 						}
 						
-						// A5_1
-						Cell dateCell = cells.get(currentRow, 0);
-						YearMonth yearMonth = detailedDailyPerformanceReportData.getYearMonth();
-						String yearMonthStr = yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month());
-						
-						 
-						Cell prevYearMonthCell = cells.get(currentRow - dataRowCount, 0);
 						if (prevYearMonthCell.getValue() != null && yearMonthStr.equals(prevYearMonthCell.getValue())) {
-							Range yearMonthRange = cells.createRange(currentRow - dataRowCount, 0, dataRowCount, 1);
-							yearMonthRange.merge();
+							Range yearMonthRange = cells.createRange(currentRow, 0, dataRowCount, 1);
+							yearMonthRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 						}
 						else {
 							dateCell.setValue(yearMonthStr);
@@ -1943,6 +1955,13 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					rowPageTracker.resetRemainingRow();
 				}
 				
+				// B5_1
+				Cell employeeCell = cells.get(currentRow, 0);
+				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
+				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
+					colorWhite = !colorWhite;
+				}
+				
 				Range dateRangeTemp;
 				if (colorWhite) // White row
 					dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
@@ -1959,13 +1978,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					rowPageTracker.useRemainingRow(dataRowCount);
 				}
 				
-				// B5_1
-				Cell employeeCell = cells.get(currentRow, 0);
-				// Perform merge cell if prev data row belong to same employee
-				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
 				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
-					Range employeeRange = cells.createRange(currentRow - dataRowCount, 0, dataRowCount, 1);
-					employeeRange.merge();
+					Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 1);
+					employeeRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 				}
 				else {
 					employeeCell.setValue(employee.getEmployeeName());
@@ -2464,5 +2479,22 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setPrintArea("A1:" + lastCellName);
+	}
+	
+	/**
+	 * 会社の月次項目を取得する (private version)
+	 * @param lstRegisterAttendanceId
+	 * @return
+	 */
+	private List<Integer> getListAttendanceIdAuth(List<Integer> lstRegisterAttendanceId) {
+		String roleId = AppContexts.user().roles().forAttendance();
+		String companyId = AppContexts.user().companyId();
+		Optional<MonthlyItemControlByAuthority> optData = monthlyItemControlByAuthRepository.getMonthlyAttdItem(companyId, roleId);
+		if (optData.isPresent()) {
+			MonthlyItemControlByAuthority data = optData.get();
+			List<DisplayAndInputMonthly> listDisplayAndInputMonthly = data.getListDisplayAndInputMonthly();
+			return listDisplayAndInputMonthly.stream().filter(x -> lstRegisterAttendanceId.contains(x.getItemMonthlyId()) && x.isToUse()).map(y -> y.getItemMonthlyId()).collect(Collectors.toList());
+		}
+		return lstRegisterAttendanceId;
 	}
 }

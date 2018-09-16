@@ -237,13 +237,12 @@ module nts.uk.at.view.kal001.a.model {
             setShared("KAL001_A_PARAMS", params);
             modal("/view/kal/001/d/index.xhtml").onClosed(() => {
                 // Set param to screen export B
-                let paramD= getShared("KAL001_D_PARAMS");
-                if (!paramD.extractingFlg) {
+                let paramD = getShared("KAL001_D_PARAMS");
+                if (paramD) {
                     setShared("extractedAlarmData", paramD);
                     modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-
                     });
-                }  
+                }
             });
         }
 

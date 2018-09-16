@@ -24,4 +24,9 @@ public class TimeSpanForCalcDto {
 //	@AttendanceItemLayout(layout = "B")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.TIME_WITH_DAY)
 	private Integer end;
+	
+	@Override
+	public TimeSpanForCalcDto clone() {
+		return new TimeSpanForCalcDto(start, end);
+	}
 }

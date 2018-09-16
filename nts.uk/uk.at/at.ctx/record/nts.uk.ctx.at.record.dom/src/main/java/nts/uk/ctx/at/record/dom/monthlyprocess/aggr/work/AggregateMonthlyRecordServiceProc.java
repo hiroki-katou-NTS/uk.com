@@ -41,6 +41,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -747,7 +748,7 @@ public class AggregateMonthlyRecordServiceProc {
 						this.employeeId,
 						this.closureId,
 						this.closureDate,
-						Flex.FLEX_EXCESS_CARRYOVER_TIME,	// 仮
+						null,
 						null,
 						null));
 			}
@@ -844,7 +845,9 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 計算後データを確認
 		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-		val convert = monthlyConverter.withAnyItem(this.aggregateResult.getAnyItemList());
+		MonthlyRecordToAttendanceItemConverter convert =
+				monthlyConverter.withAttendanceTime(this.aggregateResult.getAttendanceTime().get());
+		convert = convert.withAnyItem(this.aggregateResult.getAnyItemList());
 		
 		// 月別実績の編集状態を取得
 		for (val editState : this.editStates){

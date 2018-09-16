@@ -34,6 +34,16 @@ public class SpecialHolidayRemainMonthFinder extends MonthlyFinderFacade {
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
+	public List<SpecialHolidayRemainDataDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
+				.filter(c -> c.getClosureId() == closureId.value && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
+							&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay())
+				.map(c -> SpecialHolidayRemainDataDto.from(c)).collect(Collectors.toList());
+	}
+	
+	@Override
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
 		return find(employeeId, ConvertHelper.yearMonthsBetween(range));
 	}

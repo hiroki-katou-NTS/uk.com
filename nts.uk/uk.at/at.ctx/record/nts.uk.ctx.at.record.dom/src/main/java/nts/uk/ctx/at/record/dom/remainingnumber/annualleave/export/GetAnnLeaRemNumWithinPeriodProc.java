@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
@@ -41,6 +42,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
@@ -90,6 +93,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	private CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate;
 	/** 年休付与テーブル */
 	private GrantYearHolidayRepository grantYearHolidayRepo;
+	/** 日別実績の運用開始設定 */
+	private OperationStartSetDailyPerformRepository operationStartSetRepo;
 	
 	/** 会社ID */
 	private String companyId;
@@ -131,7 +136,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod,
 			ClosureStatusManagementRepository closureSttMngRepo,
 			CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate,
-			GrantYearHolidayRepository grantYearHolidayRepo) {
+			GrantYearHolidayRepository grantYearHolidayRepo,
+			OperationStartSetDailyPerformRepository operationStartSetRepo) {
 		
 		this.empEmployee = empEmployee;
 		this.annLeaEmpBasicInfoRepo = annLeaEmpBasicInfoRepo;
@@ -150,6 +156,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		this.closureSttMngRepo = closureSttMngRepo;
 		this.calcAnnLeaAttendanceRate = calcAnnLeaAttendanceRate;
 		this.grantYearHolidayRepo = grantYearHolidayRepo;
+		this.operationStartSetRepo = operationStartSetRepo;
 	}
 
 	/**
@@ -285,6 +292,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 							.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 		}
 		
+		// 日別実績の運用開始設定　取得
+		Optional<OperationStartSetDailyPerform> operationStartSetOpt = Optional.empty();
+		if (companySets.isPresent()){
+			operationStartSetOpt = companySets.get().getOperationStartSet();
+		}
+		else {
+			operationStartSetOpt = this.operationStartSetRepo.findByCid(new CompanyId(companyId));
+		}
+		
 		// 集計開始日時点の年休情報を作成
 		AnnualLeaveInfo annualLeaveInfo = this.createInfoAsOfPeriodStart(noCheckStartDate);
 		
@@ -312,7 +328,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 								nextAnnualGrantList.getGrantDate(),
 								Optional.of(nextAnnualGrantList.getTimes().v()),
 								Optional.of(annualLeaveSet), Optional.of(employee), annualLeaveEmpBasicInfoOpt,
-								grantHdTblSetOpt, lengthServiceTblsOpt);
+								grantHdTblSetOpt, lengthServiceTblsOpt, operationStartSetOpt);
 						if (resultRateOpt.isPresent()){
 							val resultRate = resultRateOpt.get();
 							nextAnnualGrantList.setAttendanceRate(Optional.of(
@@ -585,7 +601,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			
 			// 年休集計期間WORKを作成し、Listに追加
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd();
+			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
 					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
 					nowDividedDay.isNextDayAfterPeriodEnd(),

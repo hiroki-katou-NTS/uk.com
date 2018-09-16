@@ -31,6 +31,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -68,8 +69,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	@Override
 	public CaculationTime checkCaculationActualExcess(int prePostAtr, int appType, String employeeID,
 			String companyID, GeneralDate appDate,
-			CaculationTime breakTime, String siftCD,Integer calTime) {
-		if(!checkCodition(prePostAtr,companyID)){
+			CaculationTime breakTime, String siftCD,Integer calTime, boolean isCalculator) {
+		if(!checkCodition(prePostAtr,companyID, isCalculator)){
 			return breakTime;
 		}
 		String employeeName = employeeAdapter.getEmployeeName(employeeID);
@@ -267,7 +268,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	 */
 	@Override
 	public OvertimeCheckResult preApplicationExceededCheck(String companyId, GeneralDate appDate,
-			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> holidayWorkInputs) {
+			GeneralDateTime inputDate, PrePostAtr prePostAtr, int attendanceId, List<HolidayWorkInput> holidayWorkInputs, String employeeID) {
+		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		OvertimeCheckResult result = new OvertimeCheckResult();
 		result.setFrameNo(-1);
 		// 社員ID
@@ -282,8 +284,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		List<Application_New> beforeApplication = appRepository.getBeforeApplication(companyId, appDate, inputDate,
 				ApplicationType.BREAK_TIME_APPLICATION.value, PrePostAtr.PREDICT.value);
 		if (beforeApplication.isEmpty()) {
-			result.setErrorCode(1);
-			return result;
+			throw new BusinessException("Msg_424",employeeName,"");
 		}
 		// 事前申請否認チェック
 		// 否認以外：
@@ -291,8 +292,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
 		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
-			result.setErrorCode(1);
-			return result;
+			throw new BusinessException("Msg_424",employeeName,"");
 		}
 		String beforeCid = beforeApplication.get(0).getCompanyID();
 		String beforeAppId = beforeApplication.get(0).getAppID();
@@ -323,9 +323,9 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			// 事前申請の申請時間＞事後申請の申請時間
 			if (afterTime.getApplicationTime()!= null && beforeTime.getApplicationTime().v() < afterTime.getApplicationTime().v()) {
 				// 背景色を設定する
-				result.setErrorCode(1);
-				result.setFrameNo(frameNo);
-				return result;
+				Optional<WorkdayoffFrame> workDayoffFrame = breaktimeFrameRep.findWorkdayoffFrame(new CompanyId(companyId), frameNo);
+				throw new BusinessException("Msg_424",employeeName, workDayoffFrame.isPresent() ? workDayoffFrame.get().getWorkdayoffFrName().toString() : "",
+						"", String.valueOf(frameNo), String.valueOf(1));
 			}
 		}
 		result.setErrorCode(0);
@@ -359,13 +359,21 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	
 	// 03-02-1_チェック条件
 	@Override
-	public boolean checkCodition(int prePostAtr, String companyID) {
+	public boolean checkCodition(int prePostAtr, String companyID, boolean isCalculator) {
 		if(prePostAtr == PrePostAtr.POSTERIOR.value){
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
 			if(overtimeRestAppCommonSetting.isPresent()){
-				//ドメインモデル「残業休出申請共通設定」.実績表示区分チェック
-				if(overtimeRestAppCommonSetting.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
-					return true;
+				if(isCalculator){
+					//ドメインモデル「残業休出申請共通設定」.実績表示区分チェック
+					if(overtimeRestAppCommonSetting.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+						return true;
+					}
+				} else {
+					//休出の事前申請よりも超過している場合確認メッセージを表示するかどうかの区分
+					if((overtimeRestAppCommonSetting.get().getPerformanceExcessAtr() == AppDateContradictionAtr.CHECKNOTREGISTER)||
+							(overtimeRestAppCommonSetting.get().getPerformanceExcessAtr() == AppDateContradictionAtr.CHECKREGISTER)){
+						return true;
+					}
 				}
 			}
 		}
@@ -387,9 +395,9 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	}
 	@Override
 	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr, int appType, String employeeID,
-			String companyID, GeneralDate appDate, CaculationTime breakTimeInput, String siftCD, Integer calTime) {
+			String companyID, GeneralDate appDate, CaculationTime breakTimeInput, String siftCD, Integer calTime, boolean isCalculator) {
 		// 03-02-1_チェック条件
-		if(!this.checkCodition(prePostAtr, companyID)){
+		if(!this.checkCodition(prePostAtr, companyID, isCalculator)){
 			return breakTimeInput;
 		}
 		//Imported(申請承認)「勤務実績」を取得する

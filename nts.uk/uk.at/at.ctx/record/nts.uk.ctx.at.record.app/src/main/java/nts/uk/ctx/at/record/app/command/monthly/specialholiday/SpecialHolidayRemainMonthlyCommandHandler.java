@@ -15,8 +15,10 @@ public class SpecialHolidayRemainMonthlyCommandHandler extends CommandFacade<Spe
 
 	@Override
 	protected void handle(CommandHandlerContext<SpecialHolidayRemainMonthlyCommand> context) {
-		if(context.getCommand().getData().isHaveData()) {
-			repo.persistAndUpdate(context.getCommand().toDomain());
+		if(!context.getCommand().getData().isEmpty()) {
+			context.getCommand().toDomain().stream().forEach(d -> {
+				repo.persistAndUpdate(d);
+			});
 		}
 		
 	}

@@ -22,4 +22,13 @@ public interface EditStateOfMonthlyPerRepository {
 	 */
 	List<EditStateOfMonthlyPerformance> findByClosure(
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+	
+	/**
+	 * 削除
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日
+	 */
+	void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 }

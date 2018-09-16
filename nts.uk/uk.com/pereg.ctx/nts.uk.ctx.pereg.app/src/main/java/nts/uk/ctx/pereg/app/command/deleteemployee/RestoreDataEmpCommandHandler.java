@@ -84,9 +84,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				// get Person
 				Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
 				String nameBefore = person.getPersonNameGroup().getBusinessName().v();
-				PersonNameGroup nameGroup = person.getPersonNameGroup();
-				nameGroup.setBusinessName(new BusinessName(command.getName()));
-				person.setPersonNameGroup(nameGroup);
+				person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
 				personRepo.update(person);
 				
 				setDataLogPersonCorrection(command);

@@ -1,5 +1,5 @@
 module nts.uk.at.view.kmk008.e {
-    import text = nts.uk.resource.getText;
+        import text = nts.uk.resource.getText;
     export module viewmodel {
 
         export class ScreenModel {
@@ -18,9 +18,9 @@ module nts.uk.at.view.kmk008.e {
             workplaceGridList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-
-            nameErrorWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_43"));
-            nameAlarmWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_42"));
+            
+            nameErrorWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_42"));
+            nameAlarmWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_43"));
             nameLimitWeek: KnockoutObservable<string> = ko.observable(text("KMK008_22") + text("KMK008_44"));
             nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_42"));
             nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(text("KMK008_23") + text("KMK008_43"));
@@ -67,7 +67,7 @@ module nts.uk.at.view.kmk008.e {
                     isShowSelectButton: true,
                     isDialog: false,
                     alreadySettingList: self.alreadySettingList,
-                    systemType: 2
+                    systemType:2
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {
@@ -84,7 +84,12 @@ module nts.uk.at.view.kmk008.e {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                nts.uk.ui.errors.clearAll();
+
+                $('#work-place-base-date').prop('tabIndex', -1);
+                $(document).ready(function() {
+                    $('tabindex').removeAttr("tabindex");
+                });
+                
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
                 } else {
@@ -109,13 +114,12 @@ module nts.uk.at.view.kmk008.e {
                     if (data.workPlaceIds.length > 0) {
                         self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                         _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
- 
-                        if (self.workplaceGridList().length > 0) {
+                    }
+                     if (self.workplaceGridList().length > 0) {
                             self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                         }
-                    
                 })
-                 self.isRemove(self.isShowAlreadySet());
+                    self.isRemove(self.isShowAlreadySet());
             }
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
@@ -144,28 +148,29 @@ module nts.uk.at.view.kmk008.e {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
                             let periodName = nts.uk.resource.getText(errorCode[1]);
-                            let param1 = "期間: "+ n ts.uk.resource.getText(errorCode[1]) +" <br>"+ n ts.uk.resource.getText(errorCode[2]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>"+nts.uk.resource.getText(errorCode[2]);
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                            nts.uk.ui.block.clear();
                             return;
                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.getDetail(self.selectedWorkplaceId());
-                         nts.uk.ui.block.clear();
+                        nts.uk.ui.block.clear();
                     });
                     return;
                 }
                 new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(listError => {
                     if (listError.length > 0) {
                         let errorCode = _.split(listError[0], ',');
-                         et  eriodName = nts.uk.resource.getText(errorCode[1]);
-                         et param1 = "期間: "+ n ts.uk.resource.getText(errorCode[1]) +" <br>"+ n ts.uk.resource.getText(errorCode[2]);
-                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                      let  periodName = nts.uk.resource.getText(errorCode[1]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>"+nts.uk.resource.getText(errorCode[2]);
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                        nts.uk.ui.block.clear();
                         return;
                     }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.getalreadySettingList();
                     self.getDetail(self.selectedWorkplaceId());
-                     nts.uk.ui.block.clear();
                 });
                 nts.uk.ui.block.clear();
             }
@@ -182,6 +187,7 @@ module nts.uk.at.view.kmk008.e {
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
+                nts.uk.ui.block.clear();
 
             }
 

@@ -63,6 +63,7 @@ public class ScheCreExeErrorLogHandler {
 		// check exist error
 		if (!this.checkExistErrorByKey(command, employeeId)) {
 			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId, paramMsg));
+			
 		}
 	}
 

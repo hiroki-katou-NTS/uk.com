@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
@@ -32,6 +33,9 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private ComSubstVacationRepository subRepos;
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
+	
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
 		//「残数作成元情報(実績)」を取得する
@@ -40,12 +44,17 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cid, sid, lstDate);
 		//「残数作成元の申請を取得する」
 		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, lstDate);
+		if(lstRecordData.isEmpty()
+				&& lstAppData.isEmpty()
+				&& lstScheData.isEmpty()) {
+			return;
+		}
 		//雇用履歴と休暇管理設定を取得する
 		Optional<ComSubstVacation> comSetting = subRepos.findById(cid);
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, comSetting, leaveComSetting);
 		
-		for (GeneralDate loopDate : lstDate) {
+		this.managedParallelWithContext.forEach(lstDate, loopDate -> {
 			DatePeriod datePeriod = new DatePeriod(loopDate, loopDate);
 			//指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputData = new InterimRemainCreateDataInputPara(cid, 
@@ -56,7 +65,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstAppData,
 					false);
 			mngRegister.registryInterimDataMng(inputData, comHolidaySetting);
-		}
+		});
 	}
 
 }

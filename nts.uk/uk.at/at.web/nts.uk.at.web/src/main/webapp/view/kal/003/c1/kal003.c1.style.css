@@ -1,0 +1,35 @@
+.display-list-label {
+	width: 139px;
+}
+
+.value-input {
+	width: 70px
+}
+
+.form-label {
+	width: 80px
+}
+
+.ntsRadioBox {
+	padding-right: 15px
+}
+
+#compareOperator-cbb, #inputCheck-cbb {
+	margin-left: 20px;
+}
+
+#compareOperator-cbb {
+	margin-right: 50px;
+}
+
+#conditionAtr-cbb {
+	margin-right: 215px
+}
+
+.mb-20{
+	margin-bottom: 20px
+}
+
+[dropdown-for="compareOperator-cbb"] .nts-combo-column-0 {
+  width: 240px !important;
+}

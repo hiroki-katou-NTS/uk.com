@@ -58,8 +58,8 @@ module nts.uk.at.view.kdw002.c {
                     var canBeChangedByOthersHeader = "<input  tabindex='-1'  type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
                     self.columns = ko.observableArray([
                         { headerText: '', key: 'itemDailyID', width: 1, hidden: true },
-                        { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70 },
-                        { headerText: getText('KDW002_4'), key: 'itemDailyName', width: 220 },
+                        { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70  , formatter: _.escape },
+                        { headerText: getText('KDW002_4'), key: 'itemDailyName', width: 220  , formatter: _.escape},
                         { headerText: useHeader + getText('KDW002_5'), key: 'toUse', width: 120, template: useTemplate },
                         { headerText: youCanChangeItHeader + getText('KDW002_6'), key: 'youCanChangeIt', width: 120, template: youCanChangeItTemplate },
                         { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 165, template: canBeChangedByOthersTemplate },

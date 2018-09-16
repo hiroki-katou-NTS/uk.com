@@ -27,8 +27,7 @@ public class EditHistoryCommandHandler extends CommandHandler<EditHistoryCommand
 	protected void handle(CommandHandlerContext<EditHistoryCommand> context) {
 		EditHistoryCommand command = context.getCommand();
 
-		String companyId = isGroupManager() ? AppContexts.user().zeroCompanyIdInContract()
-				: AppContexts.user().companyId();
+		String companyId = AppContexts.user().companyId();
 
 		SelectionHistory history = historySelecitonRepo.get(command.getSelectionItemId(), companyId).get();
 

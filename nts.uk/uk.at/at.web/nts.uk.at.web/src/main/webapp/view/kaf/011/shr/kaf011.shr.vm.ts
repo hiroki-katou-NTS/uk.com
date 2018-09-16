@@ -56,8 +56,8 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateData(param) {
                 if (param) {
-                    let startTime = param.startTime || null,
-                        endTime = param.endTime || null;
+                    let startTime = param.startTime,
+                        endTime = param.endTime;
                     this.startTime(startTime);
                     this.endTime(endTime);
                     this.startTimeDisplay(startTime);

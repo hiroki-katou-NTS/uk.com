@@ -49,8 +49,8 @@ public interface RegisterEmbededURL {
 	 * @param taskIncidental
 	 * @return 埋込用URL
 	 */
-	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod, 
-			String employeeId, String contractCD, String loginId, String employeeCD, List<UrlTaskIncre> taskIncidental);
+	public String embeddedUrlInfoRegis(String programId, String screenId, Integer periodCls, Integer numOfPeriod, 
+			String employeeId, String contractCD, String loginId, String employeeCD, Integer isCompanyNotLogin, List<UrlTaskIncre> taskIncidental);
 	// アルゴリズム「埋込URL有効期限取得」を実行する
 	/**
 	 * アルゴリズム「埋込URL有効期限取得」を実行する

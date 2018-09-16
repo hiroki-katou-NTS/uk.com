@@ -559,20 +559,22 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 grantTime: grantTime
             };
             
-            let start = "";
-            let end = "";
-            if(self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
-                start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
-            } else {
-                start = self.startDate() != "" ? self.startDate() : "1900/01/01";
+            let start = null;
+            let end = null;
+            if (self.startDate()) {
+                if (self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
+                    start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
+                } else {
+                    start = self.startDate() != "" ? self.startDate() : null;
+                }
             }
-            
-            if(self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
-                end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
-            } else {
-                end = self.endDate() != "" ? self.endDate() : "1900/01/01";
+            if (self.endDate()) {
+                if (self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
+                    end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
+                } else {
+                    end = self.endDate() != "" ? self.endDate() : null;
+                }
             }
-            
             let availabilityPeriod : service.AvailabilityPeriod = {
                 startDate: start,
                 endDate: end
@@ -663,7 +665,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let dataItem = self.preData();
             
             if(self.yearReq() && self.dayReq()) {
-                if(dataItem.regularCommand.grantTime.fixGrantDate.interval == "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays == "") {
+                if(dataItem.regularCommand.grantTime.fixGrantDate.interval === "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays === "") {
                     $("#years").ntsError("set", "付与周期を入力してください", "FND_E_REQ_INPUT");
                     $("#days").ntsError("set", "付与日数を入力してください", "FND_E_REQ_INPUT");
                 }
