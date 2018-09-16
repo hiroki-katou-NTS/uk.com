@@ -14,29 +14,53 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         processCategoryNO:number;
 
 
-        processInfomations:KnockoutObservableArray<model.ProcessInfomation>;
-        setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
-        currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>;
-        empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>;
+        // processInfomations:KnockoutObservableArray<model.ProcessInfomation>;
+        // setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
+        // currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>;
+        // empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>;
 
         itemBinding:KnockoutObservableArray<ItemBinding>;
         itemTable:ItemTable;
 
         constructor() {
             var self = this;
-            self.itemTable=new Array<ItemTable>(5);
+
             //A3_4 対象雇用
             self.targetEmployment=ko.observable([]);
             self.itemTable=ko.observableArray();
 
-            self.processInfomations=ko.observableArray([]);
-            self.currentProcessDates=ko.observableArray([]);
-            self.setDaySupports=ko.observableArray([]);
-            self.empTiedProYear=ko.observableArray([]);
+            // self.processInfomations=ko.observableArray([]);
+            // self.currentProcessDates=ko.observableArray([]);
+            // self.setDaySupports=ko.observableArray([]);
+            // self.empTiedProYear=ko.observableArray([]);
 
 
-            self.itemTable=new ItemTable(self.processInfomations,self.setDaySupports,self.currentProcessDates,self.empTiedProYear);
+            // let param1={
+            //     processCateNo: 1,
+            //     processDivisionName: 'a',
+            //     deprecatCate: 1
+            // }
+
+
+            // self.processInfomations.push(new model.ProcessInfomation(param3));
+            // self.processInfomations.push(new model.ProcessInfomation(param4));
+
+
+
+
+
             self.itemBinding=ko.observableArray([]);
+
+            var sizetalbe=self.itemTable.processInfomations().length;
+            for(let i:number=sizetalbe;i<5;i++){
+                self.itemTable.processInfomations.push(new model.ProcessInfomation({
+                        processCateNo: i+1,
+                        processDivisionName: '',
+                        deprecatCate: 0
+                    }
+                ));
+            }
+
             for(let i:number=0;i<5;i++){
                 self.itemBinding.push(new ItemBinding(
                     self.itemTable.processInfomations()[i],
@@ -45,8 +69,13 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     }),
                     self.itemTable.currentProcessDates()[i],
                     self.itemTable.empTiedProYear()[i])
-                )
-            }
+                );
+
+            };
+
+
+
+
 
 
 
@@ -68,20 +97,20 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     }
 
     export class ItemBinding{
-        processInfomations:model.ProcessInfomation;
+        processInfomation:model.ProcessInfomation;
         setDaySupports:Array<model.SetDaySupport>;
-        currentProcessDates:model.CurrentProcessDate;
+        currentProcessDate:model.CurrentProcessDate;
         empTiedProYear:model.EmpTiedProYear;
 
         constructor(
-            processInfomations:model.ProcessInfomation,
+            processInfomation:model.ProcessInfomation,
             setDaySupports:Array<model.SetDaySupport>,
-            currentProcessDates:model.CurrentProcessDate,
+            currentProcessDate:model.CurrentProcessDate,
             empTiedProYear:model.EmpTiedProYear
 
         ){
-            this.processInfomations=processInfomations;
-            this.currentProcessDates=currentProcessDates;
+            this.processInfomation=processInfomation;
+            this.currentProcessDate=currentProcessDate;
             this.setDaySupports=setDaySupports;
             this.empTiedProYear=empTiedProYear;
         }
@@ -105,7 +134,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>
 
         ){
-            this.processInfomations=ko.observableArray(processInfomations);
+            this.processInfomations=processInfomations;
             this.currentProcessDates=ko.observableArray(currentProcessDates);
             this.setDaySupports=ko.observableArray(setDaySupports);
             this.empTiedProYear=ko.observableArray(empTiedProYear);
