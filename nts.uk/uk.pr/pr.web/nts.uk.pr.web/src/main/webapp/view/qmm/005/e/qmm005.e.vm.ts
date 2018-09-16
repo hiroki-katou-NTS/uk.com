@@ -62,8 +62,8 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             let params = getShared("QMM005bParams");
             service.findReflectSystemReferenceDateInfo(params.processCateNo, params.processingYear).done(function (data) {
                 self.valPayDateSet = data;
-                var basicSetting = data.basicSetting;
-                var advancedSetting = data.advancedSetting;
+                var basicSetting = data.valPayDateSetDto.basicSetting;
+                var advancedSetting = data.valPayDateSetDto.advancedSetting;
                 let tranferModel = {
                     E1_3_0 : params.processCateNo,
                     E1_3_1 : params.processInfomation.processDivisionName,
@@ -89,6 +89,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                     E2_25_0 : basicSetting.accountingClosureDate.processMonth,
                     E2_25_1 : basicSetting.accountingClosureDate.disposalDay,
                 }
+                self.mapLabel(tranferModel);
                 dfd.resolve();
             });
             return dfd.promise();

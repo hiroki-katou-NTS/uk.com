@@ -30,7 +30,7 @@
                             <!--B2_1	処理年パネル-->
                             <div data-bind="ntsPanel:{}">
                                 <!--B2_2	処理年一覧-->
-                                <table id="single-list" data-bind="ntsGridList: {
+                                <!--<table id="single-list" data-bind="ntsGridList: {
                                         height: 350,
                                         dataSource: processingYearList,
                                         primaryKey: 'code',
@@ -39,7 +39,19 @@
                                         multiple: false,
                                         value: processingYear,
                                         rows: 10
-                                    }"></table>
+                                    }"></table>-->
+                                <table id="F4_2"
+                                       data-bind="ntsGridList: {
+													dataSource: processingYearList,
+													primaryKey: 'code',
+													columns: [
+																{headerText: '#{i18n.getText('CMF002_60')}', key: 'code', width: 50, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_61')}', key: 'name', width: 170, formatter: _.escape}
+								                			],
+													value: processingYear,
+													multiple: false,
+													rows: 10
+												}"></table>
                             </div>
                         </div>
                     </td>

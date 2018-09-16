@@ -179,8 +179,8 @@ public class QpbmtValPayDateSet extends UkJpaEntity implements Serializable {
 
 	public ValPayDateSet toDomain() {
 		return new ValPayDateSet(valPayDateSetPk.cid, valPayDateSetPk.processCateNo, processMonth, disposalDay,
-				refeMonth, refeDate, datePayMent, workDay, printingMonth, socialInsuColleMonth, sociInsuRefeDate,
-				sociInsuBaseMonth, incomeRefeDate, incomeBaseYear, incomeBaseMonth, sociInsuBaseMonth, sociInsuBaseYear,
+				refeMonth, refeDate, datePayMent, workDay, printingMonth, socialInsuColleMonth, incomeRefeDate,
+				incomeBaseMonth, incomeRefeDate, incomeBaseYear, empBaseMonth, sociInsuBaseMonth, sociInsuBaseYear,
 				sociInsuRefeDate, timeCloseDate, closeDateBaseMonth, closeDateBaseYear, closeDateRefeDate);
 	}
 

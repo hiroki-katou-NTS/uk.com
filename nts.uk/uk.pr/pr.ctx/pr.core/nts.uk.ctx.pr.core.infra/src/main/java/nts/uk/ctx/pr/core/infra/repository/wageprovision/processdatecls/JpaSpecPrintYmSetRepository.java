@@ -13,7 +13,7 @@ public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPr
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecPrintYmSet f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specPrintYmSetPk.cid =:cid AND  f.specPrintYmSetPk.processCateNo =:processCateNo ";
-    private static final String SELECT_BY_KEY_AND_YEAR_STRING = SELECT_BY_KEY_STRING + " AND  f.specPrintYmSetPk.processDate LIKE :year ORDER BY f.specPrintYmSetPk.processDate ASC";
+    private static final String SELECT_BY_KEY_AND_YEAR_STRING = SELECT_BY_KEY_STRING + " AND  f.specPrintYmSetPk.processDate LIKE CONCAT(:year, '%') ORDER BY f.specPrintYmSetPk.processDate ASC";
 
     @Override
     public List<SpecPrintYmSet> getAllSpecPrintYmSet() {
@@ -34,7 +34,7 @@ public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPr
         return this.queryProxy().query(SELECT_BY_KEY_AND_YEAR_STRING, QpbmtSpecPrintYmSet.class)
                 .setParameter("cid", cid)
                 .setParameter("processCateNo", processCateNo)
-                .setParameter("year", year + "%")
+                .setParameter("year", year + "")
                 .getList(QpbmtSpecPrintYmSet::toDomain);
     }
 

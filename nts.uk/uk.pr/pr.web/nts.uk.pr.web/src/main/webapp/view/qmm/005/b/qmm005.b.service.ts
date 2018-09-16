@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm005.b.service {
     var paths = {
         getProcessInfomation: "ctx/pr/core/wageprovision/processdatecls/getProcessInfomation/{0}",
         getSetDaySupport: "ctx/pr/core/wageprovision/processdatecls/getSetDaySupport/{0}",
-        getSelectProcessingYear: "ctx/pr/core/wageprovision/processdatecls/getSelectProcessingYear/{0}",
+        getSelectProcessingYear: "ctx/pr/core/wageprovision/processdatecls/getSelectProcessingYear/{0}/{1}",
         getValPayDateSet: "ctx/pr/core/wageprovision/processdatecls/getValPayDateSet/{0}",
         processingYear: "ctx/pr/core/wageprovision/processdatecls/processingYear/{0}/{1}",
         addDomainModel: "ctx/pr/core/wageprovision/processdatecls/addDomainModel",

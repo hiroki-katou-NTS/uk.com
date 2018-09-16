@@ -13,7 +13,7 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSetDaySupport f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.setDaySupportPk.cid =:cid AND  f.setDaySupportPk.processCateNo =:processCateNo ";
-    private static final String SELECT_BY_KEY_AND_YEAR_STRING = SELECT_BY_KEY_STRING + " AND  f.setDaySupportPk.processDate LIKE :year ORDER BY f.setDaySupportPk.processDate ASC";
+    private static final String SELECT_BY_KEY_AND_YEAR_STRING = SELECT_BY_KEY_STRING + " AND  f.setDaySupportPk.processDate LIKE CONCAT(:year, '%') ORDER BY f.setDaySupportPk.processDate ASC";
 
     @Override
     public List<SetDaySupport> getAllSetDaySupport() {
@@ -34,7 +34,7 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
         return this.queryProxy().query(SELECT_BY_KEY_AND_YEAR_STRING, QpbmtSetDaySupport.class)
                 .setParameter("cid", cid)
                 .setParameter("processCateNo", processCateNo)
-                .setParameter("year", year + "%")
+                .setParameter("year", year + "")
                 .getList(c -> c.toDomain());
     }
 
