@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,43 +31,47 @@ public class InitialDisplayRegisterProcessingFinder {
 	private CurrProcessDateRepository finderCurrProcessDate;
 	@Inject
 	private EmpTiedProYearRepository finderEmpTiedProYear;
-	/*
-	 * @Inject private EmploymentRepository finderEmployment;
-	 */
 	@Inject
 	private SysEmploymentAdapter syEmploymentAdapter;
 
 	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing() {
 		String cid = AppContexts.user().companyId();
 		List<ProcessInformation> optProcessInformation = finderProcessInformation.getProcessInformationByCid(cid);
+
+		List<SetDaySupportDto> setDaySupportDto = new ArrayList<SetDaySupportDto>();
+		List<ProcessInformationDto> informationDto = new ArrayList<ProcessInformationDto>();
+		List<CurrProcessDateDto> currProcessDateDto = new ArrayList<CurrProcessDateDto>();
+		List<EmpCdNameImport> employeeList = syEmploymentAdapter.findAll(cid);
+
+		List<EmpTiedProYearDto> empTiedProYearDto = new ArrayList<EmpTiedProYearDto>();
+
 		if (!optProcessInformation.isEmpty()) {
-			for (int i = 1; i < optProcessInformation.size() + 1; i++) {
+			for (int i = 0; i < optProcessInformation.size(); i++) {
 				int processCateNo = optProcessInformation.get(i).getProcessCateNo();
 				List<SetDaySupport> optSetDaySupport = finderSetDaySupport.getSetDaySupportById(cid, processCateNo);
 				List<CurrProcessDate> optCurrProcessDate = finderCurrProcessDate.getCurrProcessDateById(cid,
 						processCateNo);
 				Optional<EmpTiedProYear> optEmpTiedProYear = finderEmpTiedProYear.getEmpTiedProYearById(cid,
 						processCateNo);
-				// TODO //ドメインモデル「雇用」を取得する
-				List<EmpCdNameImport> employeeList = syEmploymentAdapter.findAll(cid);
 
-				List<ProcessInformationDto> informationDto = optProcessInformation.stream()
-						.map(item -> ProcessInformationDto.fromDomain(item)).collect(Collectors.toList());
-				List<SetDaySupportDto> setDaySupportDto = optSetDaySupport.stream()
-						.map(item -> SetDaySupportDto.fromDomain(item)).collect(Collectors.toList());
+				informationDto = optProcessInformation.stream().map(item -> ProcessInformationDto.fromDomain(item))
+						.collect(Collectors.toList());
 
-				List<CurrProcessDateDto> currProcessDateDto = optCurrProcessDate.stream()
-						.map(item -> CurrProcessDateDto.fromDomain(item)).collect(Collectors.toList());
-				EmpTiedProYearDto empTiedProYearDto = optEmpTiedProYear
+				setDaySupportDto.addAll(optSetDaySupport.stream().map(item -> SetDaySupportDto.fromDomain(item))
+						.collect(Collectors.toList()));
+
+				currProcessDateDto.addAll(optCurrProcessDate.stream().map(item -> CurrProcessDateDto.fromDomain(item))
+						.collect(Collectors.toList()));
+
+				empTiedProYearDto.add(optEmpTiedProYear
 						.map(x -> new EmpTiedProYearDto(x.getCid(), x.getProcessCateNo(),
 								x.getEmploymentCodes().stream().map(item -> item.v()).collect(Collectors.toList())))
-						.orElse(null);
-
-				InitialDisplayRegisterProcessingDto returnData = new InitialDisplayRegisterProcessingDto(informationDto,
-						setDaySupportDto, currProcessDateDto, empTiedProYearDto, employeeList);
-
-				return returnData;
+						.orElse(null));
 			}
+
+			InitialDisplayRegisterProcessingDto returnData = new InitialDisplayRegisterProcessingDto(informationDto,
+					setDaySupportDto, currProcessDateDto, empTiedProYearDto, employeeList);
+			return returnData;
 		}
 
 		return null;

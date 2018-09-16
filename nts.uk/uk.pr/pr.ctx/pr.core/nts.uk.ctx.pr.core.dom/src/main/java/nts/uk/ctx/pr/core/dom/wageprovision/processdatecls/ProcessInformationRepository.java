@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 処理区分基本情報

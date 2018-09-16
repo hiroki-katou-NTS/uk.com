@@ -16,7 +16,7 @@ public class InitialDisplayRegisterProcessingDto {
 
 	private List<CurrProcessDateDto> currProcessDateDto;
 
-	private EmpTiedProYearDto empTiedProYearDto;
+	private List<EmpTiedProYearDto> empTiedProYearDto;
 	
 	private List<EmpCdNameImport> empCdNameImports;
 }
