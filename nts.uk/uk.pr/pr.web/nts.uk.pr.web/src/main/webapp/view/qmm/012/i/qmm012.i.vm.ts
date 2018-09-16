@@ -4,18 +4,20 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
-    import alertError = nts.uk.ui.dialog.alertError;
     import dialog = nts.uk.ui.dialog;
+    import model = nts.uk.pr.view.qmm012.share.model;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
 
-        lstBreakdownItemSet: KnockoutObservableArray<IBreakdownItemSet> = ko.observableArray([]);
+        lstBreakdownItemSet: KnockoutObservableArray<model.IBreakdownItemSet> = ko.observableArray([]);
         currentCode: KnockoutObservable<string> = ko.observable('');
-        currentBreakdownItemSet: KnockoutObservable<IBreakdownItemSet> = ko.observable(new BreakdownItemSet(null));
+        currentBreakdownItemSet: KnockoutObservable<model.BreakdownItemSet> = ko.observable(null);
 
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
         salaryItemId: KnockoutObservable<string> = ko.observable('salary1');
-        requiredCode: KnockoutObservable<boolean> = ko.observable(true);
+        enableCode: KnockoutObservable<boolean> = ko.observable(true);
         bindAtr: KnockoutObservable<string> = ko.observable('bindAtr');
 
         breakdownItemCode: KnockoutObservable<string> = ko.observable('');
@@ -28,14 +30,18 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 let itemModel = _.find(self.lstBreakdownItemSet(), function(x) { return x.breakdownItemCode == item });
                 self.breakdownItemCode(itemModel.breakdownItemCode);
                 self.breakdownItemName(itemModel.breakdownItemName);
-                self.isNewMode(true);
+                self.isNewMode(false);
+                self.enableCode(true);
+                $("#breakdownItemName").focus();
+                nts.uk.ui.errors.clearAll();
             });
             block.invisible();
-            service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<IBreakdownItemSet>) {
-                if (data) {
+            service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<model.IBreakdownItemSet>) {
+                if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["breakdownItemCode"]);
                     self.lstBreakdownItemSet(dataSort);
                     self.currentCode(self.lstBreakdownItemSet()[0].breakdownItemCode);
+                    self.isNewMode(false);
                 }
                 else {
                     //new mode
@@ -43,7 +49,7 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 }
                 dfd.resolve(self);
             }).fail(function(error) {
-                alertError({ messageId: res.messageId });
+                alertError(error);
                 dfd.reject();
             }).always(() => {
                 block.clear();
@@ -56,36 +62,36 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.breakdownItemCode('');
             self.breakdownItemName('');
-            self.isNewMode(false);
+            self.isNewMode(true);
+            self.enableCode(false);
             $("#breakdownItemCode").focus();
         }
 
         saveItemSet() {
             let self = this;
-            let data: BreakdownItemSet = {
-                salaryItemId: self.salaryItemId(), 
-                breakdownItemCode: self.breakdownItemCode(), 
-                breakdownItemName: self.breakdownItemName()};
+            let data = {
+                salaryItemId: self.salaryItemId(),
+                breakdownItemCode: self.breakdownItemCode(),
+                breakdownItemName: self.breakdownItemName()
+            };
             $("#breakdownItemCode").trigger("validate");
             $("#breakdownItemName").trigger("validate");
             if (errors.hasError() === false) {
                 block.invisible();
                 if (self.isNewMode()) {
-                    // create new holiday
+                    // create 
                     service.addBreakdownItemSet(ko.toJS(data)).done(() => {
                         self.getAllData(data.breakdownItemCode).done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.setFocus();
+                                $("#breakdownItemCode").focus();
+                                self.isNewMode(false);
+                                self.currentCode(data.breakdownItemCode);
                             });
                         });
                     }).fail(function(error) {
-                            error.messageId == 'Msg_3') 
-                            $('#breakdownItemCode').ntsError('set', error);
-                            $('#breakdownItemName').focus();
-                            dialog.alertError({ messageId: error.messageId });
-                        
+                        alertError(error);
                     }).always(function() {
-                        self.setFocus();
+                        $("#breakdownItemCode").focus();
                         block.clear();
                     });
                 } else {
@@ -93,17 +99,14 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                     service.updateBreakdownItemSet(ko.toJS(data)).done(() => {
                         self.getAllData(data.breakdownItemCode).done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.setFocus();
+                                self.isNewMode(false);
+                                self.currentCode(data.breakdownItemCode);
                             });
                         });
                     }).fail(function(error) {
-                        if (error.messageId == 'Msg_880') {
-                            dialog.alertError({ messageId: error.messageId });
-                        } else {
-                            dialog.alertError({ messageId: error.messageId });
-                        }
+                        alertError(error);
                     }).always(function() {
-                        self.setFocus();
+                        $("#breakdownItemCode").focus();
                         block.clear();
                     });
                 }
@@ -111,27 +114,27 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         }
 
         deleteItemSet() {
-            let self = this,
-                lstBreakdownItemSet = self.lstBreakdownItemSet,
-                currentBreakdownItemSet: BreakdownItemSet = self.currentBreakdownItemSet();
+            let self = this;
+            let data = {
+                salaryItemId: self.salaryItemId(),
+                breakdownItemCode: self.breakdownItemCode(),
+                breakdownItemName: self.breakdownItemName()
+            };
             block.invisible();
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                if (currentBreakdownItemSet.breakdownItemCode()) {
-                    let index: number = _.findIndex(lstBreakdownItemSet(), function(x)
-                    { return x.cd() == currentBreakdownItemSet.breakdownItemCode() });
-                    service.removeBreakdownItemSet(ko.toJS(currentBreakdownItemSet)).done(function() {
-                        self.getAllData(self.currentCode()).done(() => {
+                if (data.breakdownItemCode) {
+                    let index: number = _.findIndex(self.lstBreakdownItemSet(), function(x)
+                    { return x.breakdownItemCode == data.breakdownItemCode });
+                    service.removeBreakdownItemSet(ko.toJS(data)).done(function() {
+                        self.getAllData().done(() => {
                             dialog.info({ messageId: "Msg_16" }).then(() => {
                                 if (self.lstBreakdownItemSet().length == 0) {
-                                    self.currentCode('');
-                                    self.isNewMode(true);
-                                    self.setFocus();
-                                    nts.uk.ui.errors.clearAll();
+                                    self.createItemSet();
                                 } else {
                                     if (index == self.lstBreakdownItemSet().length) {
-                                        self.currentCode(self.lstBreakdownItemSet()[index - 1].breakdownItemCode());
+                                        self.currentCode(self.lstBreakdownItemSet()[index - 1].breakdownItemCode);
                                     } else {
-                                        self.currentCode(self.lstBreakdownItemSet()[index].breakdownItemCode());
+                                        self.currentCode(self.lstBreakdownItemSet()[index].breakdownItemCode);
                                     }
                                 }
                             });
@@ -156,34 +159,21 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        settingCreateMode() {
-            let self = this;
-        }
-
-        setFocus() {
-            let self = this;
-            if (self.isNewMode()) {
-                $('#breakdownItemCode').focus();
-            } else {
-                $('#breakdownItemName').focus();
-            }
-        }
-
-        getAllData(breakdownItemCode: string): JQueryPromise<any> {
+        getAllData(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
             self.lstBreakdownItemSet.removeAll();
-            service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<BreakdownItemSet>) {
-                if (data) {
+            service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<model.IBreakdownItemSet>) {
+                if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["breakdownItemCode"]);
                     self.lstBreakdownItemSet(dataSort);
                     self.currentCode(self.lstBreakdownItemSet()[0].breakdownItemCode);
                 }
                 else {
                     nts.uk.ui.errors.clearAll();
-                    self.currentCode('');
-                    self.currentBreakdownItemSet(new BreakdownItemSet(null));
+                    self.breakdownItemCode('');
+                    self.breakdownItemName('');
                     self.isNewMode(true);
                 }
                 block.clear();
@@ -195,34 +185,5 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
             });
             return dfd.promise();
         }
-
-        start(): JQueryPromise<any> {
-            //block.invisible();
-            var self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
-        }
     }
-
-    /**
-     * 内訳項目設定
-     */
-    export interface IBreakdownItemSet {
-        salaryItemId: string;
-        breakdownItemCode: string;
-        breakdownItemName: string;
-    }
-    export class BreakdownItemSet {
-        salaryItemId: KnockoutObservable<string> = ko.observable('');
-        breakdownItemCode: KnockoutObservable<string> = ko.observable('');
-        breakdownItemName: KnockoutObservable<string> = ko.observable('');
-        constructor(param: IBreakdownItemSet) {
-            let self = this;
-            self.salaryItemId(param ? param.salaryItemId : '');
-            self.breakdownItemCode(param ? param.breakdownItemCode : '');
-            self.breakdownItemName(param ? param.breakdownItemName : '');
-        }
-    }
-
 }

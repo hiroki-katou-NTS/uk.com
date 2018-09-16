@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSet;
@@ -21,6 +22,10 @@ public class AddBreakdownItemSetCommandHandler extends CommandHandler<BreakdownI
 		BreakdownItemSetCommand command = context.getCommand();
 		BreakdownItemSet breakdownItemSet = new BreakdownItemSet(command.getSalaryItemId(),
 				command.getBreakdownItemCode(), command.getBreakdownItemName());
+        if(breakdownItemSetRepository.getBreakdownItemStById(
+        		command.getSalaryItemId(), command.getBreakdownItemCode()).isPresent()){
+        	throw new BusinessException("Msg_3");
+        }
 		breakdownItemSetRepository.add(breakdownItemSet);
 	}
 

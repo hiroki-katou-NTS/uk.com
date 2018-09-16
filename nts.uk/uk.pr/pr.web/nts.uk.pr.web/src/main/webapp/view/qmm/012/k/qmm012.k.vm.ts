@@ -5,8 +5,8 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
 
     export class ScreenModel {
         listTaxExemptLimit: KnockoutObservableArray<TaxExemptLimit> = ko.observableArray([]);
-        selectedTaxExemptLimit: KnockoutObservable<TaxExemptLimit> = ko.observable(new TaxExemptLimit('', '', 1));
-        currentCode: KnockoutObservable<String> = ko.observable('');
+        selectedTaxExemptLimit: KnockoutObservable<TaxExemptLimit> = ko.observable(new TaxExemptLimit(null));
+        currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
 
@@ -15,13 +15,10 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
                 self.selectedTaxExemptLimit(getTaxExemptLimit);
             });
             service.getAllTaxAmountByCompanyId().done(function(data: Array<TaxExemptLimit>) {
-                if (data) {
+                if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["taxFreeamountCode"]);
                     self.listTaxExemptLimit(dataSort);
                     self.currentCode(self.listTaxExemptLimit()[0].taxFreeamountCode);
-                }
-                else{
-                    self.listTaxExemptLimit([]);
                 }
             }).fail(function(error) {
                 alertError(error);
@@ -31,7 +28,7 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
 
         setTaxExemption() {
             let self = this;
-            if (self.selectedTaxExemptLimit().length == 0) {
+            if (self.selectedTaxExemptLimit()) {
                 setShared("QMM012_TaxExemptLimit", self.selectedTaxExemptLimit(null));
             } else {
                 setShared("QMM012_TaxExemptLimit", self.selectedTaxExemptLimit());
