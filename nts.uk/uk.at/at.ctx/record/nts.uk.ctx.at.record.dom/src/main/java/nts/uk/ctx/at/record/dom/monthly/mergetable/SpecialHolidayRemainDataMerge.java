@@ -26,5 +26,28 @@ public class SpecialHolidayRemainDataMerge {
 	SpecialHolidayRemainData specialHolidayRemainData18;
 	SpecialHolidayRemainData specialHolidayRemainData19;
 	SpecialHolidayRemainData specialHolidayRemainData20;
-
+	
+	public boolean isEmpty(){
+		if (this.specialHolidayRemainData1 != null) return false;
+		if (this.specialHolidayRemainData2 != null) return false;
+		if (this.specialHolidayRemainData3 != null) return false;
+		if (this.specialHolidayRemainData4 != null) return false;
+		if (this.specialHolidayRemainData5 != null) return false;
+		if (this.specialHolidayRemainData6 != null) return false;
+		if (this.specialHolidayRemainData7 != null) return false;
+		if (this.specialHolidayRemainData8 != null) return false;
+		if (this.specialHolidayRemainData9 != null) return false;
+		if (this.specialHolidayRemainData10 != null) return false;
+		if (this.specialHolidayRemainData11 != null) return false;
+		if (this.specialHolidayRemainData12 != null) return false;
+		if (this.specialHolidayRemainData13 != null) return false;
+		if (this.specialHolidayRemainData14 != null) return false;
+		if (this.specialHolidayRemainData15 != null) return false;
+		if (this.specialHolidayRemainData16 != null) return false;
+		if (this.specialHolidayRemainData17 != null) return false;
+		if (this.specialHolidayRemainData18 != null) return false;
+		if (this.specialHolidayRemainData19 != null) return false;
+		if (this.specialHolidayRemainData20 != null) return false;
+		return true;
+	}
 }
