@@ -43,18 +43,14 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 	@Inject
 	private SetDaySupportFinder setDaySupportFinder;
 
-	String cid = AppContexts.user().companyId();
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<ProcessingSegmentCommand> commandHandlerContext) {
-
+		String cid = AppContexts.user().companyId();
 		ProcessingSegmentCommand addCommand = commandHandlerContext.getCommand();
 
-		// System.out.println(addCommand.getValPayDateSet().getBasicSetting().toString());
-		//
-		// System.out.println(addCommand.getProcessInformation().toString());
-		//
-		// System.out.println(addCommand.getValPayDateSet().getAdvancedSetting().toString());
+		
 
 		this.processInformationRepository
 				.add(new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
@@ -90,7 +86,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 	}
 
 	public void addSpecPrintYmSet(ProcessingSegmentCommand addCommand) {
-
+		String cid = AppContexts.user().companyId();
 		int processCateNo = addCommand.getValPayDateSet().getProcessCateNo();
 		int currentYear = GeneralDate.today().year();
 
@@ -102,56 +98,20 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 		if (montOption == PreviousMonthClassification.THIS_MONTH.value) {
 			for (int i = 1; i < 25; i++) {
 
-				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(1).v(),
-						printDate.addMonths(1).v()));
+				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(i).v(),
+						printDate.addMonths(i).v()));
 			}
 		}
 		if (montOption == PreviousMonthClassification.LAST_MONTH.value) {
-			printDate.addMonths(-1);
-			this.specPrintYmSetRepository.add(
-					new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(1).v(), printDate.addMonths(1).v()));
 			for (int i = 1; i < 25; i++) {
 				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(1).v(),
-						printDate.addMonths(1).v()));
-
+						printDate.addMonths(i-1).v()));
 			}
-		}
-
-		// if (montOption == PreviousMonthClassification.THIS_MONTH.value) {
-		// for (int i = 1; i < 13; i++) {
-		// this.specPrintYmSetRepository
-		// .add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + i,
-		// currentYear * 100 + i));
-		//
-		// this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid,
-		// processCateNo, (currentYear + 1) * 100 + i,
-		// (currentYear + 1) * 100 + i));
-		//
-		// }
-		// }
-		//
-		// if (montOption == PreviousMonthClassification.LAST_MONTH.value) {
-		// this.specPrintYmSetRepository
-		// .add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + 1,
-		// (currentYear - 1) * 100 + 12));
-		// for (int i = 1; i < 12; i++) {
-		// this.specPrintYmSetRepository
-		// .add(new SpecPrintYmSet(cid, processCateNo, currentYear * 100 + 1 +
-		// i, currentYear * 100 + i));
-		// }
-		// this.specPrintYmSetRepository
-		// .add(new SpecPrintYmSet(cid, processCateNo, (currentYear + 1) * 100 +
-		// 1, (currentYear) * 100 + 12));
-		// for (int i = 1; i < 12; i++) {
-		// this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid,
-		// processCateNo,
-		// (currentYear + 1) * 100 + i + 1, (currentYear + 1) * 100 + i));
-		// }
-		//
-		// }
+		}	
 	}
 
 	public void addSetDaySupport(ProcessingSegmentCommand addCommand) {
+		String cid = AppContexts.user().companyId();
 		int currentYear = GeneralDate.today().year();
 
 		int processCateNo = addCommand.getValPayDateSet().getProcessCateNo();
@@ -187,10 +147,10 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
 		BigDecimal numberWorkDay = addCommand.getValPayDateSet().getBasicSetting().getWorkDay();
 
-		YearMonth yearMonth = new YearMonth((currentYear - 1) * 100 + 12);
+		YearMonth startMonth = new YearMonth((currentYear - 1) * 100 + 12);
 
 		for (int i = 1; i < 25; i++) {
-			yearMonth.addMonths(1);
+			YearMonth yearMonth=startMonth.addMonths(i);
 			GeneralDate empInsurdStanDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(),
 					(referDateEmploymentInsuranceStanDate == DateSelectClassification.LAST_DAY_MONTH.value)
 							? GeneralDate.today().lastDateInMonth() : referDateEmploymentInsuranceStanDate);
@@ -249,12 +209,9 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 							? GeneralDate.today().lastDateInMonth() : inComRefeDate);
 			incomeTaxDate.addYears(inComRefeYear - 1);
 
-			YearMonth processDate = new YearMonth(currentYear * 100 + 1);
-			if (i != 1) {
-				processDate.addMonths(1);
-			}
+			
 
-			this.setDaySupportRepository.add(new SetDaySupport(cid, processCateNo, processDate.v(), closeDateTime,
+			this.setDaySupportRepository.add(new SetDaySupport(cid, processCateNo, yearMonth.v(), closeDateTime,
 					empInsurdStanDate, closureDateAccounting, paymentDate, empExtraRefeDate, socialInsurdStanDate,
 					socialInsurdCollecMonth.v(), incomeTaxDate, numberWorkDay));
 		}
@@ -262,6 +219,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 	}
 
 	public void addCurrProcessDate(ProcessingSegmentCommand addCommand) {
+		String cid = AppContexts.user().companyId();
 		/*
 		 * List<SetDaySupportDto> setDaySupportDtoList =
 		 * this.setDaySupportFinder.getAllSetDaySupport(); GeneralDate
@@ -276,14 +234,14 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 		 */
 		GeneralDate currentDay = GeneralDate.today();
 		int currTreatYear = currentDay.yearMonth().v();
-		String cid = addCommand.getValPayDateSet().getCid();
+		//String cid = addCommand.getValPayDateSet().getCid();
 		int processCateNo = addCommand.getValPayDateSet().getProcessCateNo();
 		this.currProcessDateRepository.add(new CurrProcessDate(cid, processCateNo, currTreatYear));
 
 	}
 
 	public void addEmpTiedProYear(ProcessingSegmentCommand addCommand) {
-
+		String cid = AppContexts.user().companyId();
 		int processCateNo = addCommand.getValPayDateSet().getProcessCateNo();
 
 		this.empTiedProYearRepository.add(new EmpTiedProYear(cid, processCateNo, new ArrayList<EmploymentCode>()));
