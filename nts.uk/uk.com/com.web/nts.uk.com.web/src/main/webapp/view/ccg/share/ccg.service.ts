@@ -11,6 +11,7 @@ module nts.uk.com.view.ccg.share.ccg {
             getEmploymentCodeByClosureId: "ctx/at/shared/workrule/closure/findEmpByClosureId",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
+            getClosureByCurrentEmployee: "ctx/at/shared/workrule/closure/getclosurebycurrentemployee",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
             getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment",
             getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem",
@@ -78,6 +79,13 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function getClosuresByBaseDate(baseDate: string): JQueryPromise<Array<any>> {
             return nts.uk.request.ajax('at', servicePath.getClosuresByBaseDate + '/' + baseDate);
+        }
+
+        /**
+         * Get closure id by current login employee
+         */
+        export function getClosureByCurrentEmployee(baseDate: string): JQueryPromise<number> {
+            return nts.uk.request.ajax('at', servicePath.getClosureByCurrentEmployee + '/' + baseDate);
         }
         
         /**
@@ -185,9 +193,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 nameType?: number; // 氏名の種類
 
                 /** Required parameter */
-                baseDate?: string; // 基準日
-                periodStartDate?: string; // 対象期間開始日
-                periodEndDate?: string; // 対象期間終了日
+                baseDate?: any; // 基準日 KnockoutObservable<string> or string
+                periodStartDate?: any; // 対象期間開始日 KnockoutObservable<string> or string
+                periodEndDate?: any; // 対象期間終了日 KnockoutObservable<string> or string
+                dateRangePickerValue?: KnockoutObservable<any>;
                 inService: boolean; // 在職区分
                 leaveOfAbsence: boolean; // 休職区分
                 closed: boolean; // 休業区分

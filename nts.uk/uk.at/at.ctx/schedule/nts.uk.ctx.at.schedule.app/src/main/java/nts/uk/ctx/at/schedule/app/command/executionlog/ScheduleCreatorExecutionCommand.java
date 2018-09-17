@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
@@ -42,7 +44,9 @@ public class ScheduleCreatorExecutionCommand {
 
 	private List<String> employeeIds;
 	
-	
+	@Setter
+	@Getter
+	private Object companySetting;
 
 	public String getEmployeeId() {
 		return employeeId;

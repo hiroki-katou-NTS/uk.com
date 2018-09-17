@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.vacation.dayoff;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.RemainDataDaysMonth;
@@ -37,6 +41,11 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 			+ "AND a.pk.ym = :yearMonth "
 			+ "ORDER BY a.startDate ";
 	
+	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonDayoffRemain a "
+			+ "WHERE a.pk.sid IN :employeeIds "
+			+ "AND a.pk.ym IN :yearMonths "
+			+ "ORDER BY a.pk.sid, a.startDate ";
+	
 	@Override
 	public List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus(String employeeId, YearMonth ym,
 			ClosureStatus status) {
@@ -57,13 +66,33 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				EnumAdaptor.valueOf(c.closureStatus, ClosureStatus.class),
 				c.startDate,
 				c.endDate,
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.occurredDays), Optional.of(new RemainDataTimesMonth(c.occurredTimes))),
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.usedDays), Optional.of(new RemainDataTimesMonth(c.usedTimes))),
-				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.remainingDays), Optional.of(new RemainingMinutes(c.remainingTimes))),
-				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.carryforwardDays), Optional.of(new RemainingMinutes(c.carryforwardTimes))),
-				new DayOffDayAndTimes(new RemainDataDaysMonth(c.unUsedDays), Optional.of(new RemainDataTimesMonth(c.unUsedTimes))));
+				new DayOffDayAndTimes(new RemainDataDaysMonth(c.occurredDays), c.occurredTimes == null ? Optional.empty() :
+						Optional.ofNullable(new RemainDataTimesMonth(c.occurredTimes))),
+				new DayOffDayAndTimes(new RemainDataDaysMonth(c.usedDays), 
+						c.usedTimes == null ? Optional.empty() : Optional.ofNullable(new RemainDataTimesMonth(c.usedTimes))),
+				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.remainingDays), 
+						c.remainingTimes == null ? Optional.empty() : Optional.ofNullable(new RemainingMinutes(c.remainingTimes))),
+				new DayOffRemainDayAndTimes(new AttendanceDaysMonthToTal(c.carryforwardDays), 
+						c.carryforwardTimes == null ? Optional.empty() : Optional.ofNullable(new RemainingMinutes(c.carryforwardTimes))),
+				new DayOffDayAndTimes(new RemainDataDaysMonth(c.unUsedDays),
+						c.unUsedTimes == null ? Optional.empty() : Optional.ofNullable(new RemainDataTimesMonth(c.unUsedTimes))));
 	}
 
+	@Override
+	public Optional<MonthlyDayoffRemainData> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		
+		return this.queryProxy()
+				.find(new KrcdtMonDayoffRemainPK(
+						employeeId,
+						yearMonth.v(),
+						closureId.value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0)),
+						KrcdtMonDayoffRemain.class)
+				.map(c -> toDomain(c));
+	}
+	
 	@Override
 	public List<MonthlyDayoffRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 
@@ -71,6 +100,21 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<MonthlyDayoffRemainData> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
+		
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		
+		List<MonthlyDayoffRemainData> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonDayoffRemain.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
+					.getList(c -> toDomain(c)));
+		});
+		return results;
 	}
 	
 	@Override

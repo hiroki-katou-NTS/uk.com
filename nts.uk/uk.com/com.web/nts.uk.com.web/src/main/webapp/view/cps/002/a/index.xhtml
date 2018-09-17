@@ -212,8 +212,7 @@
 						<!-- step1 -->
 						<!-- step2 end -->
 						<div class="step-2">
-							<com:ko tag="let">
-							<label data-bind="text: typi == 1 ? text('CPS002_32') : typi == 2 ? text('CPS002_39') : ''"></label>
+							<div data-bind="text: typi == 1 ? text('CPS002_32') : typi == 2 ? text('CPS002_39') : ''"></div>
 							<div id="step2_content">
 								<div id="search_box" class="float_left bg-green">
 									<i class="icon icon-searchbox"></i>
@@ -295,7 +294,6 @@
 									</div>
 								</div>
 							</div>
-							</com:ko>
 						</div>
 						<!-- step2 end -->
 						<!-- step3 start -->
@@ -330,12 +328,12 @@
 							</div>
 
 							<!-- layout start -->
-							<div class="form-group" data-bind="with: layout">
+							<div class="form-group">
 								<div
 									data-bind="ntsLayoutControl: { 
-											data: listItemCls,
+											data: $vm.listItemCls,
 											editAble: 2 ,
-											outData: $parent.layoutData
+											outData: $vm.layoutData
 											}"></div>
 							</div>
 							<!-- layout end -->

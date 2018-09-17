@@ -183,7 +183,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				}
 			}
 			if (!Strings.isBlank(urlInfo)) {
-				appContent += "\n" + I18NText.getText("KDL030_30") + " " + application.getAppID() + "\n" + urlInfo;
+				appContent += "\n" + I18NText.getText("KDL030_30") + "\n" + urlInfo;
 			}
 			String mailContentToSend = I18NText.getText("Msg_1060",
 					//｛0｝氏名 - ログイン者

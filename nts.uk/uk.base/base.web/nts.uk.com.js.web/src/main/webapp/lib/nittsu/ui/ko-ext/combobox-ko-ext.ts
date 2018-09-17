@@ -97,7 +97,7 @@ module nts.uk.ui.koExtentions {
 
                     if (option) {
                         _.each(_.keys(option), k => {
-                            _template = _template.replace(`\$\{${k}\}`, option[k]);
+                            _template = _template.replace(`\$\{${k}\}`, _.escape(option[k]));
                         });
 
                         $show.html(_template);
@@ -117,7 +117,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         // show text
                         if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
-                            $show.html($('<div>', { 'class': 'nts-combo-column', text: ko.toJS(accessor.nullText), css: { 'line-height': '27px' } }));
+                            $show.html($('<div>', { 'class': 'nts-combo-column', text: _.escape(ko.toJS(accessor.nullText)), css: { 'line-height': '27px' } }));
                         } else {
                             $show.empty();
                         }
@@ -245,10 +245,12 @@ module nts.uk.ui.koExtentions {
                         }
                     },
                     dropDownClosed: (evt, ui) => {
+                        let data = $element.data(DATA);
+                        
                         // check flag changed for validate
                         $element.trigger(CHANGED, [CHANGED, true]);
 
-                        setTimeout(() => {
+                        let sto = setTimeout(() => {
                             let data = $element.data(DATA);
 
                             // select first if !select and !editable
@@ -264,9 +266,14 @@ module nts.uk.ui.koExtentions {
                             // validate if required
                             $element
                                 .trigger(VALIDATE, [true])
-                                .trigger(SHOWVALUE)
-                                .focus();
+                                .trigger(SHOWVALUE);
+
+                            clearTimeout(sto);
                         }, 10);
+
+                        if (data[ENABLE] && !$(":focus").length) {
+                            $element.focus();
+                        }
                     },
                     dropDownOpening: (evt, ui) => {
                         let data = $element.data(DATA),
@@ -324,10 +331,12 @@ module nts.uk.ui.koExtentions {
                             .find('.nts-column:last-child')
                             .css('margin-right', 0);
 
-                        setTimeout(() => {
+                        let sto = setTimeout(() => {
                             $input.css({
                                 'width': ($(ui.list).width() - 6) + 'px'
                             });
+
+                            clearTimeout(sto);
                         }, 25);
                     }
                 })
@@ -464,9 +473,14 @@ module nts.uk.ui.koExtentions {
                     $element.igCombo(OPTION, "dataSource", options);
                 }
 
+                let sto = setTimeout(() => {
+                    $element
+                        // enable or disable 
+                        .igCombo(OPTION, "disabled", !enable)
+                    clearTimeout(sto);
+                }, 100);
+
                 $element
-                    // enable or disable 
-                    .igCombo(OPTION, "disabled", !enable)
                     // set new value
                     .igCombo("value", value);
 

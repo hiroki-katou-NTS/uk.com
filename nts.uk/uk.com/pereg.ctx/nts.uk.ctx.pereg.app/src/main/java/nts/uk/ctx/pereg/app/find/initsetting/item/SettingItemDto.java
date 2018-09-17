@@ -83,7 +83,7 @@ public class SettingItemDto {
 			return new SaveDataDto(SaveDataType.STRING, null);
 		}
 
-		if (value.getClass().equals(Integer.class)) {
+		if (value.getClass().equals(Integer.class) || value.getClass().equals(BigDecimal.class)|| value.getClass().equals(Double.class)) {
 			return new SaveDataDto(SaveDataType.NUMBERIC, value);
 		}
 		if (value.getClass().equals(String.class)) {
@@ -93,7 +93,6 @@ public class SettingItemDto {
 		if (value.getClass().equals(GeneralDate.class)) {
 			return new SaveDataDto(SaveDataType.DATE, value);
 		}
-		
 		return new SaveDataDto(SaveDataType.STRING, null);
 
 	}

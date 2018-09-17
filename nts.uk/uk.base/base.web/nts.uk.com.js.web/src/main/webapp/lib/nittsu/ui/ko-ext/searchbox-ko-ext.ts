@@ -130,6 +130,12 @@ module nts.uk.ui.koExtentions {
         }
     }
     
+    export interface SelectionChangingData {
+        selected: Array<any>;
+        searchMode: string;
+        options?: Array<any>;
+    }
+    
     class NtsSearchBoxBindingHandler implements KnockoutBindingHandler {
         /**
          * Init.
@@ -244,6 +250,8 @@ module nts.uk.ui.koExtentions {
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
                     
+                    component.trigger("searchfinishing", { selected: selectedProperties, searchMode: searchMode, options: result.options })
+                    
                     if (targetMode === 'igGrid') {  
                         component.ntsGridList("setSelected", selectedProperties);
                         if(searchMode === "filter"){
@@ -251,14 +259,15 @@ module nts.uk.ui.koExtentions {
                             component.attr("filtered", "true");   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
-                            let source = _.filter(data.items(), function (item: any){
-                                             return _.find(result.options, function (itemFilterd: any){
-                                            return itemFilterd[primaryKey] === item[primaryKey];        
-                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
-                                             return oldItem[primaryKey] === item[primaryKey];        
-                                            }) === undefined;            
-                            });
-                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+//                            let source = _.filter(data.items(), function (item: any){
+//                                             return _.find(result.options, function (itemFilterd: any){
+//                                            return itemFilterd[primaryKey] === item[primaryKey];        
+//                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+//                                             return oldItem[primaryKey] === item[primaryKey];        
+//                                            }) === undefined;            
+//                            });
+//                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+                            component.igGrid("option", "dataSource", _.cloneDeep(result.options));
                             component.igGrid("dataBind");  
                             
 //                            if(_.isEmpty(selectedProperties)){

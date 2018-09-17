@@ -176,9 +176,18 @@ module nts.uk.ui {
                             my: 'left top',
                             at: 'left bottom',
                             of: $label,
-                            collision: 'flip'
+                            collision: 'flipfit'
                         });
 
+                    if ($label.attr("disabled")) {
+                        let id = "#" + $label.attr("id");
+                        $(document).on('mouseleave.limitedlabel', id, () => {
+                            $(document).off('mouseleave.limitedlabel', id);
+                            $view.remove();
+                        });
+                        return;
+                    }
+                    
                     $label.bind('mouseleave.limitedlabel', () => {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();

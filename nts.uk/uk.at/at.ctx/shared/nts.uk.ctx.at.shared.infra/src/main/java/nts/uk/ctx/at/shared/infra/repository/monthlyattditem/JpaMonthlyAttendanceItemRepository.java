@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,10 +18,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK_;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem_;
 
@@ -111,7 +115,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 	@Override
 	public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
 		StringBuilder builderString = new StringBuilder();	
-		if(attendanceItemIds.isEmpty())
+		if(CollectionUtil.isEmpty(attendanceItemIds))
 			return Collections.emptyList();
 		builderString.append("SELECT b");
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
@@ -121,6 +125,34 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("attendanceItemIds", attendanceItemIds)
 				.setParameter("companyId", companyId)
 				.getList(f -> toDomain(f));
+	}
+	
+	
+	@Override
+	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds, 
+			List<Integer> itemAtrs) {
+		StringBuilder builderString = new StringBuilder();	
+		builderString.append("SELECT b");
+		builderString.append(" FROM KrcmtMonAttendanceItem b");
+		builderString.append(" WHERE");
+		builderString.append(" b.krcmtMonAttendanceItemPK.cid = :companyId");
+		if (!CollectionUtil.isEmpty(attendanceItemIds)) {
+			builderString.append(" AND b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
+		}
+		if (!CollectionUtil.isEmpty(itemAtrs)) {
+			builderString.append(" AND b.mAtdItemAtr IN :itemAtrs");
+		}
+		
+		TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class);
+		query.setParameter("companyId", companyId);
+		if (!CollectionUtil.isEmpty(attendanceItemIds)) {
+			query.setParameter("attendanceItemIds", attendanceItemIds);
+		}
+		
+		if (!CollectionUtil.isEmpty(itemAtrs)) {
+			query.setParameter("itemAtrs", itemAtrs);
+		}
+		return query.getList(f -> toDomain(f));
 	}
 
 	@Override
@@ -183,5 +215,22 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("listAttdID", listAttdID)
 				.setParameter("companyId", companyId)
 				.getList(f -> toDomain(f));
+	}
+
+	@Override
+	public Optional<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, int attendanceItemId) {
+		Optional<KrcmtMonAttendanceItem> entity = this.queryProxy()
+				.find(new KrcmtMonAttendanceItemPK(companyId, attendanceItemId), KrcmtMonAttendanceItem.class);
+		if (entity.isPresent()) {
+			return Optional.of(toDomain(entity.get()));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void update(MonthlyAttendanceItem domain) {
+		KrcmtMonAttendanceItem entity = new KrcmtMonAttendanceItem(domain);
+		this.commandProxy().update(entity);
 	}
 }

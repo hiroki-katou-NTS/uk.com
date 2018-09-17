@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmf004.d.viewmodel {
+    import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
         grantDates: KnockoutObservableArray<GrantDateTbl>;
         lstGrantDate: KnockoutObservableArray<GrantDateItem>;
@@ -170,9 +171,9 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     var item : IItem = {
                         grantDateCode: data[0].grantDateCode,
                         elapseNo: j + 1,
-                        months: "",
-                        years: "",
-                        grantedDays: ""
+                        months: null,
+                        years: null,
+                        grantedDays: null
                     };
                     
                     self.items.push(new Item(item));    
@@ -182,9 +183,9 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     var item : IItem = {
                         grantDateCode: self.grantDateCode(),
                         elapseNo: i + 1,
-                        months: "",
-                        years: "",
-                        grantedDays: ""
+                        months: null,
+                        years: null,
+                        grantedDays: null
                     };
                     
                     self.items.push(new Item(item));
@@ -221,12 +222,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             
             if(elapseData.length > 0) {
                 var evens = _.remove(elapseData, function(item) {
-                    return item.months === "" && item.years === "" && item.grantedDays === "";
+                    return isNullOrEmpty(item.months) && isNullOrEmpty(item.years) && isNullOrEmpty(item.grantedDays);
                 });
             }
             
             _.forEach(elapseData, function(item) {
-                if(item.grantedDays === "" && (item.months !== "" || item.months !== "")) {
+                if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
                     nts.uk.ui.block.clear();
                     checkErr = true;
@@ -320,7 +321,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         remove() {
             let self = this;
             
-            nts.uk.ui.block.invisible();
             
             let count = 0;
             for (let i = 0; i <= self.lstGrantDate().length; i++){
@@ -372,9 +372,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     }).always(function() {
                         nts.uk.ui.block.clear();      
                     });
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();      
-                });
+                })
             }
         } 
         

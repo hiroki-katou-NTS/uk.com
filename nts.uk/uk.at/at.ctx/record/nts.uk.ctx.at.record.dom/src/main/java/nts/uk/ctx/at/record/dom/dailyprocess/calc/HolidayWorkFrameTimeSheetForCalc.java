@@ -112,7 +112,13 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 
 		//時間帯跨いだ控除時間帯分割
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
+		dedTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.HolidayWork, DeductionAtr.Deduction, commonSetting);
+		});
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Appropriate);
+		recordTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.HolidayWork, DeductionAtr.Appropriate, commonSetting);
+		});
 		//控除時間帯を保持させる(継承先に)
 		//控除の丸め
 		//休出枠No
@@ -155,7 +161,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 			holidayWorkTime = new AttendanceTime(0);
 		}
 		else {
-			holidayWorkTime = this.calcTotalTime();
+			holidayWorkTime = this.calcTotalTime(DeductionAtr.Deduction);
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
@@ -175,7 +181,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		//一旦、打刻から計算する場合　を入れとく
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		
-		AttendanceTime calcTime = this.afterMinusDeductionTime(dedAtr);
+		AttendanceTime calcTime = this.calcTotalTime(dedAtr);
 		
 		if(!forceAtr.isCalculateEmbossing()) {
 			calcTime = new AttendanceTime(0);

@@ -157,6 +157,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ " WHERE c.pk.companyId = :companyId"
 			+ " AND c.pk.absFameNo = :absFameNo";
 	
+	private String QUERY_BY_SPECLEAVE = "SELECT c FROM KshstSphdSpecLeave c"
+			+ " WHERE c.pk.companyId = :companyId"
+			+ " AND c.pk.sphdNo = :sphdNo";
+	
 	private SpecialHoliday createDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
 		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
@@ -191,7 +195,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 		GrantRegular grantRegular = GrantRegular.createFromJavaType(companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
 		
-		DatePeriod availabilityPeriod = new DatePeriod(startDate != null ? startDate : GeneralDate.min(), endDate != null ? endDate : GeneralDate.min());
+		DatePeriod availabilityPeriod = new DatePeriod(startDate, endDate);
 		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
 		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, timeMethod, availabilityPeriod, expirationDate, limitCarryoverDays);
 		
@@ -543,5 +547,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		String companyId = String.valueOf(c[0]);
 		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
 		 return this.findBySingleCD(companyId, specialHolidayCode).get();
+	}
+
+	@Override
+	public List<Integer> findBySphdSpecLeave(String cid, int sphdSpecLeaveNo) {
+		return this.queryProxy().query(QUERY_BY_SPECLEAVE, KshstSphdSpecLeave.class)
+				.setParameter("companyId", cid)
+				.setParameter("sphdNo", sphdSpecLeaveNo)
+				.getList().stream()
+				.map(c -> {
+					return c.pk.specialHolidayCode;
+				}).collect(Collectors.toList());
 	}
 }

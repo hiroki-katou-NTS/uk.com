@@ -66,19 +66,19 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: 2, name: "残業申請（早出・通常）" },
             { code: 3, name: "休暇申請" },
             { code: 4, name: "勤務変更申請" },
-            { code: 5, name: "出張申請" },
+//            { code: 5, name: "出張申請" },
             { code: 6, name: "直行直帰申請" },
             { code: 7, name: "休出時間申請" },
-            { code: 8, name: "打刻申請（外出許可）" },
-            { code: 9, name: "打刻申請（出退勤漏れ）" },
-            { code: 10, name: "打刻申請（打刻取消）" },
-            { code: 11, name: "打刻申請（レコーダイメージ）" },
-            { code: 12, name: "打刻申請（その他）" },
-            { code: 13, name: "時間年休申請" },
-            { code: 14, name: "遅刻早退取消申請" },
+//            { code: 8, name: "打刻申請（外出許可）" },
+//            { code: 9, name: "打刻申請（出退勤漏れ）" },
+//            { code: 10, name: "打刻申請（打刻取消）" },
+//            { code: 11, name: "打刻申請（レコーダイメージ）" },
+//            { code: 12, name: "打刻申請（その他）" },
+//            { code: 13, name: "時間年休申請" },
+//            { code: 14, name: "遅刻早退取消申請" },
             { code: 15, name: "振休振出申請" },
-            { code: 16, name: "連続出張申請" },
-            { code: 17, name: "３６協定時間申請" }
+//            { code: 16, name: "連続出張申請" },
+//            { code: 17, name: "３６協定時間申請" }
         ]);
         appTypeGridlistColumns = ko.observableArray([
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -369,6 +369,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         update() {
             let self = this;
+            
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 var data = ko.mapping.toJS(self.selectedErrorAlarm());
@@ -402,6 +403,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 });
                 ko.utils.extend(data, {newMode: self.isNewMode() ? 1 : 0});
                 if (self.screenMode() == ScreenMode.Daily) {
+                    nts.uk.ui.block.invisible();
                     service.update(data).done(() => {
                         self.codeToSelect(data.code);
                         if (data.fixedAtr == 1)
@@ -424,7 +426,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                             $("#errorAlarmWorkRecordCode").focus();
                         });
                     });
+                    nts.uk.ui.block.clear();
                 } else if (self.screenMode() == ScreenMode.Monthly) {
+                    nts.uk.ui.block.invisible();
                     service.updateMonthlyCondition(data).done(() => {
                         self.codeToSelect(data.code);
                         service.getAllMonthlyCondition().done((lstData: Array<any>) => {
@@ -457,6 +461,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                             $("#errorAlarmWorkRecordCode").focus();
                         });
                     });
+                    nts.uk.ui.block.clear();
                 }
             }
 

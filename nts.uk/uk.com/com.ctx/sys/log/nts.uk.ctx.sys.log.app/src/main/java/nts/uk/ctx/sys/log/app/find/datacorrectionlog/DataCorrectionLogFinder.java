@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
@@ -40,7 +41,13 @@ public class DataCorrectionLogFinder {
 		List<DataCorrectionLogDto> result = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		List<DataCorrectionLog> listCorrectionLog = new ArrayList<>();
-		if (params.getStartYmd() != null && params.getEndYmd() != null) {
+		if (params.getStartYmd() != null && params.getEndYmd() != null && params.getStartYm() != null
+				&& params.getEndYm() != null) {
+			// ※この分岐は月別修正から呼び出し時のみ - ※ This branch only from the monthly correction to calling
+			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
+					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()),
+					new YearMonthPeriod(new YearMonth(params.getStartYm()), new YearMonth(params.getEndYm())));
+		} else if (params.getStartYmd() != null && params.getEndYmd() != null) {
 			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
 					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()));
 		} else if (params.getStartYm() != null && params.getEndYm() != null) {
@@ -70,14 +77,14 @@ public class DataCorrectionLogFinder {
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getEmployeeId)
 					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
-					.thenComparing(DataCorrectionLogDto::getModifiedDateTime)
+					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		} else { // by individual
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeId)
 					.thenComparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
-					.thenComparing(DataCorrectionLogDto::getModifiedDateTime)
+					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		}

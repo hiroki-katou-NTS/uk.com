@@ -28,6 +28,9 @@ module nts.uk.at.view.kbt002.b {
             monthDaysList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
 
             settingEnum: ExecItemEnumDto;
+            
+            //list GetAlarmByUser
+            listGetAlarmByUser :  KnockoutObservableArray<any> = ko.observableArray([]);
 
             //targetGroupClass: KnockoutObservableArray<any>;
             constructor() {
@@ -67,6 +70,17 @@ module nts.uk.at.view.kbt002.b {
             start() {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                let dfdGetEnumDataList = self.getEnumDataList();
+                let dfdGetAlarmByUser= self.getAlarmByUser();
+                $.when(dfdGetEnumDataList,dfdGetAlarmByUser).done((dfdGetEnumDataListData,dfdGetAlarmByUserData) => {
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            getEnumDataList(){
+                let self = this;
+                let dfd = $.Deferred<void>();
                 service.getEnumDataList().done(function(setting) {
                     self.settingEnum = setting;
                     self.targetMonthList(setting.targetMonth);
@@ -87,6 +101,19 @@ module nts.uk.at.view.kbt002.b {
                 });
 
                 // set ntsFixedTable style
+                return dfd.promise();
+            }
+            
+            getAlarmByUser(){
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.getAlarmByUser().done(function(data) {
+                        self.listGetAlarmByUser(data);
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        dfd.reject();
+                        nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+                    });
                 return dfd.promise();
             }
 
@@ -110,8 +137,8 @@ module nts.uk.at.view.kbt002.b {
                     return;
                 }
 
-                if((execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" });
+                if((self.currentExecItem().execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" }); 
                 } else {
                     // get JsObject
                     //                let command: any = ko.toJS(self.currentExecItem);
@@ -364,67 +391,67 @@ module nts.uk.at.view.kbt002.b {
                     command.companyId = self.currentExecItem().companyId();
                     command.execItemCd = self.currentExecItem().execItemCd();
                     command.execItemName = self.currentExecItem().execItemName();
-                    command.perScheduleCls = self.currentExecItem().perScheduleCls();
+                    command.perScheduleCls = self.currentExecItem().perScheduleClsNomarl();
+                     if(self.currentExecItem().perScheduleCls()==false){
+                        command.targetDate = 1;                        
+                        command.creationPeriod = 1;
+                    }else{
+                        command.creationPeriod = self.currentExecItem().creationPeriod();
+                        command.targetDate = self.currentExecItem().targetDate();
+                    }
                     command.targetMonth = self.currentExecItem().targetMonth();
-                    command.targetDate = self.currentExecItem().targetDate();
-                    command.creationPeriod = self.currentExecItem().creationPeriod();
                     command.creationTarget = self.currentExecItem().creationTarget();
                     command.recreateWorkType = false;//B15_3
                     command.manualCorrection = false;//B15_4
                     command.createEmployee = self.currentExecItem().createEmployee();
                     command.recreateTransfer = false;//B15_2(1)
-                    command.dailyPerfCls = self.currentExecItem().dailyPerfCls();
+                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsNormal();//B8_1
                     command.dailyPerfItem = self.currentExecItem().dailyPerfItem();
                     command.midJoinEmployee = self.currentExecItem().midJoinEmployee();
                     command.reflectResultCls = self.currentExecItem().reflectResultCls();
                     command.monthlyAggCls = self.currentExecItem().monthlyAggCls();
-                    command.indvAlarmCls = self.currentExecItem().indvAlarmCls();
-                    command.indvMailPrin = self.currentExecItem().indvMailPrin();
-                    command.indvMailMng = self.currentExecItem().indvMailMng();
-                    command.wkpAlarmCls = self.currentExecItem().wkpAlarmCls();
-                    command.wkpMailMng = self.currentExecItem().wkpMailMng();
                     command.execScopeCls = self.currentExecItem().execScopeCls();
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();
-                    command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();
+                    command.recreateTypeChangePerson = false;
                     command.recreateTransfers =  false;//B15_2(2)
                     command.appRouteUpdateAtr =  self.currentExecItem().appRouteUpdateAtrNormal()
                     command.createNewEmp =  self.currentExecItem().createNewEmp();
                     command.appRouteUpdateMonthly =  self.currentExecItem().appRouteUpdateMonthly();
                     command.processExecType = self.currentExecItem().processExecType();
+                    command.alarmCode = self.currentExecItem().alarmCode();
+                    command.alarmExtraction = self.currentExecItem().alarmAtr();
                 }else{//再作成
                     self.currentExecItem().creationTarget(1);
                     command.companyId = self.currentExecItem().companyId();
                     command.execItemCd = self.currentExecItem().execItemCd();
                     command.execItemName = self.currentExecItem().execItemName();
-                    command.perScheduleCls = false;//B7_1
-                    command.targetMonth = self.currentExecItem().targetMonth() || 1;
-                    command.targetDate = self.currentExecItem().targetDate() || 1;
-                    command.creationPeriod = self.currentExecItem().creationPeriod() || 1;
+                    command.perScheduleCls = self.currentExecItem().perScheduleClsReCreate();//B7_1
+                    command.targetMonth = 0;
+                    command.targetDate =  1;
+                    command.creationPeriod = 1;
                     command.creationTarget = 1;
                     command.recreateWorkType = self.currentExecItem().recreateWorkType();//B15_3
                     command.manualCorrection = self.currentExecItem().manualCorrection();//B15_4
                     command.createEmployee = false;
                     command.recreateTransfer = self.currentExecItem().recreateTransfer();//B15_2(1)
-                    command.dailyPerfCls = false;
+                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsReCreate();//B14_2
                     command.dailyPerfItem = 0;
                     command.midJoinEmployee = false;
                     command.reflectResultCls = false;
                     command.monthlyAggCls = false;
-                    command.indvAlarmCls = false;
-                    command.indvMailPrin = false;
-                    command.indvMailMng = false;
-                    command.wkpAlarmCls = false;
-                    command.wkpMailMng = false;
                     command.execScopeCls = 1;
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();
-                    command.recreateTypeChangePerson = false;
+                    command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();//B14_2
                     command.recreateTransfers =  self.currentExecItem().recreateTransfer();//B15_2(2)
                     command.appRouteUpdateAtr =  self.currentExecItem().appRouteUpdateAtrReCreate();
                     command.createNewEmp =  false;
                     command.appRouteUpdateMonthly =  false;
                     command.processExecType = self.currentExecItem().processExecType();
+                    command.alarmCode = self.listGetAlarmByUser()[0].alarmCode;
+                    command.alarmExtraction = false;
+                    
                 }
                 
                 
@@ -459,7 +486,7 @@ module nts.uk.at.view.kbt002.b {
                     if (item.childs && item.childs.length > 0) {
                         res = res.concat(self.convertTreeToArray(item.childs));
                     }
-                    res.push({ workplaceId: item.workplaceId, hierarchyCode: item.hierarchyCode, name: item.name });
+                    res.push({ workplaceId: item.workplaceId, hierarchyCode: item.code, name: item.name });
                 })
                 return res;
             }
@@ -470,6 +497,8 @@ module nts.uk.at.view.kbt002.b {
             execItemCd: string;
             execItemName: string;
             perScheduleCls: boolean;
+            perScheduleClsNomarl :boolean;
+            perScheduleClsReCreate :boolean;
             targetMonth: number;
             targetDate: number;
             creationPeriod: number;
@@ -480,15 +509,15 @@ module nts.uk.at.view.kbt002.b {
             recreateTransfer: boolean;
             dailyPerfCls: boolean;
             dailyPerfItem: number;
-            //            lastProcDate:        string;
+            //lastProcDate: string;
             midJoinEmployee: boolean;
             reflectResultCls: boolean;
             monthlyAggCls: boolean;
-            indvAlarmCls: boolean;
-            indvMailPrin: boolean;
-            indvMailMng: boolean;
-            wkpAlarmCls: boolean;
-            wkpMailMng: boolean;
+            //indvAlarmCls: boolean;
+            //indvMailPrin: boolean;
+            //indvMailMng: boolean;
+            //wkpAlarmCls: boolean;
+            //wkpMailMng: boolean;
             execScopeCls: number;
             refDate: string;
             workplaceList: Array<string>;
@@ -500,6 +529,12 @@ module nts.uk.at.view.kbt002.b {
             processExecType : number;
             appRouteUpdateAtrNormal : boolean;
             appRouteUpdateAtrReCreate : boolean;
+            //dailyPerfCls
+            dailyPerfClsNormal : boolean;
+            dailyPerfClsReCreate : boolean;
+            //alarmCode
+            alarmCode :string;
+            alarmAtr : boolean;
         }
 
         export class ExecutionItem {
@@ -507,6 +542,8 @@ module nts.uk.at.view.kbt002.b {
             execItemCd: KnockoutObservable<string> = ko.observable('');
             execItemName: KnockoutObservable<string> = ko.observable('');
             perScheduleCls: KnockoutObservable<boolean> = ko.observable(false);
+            perScheduleClsNomarl :KnockoutObservable<boolean> = ko.observable(false);
+            perScheduleClsReCreate :KnockoutObservable<boolean> = ko.observable(false);
             targetMonth: KnockoutObservable<number> = ko.observable(null);
             targetDate: KnockoutObservable<number> = ko.observable(null);
             creationPeriod: KnockoutObservable<number> = ko.observable(null);
@@ -520,11 +557,6 @@ module nts.uk.at.view.kbt002.b {
             midJoinEmployee: KnockoutObservable<boolean> = ko.observable(false);
             reflectResultCls: KnockoutObservable<boolean> = ko.observable(false);
             monthlyAggCls: KnockoutObservable<boolean> = ko.observable(false);
-            indvAlarmCls: KnockoutObservable<boolean> = ko.observable(false);
-            indvMailPrin: KnockoutObservable<boolean> = ko.observable(false);
-            indvMailMng: KnockoutObservable<boolean> = ko.observable(false);
-            wkpAlarmCls: KnockoutObservable<boolean> = ko.observable(false);
-            wkpMailMng: KnockoutObservable<boolean> = ko.observable(false);
             execScopeCls: KnockoutObservable<number> = ko.observable(null);
             refDate: KnockoutObservable<string> = ko.observable('');
             workplaceList: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -537,6 +569,10 @@ module nts.uk.at.view.kbt002.b {
             processExecType : KnockoutObservable<number> = ko.observable(null);
             appRouteUpdateAtrNormal :KnockoutObservable<boolean> = ko.observable(false);
             appRouteUpdateAtrReCreate :KnockoutObservable<boolean> = ko.observable(false);
+            dailyPerfClsNormal :KnockoutObservable<boolean> = ko.observable(false);
+            dailyPerfClsReCreate :KnockoutObservable<boolean> = ko.observable(false);
+            alarmCode : KnockoutObservable<string> = ko.observable('');
+            alarmAtr :KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
                 let self = this;
                 if (param && param != null) {
@@ -544,6 +580,8 @@ module nts.uk.at.view.kbt002.b {
                     self.execItemCd(param.execItemCd || '');
                     self.execItemName(param.execItemName || '');
                     self.perScheduleCls(param.perScheduleCls || false);
+                    self.perScheduleClsNomarl(param.perScheduleCls || false);
+                    self.perScheduleClsReCreate(param.perScheduleCls || false);
                     self.targetMonth(param.targetMonth);
                     self.targetDate(param.targetDate);
                     self.creationPeriod(param.creationPeriod);
@@ -557,11 +595,6 @@ module nts.uk.at.view.kbt002.b {
                     self.midJoinEmployee(param.midJoinEmployee || false);
                     self.reflectResultCls(param.reflectResultCls || false);
                     self.monthlyAggCls(param.monthlyAggCls || false);
-                    self.indvAlarmCls(param.indvAlarmCls || false);
-                    self.indvMailPrin(param.indvMailPrin || false);
-                    self.indvMailMng(param.indvMailMng || false);
-                    self.wkpAlarmCls(param.wkpAlarmCls || false);
-                    self.wkpMailMng(param.wkpMailMng || false);
                     self.execScopeCls(param.execScopeCls);
                     self.refDate(param.refDate || moment().format("YYYY/MM/DD"));
                     self.workplaceList(param.workplaceList || []);
@@ -574,14 +607,30 @@ module nts.uk.at.view.kbt002.b {
                     self.processExecType(param.processExecType);
                     self.appRouteUpdateAtrNormal(param.appRouteUpdateAtr||false);
                     self.appRouteUpdateAtrReCreate(param.appRouteUpdateAtr||false);
+                    self.dailyPerfClsNormal(param.dailyPerfCls||false);
+                    self.dailyPerfClsReCreate(param.dailyPerfCls||false);
+                    self.alarmCode(param.alarmCode || '');
+                    self.alarmAtr(param.alarmAtr||false);
                     if(self.processExecType()==0){
                         self.creationTarget(0);
                         self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
                         self.appRouteUpdateAtrReCreate(false);
+                        
+                        self.dailyPerfClsNormal(self.dailyPerfCls());
+                        self.dailyPerfClsReCreate(false);
+                        
+                        self.perScheduleClsNomarl(self.perScheduleCls());
+                        self.perScheduleClsReCreate(false);
                     }else{
                         self.creationTarget(1);
                         self.appRouteUpdateAtrNormal(false);
                         self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
+                        
+                        self.dailyPerfClsNormal(false);
+                        self.dailyPerfClsReCreate(self.dailyPerfCls());
+                        
+                        self.perScheduleClsNomarl(false);
+                        self.perScheduleClsReCreate(self.perScheduleCls());
                     }
                     
                 } else {
@@ -602,11 +651,6 @@ module nts.uk.at.view.kbt002.b {
                     self.midJoinEmployee(false);
                     self.reflectResultCls(false);
                     self.monthlyAggCls(false);
-                    self.indvAlarmCls(false);
-                    self.indvMailPrin(false);
-                    self.indvMailMng(false);
-                    self.wkpAlarmCls(false);
-                    self.wkpMailMng(false);
                     self.execScopeCls(0);
                     self.refDate(moment().format("YYYY/MM/DD"));
                     self.workplaceList([]);
@@ -619,6 +663,12 @@ module nts.uk.at.view.kbt002.b {
                     self.processExecType(0);
                     self.appRouteUpdateAtrNormal(false);
                     self.appRouteUpdateAtrReCreate(false);
+                    self.dailyPerfClsNormal(false);
+                    self.dailyPerfClsReCreate(false);
+                    self.alarmCode('');
+                    self.alarmAtr(false);
+                    self.perScheduleClsNomarl(false);
+                    self.perScheduleClsReCreate(false);
                 }
                 
                 self.appRouteUpdateAtr.subscribe(x=>{
@@ -641,10 +691,16 @@ module nts.uk.at.view.kbt002.b {
                         self.creationTarget(0);
                         self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
                         self.appRouteUpdateAtrReCreate(false);
+                        
+                        self.dailyPerfClsNormal(self.dailyPerfCls());
+                        self.dailyPerfClsReCreate(false);
                     }else{
                         self.creationTarget(1);
                         self.appRouteUpdateAtrNormal(false);
                         self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
+                        
+                        self.dailyPerfClsNormal(false);
+                        self.dailyPerfClsReCreate(self.dailyPerfCls());
                     }
                 });
                 

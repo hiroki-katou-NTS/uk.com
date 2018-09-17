@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
@@ -523,7 +524,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			
 			// 集計期間をチェック
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd();
+			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 			DatePeriod workPeriod = new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd);
 			
 			// 上限日数をチェック
@@ -559,6 +560,15 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	private List<TmpReserveLeaveMngWork> getTmpReserveLeaveMngs(GetRsvLeaRemNumWithinPeriodParam param){
 		
 		List<TmpReserveLeaveMngWork> results = new ArrayList<>();
+		
+		// 「上書きフラグ」をチェック
+		if (param.getIsOverWrite().isPresent()){
+			if (param.getIsOverWrite().get()){
+				
+				// 上書き用データがある時、使用する
+				if (param.getForOverWriteList().isPresent()) return param.getForOverWriteList().get();
+			}
+		}
 		
 		// 「モード」をチェック
 		if (param.getMode() == TempAnnualLeaveMngMode.MONTHLY){

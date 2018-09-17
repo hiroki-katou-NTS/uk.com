@@ -215,7 +215,7 @@ module nts.uk.com.view.cas005.a {
                     self.employeeReferenceRange(item.employeeReferenceRange);
                     self.roleCode(item.roleCode);
                     self.listWpkAuthoritySelect([]);
-
+                    self.getEmploymentRoleById(value);
                     //web menu
                     if (item.assignAtr == 0) {
                         self.getRoleByRoleTiesById(value);
@@ -224,7 +224,6 @@ module nts.uk.com.view.cas005.a {
                         self.specifyingAgent(0);
                         self.registeredInquiries(0);
                         self.visibleWebmenu(true);
-                        self.getEmploymentRoleById(value);
                     }
                     self.objCommandScreenB(new model.RoleCas005Command(
                         self.component.currentCode(),
@@ -241,7 +240,8 @@ module nts.uk.com.view.cas005.a {
                         parseInt(self.selectReferenceAuthority()),
                         self.listWorkPlaceAuthorityCommand()
                     ));
-
+                    $("#roleNameFocus").focus(); 
+                    _.defer(() => {errors.clearAll();});
                 } else {
                     self.roleName('');
                     self.assignAtr(0);
@@ -252,9 +252,8 @@ module nts.uk.com.view.cas005.a {
 
                     self.selectReferenceAuthority("0");
                     self.visibleWebmenu(true);
+                    self.createButton();
                 }
-                $("#roleNameFocus").focus(); 
-                _.defer(() => {errors.clearAll();});
             }
 
             /** Select TitleMenu by Index: Start & Delete case */

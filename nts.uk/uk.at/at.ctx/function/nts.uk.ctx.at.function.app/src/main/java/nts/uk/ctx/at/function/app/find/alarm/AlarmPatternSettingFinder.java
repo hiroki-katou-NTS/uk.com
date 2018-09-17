@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.find.alarm;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,12 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodMonthlyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodUnitDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeYearDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
-import nts.uk.ctx.at.function.dom.adapter.role.RoleIdFromUserAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -36,9 +35,6 @@ public class AlarmPatternSettingFinder {
 
 	@Inject
 	private AlarmCheckConditionByCategoryRepository alarmCategoryRepo;
-
-	@Inject
-	private RoleIdFromUserAdapter roleByUserFinder;
 
 	public List<AlarmPatternSettingDto> findAllAlarmPattern() {
 		String companyId = AppContexts.user().companyId();
@@ -129,21 +125,21 @@ public class AlarmPatternSettingFinder {
 	}
 
 	public List<CodeNameAlarmDto> getCodeNameAlarm() {
-		
 		String companyId = AppContexts.user().companyId();
-		String userId = AppContexts.user().userId();
-		List<String> roleIds = roleByUserFinder.getRoleIdFromUserId(userId);
+		String roleId = AppContexts.user().roles().forAttendance();
 		List<CodeNameAlarmDto> result = alarmPatternRepo.findByCompanyIdAndUser(companyId).stream()
-				.filter(a -> !a.isAuthSetting() || a.isAuthSetting() && intersectTwoListRoleId(a.getRoleIds(), roleIds))
-				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName())).collect(Collectors.toList());
-
+				.filter(a -> !a.isAuthSetting() || a.isAuthSetting() && intersectTwoListRoleId(a.getRoleIds(), roleId))
+				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName(),a.getAlarmCode()+" "+ a.getAlarmName())).collect(Collectors.toList());
 		result.sort((a, b) -> a.getAlarmCode().compareTo(b.getAlarmCode()));
 		return result;
 	}
 
-	private boolean intersectTwoListRoleId(List<String> listRole1, List<String> listRole2) {
-		List<String> intersect = listRole1.stream().filter(listRole2::contains).collect(Collectors.toList());
-		return !intersect.isEmpty();
+	private boolean intersectTwoListRoleId(List<String> listRole1, String roleId) {
+		if(CollectionUtil.isEmpty(listRole1)){
+			return false;
+		}else{
+			return listRole1.contains(roleId);
+		}
 	}
 	
 }

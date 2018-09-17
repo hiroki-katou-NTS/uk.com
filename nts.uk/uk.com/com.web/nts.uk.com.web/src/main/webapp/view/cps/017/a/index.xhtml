@@ -182,13 +182,13 @@
 						</div>
 						<div class="input">
 							
-							 	<span><input class = "limited-label" id="code"
+							 	<span><input id="code" class = "limited-label" 
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
 										value: selectionCD,
 										constraint: $vm.codeConstraint, 
 										required: true, 
-										enable: $parent.enableSelectionCd, 
+										enable: $parent.enableSelectionCd,
 		 								immediate: false}, hasFocus: $vm.focus.code" />
 								</span>
 							
@@ -209,7 +209,7 @@
 								<label>#{i18n.getText('CPS017_23')}</label>
 							</div>
 							<div class="input">
-								<input class = "limited-label" id="exCode"
+								<input id="exCode"
 									data-bind="ntsTextEditor: {
 									name: '#[CPS017_24]',
 									value: externalCD,

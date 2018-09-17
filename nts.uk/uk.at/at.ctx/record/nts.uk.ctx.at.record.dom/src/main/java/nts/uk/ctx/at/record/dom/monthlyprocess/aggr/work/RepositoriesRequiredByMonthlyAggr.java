@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.GetWeekStart;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
@@ -42,6 +43,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
@@ -58,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTim
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -76,7 +79,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 
 /**
  * 月別集計が必要とするリポジトリ
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface RepositoriesRequiredByMonthlyAggr {
 
@@ -122,6 +125,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	YearHolidayRepository getYearHoliday();
 	/** 勤続年数テーブル */
 	LengthServiceRepository getLengthService();
+	/** 日別実績の運用開始設定 */
+	OperationStartSetDailyPerformRepository getOperationStartSet();
 
 	/** 勤怠項目値変換 */
 	AttendanceItemConvertFactory getAttendanceItemConverter();
@@ -136,6 +141,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	ClosureRepository getClosure();
 	/** 実績ロック */
 	ActualLockRepository getActualLock();
+	/** 締め状態管理 */
+	ClosureStatusManagementRepository getClosureStatusMng();
 
 	/** 日の法定労働時間の取得 */
 	DailyStatutoryWorkingHours getDailyStatutoryWorkingHours();
@@ -189,6 +196,9 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	MonthlyAggrSetOfFlexRepository getMonthlyAggrSetOfFlex();
 	/** フレックス勤務所定労働時間取得 */
 	GetFlexPredWorkTimeRepository getFlexPredWorktime();
+	/** フレックス不足の年休補填管理 */
+	InsufficientFlexHolidayMntRepository getInsufficientFlex();
+	/** フレックス不足の繰越上限管理 */
 	/** 残業・振替の処理順序を取得する */
 	GetOverTimeAndTransferOrder getOverTimeAndTransferOrder();
 	/** 休出・振替の処理順序を取得する */

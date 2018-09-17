@@ -58,9 +58,7 @@ module cps002.a.vm {
         currentInitSetting: KnockoutObservable<InitSetting> = ko.observable(new InitSetting(null));
 
         copyEmployee: KnockoutObservable<EmployeeCopy> = ko.observable(new EmployeeCopy(null));
-
-        layout: KnockoutObservable<Layout> = ko.observable(new Layout());
-
+        
         isAllowAvatarUpload: KnockoutObservable<boolean> = ko.observable(false);
 
         currentUseSetting: KnockoutObservable<UserSetting> = ko.observable(null);
@@ -68,6 +66,7 @@ module cps002.a.vm {
         employeeBasicInfo: KnockoutObservable<IEmployeeBasicInfo> = ko.observable(null);
 
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
+        listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
         subContraint: KnockoutObservable<boolean> = ko.observable(true);
@@ -138,11 +137,13 @@ module cps002.a.vm {
                         $('#ccgcomponent').css('visibility', 'hidden');
                     }
 
-                    if (step != 2) {
-                        $('#emp_reg_info_wizard').css('min-height', '');
-                    } else {
-                        $('#emp_reg_info_wizard').css('min-height', '720px');
-                    }
+                    setTimeout(() => {
+                        if (step == 2) {
+                            $('#emp_reg_info_wizard').css('min-height', '740px');
+                        } else {
+                            $('#emp_reg_info_wizard').css('min-height', $('.body.current').height() + 'px');
+                        }
+                    }, 100);
                 }
             });
 
@@ -322,6 +323,8 @@ module cps002.a.vm {
             });
             self.checkLicense();
             self.start();
+            
+            self.currentStep.valueHasMutated();
         }
 
         loadCopySettingItemData() {
@@ -456,7 +459,7 @@ module cps002.a.vm {
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                let controls = self.layout().listItemCls();
+                let controls = self.listItemCls();
                 lv.checkError(controls);
             } else {
                 $(".form_step1").trigger("validate");
@@ -537,11 +540,6 @@ module cps002.a.vm {
         gotoStep2() {
             let self = this;
             self.currentStep(2);
-            let layout = self.layout();
-
-            layout.layoutCode('');
-            layout.layoutName('');
-            layout.listItemCls([]);
 
             let command = ko.toJS(self.currentEmployee());
 
@@ -551,16 +549,10 @@ module cps002.a.vm {
             command.createType = self.createTypeId();
 
             service.getLayoutByCreateType(command).done((data: ILayout) => {
-                layout.layoutCode(data.layoutCode || '');
-                layout.layoutName(data.layoutName || '');
 
-                if (data.standardDate) {
-                    layout.standardDate(data.standardDate);
-                }
-
-                layout.listItemCls(data.itemsClassification || []);
-                if (layout.listItemCls().length > 0) {
-                    new vc(layout.listItemCls());
+                self.listItemCls(data.itemsClassification || []);
+                if (self.listItemCls().length > 0) {
+                    new vc(self.listItemCls());
                     setTimeout(() => {
                         $('.drag-panel input:not(:disabled):first').focus();
                     }, 100);
@@ -705,7 +697,7 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            self.layout().listItemCls.removeAll();
+            self.listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
                 $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
@@ -752,6 +744,9 @@ module cps002.a.vm {
             //add atr
             command.employeeCopyId = self.copyEmployee().employeeId;
             command.initSettingId = self.currentInitSetting().itemId;
+            
+            // reload data
+            self.layoutData.refresh();
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
             command.categoryName = nts.uk.resource.getText("CPS001_152");
@@ -775,7 +770,7 @@ module cps002.a.vm {
 
                 }).fail(error => {
 
-                    dialog({ messageId: error.messageId, messageParams: error.parameterIds });
+                    alertError({ messageId: error.messageId, messageParams: error.parameterIds });
 
                 })
             }
@@ -1110,32 +1105,6 @@ module cps002.a.vm {
         itemsClassification?: Array<any>;
         classificationItems?: Array<any>;
         standardDate?: string;
-    }
-
-    class Layout {
-        layoutCode: KnockoutObservable<string> = ko.observable('');
-        layoutName: KnockoutObservable<string> = ko.observable('');
-        maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
-        listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
-        standardDate: KnockoutObservable<string> = ko.observable(undefined);
-
-        constructor(param?: ILayout) {
-            let self = this;
-            if (param) {
-                self.layoutCode(param.layoutCode || '');
-                self.layoutName(param.layoutName || '');
-                self.maintenanceLayoutID(param.maintenanceLayoutID || '');
-                self.standardDate(param.standardDate)
-
-                self.listItemCls(param.itemsClassification || []);
-            }
-        }
-
-        // recall selected layout event
-        filterData() {
-            let self = this;
-            self.maintenanceLayoutID.valueHasMutated();
-        }
     }
 
     class EmpRegHistory {

@@ -2,7 +2,11 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-
+/**
+ * 乖離時間
+ * @author tutk
+ *
+ */
 @Getter
 public class DivergenceTime extends AggregateRoot{
 	/*会社ID*/

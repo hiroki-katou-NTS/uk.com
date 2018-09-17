@@ -41,47 +41,52 @@ public class CalcAttachTimeDto implements ItemConst {
 		this.time = time;
 	}
 	
+	@Override
+	public CalcAttachTimeDto clone() {
+		return new CalcAttachTimeDto(calcTime, time, divergenceTime);
+	}
+	
 	public static CalcAttachTimeDto toTimeWithCal(TimeDivergenceWithCalculationMinusExist time){
 		return time == null ? null : new CalcAttachTimeDto(
-											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
-											time.getTime() == null ? null : time.getTime().valueAsMinutes(), 
-											time.getDivergenceTime() == null ? null : time.getDivergenceTime().valueAsMinutes());
+											time.getCalcTime() == null ? 0 : time.getCalcTime().valueAsMinutes(), 
+											time.getTime() == null ? 0 : time.getTime().valueAsMinutes(), 
+											time.getDivergenceTime() == null ? 0 : time.getDivergenceTime().valueAsMinutes());
 	}
 	
 	public static CalcAttachTimeDto toTimeWithCal(TimeDivergenceWithCalculation time){
 		return time == null ? null : new CalcAttachTimeDto(
-											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
-											time.getTime() == null ? null : time.getTime().valueAsMinutes(), 
-											time.getDivergenceTime() == null ? null : time.getDivergenceTime().valueAsMinutes());
+											time.getCalcTime() == null ? 0 : time.getCalcTime().valueAsMinutes(), 
+											time.getTime() == null ? 0 : time.getTime().valueAsMinutes(), 
+											time.getDivergenceTime() == null ? 0 : time.getDivergenceTime().valueAsMinutes());
 	}
 	
 	public static CalcAttachTimeDto toTimeWithCal(TimeWithCalculation time){
 		return time == null ? null : new CalcAttachTimeDto(
-											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
-											time.getTime() == null ? null : time.getTime().valueAsMinutes());
+											time.getCalcTime() == null ? 0 : time.getCalcTime().valueAsMinutes(), 
+											time.getTime() == null ? 0 : time.getTime().valueAsMinutes());
 	}
 	
 	public static CalcAttachTimeDto toTimeWithCal(TimeWithCalculationMinusExist time) {
 		return time == null ? null : new CalcAttachTimeDto(
-											time.getCalcTime() == null ? null : time.getCalcTime().valueAsMinutes(), 
-											time.getTime() == null ? null : time.getTime().valueAsMinutes());
+											time.getCalcTime() == null ? 0 : time.getCalcTime().valueAsMinutes(), 
+											time.getTime() == null ? 0 : time.getTime().valueAsMinutes());
 	}
 	
 	public TimeWithCalculation createTimeWithCalc() {
 		return TimeWithCalculation.createTimeWithCalculation(
-										time == null ? null : new AttendanceTime(time), 
-										calcTime == null ? null : new AttendanceTime(calcTime));
+										time == null ? AttendanceTime.ZERO : new AttendanceTime(time), 
+										calcTime == null ? AttendanceTime.ZERO : new AttendanceTime(calcTime));
 	}
 	
 	public TimeDivergenceWithCalculation createTimeDivWithCalc() {
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(
-										time == null ? null : new AttendanceTime(time), 
-										calcTime == null ? null : new AttendanceTime(calcTime));
+										time == null ? AttendanceTime.ZERO : new AttendanceTime(time), 
+										calcTime == null ? AttendanceTime.ZERO : new AttendanceTime(calcTime));
 	}
 	
 	public TimeDivergenceWithCalculationMinusExist createTimeDivWithMinus(){
 		return TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
-				time == null ? null : new AttendanceTimeOfExistMinus(time), 
-				calcTime == null ? null : new AttendanceTimeOfExistMinus(calcTime));
+				time == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(time), 
+				calcTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(calcTime));
 	}
 }

@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
@@ -38,17 +40,18 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate date;
 
-	private CalculationState calculationState;
+	private int calculationState;
 
 	// 直行区分
-	private NotUseAttribute goStraightAtr;
+	private int goStraightAtr;
 
 	// 直帰区分
-	private NotUseAttribute backStraightAtr;
+	private int backStraightAtr;
 
-	private DayOfWeek dayOfWeek;
+	private int dayOfWeek;
 
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
@@ -56,29 +59,28 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
-			result.setBackStraightAtr(workInfo.getBackStraightAtr());
-			result.setCalculationState(workInfo.getCalculationState());
-			result.setGoStraightAtr(workInfo.getGoStraightAtr());
+			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
+			result.setCalculationState(workInfo.getCalculationState().value);
+			result.setGoStraightAtr(workInfo.getGoStraightAtr().value);
 			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
-			result.setDayOfWeek(workInfo.getDayOfWeek());
+			result.setDayOfWeek(workInfo.getDayOfWeek().value);
 			result.exsistData();
 		}
 		return result;
 	}
 
 	private static List<ScheduleTimeZoneDto> getScheduleTimeZone(List<ScheduleTimeSheet> sheets) {
-		return sheets == null ? new ArrayList<>() : sheets.stream().map(sts -> {
-			return new ScheduleTimeZoneDto(sts.getWorkNo() == null ? null : sts.getWorkNo().v().intValue(),
-					sts.getAttendance() == null ? null : sts.getAttendance().v(),
-					sts.getLeaveWork() == null ? null : sts.getLeaveWork().v());
-		}).sorted((s1, s2) -> s1.getNo().compareTo(s2.getNo())).collect(Collectors.toList());
+		return ConvertHelper.mapTo(sheets, sts -> {
+			return new ScheduleTimeZoneDto(sts.getWorkNo().v(),
+					sts.getAttendance() == null ? 0 : sts.getAttendance().v(),
+					sts.getLeaveWork() == null ? 0 : sts.getLeaveWork().v());
+		});
 	}
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
-		return workInfo == null ? null
-				: new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(),
+		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(),
 						workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
 	}
 
@@ -104,14 +106,36 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
-				calculationState, goStraightAtr, backStraightAtr, date, dayOfWeek,
+				calculationState == CalculationState.No_Calculated.value ? CalculationState.No_Calculated : CalculationState.Calculated, 
+				goStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use,
+				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
+				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
-						(c) -> new ScheduleTimeSheet(c.getNo(),
-										c.getWorking() == null ? 0 : c.getWorking(), 
-										c.getLeave() == null ? 0 : c.getLeave())));
+						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave())));
 	}
+	
+	
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
 		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
+	}
+
+	@Override
+	public WorkInformationOfDailyDto clone() {
+		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
+		result.setEmployeeId(employeeId());
+		result.setDate(workingDate());
+		result.setActualWorkInfo(actualWorkInfo == null ? null : actualWorkInfo.clone());
+		result.setBackStraightAtr(backStraightAtr);
+		result.setCalculationState(calculationState);
+		result.setGoStraightAtr(goStraightAtr);
+		result.setPlanWorkInfo(planWorkInfo == null ? null : planWorkInfo.clone());
+		
+		result.setScheduleTimeZone(ConvertHelper.mapTo(scheduleTimeZone, c -> c.clone()));
+		result.setDayOfWeek(dayOfWeek);
+		if(this.isHaveData()){
+			result.exsistData();
+		}
+		return result;
 	}
 }

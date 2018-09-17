@@ -245,7 +245,6 @@ public class ItemValue {
 		default:
 			return value.toString();
 		}
-		
 	}
 	
 	private static String formatContent(int logType, String viewContent, String value) {
@@ -254,27 +253,28 @@ public class ItemValue {
 		if (viewContent == null || value == null) return null;
 		if (viewContent.equals("") && logType != ItemValueType.STRING.value) return null;
 		if (value.equals("") && logType != ItemValueType.STRING.value) return null;
-		
+		BigDecimal valueAfter  = null;
 		switch(itemValueType) {
 		case STRING:
-		case NUMERIC: 
 		case DATE:
 		case SELECTION: 
 		case SELECTION_BUTTON:
 		case SELECTION_RADIO:
-		case READONLY:
-		case RELATE_CATEGORY:
+		case NUMERIC: 
 		case NUMBERIC_BUTTON:
+		case READONLY:
 		case READONLY_BUTTON:
+		case RELATE_CATEGORY:
 			return viewContent;
 		case TIME:
-			return formatMinutesToTime(Integer.valueOf(value));
+			valueAfter = new BigDecimal(value);
+			return valueAfter == null? null: formatMinutesToTime(valueAfter.intValue());
 		case TIMEPOINT:
-			return new TimeWithDayAttr(Integer.valueOf(value)).getFullText();
+			valueAfter = new BigDecimal(value);
+			return valueAfter == null? null: new TimeWithDayAttr(valueAfter.intValue()).getFullText();
 		default:
 			throw new RuntimeException("invalid attribute: " + value);
 		}
-		
 	}
 	
 	private static String formatMinutesToTime(int valueAsMinutes) {

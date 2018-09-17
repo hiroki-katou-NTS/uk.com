@@ -141,6 +141,15 @@ public interface SyEmployeePub {
 	List<EmpInfoExport> getEmpInfo(List<String> lstSid);
 	
 	/**
+	 * 期間内に特定の職場（List）に所属している社員一覧を取得
+	 * RequestList462, RequestList466 trỏ đến RequestList462
+	 * @param wkpIds
+	 * @param dateperiod
+	 * @return list sid đang làm việc
+	 */
+	List<String> getListEmployeeId(List<String> wkpIds, DatePeriod dateperiod);
+	
+	/**
 	 * Find by S id and company id.
 	 *
 	 * @param sId the s id

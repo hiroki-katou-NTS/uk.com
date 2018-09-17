@@ -11,6 +11,9 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
@@ -50,11 +53,20 @@ public class IntegrationOfMonthly {
 	private Optional<MonthlyDayoffRemainData> monthlyDayoffRemain;
 	/** 特別休暇残数月別データ */
 	@Setter
-	private Optional<SpecialHolidayRemainData> specialLeaveRemain;
+	private List<SpecialHolidayRemainData> specialLeaveRemainList;
 	/** 週別実績の勤怠時間 */
 	private List<AttendanceTimeOfWeekly> attendanceTimeOfWeekList;
 	/** 社員の月別実績エラー一覧 */
 	private List<EmployeeMonthlyPerError> employeeMonthlyPerErrorList;
+	/** 月別実績の備考 */
+	@Setter
+	private List<RemarksMonthlyRecord> remarks;
+	/** 介護休暇月別残数データ */
+	@Setter
+	private Optional<MonCareHdRemain> care;
+	/** 子の看護月別残数データ */
+	@Setter
+	private Optional<MonChildHdRemain> childCare;
 	
 	public IntegrationOfMonthly(){
 		this.attendanceTime = Optional.empty();
@@ -65,9 +77,12 @@ public class IntegrationOfMonthly {
 		this.reserveLeaveRemain = Optional.empty();
 		this.absenceLeaveRemain = Optional.empty();
 		this.monthlyDayoffRemain = Optional.empty();
-		this.specialLeaveRemain = Optional.empty();
+		this.specialLeaveRemainList = new ArrayList<>();
 		this.attendanceTimeOfWeekList = new ArrayList<>();
 		this.employeeMonthlyPerErrorList = new ArrayList<>();
+		this.remarks = new ArrayList<>();
+		this.care = Optional.empty();
+		this.childCare = Optional.empty();
 	}
 	
 	/**
@@ -80,7 +95,7 @@ public class IntegrationOfMonthly {
 	 * @param reserveLeaveRemain 積立年休月別残数データ
 	 * @param absenceLeaveRemain 振休月別残数データ
 	 * @param monthlyDayoffRemain 代休月別残数データ
-	 * @param specialLeaveRemain 特別休暇月別残数データ
+	 * @param specialLeaveRemainList 特別休暇月別残数データ
 	 */
 	public IntegrationOfMonthly(
 			Optional<AttendanceTimeOfMonthly> attendanceTime,
@@ -91,7 +106,10 @@ public class IntegrationOfMonthly {
 			Optional<RsvLeaRemNumEachMonth> reserveLeaveRemain,
 			Optional<AbsenceLeaveRemainData> absenceLeaveRemain,
 			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain,
-			Optional<SpecialHolidayRemainData> specialLeaveRemain){
+			List<SpecialHolidayRemainData> specialLeaveRemainList,
+			List<RemarksMonthlyRecord> remarks,
+			Optional<MonCareHdRemain> care,
+			Optional<MonChildHdRemain> childCare){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
@@ -101,6 +119,9 @@ public class IntegrationOfMonthly {
 		this.reserveLeaveRemain = reserveLeaveRemain;
 		this.absenceLeaveRemain = absenceLeaveRemain;
 		this.monthlyDayoffRemain = monthlyDayoffRemain;
-		this.specialLeaveRemain = specialLeaveRemain;
+		this.specialLeaveRemainList = specialLeaveRemainList;
+		this.remarks = remarks;
+		this.care = care;
+		this.childCare = childCare;
 	}
 }

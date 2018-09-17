@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -141,7 +142,6 @@ public class ActualWorkingTimeOfDaily {
     public ActualWorkingTimeOfDaily inssertTotalWorkingTime(TotalWorkingTime time) {
     	return new ActualWorkingTimeOfDaily(this.constraintDifferenceTime,this.constraintTime,this.timeDifferenceWorkingHours,time,this.divTime,this.premiumTimeOfDailyPerformance);
     }
-    
     
 	/**
 	 * 日別実績の実働時間の計算
@@ -343,7 +343,7 @@ public class ActualWorkingTimeOfDaily {
 									TotalWorkingTime totalWorkingTime,
 									WorkType workType
 									) {
-		if(recordClass.getCalculatable()) return totalWorkingTime;
+		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() != null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
 		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork())&&recordClass.getOotsukaFixedWorkSet().isPresent()&& !workType.getDailyWork().isHolidayWork()) {
 			//休憩未取得時間の計算
 			AttendanceTime unUseBreakTime = recordClass.getPersonalInfo().getWorkingSystem().isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(recordClass.getFixRestTimeSetting().get(),recordClass.getIntegrationOfDaily().getAttendanceLeave().get()):new AttendanceTime(0);
@@ -360,9 +360,20 @@ public class ActualWorkingTimeOfDaily {
 						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork()),
 						recordClass.getOotsukaFixedWorkSet(),
 						recordClass.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
-						recordClass.getDailyUnit()
+						recordClass.getDailyUnit(),
+						recordClass.getFixRestTimeSetting(),
+						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet()
 						);
 				
+			}
+			
+			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
+			if(recordClass.getOotsukaFixedWorkSet() != null
+			   && recordClass.getOotsukaFixedWorkSet().isPresent()
+			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak() != null
+			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod() != null
+			   && !recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
+				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
 			}
 			
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
@@ -374,16 +385,6 @@ public class ActualWorkingTimeOfDaily {
 					totalWorkingTime.setWithinWorkTime(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getAdditionSet().getPredTime().getOneDay());
 				}
 			}
-
-			//就業時間から休憩未取得時間を減算(休憩未取得を残業時間として計算する　であれば差し引く)
-			if(recordClass.getOotsukaFixedWorkSet() != null
-			   && recordClass.getOotsukaFixedWorkSet().isPresent()
-			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak() != null
-			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod() != null
-			   && !recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
-				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
-			}
-			
 
 		}
 		return totalWorkingTime;
@@ -397,7 +398,8 @@ public class ActualWorkingTimeOfDaily {
 	 * @param breakList 就業時間帯側の休憩リスト
 	 * @param breakOfDaily 
 	 */
-	public static int calcDivergenceNo8910(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, TotalWorkingTime calcResultOotsuka) {
+	public static int calcDivergenceNo8910(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, 
+										   TotalWorkingTime calcResultOotsuka) {
 		//実績がそもそも存在しない(不正)の場合
 		if(!integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()
 		 ||!masterBreakList.isPresent()) 
@@ -410,7 +412,7 @@ public class ActualWorkingTimeOfDaily {
 		case 8:
 			return processNumberEight(integrationOfDailyInDto, breakList, breakOfDaily);
 		case 9:
-			return processNumberNight(integrationOfDailyInDto, breakList, breakOfDaily);
+			return processNumberNight(integrationOfDailyInDto, breakList, breakOfDaily,calcResultOotsuka);
 		case 10:
 			return processNumberTen(integrationOfDailyInDto, breakList, breakOfDaily);
 		default:
@@ -443,8 +445,8 @@ public class ActualWorkingTimeOfDaily {
 			return 0;
 		}
 	}
-	public static int processNumberNight(IntegrationOfDaily integrationOfDailyInDto,List<BreakTimeSheet> breakList,BreakTimeOfDaily breakOfDaily) {
-		//休憩枠No1取得
+	public static int processNumberNight(IntegrationOfDaily integrationOfDailyInDto,List<BreakTimeSheet> breakList,BreakTimeOfDaily breakOfDaily, TotalWorkingTime calcResultOotsuka) {
+		//休憩枠No2取得
 		Optional<BreakTimeSheet> breakTimeSheet = breakList.stream().filter(tc -> tc.getBreakFrameNo().v() == 2).findFirst();
 		if(!breakTimeSheet.isPresent()) return 0;
 		//出退勤取得
@@ -455,21 +457,22 @@ public class ActualWorkingTimeOfDaily {
 				attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
 			}
 		}
-		//出退勤が休憩No1を含んでいるか
-		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
+		//実働時間 > 8:00 && 残業合計(振替残業含む)>0
+		if(calcResultOotsuka.getActualTime().greaterThan(480) && calcResultOotsuka.getExcessOfStatutoryTimeOfDaily().calcOverTime().greaterThan(0)) {
+			//出退勤が休憩No2を含んでいるか
 			val calcValue = new AttendanceTime(breakTimeSheet.get().getEndTime().valueAsMinutes() - breakTimeSheet.get().getStartTime().valueAsMinutes())
-											.minusMinutes(breakOfDaily.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes());
+										.minusMinutes(breakOfDaily.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes());
 			return calcValue.greaterThan(0)?calcValue.valueAsMinutes():0;
 		}
 		//含んでいない
 		else {
-			//乖離時間0
-			return 0;
+		//乖離時間0
+		return 0;
 		}
 	}
 	
 	public static int processNumberTen(IntegrationOfDaily integrationOfDailyInDto,List<BreakTimeSheet> breakList,BreakTimeOfDaily breakOfDaily) {
-		//休憩枠No1取得
+		//休憩枠No2取得
 		Optional<BreakTimeSheet> breakTimeSheet = breakList.stream().filter(tc -> tc.getBreakFrameNo().v() == 2).findFirst();
 		if(!breakTimeSheet.isPresent()) return 0;
 		//出退勤取得
@@ -487,8 +490,8 @@ public class ActualWorkingTimeOfDaily {
 				if(masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
 					equalTimeSheet = masterBreakTimeSheet.getBreakTimeSheets().stream()
 																			  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
-																			  .filter(tc -> tc.getStartTime().equals(breakTimeSheet.get().getStartTime())
-							 													  &&tc.getStartTime().equals(breakTimeSheet.get().getEndTime())).findFirst();
+																			  .filter(tc -> new TimeSpanForCalc(tc.getStartTime(),tc.getEndTime())
+																					  					.contains(new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),breakTimeSheet.get().getEndTime()))).findFirst();
 				}
 			}
 			if(equalTimeSheet.isPresent()) {
@@ -497,8 +500,7 @@ public class ActualWorkingTimeOfDaily {
 			}
 			//該当した物が一つもない
 			else {
-				val difference = new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),breakTimeSheet.get().getEndTime()).lengthAsMinutes() 
-									    - breakOfDaily.getToRecordTotalTime().getExcessOfStatutoryTotalTime().getCalcTime().valueAsMinutes();
+				val difference = breakTimeSheet.get().getEndTime().valueAsMinutes() - breakTimeSheet.get().getStartTime().valueAsMinutes();
 				return difference>0?difference:0;
 			}
 		}
@@ -510,5 +512,10 @@ public class ActualWorkingTimeOfDaily {
 	}
 	
 	/////****************************************************:大塚専用:********************************************************/////
-
+	public static ActualWorkingTimeOfDaily defaultValue(){
+		return new ActualWorkingTimeOfDaily(AttendanceTime.ZERO, ConstraintTime.defaultValue(), AttendanceTime.ZERO, 
+											TotalWorkingTime.createAllZEROInstance(), 
+											new DivergenceTimeOfDaily(new ArrayList<>()), 
+											new PremiumTimeOfDailyPerformance(new ArrayList<>()));
+	}
 }

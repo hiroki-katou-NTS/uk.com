@@ -24,6 +24,7 @@ import nts.uk.ctx.at.function.app.find.alarm.alarmlist.EmployeeInfoInput;
 import nts.uk.ctx.at.function.app.find.alarm.alarmlist.EmployeeSendEmail;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.CheckConditionTimeDto;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -82,7 +83,7 @@ public class KAL001WebService {
 	public JavaTypeResult<Boolean> isExtracting() {
 		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		return new JavaTypeResult<Boolean>(alListExtraProcessStatusRepo.isAlListExtaProcessing(companyID, employeeId));
+		return new JavaTypeResult<Boolean>(alListExtraProcessStatusRepo.isAlListExtaProcessing(companyID, employeeId,ExtractionState.PROCESSING.value));
 	}
 	
 	@POST

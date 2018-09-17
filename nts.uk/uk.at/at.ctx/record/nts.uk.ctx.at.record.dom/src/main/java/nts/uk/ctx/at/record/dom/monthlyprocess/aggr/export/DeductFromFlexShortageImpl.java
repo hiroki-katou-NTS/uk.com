@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -60,7 +61,7 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 				this.repositories.getWorkingConditionItem().getBySidAndStandardDate(employeeId, period.end());
 		if (!workConditionItemOpt.isPresent()){
 			returnValue.getErrorInfos().add(new MonthlyAggregationErrorInfo(
-					"099", new ErrMessageContent("not exist WorkingConditionItem")));
+					"006", new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return returnValue;
 		}
 		val workConditionItem = workConditionItemOpt.get();
@@ -77,8 +78,8 @@ public class DeductFromFlexShortageImpl implements DeductFromFlexShortage {
 		monthlyCalculation.prepareAggregation(companyId, employeeId, yearMonth, closureId, closureDate,
 				period, workConditionItem, 1, companySets, employeeSets,
 				monthlyCalcDailys, monthlyOldDatas, this.repositories);
-		for (val errorInfo : monthlyCalculation.getErrorInfos()){
-			if (errorInfo.getResourceId().compareTo("002") == 0) return returnValue;
+		if (monthlyCalculation.getErrorInfos().size() > 0){
+			return returnValue;
 		}
 		monthlyCalculation.aggregate(period, MonthlyAggregateAtr.MONTHLY,
 				Optional.of(annualLeaveDeductDays), Optional.of(absenceDeductTime), this.repositories);

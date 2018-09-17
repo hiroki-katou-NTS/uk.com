@@ -223,7 +223,13 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 																			Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
 		
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
+		dedTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.OverTimeWork, DeductionAtr.Deduction, commonSetting);
+		});
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Appropriate);
+		recordTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.OverTimeWork, DeductionAtr.Appropriate, commonSetting);
+		});
 		/*加給*/
 		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 		/*特定日*/
@@ -320,8 +326,9 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         	AttendanceTime workTime = new AttendanceTime(0);
         	if(createWithinWorkTimeSheet != null)
         	{
+        		
         		workTime = createWithinWorkTimeSheet.calcWorkTime(PremiumAtr.RegularWork, 
-        														  CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, 
+        														  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), 
         														  vacationClass, 
         														  timevacationUseTimeOfDaily, 
         														  StatutoryDivision.Nomal, 
@@ -577,10 +584,12 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public AttendanceTime overTimeCalculationByAdjustTime(DeductionAtr dedAtr) {
 		//調整時間を加算
-		this.calcrange.getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes());
-		AttendanceTime time = this.afterMinusDeductionTime(dedAtr);
+		this.calcrange = new TimeSpanForCalc(this.calcrange.getStart(), this.calcrange.getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()));
+		this.timeSheet = new TimeZoneRounding(this.getTimeSheet().getStart(), this.getTimeSheet().getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()), this.getTimeSheet().getRounding());
+		AttendanceTime time = this.calcTotalTime(dedAtr);
 		//調整時間を減算(元に戻す)
-		this.calcrange.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes());
+		this.calcrange = new TimeSpanForCalc(this.calcrange.getStart(), this.calcrange.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()));
+		this.timeSheet = new TimeZoneRounding(this.getTimeSheet().getStart(), this.getTimeSheet().getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()), this.getTimeSheet().getRounding());
 		time = time.minusMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()) ;
 		return time;
 		

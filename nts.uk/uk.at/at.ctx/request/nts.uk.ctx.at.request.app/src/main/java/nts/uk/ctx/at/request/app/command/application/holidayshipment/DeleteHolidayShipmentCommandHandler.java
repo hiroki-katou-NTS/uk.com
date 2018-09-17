@@ -69,7 +69,7 @@ public class DeleteHolidayShipmentCommandHandler
 
 	private ProcessResult deleteProcess(String companyID, String appID, Long version) {
 		// アルゴリズム「詳細画面削除後の処理」を実行する
-		return this.afterDelete.screenAfterDelete(companyID, appID, version);
+		return this.afterDelete.screenAfterDelete(companyID, appID, version).getProcessResult();
 	}
 
 }

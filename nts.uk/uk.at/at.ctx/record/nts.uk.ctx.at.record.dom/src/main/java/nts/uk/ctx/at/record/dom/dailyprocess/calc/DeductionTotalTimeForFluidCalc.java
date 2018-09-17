@@ -146,7 +146,7 @@ public class DeductionTotalTimeForFluidCalc {
 			//for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : duplicateList) {
 			for(int itemNumber = 0 ; itemNumber < duplicateList.size() ; itemNumber++) {
 				//外出時間を計算
-				AttendanceTime calcTime = duplicateList.get(itemNumber).calcTotalTime();
+				AttendanceTime calcTime = duplicateList.get(itemNumber).calcTotalTime(DeductionAtr.Deduction);
 				//丸め処理(今は一時的に丸めていない値を直接入れている)
 				//int goOutdeductionTime = calcTime;
 				//控除時間分、流動休憩時間の開始をズラす
@@ -266,7 +266,7 @@ public class DeductionTotalTimeForFluidCalc {
 		AttendanceTime breakTime = new AttendanceTime(0);
 		//or(TimeSheetOfDeductionItem goOutTimeSheet : goOutTimeSheetList) {
 		for(int itemNumber = 0 ; itemNumber < goOutTimeSheetList.size();itemNumber++) {
-			AttendanceTime goOutTime = goOutTimeSheetList.get(itemNumber).calcTotalTime();
+			AttendanceTime goOutTime = goOutTimeSheetList.get(itemNumber).calcTotalTime(DeductionAtr.Deduction);
 			//goOutTime全てを休憩時間に帰る
 			if(offSetTime.greaterThan(goOutTime.v())) {
 				breakTime = goOutTime;
@@ -309,7 +309,7 @@ public class DeductionTotalTimeForFluidCalc {
 		//分割する場合
 		if(breakTime.greaterThan(0)) {
 			//前を休憩へ
-			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
+			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 					   new TimeZoneRounding(deductionItem.timeSheet.getStart(), baseTime, deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(deductionItem.calcrange.getStart(), baseTime)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate)
@@ -317,13 +317,14 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, true)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
+					  ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
 					 ,Optional.empty()
 					 ,DeductionClassification.BREAK
 					 ,deductionItem.getChildCareAtr()));
 			//後ろを外出のままに
-			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime( 
+			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
 					   new TimeZoneRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(baseTime, deductionItem.calcrange.getEnd())
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate)
@@ -331,6 +332,7 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, false)
 					  ,deductionItem.recreateSpecifiedBonusPayListBeforeBase(baseTime, false)
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, false)
+					  ,deductionItem.getWorkingBreakAtr()
 					  ,deductionItem.getGoOutReason()
 					  ,deductionItem.getBreakAtr()
 					  ,Optional.empty()
@@ -340,7 +342,7 @@ public class DeductionTotalTimeForFluidCalc {
 		//分割しない場合
 		else {
 			//全部休憩へ
-			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
+			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
 					  deductionItem.timeSheet
 					 ,deductionItem.calcrange
 					 ,deductionItem.recordedTimeSheet
@@ -348,6 +350,7 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.bonusPayTimeSheet
 					 ,deductionItem.specBonusPayTimesheet
 					 ,deductionItem.midNightTimeSheet
+					 ,deductionItem.getWorkingBreakAtr()
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
 					 ,Optional.empty()

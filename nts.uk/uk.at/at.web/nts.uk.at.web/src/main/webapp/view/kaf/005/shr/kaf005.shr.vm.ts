@@ -430,20 +430,19 @@ module nts.uk.at.view.kaf005.share {
                 let overtimeWork2 = new common.OvertimeWork("",0,0,0,0,"","");
                 
                 overtimeWork1.yearMonth(overtimeAgreement.currentMonth);
-                let exceptionLimitErrorTime1 = overtimeAgreement.detailCurrentMonth.afterAppReflect.exceptionLimitErrorTime;   
-                if(exceptionLimitErrorTime1 >= 0){
+                let exceptionLimitErrorTime1 = overtimeAgreement.detailCurrentMonth.confirmed.exceptionLimitErrorTime;   
+                if(!nts.uk.util.isNullOrUndefined(exceptionLimitErrorTime1)){
                     overtimeWork1.limitTime(Process.convertTime(exceptionLimitErrorTime1));             
                 } else {
-                    let limitErrorTime1 = Process.setNulltoZero(overtimeAgreement.detailCurrentMonth.afterAppReflect.limitErrorTime);
+                    let limitErrorTime1 = overtimeAgreement.detailCurrentMonth.confirmed.limitErrorTime;
                     overtimeWork1.limitTime(Process.convertTime(limitErrorTime1));        
                 }
-                let agreementTimeReflect1 = Process.setNulltoZero(overtimeAgreement.detailCurrentMonth.afterAppReflect.agreementTime);
-                let agreementTimeConfirm1 = Process.setNulltoZero(overtimeAgreement.detailCurrentMonth.confirmed.agreementTime);
-                overtimeWork1.actualTime(Process.convertTime(agreementTimeConfirm1));
-                let appTime1 = Process.setNulltoZero(agreementTimeReflect1 - agreementTimeConfirm1);
+                let agreementTime1 = overtimeAgreement.detailCurrentMonth.confirmed.agreementTime;
+                overtimeWork1.actualTime(Process.convertTime(agreementTime1));
+                let appTime1 = 0;
                 overtimeWork1.appTime(Process.convertTime(appTime1));
-                overtimeWork1.totalTime(Process.convertTime(agreementTimeReflect1));
-                switch(overtimeAgreement.detailCurrentMonth.afterAppReflect.status){
+                overtimeWork1.totalTime(Process.convertTime(agreementTime1+appTime1));
+                switch(overtimeAgreement.detailCurrentMonth.confirmed.status){
                     case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
                         overtimeWork1.backgroundColor(common.Color.ALARM);
                         overtimeWork1.textColor(common.Color.ALARM_TEXT);
@@ -454,6 +453,17 @@ module nts.uk.at.view.kaf005.share {
                         overtimeWork1.textColor(common.Color.ERROR_TEXT);
                         break;
                     } 
+                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                        break;    
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                        overtimeWork1.backgroundColor(common.Color.EXCEPTION);
+                        break;
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                        overtimeWork1.backgroundColor(common.Color.EXCEPTION);
+                        break;        
+                    }
                     case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
                         overtimeWork1.backgroundColor(common.Color.ALARM);
                         overtimeWork1.textColor(common.Color.ALARM_TEXT);
@@ -468,20 +478,19 @@ module nts.uk.at.view.kaf005.share {
                 }
                 
                 overtimeWork2.yearMonth(overtimeAgreement.nextMonth);
-                let exceptionLimitErrorTime2 = overtimeAgreement.detailNextMonth.afterAppReflect.exceptionLimitErrorTime;   
-                if(exceptionLimitErrorTime2 >= 0){
+                let exceptionLimitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.exceptionLimitErrorTime;   
+                if(!nts.uk.util.isNullOrUndefined(exceptionLimitErrorTime2)){
                     overtimeWork2.limitTime(Process.convertTime(exceptionLimitErrorTime2));             
                 } else {
-                    let limitErrorTime2 = Process.setNulltoZero(overtimeAgreement.detailNextMonth.afterAppReflect.limitErrorTime);
+                    let limitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.limitErrorTime;
                     overtimeWork2.limitTime(Process.convertTime(limitErrorTime2));        
                 }
-                let agreementTimeReflect2 = Process.setNulltoZero(overtimeAgreement.detailNextMonth.afterAppReflect.agreementTime);
-                let agreementTimeConfirm2 = Process.setNulltoZero(overtimeAgreement.detailNextMonth.confirmed.agreementTime);
-                overtimeWork2.actualTime(Process.convertTime(agreementTimeConfirm2));
-                let appTime2 = Process.setNulltoZero(agreementTimeReflect2 - agreementTimeConfirm2);
+                let agreementTime2 = overtimeAgreement.detailNextMonth.confirmed.agreementTime;
+                overtimeWork2.actualTime(Process.convertTime(agreementTime2));
+                let appTime2 = 0;
                 overtimeWork2.appTime(Process.convertTime(appTime2));
-                overtimeWork2.totalTime(Process.convertTime(agreementTimeReflect2));
-                switch(overtimeAgreement.detailNextMonth.afterAppReflect.status){
+                overtimeWork2.totalTime(Process.convertTime(agreementTime2+appTime2));
+                switch(overtimeAgreement.detailNextMonth.confirmed.status){
                     case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
                         overtimeWork2.backgroundColor(common.Color.ALARM);
                         overtimeWork2.textColor(common.Color.ALARM_TEXT);
@@ -492,6 +501,17 @@ module nts.uk.at.view.kaf005.share {
                         overtimeWork2.textColor(common.Color.ERROR_TEXT);
                         break;
                     } 
+                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                        break;    
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                        overtimeWork2.backgroundColor(common.Color.EXCEPTION);
+                        break;
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                        overtimeWork2.backgroundColor(common.Color.EXCEPTION);
+                        break;        
+                    }
                     case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
                         overtimeWork2.backgroundColor(common.Color.ALARM);
                         overtimeWork2.textColor(common.Color.ALARM_TEXT);
@@ -509,6 +529,57 @@ module nts.uk.at.view.kaf005.share {
                 self.overtimeWork.push(overtimeWork1);
                 self.overtimeWork.push(overtimeWork2);
             } 
+            
+            public static setOvertimeWorkDetail(appOvertimeDetailDto: any, self: any, status: any): void {
+                let overtimeWork = new common.OvertimeWork("",0,0,0,0,"","");
+                
+                overtimeWork.yearMonth(nts.uk.time.formatYearMonth(appOvertimeDetailDto.yearMonth));
+                if(!nts.uk.util.isNullOrUndefined(appOvertimeDetailDto.exceptionLimitErrorTime)){
+                    overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.exceptionLimitErrorTime));    
+                } else {
+                    overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.limitErrorTime));    
+                }
+                overtimeWork.actualTime(Process.convertTime(appOvertimeDetailDto.actualTime));
+                overtimeWork.appTime(Process.convertTime(appOvertimeDetailDto.applicationTime));
+                overtimeWork.totalTime(Process.convertTime(appOvertimeDetailDto.actualTime + appOvertimeDetailDto.applicationTime));
+                switch(status){
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
+                        overtimeWork.backgroundColor(common.Color.ALARM);
+                        overtimeWork.textColor(common.Color.ALARM_TEXT);
+                        break;
+                    }   
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: {
+                        overtimeWork.backgroundColor(common.Color.ERROR);
+                        overtimeWork.textColor(common.Color.ERROR_TEXT);
+                        break;
+                    } 
+                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
+                        break;    
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
+                        overtimeWork.backgroundColor(common.Color.EXCEPTION);
+                        break;
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
+                        overtimeWork.backgroundColor(common.Color.EXCEPTION);
+                        break;        
+                    }
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
+                        overtimeWork.backgroundColor(common.Color.ALARM);
+                        overtimeWork.textColor(common.Color.ALARM_TEXT);
+                        break;
+                    }     
+                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: {
+                        overtimeWork.backgroundColor(common.Color.ERROR);
+                        overtimeWork.textColor(common.Color.ERROR_TEXT);
+                        break;
+                    }  
+                    default: break;
+                }
+                
+                self.overtimeWork.removeAll();
+                self.overtimeWork.push(overtimeWork);
+            }
             
             public static convertTime(minutes: number){
                 if(minutes < 0){

@@ -37,6 +37,10 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
+        
+        optionNoOfHolidays: any = {
+            decimallength: 1
+        }
 
         constructor() {
             let self = this,
@@ -57,6 +61,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
+            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && _.isEmpty(param.data.uncountableAtdItem)) {
+                param.data.compareStartValue = null;
+                param.data.compareEndValue = null;
+                param.data.uncountableAtdItem = null;
+            }
+            
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
 
             if (caic.compareOperator() > 5) {
@@ -204,22 +214,24 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             if (self.currentAtdItemCondition.conditionAtr() === 0) {
                 //With type 回数 - Times
                 service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : DailyAttendanceItemAtr.NumberOfTime, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
+                    /*service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
-                    });
+                    });*/
+                    dfd.resolve(lstAtdItem);
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 1) {
                 //With type 時間 - Time
                 service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : DailyAttendanceItemAtr.Time, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 0, self.mode).done((lstOptItem) => {
+                    /*service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 0, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
-                    });
+                    });*/
+                    dfd.resolve(lstAtdItem);
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 2) {
                 //With type 時刻 - TimeWithDay
@@ -229,12 +241,13 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             } else if (self.currentAtdItemCondition.conditionAtr() === 3) {
                 //With type 金額 - AmountMoney
                 service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : DailyAttendanceItemAtr.AmountOfMoney, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 2, self.mode).done((lstOptItem) => {
+                    /*service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 2, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
-                    });
+                    });*/
+                    dfd.resolve(lstAtdItem);
                 });
             } else { // 日数
                 service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
@@ -306,21 +319,27 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         validateRange() {
             let self = this,
                 caic = ko.toJS(self.currentAtdItemCondition);
-
             $('.value-input').ntsError('clear');
-
+            $('#endValue').css('border-color','grey');
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
+                // fixbug 99086 : set timeout
+                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+                        $('.value-input').ntsError('clear');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
+                }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-
+                // fixbug 99086 : set timeout
+                $('#endValue').css('border-color', 'grey');
+                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
+                        $('.value-input').ntsError('clear');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                        $('#endValue').css('border-color', 'red');
                     }
-
+                }, 25);
             }
         }
 

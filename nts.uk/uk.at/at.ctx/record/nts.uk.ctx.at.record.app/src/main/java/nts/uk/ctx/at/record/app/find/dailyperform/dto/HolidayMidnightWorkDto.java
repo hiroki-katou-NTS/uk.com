@@ -42,13 +42,20 @@ public class HolidayMidnightWorkDto implements ItemConst {
 				getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.PublicHolidayWork));
 	}
 	
+	@Override
+	public HolidayMidnightWorkDto clone() {
+		return new HolidayMidnightWorkDto(withinPrescribedHolidayWork == null ? null : withinPrescribedHolidayWork.clone(), 
+						excessOfStatutoryHolidayWork == null ? null : excessOfStatutoryHolidayWork.clone(),
+						publicHolidayWork == null ? null : publicHolidayWork.clone());
+	}
+	
 	private static CalcAttachTimeDto getWorkTime(List<HolidayWorkMidNightTime> source, StaturoryAtrOfHolidayWork type){
 		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> 
 														CalcAttachTimeDto.toTimeWithCal(c.getTime())).orElse(null);
 	}
 	
 	public HolidayMidnightWork toDomain() {
-		return withinPrescribedHolidayWork == null ? null : new HolidayMidnightWork(Arrays.asList(
+		return withinPrescribedHolidayWork == null ? createDefaul() : new HolidayMidnightWork(Arrays.asList(
 				newMidNightTime(withinPrescribedHolidayWork, StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
 				newMidNightTime(excessOfStatutoryHolidayWork, StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
 				newMidNightTime(publicHolidayWork, StaturoryAtrOfHolidayWork.PublicHolidayWork)));
@@ -57,5 +64,16 @@ public class HolidayMidnightWorkDto implements ItemConst {
 	public HolidayWorkMidNightTime newMidNightTime(CalcAttachTimeDto time, StaturoryAtrOfHolidayWork attr) {
 		return new HolidayWorkMidNightTime(time == null ? TimeDivergenceWithCalculation.emptyTime() 
 																: time.createTimeDivWithCalc(), attr);
+	}
+	
+	public static HolidayMidnightWork createDefaul(){
+		return new HolidayMidnightWork(Arrays.asList(
+				 createHolidateMidTime(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
+				 createHolidateMidTime(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
+				 createHolidateMidTime(StaturoryAtrOfHolidayWork.PublicHolidayWork)));
+	}
+
+	private static HolidayWorkMidNightTime createHolidateMidTime(StaturoryAtrOfHolidayWork statutoryAtr) {
+		return new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue(), statutoryAtr);
 	}
 }

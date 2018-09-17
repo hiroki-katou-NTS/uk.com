@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -92,6 +93,14 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.stateReflectionReal IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
 	
+	private String SELECT_BY_REFLECT = SELECT_BY_SID_PERIOD_APPTYPE + " OR c.stateReflection IN :stateReflection";
+	
+	private String SELECT_BY_SID_LISTDATE_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
+			+ " WHERE c.employeeID = :employeeID"
+			+ " AND c.appDate IN :dates"
+			+ " AND c.stateReflectionReal IN :stateReflectionReals"
+			+ " AND c.stateReflectionReal IN :stateReflectionReals"
+			+ " AND c.appType IN :appTypes";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -298,12 +307,16 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(lstSID.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_BY_LIST_SID, KrqdtApplication_New.class)
-				.setParameter("companyID", companyId)
-				.setParameter("lstSID", lstSID)
-				.setParameter("startDate", sDate)
-				.setParameter("endDate", eDate)
-				.getList(c -> c.toDomain());
+		List<KrqdtApplication_New> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSID, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_SID, KrqdtApplication_New.class)
+					.setParameter("companyID", companyId)
+					.setParameter("lstSID", subList)
+					.setParameter("startDate", sDate)
+					.setParameter("endDate", eDate)
+					.getList());
+		});
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 	/**
 	 * @author hoatt
@@ -321,12 +334,16 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		if(lstSID.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(SELECT_BY_LIST_APPLICANT, KrqdtApplication_New.class)
-				.setParameter("companyID", companyId)
-				.setParameter("lstSID", lstSID)
-				.setParameter("startDate", sDate)
-				.setParameter("endDate", eDate)
-				.getList(c -> c.toDomain());
+		List<KrqdtApplication_New> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSID, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_APPLICANT, KrqdtApplication_New.class)
+					.setParameter("companyID", companyId)
+					.setParameter("lstSID", subList)
+					.setParameter("startDate", sDate)
+					.setParameter("endDate", eDate)
+					.getList());
+		});
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 	@Override
 	public List<Application_New> getListAppByType(String companyId, String employeeID, GeneralDate startDate, GeneralDate endDate, int prePostAtr,
@@ -343,5 +360,27 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("appType", appType)
 				.setParameter("lstRef", lstRef)
 				.getList(c -> c.toDomain());
+	}
+	@Override
+	public List<Application_New> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
+			List<Integer> scheStatus, List<Integer> appType) {
+		return this.queryProxy().query(SELECT_BY_REFLECT, KrqdtApplication_New.class)
+				.setParameter("employeeID", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.setParameter("stateReflectionReals", recordStatus)
+				.setParameter("stateReflection", scheStatus)
+				.setParameter("appTypes", appType)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
+			List<Integer> appType) {
+		return this.queryProxy().query(SELECT_BY_SID_LISTDATE_APPTYPE, KrqdtApplication_New.class)
+				.setParameter("employeeID", sid)
+				.setParameter("dates", dateData)
+				.setParameter("stateReflectionReals", reflect)
+				.setParameter("appTypes", appType)
+				.getList(x -> x.toDomain());
 	}
 }

@@ -31,8 +31,8 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
@@ -84,9 +84,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				// get Person
 				Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
 				String nameBefore = person.getPersonNameGroup().getBusinessName().v();
-				PersonNameGroup nameGroup = person.getPersonNameGroup();
-				nameGroup.setBusinessName(new BusinessName(command.getName()));
-				person.setPersonNameGroup(nameGroup);
+				person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
 				personRepo.update(person);
 				
 				setDataLogPersonCorrection(command);
