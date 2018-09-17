@@ -198,39 +198,40 @@ module nts.uk.pr.view.qmm012.share.model {
         endYearJpn: KnockoutObservable<string> = ko.observable(null);;
 
         constructor(data: IValidityPeriodAndCycleSet) {
-            this.yearPeriodStart.subscribe(data => {
+            let self = this;
+            self.yearPeriodStart.subscribe(data => {
                 if (data) {
-                    this.startYearJpn("（" + time.yearInJapanEmpire(data).toString().split(' ').join('') + "）");
+                    self.startYearJpn("（" + time.yearInJapanEmpire(data).toString().split(' ').join('') + "）");
                 }
                 else {
-                    this.startYearJpn("");
+                    self.startYearJpn("");
                 }
             });
-            this.yearPeriodEnd.subscribe(data => {
+            self.yearPeriodEnd.subscribe(data => {
                 if (data) {
-                    this.endYearJpn("（" + time.yearInJapanEmpire(data).toString().split(' ').join('') + "）");
+                    self.endYearJpn("（" + time.yearInJapanEmpire(data).toString().split(' ').join('') + "）");
                 }
                 else {
-                    this.endYearJpn("");
+                    self.endYearJpn("");
                 }
             });
 
-            this.cycleSettingAtr = ko.observable(data ? data.cycleSettingAtr : null);
-            this.january(data ? data.january : false);
-            this.february(data ? data.february : false);
-            this.march(data ? data.march : false);
-            this.april(data ? data.april : false);
-            this.may(data ? data.may : false);
-            this.june(data ? data.june : false);
-            this.july(data ? data.july : false);
-            this.august(data ? data.august : false);
-            this.september(data ? data.september : false);
-            this.october(data ? data.october : false);
-            this.november(data ? data.november : false);
-            this.december(data ? data.december : false);
-            this.periodAtr(data ? data.periodAtr : null);
-            this.yearPeriodStart(data ? data.yearPeriodStart : null);
-            this.yearPeriodEnd(data ? data.yearPeriodEnd : null);
+            self.cycleSettingAtr = ko.observable(data ? data.cycleSettingAtr : null);
+            self.january(data ? data.january : false);
+            self.february(data ? data.february : false);
+            self.march(data ? data.march : false);
+            self.april(data ? data.april : false);
+            self.may(data ? data.may : false);
+            self.june(data ? data.june : false);
+            self.july(data ? data.july : false);
+            self.august(data ? data.august : false);
+            self.september(data ? data.september : false);
+            self.october(data ? data.october : false);
+            self.november(data ? data.november : false);
+            self.december(data ? data.december : false);
+            self.periodAtr(data ? data.periodAtr : null);
+            self.yearPeriodStart(data ? data.yearPeriodStart : null);
+            self.yearPeriodEnd(data ? data.yearPeriodEnd : null);
         }
     }
 }
