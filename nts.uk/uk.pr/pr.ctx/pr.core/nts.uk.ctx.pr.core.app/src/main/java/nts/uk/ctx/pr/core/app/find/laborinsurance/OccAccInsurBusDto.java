@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName;
 
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class OccAccInsurBusDto
     {
         List<OccAccInsurBusDto> occAccIsHisDtoList = domain.getEachBusiness().stream().map(item -> {
             return new OccAccInsurBusDto(domain.getCid(),item.getOccAccInsurBusNo(),item.getToUse(),item.getName().get().v());
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(OccAccInsurBusDto::getOccAccInsurBusNo)).collect(Collectors.toList());
         return occAccIsHisDtoList;
     }
     

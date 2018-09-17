@@ -19,7 +19,7 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 
-@Path("exio/monsalabonus/laborinsur")
+@Path("core/monsalabonus/laborinsur")
 @Produces("application/json")
 public class OccAccidentInsurWebService extends WebService {
 
@@ -72,14 +72,14 @@ public class OccAccidentInsurWebService extends WebService {
         return accInsurPreRateFinder.getAccInsurPreRate(hisId);
     }
     @POST
-    @Path("register")
-    public void registerEmpInsurPreRate(AddOccAccIsPrRateCommand command){
+    @Path("registerOccAccInsur")
+    public void registerOccAccInsurPreRate(AddOccAccIsPrRateCommand command){
         addOccAccIsPrRateCommandHandler.handle(command);
     }
 
     @POST
-    @Path("adđOccAccIsHis")
-    public void adđOccAccIsHis(AccInsurHisCommand accInsurHisCommand){
+    @Path("addOccAccIsHis")
+    public void addOccAccIsHis(AccInsurHisCommand accInsurHisCommand){
         addOccAccIsHisCommandHandler.handle(accInsurHisCommand);
     }
 
