@@ -42,6 +42,8 @@ public class JpaSetPeriodCycleRepository extends JpaRepository implements SetPer
 
 	@Override
 	public void remove(String salaryItemId) {
-		this.commandProxy().remove(QpbmtSetPeriodCycle.class, new QpbmtSetPeriodCyclePk(salaryItemId));
+		if (this.getSetPeriodCycleById(salaryItemId).isPresent()) {
+			this.commandProxy().remove(QpbmtSetPeriodCycle.class, new QpbmtSetPeriodCyclePk(salaryItemId));
+		}
 	}
 }

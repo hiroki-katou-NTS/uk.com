@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 明細書項目名称: 主キー情報
+ * 明細書項目の表示設定: 主キー情報
  */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtSpecItemNamePk implements Serializable {
+public class QpbmtStatementItemDispPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

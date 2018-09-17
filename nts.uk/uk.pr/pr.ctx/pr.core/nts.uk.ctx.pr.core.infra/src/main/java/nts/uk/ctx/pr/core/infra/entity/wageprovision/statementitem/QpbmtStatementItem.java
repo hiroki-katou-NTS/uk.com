@@ -16,18 +16,18 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 明細書項目
  */
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "QPBMT_BILLING_ITEM")
-public class QpbmtBillingItem extends UkJpaEntity implements Serializable {
+@Entity
+@Table(name = "QPBMT_STATEMENT_ITEM")
+public class QpbmtStatementItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public QpbmtBillingItemPk billingItemPk;
+	public QpbmtStatementItemPk statementItemPk;
 
 	/**
 	 * 既定区分
@@ -62,23 +62,23 @@ public class QpbmtBillingItem extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "INTERGRATE_CD")
-	public Integer intergrateCd;
+	public String intergrateCd;
 
 	@Override
 	protected Object getKey() {
-		return billingItemPk;
+		return statementItemPk;
 	}
 
 	public StatementItem toDomain() {
-		return new StatementItem(this.billingItemPk.cid, this.billingItemPk.categoryAtr, this.billingItemPk.itemNameCd,
-				this.billingItemPk.salaryItemId, this.defaultAtr, this.valueAtr, this.deprecatedAtr,
-				this.socialInsuaEditableAtr, this.intergrateCd);
+		return new StatementItem(this.statementItemPk.cid, this.statementItemPk.categoryAtr,
+				this.statementItemPk.salaryItemId, this.statementItemPk.itemNameCd, this.defaultAtr, this.valueAtr,
+				this.deprecatedAtr, this.socialInsuaEditableAtr, this.intergrateCd);
 	}
 
-	public static QpbmtBillingItem toEntity(StatementItem domain) {
-		return new QpbmtBillingItem(
-				new QpbmtBillingItemPk(domain.getCid(), domain.getCategoryAtr().value, domain.getItemNameCd().v(),
-						domain.getSalaryItemId()),
+	public static QpbmtStatementItem toEntity(StatementItem domain) {
+		return new QpbmtStatementItem(
+				new QpbmtStatementItemPk(domain.getCid(), domain.getCategoryAtr().value, domain.getSalaryItemId(),
+						domain.getItemNameCd().v()),
 				domain.getDefaultAtr().value, domain.getValueAtr().value, domain.getDeprecatedAtr().value,
 				domain.getSocialInsuaEditableAtr().map(i -> i.value).orElse(null),
 				domain.getIntergrateCd().map(i -> i.v()).orElse(null));

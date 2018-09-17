@@ -26,14 +26,14 @@ public class SetValidityPeriodCycle extends AggregateRoot {
 	 */
 	private ValidityPeriodSet validityPeriodSetting;
 
-	public SetValidityPeriodCycle(String salaryItemId, int cycleSettingAtr, int january, int february, int march, int april,
-			int may, int june, int july, int august, int september, int october, int november, int december,
-			int periodAtr, int endYear, int startYear) {
+	public SetValidityPeriodCycle(String salaryItemId, int cycleSettingAtr, Integer january, Integer february, Integer march, Integer april,
+			Integer may, Integer june, Integer july, Integer august, Integer september, Integer october, Integer november, Integer december,
+			int periodAtr, Integer startYear, Integer endYear) {
 		super();
 		this.salaryItemId = salaryItemId;
 		this.cycleSetting = new CycleSetting(cycleSettingAtr, january, february, march, april, may, june, july, august,
 				september, october, november, december);
-		this.validityPeriodSetting = new ValidityPeriodSet(periodAtr, endYear, startYear);
+		this.validityPeriodSetting = new ValidityPeriodSet(periodAtr, startYear, endYear);
 	}
 
 }
