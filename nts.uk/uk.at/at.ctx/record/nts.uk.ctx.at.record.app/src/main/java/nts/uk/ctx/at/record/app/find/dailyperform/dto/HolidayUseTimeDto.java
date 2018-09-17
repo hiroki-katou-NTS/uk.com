@@ -28,11 +28,6 @@ public class HolidayUseTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
-	
-	@Override
-	public HolidayUseTimeDto clone() {
-		return new HolidayUseTimeDto(timeDigestionVacationUseTime, useTime);
-	}
 
 	public SpecialHolidayOfDaily toSpecialHoliday() {
 		return new SpecialHolidayOfDaily(toUseAttendanceTime(),
@@ -79,10 +74,10 @@ public class HolidayUseTimeDto implements ItemConst {
 	}
 
 	private AttendanceTime toDigestionTIme() {
-		return timeDigestionVacationUseTime == null ? AttendanceTime.ZERO : new AttendanceTime(timeDigestionVacationUseTime);
+		return timeDigestionVacationUseTime == null ? new AttendanceTime(0) : new AttendanceTime(timeDigestionVacationUseTime);
 	}
 
 	private AttendanceTime toUseAttendanceTime() {
-		return useTime == null ? AttendanceTime.ZERO : new AttendanceTime(useTime);
+		return useTime == null ? new AttendanceTime(0) : new AttendanceTime(useTime);
 	}
 }

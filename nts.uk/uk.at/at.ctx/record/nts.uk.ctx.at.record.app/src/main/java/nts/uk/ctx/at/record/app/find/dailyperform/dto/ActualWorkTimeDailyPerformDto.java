@@ -2,14 +2,12 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ConstraintTime;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
@@ -56,17 +54,6 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = DIVERGENCE, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<DivergenceTimeDto> divergenceTime;
 
-	@Override
-	public ActualWorkTimeDailyPerformDto clone() {
-		return new ActualWorkTimeDailyPerformDto(
-						premiumTimes == null ? null : premiumTimes.stream().map(t -> t.clone()).collect(Collectors.toList()),
-						constraintDifferenceTime,
-						constraintTime == null ? null : constraintTime.clone(),
-						timeDifferenceWorkingHours,
-						totalWorkingTime == null ? null : totalWorkingTime.clone(),
-						divergenceTime == null ? null : divergenceTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
-	}
-
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {
 		return domain == null ? null : new ActualWorkTimeDailyPerformDto(
 						getPremiumTime(domain.getPremiumTimeOfDailyPerformance()),
@@ -103,7 +90,7 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 
 	public ActualWorkingTimeOfDaily toDomain() {
 		return ActualWorkingTimeOfDaily.of(
-					totalWorkingTime == null ? TotalWorkingTime.createAllZEROInstance() : totalWorkingTime.toDomain(), 
+					totalWorkingTime == null ? null : totalWorkingTime.toDomain(), 
 					constraintTime == null || constraintTime.getLateNightConstraintTime() == null ? 0 : constraintTime.getLateNightConstraintTime(),
 					constraintTime == null || constraintTime.getTotalConstraintTime() == null ? 0 : constraintTime.getTotalConstraintTime(),
 					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, 
@@ -114,11 +101,11 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 										c.getNo(),
 										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
 										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
-				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
-										c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime())))));
+				new PremiumTimeOfDailyPerformance(premiumTimes == null ? new ArrayList<>() : ConvertHelper.mapTo(premiumTimes,
+						c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime())))));
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {
-		return value == null ? AttendanceTime.ZERO : new AttendanceTime(value);
+		return value == null ? new AttendanceTime(0) : new AttendanceTime(value);
 	}
 }
