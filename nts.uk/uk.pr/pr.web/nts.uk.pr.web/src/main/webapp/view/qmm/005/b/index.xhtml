@@ -6,6 +6,20 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 1200,
+                height : 600
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qmm005.b.style.css"/>
+        <com:scriptfile path="qmm005.b.start.js"/>
+        <com:scriptfile path="qmm005.b.service.js"/>
+        <com:scriptfile path="qmm005.b.vm.js"/>
+    </ui:define>
     <ui:define name="content">
         <div id="functions-area">
             <!--B1_1	新規-->
@@ -17,13 +31,13 @@
                     data-bind="click: registration">#{i18n.getText('QMM005_1')}</button>
 
             <!--B1_3	閉じる-->
-            <button class=""
+            <button style="margin-left: 110px;"
                     data-bind="click: cancel">#{i18n.getText('QMM005_23')}</button>
         </div>
         <!--B2_4	処理年-->
         <!--B4_1	支払日設定一覧-->
         <div id="contents-area">
-            <table>
+            <table id='content_dialog'>
                 <tr>
                     <td style="border: 0px; vertical-align: top">
                         <div id="clf-component">
@@ -58,7 +72,7 @@
                             </div>
                         </div>
                     </td>
-                    <td style="border: 0px">
+                    <td style="border: 0px; vertical-align: top">
                         <div>
                             <!--B3_1	処理区分-->
                             <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
@@ -181,15 +195,6 @@
                 </tr>
             </table>
         </div>
-    </ui:define>
-    <script>var dialogSize = {width: 900, height: 530};</script>
-    <ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE"/>
-        <com:scriptfile path="../share/model.js"/>
-        <com:scriptfile path="qmm005.b.start.js"/>
-        <com:scriptfile path="qmm005.b.service.js"/>
-        <com:scriptfile path="qmm005.b.vm.js"/>
-        <com:stylefile path="qmm005.b.style.css"/>
     </ui:define>
 </ui:composition>
 </body>

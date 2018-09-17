@@ -5,51 +5,42 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-
+    import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         //A2_2
-        itemTable:ItemTable;
+        itemTable: ItemTable;
         //A3_4 対象雇用
-        targetEmployment:KnockoutObservableArray<number>;
-        processCategoryNO:number;
-        itemBinding:KnockoutObservableArray<ItemBinding>;
-
+        targetEmployment: KnockoutObservableArray<number>;
+        processCategoryNO: number;
+        itemBinding: KnockoutObservableArray<ItemBinding>;
 
 
         constructor() {
             var self = this;
-            $("#A2_2").ntsFixedTable({ height: 300, width: 1000 });
-            $("#A3_1").ntsFixedTable({ height: 300, width:400  });
+            $("#A2_2").ntsFixedTable({height: 300, width: 1000});
+            $("#A3_1").ntsFixedTable({height: 300, width: 400});
             //A3_4 対象雇用
-            self.targetEmployment=ko.observable([]);
+            self.targetEmployment = ko.observable([]);
 
-            self.itemBinding=ko.observableArray([]);
+            self.itemBinding = ko.observableArray([]);
 
 
         }
 
-
-
-        showDialogD(processCateNo,mode):void{
-            let param={
-                processCateNo:processCateNo,
-                modeUpdate:mode,
-            }
-            setShared("QMM005_output_D", param);
+        showDialogD_Create(processCateNo): void {
+            setShared("QMM005_output_D_create", processCateNo);
             modal('/view/qmm/005/d/index.xhtml', {title: '',}).onClosed(function (): any {
             })
         }
 
-
-        getYearFromSetDaySuport(setDaySuports:Array<model.SetDaySupport>){
-            let self=this;
-            temp:Array;
-            for(let item in setDaySuports){
-
+        showDialogB_Update(processCateNo): void {
+            let param = {
+                processCateNo: processCateNo,
+                modeUpdate: true,
             }
+            setShared("QMM005_output_D_create", param);
         }
-
 
 
         showDialogB(param): void {
@@ -68,41 +59,52 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             }
             setShared("QMM005_output_F", paramEmployment);
             modal('/view/qmm/005/f/index.xhtml', {title: '',}).onClosed(function (): any {
-            })
+                let employeeString = '';
+                let params = getShared("QMM005F_outParams");
+                let array = [];
+                for (let i = 0; i < params.returnList.length; i++) {
+                    employeeString == '' ? employeeString += params.returnList[i].name : employeeString += (', ' + params.returnList[i].name);
+                }
+                for (let i = 0; i < self.itemBinding().length; i++) {
+                    if (self.itemBinding()[i].processInfomation.processCateNo == params.processCateNo) {
+                        array.push(new ItemBinding(self.itemBinding()[i].processInfomation, self.itemBinding()[i].setDaySupports(), employeeString, params.returnList));
+                    } else {
+                        array.push(self.itemBinding()[i]);
+                    }
+                }
+                self.itemBinding(array);
+            });
 
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.findDisplayRegister().done(data=>{
-                self.itemTable=new ItemTable(data);
+            service.findDisplayRegister().done(data => {
+                self.itemTable = new ItemTable(data);
                 console.log(self.itemTable);
 
 
-                var sizetalbe=self.itemTable.processInfomations.length;
-                for(let i:number=sizetalbe;i<5;i++){
+                var sizetalbe = self.itemTable.processInfomations.length;
+                for (let i: number = sizetalbe; i < 5; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
-                            processCateNo: i+1,
+                            processCateNo: i + 1,
                             processDivisionName: '',
                             deprecatCate: 0
                         }
                     ));
                 }
 
-                for(let i:number=0;i<5;i++){
+                for (let i: number = 0; i < 5; i++) {
                     self.itemBinding.push(new ItemBinding(
                         self.itemTable.processInfomations[i],
-                        _.sortBy(_.filter(self.itemTable.setDaySupports,function (o) {
-                                return o.processCateNo==i+1;
-                        }),function (o) {
+                        _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
+                            return o.processCateNo == i + 1;
+                        }), function (o) {
                             return o.processDate;
-                        })
-
-
+                        }), null, []
                     ));
-                };
-
+                }
                 console.log(self.itemBinding());
             });
             dfd.resolve();
@@ -111,29 +113,24 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
     }
 
+    export class ItemBinding {
+        processInfomation: model.ProcessInfomation;
+        setDaySupports: KnockoutObservableArray<model.SetDaySupport>;
+        setDaySupportsSelectedCode: KnockoutObservable<number>;
+        employeeString: KnockoutObservable<string>;
+        employeeList: KnockoutObservableArray<any>;
 
-
-    export class ItemBinding{
-
-        processInfomation:model.ProcessInfomation;
-        setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
-        setDaySupportsSelectedCode:KnockoutObservable<number>;
-        yearSupports:KnockoutObservableArray<number>;
-        constructor(
-            processInfomation:model.ProcessInfomation,
-            setDaySupports:Array<model.SetDaySupport>,
-            //yearSupports:Array<number>
-
-        ){
-            this.processInfomation=processInfomation;
-            this.setDaySupports=ko.observableArray(setDaySupports);
-            this.setDaySupportsSelectedCode=ko.observable(0);
-            //this.yearSupports=ko.observableArray(yearSupports);
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array) {
+            this.processInfomation = processInfomation;
+            this.setDaySupports = ko.observableArray(setDaySupports);
+            this.setDaySupportsSelectedCode = ko.observable(0);
+            this.employeeString = ko.observable(employeeString);
+            this.employeeList = ko.observableArray(employeeList);
         }
     }
 
 
-    export interface IitemTable{
+    export interface IitemTable {
         informationDto: Array<model.ProcessInfomation>,
         setDaySupportDto: Array<model.SetDaySupport>,
         currProcessDateDto: Array<model.CurrentProcessDate>,
@@ -141,21 +138,19 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         empCdNameImports: Array<model.EmpCdNameImport>
     }
 
-    export class ItemTable{
-        processInfomations:Array<model.ProcessInfomation>;
-        setDaySupports:Array<model.SetDaySupport>;
-        currentProcessDates:Array<model.CurrentProcessDate>;
-        empCdNameImports:Array<model.EmpCdNameImport>;
-        empTiedProYear:Array<model.EmpTiedProYear>;
+    export class ItemTable {
+        processInfomations: Array<model.ProcessInfomation>;
+        setDaySupports: Array<model.SetDaySupport>;
+        currentProcessDates: Array<model.CurrentProcessDate>;
+        empCdNameImports: Array<model.EmpCdNameImport>;
+        empTiedProYear: Array<model.EmpTiedProYear>;
 
-        constructor(
-            param:IitemTable
-        ){
-            this.processInfomations=param.informationDto;
-            this.currentProcessDates=param.currProcessDateDto;
-            this.setDaySupports=param.setDaySupportDto;
-            this.empCdNameImports=param.empCdNameImports;
-            this.empTiedProYear=param.empTiedProYearDto;
+        constructor(param: IitemTable) {
+            this.processInfomations = param.informationDto;
+            this.currentProcessDates = param.currProcessDateDto;
+            this.setDaySupports = param.setDaySupportDto;
+            this.empCdNameImports = param.empCdNameImports;
+            this.empTiedProYear = param.empTiedProYearDto;
         }
 
 
