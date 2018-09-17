@@ -37,13 +37,13 @@
 				data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
 					<div id="functions-area">
 						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  data-bind="click: openEscreen , enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
+						<button id ="B1_2"  tabindex="1" data-bind="click: openEscreen , enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
+						<button id ="B1_3"  tabindex="2" data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
 					</div>
 					<div>
 						<!--B1_4 雇用保険料率一覧 -->
-						<table id="B1_4"
+						<table id="B1_4" tabindex="3"
 								data-bind="ntsGridList: {
 												name: '#QMM011_8',
 												height: 700,
@@ -107,7 +107,7 @@
 								</com:ko-if>
 							</td>
 							<td >
-								<input id = "B3_7" class = "B3_7" 
+								<input id = "B3_7" class = "B3_7"  tabindex = "4"
 										data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																name: '#{i18n.getText('QMM011_11')}',
@@ -118,14 +118,15 @@
 								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
 							</td>
 							<td>
-								<div class = "B3_9"
+								<div class = "B3_9" tabindex = "5"
 										data-bind="ntsComboBox: {
 																
-																name: '#{i18n.getText('QMM011_15')}',
+																name: '#{i18n.getText('QMM011_12')}',
 																value: perFracClass,
 																options: $parent.listPerFracClass,
 																optionsValue: 'code',
 																optionsText: 'name',
+																visibleItemsCount: 5,
 																enable: !$parent.enableRegis(),
 																columns: [             
 																{ prop: 'name', length: 10 },]
@@ -133,7 +134,7 @@
 																}"/>
 							</td>
 							<td>
-									<input id = "B3_11" class = "B3_11"
+									<input id = "B3_11" class = "B3_11" tabindex = "6"
 										data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																value: empContrRatio,

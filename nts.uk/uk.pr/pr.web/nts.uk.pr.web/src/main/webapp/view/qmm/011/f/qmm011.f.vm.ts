@@ -56,7 +56,7 @@ module nts.uk.com.view.qmm011.f.viewmodel {
                             close();
                         });
                     } else {
-                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
                             setShared('QMM011_F_PARAMS_OUTPUT', {
                                 methodEditing: self.methodEditing()
                             });

@@ -27,6 +27,9 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) => {
                 let self = this;
+                if (data == HIS_ID_TEMP) {
+                    self.isNewMode(MODE.NEW);
+                }
                 self.selectedEmpInsHis(self.listEmpInsHis()[self.getIndex(data)]);
                 self.setEmplInsurHis(self.selectedEmpInsHis());
                 self.getEmpInsurPreRate();
@@ -46,6 +49,9 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                         self.index(self.getIndex(hisId));
                     }
                     self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
+                    self.selectedEmpInsHis(self.listEmpInsHis()[self.index()]);
+                    self.setEmplInsurHis(self.selectedEmpInsHis());
+                    
                 } else {
                     self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                 }
@@ -57,14 +63,14 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         getEmpInsurPreRate() {
             let self = this;
             let hisId :string = self.selectedEmpInsHisId();
-            if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER && self.listEmpInsHis().length > 1) {
+            if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER && self.listEmpInsHis().length > 1 && self.isNewMode == MODE.NEW) {
                 hisId = self.listEmpInsHis()[1].hisId;
             }
             service.getEmpInsurPreRate(hisId).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) => {
                 if (listEmpInsurPreRate && listEmpInsurPreRate.length > 0) {
                     self.listEmpInsurPreRate(EmpInsurPreRate.fromApp(listEmpInsurPreRate));
                     self.isNewMode(MODE.UPDATE);
-                    if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER) {
+                    if (self.selectedEmpInsHisId() == HIS_ID_TEMP) {
                         self.isNewMode(MODE.NEW);
                     }
                 } else {
@@ -172,7 +178,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             let listEmpInsHis: Array<EmplInsurHis> = []; 
             let self = this;
             let emplInsurHis = new EmplInsurHis();
-            emplInsurHis.hisId = '000';
+            emplInsurHis.hisId = '00000';
             emplInsurHis.startYearMonth = start.toString();
             emplInsurHis.endYearMonth = '999912';
             emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString(emplInsurHis.endYearMonth);
@@ -192,6 +198,9 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
+            year = self.startYearMonth().slice(0, 4);
+            month = self.startYearMonth().slice(5, 7);
+            self.monthlyCalendar( "(" + nts.uk.time.yearInJapanEmpire(year).toString() + month +"月)" );
         }
         
         validate(){
@@ -235,10 +244,8 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 let params = getShared('QMM011_F_PARAMS_OUTPUT');
                 if(params && params.methodEditing == 1) {
                     self.initScreen(self.selectedEmpInsHisId());
-                    self.setEmplInsurHis(self.selectedEmpInsHisId());
                 }
                 if(params && params.methodEditing == 0) {
-                    
                     self.initScreen(null);
                 }
                 
@@ -362,6 +369,8 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         UPDATE = 1,
         NO = 2
     }
+    
+    export const HIS_ID_TEMP = "00000"
 
     export const FIRST = 0;
 }
