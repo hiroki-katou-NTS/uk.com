@@ -8,6 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.HEAD;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class UpdateNameOfEachBusinessCommandHandler extends CommandHandler<Updat
         {
            return  new NameOfEachBusiness(item.getOccAccInsurBusNo(),item.getToUse(),Optional.of(new OccAccInsurBusinessName(item.getName())));
         }).collect(Collectors.toList());
-        OccAccInsurBus occAccInsurBus = new OccAccInsurBus(cId,listNameOfEachBusiness);
+        OccAccInsurBus occAccInsurBus = new OccAccInsurBus(cId, listNameOfEachBusiness);
         occAccInsurBusRepository.update(occAccInsurBus);
     }
 }

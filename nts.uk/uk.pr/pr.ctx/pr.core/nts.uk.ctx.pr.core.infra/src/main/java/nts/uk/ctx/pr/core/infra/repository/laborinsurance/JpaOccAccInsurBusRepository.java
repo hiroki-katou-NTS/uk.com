@@ -1,19 +1,18 @@
 package nts.uk.ctx.pr.core.infra.repository.laborinsurance;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.laborinsurance.NameOfEachBusiness;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusRepository;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName;
-import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurHis;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccInsurBus;
 import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtOccAccInsurBusPk;
-
-
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 
 @Stateless

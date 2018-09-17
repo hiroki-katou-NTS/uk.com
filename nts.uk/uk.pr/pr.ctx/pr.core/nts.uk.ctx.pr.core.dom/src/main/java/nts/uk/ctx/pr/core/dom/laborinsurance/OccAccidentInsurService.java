@@ -1,16 +1,13 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
-import nts.arc.time.YearMonth;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import java.util.List;
-import java.util.Optional;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 
 @Stateless
@@ -79,12 +76,12 @@ public class OccAccidentInsurService {
     		return;
     	}
     	accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
-    	this.updateAccInsurHis(accInsurHis.get());
+    	this.updateAccInsurHis(itemToBeUpdate.get(), cId);
     	this.updateItemBefore(accInsurHis.get(), itemToBeUpdate.get(), cId);
     }
     
-    private void updateAccInsurHis(OccAccIsHis itemToBeUpdated){
-    	occAccIsHisRepository.update(itemToBeUpdated.getHistory().get(itemToBeUpdated.getHistory().size() - 1), itemToBeUpdated.getCid());
+    private void updateAccInsurHis(YearMonthHistoryItem itemToBeUpdated, String cId){
+    	occAccIsHisRepository.update(itemToBeUpdated, cId);
     }
     
     private void updateItemBefore(OccAccIsHis accIsHis, YearMonthHistoryItem item, String cId){
