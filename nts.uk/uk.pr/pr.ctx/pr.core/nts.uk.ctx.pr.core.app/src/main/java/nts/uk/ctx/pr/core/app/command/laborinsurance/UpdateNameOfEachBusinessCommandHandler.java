@@ -17,21 +17,17 @@ import java.util.stream.Collectors;
 public class UpdateNameOfEachBusinessCommandHandler extends CommandHandler<UpdateNameOfEachBusinessCommand> {
 
     @Inject
-    OccAccidentInsurService workersComInsurService;
-
-    @Inject
     OccAccInsurBusRepository occAccInsurBusRepository;
 
     @Override
     protected void handle(CommandHandlerContext<UpdateNameOfEachBusinessCommand> context) {
         String cId = AppContexts.user().companyId();
         UpdateNameOfEachBusinessCommand command = context.getCommand();
-        Optional<OccAccInsurBus> occAccInsurBus = workersComInsurService.getOccAccInsurBus(cId);
         List<NameOfEachBusiness> listNameOfEachBusiness = command.getListEachBusiness().stream().map(item->
         {
            return  new NameOfEachBusiness(item.getOccAccInsurBusNo(),item.getToUse(),Optional.of(new OccAccInsurBusinessName(item.getName())));
         }).collect(Collectors.toList());
-        occAccInsurBus.get().setEachBusiness(listNameOfEachBusiness);
-        occAccInsurBusRepository.update(occAccInsurBus.get());
+        OccAccInsurBus occAccInsurBus = new OccAccInsurBus(cId,listNameOfEachBusiness);
+        occAccInsurBusRepository.update(occAccInsurBus);
     }
 }
