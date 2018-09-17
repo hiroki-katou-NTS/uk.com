@@ -6,10 +6,12 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
 
+
     export class ScreenModel {
 
+
         enableCloseDate: KnockoutObservable<boolean>;
-        screenMode: number;
+        screenMode: boolean;
 
         valPayDateSet: model.ValPayDateSet;
         basicSetting: model.BasicSetting;
@@ -138,7 +140,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             var self = this;
 
-            self.processCategoryNo=3;
+            self.processCategoryNo=getShared('QMM005_output_D_create');
 
             self.numberOfWorkingDays = ko.observable(20);
             self.enableCloseDate = ko.observable(false);

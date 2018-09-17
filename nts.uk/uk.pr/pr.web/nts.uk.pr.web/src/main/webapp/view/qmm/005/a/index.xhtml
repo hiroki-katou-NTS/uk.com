@@ -39,7 +39,7 @@
                     <colgroup>
 
                         <col width="50px"/>
-                        <col width="200px"/>
+                        <col width="250px"/>
                         <col width="130px"/>
                         <col width="400px"/>
 
@@ -80,7 +80,7 @@
 
                             <!--A2_9 編集-->
                             <com:ko-if bind="processInfomation.processDivisionName == ''">
-                                <button>#{i18n.getText('QMM005_21')}</button>
+                                <button data-bind="click: function (){$vm.showDialogD_Create(processInfomation.processCateNo)}">#{i18n.getText('QMM005_21')}</button>
                             </com:ko-if>
                         </td>
 

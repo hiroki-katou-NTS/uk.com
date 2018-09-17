@@ -13,20 +13,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         //A3_4 対象雇用
         targetEmployment:KnockoutObservableArray<number>;
         processCategoryNO:number;
-
-
-        // processInfomations:KnockoutObservableArray<model.ProcessInfomation>;
-        // setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
-        // currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>;
-        // empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>;
-
         itemBinding:KnockoutObservableArray<ItemBinding>;
 
-        processInfomations:Array<model.ProcessInfomation>;
-        setDaySupports:Array<model.SetDaySupport>;
-        currentProcessDates:Array<model.CurrentProcessDate>;
-        empCdNameImports:Array<model.EmpCdNameImport>;
-        empTiedProYear:Array<model.EmpTiedProYear>;
 
 
         constructor() {
@@ -40,6 +28,25 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
         }
+
+        showDialogD_Create(processCateNo):void{
+            setShared("QMM005_output_D_create", processCateNo);
+            modal('/view/qmm/005/d/index.xhtml', {title: '',}).onClosed(function (): any {
+            })
+        }
+
+        showDialogB_Update(processCateNo):void{
+            let param={
+                processCateNo:processCateNo,
+                modeUpdate:true,
+            }
+            setShared("QMM005_output_D_create", param);
+        }
+
+
+
+
+
 
         showDialogB(param): void {
             setShared("QMM005_output_B", param);
@@ -105,32 +112,24 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         processInfomation:model.ProcessInfomation;
         setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
         setDaySupportsSelectedCode:KnockoutObservable<number>;
-
-
-
         constructor(
             processInfomation:model.ProcessInfomation,
             setDaySupports:Array<model.SetDaySupport>,
 
         ){
-
             this.processInfomation=processInfomation;
             this.setDaySupports=ko.observableArray(setDaySupports);
             this.setDaySupportsSelectedCode=ko.observable(0);
-
-
         }
     }
 
 
     export interface IitemTable{
-
         informationDto: Array<model.ProcessInfomation>,
         setDaySupportDto: Array<model.SetDaySupport>,
         currProcessDateDto: Array<model.CurrentProcessDate>,
         empTiedProYearDto: Array<model.EmpTiedProYear>,
         empCdNameImports: Array<model.EmpCdNameImport>
-
     }
 
     export class ItemTable{
