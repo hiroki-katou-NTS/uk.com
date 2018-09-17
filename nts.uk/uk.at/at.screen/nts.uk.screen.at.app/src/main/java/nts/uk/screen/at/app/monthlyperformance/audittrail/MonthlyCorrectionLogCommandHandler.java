@@ -59,8 +59,7 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 			Map<Integer, ItemValue> itemNewMap = AttendanceItemUtil
 					.toItemValues(newDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
 					.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			MonthlyCorrectionTarget monthTarget = new MonthlyCorrectionTarget(oldDto.getEmployeeId(),
-					GeneralDate.ymd(oldDto.getYearMonth().year(), oldDto.getYearMonth().month(), 1));
+			MonthlyCorrectionTarget monthTarget = new MonthlyCorrectionTarget(oldDto.getEmployeeId(), context.getCommand().getEndPeriod());
 			itemNewMap.forEach((key, value) -> {
 				ItemValue itemNew = value;
 				ItemValue itemOld = itemOldMap.get(key);
