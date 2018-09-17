@@ -180,6 +180,12 @@ module nts.uk.pr.view.qmm008.share.model {
         employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
         individualBurdenRatio: KnockoutObservable<HealthContributionFee> = ko.observable(null);
         employeeBurdenRatio: KnockoutObservable<HealthContributionFee> = ko.observable(null);
+        
+         // Control item
+        shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
+            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
+            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
+        ]);
         constructor(params: IBonusHealthInsuranceRate) {
             this.historyId(params ? params.historyId : null);
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
@@ -200,6 +206,11 @@ module nts.uk.pr.view.qmm008.share.model {
         individualBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
         employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
         employeeBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
+        // Control item
+        shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
+            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
+            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
+        ]);
         constructor(params: ISalaryHealthInsurancePremiumRate) {
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
             this.individualBurdenRatio(new HealthContributionRate(params ? params.individualBurdenRatio : null));
@@ -219,13 +230,19 @@ module nts.uk.pr.view.qmm008.share.model {
         healthInsuranceRate: KnockoutObservable<SalaryHealthInsurancePremiumRate> = ko.observable(null);
         autoCalculationCls: KnockoutObservable<number> = ko.observable(null);
         historyId: KnockoutObservable<string> = ko.observable(null);
-        healthInsurancePerGradeFee: KnockoutObservableAray<HealthInsurancePerGradeFee> = ko.observableAray(null);
+        healthInsurancePerGradeFee: KnockoutObservableArray<HealthInsurancePerGradeFee> = ko.observableArray(null);
 
+        // Control item
+        autoCalculationClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
+            new EnumModel(AUTOMATIC_CALCULATE_CLASSIFICATION.USE, getText('QMM008_14')),
+            new EnumModel(AUTOMATIC_CALCULATE_CLASSIFICATION.NOT_USE, getText('QMM008_15'))
+        ]);
+        
         constructor(params: IHealthInsuranceMonthlyFee) {
-            this.autoCalculationCls(params ? params.autoCalculationCls : null);
+            this.autoCalculationCls(params ? params.autoCalculationCls : 1);
             this.historyId(params ? params.historyId : null);
             this.healthInsuranceRate(new SalaryHealthInsurancePremiumRate(params ? params.healthInsuranceRate : null));
-            this.autoCalculationCls(params ? params.healthInsurancePerGradeFee.map(function(item) {
+            this.healthInsurancePerGradeFee(params ? params.healthInsurancePerGradeFee.map(function(item) {
                 return new HealthInsurancePerGradeFee(item);
             }) : []);
         }
@@ -288,7 +305,7 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_55'))
         ]);
         constructor(params: IWelfarePensionInsuranceClassification) {
-            this.fundClassification(params ? params.fundClassification : null);
+            this.fundClassification(params ? params.fundClassification : 1);
             this.historyId(params ? params.historyId : null);
         }
     }
@@ -338,8 +355,8 @@ module nts.uk.pr.view.qmm008.share.model {
     export interface IEmployeePensionContributionRate {
         individualBurdenRatio: number;
         employeeContributionRatio: number;
-        individualExcemtionRate: number;
-        employeeExcemtionRate: number;
+        individualExemptionRate: number;
+        employeeExemptionRate: number;
     }
 
     // 厚生年金各負担率
@@ -348,8 +365,8 @@ module nts.uk.pr.view.qmm008.share.model {
         // Fields
         individualBurdenRatio: KnockoutObservable<number> = ko.observable(null);
         employeeContributionRatio: KnockoutObservable<number> = ko.observable(null);
-        individualExcemtionRate: KnockoutObservable<number> = ko.observable(null);
-        employeeExcemtionRate: KnockoutObservable<number> = ko.observable(null);
+        individualExemptionRate: KnockoutObservable<number> = ko.observable(null);
+        employeeExemptionRate: KnockoutObservable<number> = ko.observable(null);
 
         // Display remain ratio
         remainBurdenRatio: any;
@@ -357,14 +374,14 @@ module nts.uk.pr.view.qmm008.share.model {
         constructor(params: IEmployeePensionContributionRate) {
             this.individualBurdenRatio(params ? params.individualBurdenRatio : null);
             this.employeeContributionRatio(params ? params.employeeContributionRatio : null);
-            this.individualExcemtionRate(params ? params.individualExcemtionRate : null);
-            this.employeeExcemtionRate(params ? params.employeeExcemtionRate : null);
+            this.individualExemptionRate(params ? params.individualExemptionRate : null);
+            this.employeeExemptionRate(params ? params.employeeExemptionRate : null);
 
             this.remainBurdenRatio = ko.computed(function() {
-                return this.individualBurdenRatio() - this.individualExcemtionRate();
+                return this.individualBurdenRatio() - this.individualExemptionRate();
             }, this);
             this.remainEmployeeContributionRatio = ko.computed(function() {
-                return this.employeeContributionRatio() - this.employeeExcemtionRate();
+                return this.employeeContributionRatio() - this.employeeExemptionRate();
             }, this);
         }
     }
@@ -429,19 +446,19 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 厚生年金月額保険料額
     export interface IEmployeePensionMonthlyInsuFee {
-        autoCalculation: number;
+        autoCalculationCls: number;
         pensionInsurancePremium: Array<IGradeWelfarePensionInsurancePremium>;
         historyId: string;
-        salaryEmployeePensionInsuranceRate: ISalaryEmployeePensionInsuRate;
+        salaryEmployeesPensionInsuranceRate: ISalaryEmployeePensionInsuRate;
     }
 
     // 厚生年金月額保険料額
     export class EmployeePensionMonthlyInsuFee {
         // Fields
-        autoCalculation: KnockoutObservable<number> = ko.observable(null);
+        autoCalculationCls: KnockoutObservable<number> = ko.observable(null);
         pensionInsurancePremium: KnockoutObservableArray<GradeWelfarePensionInsurancePremium> = ko.observableArray([]);
         historyId: KnockoutObservable<string> = ko.observable(null);
-        salaryEmployeePensionInsuranceRate: KnockoutObservable<SalaryEmployeePensionInsuRate> = ko.observable(null);
+        salaryEmployeesPensionInsuranceRate: KnockoutObservable<SalaryEmployeePensionInsuRate> = ko.observable(null);
 
         // Control item
         autoCalculationClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
@@ -450,12 +467,12 @@ module nts.uk.pr.view.qmm008.share.model {
         ]);
 
         constructor(params: IEmployeePensionMonthlyInsuFee) {
-            this.autoCalculation(params ? params.autoCalculation : null);
+            this.autoCalculationCls(params ? params.autoCalculationCls : 1);
             this.pensionInsurancePremium(params ? params.pensionInsurancePremium.map(function(item) {
                 return new GradeWelfarePensionInsurancePremium(item);
             }) : []);
             this.historyId(params ? params.historyId : null);
-            this.salaryEmployeePensionInsuranceRate(new SalaryEmployeePensionInsuRate(params ? params.salaryEmployeePensionInsuranceRate : null));
+            this.salaryEmployeesPensionInsuranceRate(new SalaryEmployeePensionInsuRate(params ? params.salaryEmployeesPensionInsuranceRate : null));
         }
     }
 

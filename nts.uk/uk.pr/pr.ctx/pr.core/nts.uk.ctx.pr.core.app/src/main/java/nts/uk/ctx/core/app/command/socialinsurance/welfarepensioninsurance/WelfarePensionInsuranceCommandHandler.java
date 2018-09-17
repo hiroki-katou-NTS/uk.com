@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -14,6 +15,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensio
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.service.FindSocialInsuranceOfficeAndHistoryService;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
+@Stateless
 public class WelfarePensionInsuranceCommandHandler extends CommandHandler<WelfarePensionInsuraceRateCommand> {
 
 	@Inject

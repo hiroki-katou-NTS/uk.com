@@ -21,8 +21,8 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 let selectedOffice = params.selectedOffice;
                 self.selectedHistory = params.selectedHistory;
                 self.startMonth(self.selectedHistory.startMonth);
-                let history = selectedOffice.welfareInsuranceRateHistory.history;
-                if (history.length > 0) {
+                let history = params.history;
+                if (history && history.length > 0) {
                     history.forEach((historyItem, index) => {
                         if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index - 1];
                     });

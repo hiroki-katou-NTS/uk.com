@@ -8,8 +8,11 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qmm008.c.start.js" />
-			<com:scriptfile path="qmm008.c.vm.js" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm008.b.start.js" />
+			<com:scriptfile path="qmm008.b.service.js" />
+			<com:scriptfile path="qmm008.b.vm.js" />
+			<com:stylefile path="qmm008.b.style.css" />
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul class="navigator">
@@ -42,7 +45,8 @@
 								data-bind="click: standardRemunerationMonthlyAmount, enable: true">#{i18n.getText('QMM008_4')}</button>
 							<button id="A1_5" tabindex="1"
 								data-bind="click: masterCorrectionLog, enable: true">#{i18n.getText('QMM008_5')}</button>
-							<button data-bind="click: changeMode, enable: true">Change mode</button>
+							<button data-bind="click: changeMode, enable: true">Change
+								mode</button>
 						</div>
 					</div>
 					<div style="margin-top: 30px;"
@@ -56,9 +60,9 @@
 									data-bind="ntsSearchBox: {
 								targetKey: 'code', 
 								mode:'igTreeDrag', 
-								comId:'C1_5', 
-								items: welfareInsuranceRateTreeList, 
-								selected: selectedWelfareInsurance, 
+								comId:'B1_5', 
+								items: healthInsuranceRateTreeList, 
+								selected: selectedHealthInsurance, 
 								selectedKey: 'code', 
 								childField: 'child', 
 								fields: ['code', 'displayText']}" />
@@ -68,25 +72,108 @@
 									<button style="float: right" id="B1_4" tabindex="3"
 										data-bind="click: editHistory, enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
 								</div>
-								<div id="C1_5" tabindex="4"
+								<div id="B1_5" tabindex="4"
 									style="background-color: white; margin-top: 15px;"
 									data-bind="ntsTreeDragAndDrop:{
-									width: 290,
-									rows: 15,
-									dataSource: healthInsuranceRateTreeList,
-									value: selectedHealthInsurance,
-									primaryKey: 'code',
-									childDataKey: 'child',
-									primaryText: 'displayText',
-									maxDeepLeaf: 1,
-									maxChildInNode: 12,
-									multiple: false,
-									enable: true}">
+										width: 290,
+										rows: 15,
+										dataSource: healthInsuranceRateTreeList,
+										value: selectedHealthInsurance,
+										primaryKey: 'code',
+										childDataKey: 'child',
+										primaryText: 'displayText',
+										maxDeepLeaf: 1,
+										maxChildInNode: 12,
+										multiple: false,
+										enable: true}">
 								</div>
 							</div>
 						</div>
-						<div class="fixed-flex-layout-right right-panel">
-							
+						<div class="fixed-flex-layout-right right-panel"
+							data-bind="with: healthInsuranceMonthlyFee">
+							<div>
+								<div data-bind="with: $vm.selectedHistoryPeriod">
+									<div style="width: 130px;" class="inline-element"
+										data-bind="ntsFormLabel: {}" >#{i18n.getText('QMM008_12')}</div>
+									<div style="width: 65px;" class="inline-element"
+										data-bind="text: displayStart" ></div>
+									<div style="width: 85px;" class="inline-element" >平成20年12</div>
+									<div class="inline-element" >#{i18n.getText('QMM008_11')}</div>
+									<div style="width: 65px;" class="inline-element"
+										data-bind="text: displayEnd"></div>
+								</div>
+							</div>
+							<div>
+								<div style="display: inline-block; margin-top: 15px;">
+									<div data-bind="ntsFormLabel: {}" >#{i18n.getText('QMM008_13')}</div>
+									<!-- B2_7 自動計算区分 -->
+									<div class="cf" tabindex="5"
+										data-bind="ntsSwitchButton: {
+											name: '#[QMM008_13]',
+											options: autoCalculationClsItem,
+											optionsValue: 'value',
+											optionsText: 'name',
+											value: autoCalculationCls,
+											required: true,
+											enable: $vm.isSelectedHistory }"></div>
+								</div>
+								<button style="display: inline-block" tabindex = "6"
+								data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left', enable: $vm.isSelectedHistory}">?</button>
+							</div>
+							<hr></hr>
+							<div id="B2_12">#{i18n.getText('QMM008_16')}</div>
+							<hr></hr>
+							<div>Table B3</div>
+							<div id="B2_14">#{i18n.getText('QMM008_17')}</div>
+							<hr></hr>
+							<div>Table B4</div>
+							<div id="B2_14">#{i18n.getText('QMM008_183')}</div>
+							<hr></hr>
+							<div style="margin-bottom: 30px;">
+								<div data-bind="ntsFormLabel: {}">給与</div>
+								<div style="display: inline-block"
+									data-bind="with: healthInsuranceRate">
+									<!-- C2_34 賞与事業主端数区分 -->
+									<div id="C2_34" class="table-combobox" tabindex="28"
+										data-bind="ntsComboBox: {
+													width: '280px',
+													name: '#[QMM008_184]',
+													options: shareAmountMethodItem,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: employeeShareAmountMethod,
+													optionsText: 'name',
+													enable: true,
+													required: true,
+													dropDownAttachedToBody: true,
+													columns: [
+														{ prop: 'fix_length', length: 0},
+														{ prop: 'name', length: 10 }
+													]}"></div>
+								</div>
+								<div style="display: inline-block; margin-left: 25px;"
+									data-bind="ntsFormLabel: {}">賞与</div>
+								<div style="display: inline-block"
+									data-bind="with: $vm.bonusHealthInsuranceRate">
+									<!-- C2_37賞与事業主負担分計算方法 -->
+									<div id="C2_37" class="table-combobox" tabindex="29"
+										data-bind="ntsComboBox: {
+													width: '280px',
+													name: '#[QMM008_185]',
+													options: shareAmountMethodItem,
+													optionsValue: 'value',
+													visibleItemsCount: 5,
+													value: employeeShareAmountMethod,
+													optionsText: 'name',
+													enable: true,
+													required: true,
+													dropDownAttachedToBody: true,
+													columns: [
+														{ prop: 'fix_length', length: 0},
+														{ prop: 'name', length: 10 }
+													]}"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

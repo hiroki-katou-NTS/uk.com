@@ -1,6 +1,5 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -8,8 +7,6 @@ import java.util.Optional;
  */
 public interface WelfarePensionInsuranceRateHistoryRepository {
 	void add (WelfarePensionInsuranceRateHistory domain);
-	void remove(WelfarePensionInsuranceRateHistory domain);
 	Optional<WelfarePensionInsuranceRateHistory> getWelfarePensionInsuranceRateHistoryByOfficeCode(String officeCode);
-	List<WelfarePensionInsuranceRateHistory> findAll();
 	void deleteByCidAndCode(String cid, String officeCode);
 }

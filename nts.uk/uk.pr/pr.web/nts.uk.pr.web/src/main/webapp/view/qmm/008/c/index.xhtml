@@ -48,8 +48,6 @@
 								data-bind="click: standardRemunerationMonthlyAmount, enable: true">#{i18n.getText('QMM008_4')}</button>
 							<button id="A1_5" tabindex="1"
 								data-bind="click: masterCorrectionLog, enable: true">#{i18n.getText('QMM008_5')}</button>
-							<button data-bind="click: changeMode, enable: true">Change
-								mode</button>
 						</div>
 					</div>
 					<div style="margin-top: 30px;"
@@ -125,15 +123,15 @@
 								</div>
 								<!-- C2_10  自動計算 -> C2_14 終了年月  -->
 								<div style="display: inline-block; margin-left: 50px;">
-									<div data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_12')}</div>
+									<div data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_13')}</div>
 									<!-- C2_11 自動計算区分 -->
 									<div class="cf" tabindex="6"
 										data-bind="ntsSwitchButton: {
-									name: '#[QMM008_53]',
+									name: '#[QMM008_13]',
 									options: autoCalculationClsItem,
 									optionsValue: 'value',
 									optionsText: 'name',
-									value: autoCalculation,
+									value: autoCalculationCls,
 									required: true,
 									enable: $vm.isSelectedHistory }"></div>
 								</div>
@@ -180,7 +178,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_63]',
- 													value: salaryEmployeePensionInsuranceRate().maleContributionRate().individualBurdenRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualBurdenRatio, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -197,7 +195,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_64]',
- 													value: salaryEmployeePensionInsuranceRate().maleContributionRate().employeeContributionRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().employeeContributionRatio, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -252,7 +250,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_68]',
- 													value: salaryEmployeePensionInsuranceRate().femaleContributionRate().individualBurdenRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().individualBurdenRatio, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -269,7 +267,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_69]',
- 													value: salaryEmployeePensionInsuranceRate().femaleContributionRate().employeeContributionRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().employeeContributionRatio, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -358,7 +356,7 @@
  														width: '60px',
 														decimallength: 3
 													}, 
- 													value: salaryEmployeePensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
  													constraint: '', 
  													required: true, 
  													enable: false}" />
@@ -374,7 +372,7 @@
  														width: '60px',
 														decimallength: 3
 													},
- 													value: salaryEmployeePensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio, 
  													constraint: '', 
  													required: true, 
  													enable: false}" />
@@ -427,7 +425,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_84]',
- 													value: salaryEmployeePensionInsuranceRate().maleContributionRate().individualExcemtionRate, 
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualExemptionRate, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -444,7 +442,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_85]',
- 													value: salaryEmployeePensionInsuranceRate().maleContributionRate().employeeExcemtionRate, 
+ 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().employeeExemptionRate, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -461,7 +459,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_86]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().individualExcemtionRate, 
+ 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().individualExemptionRate, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -478,7 +476,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_87]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().employeeExcemtionRate,
+ 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().employeeExemptionRate,
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -499,7 +497,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_87]',
- 													value: salaryEmployeePensionInsuranceRate().femaleContributionRate().remainBurdenRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().remainBurdenRatio, 
  													constraint: '', 
  													required: true, 
  													enable: false}" />
@@ -515,7 +513,7 @@
  														width: '60px',
 														decimallength: 3
 													},
- 													value: salaryEmployeePensionInsuranceRate().femaleContributionRate().remainEmployeeContributionRatio, 
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().remainEmployeeContributionRatio, 
  													constraint: '', 
  													required: true, 
  													enable: false}" />
@@ -568,7 +566,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_93]',
- 													value: salaryEmployeePensionInsuranceRate().femaleContributionRate().individualExcemtionRate, 
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().individualExemptionRate, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -585,7 +583,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_94]',
- 													value: salaryEmployeePensionInsuranceRate().femaleContributionRate().employeeExcemtionRate, 
+ 													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().employeeExemptionRate, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -602,7 +600,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_95]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().individualExcemtionRate, 
+ 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().individualExemptionRate, 
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -619,7 +617,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_96]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().employeeExcemtionRate,
+ 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().employeeExemptionRate,
  													constraint: '', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -660,7 +658,7 @@
 										<tr>
 											<td class="td-widget" style="border-top: none;"></td>
 											<td
-												data-bind="with: salaryEmployeePensionInsuranceRate().fractionClassification">
+												data-bind="with: salaryEmployeesPensionInsuranceRate().fractionClassification">
 												<!-- C5_8  給与個人端数区分 -->
 												<div id="C5_8" class="table-combobox" tabindex="23"
 													data-bind="ntsComboBox: {
@@ -678,7 +676,7 @@
 													]}"></div>
 											</td>
 											<td
-												data-bind="with: salaryEmployeePensionInsuranceRate().fractionClassification">
+												data-bind="with: salaryEmployeesPensionInsuranceRate().fractionClassification">
 												<!-- C5_10  給与事業主端数区分 -->
 												<div id="C5_10" class="table-combobox" tabindex="24"
 													data-bind="ntsComboBox: {
@@ -740,7 +738,7 @@
 							<div style="margin-bottom: 30px;">
 								<div data-bind="ntsFormLabel: {}">給与</div>
 								<div style="display: inline-block"
-									data-bind="with: salaryEmployeePensionInsuranceRate">
+									data-bind="with: salaryEmployeesPensionInsuranceRate">
 									<!-- C2_34 賞与事業主端数区分 -->
 									<div id="C2_34" class="table-combobox" tabindex="29"
 										data-bind="ntsComboBox: {

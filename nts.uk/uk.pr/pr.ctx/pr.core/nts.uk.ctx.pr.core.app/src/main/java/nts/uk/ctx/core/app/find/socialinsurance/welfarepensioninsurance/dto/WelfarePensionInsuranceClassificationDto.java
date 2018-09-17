@@ -19,9 +19,9 @@ public class WelfarePensionInsuranceClassificationDto {
     /**
      * 厚生年金基金加入区分
      */
-    private FundClassification fundClassification;
+    private int fundClassification;
 
     public static WelfarePensionInsuranceClassificationDto fromDomainToDto(WelfarePensionInsuranceClassification domain) {
-        return new WelfarePensionInsuranceClassificationDto(domain.getHistoryId(), domain.getFundClassification());
+        return new WelfarePensionInsuranceClassificationDto(domain.getHistoryId(), domain.getFundClassification().value);
     }
 }

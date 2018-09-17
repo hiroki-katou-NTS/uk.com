@@ -17,8 +17,8 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
             let params = getShared("QMM008_G_PARAMS"); 
             if (params){
                 let selectedOffice = params.selectedOffice, displayLastestHistory = "";
-                let history = selectedOffice.welfareInsuranceRateHistory.history;
-                if (history.length > 0){
+                let history = params.history;
+                if (history && history.length > 0){
                     let lastestHistory = history[history.length-1].startMonth + "";
                     displayLastestHistory = lastestHistory.substring(0, 4) + "/" + lastestHistory.substring(4, 6)
                     self.lastestHistory = history[history.length-1].startMonth;
