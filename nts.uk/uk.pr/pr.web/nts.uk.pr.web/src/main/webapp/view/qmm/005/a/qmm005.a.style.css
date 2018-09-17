@@ -16,3 +16,7 @@
 #A3_1 td{
 	height: 39px;
 }
+
+.fixed-table tr th{
+	text-align: center;
+}
