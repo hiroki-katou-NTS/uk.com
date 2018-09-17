@@ -5,13 +5,14 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
+    import close=nts.uk.ui.windows.close;
 
 
     export class ScreenModel {
 
 
         enableCloseDate: KnockoutObservable<boolean>;
-        screenMode: boolean;
+        modeUpdate: number;
 
         valPayDateSet: model.ValPayDateSet;
         basicSetting: model.BasicSetting;
@@ -39,7 +40,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         closeDate: model.CloseDate;
 
 
-        createMode: KnockoutObservable<boolean>;
+
 
         //D2_3
         DiscontinueThisProcessClassification: KnockoutObservableArray<model.Abolition>;
@@ -140,7 +141,15 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             var self = this;
 
-            self.processCategoryNo=getShared('QMM005_output_D_create');
+
+            let init=getShared('QMM005_output_D');
+            self.modeUpdate=init.modeUpdate;
+            self.processCategoryNo=init.processCateNo;
+
+
+
+
+
 
             self.numberOfWorkingDays = ko.observable(20);
             self.enableCloseDate = ko.observable(false);
@@ -353,6 +362,83 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         saveCharacterSetting(): void {
             let self = this;
 
+            if(self.modeUpdate==0){
+                service.deleteDisplayRegister(self.processCategoryNo).done(function () {
+                    self.saveToDB();
+                })
+            }
+            if (self.modeUpdate==1){
+                self.saveToDB();
+            }
+
+
+
+
+
+        }
+
+        cancelCharacterSetting(): void {
+            nts.uk.ui.windows.close();
+        }
+
+
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            dfd.resolve();
+            if(self.modeUpdate==0){
+                service.findDisplayRegister(this.processCategoryNo).done(function (data) {
+                    console.log(data);
+                    self.valPayDateSet=new model.ValPayDateSet(data);
+                    console.log(self.valPayDateSet)
+
+                    //basic
+                    self.datePaymentSelectedCode(self.valPayDateSet.basicSetting.monthlyPaymentDate.datePayMent);
+                    self.refeDateSelectedCode(self.valPayDateSet.basicSetting.employeeExtractionReferenceDate.refeDate);
+                    self.refeMonthSelectedCode(self.valPayDateSet.basicSetting.employeeExtractionReferenceDate.refeMonth);
+                    self.disposalDaySelectedCode(self.valPayDateSet.basicSetting.accountingClosureDate.disposalDay);
+                    self.processingMonthSelectedCode(self.valPayDateSet.basicSetting.accountingClosureDate.processMonth);
+                    self.numberOfWorkingDays(self.valPayDateSet.basicSetting.workDay);
+                    //advan
+
+                        self.timeCloseDateSelectedCode(self.valPayDateSet.advancedSetting.closeDate.timeCloseDate);
+                        self.timeBaseYearSelectedCode(self.valPayDateSet.advancedSetting.closeDate.baseYear);
+                        self.timeReferenceStandardDaySelectedCode(self.valPayDateSet.advancedSetting.closeDate.refeDate);
+                        self.timeClosingStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.closeDate.baseMonth);
+
+                        self.yearSelectClassificationSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.baseYear);
+                        self.incomeTaxBaseMonthSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.baseMonth);
+                        self.incomeTaxBaseDateSelectedCode(self.valPayDateSet.advancedSetting.incomTaxBaseYear.refeDate);
+                        self.printingMonthSelectedCode(self.valPayDateSet.advancedSetting.detailPrintingMon.printingMonth);
+                        self.monthsCollectedSelectedCode(self.valPayDateSet.advancedSetting.salaryInsuColMon.monthCollected);
+                        self.guaranteedBaseYearSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.baseYear);
+                        self.guaranteedBaseMonthSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.baseMonth);
+                        self.guaranteedBaseDateSelectedCode(self.valPayDateSet.advancedSetting.sociInsuStanDate.refeDate);
+                        self.employmentInsuranceStandardDateSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.refeDate);
+                        self.employmentInsuranceStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.baseMonth);
+
+
+
+
+
+                })
+
+            }
+            return dfd.promise();
+        }
+
+
+        //初期表示処理
+        onInitScreen(): void {
+
+        }
+
+
+
+
+        saveToDB():void{
+            let self = this;
+
 
             //basic
             self.monthlyPaymentDate = new model.MonthlyPaymentDate(self.datePaymentSelectedCode());
@@ -406,8 +492,6 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             }
 
-
-
             self.processInfomation = new model.ProcessInfomation(processInfomationParam);
             console.log(self.processInfomation);
             console.log(self.valPayDateSet);
@@ -415,28 +499,9 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 processInformation: ko.toJS(self.processInfomation),
                 valPayDateSet: ko.toJS(self.valPayDateSet)
             });
-
-
-        }
-
-        cancelCharacterSetting(): void {
-
         }
 
 
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            dfd.resolve();
-
-            return dfd.promise();
-        }
-
-
-        //初期表示処理
-        onInitScreen(): void {
-
-        }
 
 
         pushDaytoList(itemList: KnockoutObservableArray<model.ItemModel>, codeEnum: any): void {

@@ -72,11 +72,11 @@
 											<label
 												data-bind="text: processInfomation.processDivisionName"></label>
 										</div>
-										<button id="button_">#{i18n.getText('QMM005_11')}</button>
+										<button id="button_" data-bind="click:function (){$vm.showDialogD(processInfomation.processCateNo, 0)}">#{i18n.getText('QMM005_11')}</button>
 									</div> <!--A2_9 編集--> <com:ko-if
 										bind="processInfomation.processDivisionName == ''">
 										<button
-											data-bind="click: function (){$vm.showDialogD_Create(processInfomation.processCateNo)}">#{i18n.getText('QMM005_21')}</button>
+											data-bind="click: function (){$vm.showDialogD(processInfomation.processCateNo, 1)}">#{i18n.getText('QMM005_21')}</button>
 									</com:ko-if>
 								</td>
 								<td>

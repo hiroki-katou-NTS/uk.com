@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
+
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         //A2_2
@@ -29,22 +29,26 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         }
 
-        showDialogD_Create(processCateNo):void{
-            setShared("QMM005_output_D_create", processCateNo);
+
+
+        showDialogD(processCateNo,mode):void{
+            let param={
+                processCateNo:processCateNo,
+                modeUpdate:mode,
+            }
+            setShared("QMM005_output_D", param);
             modal('/view/qmm/005/d/index.xhtml', {title: '',}).onClosed(function (): any {
             })
         }
 
-        showDialogB_Update(processCateNo):void{
-            let param={
-                processCateNo:processCateNo,
-                modeUpdate:true,
+
+        getYearFromSetDaySuport(setDaySuports:Array<model.SetDaySupport>){
+            let self=this;
+            temp:Array;
+            for(let item in setDaySuports){
+
             }
-            setShared("QMM005_output_D_create", param);
         }
-
-
-
 
 
 
@@ -93,7 +97,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                                 return o.processCateNo==i+1;
                         }),function (o) {
                             return o.processDate;
-                        }),
+                        })
+
+
                     ));
                 };
 
@@ -112,14 +118,17 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         processInfomation:model.ProcessInfomation;
         setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
         setDaySupportsSelectedCode:KnockoutObservable<number>;
+        yearSupports:KnockoutObservableArray<number>;
         constructor(
             processInfomation:model.ProcessInfomation,
             setDaySupports:Array<model.SetDaySupport>,
+            //yearSupports:Array<number>
 
         ){
             this.processInfomation=processInfomation;
             this.setDaySupports=ko.observableArray(setDaySupports);
             this.setDaySupportsSelectedCode=ko.observable(0);
+            //this.yearSupports=ko.observableArray(yearSupports);
         }
     }
 
@@ -151,13 +160,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
     }
-
-
-
-
-
-
-
 
 
 }
