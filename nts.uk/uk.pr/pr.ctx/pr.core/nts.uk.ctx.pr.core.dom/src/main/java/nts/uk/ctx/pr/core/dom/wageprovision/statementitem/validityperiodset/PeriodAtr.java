@@ -8,7 +8,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset;
 public enum PeriodAtr {
 
 	NOT_SETUP(0, "設定しない"), 
-	TO_SETUP(1, "設定する");
+	SETUP(1, "設定する");
 
 	/** The value. */
 	public final int value;
