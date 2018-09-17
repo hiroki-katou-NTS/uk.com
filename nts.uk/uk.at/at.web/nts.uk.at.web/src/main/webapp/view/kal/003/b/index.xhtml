@@ -169,7 +169,7 @@
                                 <table>
                                     <colgroup>
                                         <col width="150px" />
-                                        <col width="250px" />
+                                        <col width="300px" />
                                         <col width="266px" />
                                         <col width="50px" />
                                         <col width="50px" />
@@ -379,12 +379,14 @@
                             <div>
                                 <table>
                                     <colgroup>
-                                        <col width="190px" />
+                                    	<col width="150px" />
                                         <col width="200px" />
-                                        <col width="*" />
+                                        <col width="200px" />
+                                        <col width="200px" />
                                     </colgroup>
                                     <tr class="row">
                                         <!-- B5-1:  -->
+                                        <td></td>
                                         <td class="pad_left_10px">
                                             <div>#{i18n.getText('KAL003_31')}</div>
                                         </td>
@@ -406,7 +408,7 @@
                                 </table>
                             </div>
 
-                            <div class="pad_left_10px">
+                            <div style = "margin-left: 150px">
                                 <!-- B5_4 -->
                                 <table id="table-group1condition">
                                     <colgroup>
@@ -459,11 +461,13 @@
                             <div class="pad_left_10px">
                                 <table>
                                     <colgroup>
-                                        <col width="180px" />
-                                        <col width="200" />
-                                        <col width="*" />
+                                        <col width="150px" />
+                                        <col width="200px" />
+                                        <col width="190px" />
+                                        <col width="200px" />
                                     </colgroup>
                                     <tr class="row">
+                                    	<td></td>
                                         <!-- B6-1:  -->
                                         <td>
                                             <div data-bind="ntsCheckBox: { checked: group2UseAtr, enable: true}">#{i18n.getText('KAL003_34')}</div>
@@ -487,7 +491,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div id="div_B16" class="pad_left_10px cf" data-bind="visible : group2UseAtr()">
+                            <div id="div_B16" style = "margin-left: 150px" data-bind="visible : group2UseAtr()">
                                 <!-- B16_1 -->
                                 <table id="table-group2condition">
                                     <colgroup>
@@ -539,10 +543,12 @@
                             <div id="div_b7" data-bind="visible : group2UseAtr()">
                                 <table>
                                     <colgroup>
-                                        <col width="300px" />
-                                        <col width="*" />
+                                    	<col width="150px" />
+                                        <col width="200px" />
+                                        <col width="200px" />
                                     </colgroup>
                                     <tr class="row">
+                                    	<td></td>
                                         <!-- B7-1:  -->
                                         <td class="pad_left_10px">
 
@@ -689,7 +695,7 @@
                                                 	<br />
                                                     <!-- bind select -->
                                                         <button  id="btnSettingBA2_2" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
-                                                        <input id="display-target-item" 
+                                                        <input id="display-target-item" style = "margin-right : 70px" 
                                                         class="display-list-label nts-input "
                                                          data-bind="ntsTextEditor: {
                                                           name:'#[KAL003_59]',
@@ -906,7 +912,7 @@
                                             <div>#{i18n.getText('KAL003_28')}</div>
                                         </td>
                                         <td class="pad_left_5px">
-                                            <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, width: 60}" />
+                                            <div tabindex = "8" id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, width: 60}" />
                                         </td>
                                     </tr>
                                     <tr class="row">
@@ -914,7 +920,7 @@
                                             <div>#{i18n.getText('KAL003_25')}</div>
                                         </td>
                                         <td class="pad_left_5px">
-                                            <textarea style="width: 400px;height: 100px;" 
+                                            <textarea tabindex = "9" style="width: 400px;height: 100px;" 
                                             id="message"
                                              data-bind="ntsMultilineEditor: { value: displayMessage,
                                             					name: '#[KAL003_25]',
@@ -927,7 +933,7 @@
 
                                         </td>
                                         <td class="pad_left_5px">
-                                            <div data-bind="ntsCheckBox: { checked: messageBold}">#{i18n.getText('KAL003_29')}</div>
+                                            <div tabindex = "10" data-bind="ntsCheckBox: { checked: messageBold}">#{i18n.getText('KAL003_29')}</div>
                                             <!-- </div><div>#{i18n.getText('メッセージを太字にする')}</div> -->
                                         </td>
                                     </tr>
@@ -1375,23 +1381,12 @@
 			</div>
 			
 			<div id="functions-area-bottom">
-				<com:ko-if bind="category() == 7">
-					<!-- B4-2 : Decision-->
-					<button id="btnDecision" class="proceed large" tabindex="2"
-						data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
-					<!-- B4-3 : Cancel-->
-					<button id="btnCancel" class="large" tabindex="3"
-						data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
-				</com:ko-if>
-			
-				<com:ko-if bind="category() == 9 || category() == 5">
 					<!-- B4-2 : Decision-->
 					<button id="btnDecision" class="proceed large" tabindex="11"
 						data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
 					<!-- B4-3 : Cancel-->
 					<button id="btnCancel" class="large" tabindex="12"
 						data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
-				</com:ko-if>
 			</div>
 			
 		</ui:define>
