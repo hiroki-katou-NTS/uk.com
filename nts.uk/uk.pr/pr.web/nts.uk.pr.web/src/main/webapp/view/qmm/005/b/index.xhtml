@@ -10,7 +10,7 @@
         <div id="functions-area">
             <!--B1_1	新規-->
             <button class=""
-                    data-bind="click: creatNewProcessYear, enable=!isNewMode()">#{i18n.getText('QMM005_22')}</button>
+                    data-bind="click: creatNewProcessYear, enable: !isNewMode()">#{i18n.getText('QMM005_22')}</button>
 
             <!--B1_2	登録-->
             <button class="proceed "
@@ -25,33 +25,36 @@
         <div id="contents-area">
             <table>
                 <tr>
-                    <td style="border: 0px">
+                    <td style="border: 0px; vertical-align: top">
                         <div id="clf-component">
                             <!--B2_1	処理年パネル-->
                             <div data-bind="ntsPanel:{}">
                                 <!--B2_2	処理年一覧-->
-                                <!--<table id="single-list" data-bind="ntsGridList: {
+                                <table id="single-list" data-bind="ntsGridList: {
                                         height: 350,
                                         dataSource: processingYearList,
                                         primaryKey: 'code',
-                                        columns: columns,
-                                        enable: enable,
+                                        columns: [
+                                                {headerText: '', key: 'code', width: 0, hidden: true},
+                                                {headerText: '#{i18n.getText('QMM005_25')}', key: 'name', width: 150}
+                                            ],
+                                        enable: !isNewMode(),
                                         multiple: false,
                                         value: processingYear,
                                         rows: 10
-                                    }"></table>-->
-                                <table id="F4_2"
-                                       data-bind="ntsGridList: {
-													dataSource: processingYearList,
-													primaryKey: 'code',
-													columns: [
-																{headerText: '#{i18n.getText('CMF002_60')}', key: 'code', width: 50, formatter: _.escape},
-								                				{headerText: '#{i18n.getText('CMF002_61')}', key: 'name', width: 170, formatter: _.escape}
-								                			],
-													value: processingYear,
-													multiple: false,
-													rows: 10
-												}"></table>
+                                    }"></table>
+                                <!--<table id="F4_2"-->
+                                <!--data-bind="ntsGridList: {-->
+                                <!--dataSource: processingYearList,-->
+                                <!--primaryKey: 'code',-->
+                                <!--columns: [-->
+                                <!--{headerText: '#{i18n.getText('CMF002_60')}', key: 'code', width: 50, formatter: _.escape},-->
+                                <!--{headerText: '#{i18n.getText('CMF002_61')}', key: 'name', width: 170, formatter: _.escape}-->
+                                <!--],-->
+                                <!--value: processingYear,-->
+                                <!--multiple: false,-->
+                                <!--rows: 10-->
+                                <!--}"></table>-->
                             </div>
                         </div>
                     </td>
@@ -131,26 +134,24 @@
                                         <div data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td>
-                                        <div style="width: 180px">
+                                        <div style="width: 200px">
                                             <!--B4_13	社会保険徴収月-->
                                             <span data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth'}"></span>
                                             <!--B4_14	分を徴収-->
-                                            <span class="label">#{i18n.getText('#QMM005_37')}</span>
+                                            <span class="label" data-bind="if: socialInsuranceCollectionMonth">#{i18n.getText('#QMM005_37')}</span>
                                         </div>
                                     </td>
-
                                     <td>
                                         <!--B4_15	明細書印字年月-->
                                         <div data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth'}"></div>
                                     </td>
                                     <td>
-                                        <div style="width: 150px;">
-
+                                        <div style="width: 170px;">
                                             <!--B4_16	要勤務日数-->
                                             <input data-bind="ntsNumberEditor: {value: numberOfWorkingDays}"
                                                    class="number-editor"/>
                                             <!--B4_17	日-->
-                                            <span>#{i18n.getText('#QMM005_40')}</span></div>
+                                            <span data-bind="if:numberOfWorkingDays">#{i18n.getText('#QMM005_40')}</span></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_7	社会保険基準日-->

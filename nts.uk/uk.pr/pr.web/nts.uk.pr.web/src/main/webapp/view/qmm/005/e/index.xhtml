@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 900,
-                height : 700
+                width : 500,
+                height : 600
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -22,22 +22,22 @@
     </ui:define>
     <ui:define name="content">
         <div id="contents-area" style="padding-left: 24px">
-            <div data-bind="with: referenceDateInformation">
+            <div>
                 <!--    E1_1    給与・賞与の処理年月の設定を行います。 -->
                 <div class="label" style="margin-bottom: 15px;">#{i18n.getText('#QMM005_6')}</div>
                 <div class="flex valign-center" style="margin-bottom: 15px">
                     <!--    E1_2	処理区分	-->
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM005_7')}</div>
                     <!--    E1_3    処理区分	 processingDivision-->
-                    <div class="label" data-bind="text: $vm.processingClassification"></div>
+                    <div class="label" data-bind="text: processingClassification"></div>
                 </div>
                 <div class="flex valign-center" style="margin-bottom: 15px">
                     <!--    E1_4    処理年 -->
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM005_25')}</div>
                     <!--    E1_5	処理年西暦   -->
-                    <span class="label" data-bind="text: $vm.processingYearAD">1.5</span>
+                    <span class="label" data-bind="text: processingYearAD">1.5</span>
                     <!--    E1_6	処理年和暦  (heisei) -->
-                    <span class="label" data-bind="text: $vm.treatmentYearJapaneseCalendar">1.6</span>
+                    <span class="label" data-bind="text: treatmentYearJapaneseCalendar">1.6</span>
                 </div>
                 <!--    E1_7	罫線 hr tag-->
                 <hr/>
@@ -52,14 +52,14 @@
                             <span class="vertical-container margin-bottom-12">
                                 <!--    E2_2	反映開始年-->
                                 <span class="label vertical-child padding-left-6"
-                                      data-bind="text: $vm.reflectionStartYear"></span>
+                                      data-bind="text: reflectionStartYear"></span>
                                 <!--    E2_3	反映開始月-->
                                 <span class="padding-left-6" id="combo-box" data-bind="ntsComboBox: {
                                 name: 'Sample List',
-                                options: $vm.reflectionStartMonthList,
+                                options: reflectionStartMonthList,
                                 optionsValue: 'code',
                                 visibleItemsCount: 8,
-                                value: $vm.reflectionStartMonth,
+                                value: startMonth,
                                 optionsText: 'name',
                                 editable: true,
                                 required: true}">
@@ -83,7 +83,7 @@
                         </td>
                         <td>
                             <!--    E2_8		支払日設定-->
-                            <div class="label" data-bind="text: $vm.dailyPaymentDate"></div>
+                            <div class="label" data-bind="text: dailyPaymentDate"></div>
                         </td>
                     </tr>
                     <tr>
@@ -94,7 +94,7 @@
                         </td>
                         <td>
                             <!--    E2_10		社員抽出基準日設定-->
-                            <div class="label" data-bind="text: $vm.empExtractionRefDate">2.10</div>
+                            <div class="label" data-bind="text: empExtractionRefDate">2.10</div>
                         </td>
                     </tr>
                     <tr>
@@ -105,7 +105,7 @@
                         </td>
                         <td>
                             <!--    E2_12		社会保険徴収月設定-->
-                            <div class="label" data-bind="text: $vm.socialInsuranceCollectionMonthSetting"></div>
+                            <div class="label" data-bind="text: socialInsuranceCollectionMonthSetting"></div>
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +116,7 @@
                         </td>
                         <td>
                             <!--    E2_14		明細書印字年月設定-->
-                            <div class="label" data-bind="text: $vm.specificationPrintoutYearMonthSetting"></div>
+                            <div class="label" data-bind="text: specificationPrintoutYearMonthSetting"></div>
                         </td>
                     </tr>
                     <tr>
@@ -127,7 +127,7 @@
                         </td>
                         <td>
                             <!--    E4_2	要勤務日数設定-->
-                            <div class="label" data-bind="text: $vm.numberOfWorkingDaysSetting"></div>
+                            <div class="label" data-bind="text: numberOfWorkingDaysSetting"></div>
                         </td>
                     </tr>
                     <tr>
@@ -145,7 +145,7 @@
                         </td>
                         <td>
                             <!--    E2_17		社会保険基準日設定-->
-                            <div class="label" data-bind="text: $vm.socialInsuranceStandardDateSetting"></div>
+                            <div class="label" data-bind="text: socialInsuranceStandardDateSetting"></div>
 
                         </td>
                     </tr>
@@ -157,7 +157,7 @@
                         </td>
                         <td>
                             <!--    E2_19		雇用保険基準日設定-->
-                            <div class="label" data-bind="text: $vm.employmentInsuranceStandardDateSetting"></div>
+                            <div class="label" data-bind="text: employmentInsuranceStandardDateSetting"></div>
                         </td>
                     </tr>
                     <tr>
@@ -169,7 +169,7 @@
                         </td>
                         <td>
                             <!--    E2_21		勤怠締め基準日設定-->
-                            <div class="label" data-bind="text: $vm.settingOfStandardReferenceDayForClosingTime"></div>
+                            <div class="label" data-bind="text: settingOfStandardReferenceDayForClosingTime"></div>
                         </td>
                     </tr>
                     <tr>
@@ -180,7 +180,7 @@
                         </td>
                         <td>
                             <!--    E2_23		所得税基準日設定-->
-                            <div class="label" data-bind="text: $vm.incomeTaxBaseDateSetting"></div>
+                            <div class="label" data-bind="text: incomeTaxBaseDateSetting"></div>
                         </td>
                     </tr>
                     <tr>
@@ -191,7 +191,7 @@
                         </td>
                         <td>
                             <!--    E2_25		経理締め日設定-->
-                            <div class="label" data-bind="text: $vm.accountingClosingDateSetting "></div>
+                            <div class="label" data-bind="text: accountingClosingDateSetting "></div>
                         </td>
                     </tr>
                 </table>
