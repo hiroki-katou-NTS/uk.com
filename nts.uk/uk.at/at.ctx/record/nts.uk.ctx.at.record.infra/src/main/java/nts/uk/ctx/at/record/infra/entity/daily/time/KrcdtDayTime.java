@@ -2154,8 +2154,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			setPerData("divergenceTime",number,frame.get().getDivTime() == null ? 0 : frame.get().getDivTime().valueAsMinutes());
 			setPerData("deductionTime",number,frame.get().getDeductionTime() == null ? 0 : frame.get().getDeductionTime().valueAsMinutes());
 			setPerData("afterDeductionTime",number,frame.get().getDivTimeAfterDeduction() == null ? 0 : frame.get().getDivTimeAfterDeduction().valueAsMinutes());
-			setPerData("reasonCode",number,frame.get().getDivResonCode().isPresent() ? null : frame.get().getDivResonCode().get().v());
-			setPerData("reason",number,frame.get().getDivReason().isPresent() ? null : frame.get().getDivReason().get().v());
+			setPerData("reasonCode",number,frame.get().getDivResonCode().map(c -> c.v()).orElse(null));
+			setPerData("reason",number,frame.get().getDivReason().map(c -> c.v()).orElse(null));
 		}
 		else {
 			setPerData("divergenceTime",number,0);
