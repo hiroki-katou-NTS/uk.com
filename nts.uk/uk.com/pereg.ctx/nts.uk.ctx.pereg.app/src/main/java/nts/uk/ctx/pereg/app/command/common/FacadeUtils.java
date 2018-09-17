@@ -431,7 +431,7 @@ public class FacadeUtils {
 	 * @return
 	 */
 	public Optional<GeneralDate> getHireDate(String sid){
-		AffCompanyHist affcom = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(AppContexts.user().companyId(),sid);
+		AffCompanyHist affcom = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(sid);
 		AffCompanyHistByEmployee hist = affcom.getAffCompanyHistByEmployee(sid);
 		if (hist.getHistory().isPresent()){
 			return Optional.of(hist.getHistory().get().start());
