@@ -317,7 +317,7 @@ public class ActualWorkingTimeOfDaily {
 									TotalWorkingTime totalWorkingTime,
 									WorkType workType
 									) {
-		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() != null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
+		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() == null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
 		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork())&&recordClass.getOotsukaFixedWorkSet().isPresent()&& !workType.getDailyWork().isHolidayWork()) {
 			//休憩未取得時間の計算
 			AttendanceTime unUseBreakTime = recordClass.getPersonalInfo().getWorkingSystem().isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(recordClass.getFixRestTimeSetting().get(),recordClass.getIntegrationOfDaily().getAttendanceLeave().get()):new AttendanceTime(0);
