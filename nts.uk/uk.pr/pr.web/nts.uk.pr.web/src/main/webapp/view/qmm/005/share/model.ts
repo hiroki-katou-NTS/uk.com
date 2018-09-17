@@ -115,23 +115,23 @@ module nts.uk.pr.view.qmm005.share.model {
 
 
     export interface ISetDaySupport{
-        processCategoryNO:number,
-        socialInsurCollecMonth:number,
-        processDate:number,
-        incomeTaxDate:string,
-        closeDateTime:string,
-        empExtraRefeDate:string,
-        closureAccountingDate:string,
-        socialInsurStanDate:string,
-        empInsurdStanDate:string,
-        payMentDate:string,
-        numberWorkDay:number
+        processCateNo: number,
+        closeDateTime: string,
+        empInsurdStanDate: string,
+        closureDateAccounting: string,
+        paymentDate: string,
+        empExtraRefeDate: string,
+        socialInsurdStanDate: string,
+        socialInsurdCollecMonth: number,
+        processDate: number,
+        incomeTaxDate: string,
+        numberWorkDay: number
     }
 
 
 
     export class SetDaySupport{
-        processCategoryNO:number;
+        processCateNo:number;
         socialInsurCollecMonth:number;
         processDate:number;
         incomeTaxDate:string;
@@ -143,16 +143,16 @@ module nts.uk.pr.view.qmm005.share.model {
         payMentDate:string;
         numberWorkDay:number;
         constructor(params:ISetDaySupport){
-            this.processCategoryNO=params.processCategoryNO;
-            this.socialInsurCollecMonth=ko.observable(params.socialInsurCollecMonth);
+            this.processCateNo=params.processCateNo;
+            this.socialInsurCollecMonth=ko.observable(params.socialInsurdCollecMonth);
             this.processDate=ko.observable(params.processDate);
             this.incomeTaxDate=ko.observable(params.incomeTaxDate);
             this.closeDateTime=ko.observable(params.closeDateTime);
             this.empExtraRefeDate=ko.observable(params.empExtraRefeDate);
-            this.closureAccountingDate=ko.observable(params.closureAccountingDate);
-            this.socialInsurStanDate=ko.observable(params.socialInsurStanDate);
+            this.closureAccountingDate=ko.observable(params.closureDateAccounting);
+            this.socialInsurStanDate=ko.observable(params.socialInsurdStanDate);
             this.empInsurdStanDate=ko.observable(params.empInsurdStanDate);
-            this.payMentDate=ko.observable(params.payMentDate);
+            this.payMentDate=ko.observable(params.paymentDate);
             this.numberWorkDay=ko.observable(params.numberWorkDay);
 
         }
@@ -167,14 +167,14 @@ module nts.uk.pr.view.qmm005.share.model {
     export interface IProcessInfomation {
         processCateNo: number,
         processDivisionName: string,
-        deprecatCate: Abolition
+        deprecatCate: number
     }
 
 
     export class ProcessInfomation{
         processCateNo:number;
         processDivisionName:string;
-        deprecatCate:Abolition;
+        deprecatCate:number;
 
         constructor(params:IProcessInfomation){
             this.processCateNo=params.processCateNo;
@@ -182,6 +182,9 @@ module nts.uk.pr.view.qmm005.share.model {
             this.deprecatCate=params.deprecatCate;
         }
     }
+
+
+
 
 
 
@@ -325,40 +328,52 @@ module nts.uk.pr.view.qmm005.share.model {
         }
     }
 
+    export interface ICurrentProcessDate{
+        processCateNo:number,
+        giveCurrTreatYear:number
+    }
+
     export class CurrentProcessDate {
-        processCategoryNo: string;
+        processCateNo: number;
         salaryCurrentProcessingDate: number;
 
         constructor(
-                    processCategoryNo: string,
-                    salaryCurrentProcessingDate: number) {
-            this.processCategoryNo = processCategoryNo;
-            this.salaryCurrentProcessingDate = this.salaryCurrentProcessingDate;
+                   param:ICurrentProcessDate) {
+            this.processCateNo = param.processCateNo;
+            this.salaryCurrentProcessingDate = param.giveCurrTreatYear;
         }
 
+    }
+
+    export interface IEmpTiedProYear{
+        processCateNo:number,
+        getEmploymentCodes:Array<string>
     }
 
     export class EmpTiedProYear {
-        processCateNo: string;
+        processCateNo: number;
         employmentCodes: Array<string>;
 
         constructor(
-                    processCategoryNo: string,
-                    employeeCode: Array<string>) {
-            this.processCateNo = processCategoryNo;
-            this.employmentCodes = employeeCode;
+                    param:IEmpTiedProYear) {
+            this.processCateNo = param.processCateNo;
+            this.employmentCodes = param.getEmploymentCodes;
         }
     }
 
-    export class Employment {
-        employmentCode: string;
-        employmentName: string;
+    export interface IEmpCdNameImport{
+        code:string,
+        name:string
+    }
+
+    export class EmpCdNameImport {
+        code: string;
+        name: string;
 
         constructor(
-                    employmentCode: string,
-                    employmentName: string) {
-            this.employmentCode=employmentCode;
-            this.employmentName=employmentName;
+                    param:IEmpCdNameImport) {
+            this.code=param.code;
+            this.name=param.name;
 
         }
     }
@@ -504,5 +519,8 @@ module nts.uk.pr.view.qmm005.share.model {
             this.timeClosingDate = ko.observable(params.timeClosingDate);
         }
     }
+
+
+
 
 }

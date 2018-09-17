@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
     export class ScreenModel {
         //A2_2
-        itemTable:Array<ItemTable>;
+        itemTable:ItemTable;
         //A3_4 対象雇用
         targetEmployment:KnockoutObservableArray<number>;
         processCategoryNO:number;
@@ -20,19 +20,37 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         // empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>;
 
         itemBinding:KnockoutObservableArray<ItemBinding>;
-        itemTable:ItemTable;
+
+        processInfomations:Array<model.ProcessInfomation>;
+        setDaySupports:Array<model.SetDaySupport>;
+        currentProcessDates:Array<model.CurrentProcessDate>;
+        empCdNameImports:Array<model.EmpCdNameImport>;
+        empTiedProYear:Array<model.EmpTiedProYear>;
+
 
         constructor() {
             var self = this;
-
+            $("#A2_2").ntsFixedTable({ height: 300, width: 1000 });
             //A3_4 対象雇用
             self.targetEmployment=ko.observable([]);
-            self.itemTable=ko.observableArray();
 
-            // self.processInfomations=ko.observableArray([]);
-            // self.currentProcessDates=ko.observableArray([]);
-            // self.setDaySupports=ko.observableArray([]);
-            // self.empTiedProYear=ko.observableArray([]);
+            //self.itemTable=new ItemTable(null,null,null,null);
+
+
+            // self.processInfomations=new Array();
+            // self.setDaySupports=new Array();
+            // self.currentProcessDates=new Array();
+            // self.empCdNameImports=new Array();
+            // self.empTiedProYear=new Array();
+            // let param={
+            //     informationDto: self.processInfomations,
+            //     setDaySupportDto: self.setDaySupports,
+            //     currProcessDateDto:  self.currentProcessDates,
+            //     empTiedProYearDto:  self.empCdNameImports,
+            //     empCdNameImports:  self.empTiedProYear
+            // }
+            //
+            // self.itemTable=new ItemTable(param);
 
 
             // let param1={
@@ -46,42 +64,15 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             // self.processInfomations.push(new model.ProcessInfomation(param4));
 
 
-
-
-
             self.itemBinding=ko.observableArray([]);
-
-            var sizetalbe=self.itemTable.processInfomations().length;
-            for(let i:number=sizetalbe;i<5;i++){
-                self.itemTable.processInfomations.push(new model.ProcessInfomation({
-                        processCateNo: i+1,
-                        processDivisionName: '',
-                        deprecatCate: 0
-                    }
-                ));
-            }
-
-            for(let i:number=0;i<5;i++){
-                self.itemBinding.push(new ItemBinding(
-                    self.itemTable.processInfomations()[i],
-                    _.filter(self.itemTable.setDaySupports(),function (o) {
-                        return o.processCategoryNO==i;
-                    }),
-                    self.itemTable.currentProcessDates()[i],
-                    self.itemTable.empTiedProYear()[i])
-                );
-
-            };
-
-
-
-
 
 
 
 
 
         }
+
+
 
 
 
@@ -89,7 +80,34 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            service.findDisplayRegister().done(data=>{
+                self.itemTable=new ItemTable(data);
+                console.log(self.itemTable);
 
+
+                var sizetalbe=self.itemTable.processInfomations.length;
+                for(let i:number=sizetalbe;i<5;i++){
+                    self.itemTable.processInfomations.push(new model.ProcessInfomation({
+                            processCateNo: i+1,
+                            processDivisionName: '',
+                            deprecatCate: 0
+                        }
+                    ));
+                }
+
+                for(let i:number=0;i<5;i++){
+                    self.itemBinding.push(new ItemBinding(
+                        self.itemTable.processInfomations[i],
+                        _.sortBy(_.filter(self.itemTable.setDaySupports,function (o) {
+                                return o.processCateNo==i+1;
+                        }),function (o) {
+                            return o.processDate;
+                        }),
+                    ));
+                };
+
+                console.log(self.itemBinding());
+            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -97,47 +115,52 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     }
 
     export class ItemBinding{
+
         processInfomation:model.ProcessInfomation;
-        setDaySupports:Array<model.SetDaySupport>;
-        currentProcessDate:model.CurrentProcessDate;
-        empTiedProYear:model.EmpTiedProYear;
+        setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
+        setDaySupportsSelectedCode:KnockoutObservable<number>;
+
 
         constructor(
             processInfomation:model.ProcessInfomation,
             setDaySupports:Array<model.SetDaySupport>,
-            currentProcessDate:model.CurrentProcessDate,
-            empTiedProYear:model.EmpTiedProYear
 
         ){
+
             this.processInfomation=processInfomation;
-            this.currentProcessDate=currentProcessDate;
-            this.setDaySupports=setDaySupports;
-            this.empTiedProYear=empTiedProYear;
+            this.setDaySupports=ko.observableArray(setDaySupports);
+            this.setDaySupportsSelectedCode=ko.observable(0);
+
+
         }
-
-
-
-
     }
 
 
+    export interface IitemTable{
+
+        informationDto: Array<model.ProcessInfomation>,
+        setDaySupportDto: Array<model.SetDaySupport>,
+        currProcessDateDto: Array<model.CurrentProcessDate>,
+        empTiedProYearDto: Array<model.EmpTiedProYear>,
+        empCdNameImports: Array<model.EmpCdNameImport>
+
+    }
+
     export class ItemTable{
-        processInfomations:KnockoutObservableArray<model.ProcessInfomation>;
-        setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
-        currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>;
-        empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>;
+        processInfomations:Array<model.ProcessInfomation>;
+        setDaySupports:Array<model.SetDaySupport>;
+        currentProcessDates:Array<model.CurrentProcessDate>;
+        empCdNameImports:Array<model.EmpCdNameImport>;
+        empTiedProYear:Array<model.EmpTiedProYear>;
 
         constructor(
-            processInfomations:KnockoutObservableArray<model.ProcessInfomation>,
-            setDaySupports:KnockoutObservableArray<model.SetDaySupport>,
-            currentProcessDates:KnockoutObservableArray<model.CurrentProcessDate>,
-            empTiedProYear:KnockoutObservableArray<model.EmpTiedProYear>
-
+            param:IitemTable
         ){
-            this.processInfomations=processInfomations;
-            this.currentProcessDates=ko.observableArray(currentProcessDates);
-            this.setDaySupports=ko.observableArray(setDaySupports);
-            this.empTiedProYear=ko.observableArray(empTiedProYear);
+            this.processInfomations=param.informationDto;
+            this.currentProcessDates=param.currProcessDateDto;
+            this.setDaySupports=param.setDaySupportDto;
+            this.empCdNameImports=param.empCdNameImports;
+            this.empTiedProYear=param.empTiedProYearDto;
         }
 
 

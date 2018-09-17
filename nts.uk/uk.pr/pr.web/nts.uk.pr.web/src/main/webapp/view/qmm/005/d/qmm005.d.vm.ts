@@ -138,7 +138,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             var self = this;
 
-            self.processCategoryNo=1;
+            self.processCategoryNo=3;
 
             self.numberOfWorkingDays = ko.observable(20);
             self.enableCloseDate = ko.observable(false);
@@ -175,7 +175,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.MonthSelectionSegment.NOVEMBER, 'NOVEMBER'),
                 new model.ItemModel(model.MonthSelectionSegment.DECEMBER, 'DECEMBER')
             ]);
-            self.incomeTaxBaseMonthSelectedCode = ko.observable(0);
+            self.incomeTaxBaseMonthSelectedCode = ko.observable(1);
 
             //D4_46
             self.incomeTaxBaseDate = ko.observableArray([]);
@@ -200,24 +200,24 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.SocialInsuColleMonth.NEXT_MONTH, 'NEXT_MONTH'),
                 new model.ItemModel(model.SocialInsuColleMonth.SECOND_FOLLOWING_MONTH, 'SECOND_FOLLOWING_MONTH'),
             ]);
-            self.timeClosingStandardMonthSelectedCode = ko.observable(0);
+            self.timeClosingStandardMonthSelectedCode = ko.observable(1);
 
             //D4_38
             self.timeReferenceStandardDay = ko.observableArray([]);
-            self.timeReferenceStandardDaySelectedCode = ko.observable(0);
+            self.timeReferenceStandardDaySelectedCode = ko.observable(1);
 
             //D4_19
             self.guaranteedBaseDate = ko.observableArray([]);
-            self.guaranteedBaseDateSelectedCode = ko.observable(0);
+            self.guaranteedBaseDateSelectedCode = ko.observable(1);
 
 
             //D3_3
             self.disposalDay = ko.observableArray([]);
-            self.disposalDaySelectedCode = ko.observable(0);
+            self.disposalDaySelectedCode = ko.observable(1);
 
             //D4_23
             self.employmentInsuranceStandardDate = ko.observableArray([]);
-            self.employmentInsuranceStandardDateSelectedCode = ko.observable(0);
+            self.employmentInsuranceStandardDateSelectedCode = ko.observable(1);
 
 
             //D4_25
@@ -235,7 +235,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.MonthSelectionSegment.NOVEMBER, 'NOVEMBER'),
                 new model.ItemModel(model.MonthSelectionSegment.DECEMBER, 'DECEMBER')
             ]);
-            self.employmentInsuranceStandardMonthSelectedCode = ko.observable(0);
+            self.employmentInsuranceStandardMonthSelectedCode = ko.observable(1);
 
             //D3_20
             self.datePayment = ko.observableArray([]);
@@ -295,7 +295,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
             ]);
-            self.guaranteedBaseYearSelectedCode = ko.observable(0);
+            self.guaranteedBaseYearSelectedCode = ko.observable(1);
 
 
             //D3_11
@@ -328,7 +328,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.InsuranceStanMonthClassSification.DECEMBER, 'DECEMBER')
 
             ]);
-            self.guaranteedBaseMonthSelectedCode = ko.observable(0);
+            self.guaranteedBaseMonthSelectedCode = ko.observable(1);
 
 
             self.pushDaytoList(self.disposalDay, model.DateSelectClassification);
