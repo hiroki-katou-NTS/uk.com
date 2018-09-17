@@ -145,6 +145,7 @@ module nts.uk.at.view.kwr006.c {
 
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR006_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR006_D').nameCopy);
+                        self.saveData();
                     } else {
                         self.selectedCodeC2_3(self.storeCurrentCodeBeforeCopy());
                     }
@@ -263,6 +264,8 @@ module nts.uk.at.view.kwr006.c {
                 Close C screen
             */
             public closeScreenC(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared('selectedCodeScreenC',self.selectedCodeC2_3(),true)
                 nts.uk.ui.windows.close();
             }
 

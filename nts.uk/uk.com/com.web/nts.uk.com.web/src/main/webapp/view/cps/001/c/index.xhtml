@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 1000,
+					width : 990,
 					height : 700
 				};
 			</script>
@@ -67,8 +67,8 @@
 						<span class="text-inform" data-bind="text: dateDelete"></span>
 					</div>
 					<div class="form-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_55')}</div>
-						<span class="text-inform" data-bind="text: reason"></span>
+						<div class="reasonLable" data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_55')}</div>
+						<div class="reason"><span data-bind="text: reason"></span></div>
 					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_56')}</div>

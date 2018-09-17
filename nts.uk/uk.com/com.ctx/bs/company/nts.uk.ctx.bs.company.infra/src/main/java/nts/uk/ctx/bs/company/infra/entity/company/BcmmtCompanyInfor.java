@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -62,7 +63,7 @@ public class BcmmtCompanyInfor extends UkJpaEntity implements Serializable{
 	@Column(name = "TAX_NO")
 	public String taxNo;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "bcmmtCompanyInfor", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "bcmmtCompanyInfor", orphanRemoval = true, fetch = FetchType.LAZY)
 	public BcmmtAddInfor bcmmtAddInfor;
 	
 	@Override

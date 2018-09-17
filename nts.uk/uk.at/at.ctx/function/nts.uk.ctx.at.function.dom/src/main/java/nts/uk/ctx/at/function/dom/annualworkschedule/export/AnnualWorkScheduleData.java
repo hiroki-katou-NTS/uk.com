@@ -144,6 +144,9 @@ public class AnnualWorkScheduleData {
 					.add(this.getItemValueByNullOrZero(this.month12th));
 			this.sum = new ItemData(sum, null);
 		}
+		if (this.numMonth == 0) {
+			return this;
+		}
 		// 月平均を算出する
 		switch (this.valOutFormat) {
 		case DAYS:
@@ -390,7 +393,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setNumMonth(monthlyAttendanceResult.size());
 		annualWorkScheduleData.setAgreementTime(false);
 		monthlyAttendanceResult.forEach(m -> {
 			annualWorkScheduleData.setMonthlyData(
@@ -432,7 +435,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(numMonth);
+		annualWorkScheduleData.setNumMonth(listAgreementTimeBymonth.size());
 		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
 		annualWorkScheduleData.setAgreementTime(true);

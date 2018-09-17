@@ -153,7 +153,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 self.clear();
                 return;
             }
-            if (self.time2() !== '' && self.time1() > self.time2()) {
+            if (!((self.time1() == '' && self.time2() !== '') || (self.time1() !== '' && self.time2() == '')) && self.time1() > self.time2()) {
                 alertError({ messageId: "Msg_54" });
                 self.clear();
                 return;

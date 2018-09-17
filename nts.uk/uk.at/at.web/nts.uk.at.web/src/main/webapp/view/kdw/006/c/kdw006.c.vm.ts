@@ -185,8 +185,10 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                         service.updateDaily(ko.toJS(self.daiPerformanceFunDto)).done(function() {
                             service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
                                 service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
+                                    nts.uk.ui.block.invisible();
                                     //self.start();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                    nts.uk.ui.block.clear();
                                 })
                             });
                         });

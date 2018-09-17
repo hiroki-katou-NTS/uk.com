@@ -151,7 +151,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		}
 		return AnnLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				annualLeave == null ? new AnnualLeave() : annualLeave.toDomain(), 
 				realAnnualLeave == null ? new RealAnnualLeave() : realAnnualLeave.toRealDomain(),
 				Optional.of(halfDayAnnualLeave == null ? new HalfDayAnnualLeave() : halfDayAnnualLeave.toDomain()), 

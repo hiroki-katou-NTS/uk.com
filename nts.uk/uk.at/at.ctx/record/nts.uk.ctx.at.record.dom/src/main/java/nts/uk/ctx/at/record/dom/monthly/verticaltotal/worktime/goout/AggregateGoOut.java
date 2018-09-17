@@ -1,16 +1,19 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 集計外出
  * @author shuichu_ishida
  */
 @Getter
+@NoArgsConstructor
 public class AggregateGoOut {
 
 	/** 外出理由 */
@@ -59,6 +62,28 @@ public class AggregateGoOut {
 		domain.totalTime = totalTime;
 		return domain;
 	}
+	/**
+	 * for use merger table KrcdtMonMerge
+	 * @author lanlt
+	 * @param times
+	 * @param legalTime
+	 * @param illegalTime
+	 * @param totalTime
+	 * @return
+	 */
+	public static AggregateGoOut of(
+			AttendanceTimesMonth times,
+			TimeMonthWithCalculation legalTime,
+			TimeMonthWithCalculation illegalTime,
+			TimeMonthWithCalculation totalTime){
+		
+		val domain = new AggregateGoOut();
+		domain.times = times;
+		domain.legalTime = legalTime;
+		domain.illegalTime = illegalTime;
+		domain.totalTime = totalTime;
+		return domain;
+	}
 	
 	/**
 	 * 回数に加算する
@@ -93,5 +118,11 @@ public class AggregateGoOut {
 	 */
 	public void addMinutesToTotalTime(int minutes, int calcMinutes){
 		this.totalTime = this.totalTime.addMinutes(minutes, calcMinutes);
+	}
+
+	public static AggregateGoOut of(AttendanceTimeMonth attendanceTimeMonth, TimeMonthWithCalculation legalTime2,
+			TimeMonthWithCalculation illegalTime2, TimeMonthWithCalculation totalTime2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

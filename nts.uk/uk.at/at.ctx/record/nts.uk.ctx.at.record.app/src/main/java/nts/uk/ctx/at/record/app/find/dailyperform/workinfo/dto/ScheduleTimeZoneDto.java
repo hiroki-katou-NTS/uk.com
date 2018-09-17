@@ -15,15 +15,20 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class ScheduleTimeZoneDto implements ItemConst {
 
 	/** 勤務NO */
-	private Integer no;
+	private int no;
 
 	/** 出勤 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTENDANCE)
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
-	private Integer working;
+	private int working;
 
 	/** 退勤 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LEAVE)
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
-	private Integer leave;
+	private int leave;
+
+	@Override
+	protected ScheduleTimeZoneDto clone() {
+		return new ScheduleTimeZoneDto(no, working, leave);
+	}
 }

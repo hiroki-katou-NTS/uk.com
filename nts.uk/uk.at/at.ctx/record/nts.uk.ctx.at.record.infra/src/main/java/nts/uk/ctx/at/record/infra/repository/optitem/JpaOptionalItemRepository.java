@@ -6,11 +6,14 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -18,13 +21,16 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange_;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
@@ -305,6 +311,85 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				.map(item -> new OptionalItem(new JpaOptionalItemGetMemento(
 						(KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
 				.collect(Collectors.toList());
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#
+	 * findByPerformanceAtr(java.lang.String,
+	 * nts.uk.ctx.at.record.dom.optitem.PerformanceAtr)
+	 */
+	@Override
+	public List<OptionalItem> findUsedByPerformanceAtr(String companyId, PerformanceAtr atr) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<Tuple> cq = builder.createQuery(Tuple.class);
+
+		// From table
+		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(
+				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+				companyId));
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.usageAtr), OptionalItemUsageAtr.USE.value));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		
+		cq = cq.multiselect(root, join);
+		List<Tuple> result = em.createQuery(cq.distinct(true)).getResultList();
+		
+		// Get results
+		return result.stream()
+				.map(c -> new OptionalItem(new JpaOptionalItemGetMemento((KrcstOptionalItem) c.get(0), (KrcstCalcResultRange) c.get(1))))
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public Map<Integer, OptionalItemAtr> findOptionalTypeBy(String companyId, PerformanceAtr atr) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<Tuple> cq = builder.createTupleQuery();
+
+		// From table
+		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		
+		// Get NO and optional attr only
+		cq.multiselect(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo), 
+						root.get(KrcstOptionalItem_.optionalItemAtr));
+
+		// Get results
+		List<Tuple> results = em.createQuery(cq).getResultList();
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return new HashMap<>();
+		}
+		
+		// Return
+		return results.stream().collect(Collectors.toMap(r -> (Integer) r.get(0), 
+				r -> EnumAdaptor.valueOf((Integer) r.get(1), OptionalItemAtr.class)));
 	}
 
 }
