@@ -24,7 +24,7 @@ public class EmpInsurBusBurRatioService {
     public void addEmpInsurBusBurRatio(String newHistID, List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio, YearMonth start, YearMonth end){
     	String cId = AppContexts.user().companyId();
 		YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
-		EmpInsurHis itemtoBeAdded = new EmpInsurHis(newHistID, new ArrayList<>());
+		EmpInsurHis itemtoBeAdded = new EmpInsurHis(cId, new ArrayList<>());
 		Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
 		if (empInsurHis.isPresent()) {
 			itemtoBeAdded = empInsurHis.get();
@@ -33,7 +33,6 @@ public class EmpInsurBusBurRatioService {
 		this.addEmpInsurHis(yearMonthItem, cId);
 		this.updateItemBefore(empInsurHis.get(), yearMonthItem, cId);
 		this.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
-
 	}
     
     public void updateEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio){
@@ -60,18 +59,19 @@ public class EmpInsurBusBurRatioService {
 	}
     
     public void historyDeletionProcessing(String hisId, String cId){
-    
     	Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
     	if (!empInsurHis.isPresent()) {
-    		throw new RuntimeException("invalid employmentHistory"); 
+    		throw new RuntimeException("invalid YearMonthHistory"); 
     	}
     	Optional<YearMonthHistoryItem> itemToBeDelete = empInsurHis.get().getHistory().stream()
                 .filter(h -> h.identifier().equals(hisId))
                 .findFirst();
+    	if (!itemToBeDelete.isPresent()) {
+    		return;
+    	}
     	empInsurHis.get().remove(itemToBeDelete.get());
     	empInsurBusBurRatioRepository.remove(hisId);
     	empInsurHisRepository.remove(cId, hisId);
-    	
     }
     
     public void historyCorrectionProcecessing(String cId, String hisId, YearMonth start, YearMonth end){
@@ -87,7 +87,6 @@ public class EmpInsurBusBurRatioService {
     	empInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
     	this.updateEmpInsurHis(itemToBeUpdate.get(), cId);
     	this.updateItemBefore(empInsurHis.get(), itemToBeUpdate.get(), cId);
-    	
     }
     
     private void updateEmpInsurHis(YearMonthHistoryItem itemToBeUpdated, String cId){
