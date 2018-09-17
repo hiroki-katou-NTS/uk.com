@@ -20,8 +20,8 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaRepository implements WelfarePensionInsuranceRateHistoryRepository {
-	private static final String FIND_ALL = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid";
-	private static final String DELETE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.QpbmtWelfarePensionInsuranceRateHistoryPk.cid =: cid AND a.QpbmtWelfarePensionInsuranceRateHistoryPk.socialInsuranceOfficeCd =:officeCode";
+	private static final String FIND_ALL = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid";
+	private static final String DELETE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
 	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
 	private static final String DELETE_BY_OFFICE_CODE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
 	
@@ -77,7 +77,7 @@ public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaReposito
 	@Override
 	public void deleteByCidAndCode(String cid, String officeCode) {
 		this.getEntityManager().createQuery(DELETE, QpbmtWelfarePensionInsuranceRateHistory.class)
-		.setParameter("companyID", cid)
+		.setParameter("cid", cid)
 		.setParameter("officeCode", officeCode)
 		.executeUpdate();
 	}

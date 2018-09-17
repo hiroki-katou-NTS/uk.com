@@ -32,7 +32,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandlerWithResult<U
 			SocialInsuranceOffice socialInuran = mappingEntity(command);
 			socialInsuranceOfficeRepository.update(socialInuran);
 			response.add(command.getCode());
-			response.add(command.getRepresentativeName());
+			response.add(socialInuran.getName().v());
 		}
 		return response;
 	}

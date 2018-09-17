@@ -61,8 +61,8 @@
 							<div class="flex valign-center">
 								<div id="D4_1"
 									data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_114')}</div>
-								<input id="D4_2"
-									data-bind="ntsTextEditor: {value: code} , name: '#{i18n.getText('QMM008_110')}'" />
+								<input id="D4_2"  
+									data-bind="ntsTextEditor: {value: code} , name: '#{i18n.getText('QMM008_110')}',enable: $vm.isEnableCode()" />
 								<input id="D4_3"
 									data-bind="ntsTextEditor: {value: name}, name: '#{i18n.getText('QMM008_111')}'" />
 							</div>
@@ -93,7 +93,6 @@
 									data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: false }">#{i18n.getText('QMM008_118')}</div>
 								<input id="D4_12"
 									data-bind="ntsTextEditor: {value: postalCode}, name: '#{i18n.getText('QMM008_118')}'" />
-								<button id="D4_13" style="margin-left: 5px;" class="small">#{i18n.getText('QMM008_119')}</button>
 							</div>
 
 							<div class="flex valign-center">
