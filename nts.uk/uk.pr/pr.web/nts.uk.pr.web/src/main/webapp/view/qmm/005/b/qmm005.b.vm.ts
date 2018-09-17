@@ -23,15 +23,39 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         constructor() {
             var self = this;
-            self.processCateNo = 1;
             self.targetMonth = ko.observable();
             self.processingDivisionName = ko.observable();
             self.settingPaymentList = ko.observableArray([]);
             self.processingYearList = ko.observableArray([]);
             self.show = ko.observable(false);
             self.btnText = ko.computed(function () {
-                if (self.show()) return "-";
-                return "+";
+                let windowSize = nts.uk.ui.windows.getSelf();
+                if (self.show()) {
+                    windowSize.$dialog.dialog('option', {
+                        position: {
+                            my: "top-100",
+                            at: "left+200",
+                            of: $("#content_dialog")
+                        },
+                        width: 1700,
+                        height: 500
+                    });
+                    windowSize.$dialog.resize();
+                    return "-";
+                } else {
+                    windowSize.$dialog.dialog('option', {
+                        position: {
+                            my: "top-100",
+                            at: "left+200)",
+                            of: $("#content_dialog")
+                        },
+                        width: 1100,
+                        height: 500
+                    });
+                    windowSize.$dialog.resize();
+                    return "+";
+                }
+
             });
             self.isNewMode = ko.observable(false);
 
@@ -47,9 +71,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         blankData() {
             var self = this;
             for (var i = 0; i < self.settingPaymentList().length; i++) {
-                for (k in self.settingPaymentList()[i]){
-                    var key  = k.toString();
-                    if(key != 'targetMonth'){
+                for (k in self.settingPaymentList()[i]) {
+                    var key = k.toString();
+                    if (key != 'targetMonth') {
                         self.settingPaymentList()[i][key](null);
                     }
                 }
@@ -61,12 +85,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         }
 
         cancel() {
-            var self = this;
-            if (self.processingYearList().length > 0) {
-                self.processingYear(self.processingYearList()[0].code);
-                self.selectProcessingYear(self.processingYearList()[0].code);
-            }
-            self.isNewMode(false);
             nts.uk.ui.windows.close();
         }
 
@@ -81,6 +99,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         startupScreen() {
             // get domain 処理区分基本情報 (ProcessInfomation), 給与支払日設定 (SetDaySupport)
             var self = this;
+            self.processCateNo = getShared("QMM005_output_B");
             service.getProcessInfomation(self.processCateNo).done(function (data) {
                 if (data) {
                     self.processInfomationDto = data;
@@ -96,14 +115,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     _.forEach(setDaySupport, function (value, key) {
                         if (key == "processDate") {
                             let year = value.toString().substr(0, 4);
-                            array.push(new model.ItemModel(year, year + '(' + nts.uk.time.yearInJapanEmpire(year).toString() + ')'));
+                            array.push(new model.ItemModel(year, year + '(' + nts.uk.time.yearInJapanEmpire(year).toString().split(' ').join('') + ')'));
                         }
                     });
                 });
-                self.processingYearList(_.uniqBy(array, 'code'));
+                self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
                     self.processingYear(self.processingYearList()[0].code);
-                    // self.selectProcessingYear(self.processingYearList()[0].code);
                 }
             });
 
@@ -114,48 +132,53 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             // B3_4				処理年
             var self = this;
             service.getSelectProcessingYear(self.processCateNo, year).done(function (data) {
-                var firstArray = [];
-                var index = 0;
-                _.forEach(data.setDaySupportDtoList, function (setDaySupport) {
-                    var obj = {};
-                    obj["targetMonth"] = ko.observable(++index);
-                    // B4_10 支払年月日
-                    obj["paymentDate"] = ko.observable(setDaySupport.paymentDate);
-                    // B4_11 支払曜日
-                    // B4_12				社員抽出基準日
-                    obj["employeeExtractionReferenceDate"] = ko.observable(setDaySupport.empExtraRefeDate);
-                    // B4_13 社会保険徴収月
-                    obj["socialInsuranceCollectionMonth"] = ko.observable(setDaySupport.socialInsurdCollecMonth);
-                    // B4_16 要勤務日数
-                    obj["numberOfWorkingDays"] = ko.observable(setDaySupport.numberWorkDay);
-                    // B6_7	社会保険基準日
-                    obj["socialInsuranceStandardDate"] = ko.observable(setDaySupport.socialInsurdStanDate);
-                    // B6_8	雇用保険基準日
-                    obj["employmentInsuranceStandardDate"] = ko.observable(setDaySupport.empInsurdStanDate);
-                    // B6_9	勤怠締め日
-                    obj["timeClosingDate"] = ko.observable(setDaySupport.closeDateTime);
-                    // B6_10 所得税基準日
-                    obj["incomeTaxReferenceDate"] = ko.observable(setDaySupport.incomeTaxDate);
-                    // B6_11
-                    obj["accountingClosureDate"] = ko.observable(setDaySupport.closureDateAccounting)
-                    firstArray.push(obj);
-                });
-                var secondArray = [];
-                _.forEach(data.specPrintYmSetDtoList, function (specPrintYmSet) {
-                    secondArray.push({specificationPrintDate: ko.observable(specPrintYmSet.printDate)});
-                });
-                var i;
-                for (i = 0; i < firstArray.length; i++) {
-                    firstArray[i]["specificationPrintDate"] = secondArray[i]["specificationPrintDate"];
+                if (data.setDaySupportDtoList.length > 0) {
+                    var firstArray = [];
+                    var index = 0;
+                    _.forEach(data.setDaySupportDtoList, function (setDaySupport) {
+                        var obj = {};
+                        obj["targetMonth"] = ko.observable(++index);
+                        // B4_10 支払年月日
+                        obj["paymentDate"] = ko.observable(setDaySupport.paymentDate);
+                        // B4_11 支払曜日
+                        // B4_12				社員抽出基準日
+                        obj["employeeExtractionReferenceDate"] = ko.observable(setDaySupport.empExtraRefeDate);
+                        // B4_13 社会保険徴収月
+                        obj["socialInsuranceCollectionMonth"] = ko.observable(setDaySupport.socialInsurdCollecMonth);
+                        // B4_16 要勤務日数
+                        obj["numberOfWorkingDays"] = ko.observable(setDaySupport.numberWorkDay);
+                        // B6_7	社会保険基準日
+                        obj["socialInsuranceStandardDate"] = ko.observable(setDaySupport.socialInsurdStanDate);
+                        // B6_8	雇用保険基準日
+                        obj["employmentInsuranceStandardDate"] = ko.observable(setDaySupport.empInsurdStanDate);
+                        // B6_9	勤怠締め日
+                        obj["timeClosingDate"] = ko.observable(setDaySupport.closeDateTime);
+                        // B6_10 所得税基準日
+                        obj["incomeTaxReferenceDate"] = ko.observable(setDaySupport.incomeTaxDate);
+                        // B6_11
+                        obj["accountingClosureDate"] = ko.observable(setDaySupport.closureDateAccounting)
+                        firstArray.push(obj);
+                    });
+                    var secondArray = [];
+                    _.forEach(data.specPrintYmSetDtoList, function (specPrintYmSet) {
+                        secondArray.push({specificationPrintDate: ko.observable(specPrintYmSet.printDate)});
+                    });
+                    var i;
+                    for (i = 0; i < firstArray.length; i++) {
+                        firstArray[i]["specificationPrintDate"] = secondArray[i]["specificationPrintDate"];
+                    }
+                    self.settingPaymentList(firstArray);
+                } else {
+                    self.blankData();
                 }
-                self.settingPaymentList(firstArray);
             });
+
         }
 
         creatNewProcessYear() {
             var self = this;
             self.isNewMode(true);
-            self.processingYear = ko.observable();
+            self.processingYear();
             self.blankData();
         }
 
@@ -172,8 +195,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                                 targetMonth: ko.observable(index),
                                 paymentDate: ko.observable(self.processingYear() + '/' + index + '/' + data.basicSetting.monthlyPaymentDate.datePayMent),
                                 employeeExtractionReferenceDate: ko.observable(self.processingYear() + '/' + index + '/' + data.basicSetting.employeeExtractionReferenceDate.refeDate),
-                                socialInsuranceCollectionMonth: ko.observable(self.processingYear() + '/' + index),
-                                specificationPrintDate: ko.observable(self.processingYear() + '/' + index),
+                                socialInsuranceCollectionMonth: ko.observable(Number.parseInt(self.processingYear() + self.fullMonth(index))),
+                                specificationPrintDate: ko.observable(Number.parseInt(self.processingYear() + '' + index)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
                                 socialInsuranceStandardDate: ko.observable(self.processingYear() + '/' + index + '/' + data.advancedSetting.sociInsuStanDate.refeDate),
                                 employmentInsuranceStandardDate: ko.observable((self.processingYear() - 1) + '/' + index + '/' + data.advancedSetting.empInsurStanDate.refeDate),
@@ -289,7 +312,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     setDaySupportCommand: {
                         processCateNo: self.processCateNo,
                         paymentDate: setting.paymentDate(),
-                        processDate: self.processingYear() + '' +(index < 10 ? '0' + index : index),
+                        processDate: self.processingYear() + self.fullMonth(index),
                         closeDateTime: setting.timeClosingDate(),
                         empInsurdStanDate: setting.employmentInsuranceStandardDate(),
                         closureDateAccounting: setting.accountingClosureDate(),
@@ -300,19 +323,21 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         numberWorkDay: setting.numberOfWorkingDays()
                     },
                     specPrintYmSetCommand: {
-                        printDate: setting.specificationPrintDate()
+                        printDate: setting.specificationPrintDate(),
+                        processCateNo: self.processCateNo,
+                        processDate: self.processingYear() + self.fullMonth(index),
                     }
                 })
             });
             let commandData = {paymentDateSettingCommands: arrayItem}
             if (self.isNewMode()) {
-                service.addDomainModel(commandData).done(function () {
+                service.addDomainModel(commandData).done(function (data) {
                     self.transactionSuccess();
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
             } else {
-                service.updateDomainModel(commandData).done(function () {
+                service.updateDomainModel(commandData).done(function (data) {
                     self.transactionSuccess();
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
@@ -320,9 +345,16 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             }
         }
 
+        fullMonth(month) {
+            return (month < 10 ? '0' + month : month).toString();
+        }
+
+
         transactionSuccess() {
+            let self = this;
             nts.uk.ui.dialog.info({messageId: "Msg_15"});
-            this.processingYear(this.processingYear());
+            self.startupScreen();
+            self.isNewMode(false);
         }
     }
 }
