@@ -29,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
 @Stateless
-public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<FindSocialOfficeCommand,String> {
+public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<FindSocialOfficeCommand,List<String>> {
 	
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
@@ -62,8 +62,8 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 	private ContributionRateRepository contributionRateRepository;
 	
 	@Override
-	protected String handle(CommandHandlerContext<FindSocialOfficeCommand> context) {
-		String messSuccess = "Msg_16";
+	protected List<String> handle(CommandHandlerContext<FindSocialOfficeCommand> context) {
+		List<String> response = new ArrayList<>();
 		FindSocialOfficeCommand command = context.getCommand();
 		Optional<SocialInsuranceOffice> data = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
 		if(data.isPresent()) {
@@ -106,7 +106,7 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 		
 		// ドメインモデル「拠出金率履歴」を全て取得する
 		Optional<ContributionRateHistory> dataContri = contributionRateHistoryRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
-		if(dataContri.isPresent()) {
+		if(dataContri != null &&  dataContri.isPresent()) {
 			List<String> historyIds = dataContri.get().getHistory().stream().map(x -> x.identifier()).collect(Collectors.toList());
 			
 			// ドメインモデル「拠出金率」を削除する
@@ -119,9 +119,8 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandlerWithResult<F
 		
 		// ドメインモデル「社会保険事業所」を削除する
 		socialInsuranceOfficeRepository.remove(AppContexts.user().companyId(), command.getCode());
-		
-		// show msg  - to do
-		return messSuccess;
+		response.add(command.getCode());
+		return response;
 		
 		// 共通アルゴリズム「削除後の選択」を実行する
 		

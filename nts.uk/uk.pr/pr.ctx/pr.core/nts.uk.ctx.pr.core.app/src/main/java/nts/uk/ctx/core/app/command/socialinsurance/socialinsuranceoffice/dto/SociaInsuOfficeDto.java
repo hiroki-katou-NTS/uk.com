@@ -21,9 +21,9 @@ public class SociaInsuOfficeDto {
 	private String addressKana2;
 	private String phoneNumber;
 	private Integer welfarePensionFundNumber;
-	private Integer welfarePensionOfficeNumber;
+	private String welfarePensionOfficeNumber;
 	private Integer healthInsuranceOfficeNumber;
-	private Integer healthInsuranceUnionOfficeNumber;
+	private String healthInsuranceUnionOfficeNumber;
 	private String healthInsuranceOfficeNumber1;
 	private String healthInsuranceOfficeNumber2;
 	private String welfarePensionOfficeNumber1;

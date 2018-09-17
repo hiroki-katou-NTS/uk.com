@@ -68,20 +68,20 @@ public class SocialOfficeService {
 	
 	@POST
 	@Path("/create")
-	public String createSociaInsuOffice(CreateSocialOfficeCommand createSocialOfficeCommand) {
-		return this.createSocialOfficeCommandHandler.handle(createSocialOfficeCommand);
+	public List<String> createSociaInsuOffice(CreateSocialOfficeCommand createSocialOfficeCommand) {
+		return createSocialOfficeCommandHandler.handle(createSocialOfficeCommand);
 	}
 	
 	@POST
 	@Path("/update")
-	public String updateSociaInsuOffice(UpdateSocialOfficeCommand updateSocialOfficeCommand) {
-		return this.updateSocialOfficeCommandHandler.handle(updateSocialOfficeCommand);
+	public List<String> updateSociaInsuOffice(UpdateSocialOfficeCommand updateSocialOfficeCommand) {
+		return updateSocialOfficeCommandHandler.handle(updateSocialOfficeCommand);
 	}
 	
 	@POST
 	@Path("/remove")
-	public String deleteSociaInsuOffice(FindSocialOfficeCommand findSocialOfficeCommand) {
-		return this.deleteSocialOfficeCommandHandler.handle(findSocialOfficeCommand);
+	public List<String> deleteSociaInsuOffice(FindSocialOfficeCommand findSocialOfficeCommand) {
+		return deleteSocialOfficeCommandHandler.handle(findSocialOfficeCommand);
 	}
 	
 }

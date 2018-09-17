@@ -1,5 +1,7 @@
 package nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -14,23 +16,25 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
 @Stateless
-public class UpdateSocialOfficeCommandHandler extends CommandHandlerWithResult<UpdateSocialOfficeCommand, String> {
+public class UpdateSocialOfficeCommandHandler extends CommandHandlerWithResult<UpdateSocialOfficeCommand, List<String>> {
 	
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	
 	@Override
-	protected String handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) {
-		String msg = null ;
+	protected List<String> handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) { 
+		List<String> response = new ArrayList<>();
 		UpdateSocialOfficeCommand command = context.getCommand();
 		Optional<SocialInsuranceOffice> socialInsu = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), command.getCode());
 		if(socialInsu.isPresent()) {
+			command.setCompanyID(AppContexts.user().companyId());
 			SocialInsuranceOffice socialInuran = mappingEntity(command);
 			socialInsuranceOfficeRepository.update(socialInuran);
-			msg = "Msg_15";
+			response.add(command.getCode());
+			response.add(command.getRepresentativeName());
 		}
-		return msg;
+		return response;
 	}
 	
 	private SocialInsuranceOffice mappingEntity(UpdateSocialOfficeCommand command) {

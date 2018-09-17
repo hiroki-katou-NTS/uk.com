@@ -1,22 +1,22 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistoryRepository;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtBonusHealthInsuranceRate;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceFeeRateHistory;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceFeeRateHistoryPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 健康保険料率履歴
@@ -27,7 +27,7 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
     private static final String GET_HEALTH_INSURANCE_FEE_RATE_HISTORY_BY_CID = "SELECT a FROM QpbmtHealthInsuranceFeeRateHistory a WHERE a.healthInsFeeHistPk.cid =:companyId";
     private static final String WHERE_OFFICE_CODE = " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode";
     private static final String STRING_EMPTY = "";
-    private static final String DELETE = "DELETE FROM QpbmtHealthInsuranceFeeRateHistory WHERE a.healthInsFeeHistPk.cid =:companyId"
+    private static final String DELETE = "DELETE FROM QpbmtHealthInsuranceFeeRateHistory a WHERE a.healthInsFeeHistPk.cid =:companyId"
     		+ " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode";
     
     
@@ -75,7 +75,7 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
 	@Override
 	public void deleteByCidAndCode(String companyId, String officeCode) {
 		this.getEntityManager().createQuery(DELETE, QpbmtHealthInsuranceFeeRateHistory.class)
-		.setParameter("companyID", companyId)
+		.setParameter("companyId", companyId)
 		.setParameter("officeCode", officeCode)
 		.executeUpdate();
 	}

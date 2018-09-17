@@ -32,14 +32,18 @@ public class JpaContributionRateHistoryRepository extends JpaRepository implemen
      * @return ContributionRateHistory
      */
     private Optional<ContributionRateHistory> toDomain(List<QpbmtContributionRateHistory> entity) {
-        String companyId = entity.get(0).contributionHistPk.cid;
-        String socialInsuranceCode = entity.get(0).contributionHistPk.socialInsuranceOfficeCd;
-        List<YearMonthHistoryItem> history = entity.stream().map(item -> new YearMonthHistoryItem(
-                item.contributionHistPk.historyId,
-                new YearMonthPeriod(
-                        new YearMonth(item.startYearMonth),
-                        new YearMonth(item.endYearMonth)))).collect(Collectors.toList());
-        return Optional.of(new ContributionRateHistory(companyId, socialInsuranceCode, history));
+    	if(entity.size() > 0) {
+    		String companyId = entity.get(0).contributionHistPk.cid;
+            String socialInsuranceCode = entity.get(0).contributionHistPk.socialInsuranceOfficeCd;
+            List<YearMonthHistoryItem> history = entity.stream().map(item -> new YearMonthHistoryItem(
+                    item.contributionHistPk.historyId,
+                    new YearMonthPeriod(
+                            new YearMonth(item.startYearMonth),
+                            new YearMonth(item.endYearMonth)))).collect(Collectors.toList());
+            return Optional.of(new ContributionRateHistory(companyId, socialInsuranceCode, history));
+    	} else {
+    		return null;
+    	}
     }
 
     /**

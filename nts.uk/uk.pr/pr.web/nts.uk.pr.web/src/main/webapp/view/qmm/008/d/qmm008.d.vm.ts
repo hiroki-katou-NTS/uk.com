@@ -1,8 +1,9 @@
 module nts.uk.pr.view.qmm008.d {
     export module viewmodel {
         import text = nts.uk.resource.getText;
+        import confirm = nts.uk.ui.dialog.confirm;
         export class ScreenModel {
-            items: KnockoutObservableArray<ItemModel>;
+            items: KnockoutObservableArray<SocialOfficeOverView>;
             columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any> = ko.observable('');
             count: number = 100;
@@ -37,10 +38,10 @@ module nts.uk.pr.view.qmm008.d {
                     for (let i = 0; i < response.sociaInsuPreInfos.length; i++) {
                         self.itemList.push(new ItemModelComBoBox(response.sociaInsuPreInfos[i].no, response.sociaInsuPreInfos[i].prefectureName));
                         if (response.sociaInsuOfficeDetail.healthInsurancePrefectureNo == response.sociaInsuPreInfos[i].no) {
-                             self.selectedNoD35(response.sociaInsuPreInfos[i].no);
+                            self.selectedNoD35(response.sociaInsuPreInfos[i].no);
                         }
                         if (response.sociaInsuOfficeDetail.welfarePensionPrefectureNo == response.sociaInsuPreInfos[i].no) {
-                             self.selectedNoD38(response.sociaInsuPreInfos[i].no);
+                            self.selectedNoD38(response.sociaInsuPreInfos[i].no);
                         }
                     }
                 });
@@ -71,30 +72,91 @@ module nts.uk.pr.view.qmm008.d {
                     if (codeId) {
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
                             self.detail(new SocialOfficeDetail(response));
+                            let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
+                            self.selectedNoD35(selectedNo35.no);
+                            let selectedNo38 = _.find(self.itemList(), { no: response.welfarePensionPrefectureNo });
+                            self.selectedNoD38(selectedNo38.no);
+
                         });
                     }
                 });
 
             }
 
+            /**
+             * update 
+            */
+            private update(): void {
+                let self = this;
+                self.detail().healthInsurancePrefectureNo(self.selectedNoD35);
+                self.detail().welfarePensionPrefectureNo(self.selectedNoD38);
+                if(self.currentCode() == null) {
+                    nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
+                        self.items.push(new SocialOfficeOverView(response[0], response[1]));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                           
+                        });
+                    });
+                } else {
+                    nts.uk.pr.view.qmm008.d.service.update(ko.toJS(self.detail)).done(function(response) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                           for (let i = 0; i < self.items().length; i++) {
+                               if (self.items()[i].code == response[0]) {
+                                   self.items()[i].name(response[1]);
+                               }
+                           }
+                        });
+                    });
+                }
+                
+            }
 
+            /**
+             * create
+             */
+            private create(): void {
+                let self = this;
+                self.detail(new SocialOfficeDetail());
+                self.currentCode(null);
+            }
+
+            /**
+             * delete
+             */
+            private deleteOffice(): void {
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    let self = this;
+                    let command = { code: self.currentCode() };
+                    nts.uk.pr.view.qmm008.d.service.deleteOffice(command).done(function(response) {
+                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                             for (let i = 0; i < self.items().length; i++) {
+                                 if(self.items()[i].code == response[0]) {
+                                     delete self.items()[i];
+                                 }
+                             }
+                        });
+                    });
+                }).ifNo(() => {
+
+                });
+            }
 
         }
 
         class SocialOfficeOverView {
-            code: string;
-            name: string;
-            constructor(code: string, name: string) {
+            code: KnockoutObservable<string> = ko.observable(null);
+            name: KnockoutObservable<string> = ko.observable(null);
+            constructor(code: KnockoutObservable<string>, name: KnockoutObservable<string>) {
                 this.code = code;
                 this.name = name;
             }
         }
 
         class ItemModelComBoBox {
-            no: string;
-            prefectureName: string;
+            no: KnockoutObservable<string> = ko.observable(null);
+            prefectureName: KnockoutObservable<string> = ko.observable(null);
 
-            constructor(no: string, prefectureName: string) {
+            constructor(no: KnockoutObservable<string>, prefectureName: KnockoutObservable<string>) {
                 this.no = no;
                 this.prefectureName = prefectureName;
             }

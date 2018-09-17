@@ -1,8 +1,12 @@
 package nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateSocialOfficeCommand {
 	private String companyID;
 	private String code;

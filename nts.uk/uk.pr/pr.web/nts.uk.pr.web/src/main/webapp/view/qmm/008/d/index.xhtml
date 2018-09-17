@@ -30,10 +30,10 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div style="margin-bottom: 15px;">
-					<button id="D1_1">#{i18n.getText('QMM008_106')}</button>
-					<button class="proceed" id="D1_2">#{i18n.getText('QMM008_1')}</button>
+					<button id="D1_1" data-bind="click: create">#{i18n.getText('QMM008_106')}</button>
+					<button class="proceed" data-bind="click: update" id="D1_2">#{i18n.getText('QMM008_1')}</button>
 					<button id="D1_3">#{i18n.getText('QMM008_2')}</button>
-					<button class="danger" id="D1_4">#{i18n.getText('QMM008_107')}</button>
+					<button class="danger" id="D1_4" data-bind="click: deleteOffice">#{i18n.getText('QMM008_107')}</button>
 					<button id="D1_5">#{i18n.getText('QMM008_108')}</button>
 				</div>
 				<hr style="margin-bottom: 20px;"></hr>
