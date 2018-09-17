@@ -10,10 +10,10 @@
 #D1_5 {
 	margin-left: 10px;
 }
-/* #D4_2 {
+ #D4_2 {
 	width: 100px;
 	
-} */
+} 
 #D4_3 {
 	width: 180px;
 	margin-left: 8px;
@@ -43,14 +43,14 @@
 	margin-top: 8px;
 }
 #D4_15 {
-	width: 225px;
+	width: 225px !important;
 }
 #D4_16 {
 	margin-left: 13px;
 }
 #D4_17 {
-	margin-left: 102px;
-	width: 225px;
+	margin-left: 48px;
+	width: 225px !important	;
 }
 #D4_18 {
 	margin-top: 8px;
@@ -62,8 +62,8 @@
 	margin-left: 13px;
 }
 #D4_21 {
-	margin-left: 102px;
-	width: 315px;
+	margin-left: 48px;
+	width: 360px !important;
 }
 #D4_22 {
 	margin-top: 8px;

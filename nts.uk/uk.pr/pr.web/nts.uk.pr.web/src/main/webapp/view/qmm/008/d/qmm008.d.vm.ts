@@ -83,7 +83,7 @@ module nts.uk.pr.view.qmm008.d {
                             let selectedNo38 = _.find(self.itemList(), { no: response.welfarePensionPrefectureNo });
                             if(response.welfarePensionPrefectureNo)
                             self.selectedNoD38(selectedNo38.no);
-
+                            self.isEnableCode(false);
                         });
                     }
                 });
@@ -100,11 +100,13 @@ module nts.uk.pr.view.qmm008.d {
                 if(self.currentCode() == null) {
                     nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
                         if(response[0] == 'Msg_3') {
-                            
+                            nts.uk.ui.dialog.error({ messageId: "Msg_3" }).then(function() {
+                            });
                         } else {
                             self.items.push(new SocialOfficeOverView(response[0], response[1]));
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 self.currentCode(response[0]);
+                                self.isEnableCode(false);           
                             });
                         }
                     });
@@ -117,6 +119,7 @@ module nts.uk.pr.view.qmm008.d {
                                    self.items.valueHasMutated()
                                }
                            }
+                            self.isEnableCode(false);
                         });
                     });
                 }
@@ -164,6 +167,7 @@ module nts.uk.pr.view.qmm008.d {
                                          if(response.welfarePensionPrefectureNo)
                                          self.selectedNoD38(selectedNo38.no);
                                          self.currentCode(self.items()[parameter].code);
+                                         self.isEnableCode(false);
                                      });
                                      
                                  }
