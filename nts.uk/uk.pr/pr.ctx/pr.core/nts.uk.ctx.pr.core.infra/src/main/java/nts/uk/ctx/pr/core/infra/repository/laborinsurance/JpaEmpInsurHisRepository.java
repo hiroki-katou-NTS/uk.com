@@ -35,10 +35,10 @@ public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurH
         return Optional.ofNullable(new EmpInsurHis(cid,toDomain(qpbmtEmpInsurHisList)));
     }
     private List<YearMonthHistoryItem> toDomain(List<QpbmtEmpInsurHis> entities) {
-        if (entities == null || entities.isEmpty()) {
-            return null;
-        }
         List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<YearMonthHistoryItem>();
+        if (entities == null || entities.isEmpty()) {
+            return yearMonthHistoryItemList;
+        }
         entities.forEach(entity -> {
             yearMonthHistoryItemList.add( new YearMonthHistoryItem(entity.empInsurHisPk.hisId,new YearMonthPeriod(new YearMonth(entity.startYearMonth),new YearMonth(entity.endYearMonth))));
         });

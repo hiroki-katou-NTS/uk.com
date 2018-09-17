@@ -20,7 +20,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         monthlyCalendar: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
         endYearMonth: KnockoutObservable<number> = ko.observable();
-        isNewMode: KnockoutObservable<number> = ko.observable();
+        isNewMode: KnockoutObservable<number> = ko.observable(2);
         transferMethod: KnockoutObservable<number> = ko.observable();
         constructor() {
             let self = this;
@@ -46,6 +46,8 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                         self.index(self.getIndex(hisId));
                     }
                     self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
+                } else {
+                    self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                 }
             }).always(() => {
                 block.clear();
@@ -55,7 +57,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         getEmpInsurPreRate() {
             let self = this;
             let hisId :string = self.selectedEmpInsHisId();
-            if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER) {
+            if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER && self.listEmpInsHis().length > 1) {
                 hisId = self.listEmpInsHis()[1].hisId;
             }
             service.getEmpInsurPreRate(hisId).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) => {
@@ -68,7 +70,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 } else {
                     self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                 }
-            });
+             });
         }
         
         addEmpInsurPreRate(){
@@ -123,10 +125,10 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             modal("/view/qmm/011/e/index.xhtml").onClosed(() =>{
                 let params = getShared('QMM011_E_PARAMS_OUTPUT');
                 if (params) {
-                    self.isNewMode(true);
+                    self.isNewMode(MODE.NEW);
                     if (params) {
                         self.startYearMonth(params.startYearMonth);
-                        self.isNewMode(true);
+                        self.isNewMode(MODE.NEW);
                         self.transferMethod(params.transferMethod);
                         self.listEmpInsHis(self.addEmplInsurHis(self.startYearMonth(), self.listEmpInsHis()));
                         self.selectedEmpInsHisId(self.listEmpInsHis()[FIRST].hisId);
@@ -137,12 +139,16 @@ module nts.uk.com.view.qmm011.b.viewmodel {
 
         register() {
             let self = this;
+            if (self.isNewMode() == MODE.NO) {
+                return;
+            }
+            let isNewMode = self.isNewMode() == MODE.NEW;
             if(self.validate()){
                 return;
             }
             let data: any = {
                 listEmpInsurPreRate: self.convertToCommand(self.listEmpInsurPreRate()),
-                isNewMode: self.isNewMode(),
+                isNewMode: isNewMode,
                 hisId: self.hisId(),
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth:  self.convertStringToYearMonth(self.endYearMonth())
@@ -150,7 +156,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             block.invisible();
             service.register(data).done(() => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.isNewMode(false);
+                    self.isNewMode(MODE.UPDATE);
                     self.transferMethod(null);
                     self.initScreen(null);
                 });
@@ -171,7 +177,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             emplInsurHis.endYearMonth = '999912';
             emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString(emplInsurHis.endYearMonth);
             if (list && list.length > 0) {
-                list[FIRST].display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
+                list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
             }
             listEmpInsHis.push(emplInsurHis);
             _.each(list, (item) => {
@@ -192,6 +198,18 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             $(".B3_7").trigger("validate");
             $(".B3_11").trigger("validate");
             return error.hasError();
+        }
+        
+        enableRegis(){
+            return this.isNewMode() == MODE.NO;
+        }
+        
+        enableNew(){
+            return this.isNewMode() == MODE.NEW;
+        }
+        
+        enableUpdate(){
+            return this.isNewMode() == MODE.UPDATE;
         }
         
         openFscreen() {

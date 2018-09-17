@@ -29,12 +29,15 @@ public class RegisterEmpInsurPreRateCommandHandler extends CommandHandler<Regist
 	    YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
 	    YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
 	    String newHistID = IdentifierUtil.randomUniqueId();
-	    List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
-	        return new EmpInsurBusBurRatio(newHistID, item.getEmpPreRateId(), new BigDecimal(item.getIndBdRatio()), new BigDecimal(item.getEmpContrRatio()), item.getPerFracClass(), item.getBusiOwFracClass());
-	        }).collect(Collectors.toList());
 	    if (command.isNewMode()) {
+	    	List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
+	    		return new EmpInsurBusBurRatio(newHistID, item.getEmpPreRateId(), new BigDecimal(item.getIndBdRatio()), new BigDecimal(item.getEmpContrRatio()), item.getPerFracClass(), item.getBusiOwFracClass());
+	        	}).collect(Collectors.toList());
 	    	empInsurBusBurRatioService.addEmpInsurBusBurRatio(newHistID, listEmpInsurBusBurRatio, startYearMonth, endYearMonth);
 	    } else {
+	    	List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
+		        return new EmpInsurBusBurRatio(item.getHisId(), item.getEmpPreRateId(), new BigDecimal(item.getIndBdRatio()), new BigDecimal(item.getEmpContrRatio()), item.getPerFracClass(), item.getBusiOwFracClass());
+		        }).collect(Collectors.toList());
 	    	empInsurBusBurRatioService.updateEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
 	    }
 	    

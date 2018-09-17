@@ -8,6 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.HEAD;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,16 +18,12 @@ import java.util.stream.Collectors;
 public class UpdateNameOfEachBusinessCommandHandler extends CommandHandler<UpdateNameOfEachBusinessCommand> {
 
     @Inject
-    OccAccidentInsurService workersComInsurService;
-
-    @Inject
     OccAccInsurBusRepository occAccInsurBusRepository;
 
     @Override
     protected void handle(CommandHandlerContext<UpdateNameOfEachBusinessCommand> context) {
         String cId = AppContexts.user().companyId();
         UpdateNameOfEachBusinessCommand command = context.getCommand();
-//        Optional<OccAccInsurBus> occAccInsurBus = workersComInsurService.getOccAccInsurBus(cId);
         List<NameOfEachBusiness> listNameOfEachBusiness = command.getListEachBusiness().stream().map(item->
         {
            return  new NameOfEachBusiness(item.getOccAccInsurBusNo(),item.getToUse(),Optional.of(new OccAccInsurBusinessName(item.getName())));
