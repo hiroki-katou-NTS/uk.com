@@ -76,7 +76,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_TIME_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_TIME_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" + "and TIME_LEAVING_TYPE = 1" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {

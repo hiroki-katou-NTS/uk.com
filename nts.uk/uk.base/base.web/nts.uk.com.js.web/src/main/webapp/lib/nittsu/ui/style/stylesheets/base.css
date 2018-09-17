@@ -4738,7 +4738,7 @@ div .ex-area-line.x-stay {
 	position: relative;
 	table-layout: fixed;
 	width: 100%;
-	border-collapse: separate;
+	/**border-collapse: separate;**/
 	user-select: none;
 	-ms-user-select: none;
 	-webkit-user-select: none;
@@ -4820,6 +4820,7 @@ div .ex-area-line.x-stay {
 	height: 95%;
     border: 1px solid #c5c5c5;
     border-radius: 3px;
+    background: white;
 }
 
 .mcombo-button {
@@ -4945,7 +4946,7 @@ div .ex-area-line.x-stay {
 }
 
 .mgrid table tr td.merror {
-	border-color: #ff6666;
+	border: 1px double #ff6666;
 }
 
 .mgrid .mgrid-fixed-summaries tr td,
@@ -4954,7 +4955,7 @@ div .ex-area-line.x-stay {
 	border-color: #AAB7B8;
 	color: #454545;
 	overflow: hidden; 
-	position: relative; 
+	/**position: relative;**/ 
 	padding: 0px 2px;
 	font-family: "Meiryo" !important;
     font-size: .9em !important;
@@ -5050,6 +5051,7 @@ div .ex-area-line.x-stay {
 	text-decoration: none;
 	line-height: 1.8em;
 	display: inline;
+	float: left;
 }
 
 .mgrid-sheet-button {
@@ -5078,19 +5080,24 @@ div .ex-area-line.x-stay {
 	line-height: 15px;
 	font-size: 0.5rem;
 	text-align: center;
+	top: -3px;
 	cursor: default;
 	user-select: none;
 	-ms-user-select: none;
 	-webkit-user-select: none;
 }
 
-.mgrid-sheet-scrollbar li:hover {
+.mgrid-sheet-scrollbar:not(.ui-state-disabled) li:hover {
 	background-color: #ccc;
 }
 
-.mgrid-sheet-scrollbar li:active {
+.mgrid-sheet-scrollbar:not(.disable) li:active {
 	color: white;
 	background-color: gray;
+}
+
+.mgrid-sheet-scrollbar.disable li {
+	color: #aaa;
 }
 
 /*****************************

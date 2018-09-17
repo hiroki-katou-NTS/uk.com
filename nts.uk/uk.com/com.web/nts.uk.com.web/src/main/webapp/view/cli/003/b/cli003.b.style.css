@@ -104,7 +104,7 @@ div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
 
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
-	width: auto !important;
+	max-width: 330px !important;
 }
 
 div#list-box_b1 {

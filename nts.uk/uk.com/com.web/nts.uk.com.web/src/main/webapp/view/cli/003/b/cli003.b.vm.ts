@@ -1302,6 +1302,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             paramOutputItem.itemNos = self.listItemNo();
 
                         }
+                        if(self.listItemNo() && self.listItemNo().length>0){
+                            
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
 
@@ -1346,6 +1348,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         }).fail(function(error) {
                             alertError(error);
                         });
+                        }else{
+                             alertError({ messageId: "Msg_1221" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
+                            } 
+                        //
                     } else {
                         if(selectCancel==false){
                              alertError({ messageId: "Msg_1215" }).then(function() {                                                             

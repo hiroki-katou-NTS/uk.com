@@ -34,7 +34,7 @@ public class PersonnelCostSettingImport {
 	 */
 	public PremiumTime calcPremiumTime(Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
 		
-		Integer result = dailyRecordDto.get().convert(this.attendanceItemId).stream()
+		Integer result = this.attendanceItemId.isEmpty() ? 0 : dailyRecordDto.get().convert(this.attendanceItemId).stream()
 											.filter(c -> c.value() != null).mapToInt(r -> (int) r.value()).sum();
 //		for(Integer id : this.attendanceItemId) {	
 //			//該当する勤怠項目を取得
