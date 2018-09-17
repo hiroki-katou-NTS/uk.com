@@ -422,6 +422,8 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
                 })
+                
+                
 
             }
             return dfd.promise();
@@ -495,10 +497,21 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.processInfomation = new model.ProcessInfomation(processInfomationParam);
             console.log(self.processInfomation);
             console.log(self.valPayDateSet);
-            service.registerprocessingsegment({
-                processInformation: ko.toJS(self.processInfomation),
-                valPayDateSet: ko.toJS(self.valPayDateSet)
-            });
+            
+            if(self.modeUpdate==1){
+            
+                service.registerprocessingsegment({
+                    processInformation: ko.toJS(self.processInfomation),
+                    valPayDateSet: ko.toJS(self.valPayDateSet)
+                });
+             }
+            
+            if(self.modeUpdate==0){
+                service.updateprocessingsegment({
+                    processInformation: ko.toJS(self.processInfomation),
+                    valPayDateSet: ko.toJS(self.valPayDateSet)
+                });
+            }
         }
 
 

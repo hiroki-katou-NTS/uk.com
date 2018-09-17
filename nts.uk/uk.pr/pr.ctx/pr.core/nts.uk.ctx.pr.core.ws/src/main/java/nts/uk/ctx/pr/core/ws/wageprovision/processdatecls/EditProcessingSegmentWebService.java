@@ -1,7 +1,12 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.processdatecls;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.AddRegisterProcessCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.AddRegisterProcessCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.DeleteProcessInformation;
 import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.DeleteValPayDateSetCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.ProcessingSegmentCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.UpdateProcessingCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.ValPayDateSetDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.ValPayDateSetFinder;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ValPayDateSet;
@@ -17,7 +22,8 @@ public class EditProcessingSegmentWebService extends WebService {
     ValPayDateSetFinder finder;
 
     @Inject
-    DeleteValPayDateSetCommand command;
+    private UpdateProcessingCommandHandler updateProcessingCommandHandler;
+    
 
     @POST
     @Path("findfindRegistedProcessing/{processCateNo}")
@@ -25,9 +31,13 @@ public class EditProcessingSegmentWebService extends WebService {
         return finder.getValPayDateSet(processCateNo);
     }
 
+    
+    
     @POST
-    @Path("deleteRegistedProcessing/{processCateNo}")
-    public void valPayDateSetDelete(@PathParam("processCateNo")int processCateNo){
-        command.valPayDateSetDelete(processCateNo);
+    @Path("updateRegistedProcessing")
+    public void valPayDateSetUpdate(ProcessingSegmentCommand command) {
+    	this.updateProcessingCommandHandler.handle(command);
     }
+    
+    
 }
