@@ -38,7 +38,7 @@ public class DivergenceTime {
 		this.divTime = divTime;
 		this.divTimeId = divTimeId;
 		this.divReason = Optional.ofNullable(divReason);
-		this.divResonCode = Optional.of(divResonCode);
+		this.divResonCode = Optional.ofNullable(divResonCode);
 	}
 	
 	public DivergenceTime(AttendanceTime divTimeAfterDeduction, AttendanceTime deductionTime, AttendanceTime divTime,

@@ -39,13 +39,9 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 	@Override
 	public void insertUpdateAll(List<IntegrationOfMonthly> domains) {
 		domains.forEach(domain ->{
-			if(domain.getAffiliationInfo().isPresent()){
-				affRepo.persistAndUpdate(domain.getAffiliationInfo().get());
-			}
 			
 			if(domain.getAttendanceTime().isPresent()){
-				attTimeRepo.persistAndUpdate(domain.getAttendanceTime().get(),
-						Optional.empty()); // avoid compile error
+				attTimeRepo.persistAndUpdate(domain.getAttendanceTime().get(), domain.getAffiliationInfo());
 			}
 			
 			if(!CollectionUtil.isEmpty(domain.getAnyItemList())){
