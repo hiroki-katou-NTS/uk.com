@@ -27,13 +27,15 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 dfd = $.Deferred();
 
             self.currentCode.subscribe((item) => {
-                let itemModel = _.find(self.lstBreakdownItemSet(), function(x) { return x.breakdownItemCode == item });
-                self.breakdownItemCode(itemModel.breakdownItemCode);
-                self.breakdownItemName(itemModel.breakdownItemName);
-                self.isNewMode(false);
-                self.enableCode(true);
-                $("#breakdownItemName").focus();
-                nts.uk.ui.errors.clearAll();
+                if (item != '') {
+                    let itemModel = _.find(self.lstBreakdownItemSet(), function(x) { return x.breakdownItemCode == item });
+                    self.breakdownItemCode(itemModel.breakdownItemCode);
+                    self.breakdownItemName(itemModel.breakdownItemName);
+                    self.isNewMode(false);
+                    self.enableCode(true);
+                    $("#breakdownItemName").focus();
+                    nts.uk.ui.errors.clearAll();
+                }
             });
             block.invisible();
             service.getAllBreakdownItemSetById(self.salaryItemId()).done(function(data: Array<model.IBreakdownItemSet>) {
@@ -62,6 +64,7 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.breakdownItemCode('');
             self.breakdownItemName('');
+            self.currentCode('');
             self.isNewMode(true);
             self.enableCode(false);
             $("#breakdownItemCode").focus();

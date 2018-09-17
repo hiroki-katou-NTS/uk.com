@@ -39,7 +39,7 @@
                         enable: !isNewMode()"
 					tabindex="3" class="danger" style="margin-left: 200px;">#{i18n.getText('QMM012_13')}</button>
 				<!-- I1_4 -->
-				<button data-bind="click: close, enable: !isNewMode()" tabindex="4"
+				<button data-bind="click: close" tabindex="4"
 					style="margin-left: 50px;">#{i18n.getText('QMM012_83')}</button>
 			</div>
 			<div id="contents-area" style="display: flex; margin-left: 20px;">
@@ -88,12 +88,12 @@
 				</div>
 				<div class="fixed-flex-layout-right padding-item"
 					style="width: 600px; margin-left: 20px;">
-					<div>
+					<div style="display: flex;">
 						<!-- I3_1 -->
 						<div style="margin-top: 20px;"
 							data-bind="ntsFormLabel: { constraint: ['BreakdownItemCode','ItemShortName'], required: true }">#{i18n.getText('QMM012_17')}</div>
 						<!-- I3_2 -->
-						<input id="breakdownItemCode" style="margin-left: 20px;"
+						<input id="breakdownItemCode" style="margin-left: 20px; margin-top: 25px;"
 							data-bind="ntsTextEditor: {
 													option: {width: '30px'},
 													value: breakdownItemCode,
@@ -104,9 +104,9 @@
 												}"
 							tabindex="8" />
 						<!-- I3_3 -->
-						<input id="breakdownItemName"
+						<input id="breakdownItemName" style="margin-left: 10px; margin-top: 25px; " 
 							data-bind="ntsTextEditor: {
-													option: {width: '150px'},
+													option: {width: '120px'},
 													value: breakdownItemName,
 													name:'#{i18n.getText('QMM012_86')}',
 													required: true,
