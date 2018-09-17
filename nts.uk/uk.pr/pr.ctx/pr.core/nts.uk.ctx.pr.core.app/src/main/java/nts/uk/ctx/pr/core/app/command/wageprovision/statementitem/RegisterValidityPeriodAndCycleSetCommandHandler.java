@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.MonthlyTargetAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetPeriodCycleRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetValidityPeriodCycle;
 
@@ -22,10 +23,19 @@ public class RegisterValidityPeriodAndCycleSetCommandHandler extends CommandHand
 
 		setPeriodCycleRepository.remove(command.getSalaryItemId());
 		setPeriodCycleRepository.add(new SetValidityPeriodCycle(command.getSalaryItemId(), command.getCycleSettingAtr(),
-				command.getJanuary(), command.getFebruary(), command.getMarch(), command.getApril(), command.getMay(),
-				command.getJune(), command.getJuly(), command.getAugust(), command.getSeptember(), command.getOctober(),
-				command.getNovember(), command.getDecember(), command.getPeriodAtr(), command.getYearPeriodStart(),
-				command.getYearPeriodEnd()));
+				command.isJanuary() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isFebruary() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isMarch() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isApril() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isMay() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isJune() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isJuly() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isAugust() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isSeptember() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isOctober() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isNovember() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.isDecember() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
+				command.getPeriodAtr(), command.getYearPeriodStart(), command.getYearPeriodEnd()));
 	}
 
 }

@@ -223,7 +223,7 @@ module nts.uk.pr.view.qmm012.share.model {
                 }
             });
 
-            self.cycleSettingAtr = ko.observable(data ? data.cycleSettingAtr : null);
+            self.cycleSettingAtr = ko.observable(data ? data.cycleSettingAtr : CycleSettingAtr.NOT_USE);
             self.january(data ? data.january : false);
             self.february(data ? data.february : false);
             self.march(data ? data.march : false);
@@ -236,7 +236,7 @@ module nts.uk.pr.view.qmm012.share.model {
             self.october(data ? data.october : false);
             self.november(data ? data.november : false);
             self.december(data ? data.december : false);
-            self.periodAtr(data ? data.periodAtr : null);
+            self.periodAtr(data ? data.periodAtr : ValidityPeriodAtr.NOT_SETUP);
             self.yearPeriodStart(data ? data.yearPeriodStart : null);
             self.yearPeriodEnd(data ? data.yearPeriodEnd : null);
         }

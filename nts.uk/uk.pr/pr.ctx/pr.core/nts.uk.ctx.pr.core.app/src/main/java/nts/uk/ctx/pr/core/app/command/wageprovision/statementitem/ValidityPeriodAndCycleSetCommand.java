@@ -18,62 +18,62 @@ public class ValidityPeriodAndCycleSetCommand {
 	/**
 	 * 対象月リスト
 	 */
-	private Integer january;
+	private boolean january;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer february;
+	private boolean february;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer march;
+	private boolean march;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer april;
+	private boolean april;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer may;
+	private boolean may;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer june;
+	private boolean june;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer july;
+	private boolean july;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer august;
+	private boolean august;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer september;
+	private boolean september;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer october;
+	private boolean october;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer november;
+	private boolean november;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Integer december;
+	private boolean december;
 
 	/**
 	 * 有効期間設定区分

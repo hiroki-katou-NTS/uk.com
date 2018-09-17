@@ -79,6 +79,25 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
 
             if (errors.hasError() === false && self.isValidForm()) {
                 block.invisible();
+                if (!self.isEnableYearPeriod()) {
+                    self.currentSetting().yearPeriodStart(null);
+                    self.currentSetting().yearPeriodEnd(null);
+                }
+
+                if (!self.isEnableCycleSetting()) {
+                    self.currentSetting().january(null);
+                    self.currentSetting().february(null);
+                    self.currentSetting().march(null);
+                    self.currentSetting().april(null);
+                    self.currentSetting().may(null);
+                    self.currentSetting().june(null);
+                    self.currentSetting().july(null);
+                    self.currentSetting().august(null);
+                    self.currentSetting().september(null);
+                    self.currentSetting().october(null);
+                    self.currentSetting().november(null);
+                    self.currentSetting().december(null);
+                }
                 service.registerValidityPeriodAndCycleSet(ko.toJS(self.currentSetting)).done(() => {
                     info({ messageId: "Msg_15" }).then(() => {
                         setShared('QMM012_PARAMS_FROM_H', { exitStatus: model.ExitStatus.EXECUTION });

@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm012.h.service {
 
     var paths = {
         getValidityPeriodAndCycleSet: "ctx/pr/core/wageprovision/statementitem/validityperiodset/getValidityPeriodAndCycleSet/{0}",
-        registerValidityPeriodAndCycleSet: "ctx/pr/core/wageprovision/statementitem/validityperiodset/getValidityPeriodAndCycleSet/{0}",
+        registerValidityPeriodAndCycleSet: "ctx/pr/core/wageprovision/statementitem/validityperiodset/registerValidityPeriodAndCycleSet",
     }
 
     export function getValidityPeriodAndCycleSet(salaryItemId: string): JQueryPromise<any> {
