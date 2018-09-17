@@ -1613,12 +1613,12 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("≦");
                     break;
                 case 8:
-                    self.displayLeftOperator("＞");
-                    self.displayRightOperator("＞");
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
                     break;
                 case 9:
-                    self.displayLeftOperator("≧");
-                    self.displayRightOperator("≧");
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
                     break;
                 default: 
                     self.displayLeftOperator("");
