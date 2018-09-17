@@ -282,10 +282,10 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				employeeIDLstParam = "''";
 			} else {
 				for(int i = 0; i<employeeIDLst.size(); i++){
+					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 					if(i<employeeIDLst.size()-1){
 						employeeIDLstParam+=",";	
 					}
-					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 				}
 			}
 			query = query.replaceAll("companyID", companyID);
