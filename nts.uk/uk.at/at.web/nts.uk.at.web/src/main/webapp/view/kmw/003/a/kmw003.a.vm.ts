@@ -1486,6 +1486,24 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        openCDL027() {
+            let self = this,
+                period = {
+                    startDate : self.yearMonth(),
+                    endDate : self.actualTimeDats()[self.actualTimeSelectedCode()].endDate  
+                },
+                param = {
+                    pgid: __viewContext.program.programId,
+                    functionId: 3,
+                    listEmployeeId: _.map(self.lstEmployee(), emp => { return emp.id; }),
+                    period : period,
+                    displayFormat: self.displayFormat() 
+                };
+            nts.uk.ui.windows.setShared("CDL027Params", param);
+            nts.uk.ui.windows.sub.modal('com',"/view/cdl/027/a/index.xhtml");
+        }
+        
     }
     /**
      * 
