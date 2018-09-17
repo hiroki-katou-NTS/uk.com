@@ -27,6 +27,7 @@
 .contentF {
 	margin-left: 20px;
 	display: inline-block;
+	height: calc(100% - 20px);
 	width :965px;
 }
 
@@ -71,6 +72,7 @@
 	
 }
 #F2_2 {
+	height:20px;
 	font-size :14px;
 	width: 450px;
 }
