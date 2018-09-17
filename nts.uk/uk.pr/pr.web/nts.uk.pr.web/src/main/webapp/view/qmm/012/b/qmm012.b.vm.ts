@@ -195,7 +195,7 @@ module nts.uk.pr.view.qmm012.b {
             valueAtr: KnockoutObservable<number>;
             deprecatedAtr: KnockoutObservable<number>;
             socialInsuaEditableAtr: KnockoutObservable<number>;
-            intergrateCd: KnockoutObservable<number>;
+            intergrateCd: KnockoutObservable<string>;
             
             constructor(data: IStatementItem) {
                 let self = this;
@@ -647,7 +647,7 @@ module nts.uk.pr.view.qmm012.b {
             valueAtr: number;
             deprecatedAtr: number;
             socialInsuaEditableAtr: number;
-            intergrateCd: number;
+            intergrateCd: string;
         }
         
         interface IStatementItemName {

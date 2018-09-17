@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemDisplaySet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemDisplaySetRepository;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtSpecItemDispSet;
-import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtSpecItemDispSetPk;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemDisp;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemDispPk;
 
 @Stateless
 public class JpaStatementItemDisplaySetRepository extends JpaRepository implements StatementItemDisplaySetRepository
@@ -20,13 +20,13 @@ public class JpaStatementItemDisplaySetRepository extends JpaRepository implemen
 
     @Override
     public List<StatementItemDisplaySet> getAllSpecItemDispSet(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSpecItemDispSet.class)
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStatementItemDisp.class)
                 .getList(item -> item.toDomain());
     }
 
     @Override
     public Optional<StatementItemDisplaySet> getSpecItemDispSetById(String cid, String salaryItemId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSpecItemDispSet.class)
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementItemDisp.class)
         .setParameter("cid", cid)
         .setParameter("salaryItemId", salaryItemId)
         .getSingle(c->c.toDomain());
@@ -34,16 +34,16 @@ public class JpaStatementItemDisplaySetRepository extends JpaRepository implemen
 
     @Override
     public void add(StatementItemDisplaySet domain){
-        this.commandProxy().insert(QpbmtSpecItemDispSet.toEntity(domain));
+        this.commandProxy().insert(QpbmtStatementItemDisp.toEntity(domain));
     }
 
     @Override
     public void update(StatementItemDisplaySet domain){
-        this.commandProxy().update(QpbmtSpecItemDispSet.toEntity(domain));
+        this.commandProxy().update(QpbmtStatementItemDisp.toEntity(domain));
     }
 
     @Override
     public void remove(String cid, String salaryItemId){
-        this.commandProxy().remove(QpbmtSpecItemDispSet.class, new QpbmtSpecItemDispSetPk(cid, salaryItemId)); 
+        this.commandProxy().remove(QpbmtStatementItemDisp.class, new QpbmtStatementItemDispPk(cid, salaryItemId)); 
     }
 }

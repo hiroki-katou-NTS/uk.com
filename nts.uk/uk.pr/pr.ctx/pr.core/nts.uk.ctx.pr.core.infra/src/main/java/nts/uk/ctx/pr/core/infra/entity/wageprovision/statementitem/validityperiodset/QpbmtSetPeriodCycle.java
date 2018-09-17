@@ -128,18 +128,18 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 	public int periodAtr;
 
 	/**
-	 * 終了年
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_YEAR")
-	public Integer endYear;
-
-	/**
 	 * 開始年
 	 */
 	@Basic(optional = true)
 	@Column(name = "START_YEAR")
 	public Integer startYear;
+
+	/**
+	 * 終了年
+	 */
+	@Basic(optional = true)
+	@Column(name = "END_YEAR")
+	public Integer endYear;
 
 	@Override
 	protected Object getKey() {
@@ -147,29 +147,29 @@ public class QpbmtSetPeriodCycle extends UkJpaEntity implements Serializable {
 	}
 
 	public SetValidityPeriodCycle toDomain() {
-		return new SetValidityPeriodCycle(this.setPeriodCyclePk.salaryItemId, this.cycleSettingAtr, this.january, this.february,
-				this.march, this.april, this.may, this.june, this.july, this.august, this.september, this.october,
-				this.november, this.december, this.periodAtr, this.endYear, this.startYear);
+		return new SetValidityPeriodCycle(this.setPeriodCyclePk.salaryItemId, this.cycleSettingAtr, this.january,
+				this.february, this.march, this.april, this.may, this.june, this.july, this.august, this.september,
+				this.october, this.november, this.december, this.periodAtr, this.startYear, this.endYear);
 	}
 
 	public static QpbmtSetPeriodCycle toEntity(SetValidityPeriodCycle domain) {
 		return new QpbmtSetPeriodCycle(new QpbmtSetPeriodCyclePk(domain.getSalaryItemId()),
 				domain.getCycleSetting().getCycleSettingAtr().value,
-				domain.getCycleSetting().getMonthlyList().getJanuary().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getFebruary().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getMarch().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getApril().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getMay().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getJune().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getJuly().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getAugust().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getSeptember().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getOctober().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getNovember().orElse(null),
-				domain.getCycleSetting().getMonthlyList().getDecember().orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getJanuary().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getFebruary().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getMarch().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getApril().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getMay().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getJune().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getJuly().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getAugust().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getSeptember().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getOctober().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getNovember().value).orElse(null),
+				domain.getCycleSetting().getMonthlyList().map(i -> i.getDecember().value).orElse(null),
 				domain.getValidityPeriodSetting().getPeriodAtr().value,
-				domain.getValidityPeriodSetting().getYearPeriod().end().v(),
-				domain.getValidityPeriodSetting().getYearPeriod().start().v());
+				domain.getValidityPeriodSetting().getYearPeriod().map(i -> i.start().v()).orElse(null),
+				domain.getValidityPeriodSetting().getYearPeriod().map(i -> i.end().v()).orElse(null));
 	}
 
 }

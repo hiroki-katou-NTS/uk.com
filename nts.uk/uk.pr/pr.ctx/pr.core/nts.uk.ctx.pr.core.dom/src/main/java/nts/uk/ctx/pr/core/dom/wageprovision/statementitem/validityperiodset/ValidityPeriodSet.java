@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -22,11 +24,12 @@ public class ValidityPeriodSet extends DomainObject {
 	/**
 	 * 年期間
 	 */
-	private YearPeriod yearPeriod;
+	private Optional<YearPeriod> yearPeriod;
 
-	public ValidityPeriodSet(int periodAtr, int endYear, int startYear) {
+	public ValidityPeriodSet(int periodAtr, Integer startYear, Integer endYear) {
 		super();
 		this.periodAtr = EnumAdaptor.valueOf(periodAtr, PeriodAtr.class);
-		this.yearPeriod = new YearPeriod(new Year(endYear), new Year(startYear));
+		this.yearPeriod = periodAtr == PeriodAtr.NOT_SETUP.value ? Optional.empty()
+				: Optional.of(new YearPeriod(new Year(startYear), new Year(endYear)));
 	}
 }

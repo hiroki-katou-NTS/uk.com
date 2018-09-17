@@ -82,6 +82,11 @@ module nts.uk.pr.view.qmm012.share.model {
         TIME = 0,
         TIMES = 1
     }
+    
+    export enum ExitStatus {
+        CANCEL = 0,
+        EXECUTION = 1
+    }
 
     export function getCategoryAtr(): Array<ItemModel> {
         return [
@@ -159,6 +164,7 @@ module nts.uk.pr.view.qmm012.share.model {
     }
 
     export interface IValidityPeriodAndCycleSet {
+        salaryItemId: string;
         cycleSettingAtr: number;
         january: boolean;
         february: boolean;
@@ -178,6 +184,7 @@ module nts.uk.pr.view.qmm012.share.model {
     }
 
     export class ValidityPeriodAndCycleSet {
+        salaryItemId: KnockoutObservable<string> = ko.observable(null);
         cycleSettingAtr: KnockoutObservable<number> = ko.observable(null);
         january: KnockoutObservable<boolean> = ko.observable(false);
         february: KnockoutObservable<boolean> = ko.observable(false);
