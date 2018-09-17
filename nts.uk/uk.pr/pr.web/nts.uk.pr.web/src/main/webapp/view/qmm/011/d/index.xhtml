@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 500, height: 650 };</script>
+        <script>var dialogSize = { width: 380, height: 625 };</script>
         <com:ValidatorScript>
             nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName
         </com:ValidatorScript>
@@ -23,7 +23,6 @@
             <div >
                 <span id="D1_1" class="label">#{i18n.getText('QMM011_19')}</span>
             </div>
-
             <div >
                 <span id="D1_2" class="label">#{i18n.getText('QMM011_20')}</span>
             </div>
@@ -36,25 +35,129 @@
                             <th>#{i18n.getText('QMM011_45')}</th>
 
                         </tr>
-                    <tbody data-bind="foreach: listNameOfEachBusiness()">
-                            <tr>
-                                <td><span data-bind="text: index"></span></td>
+                    <tbody >
+                    <tr data-bind = "with: businessType1">
+                        <td><span>#{i18n.getText('QMM011_21')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input id="D2_3" data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_22')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType2">
+                        <td><span>#{i18n.getText('QMM011_23')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_24')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType3">
+                        <td><span>#{i18n.getText('QMM011_25')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_26')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType4">
+                        <td><span>#{i18n.getText('QMM011_27')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_28')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType5">
+                        <td><span>#{i18n.getText('QMM011_29')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_30')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType6">
+                        <td><span>#{i18n.getText('QMM011_31')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_32')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType7">
+                        <td><span>#{i18n.getText('QMM011_33')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_34')}'
+                                                              }" />
+                        </td>
+                    </tr>
 
-                                    <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
-                                    <td ><input data-bind="ntsTextEditor: {value: name,
-                                                          enable:toUse,option : {textalign: 'left'},
-                                                          constraint: 'OccAccInsurBusinessName',
-                                                          required: toUse,
-                                                          name:#{i18n.getText('$parent.listName()[index-1]')}
-                                                          }" /></td>
-                           </tr>
+                    <tr data-bind = "with: businessType8">
+                        <td><span>#{i18n.getText('QMM011_35')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_36')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType9">
+                        <td><span>#{i18n.getText('QMM011_37')}</span></td>
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_38')}'
+                                                              }" />
+                        </td>
+                    </tr>
+                    <tr data-bind = "with: businessType10">
+                        <td><span>#{i18n.getText('QMM011_39')}</span></td>
+
+                        <td><div data-bind="ntsCheckBox: { checked: toUse}"></div></td>
+
+                        <td ><input data-bind="ntsTextEditor: {value: name,
+                                                              enable:toUse,option : {textalign: 'left'},
+                                                              constraint: 'OccAccInsurBusinessName',
+                                                              required: toUse,
+                                                              name:'#{i18n.getText('QMM011_40')}'
+                                                              }" />
+                        </td>
+                    </tr>
                     </tbody>
+
                 </table>
             </div>
             <div id="functions-area-bottom">
-                <button tabindex="" class="proceed"
+                <button id="D3_1"  class="proceed large"
                         data-bind="click: update">#{i18n.getText('QMM011_41')}</button>
-                <button  tabindex=""
+                <button id="D3_2"
                         data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
             </div>
     </ui:define>
