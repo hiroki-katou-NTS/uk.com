@@ -648,7 +648,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		EmployeeDataMngInfo emp = empOpt.get();
 
 		// Lay thông tin lịch sử vào ra công ty của nhân viên
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId, emp.getEmployeeId());
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(companyId, emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
