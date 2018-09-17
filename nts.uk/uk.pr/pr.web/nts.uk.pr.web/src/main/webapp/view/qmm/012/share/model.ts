@@ -148,6 +148,69 @@ module nts.uk.pr.view.qmm012.share.model {
         }
     }
 
+    export interface IStatementItem {
+        cId: string;
+        categoryAtr: number;
+        itemNameCd: string;
+        salaryItemId: string;
+        defaultAtr: number;
+        valueAtr: number;
+        deprecatedAtr: number;
+        socialInsuaEditableAtr: number;
+        intergrateCd: number;
+    }
+
+    export class StatementItem {
+        cId: KnockoutObservable<string> = ko.observable('');
+        categoryAtr: KnockoutObservable<number> = ko.observable(0);
+        itemNameCd: KnockoutObservable<string> = ko.observable('');
+        salaryItemId: KnockoutObservable<string> = ko.observable('');
+        defaultAtr: KnockoutObservable<number> = ko.observable(0);
+        valueAtr: KnockoutObservable<number> = ko.observable(0);
+        deprecatedAtr: KnockoutObservable<number> = ko.observable(0);
+        socialInsuaEditableAtr: KnockoutObservable<number> = ko.observable(0);
+        intergrateCd: KnockoutObservable<number> = ko.observable(0);
+        constructor(param: IStatementItem) {
+            let self = this;
+            self.cId(param ? param.cId : '');
+            self.categoryAtr(param ? param.categoryAtr : 0);
+            self.itemNameCd(param ? param.itemNameCd : '');
+            self.salaryItemId(param ? param.salaryItemId : '');
+            self.defaultAtr(param ? param.defaultAtr : 0);
+            self.valueAtr(param ? param.valueAtr : 0);
+            self.deprecatedAtr(param ? param.deprecatedAtr : 0);
+            self.socialInsuaEditableAtr(param ? param.socialInsuaEditableAtr : 0);
+            self.intergrateCd(param ? param.intergrateCd : 0);
+        }
+    }
+
+    export interface IStatementItemName {
+        cId: string;
+        salaryItemId: string;
+        name: string;
+        shortName: string;
+        otherLanguageName: string;
+        englishName: string
+    }
+
+    export class StatementItemName {
+        cId: KnockoutObservable<string> = ko.observable('');
+        salaryItemId: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+        shortName: KnockoutObservable<string> = ko.observable('');
+        otherLanguageName: KnockoutObservable<string> = ko.observable('');
+        englishName: KnockoutObservable<string> = ko.observable('');
+        constructor(param: IStatementItemName) {
+            let self = this;
+            self.cId(param ? param.cId : '');
+            self.salaryItemId(param ? param.salaryItemId : '');
+            self.name(param ? param.name : '');
+            self.shortName(param ? param.shortName : '');
+            self.otherLanguageName(param ? param.otherLanguageName : '');
+            self.englishName(param ? param.englishName : '');
+        }
+    }
+
     export class BoxModel {
         id: number;
         name: string;
