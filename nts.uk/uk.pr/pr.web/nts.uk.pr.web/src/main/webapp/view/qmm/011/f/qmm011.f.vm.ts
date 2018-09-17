@@ -27,10 +27,8 @@ module nts.uk.com.view.qmm011.f.viewmodel {
                 self.startYearMonth(params.startYearMonth);
                 self.endYearMonth(params.endYearMonth);
                 self.startLastYearMonth(params.startLastYearMonth);
-                self.canDelete(params.canDelete)
-                if (params.hisId) {
-                    self.hisId(params.hisId);
-                }
+                self.canDelete(params.canDelete);
+                self.hisId(params.hisId);
             }
             
         }
@@ -50,12 +48,21 @@ module nts.uk.com.view.qmm011.f.viewmodel {
             block.invisible();
             if (self.insurrance() == INSURRANCE.EMPLOYMENT_INSURRANCE_RATE) {
                 service.updateEmpInsurHis(param).done(() => {
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('QMM011_F_PARAMS_OUTPUT', {
-                            result: true
+                    if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
                         });
-                        close();
-                    });
+                    } else {
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
+                        });
+                    }
                 }).fail(function(res: any) {
                     if (res)
                         dialog.alertError(res);
@@ -64,9 +71,9 @@ module nts.uk.com.view.qmm011.f.viewmodel {
                 });
             } else {
                 service.updateAccInsurHis(param).done(() => {
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
                         setShared('QMM011_F_PARAMS_OUTPUT', {
-                            result: true
+                            methodEditing: self.methodEditing()
                         });
                         close();
                     });
@@ -92,7 +99,8 @@ module nts.uk.com.view.qmm011.f.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $("#F1_9").trigger("validate");
-            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || Number(self.startLastYearMonth()) > Number(self.startYearMonth())){
+            if ((self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || 
+                    Number(self.startLastYearMonth()) > Number(self.startYearMonth())) && (this.methodEditing() == EDIT_METHOD.UPDATE)){
                 $('#F1_9').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }

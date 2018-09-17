@@ -1,6 +1,7 @@
 module nts.uk.com.view.qmm011.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
+    import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
@@ -19,14 +20,14 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         monthlyCalendar: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
         endYearMonth: KnockoutObservable<number> = ko.observable();
-        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+        isNewMode: KnockoutObservable<number> = ko.observable();
         transferMethod: KnockoutObservable<number> = ko.observable();
         constructor() {
             let self = this;
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) => {
                 let self = this;
-                self.selectedEmpInsHis(self.listEmpInsHis()[self.index()]);
+                self.selectedEmpInsHis(self.listEmpInsHis()[self.getIndex(data)]);
                 self.setEmplInsurHis(self.selectedEmpInsHis());
                 self.getEmpInsurPreRate();
             });
@@ -53,19 +54,18 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         
         getEmpInsurPreRate() {
             let self = this;
-            let hisId = self.selectedEmpInsHisId();
+            let hisId :string = self.selectedEmpInsHisId();
             if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER) {
                 hisId = self.listEmpInsHis()[1].hisId;
             }
             service.getEmpInsurPreRate(hisId).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) => {
                 if (listEmpInsurPreRate && listEmpInsurPreRate.length > 0) {
                     self.listEmpInsurPreRate(EmpInsurPreRate.fromApp(listEmpInsurPreRate));
-                    self.isNewMode(false);
+                    self.isNewMode(MODE.UPDATE);
                     if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER) {
-                        self.isNewMode(true);
+                        self.isNewMode(MODE.NEW);
                     }
                 } else {
-                    self.isNewMode(true);
                     self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                 }
             });
@@ -120,7 +120,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 startYearMonth: self.startYearMonth()
             });
 
-            modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
+            modal("/view/qmm/011/e/index.xhtml").onClosed(() =>{
                 let params = getShared('QMM011_E_PARAMS_OUTPUT');
                 if (params) {
                     self.isNewMode(true);
@@ -129,9 +129,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                         self.isNewMode(true);
                         self.transferMethod(params.transferMethod);
                         self.listEmpInsHis(self.addEmplInsurHis(self.startYearMonth(), self.listEmpInsHis()));
-                        self.selectedEmpInsHisId(self.index(0));
-                       
-                        
+                        self.selectedEmpInsHisId(self.listEmpInsHis()[FIRST].hisId);
                     }
                 }
             });
@@ -139,6 +137,9 @@ module nts.uk.com.view.qmm011.b.viewmodel {
 
         register() {
             let self = this;
+            if(self.validate()){
+                return;
+            }
             let data: any = {
                 listEmpInsurPreRate: self.convertToCommand(self.listEmpInsurPreRate()),
                 isNewMode: self.isNewMode(),
@@ -146,11 +147,18 @@ module nts.uk.com.view.qmm011.b.viewmodel {
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth:  self.convertStringToYearMonth(self.endYearMonth())
             }
+            block.invisible();
             service.register(data).done(() => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
                     self.isNewMode(false);
+                    self.transferMethod(null);
                     self.initScreen(null);
                 });
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
+            }).always(() => {
+                block.clear();
             });
         }
         
@@ -163,7 +171,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             emplInsurHis.endYearMonth = '999912';
             emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString(emplInsurHis.endYearMonth);
             if (list && list.length > 0) {
-                list[0].endYearMonth = (start + 1).toString();
+                list[FIRST].display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
             }
             listEmpInsHis.push(emplInsurHis);
             _.each(list, (item) => {
@@ -174,22 +182,29 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         }
         
         setEmplInsurHis(emplInsurHis: EmplInsurHis) {
-            let self = this
+            let self = this;
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
         }
         
         validate(){
-            $("#B3_7").trigger("validate");
-            $("#B3_11").trigger("validate");
+            $(".B3_7").trigger("validate");
+            $(".B3_11").trigger("validate");
             return error.hasError();
         }
         
         openFscreen() {
             let self = this;
-            let laststartYearMonth = self.listEmpInsHis().length > 1 ? self.listEmpInsHis()[self.index() + 1].startYearMonth : 0;
-            let canDelete = self.listEmpInsHis().length > 2 ? true : false;
+            let laststartYearMonth: number = 0;
+            if (self.listEmpInsHis() && self.listEmpInsHis().length != self.index() + 1) {
+                laststartYearMonth = self.listEmpInsHis().length > 1 ? self.listEmpInsHis()[self.index() + 1].startYearMonth : 0;
+            }
+            let canDelete: boolean = false;
+            if (self.listEmpInsHis().length > 2 && self.hisId() == self.listEmpInsHis()[FIRST].hisId) {
+                canDelete = true;
+            }
+            
             setShared('QMM011_F_PARAMS_INPUT', {
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
@@ -200,9 +215,15 @@ module nts.uk.com.view.qmm011.b.viewmodel {
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_F_PARAMS_OUTPUT');
-                if (params && params.result) {
+                if(params && params.methodEditing == 1) {
                     self.initScreen(self.selectedEmpInsHisId());
+                    self.setEmplInsurHis(self.selectedEmpInsHisId());
                 }
+                if(params && params.methodEditing == 0) {
+                    
+                    self.initScreen(null);
+                }
+                
             });
         }
         
@@ -317,4 +338,12 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         CREATE_NEW = 1,
         TRANSFER = 0
     }
+    
+    export enum MODE {
+        NEW = 0,
+        UPDATE = 1,
+        NO = 2
+    }
+
+    export const FIRST = 0;
 }

@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -22,9 +21,8 @@ public class EmpInsurBusBurRatioService {
 	@Inject
 	private EmpInsurBusBurRatioRepository empInsurBusBurRatioRepository;
     
-    public void addEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio, YearMonth start, YearMonth end){
+    public void addEmpInsurBusBurRatio(String newHistID, List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio, YearMonth start, YearMonth end){
     	String cId = AppContexts.user().companyId();
-		String newHistID = IdentifierUtil.randomUniqueId();
 		YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
 		EmpInsurHis itemtoBeAdded = new EmpInsurHis(newHistID, new ArrayList<>());
 		Optional<EmpInsurHis> empInsurHis = empInsurHisRepository.getEmpInsurHisByCid(cId);
@@ -32,7 +30,7 @@ public class EmpInsurBusBurRatioService {
 			itemtoBeAdded = empInsurHis.get();
 		}
 		itemtoBeAdded.add(yearMonthItem);
-		this.addEmpInsurHis(itemtoBeAdded);
+		this.addEmpInsurHis(yearMonthItem, cId);
 		this.updateItemBefore(empInsurHis.get(), yearMonthItem, cId);
 		this.addEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
 
@@ -42,11 +40,11 @@ public class EmpInsurBusBurRatioService {
     	empInsurBusBurRatioRepository.update(listEmpInsurBusBurRatio);
     }
     
-    private void addEmpInsurHis(EmpInsurHis itemtoBeAdded){
-    	if(itemtoBeAdded.getHistory().isEmpty()){
+    private void addEmpInsurHis(YearMonthHistoryItem itemtoBeAdded, String cId){
+    	if(itemtoBeAdded == null){
     		return;
     	}
-    	empInsurHisRepository.add(itemtoBeAdded.getHistory().get(itemtoBeAdded.getHistory().size() - 1), itemtoBeAdded.getCid());
+    	empInsurHisRepository.add(itemtoBeAdded, cId);
     }
     
     private void addEmpInsurBusBurRatio(List<EmpInsurBusBurRatio> domain){

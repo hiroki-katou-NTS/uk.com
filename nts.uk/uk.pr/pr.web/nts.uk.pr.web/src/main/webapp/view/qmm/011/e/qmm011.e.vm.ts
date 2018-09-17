@@ -9,7 +9,7 @@ module nts.uk.com.view.qmm011.e.viewmodel {
     import error = nts.uk.ui.errors;
     export class ScreenModel {
         startYearMonth:              KnockoutObservable<number> = ko.observable();
-        takeOver:                    KnockoutObservable<number> = ko.observable(1);
+        takeOver:                    KnockoutObservable<number> = ko.observable(0);
         startLastYearMonth:          KnockoutObservable<number> = ko.observable();
         listTakeOver:                KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
         
@@ -35,7 +35,7 @@ module nts.uk.com.view.qmm011.e.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $("#E1_5").trigger("validate");
-            if (self.startYearMonth() < self.startLastYearMonth()){
+            if (self.startLastYearMonth() > self.startYearMonth() || self.startLastYearMonth() == self.startYearMonth()){
                 dialog.alertError({ messageId: "Msg_79" });
                 return true;
             }

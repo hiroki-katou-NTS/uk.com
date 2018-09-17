@@ -37,9 +37,9 @@
 				data-bind="ntsPanel:{width: '270px', height: '400px', showIcon:true, direction: 'none', visible: true}">
 					<div id="functions-area">
 						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  data-bind="click: openEscreen">#{i18n.getText('QMM011_6')}</button>
+						<button id ="B1_2"  data-bind="click: openEscreen , enable: isNewMode">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  data-bind="click: openFscreen">#{i18n.getText('QMM011_7')}</button>
+						<button id ="B1_3"  data-bind="click: openFscreen, enable: isNewMode">#{i18n.getText('QMM011_7')}</button>
 					</div>
 					<div>
 						<!--B1_4 雇用保険料率一覧 -->
@@ -107,7 +107,7 @@
 								</com:ko-if>
 							</td>
 							<td >
-								<input id = "B3_7" 
+								<input id = "B3_7" class = "B3_7" 
 										data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																name: '#{i18n.getText('QMM011_11')}',
@@ -131,7 +131,7 @@
 																}"/>
 							</td>
 							<td>
-									<input id = "B3_11"
+									<input id = "B3_11" class = "B3_11"
 										data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																value: empContrRatio,
