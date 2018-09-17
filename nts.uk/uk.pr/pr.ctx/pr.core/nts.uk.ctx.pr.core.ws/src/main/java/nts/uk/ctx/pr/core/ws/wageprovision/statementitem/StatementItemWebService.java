@@ -29,13 +29,10 @@ public class StatementItemWebService extends WebService {
 	private StatementItemNameFinder statementItemNameFinder;
 
 	@POST
-	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}/{breakdownItemCode}/{taxFreeAmountCode}")
+	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}")
 	public StatementItemDataDto getStatementItemData(@PathParam("categoryAtr") int categoryAtr,
-			@PathParam("itemNameCd") String itemNameCd, @PathParam("salaryItemId") String salaryItemId,
-			@PathParam("breakdownItemCode") String breakdownItemCode,
-			@PathParam("taxFreeAmountCode") String taxFreeAmountCode) {
-		return this.statementItemDataFinder.getStatementItemData(categoryAtr, itemNameCd, salaryItemId,
-				breakdownItemCode, taxFreeAmountCode);
+			@PathParam("itemNameCd") String itemNameCd, @PathParam("salaryItemId") String salaryItemId) {
+		return this.statementItemDataFinder.getStatementItemData(categoryAtr, itemNameCd, salaryItemId);
 	}
 	
 	@POST

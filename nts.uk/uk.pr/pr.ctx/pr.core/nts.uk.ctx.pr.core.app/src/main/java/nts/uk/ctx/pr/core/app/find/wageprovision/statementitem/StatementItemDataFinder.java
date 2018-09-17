@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -55,8 +58,7 @@ public class StatementItemDataFinder {
 	 *            taxFreeAmountCode
 	 * @return
 	 */
-	public StatementItemDataDto getStatementItemData(int categoryAtr, String itemNameCd, String salaryItemId,
-			String breakdownItemCode, String taxFreeAmountCode) {
+	public StatementItemDataDto getStatementItemData(int categoryAtr, String itemNameCd, String salaryItemId) {
 		StatementItemDto statementItem = null;
 		StatementItemNameDto statementItemName = null;
 		PaymentItemSetDto paymentItemSet = null;
@@ -65,8 +67,8 @@ public class StatementItemDataFinder {
 		StatementItemDisplaySetDto statementDisplaySet = null;
 		ItemRangeSetDto itemRangeSet = null;
 		ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet = null;
-		BreakdownItemSetDto breakdownItemSet = null;
-		TaxExemptionLimitDto taxExemptionLimit = null;
+		List<BreakdownItemSetDto> breakdownItemSet = null;
+		List<TaxExemptionLimitDto> taxExemptionLimit = null;
 		IntegratedItemDto integratedItem = null; // TODO Chưa tạo domain
 		String cid = AppContexts.user().companyId();
 
@@ -85,10 +87,12 @@ public class StatementItemDataFinder {
 					.map(i -> ItemRangeSetDto.fromDomain(i)).orElse(null);
 			validityPeriodAndCycleSet = setPeriodCycleRepository.getSetPeriodCycleById(salaryItemId)
 					.map(i -> ValidityPeriodAndCycleSetDto.fromDomain(i)).orElse(null);
-			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStById(salaryItemId, breakdownItemCode)
-					.map(i -> BreakdownItemSetDto.fromDomain(i)).orElse(null);
-			taxExemptionLimit = taxExemptionLimitRepository.getTaxExemptLimitById(cid, taxFreeAmountCode)
-					.map(i -> TaxExemptionLimitDto.fromDomain(i)).orElse(null);
+			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStBySalaryId(salaryItemId).stream().map(i -> {
+				return BreakdownItemSetDto.fromDomain(i);
+			}).collect(Collectors.toList());
+			taxExemptionLimit = taxExemptionLimitRepository.getTaxExemptLimitByCompanyId(cid).stream().map(i -> {
+				return TaxExemptionLimitDto.fromDomain(i);
+			}).collect(Collectors.toList());
 			break;
 
 		case DEDUCTION_ITEM:
@@ -100,8 +104,9 @@ public class StatementItemDataFinder {
 					.map(i -> ItemRangeSetDto.fromDomain(i)).orElse(null);
 			validityPeriodAndCycleSet = setPeriodCycleRepository.getSetPeriodCycleById(salaryItemId)
 					.map(i -> ValidityPeriodAndCycleSetDto.fromDomain(i)).orElse(null);
-			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStById(salaryItemId, breakdownItemCode)
-					.map(i -> BreakdownItemSetDto.fromDomain(i)).orElse(null);
+			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStBySalaryId(salaryItemId).stream().map(i -> {
+				return BreakdownItemSetDto.fromDomain(i);
+			}).collect(Collectors.toList());
 			break;
 
 		case ATTEND_ITEM:
