@@ -28,5 +28,15 @@ public class JpaWelfarePensionInsuranceClassificationRepository extends JpaRepos
 	public void add(WelfarePensionInsuranceClassification domain) {
 		this.commandProxy().insert(QpbmtWelfarePensionInsuranceClassification.toEntity(domain));
 	}
+	
+	@Override
+	public void update(WelfarePensionInsuranceClassification domain) {
+		this.commandProxy().update(QpbmtWelfarePensionInsuranceClassification.toEntity(domain));
+	}
+	
+	@Override
+	public void remove(WelfarePensionInsuranceClassification domain) {
+		this.commandProxy().remove(QpbmtWelfarePensionInsuranceClassification.toEntity(domain));
+	}
 
 }

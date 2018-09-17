@@ -13,6 +13,9 @@
 			<com:scriptfile path="qmm008.c.service.js" />
 			<com:scriptfile path="qmm008.c.vm.js" />
 			<com:stylefile path="qmm008.c.style.css" />
+			<com:ValidatorScript>
+				nts.uk.ctx.core.dom.socialinsurance.InsuranceRate
+			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul class="navigator">
@@ -39,11 +42,11 @@
 						<!-- A2_1 -> A1_5 -->
 						<div class="flex">
 							<button id="A1_1" class="proceed" tabindex="1"
-								data-bind="click: register, enable: isSelectedHistory">#{i18n.getText('QMM008_1')}</button>
+								data-bind="click: register, enable: isSelectedHistory &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 							<button id="A1_2" tabindex="1"
 								data-bind="click: printPDF, enable: true">#{i18n.getText('QMM008_2')}</button>
 							<button id="A1_3" tabindex="1"
-								data-bind="click: registerBusinessEstablishment, enable: isSelectedHistory">#{i18n.getText('QMM008_3')}</button>
+								data-bind="click: registerBusinessEstablishment, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
 							<button id="A1_4" tabindex="1"
 								data-bind="click: standardRemunerationMonthlyAmount, enable: true">#{i18n.getText('QMM008_4')}</button>
 							<button id="A1_5" tabindex="1"
@@ -105,7 +108,7 @@
 							</div>
 
 							<!-- C2_6  期間 -> C2_9 無  -->
-							<div style = "width: 800px;">
+							<div style="width: 800px;">
 								<div style="margin-top: 15px; display: inline-block"
 									data-bind="with: $vm.welfareInsuranceClassification">
 									<div style="width: 130px;" data-bind="ntsFormLabel: {}"
@@ -179,7 +182,7 @@
 													}, 
 													name: '#[QMM008_63]',
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -196,7 +199,7 @@
 													},
 													name: '#[QMM008_64]',
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().employeeContributionRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -213,7 +216,7 @@
 													}, 
 													name: '#[QMM008_65]',
  													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().individualBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -231,7 +234,7 @@
 													}, 
 													name: '#[QMM008_66]',
  													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().employeeContributionRatio,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -251,7 +254,7 @@
 													},
 													name: '#[QMM008_68]',
  													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().individualBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -268,7 +271,7 @@
 													},
 													name: '#[QMM008_69]',
  													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().employeeContributionRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -285,7 +288,7 @@
 													},
 													name: '#[QMM008_70]',
  													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().individualBurdenRatio,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -302,7 +305,7 @@
 													}, 
 													name: '#[QMM008_71]',
  													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().employeeContributionRatio,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -313,12 +316,12 @@
 								</table>
 							</div>
 							<div
-								data-bind="if: $vm.welfareInsuranceClassification().fundClassification() == 0">
+								data-bind="if: $vm.welfareInsuranceClassification().fundClassification() == 1">
 								<div style="margin-top: 10px;">#{i18n.getText('QMM008_57')}</div>
 								<hr></hr>
 							</div>
 							<div
-								data-bind="if: $vm.welfareInsuranceClassification().fundClassification() == 0"
+								data-bind="if: $vm.welfareInsuranceClassification().fundClassification() == 1"
 								id="C4_container"
 								class="nts-fixed-header-container ui-iggrid nts-fixed-header">
 								<table id="C4">
@@ -357,7 +360,7 @@
 														decimallength: 3
 													}, 
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -373,7 +376,7 @@
 														decimallength: 3
 													},
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -389,7 +392,7 @@
 														decimallength: 3
 													}, 
  													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -406,7 +409,7 @@
 														decimallength: 3
 													}, 
  													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -426,7 +429,7 @@
 													},
 													name: '#[QMM008_84]',
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualExemptionRate, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -443,7 +446,7 @@
 													},
 													name: '#[QMM008_85]',
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().employeeExemptionRate, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -460,7 +463,7 @@
 													},
 													name: '#[QMM008_86]',
  													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().individualExemptionRate, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -477,7 +480,7 @@
 													}, 
 													name: '#[QMM008_87]',
  													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().employeeExemptionRate,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -498,7 +501,7 @@
 													}, 
 													name: '#[QMM008_87]',
  													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().remainBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -514,7 +517,7 @@
 														decimallength: 3
 													},
  													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().remainEmployeeContributionRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -530,7 +533,7 @@
 														decimallength: 3
 													}, 
  													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().remainBurdenRatio, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -547,7 +550,7 @@
 														decimallength: 3
 													}, 
  													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().remainEmployeeContributionRatio,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
 												</div>
@@ -567,7 +570,7 @@
 													},
 													name: '#[QMM008_93]',
  													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().individualExemptionRate, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -584,7 +587,7 @@
 													},
 													name: '#[QMM008_94]',
  													value: salaryEmployeesPensionInsuranceRate().femaleContributionRate().employeeExemptionRate, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -601,7 +604,7 @@
 													},
 													name: '#[QMM008_95]',
  													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().individualExemptionRate, 
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
@@ -618,7 +621,7 @@
 													}, 
 													name: '#[QMM008_96]',
  													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().employeeExemptionRate,
- 													constraint: '', 
+ 													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>

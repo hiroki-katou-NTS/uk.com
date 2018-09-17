@@ -10,4 +10,6 @@ public interface WelfarePensionInsuranceClassificationRepository {
 	Optional<WelfarePensionInsuranceClassification> getWelfarePensionInsuranceClassificationById(String historyId);
 	void deleteByHistoryIds (List<String> historyIds);
 	void add (WelfarePensionInsuranceClassification domain);
+	void update (WelfarePensionInsuranceClassification domain);
+	void remove (WelfarePensionInsuranceClassification domain);
 }

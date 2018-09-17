@@ -18,7 +18,7 @@ public class WelfarePensionInsuranceRateHistoryDto {
     /**
      * 社会保険事業所コード
      */
-    private String socialInsuranceOfficeCode;
+    private String socialInsuranceCode;
 
     /**
      * 履歴

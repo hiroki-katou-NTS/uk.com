@@ -301,8 +301,8 @@ module nts.uk.pr.view.qmm008.share.model {
 
         // Control Item
         fundClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(FUND_CLASSIFICATION.NOT_JOIN, getText('QMM008_54')),
-            new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_55'))
+            new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_55')),
+            new EnumModel(FUND_CLASSIFICATION.NOT_JOIN, getText('QMM008_54'))
         ]);
         constructor(params: IWelfarePensionInsuranceClassification) {
             this.fundClassification(params ? params.fundClassification : 1);
