@@ -28,7 +28,7 @@ public class AddOccAccIsPrRateCommandHandler extends CommandHandler<AddOccAccIsP
         YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
         YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
         List<OccAccInsurBusiBurdenRatio>  occAccInsurBusiBurdenRatios = command.getListAccInsurPreRate().stream().map(item -> {
-            return new OccAccInsurBusiBurdenRatio(item.getOccAccIsBusNo(), EnumAdaptor.valueOf(item.getFracClass(), InsuPremiumFractionClassification.class), new InsuranceRate(new BigDecimal(item.getEmpConRatio())));
+            return new OccAccInsurBusiBurdenRatio(item.getOccAccInsurBusNo(), EnumAdaptor.valueOf(item.getFracClass(), InsuPremiumFractionClassification.class), new InsuranceRate(new BigDecimal(item.getEmpConRatio())));
         }).collect(Collectors.toList());
           if (command.isNewMode()) {
             occAccInsurBusiBurdenRatioService.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatios, startYearMonth, endYearMonth);

@@ -24,13 +24,13 @@ public class OccAccInsurBusiBurdenRatioService {
         String cId = AppContexts.user().companyId();
         String newHistID = IdentifierUtil.randomUniqueId();
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
-        OccAccIsHis itemtoBeAdded = new OccAccIsHis(newHistID, new ArrayList<>());
+        OccAccIsHis itemtoBeAdded = new OccAccIsHis(cId, new ArrayList<>());
         Optional<OccAccIsHis> occAccIsHis = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
         if (occAccIsHis.isPresent()) {
             itemtoBeAdded = occAccIsHis.get();
         }
         itemtoBeAdded.add(yearMonthItem);
-        this.addOccAccIsHis(itemtoBeAdded);
+        this.addOccAccIsHis(yearMonthItem,cId);
         this.updateItemBefore(occAccIsHis.get(), yearMonthItem, cId);
         this.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatioList,newHistID);
 
@@ -40,11 +40,11 @@ public class OccAccInsurBusiBurdenRatioService {
         occAccIsPrRateRepository.update(occAccInsurBusiBurdenRatioList,hisId);
     }
     
-    private void addOccAccIsHis(OccAccIsHis itemtoBeAdded){
-        if(itemtoBeAdded.getHistory().isEmpty()){
+    private void addOccAccIsHis(YearMonthHistoryItem itemtoBeAdded, String cId){
+        if(itemtoBeAdded == null){
             return;
         }
-        occAccIsHisRepository.add(itemtoBeAdded.getHistory().get(itemtoBeAdded.getHistory().size()), itemtoBeAdded.getCid());
+        occAccIsHisRepository.add(itemtoBeAdded, cId);
     }
     
     private void updateItemBefore(OccAccIsHis occAccIsHis, YearMonthHistoryItem item, String cId){

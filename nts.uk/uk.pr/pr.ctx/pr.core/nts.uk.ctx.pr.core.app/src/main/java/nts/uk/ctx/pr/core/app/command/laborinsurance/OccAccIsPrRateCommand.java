@@ -10,7 +10,7 @@ public class OccAccIsPrRateCommand
     /**
     * 労災保険事業No
     */
-    private int occAccIsBusNo;
+    private int occAccInsurBusNo;
     
     /**
     * 端数区分
