@@ -157,7 +157,7 @@ public class WithinStatutoryTimeOfDaily {
 
 		//実働時間の計算
 			Optional<WorkTimezoneCommonSet> leaveLateset = recordReget.getWorkTimezoneCommonSet().isPresent()
-								?Optional.of(recordReget.getWorkTimezoneCommonSet().get().changeWorkTimezoneLateEarlySet())
+								?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
 								:Optional.empty();
 			actualTime =  calcActualWorkTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
