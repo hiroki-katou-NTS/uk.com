@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         //A2_2
         itemTable:ItemTable;
@@ -31,51 +32,34 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         constructor() {
             var self = this;
             $("#A2_2").ntsFixedTable({ height: 300, width: 1000 });
+            $("#A3_1").ntsFixedTable({ height: 300, width:400  });
             //A3_4 対象雇用
             self.targetEmployment=ko.observable([]);
-
-            //self.itemTable=new ItemTable(null,null,null,null);
-
-
-            // self.processInfomations=new Array();
-            // self.setDaySupports=new Array();
-            // self.currentProcessDates=new Array();
-            // self.empCdNameImports=new Array();
-            // self.empTiedProYear=new Array();
-            // let param={
-            //     informationDto: self.processInfomations,
-            //     setDaySupportDto: self.setDaySupports,
-            //     currProcessDateDto:  self.currentProcessDates,
-            //     empTiedProYearDto:  self.empCdNameImports,
-            //     empCdNameImports:  self.empTiedProYear
-            // }
-            //
-            // self.itemTable=new ItemTable(param);
-
-
-            // let param1={
-            //     processCateNo: 1,
-            //     processDivisionName: 'a',
-            //     deprecatCate: 1
-            // }
-
-
-            // self.processInfomations.push(new model.ProcessInfomation(param3));
-            // self.processInfomations.push(new model.ProcessInfomation(param4));
-
 
             self.itemBinding=ko.observableArray([]);
 
 
-
-
-
         }
 
+        showDialogB(param): void {
+            setShared("QMM005_output_B", param);
+            modal('/view/qmm/005/b/index.xhtml', {title: '',}).onClosed(function (): any {
+            })
+        }
 
+        showDialogF(param): void {
+            let self = this;
+            let employeeArr = new Array();
+            employeeArr = self.itemTable.empCdNameImports;
+            let paramEmployment = {
+                processCateNo: param,
+                employeeList: employeeArr
+            }
+            setShared("QMM005_output_F", paramEmployment);
+            modal('/view/qmm/005/f/index.xhtml', {title: '',}).onClosed(function (): any {
+            })
 
-
-
+        }
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -114,11 +98,14 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
     }
 
+
+
     export class ItemBinding{
 
         processInfomation:model.ProcessInfomation;
         setDaySupports:KnockoutObservableArray<model.SetDaySupport>;
         setDaySupportsSelectedCode:KnockoutObservable<number>;
+
 
 
         constructor(
@@ -165,6 +152,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
     }
+
+
 
 
 

@@ -39,7 +39,7 @@
                     <colgroup>
 
                         <col width="50px"/>
-                        <col width="350px"/>
+                        <col width="200px"/>
                         <col width="130px"/>
                         <col width="400px"/>
 
@@ -86,7 +86,7 @@
 
                         <td>
                             <!--A2_10 詳細設定-->
-                            <button data-bind="enable: processInfomation.processDivisionName != '' ">#{i18n.getText('QMM005_12')}</button>
+                            <button data-bind="enable: processInfomation.processDivisionName != '',click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
 
                         <td>
@@ -129,39 +129,37 @@
             </div>
 
             <!--A3_1 対象雇用一覧-->
-            <!--<div class="table-left">-->
-            <!--<table>-->
-            <!--<colgroup>-->
-            <!--<col width="400px"/>-->
+            <div class="table-left">
+                <table id="A3_1">
+                    <colgroup>
+                        <col width="400px"/>
+                    </colgroup>
+                    <thead>
 
+                    <tr>
+                        <!--A3_2 対象となる雇用-->
+                        <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_19')}</th>
+                    </tr>
 
-            <!--</colgroup>-->
-            <!--<thead>-->
+                    </thead>
+                    <tbody data-bind="foreach: itemBinding">
+                    <tr>
 
-            <!--<tr>-->
-            <!--&lt;!&ndash;A3_2 対象となる雇用&ndash;&gt;-->
-            <!--<th class="ui-widget-header"  rowspan="2">#{i18n.getText('QMM005_19')}</th>-->
-            <!--</tr>-->
-
-            <!--</thead>-->
-            <!--<tbody>-->
-            <!--<tr>-->
-
-            <!--<td>-->
-
-            <!--&lt;!&ndash;A3_3 雇用設定&ndash;&gt;-->
-            <!--<button class="">#{i18n.getText('QMM005_20')}</button>-->
-            <!--&lt;!&ndash;A3_4 対象雇用&ndash;&gt;-->
-            <!--<input data-bind="ntsTextEditor: {-->
-            <!--value: targetEmployment,-->
-            <!--readonly: true-->
-            <!--}"/>-->
-
-            <!--</td>-->
-            <!--</tr>-->
-            <!--</tbody>-->
-            <!--</table>-->
-            <!--</div>-->
+                        <td>
+                            <!--A3_3 雇用設定-->
+                            <button data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo)}, enable:processInfomation.processDivisionName != '' ">#{i18n.getText('QMM005_20')}</button>
+                            <!--A3_4 対象雇用-->
+                            <input data-bind="ntsTextEditor: {
+                                value: setDaySupportsSelectedCode,
+                                readonly: true,
+                                enable:processInfomation.processDivisionName != '',
+                                }"
+                            />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </ui:define>
