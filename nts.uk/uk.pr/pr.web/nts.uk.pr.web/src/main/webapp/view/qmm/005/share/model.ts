@@ -109,11 +109,6 @@ module nts.uk.pr.view.qmm005.share.model {
         }
     }
 
-
-
-
-
-
     export interface ISetDaySupport{
         processCateNo: number,
         closeDateTime: string,

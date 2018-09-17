@@ -1,9 +1,18 @@
-.table-left{
-    float:left;
+.table-left {
+	float: left;
 }
 
+#A2_8_label {
+	width: 100px;
+	float: left;
+	margin-top: 10px;
+	margin-left: 10px;
+}
 
-#A2_8_label{width: 100px;float: left;margin-top: 10px;margin-left: 10px;}
+#A2_8 {
+	float: left
+}
 
-#A2_8{float: left}
-
+#A3_1 td{
+	height: 39px;
+}

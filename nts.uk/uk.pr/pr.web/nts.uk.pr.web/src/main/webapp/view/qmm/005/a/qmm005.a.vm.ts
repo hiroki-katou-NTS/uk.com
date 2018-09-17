@@ -21,12 +21,11 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             var self = this;
             $("#A2_2").ntsFixedTable({ height: 300, width: 1000 });
             $("#A3_1").ntsFixedTable({ height: 300, width:400  });
+            $("#fixed-table").ntsFixedTable({ height: 300, width:400  });
+            
             //A3_4 対象雇用
             self.targetEmployment=ko.observable([]);
-
             self.itemBinding=ko.observableArray([]);
-
-
         }
 
         showDialogD_Create(processCateNo):void{
