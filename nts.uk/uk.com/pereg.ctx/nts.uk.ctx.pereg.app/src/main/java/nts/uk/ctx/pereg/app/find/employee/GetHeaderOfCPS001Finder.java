@@ -123,7 +123,7 @@ public class GetHeaderOfCPS001Finder {
 			_emp.setNumberOfWork(-1);
 			_emp.setNumberOfTempHist(-1);
 		} else {
-			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(cid, sid);
+			AffCompanyHist comHist = achFinder.getAffCompanyHistoryOfEmployee(sid);
 
 			if (comHist != null) {
 				AffCompanyHistByEmployee emp = comHist.getAffCompanyHistByEmployee(sid);

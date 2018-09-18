@@ -274,7 +274,7 @@ public class ScheCreExeBasicScheduleHandler {
         
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
+			this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
 		}
 		
 		// save command
@@ -663,6 +663,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param baseDate
 	 *            the base date (input from screen A)
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void registerBasicScheduleSaveCommand(String companyId, Optional<BasicSchedule> optBasicSchedule,
 			Optional<PrescribedTimezoneSetting> optPrescribedSetting, WorkTimeSetGetterCommand command,
 			String employeeId, GeneralDate baseDate, WorkType workType) {
@@ -748,7 +749,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param basicScheduleSaveCommand
 	 */
 	private void addEditDetailsLog(String companyId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItem, String employeeId, GeneralDate targetDate, boolean isUpdate) {
-		
+		String sid = AppContexts.user().employeeId();
 		
 		//勤務種類コード
 		Optional<ScheduleItem> optScheduleItemWorkType = lstScheduleItem.stream().filter(x -> StringUtils.equals(x.getScheduleItemId(), String.valueOf(WORK_TYPE_CODE))).findFirst();
@@ -774,7 +775,7 @@ public class ScheCreExeBasicScheduleHandler {
 		// 育児介護終了時刻 1~2
 		List<ScheduleItem> optScheduleItemChildEndTime = lstScheduleItem.stream().filter(x -> IntStream.of(CHILD_END_TIME).anyMatch(y -> y == Integer.parseInt(x.getScheduleItemId()))).collect(Collectors.toList());
 		
-		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(employeeId);
+		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(sid);
 		StartPageLog lastLog = lstStartPageLog.get(lstStartPageLog.size() - 1);
 		
 		// 「データ修正記録のパラメータ」を生成する

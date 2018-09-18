@@ -41,7 +41,7 @@ module nts.uk.at.view.kal001.a.model {
         //search component
             self.ccg001ComponentOption = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,

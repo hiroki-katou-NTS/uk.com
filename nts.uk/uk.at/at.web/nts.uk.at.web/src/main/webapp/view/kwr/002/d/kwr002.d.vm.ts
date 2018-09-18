@@ -209,7 +209,7 @@ module nts.uk.com.view.kwr002.d {
                 var self = this;
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
-                    if (!$('.nts-editor').ntsError("hasError")) {
+                    if (!$('.nts-editor').ntsError("hasError") && !$('.ntsControl').ntsError("hasError")) {
                         if (nts.uk.text.isNullOrEmpty(self.singleAttendanceRecord()) || self.singleAttendanceRecord() == null) {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
                             return;
