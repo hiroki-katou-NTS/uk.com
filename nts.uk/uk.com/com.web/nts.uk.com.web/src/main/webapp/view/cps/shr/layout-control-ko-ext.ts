@@ -2163,6 +2163,9 @@ module nts.custombinding {
                         }
                         // change value
                         opts.sortable.outData(inputs);
+                    } else {
+                        // init data for save layout
+                        opts.sortable.data.valueHasMutated();
                     }
                 },
                 def_type = (items: Array<any>) => {
@@ -2597,7 +2600,7 @@ module nts.custombinding {
                 // write primitive constraints to viewContext
                 primitiveConsts();
 
-                if (typeof $editable === 'boolean' ? $editable === true : $editable === 0) {
+                if (typeof $editable === 'boolean' ? $editable === false : $editable !== 2) {
                     // init data for save layout
                     opts.sortable.outData(_(data || []).map((item, i) => {
                         return {
