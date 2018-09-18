@@ -109,7 +109,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		};
-		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr);
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
 		/** end 並列処理、PARALLELSTREAM */
 		
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
