@@ -906,18 +906,18 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 									workScheduleHasData.forEach(items -> {
 
-										if (items.getBounceAtr() == 3) {
+										if (items.getBounceAtr() == 0) {
 											workInfoOfDailyPerformanceUpdate
 													.setBackStraightAtr(NotUseAttribute.Not_use);
 											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-										} else if (items.getBounceAtr() == 2) {
+										} else if (items.getBounceAtr() == 1) {
 											workInfoOfDailyPerformanceUpdate
 													.setBackStraightAtr(NotUseAttribute.Not_use);
 											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
-										} else if (items.getBounceAtr() == 0) {
+										} else if (items.getBounceAtr() == 2) {
 											workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
 											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Not_use);
-										} else if (items.getBounceAtr() == 1) {
+										} else if (items.getBounceAtr() == 3) {
 											workInfoOfDailyPerformanceUpdate.setBackStraightAtr(NotUseAttribute.Use);
 											workInfoOfDailyPerformanceUpdate.setGoStraightAtr(NotUseAttribute.Use);
 										}
@@ -1512,10 +1512,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		WorkInformation recordWorkInformation;
 		if (workingCondition.isPresent()) {
 			recordWorkInformation = new WorkInformation(workingCondition.get().getWorkTimeCode().orElse(null),
-					workingCondition.get().getWorkTypeCode());
+					workingCondition.get().getWorkTypeCode().orElse(null));
 		} else {
 			recordWorkInformation = new WorkInformation(category.getWorkTimeCode().orElse(null),
-					category.getWorkTypeCode());
+					category.getWorkTypeCode().orElse(null));
 		}
 		return recordWorkInformation;
 	}

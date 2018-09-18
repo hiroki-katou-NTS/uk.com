@@ -20,7 +20,7 @@ public interface SingleDayScheduleSetMemento {
 	 *
 	 * @param workTypeCode the new work type code
 	 */
-	void setWorkTypeCode(WorkTypeCode workTypeCode);
+	void setWorkTypeCode(Optional<WorkTypeCode> workTypeCode);
 
 	/**
 	 * Sets the working hours.

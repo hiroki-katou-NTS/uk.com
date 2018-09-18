@@ -15,7 +15,7 @@ module nts.uk.ui.mgrid {
         _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], 
         _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, 
         _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = () => _mafollicle[_currentPage][_currentSheet], 
-        _cstifle = () => _mafollicle[SheetDef][_currentSheet].columns, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [],
+        _cstifle = () => _mafollicle[SheetDef][_currentSheet].columns, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth,
         _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers,
         _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {},
         _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
@@ -56,6 +56,9 @@ module nts.uk.ui.mgrid {
             self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
             self.body = _.assignIn(self.body, _.cloneDeep(defaultOptions));
             self.compreOptions();
+            if (self.enter) {
+                _$grid.data("enterDirect", self.enter);
+            }
             _$grid.mGrid({});
         }
         
@@ -453,7 +456,8 @@ module nts.uk.ui.mgrid {
         function groupHeader($container: HTMLElement, options: any, isUpdate: boolean) {
             let $table = selector.create("table").html("<tbody></tbody>").addClass(options.containerClass + "-table")
                         .css({ position: "relative", "table-layout": "fixed", width: "100%", 
-                                "border-collapse": "separate", "user-select": "none" }).getSingle();
+//                                "border-collapse": "separate", 
+                                "user-select": "none" }).getSingle();
             $container.appendChild($table);
             let $tbody = $table.getElementsByTagName("tbody")[0];
             if (!isUpdate) {
@@ -809,7 +813,7 @@ module nts.uk.ui.mgrid {
                 
                 let tdStyle = "";
                 tdStyle += "; border-width: 1px; overflow: hidden; white-space: " 
-                            + ws + "; position: relative;";
+                            + ws + ";"; // position: relative;";
                 
                 if (!self.visibleColumnsMap[key]) {
                     tdStyle += "; display: none;";
@@ -958,7 +962,7 @@ module nts.uk.ui.mgrid {
                 
                 let tdStyle = "";
                 tdStyle += "; border-width: 1px; overflow: hidden; white-space: " 
-                            + ws + "; position: relative; padding: 0px 2px;";
+                            + ws + "; padding: 0px 2px; ";//position: relative;";
                 
                 let col = visibleColumnsMap[key];
                 if (!col) tdStyle += "; display: none;";
@@ -1200,7 +1204,7 @@ module nts.uk.ui.mgrid {
                 
                 let tdStyle = "";
                 tdStyle += "; border-width: 1px; overflow: hidden; white-space: " 
-                            + ws + "; position: relative; padding: 0px 2px;";
+                            + ws + "; padding: 0px 2px;"; // position: relative";
                 
                 let col = self.visibleColumnsMap[key];
                 if (!col) tdStyle += "; display: none;";
@@ -1404,12 +1408,14 @@ module nts.uk.ui.mgrid {
                 maxWidth = options.isHeader ? _maxFreeWidth : _maxFreeWidth + ti.getScrollWidth();
                 style = wrapperStyles(top, left, options.width, maxWidth + "px", options.height);
                 style["background-color"] = "#F3F3F3"; 
+                style["padding-right"] = "1px";
             } else if (options.containerClass === FIXED) {
                 if (!_maxFixedWidth || newOpt) {
                     _maxFixedWidth = calcWidth(options.columns);
                 }
                 style = wrapperStyles(top, left, _maxFixedWidth + "px", undefined, options.height);
                 style["background-color"] = "#F3F3F3";
+                style["padding-right"] = "1px";
             } else if (options.containerClass === gp.PAGING_CLS || options.containerClass === gp.SHEET_CLS) {
                 style = wrapperStyles(top, left, options.width, undefined, options.height);
                 style["background-color"] = "#E9E9E9";
@@ -1803,6 +1809,7 @@ module nts.uk.ui.mgrid {
             widths: Array<string>;
             height: string;
             unshiftRight: any;
+            dir: any
             
             $fixedAgency: HTMLElement;
             $agency: HTMLElement;
@@ -1925,12 +1932,14 @@ module nts.uk.ui.mgrid {
             /**
              * Cursor down.
              */
-            cursorDown(event: any) {
+            cursorDown(event: any, trg?: any) {
                 let self = this;
                 if (self.actionDetails) {
                     self.unshiftRight ? self.cursorUp(event) : self.cursorUpShift(event);
                 }
                 let $targetGrip = event.target;
+                if (!selector.is($targetGrip, "." + LINE)
+                    && !selector.is($targetGrip, "." + FIXED_LINE)) return;
                 let gripIndex = $.data($targetGrip, RESIZE_NO);
                 let $leftCol = $.data($targetGrip, RESIZE_COL);
                 let headerGroup, isFixed = false;
@@ -1941,7 +1950,7 @@ module nts.uk.ui.mgrid {
                     headerGroup = self.headerColGroup[1];
                 }
                 
-                let breakArea, wrapperLeft, wrapperRight, leftAlign;
+                let breakArea, wrapperLeft, wrapperRight, maxWrapperRight, leftAlign;
                 if (isFixed && self.headerColGroup.length > 1 && gripIndex === self.headerColGroup[0].length - 1) {
                     breakArea = true;
                 }
@@ -1949,6 +1958,7 @@ module nts.uk.ui.mgrid {
                 if (self.headerWrappers.length > 1) {
                     wrapperLeft = self.headerWrappers[0].style.width;
                     wrapperRight = self.headerWrappers[1].style.width;
+                    maxWrapperRight = self.headerWrappers[1].style.maxWidth;
                     leftAlign = self.headerWrappers[1].style.left;
                 }   
                 
@@ -1969,7 +1979,8 @@ module nts.uk.ui.mgrid {
                         left : parseFloat(leftWidth),
                         right: rightWidth ? parseFloat(rightWidth) : undefined,
                         wrapperLeft: parseFloat(wrapperLeft),
-                        wrapperRight: parseFloat(wrapperRight)
+                        wrapperRight: parseFloat(wrapperRight),
+                        maxWrapperRight: parseFloat(maxWrapperRight)
                     },
                     changedWidths: {
                         left: parseFloat(leftWidth),
@@ -1979,7 +1990,7 @@ module nts.uk.ui.mgrid {
                 
                 self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                 self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                event.preventDefault();
+                if (!trg) event.preventDefault();
             }
             
             /**
@@ -1988,8 +1999,26 @@ module nts.uk.ui.mgrid {
             cursorMoveShift(event: any) {
                 let self = this;
                 if (!self.actionDetails) return;
-                let distance = getCursorX(event) - self.actionDetails.xCoord;
+                let evt, distance = getCursorX(event) - self.actionDetails.xCoord;
                 if (distance === 0) return;
+                else if (distance > 0) {
+                    if (_.isNil(self.dir)) {
+                        self.dir = 1;   
+                    } else if (self.dir === -1) {
+                        evt = { target: self.actionDetails.$targetGrip };
+                        self.cursorUpShift(event);
+                        evt.pageX = event.pageX;
+                        self.cursorDown(evt, true);
+                    }
+                } else if (_.isNil(self.dir)) {
+                    self.dir = -1;
+                } else if (self.dir === 1) {
+                    evt = { target: self.actionDetails.$targetGrip };
+                    self.cursorUpShift(event);
+                    evt.pageX = event.pageX;
+                    self.cursorDown(evt, true);
+                }
+                
                 let leftWidth, leftAreaWidth, rightAreaWidth, leftAlign;
                 leftWidth = self.actionDetails.widths.left + distance;
                 
@@ -2015,7 +2044,12 @@ module nts.uk.ui.mgrid {
                     if (self.sumWrappers.length > 0) sumGroup = self.sumColGroup[0];
                 } else { 
                     bodyGroup = self.bodyColGroup[1];
-                    if (self.sumWrappers.length > 0) sumGroup = self.sumColGroup[1];
+                    self.bodyWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
+                    self.headerWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                    if (self.sumWrappers.length > 0) {
+                        sumGroup = self.sumColGroup[1];
+                        self.sumWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                    }
                 }
                 
                 if (self.actionDetails.$leftCol) {
@@ -2046,6 +2080,40 @@ module nts.uk.ui.mgrid {
                     }
                     _widths._unfixed = rightAreaWidth;
                 }
+                
+                if (!self.actionDetails.isFixed && distance < 0) {
+                    let width = parseFloat(self.bodyWrappers[1].style.width),
+                        maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth);
+                    
+                    if (maxWidth < width) {
+                        let pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS),
+                            sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS),
+                            btw = _maxFixedWidth + maxWidth;
+                        if (pageDiv) {
+                            self.setWidth(pageDiv, btw);
+                        }
+                        if (sheetDiv) {
+                            self.setWidth(sheetDiv, btw);
+                        }
+                        _widths._unfixed = maxWidth - ti.getScrollWidth();
+                    }
+                }
+ 
+                if (_hasFixed && distance > 0 && !self.actionDetails.isFixed) {
+                    let width = parseFloat(self.bodyWrappers[1].style.width),
+                        maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth),
+                        pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS),
+                        sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS),
+                        ws = Math.min(maxWidth, width),
+                        btw = _maxFixedWidth + ws;
+                    if (pageDiv && parseFloat(pageDiv.style.width) !== btw) {
+                        self.setWidth(pageDiv, btw);
+                    }
+                    if (sheetDiv && parseFloat(sheetDiv.style.width) !== btw) {
+                        self.setWidth(sheetDiv, btw);
+                    }
+                    _widths._unfixed = ws;
+                } 
             }
             
             /**
@@ -2092,6 +2160,7 @@ module nts.uk.ui.mgrid {
                     replenLargeur(leftCol, self.actionDetails.changedWidths.left);
                 }
                 self.actionDetails = null;
+                self.dir = null;
             }
             
             /**
@@ -2333,7 +2402,8 @@ module nts.uk.ui.mgrid {
             let sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
             if (_headerWrappers.length > 1) {
                 width = window.innerWidth - 240 - _maxFixedWidth;
-                btmw = Math.min(_maxFixedWidth + width + ti.getScrollWidth(), _maxFixedWidth + parseFloat(_bodyWrappers[1].style.maxWidth));
+                _flexFitWidth = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[1].style.maxWidth));
+                btmw = _maxFixedWidth + _flexFitWidth;
                 _headerWrappers[1].style.width = width + "px";
                 _bodyWrappers[1].style.width = (width + ti.getScrollWidth()) + "px";
                 height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
@@ -2350,6 +2420,11 @@ module nts.uk.ui.mgrid {
                 if (sheetDiv) {
                     sheetDiv.style.width = btmw + "px";
                     sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                    let sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
+                    let scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
+                    if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
+                        scrollbar.classList.add("ui-state-disabled");
+                    } else scrollbar.classList.remove("ui-state-disabled"); 
                 }
                 _bodyWrappers[0].style.height = height + "px";
                 _bodyWrappers[1].style.height = height + "px";
@@ -2358,6 +2433,7 @@ module nts.uk.ui.mgrid {
             
             width = window.innerWidth - 240;
             btmw = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[0].style.maxWidth));
+            _flexFitWidth = btmw;
             _headerWrappers[0].style.width = width + "px";
             _bodyWrappers[0].style.width = (width + ti.getScrollWidth()) + "px";
             height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
@@ -2983,7 +3059,7 @@ module nts.uk.ui.mgrid {
                 _headerHeight = null; _zeroHidden = null; _paging = false; _sheeting = false; _copie = false; _mafollicle = {}; 
                 _specialColumn = {}; _specialLinkColumn = {}; _fixedHiddenColumns = []; _fixedColumns = null; _selected = {}; _dirties = {}; 
                 _rid = {}, _headerWrappers = null; _bodyWrappers = null; _sumWrappers = null; _fixedControlMap = {}; _cellStates = null; _features = null; 
-                _leftAlign = null; _header = null; this.element.html(""); this.element.removeData(); _histoire = [];
+                _leftAlign = null; _header = null; _flexFitWidth = null; this.element.html(""); this.element.removeData(); _histoire = [];
                 this.element[0].parentNode.replaceChild(this.element[0].cloneNode(), this.element[0]);
             }  
         });
@@ -3236,11 +3312,12 @@ module nts.uk.ui.mgrid {
                 let $input = $editor.querySelector("input.medit");
                 let inputVal = $input.value;
                 if ($bCell) {
-                    let column = _columnsMap[editor.columnKey];
+                    let spl = {}, column = _columnsMap[editor.columnKey];
                     if (!column) return;
-                    let failed = khl.any({ element: $bCell }), formatted = failed ? inputVal : format(column[0], inputVal);
+                    let failed = khl.any({ element: $bCell }), 
+                        formatted = failed ? inputVal : (_zeroHidden && ti.isZero(inputVal) ? "" : format(column[0], inputVal, spl));
                     $bCell.textContent = formatted;
-                    let disFormat = inputVal === "" || failed ? inputVal : formatSave(column[0], inputVal);
+                    let disFormat = inputVal === "" || failed ? inputVal : (spl.padded ? formatted : formatSave(column[0], inputVal));
                     wedgeCell($grid, editor, disFormat);
                     $.data($bCell, v.DATA, disFormat);
                     
@@ -3574,7 +3651,7 @@ module nts.uk.ui.mgrid {
         export function deleteRow() {
         }
         
-        export function format(column: any, value: any) {
+        export function format(column: any, value: any, spl?: any) {
             if (util.isNullOrEmpty(_.trim(value))) return value;
             if (column.constraint) {
                 let contrainte, valueType, constraint = column.constraint;
@@ -3617,6 +3694,7 @@ module nts.uk.ui.mgrid {
                         else value = rawValue;
                     } else if (valueType === "String" && contrainte && contrainte.maxLength && contrainte.isZeroPadded) {
                         value = uk.text.padLeft(value, '0', parseInt(contrainte.maxLength));
+                        if (spl) spl.padded = true;
                     }
                 }
             }
@@ -3654,6 +3732,62 @@ module nts.uk.ui.mgrid {
             }
             
             let formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
+            
+            let inputRidd = function($t, rowIdx, columnKey, dFormat) {
+                if ($t.classList.contains(khl.ERROR_CLS)) return;
+                let ridd = _columnsMap[columnKey][0].inputProcess; 
+                if (ridd) {
+                    let rData = _dataSource[rowIdx];
+                    let rId;
+                    if (rData) rId = rData[_pk];
+                    ridd(rId, columnKey, dFormat).done((sData) => {
+                        _.forEach(sData, sd => {
+                            let res = _$grid.mGrid("updateCell", sd.id, sd.item, sd.value);
+                            if (!_.isNil(res) && res >= 0) {
+                                let sht = _.filter(_.keys(_mafollicle[SheetDef]), k => {
+                                    if (k === _currentSheet) return;
+                                    let sCols = _mafollicle[SheetDef][k].columns;
+                                    return _.find(sCols, c => c.key === sd.item);
+                                });
+                                
+                                _.forEach(sht, s => {
+                                    wedgeShtCell(res, sd.item, sd.value, s); 
+                                });
+                            }
+                        });
+                    });
+                }
+            };
+            
+            let collerRidd = function(rowIdx, columnKey, value) {
+                let sCol = _specialColumn[columnKey];
+                if (sCol) {
+                    let cbx = dkn.controlType[sCol];
+                    wedgeCell(_$grid[0], { rowIdx: rowIdx, columnKey: sCol }, value);
+                    let selectedOpt = _.find(cbx.options, o => o.code === value); 
+                    if (!_.isNil(selectedOpt)) {
+                        let $cbxCell = lch.cellAt(_$grid[0], rowIdx, sCol);
+                        $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
+                        $.data($cbxCell, lo.CBX_SELECTED_TD, value);
+                    }
+                } else if ((sCol = _specialLinkColumn[columnKey]) && sCol.changed) {
+                    let data = _mafollicle[_currentPage].origDs[rowIdx];
+                    sCol.changed(columnKey, data[_pk], value, data[columnKey]).done(res => {
+                        let $linkCell = lch.cellAt(_$grid[0], rowIdx, sCol.column);
+                        if ($linkCell) {
+                            $linkCell.querySelector("a").textContent = res;
+                            wedgeCell(_$grid[0], { rowIdx: rowIdx, columnKey: sCol.column }, res);
+                        }
+                        
+                        let $t = lch.cellAt(_$grid[0], rowIdx, columnKey);
+                        inputRidd($t, rowIdx, columnKey, value);
+                    });
+                } else {
+                    let $t = lch.cellAt(_$grid[0], rowIdx, columnKey); 
+                    inputRidd($t, rowIdx, columnKey, value);
+                }
+            };
+            
             if (_copieMode === 0) {
                 if (dkn.controlType[coord.columnKey] !== dkn.TEXTBOX || target.classList.contains(color.Disable)
                     || !col || col.length === 0) return;
@@ -3662,6 +3796,7 @@ module nts.uk.ui.mgrid {
                 disFormat = su.formatSave(col[0], data);
                 su.wedgeCell(_$grid[0], coord, disFormat);
                 $.data(target, v.DATA, disFormat);
+                collerRidd(coord.rowIdx, coord.columnKey, disFormat);
                 return;
             }
                 
@@ -3693,7 +3828,8 @@ module nts.uk.ui.mgrid {
                     e = cArr[cPoint++];
                     if (e.style.display === "none" && cArr.length > cPoint + 1) e = cArr[cPoint++];
                     if (!e) return false;
-                    if (_.trim(c) === "null") return;
+                    c = _.trim(c);
+                    if (c === "null") return;
                     pointCoord = ti.getCellCoord(e);
                     pointCol = _columnsMap[pointCoord.columnKey];
                     if (dkn.controlType[pointCoord.columnKey] !== dkn.TEXTBOX || e.classList.contains(color.Disable)
@@ -3705,6 +3841,7 @@ module nts.uk.ui.mgrid {
                     disFormat = su.formatSave(pointCol[0], c);
                     su.wedgeCell(_$grid[0], pointCoord, disFormat);
                     $.data(e, v.DATA, disFormat);
+                    collerRidd(pointCoord.rowIdx, pointCoord.columnKey, disFormat);
                 });
             });
         }
@@ -3895,6 +4032,7 @@ module nts.uk.ui.mgrid {
         export const SHEET_CLS = "mgrid-sheet";
         export const PAGE_HEIGHT = 44;
         export const SHEET_HEIGHT = 30;
+        export let $sheetArea;
         
         export function imiPages($container: HTMLElement, top: any, width: any) {
             if (!_paging) return;
@@ -3987,17 +4125,17 @@ module nts.uk.ui.mgrid {
         
         export function imiSheets($container: HTMLElement, top: any, width: any) {
             if (!_sheeting) return;
-            let $sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, 
+            $sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, 
                 { width: parseFloat(width) + ti.getScrollWidth() + "px", height: SHEET_HEIGHT + "px", containerClass: SHEET_CLS });
             $container.appendChild($sheetArea);
             let $scrollBar = document.createElement("ul");
             $scrollBar.classList.add("mgrid-sheet-scrollbar");
             $sheetArea.appendChild($scrollBar);
             let $up = document.createElement("li");
-            $up.textContent = "▲";
+            $up.className = "ui-icon-triangle-1-n ui-icon";
             $scrollBar.appendChild($up);
             let $down = document.createElement("li");
-            $down.textContent = "▼";
+            $down.className = "ui-icon-triangle-1-s ui-icon";
             $scrollBar.appendChild($down);
             let $gridSheet = _prtDiv.cloneNode();
             $gridSheet.classList.add("mgrid-sheet-nav");
@@ -4029,11 +4167,11 @@ module nts.uk.ui.mgrid {
             });
             
             let sheetNav = $($gridSheet);
-            $up.addXEventListener(ssk.CLICK_EVT, evt => {
+            $up.addXEventListener(ssk.MOUSE_DOWN, evt => {
                 sheetNav.scrollTop(sheetNav.scrollTop() - SHEET_HEIGHT);
             });
             
-            $down.addXEventListener(ssk.CLICK_EVT, evt => {
+            $down.addXEventListener(ssk.MOUSE_DOWN, evt => {
                 sheetNav.scrollTop(sheetNav.scrollTop() + SHEET_HEIGHT);
             });
         }
@@ -4421,7 +4559,7 @@ module nts.uk.ui.mgrid {
             }
             let $editContainer = document.createElement("div"); 
             $editContainer.classList.add("medit-container");
-            $editContainer.style.height = (BODY_ROW_HEIGHT - 4) + "px";
+            $editContainer.style.height = (BODY_ROW_HEIGHT - 3) + "px";
             let $editor = document.createElement("input");
             $editor.classList.add("medit");
             $editContainer.appendChild($editor);
@@ -4604,6 +4742,7 @@ module nts.uk.ui.mgrid {
                             $cCell.textContent = formatted;
                             su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: sCol },  value);
                             $.data($cCell, v.DATA, value);
+                            khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: sCol, element: $cCell });
                         }
                     }
                 });

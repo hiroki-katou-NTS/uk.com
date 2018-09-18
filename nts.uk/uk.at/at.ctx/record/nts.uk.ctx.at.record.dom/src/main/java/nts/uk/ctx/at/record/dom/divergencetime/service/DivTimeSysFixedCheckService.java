@@ -506,12 +506,7 @@ public class DivTimeSysFixedCheckService {
 			return divTimeErAlMs;
 		}
 		return shareContainer.getShared(join(DIVERGENCE_TIME_KEY, SEPERATOR, comId), 
-				() -> {
-					return diverTimeRepo.getDivTimeListByNo(comId, divCheckNos).stream()
-								.filter(div -> div.isDivergenceTimeUse())
-								.sorted((c1, c2) -> Integer.compare(c1.getDivergenceTimeNo(), c2.getDivergenceTimeNo()))
-								.collect(Collectors.toList());
-				});
+				() -> diverTimeRepo.getUsedDivTimeListByNoV2(comId, divCheckNos));
 	}
 
 	/** ドメインモデル「乖離基準時間利用単位」を取得する */
@@ -641,11 +636,11 @@ public class DivTimeSysFixedCheckService {
 	}
 
 	private boolean isReasonSelected(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {
-		return divTime.getDivResonCode() != null && !divTime.getDivResonCode().v().isEmpty();
+		return divTime.getDivResonCode() != null && divTime.getDivResonCode().isPresent() && !divTime.getDivResonCode().get().v().isEmpty();
 	}
 
 	private boolean isReasonInputed(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {
-		return divTime.getDivReason() != null && !divTime.getDivReason().v().isEmpty();
+		return divTime.getDivReason() != null && divTime.getDivReason().isPresent() && !divTime.getDivReason().get().v().isEmpty();
 	}
 	
 	private InternalCheckStatus evaluateReasonOnNoError(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {

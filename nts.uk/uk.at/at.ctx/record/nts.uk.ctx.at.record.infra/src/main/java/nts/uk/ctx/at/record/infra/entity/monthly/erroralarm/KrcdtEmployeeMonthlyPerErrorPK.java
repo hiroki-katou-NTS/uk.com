@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.entity.monthly.erroralarm;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -17,6 +16,9 @@ import lombok.NoArgsConstructor;
 public class KrcdtEmployeeMonthlyPerErrorPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	@Column(name = "ERR_NO")
+	public int no;
 
 	@Column(name = "ERROR_TYPE")
 	public Integer errorType;

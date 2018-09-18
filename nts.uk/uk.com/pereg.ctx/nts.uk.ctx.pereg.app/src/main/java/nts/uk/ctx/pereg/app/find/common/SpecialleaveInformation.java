@@ -31,14 +31,11 @@ public class SpecialleaveInformation {
 	// 入社年月日
 	private GeneralDate entryDate;
 	
-	// 退職年月日
-	private GeneralDate retireDate;
-	
 	// 年休付与基準日
 	private GeneralDate yearRefDate;
 
 	public SpecialleaveInformation(String sid, int spLeaveCD, GeneralDate grantDate, int appSet, String grantTable,
-			Double grantDays, GeneralDate entryDate, GeneralDate retireDate, GeneralDate yearRefDate) {
+			Double grantDays, GeneralDate entryDate, GeneralDate yearRefDate) {
 		super();
 		this.sid = sid;
 		this.spLeaveCD = spLeaveCD;
@@ -47,7 +44,6 @@ public class SpecialleaveInformation {
 		this.grantDays = grantDays;
 		this.grantTable = grantTable;
 		this.entryDate = entryDate;
-		this.retireDate = retireDate;
 		this.yearRefDate = yearRefDate;
 	}
 

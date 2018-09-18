@@ -29,6 +29,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.shr.com.i18n.TextResource;
@@ -126,7 +127,7 @@ public class MultipleMonthAggregateProcessService {
 			String nameErrorAlarm = "";
 			List<Integer> listAttendanceItemIds = new ArrayList<>();
 			if (!CollectionUtil.isEmpty(tmp)) {
-				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, TypeOfItem.Monthly.value);
 				listAttendanceItemIds= listAttdName.stream()
                         .map(AttendanceItemName::getAttendanceItemId)
                         .collect(Collectors.toList());
@@ -135,7 +136,7 @@ public class MultipleMonthAggregateProcessService {
 				
 			} else {
 				if (!CollectionUtil.isEmpty(tmp2)) {
-					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,0);
+					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,TypeOfItem.Monthly.value);
 					listAttendanceItemIds= listAttdName.stream()
 	                        .map(AttendanceItemName::getAttendanceItemId)
 	                        .collect(Collectors.toList());
@@ -286,13 +287,13 @@ public class MultipleMonthAggregateProcessService {
 			compare.setCompareright("≦");
 			break;
 		case 8 :/* 範囲の外（境界値を含まない）（＞＜） */
-			compare.setCompareLeft("＞");
-			compare.setCompareright("＞");
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
 			break;
 		
 		default :/* 範囲の外（境界値を含む）（≧≦） */
-			compare.setCompareLeft("≧");
-			compare.setCompareright("≧");
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
 			break; 
 		}
 

@@ -4,10 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.monthlyattditem;
 
+import java.util.Optional;
+
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 
 /**
  * The Class MonthlyAttendanceItem.
@@ -38,12 +42,15 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 
 	/** The monthly attendance atr. */
 	// 勤怠項目属性
+	@Setter
 	private MonthlyAttendanceItemAtr monthlyAttendanceAtr;
 
 	/** The name line feed position. */
 	// ユーザーが値を変更できる
 	private int nameLineFeedPosition;
 
+	@Setter
+	Optional<PrimitiveValueOfAttendanceItem> primitiveValue;
 	/**
 	 * Instantiates a new monthly attendance item.
 	 *
@@ -57,6 +64,7 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		this.userCanUpdateAtr = memento.getUserCanUpdateAtr();
 		this.monthlyAttendanceAtr = memento.getMonthlyAttendanceAtr();
 		this.nameLineFeedPosition = memento.getNameLineFeedPosition();
+		this.primitiveValue = memento.getPrimitiveValue();
 	}
 
 	/**
@@ -72,6 +80,7 @@ public class MonthlyAttendanceItem extends AggregateRoot {
 		memento.setUserCanUpdateAtr(this.userCanUpdateAtr);
 		memento.setMonthlyAttendanceAtr(this.monthlyAttendanceAtr);
 		memento.setNameLineFeedPosition(this.nameLineFeedPosition);
+		memento.setPrimitiveValue(this.primitiveValue);
 	}
 
 	/* (non-Javadoc)

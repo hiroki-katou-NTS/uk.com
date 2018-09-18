@@ -20,7 +20,7 @@
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- A1_1: Button New -->
-				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="click: newMode">#{i18n.getText('KDW009_2')}</button>
+				<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="click: newMode, enable: checkUpdate()">#{i18n.getText('KDW009_2')}</button>
 				<!-- A1_2: Button Registration -->
 				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: ($root.errors.isEmpty() &amp; $vm.registerHide() == true) || ($vm.registerHide() == true &amp; $vm.checkUpdate() == false)">#{i18n.getText('KDW009_3')}</button>
 				<!-- A1_3: Button Delete -->

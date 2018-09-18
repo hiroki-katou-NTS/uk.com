@@ -51,6 +51,11 @@ public class MedicalTimeDailyPerformDto implements ItemConst {
 			return EMPTY_STRING;
 		}
 	}
+	
+	@Override
+	public MedicalTimeDailyPerformDto clone() {
+		return new MedicalTimeDailyPerformDto(attr, takeOverTime, deductionTime, workTime);
+	}
 
 	public static MedicalTimeDailyPerformDto fromMedicalCareTime(MedicalCareTimeOfDaily domain) {
 		return domain == null ? null : new MedicalTimeDailyPerformDto(

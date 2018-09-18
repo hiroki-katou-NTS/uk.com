@@ -1063,14 +1063,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			// calculate add
 			if (!addValueCalUpper.isEmpty()) {
 				for (ItemValue i : addValueCalUpper) {
-					if (i.getValue() != null)
+					if (i.getValue() != null && !i.getValue().isEmpty())
 						sum = Double.parseDouble(sum.toString()) + Double.parseDouble(i.value().toString());
 				}
 			}
 			// calculate sub
 			if (!subValueCalUpper.isEmpty()) {
 				for (ItemValue i : subValueCalUpper) {
-					if (i.getValue() != null)
+					if (i.getValue() != null && !i.getValue().isEmpty())
 						sum = Double.parseDouble(sum.toString()) - Double.parseDouble(i.value().toString());
 				}
 			}

@@ -155,7 +155,10 @@ public class WithinStatutoryTimeOfDaily {
 														  Optional.empty());
 			
 
-		//実働時間の計算					
+		//実働時間の計算
+			Optional<WorkTimezoneCommonSet> leaveLateset = recordReget.getWorkTimezoneCommonSet().isPresent()
+								?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
+								:Optional.empty();
 			actualTime =  calcActualWorkTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
@@ -181,7 +184,8 @@ public class WithinStatutoryTimeOfDaily {
 					  							recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					  							recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
 					  							recordReget.getDailyUnit(),
-					  							recordReget.getWorkTimezoneCommonSet(),conditionItem,
+					  							leaveLateset,
+					  							conditionItem,
 					  							predetermineTimeSetByPersonInfo,
 					  							Optional.of(new DeductLeaveEarly(0, 1)));
 			actualTime = actualTime.minusMinutes(withinpremiumTime.valueAsMinutes());
@@ -472,4 +476,8 @@ public class WithinStatutoryTimeOfDaily {
 		}
 	}
 	
+	public static WithinStatutoryTimeOfDaily defaultValue(){
+		return new WithinStatutoryTimeOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, 
+				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue()));
+	}
 }

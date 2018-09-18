@@ -30,7 +30,7 @@
 					<div class="valign-center control-group">
 						<span class="label">#{i18n.getText('CDL027_5')}</span>
 						<span class="label" data-bind="text: targetStart"></span>
-						<span class="label">#{i18n.getText('CDL027_6')}</span>
+						<span class="label" data-bind= "visible: targetEnd != null">#{i18n.getText('CDL027_6')}</span>
 						<span class="label" data-bind="text: targetEnd"></span>
 					</div>
 					<table id="list" tabindex="3"></table>

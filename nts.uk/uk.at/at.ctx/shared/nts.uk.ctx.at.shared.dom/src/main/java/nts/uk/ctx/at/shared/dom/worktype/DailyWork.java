@@ -332,4 +332,20 @@ public class DailyWork extends DomainObject { // 1日の勤務
 			return false;
 		}
 	}
+	
+	/**
+	 * 振休or休日であるか判定する
+	 * @return振休or休日である
+	 */
+	public boolean isHolidayOrPause() {
+		if(this.getWorkTypeUnit().isOneDay() && (this.getOneDay().isHoliday() || this.getOneDay().isPause())) {
+			return true;
+		}
+		if(this.getWorkTypeUnit().isMonringAndAfternoon() 
+		&&(this.getMorning().isHoliday() || this.getMorning().isPause())
+		&&(this.getAfternoon().isPause() || this.getAfternoon().isPause())) {
+			return true;
+		}
+		return false;
+	}
 }

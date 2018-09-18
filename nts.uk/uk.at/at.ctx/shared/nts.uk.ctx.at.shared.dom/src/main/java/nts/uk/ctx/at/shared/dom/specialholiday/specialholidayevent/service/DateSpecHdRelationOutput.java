@@ -12,4 +12,7 @@ public class DateSpecHdRelationOutput {
 	private String relationName;
 	//上限日数
 	private int maxDate;
+	//Bug100572 - ver21
+	/* 3親等以内とする */
+	private boolean threeParentOrLess;
 }

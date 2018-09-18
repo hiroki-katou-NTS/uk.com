@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -82,8 +83,9 @@ public interface AttendanceTimeOfMonthlyRepository {
 	/**
 	 * 登録および更新
 	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
+	 * @param affiliation 月別実績の所属情報
 	 */
-	void persistAndUpdate(AttendanceTimeOfMonthly attendanceTimeOfMonthly);
+	void persistAndUpdate(AttendanceTimeOfMonthly attendanceTimeOfMonthly, Optional<AffiliationInfoOfMonthly> affiliation) ;
 	
 	/**
 	 * 削除

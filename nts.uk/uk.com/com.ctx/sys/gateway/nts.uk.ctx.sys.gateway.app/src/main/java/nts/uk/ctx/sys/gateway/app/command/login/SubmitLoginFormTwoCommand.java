@@ -57,7 +57,7 @@ public class SubmitLoginFormTwoCommand {
      * @return the employee code
      */
     public String getEmployeeCode() {
-        return employeeCode.trim();
+        return employeeCode;
     }
 
     /**
@@ -66,7 +66,7 @@ public class SubmitLoginFormTwoCommand {
      * @param employeeCode the new employee code
      */
     public void setEmployeeCode(String employeeCode) {
-        this.employeeCode = employeeCode.trim();
+        this.employeeCode = employeeCode;
     }
 
     /**

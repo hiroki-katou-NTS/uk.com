@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
@@ -318,6 +319,7 @@ public class MonthlyCalculation {
 			this.settingsByFlex.setInsufficientFlexOpt(companySets.getInsufficientFlexOpt());
 			
 			// フレックス不足の繰越上限管理
+			this.settingsByFlex.setFlexShortageLimitOpt(companySets.getFlexShortageLimitOpt());
 		}
 		
 		// 法定内振替順設定
@@ -673,6 +675,12 @@ public class MonthlyCalculation {
 			
 			// 「余分な控除時間のエラーフラグ」をtrueにする
 			this.flexTime.getFlexShortDeductTime().setErrorAtrOfExtraDeductTime(true);
+			
+			// 社員の月別実績のエラーを作成する
+			val perError = this.flexTime.getPerErrors();
+			if (!perError.contains(Flex.FLEX_SHORTAGE_TIME_EXCESS_DEDUCTION)){
+				perError.add(Flex.FLEX_SHORTAGE_TIME_EXCESS_DEDUCTION);
+			}
 		}
 	}
 	

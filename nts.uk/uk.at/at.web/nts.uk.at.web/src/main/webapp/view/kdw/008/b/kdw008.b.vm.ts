@@ -89,7 +89,7 @@ module nts.uk.at.view.kdw008.b {
                     { headerText: getText('KDW008_7'), key: 'businessTypeCode', width: 100 },
                     { headerText: getText('KDW008_26'), key: 'businessTypeName', width: 180, formatter: _.escape }
                 ]);
-                this.selectedCode = ko.observable();
+                this.selectedCode = ko.observable(null);
 
                 self.columns4 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
@@ -179,18 +179,29 @@ module nts.uk.at.view.kdw008.b {
                     if (empSelect) {
                         self.currentBusinessTypeCode(empSelect.businessTypeCode);
                         self.currentBusinessTypeName(empSelect.businessTypeName);
-                        self.selectedSheetNo(1);
+                        self.initSelectedSheetNoHasMutated();
+                        /*
                         if (self.isDaily) {
                             self.getDetail(self.currentBusinessTypeCode());
                         } else {
                             self.getMonthRight(newValue, self.selectedSheetNo());
                         }
+                        */
                     }
                     nts.uk.ui.errors.clearAll();
                     
 
                 });
 
+            }
+
+            initSelectedSheetNoHasMutated() {
+                let self = this;
+                if (self.selectedSheetNo() == 1) {
+                    self.selectedSheetNo.valueHasMutated();
+                } else {
+                    self.selectedSheetNo(1);
+                }
             }
 
             startPage(): JQueryPromise<any> {
@@ -200,8 +211,8 @@ module nts.uk.at.view.kdw008.b {
                 let dfdGetBusinessType = self.getBusinessType();
                 let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
                 $.when(dfdGetBusinessType, dfdGetListMonthlyAttdItem).done(function(dfdGetBusinessTypeData, dfdGetListMonthlyAttdItemData) {
-                    self.selectedSheetNo(1);
-                    self.selectedSheetNo.valueHasMutated();
+                    // self.selectedSheetNo(1);
+                    // self.selectedSheetNo.valueHasMutated();
                     dfd.resolve();
                 });
                 dfd.resolve();
@@ -212,8 +223,11 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 let dfd = $.Deferred();
                 new service.Service().getListMonthlyAttdItem().done(function(data) {
+                    self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
+                    self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
+                    dfd.resolve();
                     
-                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    /*let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     new service.Service().getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
                             for(let j = 0;j<=dataNew.length; j++){
@@ -226,7 +240,7 @@ module nts.uk.at.view.kdw008.b {
                         self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
                         self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
                         dfd.resolve();
-                    });
+                    });*/
                 });
                 return dfd.promise();
             }
@@ -244,7 +258,7 @@ module nts.uk.at.view.kdw008.b {
                             self.currentBusinessTypeCode(self.businessTypeList()[0].businessTypeCode);
                             self.currentBusinessTypeName(self.businessTypeList()[0].businessTypeName);
                             self.selectedCode(self.businessTypeList()[0].businessTypeCode);
-                            self.getDetail(self.businessTypeList()[0].businessTypeCode);
+                            // self.getDetail(self.businessTypeList()[0].businessTypeCode);
                         }else{
                             self.selectedCode(self.businessTypeList()[0].businessTypeCode);
                         }
@@ -304,8 +318,7 @@ module nts.uk.at.view.kdw008.b {
                     new service.Service().updateMonthly(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                             nts.uk.ui.block.clear();
-                            self.selectedSheetNo(1);
-                            self.selectedSheetNo.valueHasMutated();
+                            self.initSelectedSheetNoHasMutated();
 //                            self.getMonthRight(self.currentBusinessTypeCode(), self.selectedSheetNo());
 //                            self.selectedCode(self.currentBusinessTypeCode());
 //                            self.selectedCode.valueHasMutated();
@@ -512,8 +525,7 @@ module nts.uk.at.view.kdw008.b {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             nts.uk.ui.block.clear();
 //                            self.getMonthRight(self.currentBusinessTypeCode(), 1);
-                            self.selectedSheetNo(1);
-                            self.selectedSheetNo.valueHasMutated();
+                            self.initSelectedSheetNoHasMutated();
                         });
                         $("#currentName").focus();
                     }).always(function() {
