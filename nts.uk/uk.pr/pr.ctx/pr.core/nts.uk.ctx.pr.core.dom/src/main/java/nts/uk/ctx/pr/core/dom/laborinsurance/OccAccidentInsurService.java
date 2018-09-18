@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -38,7 +39,7 @@ public class OccAccidentInsurService {
         Optional<OccAccIsHis> getEmpInsurHisByCid = occAccIsHisRepository.getAllOccAccIsHisByCid(cId);
         if(acceptCode.get().getEachBusiness() == null || getEmpInsurHisByCid == null ){
             /*選択処理*/
-          return null;
+          return Optional.ofNullable(new OccAccIsHis(cId,new ArrayList<>()));
 
 
         }
