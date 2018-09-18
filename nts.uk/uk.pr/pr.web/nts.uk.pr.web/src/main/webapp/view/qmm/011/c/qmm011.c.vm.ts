@@ -99,18 +99,24 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
 
                     _.forEach( listAccInsurPreRate, function(value,key) {
-                        if(value == null){
+
+                        let temp :IAccInsurPreRate = _.find(listAccInsurPreRate, function (o) {
+                            if(o == null)
+                                return null;
+                            return o.occAccInsurBusNo == key;
+                        });
+
+                        if (temp == null) {
                             let data:IAccInsurPreRate = {
                                 hisId: listAccInsurPreRate[0].hisId,
                                 occAccInsurBusNo: key,
                                 name: '',
                                 fracClass: 0,
                                 empConRatio: 0,
-                                useArt:0
+                                useArt: 0
                             };
-                            listAccInsurPreRate[key] =data;
+                            listAccInsurPreRate[key] = data;
                         }
-                        length++;
 
 
 
@@ -199,7 +205,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
 
                     } else {
-                        self.initScreen(self.selectedEmpInsHisId());
+                        self.initScreen(null);
                     }
 
 
@@ -261,6 +267,9 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
+            year = self.startYearMonth().slice(0, 4);
+            month = self.startYearMonth().slice(5, 7);
+            self.monthlyCalendar("(" + nts.uk.time.yearInJapanEmpire(year).toString() + month + "月)");
         }
 
         openFscreen(){
@@ -277,7 +286,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 let params = getShared('QMM011_F_PARAMS_OUTPUT');
 
                     if(params && params.methodEditing == 1) {
-                        self.initScreen(self.selectedEmpInsHisId());
+
+                        self.initScreen(null);
                         self.setOccAccIsHis(self.selectedEmpInsHis());
 
                     }

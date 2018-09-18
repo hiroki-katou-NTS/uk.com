@@ -1,19 +1,20 @@
 module nts.uk.com.view.qmm011.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
 
         listNameOfEachBusiness: KnockoutObservableArray<NameOfEachBusiness> = ko.observableArray([]);
-        businessType1: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(1,0,''));
-        businessType2: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(2,0,''));
-        businessType3: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(3,0,''));
-        businessType4: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(4,0,''));
-        businessType5: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(5,0,''));
-        businessType6: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(6,0,''));
-        businessType7: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(7,0,''));
-        businessType8: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(8,0,''));
-        businessType9: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(9,0,''));
-        businessType10: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(0,0,''));
+        businessType1: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(0,0,''));
+        businessType2: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(1,0,''));
+        businessType3: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(2,0,''));
+        businessType4: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(3,0,''));
+        businessType5: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(4,0,''));
+        businessType6: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(5,0,''));
+        businessType7: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(6,0,''));
+        businessType8: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(7,0,''));
+        businessType9: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(8,0,''));
+        businessType10: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(9,0,''));
 
         constructor() {
             var self = this;
@@ -27,33 +28,36 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                     self.listNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
                     if(self.listNameOfEachBusiness().length > 0){
                         _.each(self.listNameOfEachBusiness(),(value) => {
-                            if(value.occAccInsurBusNo == 1){
+                            if(value.occAccInsurBusNo === 0){
                                 self.businessType1(value);
-                            }else if(value.occAccInsurBusNo == 2){
+                            }else if(value.occAccInsurBusNo === 1){
                                 self.businessType2(value);
-                            }else if(value.occAccInsurBusNo == 3){
+                            }else if(value.occAccInsurBusNo === 2){
                                 self.businessType3(value);
-                            }else if(value.occAccInsurBusNo == 4){
+                            }else if(value.occAccInsurBusNo === 3){
                                 self.businessType4(value);
-                            }else if(value.occAccInsurBusNo == 5){
+                            }else if(value.occAccInsurBusNo === 4){
                                 self.businessType5(value);
-                            }else if(value.occAccInsurBusNo == 6){
+                            }else if(value.occAccInsurBusNo === 5){
                                 self.businessType6(value);
-                            }else if(value.occAccInsurBusNo == 7){
+                            }else if(value.occAccInsurBusNo === 6){
                                 self.businessType7(value);
-                            }else if(value.occAccInsurBusNo == 8){
+                            }else if(value.occAccInsurBusNo === 7){
                                 self.businessType8(value);
-                            }else if(value.occAccInsurBusNo == 9){
+                            }else if(value.occAccInsurBusNo === 8){
                                 self.businessType9(value);
-                            }else if(value.occAccInsurBusNo == 0){
+                            }else if(value.occAccInsurBusNo === 9){
                                 self.businessType10(value);
                             }
                         });
                     }
                 }
 
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
             }).always(() => {
-                $("#D2_3").focus();
+                $('#D2_3').focus();
                 block.clear();
             });
 
@@ -63,6 +67,9 @@ module nts.uk.com.view.qmm011.d.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $("input").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             if(self.businessType1().name() != ''
                 && !(self.listNameOfEachBusiness.indexOf(self.businessType1()) >= 0)){
                 self.listNameOfEachBusiness.push(self.businessType1());
@@ -103,14 +110,14 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                 && !(self.listNameOfEachBusiness.indexOf(self.businessType10()) >= 0)){
                 self.listNameOfEachBusiness.push(self.businessType10());
             }
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
             let data: any = {
                 listEachBusiness: self.convertToCommand(self.listNameOfEachBusiness()),
             }
             service.updateOccAccInsurBus(data).done(()=>{
                 close();
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
             });
         }
 

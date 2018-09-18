@@ -45,11 +45,13 @@ public class OccAccInsurBusDto
     
     public static List<OccAccInsurBusDto> fromDomain(OccAccInsurBus domain)
     {
-        List<OccAccInsurBusDto> occAccIsHisDtoList = domain.getEachBusiness().stream().map(item -> {
-            return new OccAccInsurBusDto(domain.getCid(),item.getOccAccInsurBusNo(),item.getToUse(),item.getName().get().v());
-        }).sorted(Comparator.comparing(OccAccInsurBusDto::getOccAccInsurBusNo)).collect(Collectors.toList());
-
-        return occAccIsHisDtoList;
+        List<OccAccInsurBusDto> listOccAccInsurBusDto = new ArrayList<>();
+        if(domain.getEachBusiness() != null){
+            listOccAccInsurBusDto = domain.getEachBusiness().stream().map(item -> {
+                return new OccAccInsurBusDto(domain.getCid(),item.getOccAccInsurBusNo(),item.getToUse(),item.getName().get().v());
+            }).sorted(Comparator.comparing(OccAccInsurBusDto::getOccAccInsurBusNo)).collect(Collectors.toList());
+        }
+        return listOccAccInsurBusDto;
     }
     
 }
