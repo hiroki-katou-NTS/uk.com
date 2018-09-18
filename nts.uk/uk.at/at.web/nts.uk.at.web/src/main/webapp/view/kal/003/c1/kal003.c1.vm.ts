@@ -13,7 +13,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             { code: 0, name: "固定値", enable: true },
             { code: 1, name: "勤怠項目", enable: true }
         ]);
-        
+
         enumInputCheckCondition: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: nts.uk.resource.getText("KDW007_108") },
             { code: 1, name: nts.uk.resource.getText("KDW007_107") }
@@ -31,12 +31,12 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
             { code: 9, name: "範囲の外（境界値を含む）（≧≦）" }
         ]);
-        
+
         currentAtdItemCondition: ErAlAtdItemCondition;
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
         mode: number;
-        
+
         optionNoOfHolidays: any = {
             decimallength: 1
         }
@@ -47,9 +47,9 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 param = nts.uk.ui.windows.getShared("KAL003C1Params");
             self.mode = param.mode;
             if (self.mode == 1) { // monthly
-                self.enumConditionAtr.remove( (item) => { return item.code == 2; } );
+                self.enumConditionAtr.remove((item) => { return item.code == 2; });
             } else { //daily
-                self.enumConditionAtr.remove( (item) => { return item.code == 4; } );
+                self.enumConditionAtr.remove((item) => { return item.code == 4; });
             }
 
             /*param.countableAddAtdItems = _.values(param.countableAddAtdItems || []);
@@ -65,8 +65,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 param.data.compareEndValue = null;
                 param.data.uncountableAtdItem = null;
             }
-            
-            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+
+            //            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+            caic = ko.mapping.fromJS(param.data);
+            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
 
             if (caic.compareOperator() > 5) {
                 self.enumConditionType([
@@ -79,15 +81,15 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                     { code: 1, name: "勤怠項目", enable: true }
                 ]);
             }
-            
+
             caic.compareStartValue.subscribe(v => {
                 self.validateRange();
             });
-            
+
             caic.compareEndValue.subscribe(v => {
                 self.validateRange();
             });
-            
+
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
@@ -95,9 +97,9 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 caic.countableSubAtdItems([]);
                 caic.conditionType(0);
                 caic.compareOperator(0);
-                caic.singleAtdItem(null);
-                caic.compareStartValue(null);
-                caic.compareEndValue(null);
+                caic.singleAtdItem(0);
+                caic.compareStartValue(0);
+                caic.compareEndValue(0);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
@@ -204,7 +206,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
         }
 
         getListItemByAtr() {
-            
+
             let self = this;
             let dfd = $.Deferred<any>();
             if (self.currentAtdItemCondition.conditionAtr() === 0) {
@@ -309,16 +311,20 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             });
         }
 
-               validateRange() {
-            let self = this,
-                caic = ko.toJS(self.currentAtdItemCondition);
-
+        validateRange() {
+            let self = this;
+            caic = ko.toJS(self.currentAtdItemCondition);
+            console.log(caic.conditionType);
+            console.log(caic.compareOperator);
+            console.log(caic.compareStartValue);
+            console.log(caic.compareEndValue);
             $('.value-input').ntsError('clear');
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
                 // fixbug 99086 : set timeout
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+                        console.log('7 or 9');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
@@ -327,6 +333,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 // fixbug 99086 : set timeout
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
+                        console.log('6 or 8');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
@@ -385,13 +392,13 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             this.countableSubAtdItems = ko.observableArray(param.countableSubAtdItems);
             this.conditionType = ko.observable(param.conditionType);
             this.singleAtdItem = ko.observable(param.singleAtdItem);
-            this.compareStartValue = ko.observable(param.compareStartValue);
-            this.compareEndValue = ko.observable(param.compareEndValue);
+            this.compareStartValue = ko.observable(param.compareStartValue || 0);
+            this.compareEndValue = ko.observable(param.compareEndValue || 0);
             this.compareOperator = ko.observable(param.compareOperator);
         }
-        
+
     }
-    
+
     enum MonthlyAttendanceItemAtr {
         /* 時間 */
         TIME = 1,
