@@ -790,9 +790,6 @@ var nts;
                         responseText_1 = res;
                     }).fail(function () {
                     });
-                    if (responseText_1.length == 0 || responseText_1 === messageId) {
-                        return messageId;
-                    }
                     message = responseText_1;
                     messages[messageId] = message;
                 }
