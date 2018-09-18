@@ -9,7 +9,7 @@
 			<ui:define name="htmlHead">
 							<script>
 				                var dialogSize = {
-				                    width : 800,
+				                    width : 900,
 				                    height : 580
 				                };
             				</script>
@@ -35,27 +35,20 @@
 										}"/>
 		
 					</div>
-					<table>
-						<tr>
-							<td>
+					<div id="abc" style="display: flex">
 								<div id= "C3_1">
 									<div  data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_46')}</div>
 									<hr/>
 								</div>
-							</td>
-							<td>
 								<div id= "C3_2">
 									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF005_47')}</div>
 									<hr/>
 								</div>
-							</td>
-						</tr>
-					</table>
+					</div>
 					
 					<div id="swap-list" tabindex="2" data-bind="ntsSwapList: {
 									showSearchBox: { showLeft : true},
 									height: 330,
-	                            	width: 200,
 	                            	rows:10,
 									dataSource: listCategory,
 									primaryKey: 'categoryId',
