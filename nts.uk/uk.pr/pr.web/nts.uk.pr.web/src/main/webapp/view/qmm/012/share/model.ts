@@ -90,23 +90,23 @@ module nts.uk.pr.view.qmm012.share.model {
 
     export function getCategoryAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(CategoryAtr.PAYMENT_ITEM, getText('QMM012_5')),
-            new model.ItemModel(CategoryAtr.DEDUCTION_ITEM, getText('QMM012_6')),
-            new model.ItemModel(CategoryAtr.ATTEND_ITEM, getText('QMM012_7'))
+            new model.ItemModel(CategoryAtr.PAYMENT_ITEM.toString(), getText('QMM012_5')),
+            new model.ItemModel(CategoryAtr.DEDUCTION_ITEM.toString(), getText('QMM012_6')),
+            new model.ItemModel(CategoryAtr.ATTEND_ITEM.toString(), getText('QMM012_7'))
         ];
     }
 
     export function getCycleSettingAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(CycleSettingAtr.USE, getText('QMM012_113')),
-            new model.ItemModel(CycleSettingAtr.NOT_USE, getText('QMM012_114'))
+            new model.ItemModel(CycleSettingAtr.USE.toString(), getText('QMM012_113')),
+            new model.ItemModel(CycleSettingAtr.NOT_USE.toString(), getText('QMM012_114'))
         ];
     }
 
     export function getValidityPeriodAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(ValidityPeriodAtr.SETUP, getText('QMM012_121')),
-            new model.ItemModel(ValidityPeriodAtr.NOT_SETUP, getText('QMM012_122'))
+            new model.ItemModel(ValidityPeriodAtr.SETUP.toString(), getText('QMM012_121')),
+            new model.ItemModel(ValidityPeriodAtr.NOT_SETUP.toString(), getText('QMM012_122'))
         ];
     }
 

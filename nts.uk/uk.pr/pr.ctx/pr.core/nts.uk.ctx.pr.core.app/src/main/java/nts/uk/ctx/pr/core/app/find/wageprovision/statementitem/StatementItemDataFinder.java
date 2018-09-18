@@ -22,6 +22,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSe
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset.SetPeriodCycleRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.taxexemptionlimit.TaxExemptionLimitRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.Abolition;
 
 @Stateless
 public class StatementItemDataFinder {
@@ -137,14 +138,18 @@ public class StatementItemDataFinder {
 				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem);
 	}
 
-	public List<StatementItemDataDto> getAllStatementItemData(Integer categoryAtr) {
+	public List<StatementItemDataDto> getAllStatementItemData(Integer categoryAtr, boolean isIncludeDeprecated) {
 		String cid = AppContexts.user().companyId();
 		List<StatementItem> listStatementItem = categoryAtr == null ? statementItemRepository.getAllItemByCid(cid)
 				: statementItemRepository.getByCategory(cid, categoryAtr);
-		
+
 		List<StatementItemDataDto> result = new ArrayList<StatementItemDataDto>();
 		for (StatementItem item : listStatementItem) {
-			result.add(this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v(), item.getSalaryItemId()));
+			if (!isIncludeDeprecated && item.getDeprecatedAtr() == Abolition.ABOLISH) {
+				continue;
+			}
+			result.add(this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v(),
+					item.getSalaryItemId()));
 		}
 		return result;
 	}
