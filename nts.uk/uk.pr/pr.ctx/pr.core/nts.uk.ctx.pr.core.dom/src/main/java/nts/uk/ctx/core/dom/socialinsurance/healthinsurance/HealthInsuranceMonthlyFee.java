@@ -2,7 +2,6 @@ package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -13,7 +12,6 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.InsurancePrem
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,7 +39,7 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
     /**
      * 等級毎健康保険料
      */
-    private List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee = new ArrayList<>();
+    private List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee;
 
     @Inject
     private HealthInsuranceStandardMonthlyRepository healthInsuranceStandardMonthlyRepository;
@@ -71,13 +69,22 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
                                      BigDecimal individualLongCareInsuranceRate, BigDecimal individualBasicInsuranceRate, BigDecimal individualHealthInsuranceRate, int individualFractionCls, BigDecimal individualSpecialInsuranceRate,
                                      BigDecimal employeeLongCareInsuranceRate, BigDecimal employeeBasicInsuranceRate, BigDecimal employeeHealthInsuranceRate, int employeeFractionCls, BigDecimal employeeSpecialInsuranceRate,
                                      int autoCalculationCls, List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee) {
-        this.historyId = historyId;
-        this.healthInsuranceRate = new SalaryHealthInsurancePremiumRate(employeeShareAmountMethod, individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate,
+        this.historyId                  = historyId;
+        this.healthInsuranceRate        = new SalaryHealthInsurancePremiumRate(employeeShareAmountMethod, individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate,
                 employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
-        this.autoCalculationCls = EnumAdaptor.valueOf(autoCalculationCls, AutoCalculationExecutionCls.class);
+        this.autoCalculationCls         = EnumAdaptor.valueOf(autoCalculationCls, AutoCalculationExecutionCls.class);
         this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
     }
 
+    public HealthInsuranceMonthlyFee(String historyId, SalaryHealthInsurancePremiumRate healthInsuranceRate,
+                                     int autoCalculationCls,
+                                     List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee) {
+        super();
+        this.historyId = historyId;
+        this.healthInsuranceRate = healthInsuranceRate;
+        this.autoCalculationCls = EnumAdaptor.valueOf(autoCalculationCls, AutoCalculationExecutionCls.class);
+        this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
+    }
 
     /**
      * アルゴリズム「月額健康保険料計算処理」を実行する
@@ -169,5 +176,4 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
                 return new BigDecimal(0);
         }
     }
-
 }

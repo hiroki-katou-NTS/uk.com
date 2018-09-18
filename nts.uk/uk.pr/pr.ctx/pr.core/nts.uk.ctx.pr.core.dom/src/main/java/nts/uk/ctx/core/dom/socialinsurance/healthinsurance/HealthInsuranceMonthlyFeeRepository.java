@@ -23,4 +23,10 @@ public interface HealthInsuranceMonthlyFeeRepository {
     void addOrUpdate(HealthInsuranceMonthlyFee domain);
 
     void deleteByHistoryIds(List<String> historyIds);
+    
+    void add(HealthInsuranceMonthlyFee domain);
+    
+    void update(HealthInsuranceMonthlyFee domain);
+    
+    void delete(HealthInsuranceMonthlyFee domain);
 }

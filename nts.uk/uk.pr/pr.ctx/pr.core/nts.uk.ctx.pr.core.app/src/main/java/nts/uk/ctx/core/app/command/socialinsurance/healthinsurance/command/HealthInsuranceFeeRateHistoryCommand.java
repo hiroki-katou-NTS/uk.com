@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.find.socialinsurance.healthinsurance;
+package nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 @AllArgsConstructor
 @Getter
-public class HealthInsuranceFeeRateHistoryDto {
+public class HealthInsuranceFeeRateHistoryCommand {
 
     /**
      * 社会保険事業所コード
@@ -33,10 +33,10 @@ public class HealthInsuranceFeeRateHistoryDto {
      * @param optDomain Optional<HealthInsuranceFeeRateHistory>
      * @return HealthInsuranceFeeRateHistoryDto
      */
-    public static HealthInsuranceFeeRateHistoryDto fromDomain(Optional<HealthInsuranceFeeRateHistory> optDomain) {
+    public static HealthInsuranceFeeRateHistoryCommand fromDomain(Optional<HealthInsuranceFeeRateHistory> optDomain) {
         if (!optDomain.isPresent()) return null;
         val domain = optDomain.get();
-        return new HealthInsuranceFeeRateHistoryDto(domain.getSocialInsuranceOfficeCode().v(),
+        return new HealthInsuranceFeeRateHistoryCommand(domain.getSocialInsuranceOfficeCode().v(),
                 domain.getHistory().stream().map(YearMonthHistoryItemDto::fromDomainToDto).collect(Collectors.toList()));
     }
 }

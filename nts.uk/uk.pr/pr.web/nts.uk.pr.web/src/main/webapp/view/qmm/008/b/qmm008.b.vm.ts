@@ -38,7 +38,31 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         }
 
         register() {
-            console.log('register');
+            let self = this;
+            block.invisible();
+            // Register data
+            let command = {
+                officeCode: self.selectedOffice.socialInsuranceCode,
+                bonusHealthInsuranceRate: ko.toJS(self.bonusHealthInsuranceRate),
+                healthInsuranceMonthlyFee: ko.toJS(self.healthInsuranceMonthlyFee),
+                yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
+            }
+            // Update individualExcemtionRate and employeeExemtionRate to null if not join fund
+            // Update 個人免除率, 事業主免除率
+
+
+
+            // Update historyId for case clone previous data
+            command.bonusHealthInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
+            command.healthInsuranceMonthlyFee.historyId = command.yearMonthHistoryItem.historyId;
+            service.addEmployeeHealthInsurance(command).done(function(data) {
+                block.clear();
+                dialog.info({ messageId: 'Msg_15' });
+                self.isUpdateMode(true);
+            }).fail(function(err) {
+                block.clear();
+                dialog.alertError(err.message);
+            });
         }
         printPDF() {
             console.log('printPDF');

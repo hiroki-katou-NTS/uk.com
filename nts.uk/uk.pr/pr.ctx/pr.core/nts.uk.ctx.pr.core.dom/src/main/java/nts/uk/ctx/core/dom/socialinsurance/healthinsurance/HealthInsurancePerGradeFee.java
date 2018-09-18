@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
  * 等級毎健康保険料
  */
 @Getter
+@AllArgsConstructor
 public class HealthInsurancePerGradeFee extends DomainObject {
 
     /**
@@ -44,4 +46,6 @@ public class HealthInsurancePerGradeFee extends DomainObject {
         this.employeeBurden       = new HealthInsuranceContributionFee(employeeHealthInsurancePremium, employeeNursingCare, employeeSpecInsurancePremium, employeeBasicInsurancePremium);
         this.insuredBurden        = new HealthInsuranceContributionFee(insuredHealthInsurancePremium, insuredNursingCare, insuredSpecInsurancePremium, insuredBasicInsurancePremium);
     }
+    
+    
 }

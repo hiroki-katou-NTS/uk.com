@@ -52,4 +52,12 @@ public class SalaryHealthInsurancePremiumRate extends DomainObject {
         this.individualBurdenRatio     = new HealthContributionRate(individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate);
         this.employeeBurdenRatio       = new HealthContributionRate(employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
     }
+
+	public SalaryHealthInsurancePremiumRate(int employeeShareAmountMethod,
+			HealthContributionRate individualBurdenRatio, HealthContributionRate employeeBurdenRatio) {
+		super();
+		this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
+		this.individualBurdenRatio = individualBurdenRatio;
+		this.employeeBurdenRatio = employeeBurdenRatio;
+	}
 }

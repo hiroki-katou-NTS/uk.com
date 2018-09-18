@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.find.socialinsurance.healthinsurance;
+package nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -9,14 +9,14 @@ import nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.comma
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassification;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.service.SocialInsuranceOfficeAndHistoryService;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.service.WelfareInsuranceService;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 @Stateless
 public class WelfarePensionInsuranceCommandHandler extends CommandHandler<WelfarePensionInsuraceRateCommand> {
 	
 	@Inject
-	private SocialInsuranceOfficeAndHistoryService socialInsuranceOfficeAndHistoryService;
+	private WelfareInsuranceService socialInsuranceOfficeAndHistoryService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<WelfarePensionInsuraceRateCommand> context) {
