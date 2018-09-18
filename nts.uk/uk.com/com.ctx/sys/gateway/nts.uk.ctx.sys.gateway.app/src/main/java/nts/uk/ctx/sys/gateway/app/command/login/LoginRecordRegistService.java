@@ -116,14 +116,14 @@ public class LoginRecordRegistService {
 
 		if (!(user instanceof NullLoginUserContext) && user.userId() != null) {
 			if (user.isEmployee()){
-				userInfor = this.userInfoAdaptorForLog.findByEmployeeId(user.employeeId());
+				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(user.employeeId(), user.companyId());
 			} else {
 				UserInfo u = this.userInfoAdaptorForLog.findByUserId(user.userId());
 				userInfor = new UserInfo(u.getUserId(), user.employeeId() == null? " " : user.employeeId(), u.getUserName());
 			}
 		} else {
 			if (infor.employeeId != null) {
-				userInfor = this.userInfoAdaptorForLog.findByEmployeeId(infor.employeeId);
+				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(infor.employeeId, companyId);
 			}
 		}
 		// set operationId

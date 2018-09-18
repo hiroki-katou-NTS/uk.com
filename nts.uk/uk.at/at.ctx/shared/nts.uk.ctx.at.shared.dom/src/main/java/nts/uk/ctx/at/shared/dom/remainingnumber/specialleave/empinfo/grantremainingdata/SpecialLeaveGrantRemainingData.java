@@ -93,10 +93,7 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
 			BigDecimal dayNumberOfRemain , String grantDateItemName ,String deadlineDateItemName) {
-		if (grantDate == null && deadlineDate == null && dayNumberOfGrant == null && dayNumberOfUse == null
-				&& numberOverdays == null && dayNumberOfRemain == null)
-			return false;
-
+		boolean isNull = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays, dayNumberOfRemain);
 		if (dayNumberOfGrant != null || dayNumberOfUse != null || dayNumberOfRemain != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
@@ -119,6 +116,15 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 				throw new BusinessException("Msg_1023");
 			}
 		}
-		return true;
+		return isNull;
 	}
+	
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
+			BigDecimal dayNumberOfRemain) {
+		if (grantDate == null && deadlineDate == null && dayNumberOfGrant == null && dayNumberOfUse == null
+				&& numberOverdays == null && dayNumberOfRemain == null)
+			return false;
+		return true;
+	} 
 }

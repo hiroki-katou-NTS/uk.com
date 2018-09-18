@@ -14,12 +14,14 @@ import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
@@ -89,6 +91,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 		this.withSpecialLeave(domain.getSpecialLeaveRemainList());
 		this.withDayOff(domain.getMonthlyDayoffRemain().orElse(null));
 		this.withAbsenceLeave(domain.getAbsenceLeaveRemain().orElse(null));
+		this.withRemarks(domain.getRemarks());
 		return this;
 	}
 	
@@ -196,5 +199,16 @@ public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecord
 	@Override
 	public Optional<AbsenceLeaveRemainData> toAbsenceLeave() {
 		return Optional.ofNullable(this.monthlyRecord.toAbsenceLeave());
+	}
+
+	@Override
+	public MonthlyRecordToAttendanceItemConverter withRemarks(List<RemarksMonthlyRecord> domain) {
+		this.monthlyRecord.withRemarks(domain.stream().map(d -> MonthlyRemarksDto.from(d)).collect(Collectors.toList()));
+		return this;
+	}
+
+	@Override
+	public List<RemarksMonthlyRecord> toRemarks() {
+		return this.monthlyRecord.toRemarks();
 	}
 }

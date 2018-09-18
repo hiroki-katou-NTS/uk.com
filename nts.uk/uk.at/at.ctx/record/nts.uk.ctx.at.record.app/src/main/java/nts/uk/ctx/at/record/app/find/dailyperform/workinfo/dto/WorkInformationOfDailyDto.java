@@ -43,15 +43,15 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate date;
 
-	private CalculationState calculationState;
+	private int calculationState;
 
 	// 直行区分
-	private NotUseAttribute goStraightAtr;
+	private int goStraightAtr;
 
 	// 直帰区分
-	private NotUseAttribute backStraightAtr;
+	private int backStraightAtr;
 
-	private DayOfWeek dayOfWeek;
+	private int dayOfWeek;
 
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
@@ -59,13 +59,13 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setEmployeeId(workInfo.getEmployeeId());
 			result.setDate(workInfo.getYmd());
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
-			result.setBackStraightAtr(workInfo.getBackStraightAtr());
-			result.setCalculationState(workInfo.getCalculationState());
-			result.setGoStraightAtr(workInfo.getGoStraightAtr());
+			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
+			result.setCalculationState(workInfo.getCalculationState().value);
+			result.setGoStraightAtr(workInfo.getGoStraightAtr().value);
 			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
-			result.setDayOfWeek(workInfo.getDayOfWeek());
+			result.setDayOfWeek(workInfo.getDayOfWeek().value);
 			result.exsistData();
 		}
 		return result;
@@ -106,10 +106,10 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
-				calculationState == null ? CalculationState.No_Calculated : calculationState, 
-				goStraightAtr == null ? NotUseAttribute.Not_use : goStraightAtr,
-				backStraightAtr == null ? NotUseAttribute.Not_use : backStraightAtr, date, 
-				dayOfWeek == null ? DayOfWeek.MONDAY : dayOfWeek,
+				calculationState == CalculationState.No_Calculated.value ? CalculationState.No_Calculated : CalculationState.Calculated, 
+				goStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use,
+				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
+				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave())));
 	}

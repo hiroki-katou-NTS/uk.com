@@ -72,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -357,6 +358,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				);
 	}
 	
+	
 	/**
 	 * 自身が持つ短時間勤務時間帯(控除)を収集
 	 * @return　短時間勤務時間帯
@@ -367,16 +369,22 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		for(WithinWorkTimeFrame frame : afterWithinPremiumCreate) {
 			allInFrameShortTimeSheets.addAll(frame.collectShortTimeSheetInFrame());
 		}
-		for(TimeSheetOfDeductionItem dedItem : dedTimeSheet.getForRecordTimeZoneList()) {
-			if(dedItem.getDeductionAtr().isChildCare()) {
-				val accordItem = allInFrameShortTimeSheets.stream().filter(tc -> tc.getTimeSheet().getStart().equals(dedItem.getTimeSheet().getStart())
-														     && tc.getTimeSheet().getEnd().equals(dedItem.getTimeSheet().getEnd())).findFirst();
-				if(!accordItem.isPresent()) {
-					returnList.add(dedItem);
-				}
+		//マスタ側の控除時間帯ループ
+		val loopList = dedTimeSheet.getForRecordTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
+		for(TimeSheetOfDeductionItem masterDedItem : loopList) {
+			List<TimeSheetOfDeductionItem> notDupShort = Arrays.asList(masterDedItem);
+			//実績側の時間帯に埋まっている短時間ループ
+			List<TimeSheetOfDeductionItem> addItems = new ArrayList<>();
+			for(TimeSheetOfDeductionItem dedItem:allInFrameShortTimeSheets) {
+				//ループ中短時間のどこにも所属していない時間帯
+				val timeReplce = notDupShort.stream().map(tc -> tc.getTimeSheet().getTimeSpan().getNotDuplicationWith(dedItem.getTimeSheet().getTimeSpan())).flatMap(List::stream).collect(Collectors.toList());
+				notDupShort = timeReplce.stream().map(ts -> dedItem.replaceTimeSpan(Optional.of(ts))).collect(Collectors.toList());
+				addItems.addAll(notDupShort);
 			}
-		}
-		
+			if(!addItems.isEmpty()) {
+				returnList.addAll(addItems);
+			}
+		}		
 		return returnList;
 	}
 
@@ -960,7 +968,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		boolean decisionDeductChild = false;
 		if(premiumAtr.isRegularWork()) {			
 			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
-				if(advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+				if(advancedSet.isPresent()
+					&& advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()
+					&&commonSetting.isPresent()) {
 					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
 							&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 						decisionDeductChild = true;
@@ -1602,7 +1612,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			totalTime = totalTime.addMinutes(addTime+forLateAddTime+forLeaveAddTime);
 		}
 		if(dedAtr.isAppropriate() && (atr.isCare() || atr.isChild()))
-				totalTime = totalTime.addMinutes(this.shortTimeSheet.stream().map(tc -> tc.forcs(atr, dedAtr).valueAsMinutes()).collect(Collectors.summingInt(ts -> ts)));
+				totalTime = totalTime.addMinutes(this.shortTimeSheet.stream().map(tc -> tc.calcTotalTime(dedAtr).valueAsMinutes()).collect(Collectors.summingInt(ts -> ts)));
 		
 		return totalTime;
 	}
@@ -1635,8 +1645,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		}else {
 			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
 			
-				if(advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
-					if(advanceSet.isPresent()&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+				if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
 						decisionGetChild = true;
 					}
 				}else {

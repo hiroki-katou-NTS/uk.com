@@ -576,6 +576,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             logtemp = self.getSubHeaderDataCorect(logBasicInfoModel);
                                             self.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
+                                        countLog++;
                                     } else {
                                         return false;
                                     }
@@ -698,13 +699,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
         generateIgGrid() {
             var self = this;
             $("#igGridLog").igGrid({
-                width: '100%',
-                height: '348px',
+                width: "100%",
+                height: "calc(100% - 5px)",
                 features: [
                     {
                         name: "Paging",
                         type: "local",
-                        pageSize: 10
+                        pageSize: 100
                     },
                     {
                         name: "Sorting",
@@ -735,7 +736,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '405px',
+                height: "calc(100% - 5px)",
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -754,7 +755,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     },
                     {
                         name: "Paging",
-                        pageSize: 10,
+                        pageSize: 100,
                         type: "local",
                         inherit: true
                     },
@@ -839,7 +840,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             },
                             {
                                 name: "Paging",
-                                pageSize: 20,
+                                pageSize: 100,
                                 type: "local",
                                 inherit: true
                             }
@@ -855,7 +856,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '405',
+                height: "calc(100% - 5px)",
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -873,7 +874,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     },
                     {
                         name: "Paging",
-                        pageSize: 10,
+                        pageSize: 100,
                         type: "local",
                         inherit: true
                     },
@@ -925,7 +926,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             },
                             {
                                 name: "Paging",
-                                pageSize: 20,
+                                pageSize: 100,
                                 type: "local",
                                 inherit: true
                             }
@@ -971,7 +972,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 let recordType = self.logTypeSelectedCode();
                 if (childSource.length > 0) {
                     for (var i = 0; i < parentSource.length; i++) {
-                        if (parentSource[i].operationId === childSource[0].operationId) {
+                        if (parentSource[i].parentKey === childSource[0].parentKey) {
                             headerSetting = parentSource[i].subColumnsHeaders;
                             if (recordType == RECORD_TYPE.DATA_CORRECT) {
                                 newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
@@ -1301,6 +1302,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             paramOutputItem.itemNos = self.listItemNo();
 
                         }
+                        if(self.listItemNo() && self.listItemNo().length>0){
+                            
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
 
@@ -1345,6 +1348,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         }).fail(function(error) {
                             alertError(error);
                         });
+                        }else{
+                             alertError({ messageId: "Msg_1221" }).then(function() {                                                             
+                                                               nts.uk.ui.block.clear();
+                                                            });
+                                            block.clear();
+                                            errors.clearAll();
+                                            dfd.resolve();
+                            } 
+                        //
                     } else {
                         if(selectCancel==false){
                              alertError({ messageId: "Msg_1215" }).then(function() {                                                             
