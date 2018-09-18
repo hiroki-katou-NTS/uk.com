@@ -60,18 +60,15 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             modal('/view/qmm/005/f/index.xhtml', {title: '',}).onClosed(function (): any {
                 let employeeString = '';
                 let params = getShared("QMM005F_outParams");
-                let array = [];
                 for (let i = 0; i < params.returnList.length; i++) {
                     employeeString == '' ? employeeString += params.returnList[i].name : employeeString += (', ' + params.returnList[i].name);
                 }
-                for (let i = 0; i < self.itemBinding().length; i++) {
+                for (let i = 0; i < 5; i++) {
                     if (self.itemBinding()[i].processInfomation.processCateNo == params.processCateNo) {
-                        array.push(new ItemBinding(self.itemBinding()[i].processInfomation, self.itemBinding()[i].setDaySupports(), employeeString, params.returnList));
-                    } else {
-                        array.push(self.itemBinding()[i]);
+                        self.itemBinding()[i].employeeString(employeeString);
+                        self.itemBinding()[i].employeeCodeList(params.returnList);
                     }
                 }
-                self.itemBinding(array);
             });
 
         }
@@ -93,21 +90,19 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         }
 
 
-        getListMonth(setDaySupportList:Array<SetDaySupport>,i:number):Array<model.ItemModel>{
-            let self=this;
-                let ArrSetDaySuport:Array<SetDaySupport>=_.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
+        getListMonth(setDaySupportList: Array<SetDaySupport>, i: number): Array<model.ItemModel> {
+            let self = this;
+            let ArrSetDaySuport: Array<SetDaySupport> = _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
                     return o.processCateNo == i + 1;
                 }),
                 function (o) {
                     return o.processDate;
                 });
 
-            let Araybinding:Array<model.ItemModel>=new Array<model.ItemModel>();
-                for(let i=0;i<ArrSetDaySuport.length;i++){
-                    Araybinding.push(new model.ItemModel(ArrSetDaySuport[i].processDate,ArrSetDaySuport[i].paymentDate+'-'+ArrSetDaySuport[i].empExtraRefeDate))
-                }
-
-
+            let Araybinding: Array<model.ItemModel> = new Array<model.ItemModel>();
+            for (let i = 0; i < ArrSetDaySuport.length; i++) {
+                Araybinding.push(new model.ItemModel(ArrSetDaySuport[i].processDate, ArrSetDaySuport[i].paymentDate + '-' + ArrSetDaySuport[i].empExtraRefeDate))
+            }
 
 
             return Araybinding;
@@ -133,6 +128,20 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 }
 
                 for (let i: number = 0; i < 5; i++) {
+                    let employeeSetting = _.find(self.itemTable.empTiedProYear, x => {
+                        return x.processCateNo == i + 1;
+                    })
+                    let employeeString = '';
+                    if (employeeSetting) {
+                        for (let i = 0; i < employeeSetting.getEmploymentCodes.length; i++) {
+                            let obj = _.find(self.itemTable.empCdNameImports, x => {
+                                return x.code == employeeSetting.getEmploymentCodes[i];
+                            })
+                            employeeString == '' ? employeeString += obj.name : employeeString += (', ' + obj.name);
+                        }
+                    } else {
+                        employeeSetting = {}
+                    }
                     self.itemBinding.push(new ItemBinding(
                         self.itemTable.processInfomations[i],
                         _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
@@ -141,10 +150,11 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                             function (o) {
                                 return o.processDate;
                             }),
+                        employeeString, employeeSetting.getEmploymentCodes,
                         self.getYear((_.filter(self.itemTable.setDaySupports, function (o) {
                             return o.processCateNo == i + 1;
                         }))),
-                        self.getListMonth(self.itemTable.setDaySupports,i)
+                        self.getListMonth(self.itemTable.setDaySupports, i)
                     ));
 
                 }
@@ -158,28 +168,27 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     }
 
 
-
     export class ItemBinding {
         processInfomation: model.ProcessInfomation;
         setDaySupports: KnockoutObservableArray<model.SetDaySupport>;
         setDaySupportsSelectedCode: KnockoutObservable<number>;
         employeeString: KnockoutObservable<string>;
-        employeeList: KnockoutObservableArray<any>;
-        years:KnockoutObservableArray<model.ItemModel>;
-        yaersSelected:KnockoutObservable<number>;
-        months:KnockoutObservableArray<model.ItemModel>;
-        monthsSelectd:KnockoutObservable<number>;
+        employeeCodeList: KnockoutObservableArray<any>;
+        years: KnockoutObservableArray<model.ItemModel>;
+        yaersSelected: KnockoutObservable<number>;
+        months: KnockoutObservableArray<model.ItemModel>;
+        monthsSelectd: KnockoutObservable<number>;
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, years:Array<model.ItemModel>,months:Array<model.ItemModel> ) {
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeCodeList: Array, years: Array<model.ItemModel>, months: Array<model.ItemModel>) {
             this.processInfomation = processInfomation;
             this.setDaySupports = ko.observableArray(setDaySupports);
             this.setDaySupportsSelectedCode = ko.observable(0);
-            this.employeeString = ko.observable('');
-            this.employeeList = ko.observableArray();
-            this.years=ko.observableArray(years);
-            this.yaersSelected=ko.observable(0);
-            this.months=ko.observableArray(months);
-            this.monthsSelectd=ko.observable(0);
+            this.employeeString = ko.observable(employeeString);
+            this.employeeCodeList = ko.observableArray(employeeCodeList);
+            this.years = ko.observableArray(years);
+            this.yaersSelected = ko.observable(0);
+            this.months = ko.observableArray(months);
+            this.monthsSelectd = ko.observable(0);
         }
     }
 
