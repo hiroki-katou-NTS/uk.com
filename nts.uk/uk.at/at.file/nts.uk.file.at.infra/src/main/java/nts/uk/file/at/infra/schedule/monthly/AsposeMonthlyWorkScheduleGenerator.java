@@ -156,7 +156,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private static final int[] DATA_COLUMN_INDEX = { 2, 8, 10, 14, 16, 32 };
 
 	/** The font family. */
-	private final String FONT_FAMILY = "�� ゴシヂ�";
+	private final String FONT_FAMILY = "ＭＳ ゴシック";
 
 	/** The font size. */
 	private final int FONT_SIZE = 9;
@@ -683,7 +683,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
-		// 階層累計行�み出力する設定�場合、データ取得件数は0件として扱぀�エラーメヂ�ージを表示(#Msg_37#)
+		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplaceIdWithData); // Get lowest possible workplace level -> lowestEmployeeLevel
 		WorkScheduleSettingTotalOutput totalOutputSetting = condition.getTotalOutputSetting();
 		TotalWorkplaceHierachy outputSetting = totalOutputSetting.getWorkplaceHierarchyTotal();
@@ -1846,7 +1846,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
 			if (iteratorWorkplaceData.hasNext()) {
-				// Page break (regardless of setting, see example template sheet �日別勤務表-日別3�1)
+				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
@@ -2324,7 +2324,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&16&\"源ノ角ゴシヂ� Normal,Bold\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&16&\"源ノ角ゴシック Normal,Bold\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
