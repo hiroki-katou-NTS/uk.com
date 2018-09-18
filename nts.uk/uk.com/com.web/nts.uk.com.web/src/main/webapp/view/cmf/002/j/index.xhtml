@@ -8,9 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 555, height: 500 };</script>
+			<script>var dialogSize = { width: 565, height: 500 };</script>
 			<com:ValidatorScript>
 			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatCharacterDigit
+			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
+			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
 			
 			             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -155,10 +157,10 @@
 								data-bind="ntsTextEditor: {
 								value: valueOfNullValueReplace,
 								name:'#{i18n.getText('CMF002_158')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataFormatNullReplacement', 
 								required: false,
 								enable: $vm.enableNullValueReplace(),
-								option : {width : '35px'}}" />
+								option : {width : '260px'}}" />
 						</div>
 					</div>
 					<!--  J7 - 固定値(ラベル)  -->
@@ -180,10 +182,10 @@
 								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataTypeFixedValue', 
 								required: false,
 								enable: $vm.enableFixedValue(),
-								option : {width : '35px'}}" />
+								option : {width : '260px'}}" />
 						</div>
 					</div>
 				</div>
