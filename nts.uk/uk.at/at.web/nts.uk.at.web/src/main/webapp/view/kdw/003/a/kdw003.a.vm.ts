@@ -1224,7 +1224,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve();
                     });
                     dfd.promise();
-                }
+                } else 
+                    nts.uk.ui.block.clear();
             }
         }
 
