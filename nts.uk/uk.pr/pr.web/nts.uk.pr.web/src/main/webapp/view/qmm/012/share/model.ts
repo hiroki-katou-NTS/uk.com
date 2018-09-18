@@ -98,26 +98,26 @@ module nts.uk.pr.view.qmm012.share.model {
 
     export function getCycleSettingAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(CycleSettingAtr.USE.toString(), getText('QMM012_113')),
-            new model.ItemModel(CycleSettingAtr.NOT_USE.toString(), getText('QMM012_114'))
+            new model.ItemModel(CycleSettingAtr.USE.toString(), getText('QMM012_99')),
+            new model.ItemModel(CycleSettingAtr.NOT_USE.toString(), getText('QMM012_100'))
         ];
     }
 
     export function getValidityPeriodAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(ValidityPeriodAtr.SETUP.toString(), getText('QMM012_121')),
-            new model.ItemModel(ValidityPeriodAtr.NOT_SETUP.toString(), getText('QMM012_122'))
+            new model.ItemModel(ValidityPeriodAtr.SETUP.toString(), getText('QMM012_94')),
+            new model.ItemModel(ValidityPeriodAtr.NOT_SETUP.toString(), getText('QMM012_95'))
         ];
     }
 
     export function getItemAtrText(itemAtr: number): string {
         switch (itemAtr) {
             case CategoryAtr.PAYMENT_ITEM:
-                return getText('QMM012_5');
+                return getText('QMM012_3');
             case CategoryAtr.DEDUCTION_ITEM:
-                return getText('QMM012_6')
+                return getText('QMM012_4')
             case CategoryAtr.ATTEND_ITEM:
-                return getText('QMM012_7')
+                return getText('QMM012_5')
             default:
                 return "";
         }
