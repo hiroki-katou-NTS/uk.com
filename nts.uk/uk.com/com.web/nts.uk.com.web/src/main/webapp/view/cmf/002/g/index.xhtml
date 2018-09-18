@@ -28,7 +28,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: btnCreateCodeConvert"
+				<button data-bind="click: btnCreateCodeConvert, enable: enableBtn"
 							tabindex="1">#{i18n.getText('CMF002_114')}</button>
 				<button class="proceed" data-bind="click: btnRegOutputCodeConvert"
 							 tabindex="2">#{i18n.getText('CMF002_115')}</button>
@@ -55,15 +55,15 @@
 									fields: ['dispConvertCode', 'dispConvertName'] }" />
 						</div>
 						<div class="flex">
-							<table id="table-single-list" class="auto-increment"
+							<table  id="G2_3" class="auto-increment"
 								data-bind="ntsGridList: {								
 											options: listOutputCodeConvert, 
 											optionsValue: selectedCodeConvert, 
 											primaryKey: 'dispConvertCode',
                                             columns: 
                                             [ 	
-                                            	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 60, formatter: _.escape},
-			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 200, formatter: _.escape} ],
+                                            	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 70, formatter: _.escape},
+			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 220, formatter: _.escape} ],
                                             multiple: false, 
                                             value: selectedCodeConvert, 
                                             rows: 15, 
@@ -75,11 +75,11 @@
 				<div id="fixed-flex-layout-right">
 					<div class="line-height flex">
 						<div>
-							<div class="float_left display_block"
+							<div class="float_left display_block" style = "padding-right: 50px;"
 								data-bind="ntsFormLabel: { required:true  }">#{i18n.getText('CMF002_121')}</div>
 						</div>
 						<div>
-							<input type="text" style="width: 30px;" tabindex="6"
+							<input id = "G3_1" type="text" style="width: 30px;" tabindex="6"
 								data-bind="ntsTextEditor: {
 										value: codeConvertCurrent().convertCode,
 										name:'#{i18n.getText('CMF002_122')}',
@@ -112,8 +112,8 @@
 						<table id="fixed-table" tabindex="8">
 							<colgroup>
 								<col width="20px" />
-								<col width="100px" />
-								<col width="150px" />
+								<col width="125px" />
+								<col width="125px" />
 							</colgroup>
 							<thead>
 								<tr>
@@ -127,9 +127,9 @@
 									<td class="order-column"><span
 										data-bind="text: lineNumber"></span></td>
 									<td><input tabindex="9"
-										data-bind="ntsTextEditor: {value: outputItem,constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '93px'}}" /></td>
+										data-bind="ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '98px'}}" /></td>
 									<td><input tabindex="10"
-										data-bind="ntsTextEditor: {value: systemCode,constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '123px'}}" /></td>
+										data-bind="ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '98px'}}" /></td>
 								</tr>
 							</tbody>
 						</table>
