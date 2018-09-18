@@ -682,16 +682,14 @@ module cps002.a.vm {
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
+                            self.checkLicense();
                             self.currentStep('CPS002_13');
-
                             self.start();
                             self.getUserSetting();
                         } else {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
-
-                    self.checkLicense();
                 }).fail(error => {
                     alertError({ messageId: error.messageId, messageParams: error.parameterIds });
                 })
