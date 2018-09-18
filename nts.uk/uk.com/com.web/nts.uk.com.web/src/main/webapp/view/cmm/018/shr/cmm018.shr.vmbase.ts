@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm018.shr {
         export class DataResigterDto{
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
-            checkAddHist: boolean;
+            checkAddHist: boolean;//true: newHist, false: updateHist
             workpplaceId: string;
             employeeId: string;
             startDate: string;
@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm018.shr {
             addHist: IData;
             lstAppType: Array<ApplicationType>;
             root: Array<CompanyAppRootADto>;
-            checkMode: number;
+            checkMode: number;//0: まとめて登録モード, 1: 申請個別登録モード
             constructor(rootType: number, checkAddHist: boolean,
                 workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
@@ -322,7 +322,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //list display right
         export class CompanyAppRootADto{
-            color: boolean;
+            color: boolean;//true: data, false: not data
             employRootAtr: number;
             appTypeValue: number;
             appTypeName: string;

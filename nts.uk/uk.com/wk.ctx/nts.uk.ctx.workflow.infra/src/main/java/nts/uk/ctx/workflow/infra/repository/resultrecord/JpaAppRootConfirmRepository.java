@@ -72,6 +72,29 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			" AND appRoot.ROOT_TYPE = 'rootType'" +
 			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.RECORD_DATE = 'recordDate'";
+	
+	private final String DELETE_APP_ROOT_CONFIRM = 
+			"DELETE FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
+			"WHERE appRoot.CID = :companyID " +
+			"AND appRoot.EMPLOYEE_ID = :employeeID " +
+			"AND appRoot.ROOT_TYPE = :rootType " +
+			"AND appRoot.RECORD_DATE >= :recordDate )";
+	
+	private final String DELETE_PHASE_APPROVER_FOR_424 = 
+			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = :companyID " +
+			"AND appRoot.EMPLOYEE_ID = :employeeID " +
+			"AND appRoot.ROOT_TYPE = :rootType " +
+			"AND appRoot.RECORD_DATE >= :recordDate )";
+	
+	private final String DELETE_FRAME_APPROVER_FOR_424 = 
+			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = :companyID " +
+			"AND appRoot.EMPLOYEE_ID = :employeeID " +
+			"AND appRoot.ROOT_TYPE = :rootType " +
+			"AND appRoot.RECORD_DATE >= :recordDate: )";
 
 	@Override
 	public Optional<AppRootConfirm> findByID(String rootID) {
@@ -106,6 +129,34 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	public void delete(AppRootConfirm appRootConfirm) {
 		this.commandProxy().remove(WwfdtAppRootConfirm.class, appRootConfirm.getRootID());
+	}
+	
+	@Override
+	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
+		
+		//delete phase
+		this.getEntityManager().createNativeQuery("DELETE_PHASE_APPROVER_FOR_424")
+								.setParameter("companyID", companyID)
+								.setParameter("employeeID", employeeID)
+								.setParameter("rootType", rootType)
+								.setParameter("recordDate", date.toString("yyyy-MM-dd"))
+								.executeUpdate();
+		//delete delete frame
+		this.getEntityManager().createNativeQuery("DELETE_FRAME_APPROVER_FOR_424")
+								.setParameter("companyID", companyID)
+								.setParameter("employeeID", employeeID)
+								.setParameter("rootType", rootType)
+								.setParameter("recordDate", date.toString("yyyy-MM-dd"))
+								.executeUpdate();
+		
+		//delete root
+		this.getEntityManager().createNativeQuery("DELETE_APP_ROOT_CONFIRM")
+								.setParameter("companyID", companyID)
+								.setParameter("employeeID", employeeID)
+								.setParameter("rootType", rootType)
+								.setParameter("recordDate", date.toString("yyyy-MM-dd"))
+								.executeUpdate();
+		
 	}
 
 	private WwfdtAppRootConfirm fromDomain(AppRootConfirm appRootConfirm){
