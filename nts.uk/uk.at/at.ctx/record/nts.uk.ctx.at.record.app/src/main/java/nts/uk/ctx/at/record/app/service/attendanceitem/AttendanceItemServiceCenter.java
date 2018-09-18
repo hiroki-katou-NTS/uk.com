@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class AttendanceItemServiceImpl implements AttendanceItemService {
+public class AttendanceItemServiceCenter implements AttendanceItemService {
 	
 	@Inject
 	private OptionalItemRepository optionalMaster;
