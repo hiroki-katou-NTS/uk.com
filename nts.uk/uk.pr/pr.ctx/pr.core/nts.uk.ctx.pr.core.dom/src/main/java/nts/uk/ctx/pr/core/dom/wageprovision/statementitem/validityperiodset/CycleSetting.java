@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -19,14 +21,15 @@ public class CycleSetting extends DomainObject {
 	/**
 	 * 対象月リスト
 	 */
-	private MonthlyList monthlyList;
+	private Optional<MonthlyList> monthlyList;
 
-	public CycleSetting(int cycleSettingAtr, int january, int february, int march, int april, int may, int june,
-			int july, int august, int september, int october, int november, int december) {
+	public CycleSetting(int cycleSettingAtr, Integer january, Integer february, Integer march, Integer april, Integer may, Integer june,
+			Integer july, Integer august, Integer september, Integer october, Integer november, Integer december) {
 		super();
 		this.cycleSettingAtr = EnumAdaptor.valueOf(cycleSettingAtr, CycleSettingAtr.class);
-		this.monthlyList = new MonthlyList(january, february, march, april, may, june, july, august, september, october,
-				november, december);
+		this.monthlyList = cycleSettingAtr == CycleSettingAtr.NOT_USE.value ? Optional.empty()
+				: Optional.of(new MonthlyList(january, february, march, april, may, june, july, august, september,
+						october, november, december));
 	}
 
 }

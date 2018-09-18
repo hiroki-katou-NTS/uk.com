@@ -1,8 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.validityperiodset;
 
-import java.util.Optional;
-
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -15,78 +14,78 @@ public class MonthlyList extends DomainObject {
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> january;
+	private MonthlyTargetAtr january;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> february;
+	private MonthlyTargetAtr february;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> march;
+	private MonthlyTargetAtr march;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> april;
+	private MonthlyTargetAtr april;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> may;
+	private MonthlyTargetAtr may;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> june;
+	private MonthlyTargetAtr june;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> july;
+	private MonthlyTargetAtr july;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> august;
+	private MonthlyTargetAtr august;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> september;
+	private MonthlyTargetAtr september;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> october;
+	private MonthlyTargetAtr october;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> november;
+	private MonthlyTargetAtr november;
 
 	/**
 	 * 対象月リスト
 	 */
-	private Optional<Integer> december;
+	private MonthlyTargetAtr december;
 
 	public MonthlyList(int january, int february, int march, int april, int may, int june, int july, int august,
 			int september, int october, int november, int december) {
 		super();
-		this.january = Optional.ofNullable(january);
-		this.february = Optional.ofNullable(february);
-		this.march = Optional.ofNullable(march);
-		this.april = Optional.ofNullable(april);
-		this.may = Optional.ofNullable(may);
-		this.june = Optional.ofNullable(june);
-		this.july = Optional.ofNullable(july);
-		this.august = Optional.ofNullable(august);
-		this.september = Optional.ofNullable(september);
-		this.october = Optional.ofNullable(october);
-		this.november = Optional.ofNullable(november);
-		this.december = Optional.ofNullable(december);
+		this.january = EnumAdaptor.valueOf(january, MonthlyTargetAtr.class);
+		this.february = EnumAdaptor.valueOf(february, MonthlyTargetAtr.class);
+		this.march = EnumAdaptor.valueOf(march, MonthlyTargetAtr.class);
+		this.april = EnumAdaptor.valueOf(april, MonthlyTargetAtr.class);
+		this.may = EnumAdaptor.valueOf(may, MonthlyTargetAtr.class);
+		this.june = EnumAdaptor.valueOf(june, MonthlyTargetAtr.class);
+		this.july = EnumAdaptor.valueOf(july, MonthlyTargetAtr.class);
+		this.august = EnumAdaptor.valueOf(august, MonthlyTargetAtr.class);
+		this.september = EnumAdaptor.valueOf(september, MonthlyTargetAtr.class);
+		this.october = EnumAdaptor.valueOf(october, MonthlyTargetAtr.class);
+		this.november = EnumAdaptor.valueOf(november, MonthlyTargetAtr.class);
+		this.december = EnumAdaptor.valueOf(december, MonthlyTargetAtr.class);
 	}
 
 }

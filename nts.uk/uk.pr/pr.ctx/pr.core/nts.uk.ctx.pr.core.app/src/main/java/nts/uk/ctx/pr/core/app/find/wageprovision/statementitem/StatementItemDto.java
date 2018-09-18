@@ -44,7 +44,7 @@ public class StatementItemDto {
 	/**
 	 * 統合コード
 	 */
-	private Integer intergrateCd;
+	private String intergrateCd;
 
 	public static StatementItemDto fromDomain(StatementItem domain) {
 		return new StatementItemDto(domain.getDeprecatedAtr().value, domain.getItemNameCd().v(),

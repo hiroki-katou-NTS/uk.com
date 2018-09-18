@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
+import java.util.List;
+
 import lombok.Value;
 
 @Value
@@ -12,7 +14,7 @@ public class StatementItemDataDto {
 	private StatementItemDisplaySetDto statementDisplaySet;
 	private ItemRangeSetDto itemRangeSet;
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
-	private BreakdownItemSetDto breakdownItemSet;
-	private TaxExemptionLimitDto taxExemptionLimit;
+	private List<BreakdownItemSetDto> breakdownItemSet;
+	private List<TaxExemptionLimitDto> taxExemptionLimit;
 	private IntegratedItemDto integratedItem;
 }

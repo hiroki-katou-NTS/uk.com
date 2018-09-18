@@ -19,15 +19,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SPEC_ITEM_DISP_SET")
-public class QpbmtSpecItemDispSet extends UkJpaEntity implements Serializable {
+@Table(name = "QPBMT_STATEMENT_ITEM_DISP")
+public class QpbmtStatementItemDisp extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public QpbmtSpecItemDispSetPk specItemDispSetPk;
+	public QpbmtStatementItemDispPk statementItemDispPk;
 
 	/**
 	 * ゼロ表示区分
@@ -45,16 +45,16 @@ public class QpbmtSpecItemDispSet extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return specItemDispSetPk;
+		return statementItemDispPk;
 	}
 
 	public StatementItemDisplaySet toDomain() {
-		return new StatementItemDisplaySet(this.specItemDispSetPk.cid, this.specItemDispSetPk.salaryItemId,
+		return new StatementItemDisplaySet(this.statementItemDispPk.cid, this.statementItemDispPk.salaryItemId,
 				this.zeroDisplayAtr, this.itemNameDisplay);
 	}
 
-	public static QpbmtSpecItemDispSet toEntity(StatementItemDisplaySet domain) {
-		return new QpbmtSpecItemDispSet(new QpbmtSpecItemDispSetPk(domain.getCid(), domain.getSalaryItemId()),
+	public static QpbmtStatementItemDisp toEntity(StatementItemDisplaySet domain) {
+		return new QpbmtStatementItemDisp(new QpbmtStatementItemDispPk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getZeroDisplayAtr().value, domain.getItemNameDisplay().map(i -> i.value).orElse(null));
 	}
 

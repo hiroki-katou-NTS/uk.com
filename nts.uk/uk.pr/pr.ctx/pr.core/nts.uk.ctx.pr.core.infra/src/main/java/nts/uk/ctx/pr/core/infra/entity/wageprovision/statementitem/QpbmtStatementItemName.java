@@ -19,15 +19,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SPEC_ITEM_NAME")
-public class QpbmtSpecItemName extends UkJpaEntity implements Serializable {
+@Table(name = "QPBMT_STATEMENT_ITEM_NAME")
+public class QpbmtStatementItemName extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public QpbmtSpecItemNamePk specItemNamePk;
+	public QpbmtStatementItemNamePk statementItemNamePk;
 
 	/**
 	 * 名称
@@ -59,16 +59,16 @@ public class QpbmtSpecItemName extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return specItemNamePk;
+		return statementItemNamePk;
 	}
 
 	public StatementItemName toDomain() {
-		return new StatementItemName(this.specItemNamePk.cid, this.specItemNamePk.salaryItemId, this.name,
+		return new StatementItemName(this.statementItemNamePk.cid, this.statementItemNamePk.salaryItemId, this.name,
 				this.shortName, this.otherLanguageName, this.englishName);
 	}
 
-	public static QpbmtSpecItemName toEntity(StatementItemName domain) {
-		return new QpbmtSpecItemName(new QpbmtSpecItemNamePk(domain.getCid(), domain.getSalaryItemId()),
+	public static QpbmtStatementItemName toEntity(StatementItemName domain) {
+		return new QpbmtStatementItemName(new QpbmtStatementItemNamePk(domain.getCid(), domain.getSalaryItemId()),
 				domain.getName().v(), domain.getShortName().v(),
 				domain.getOtherLanguageName().map(i -> i.v()).orElse(null),
 				domain.getEnglishName().map(i -> i.v()).orElse(null));
