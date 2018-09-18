@@ -125,6 +125,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         disAll: KnockoutObservable<boolean> = ko.observable(false);
         //ver21
         relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
+        hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
 
             let self = this;
@@ -317,9 +318,14 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 });
                 self.selectedTypeOfDuty.subscribe((value) => {
                     if(nts.uk.util.isNullOrUndefined(value)||nts.uk.util.isNullOrEmpty(value)){
-                        self.changeWorkHourValueFlg(false);    
+                        self.changeWorkHourValueFlg(false);
+                        self.maxDayDis(false); 
+                        self.hdTypeDis(false);
                     } else {
-                        self.findChangeWorkType(value);     
+                        self.findChangeWorkType(value);
+                        if(self.holidayTypeCode() == 3){
+                            self.hdTypeDis(true);
+                        }     
                     }
                 });
                 self.displayWorkTimeName.subscribe((value) => {
