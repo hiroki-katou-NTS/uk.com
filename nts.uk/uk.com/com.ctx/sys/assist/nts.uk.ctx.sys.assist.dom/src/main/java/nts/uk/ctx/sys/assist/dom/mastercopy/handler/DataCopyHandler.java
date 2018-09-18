@@ -63,17 +63,21 @@ public class DataCopyHandler {
         int sourceSize = sourceObjects.size();
         int keySize = keys.size();
 
+        Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery).setParameter(1,
+                this.companyId);
+        List<Object> oldDatas = selectQueryTarget.getResultList();
+
         switch (copyMethod) {
             case REPLACE_ALL:
                 Query dq = this.entityManager.createNativeQuery(this.deleteQuery).setParameter(1,
                         this.companyId);
                 dq.executeUpdate();
+            case DO_NOTHING:
+                if(copyMethod != CopyMethod.REPLACE_ALL && !oldDatas.isEmpty()){
+                    return;
+                }
             case ADD_NEW:
                 if (copyMethod == CopyMethod.ADD_NEW) {
-                    // get old data target by cid
-                    Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery).setParameter(1,
-                            this.companyId);
-                    List<Object> oldDatas = selectQueryTarget.getResultList();
                     // ignore data existed
                     for (int i = 0; i < sourceSize; i++) {
                         Object[] dataAttr = (Object[]) sourceObjects.get(i);
@@ -121,7 +125,6 @@ public class DataCopyHandler {
                     }
                 }
 
-            case DO_NOTHING:
             default:
                 break;
         }
