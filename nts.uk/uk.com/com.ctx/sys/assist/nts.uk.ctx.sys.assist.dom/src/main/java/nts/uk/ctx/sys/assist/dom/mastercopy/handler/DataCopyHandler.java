@@ -75,14 +75,16 @@ public class DataCopyHandler {
                             this.companyId);
                     List<Object> oldDatas = selectQueryTarget.getResultList();
                     // ignore data existed
-                    for (int i = 0; i < sourceObjects.size(); i++) {
+                    for (int i = 0; i < sourceSize; i++) {
                         Object[] dataAttr = (Object[]) sourceObjects.get(i);
                         for (int j = 0; j < oldDatas.size(); j++) {
                             Object[] targetAttr = (Object[]) oldDatas.get(j);
                             // compare keys and remove
-                            if (dataAttr[1].equals(targetAttr[1])) {
+                            if ((dataAttr[1] == null && targetAttr[1] == null) || (dataAttr[1] != null && dataAttr[1].equals(targetAttr[1]))
+                                    || (targetAttr[1] != null && targetAttr[1].equals(dataAttr[1]))) {
                                 sourceObjects.remove(i);
-                                i -= 1;
+                                i--;
+                                sourceSize--;
                                 break;
                             }
                         }
