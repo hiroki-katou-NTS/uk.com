@@ -223,6 +223,8 @@ module nts.uk.at.view.kaf006.b{
                     self.findChangeWorkType(value);
                     if(self.holidayTypeCode() == 3){
                         self.hdTypeDis(true);
+                    }else{
+                        self.hdTypeDis(false);
                     }
                 });
                 self.displayWorkTimeName.subscribe((value) => {
