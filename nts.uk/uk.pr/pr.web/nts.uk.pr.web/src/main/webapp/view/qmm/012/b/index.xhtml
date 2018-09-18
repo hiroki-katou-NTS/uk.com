@@ -34,8 +34,7 @@
 				<!-- 削除 -->
 				<button id="B1_4" tabindex="4" class="deleteBtn danger" 
 						data-bind="click: deleteItem, 
-								   enable: !(statementItemDataSelected().checkCreate() || !((statementItemDataSelected().statementItem().categoryAtr == '0') ||
-								   			(statementItemDataSelected().statementItem().categoryAtr == '1') || (statementItemDataSelected().statementItem().categoryAtr == '2')))">
+								   enable: !(statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().defaultAtr == 1))">
 					#{i18n.getText('QMM012_23')}
 				</button>
 				<!-- Excel出力 -->
@@ -117,13 +116,13 @@
 										constraint: 'ItemName',
 										option: {width: '200px'},
 										required: true,
-										enable: (($parent.statementItem().categoryAtr == '0') || ($parent.statementItem().categoryAtr == '1') || ($parent.statementItem().categoryAtr == '2')),
+										enable: ($parent.statementItem().defaultAtr != 1),
 										readonly: false}" />
 						</div>
 						<div data-bind="with: statementItem" style="display: inline-block;">
 							<!-- この項目名を廃止する -->
 							<div id="B3_12" tabindex="16" data-bind="ntsCheckBox: { checked: deprecatedAtr, style: 'warnpanel',
-																					enable: !($parent.checkCreate() || !((categoryAtr == '0') || (categoryAtr == '1') || (categoryAtr == '2')))}">
+																					enable: !($parent.checkCreate() || (defaultAtr == 1))}">
 								#{i18n.getText('#QMM012_38')}
 							</div>
 							<!-- 廃止区分について -->
@@ -163,7 +162,7 @@
 																		visibleItemsCount: 4,
 																		value: deductionItemAtr,
 																		optionsText: 'name',
-																		enable: true,
+																		enable: ($parent.statementItem().defaultAtr != 1),
 																		required: true,
 																		selectFirstIfNull: true,
 																		columns: [
@@ -183,7 +182,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: timeCountAtr,
-																				enable: true }"></div>
+																				enable: ($parent.statementItem().defaultAtr != 1) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<!-- 年間所定労働日数 -->
@@ -194,7 +193,18 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: workingDaysPerYear,
-																				enable: (timeCountAtr() == 1) }"></div>
+																				enable: ($parent.statementItem().defaultAtr != 1) &amp;&amp; (timeCountAtr() == 1) }"></div>
+								</div>
+								<div class="valign-center control-group">
+									<!-- 平均賃金 -->
+									<div id="E1_9" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_51')}</div>
+									<!-- 平均賃金対象区分 -->
+									<div id="E1_10" tabindex="63" class="cf" data-bind="ntsSwitchButton: {
+																				options: coveredList,
+																				optionsValue: 'code',
+																				optionsText: 'name',
+																				value: averageWageAtr,
+																				enable: ($parent.statementItem().defaultAtr != 1) &amp;&amp; (timeCountAtr() == 1) }"></div>
 								</div>
 							</div>
 						</com:ko-if>
@@ -211,29 +221,28 @@
 																			visibleItemsCount: 5,
 																			value: taxAtr,
 																			optionsText: 'name',
-																			enable: true,
+																			enable: $parent.statementItem().defaultAtr != 1,
 																			required: true,
 																			selectFirstIfNull: true,
 																			columns: [
 																				{ prop: 'name', length: 16 }
 																			]}"></div>
 								</div>
-								<!-- TaxAtr is LIMIT_TAX_EXEMPTION or COMMUTING_EXPENSES_MANUAL  -->
-								<com:ko-if bind="((taxAtr() == '1') || (taxAtr() == '3'))">
-									<br />
-									<div class="valign-center control-group">
-										<!-- 限度金額指定 -->
-										<div id="C4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_76')}</div>
-										<!-- 社会保険区分 -->
-										<div id="C4_2" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
-																					options: limitAmountList,
-																					optionsValue: 'code',
-																					optionsText: 'name',
-																					value: limitAmountAtr,
-																					enable: true }"></div>
-									</div>
-									<!-- LimitAmountClassification is FIXED_AMOUNT orTAX_EXEMPTION_LIMIT_MASTER or REFER_TO_PERSONAL_TRANSPORTATION_LIMIT -->
-									<com:ko-if bind="((limitAmountAtr() == '1') || (limitAmountAtr() == '0') || (limitAmountAtr() == '3'))">
+								<com:ko-if bind="($parent.statementItem().defaultAtr != 1)">
+									<!-- TaxAtr is LIMIT_TAX_EXEMPTION or COMMUTING_EXPENSES_MANUAL  -->
+									<com:ko-if bind="((taxAtr() == '1') || (taxAtr() == '3'))">
+										<br />
+										<div class="valign-center control-group">
+											<!-- 限度金額指定 -->
+											<div id="C4_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_76')}</div>
+											<!-- 社会保険区分 -->
+											<div id="C4_2" tabindex="19" class="cf" data-bind="ntsSwitchButton: {
+																						options: limitAmountList,
+																						optionsValue: 'code',
+																						optionsText: 'name',
+																						value: limitAmountAtr,
+																						enable: true }"></div>
+										</div>
 										<!-- LimitAmountClassification is FIXED_AMOUNT  -->
 										<com:ko-if bind="(limitAmountAtr() == '1')">
 											<div class="valign-center control-group">
@@ -277,14 +286,14 @@
 																				enable: true}"></div>
 										</div>
 									</com:ko-if>
-								</com:ko-if>
-								<!-- TaxAtr is COMMUTING_EXPENSES_USING_COMMUTER  -->
-								<com:ko-if bind="(taxAtr() == '4')">
-									<div class="valign-center control-group">
-										<div class="space1"></div>
-										<!-- 定期利用説明 -->
-										<span id="C6_1">#{i18n.getText('#QMM012_85')}</span>
-									</div>
+									<!-- TaxAtr is COMMUTING_EXPENSES_USING_COMMUTER  -->
+									<com:ko-if bind="(taxAtr() == '4')">
+										<div class="valign-center control-group">
+											<div class="space1"></div>
+											<!-- 定期利用説明 -->
+											<span id="C6_1">#{i18n.getText('#QMM012_85')}</span>
+										</div>
+									</com:ko-if>
 								</com:ko-if>
 								<br />
 								<div class="valign-center control-group">
@@ -296,7 +305,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: socialInsuranceCategory,
-																				enable: true }"></div>
+																				enable: !(($parent.statementItem().defaultAtr == 1) &amp;&amp; ($parent.statementItem().socialInsuaEditableAtr == 0)) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<!-- 労働保険区分 -->
@@ -307,7 +316,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: laborInsuranceCategory,
-																				enable: true }"></div>
+																				enable: ($parent.statementItem().defaultAtr != 1) }"></div>
 								</div>
 								<br />
 								<div class="valign-center control-group">
@@ -319,7 +328,7 @@
 																		optionsValue: 'id',
 																		optionsText: 'name',
 																		value: settingAtr,
-																		enable: true}"></div>
+																		enable: ($parent.statementItem().defaultAtr != 1)}"></div>
 								</div>
 								<div class="valign-center control-group">
 									<div class="space1"></div>
@@ -329,7 +338,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: everyoneEqualSet,
-																				enable: (settingAtr() == 1) }"></div>
+																				enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 1)) }"></div>
 									<!-- 月給者 -->
 									<div id="C1_19" class="space3">#{i18n.getText('#QMM012_47')}</div>
 									<!-- 月給者対象区分 -->
@@ -338,7 +347,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: monthlySalary,
-																				enable: (settingAtr() == 0) }"></div>
+																				enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<div class="space1"></div>
@@ -351,7 +360,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: hourlyPay,
-																				enable: (settingAtr() == 0) }"></div>
+																				enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<div class="space1"></div>
@@ -364,7 +373,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: dayPayee,
-																				enable: (settingAtr() == 0) }"></div>
+																				enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<div class="space1"></div>
@@ -377,11 +386,11 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: monthlySalaryPerday,
-																				enable: (settingAtr() == 0) }"></div>
+																				enable: (($parent.statementItem().defaultAtr != 1) &amp;&amp; (settingAtr() == 0)) }"></div>
 								</div>
 							</com:ko-if>
-							<!-- CategoryAtr is PAYMENT_ITEM or ATTEND_ITEM  -->
-							<com:ko-if bind="(($parent.statementItem().categoryAtr == '0') || ($parent.statementItem().categoryAtr == '2'))">
+							<!-- CategoryAtr is PAYMENT_ITEM  -->
+							<com:ko-if bind="($parent.statementItem().categoryAtr == '0')">
 								<div class="valign-center control-group">
 									<!-- 平均賃金 -->
 									<div id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_51')}</div>
@@ -391,7 +400,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: averageWageAtr,
-																				enable: true }"></div>
+																				enable: ($parent.statementItem().defaultAtr != 1) }"></div>
 								</div>
 							</com:ko-if>
 						</div>
@@ -408,7 +417,7 @@
 																			value: zeroDisplayAtr,
 																			enable: true }"></div>
 								<!-- 廃止も表示する -->
-								<div id="C2_9" tabindex="33" data-bind="ntsCheckBox: { checked: itemNameDisplayCustom }">#{i18n.getText('QMM012_55')}</div>
+								<div id="C2_9" tabindex="33" data-bind="ntsCheckBox: { checked: itemNameDisplayCustom, enable: (zeroDisplayAtr() == 0) }">#{i18n.getText('QMM012_55')}</div>
 							</div>
 						</com:ko-if>
 						<br />
@@ -481,15 +490,21 @@
 							</div>
 						</com:ko-if>
 						<br />
-						<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
+						<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM -->
 						<com:ko-if bind="((statementItem().categoryAtr == '0') || (statementItem().categoryAtr == '1'))">
 							<div class="valign-center control-group">
 								<!-- 項目の有効期間とサイクルの設定 -->
 								<div id="C3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_67')}</div>
 								<!-- 有効期間設定 -->
-								<button id="C3_2" tabindex="42" class="small" data-bind="enable: true">#{i18n.getText('QMM012_68')}</button>
-								<!-- 期間設定有無 -->
-								<label id="C3_3">#{i18n.getText('#QMM012_6970')}</label>
+								<button id="C3_2" tabindex="42" class="small" data-bind="enable: (!checkCreate() &amp;&amp; (statementItem().defaultAtr != 1))">#{i18n.getText('QMM012_68')}</button>
+								<com:ko-if bind="(isSetValidity())">
+									<!-- 期間設定有無 -->
+									<label id="C3_3">#{i18n.getText('#QMM012_69')}</label>
+								</com:ko-if>
+								<com:ko-if bind="(!isSetValidity())">
+									<!-- 期間設定有無 -->
+									<label id="C3_3">#{i18n.getText('#QMM012_70')}</label>
+								</com:ko-if>
 							</div>
 							<br />
 							<div class="valign-center control-group" data-bind="with: paymentItemSet">
@@ -501,14 +516,20 @@
 																			optionsValue: 'code',
 																			optionsText: 'name',
 																			value: breakdownItemUseAtr,
-																			enable: true }"></div>
+																			enable: (!$parent.checkCreate() &amp;&amp; ($parent.statementItem().defaultAtr != 1) &amp;&amp; (($parent.statementItem().categoryAtr == '1') || (($parent.statementItem().categoryAtr == '0') &amp;&amp; ((taxAtr() == 3) || (taxAtr() == 4))))) }"></div>
 							</div>
 							<div class="valign-center control-group">
 								<div class="space1"></div>
 								<!-- 内訳項目設定 -->
-								<button id="C3_8" tabindex="44" class="small" data-bind="enable: true">#{i18n.getText('QMM012_74')}</button>
-								<!-- 内訳設定有無 -->
-								<label id="C3_9">#{i18n.getText('#QMM012_6970')}</label>
+								<button id="C3_8" tabindex="44" class="small" data-bind="enable: (!checkCreate() &amp;&amp; (statementItem().defaultAtr != 1) &amp;&amp; (paymentItemSet().breakdownItemUseAtr() == 1))">#{i18n.getText('QMM012_74')}</button>
+								<com:ko-if bind="(isSetBreakdownItem())">
+									<!-- 内訳設定有無 -->
+									<label id="C3_9">#{i18n.getText('#QMM012_69')}</label>
+								</com:ko-if>
+								<com:ko-if bind="(!isSetBreakdownItem())">
+									<!-- 内訳設定有無 -->
+									<label id="C3_9">#{i18n.getText('#QMM012_70')}</label>
+								</com:ko-if>
 							</div>
 							<br />
 						</com:ko-if>

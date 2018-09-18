@@ -125,6 +125,12 @@ module nts.uk.pr.view.qmm012.b {
             deductionItemSet: KnockoutObservable<DeductionItemSet>;
             timeItemSet: KnockoutObservable<TimeItemSet>;
             
+            // check SetValidityPeriodCycle
+            isSetValidity: KnockoutObservable<boolean> = ko.observable(false);
+            
+            // check BreakdownItemSet
+            isSetBreakdownItem: KnockoutObservable<boolean> = ko.observable(false);
+            
             // mode of screen
             checkCreate: KnockoutObservable<boolean> = ko.observable(true);
             
@@ -141,6 +147,14 @@ module nts.uk.pr.view.qmm012.b {
                     self.itemRangeSet = ko.observable(new ItemRangeSet(data.itemRangeSet));
                     self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet));
                     self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet));
+                    
+                    if(data.validityPeriodAndCycleSet) {
+                        self.isSetValidity(true);
+                    }
+                    
+                    if(data.breakdownItemSet && (data.breakdownItemSet.length > 0)) {
+                        self.isSetBreakdownItem(true);
+                    }
                     
                     self.checkCreate = ko.observable(false);
                 } else {
@@ -171,6 +185,18 @@ module nts.uk.pr.view.qmm012.b {
                         self.deductionItemSet(new DeductionItemSet(data.deductionItemSet));
                         self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet));
                         
+                        if(data.validityPeriodAndCycleSet) {
+                            self.isSetValidity(true);
+                        } else {
+                            self.isSetValidity(false);
+                        }
+                        
+                        if(data.breakdownItemSet && (data.breakdownItemSet.length > 0)) {
+                            self.isSetBreakdownItem(true);
+                        } else {
+                            self.isSetBreakdownItem(false);
+                        }
+                        
                         self.checkCreate(false);
                     } else {
                         self.statementItem(new StatementItem(null));
@@ -180,6 +206,9 @@ module nts.uk.pr.view.qmm012.b {
                         self.itemRangeSet(new ItemRangeSet(null));
                         self.deductionItemSet(new DeductionItemSet(null));
                         self.timeItemSet = ko.observable(new TimeItemSet(null));
+                        
+                        self.isSetValidity(false);
+                        self.isSetBreakdownItem(false);
                         
                         self.checkCreate(true);
                     }
@@ -191,7 +220,7 @@ module nts.uk.pr.view.qmm012.b {
             categoryAtr: number;
             categoryName: KnockoutObservable<string>;
             itemNameCd: KnockoutObservable<number>;
-            defaultAtr: KnockoutObservable<number>;
+            defaultAtr: number;
             valueAtr: KnockoutObservable<number>;
             deprecatedAtr: KnockoutObservable<number>;
             socialInsuaEditableAtr: KnockoutObservable<number>;
@@ -212,7 +241,7 @@ module nts.uk.pr.view.qmm012.b {
                     }
                     
                     self.itemNameCd = ko.observable(data.itemNameCd);
-                    self.defaultAtr = ko.observable(data.defaultAtr);
+                    self.defaultAtr = data.defaultAtr;
                     self.valueAtr = ko.observable(data.valueAtr);
                     self.deprecatedAtr = ko.observable(data.deprecatedAtr);
                     self.socialInsuaEditableAtr = ko.observable(data.socialInsuaEditableAtr);
@@ -231,7 +260,7 @@ module nts.uk.pr.view.qmm012.b {
 //                    }
                     
                     self.itemNameCd = ko.observable(null);
-                    self.defaultAtr = ko.observable(null);
+                    self.defaultAtr = 0;
                     self.valueAtr = ko.observable(null);
                     self.deprecatedAtr = ko.observable(null);
                     self.socialInsuaEditableAtr = ko.observable(null);
@@ -297,7 +326,7 @@ module nts.uk.pr.view.qmm012.b {
             limitAmountList: KnockoutObservableArray<model.ItemModel>;
             
             // taxableAmountClassification  switch button
-            taxableAmountList: KnockoutObservableArray<model.BoxModel>;
+            taxableAmountList: KnockoutObservableArray<model.BoxModel>; 
             
             constructor(data: IPaymentItemSet, screenModel: ScreenModel) {
                 let self = this;
@@ -357,7 +386,7 @@ module nts.uk.pr.view.qmm012.b {
                 } else {
                     self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.laborInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.settingAtr = ko.observable(model.SettingClassification.DESIGNATE_FOR_EACH_SALARY_CONTRACT_TYPE);
+                    self.settingAtr = ko.observable(model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS);
                     self.everyoneEqualSet = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.monthlySalary = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.hourlyPay = ko.observable(model.CoveredAtr.NOT_COVERED);
@@ -372,13 +401,6 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxLimitAmountCode = ko.observable(null);
                     self.note = ko.observable(null);
                 }
-                
-                // mapping 2 thuộc tính của 2 domain từ cùng 1 item
-                self.averageWageAtr.subscribe(x => {
-                    if(x) {
-                        screenModel.statementItemDataSelected().timeItemSet().averageWageAtr(x);
-                    }
-                });
                 
                 // mapping 2 thuộc tính của 2 domain từ cùng 1 item
                 self.breakdownItemUseAtr.subscribe(x => {
@@ -574,7 +596,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.breakdownItemUseAtr = ko.observable(data.breakdownItemUseAtr);
                     self.note = ko.observable(data.note);
                 } else {
-                    self.deductionItemAtr = ko.observable(null);
+                    self.deductionItemAtr = ko.observable(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM);
                     self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
                     self.note = ko.observable(null);
                 }
@@ -612,7 +634,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.timeCountAtr = ko.observable(data.timeCountAtr);
                     self.note = ko.observable(data.note);
                 } else {
-                    self.averageWageAtr = ko.observable(null);
+                    self.averageWageAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.workingDaysPerYear = ko.observable(model.CoveredAtr.NOT_COVERED);
                     self.timeCountAtr = ko.observable(model.TimeCountAtr.TIME);
                     self.note = ko.observable(null);
