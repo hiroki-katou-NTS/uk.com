@@ -1519,7 +1519,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     functionId: 3,
                     listEmployeeId: _.map(self.lstEmployee(), emp => { return emp.id; }),
                     period : period,
-                    displayFormat: self.displayFormat() 
+                    displayFormat: 1 
                 };
             nts.uk.ui.windows.setShared("CDL027Params", param);
             nts.uk.ui.windows.sub.modal('com',"/view/cdl/027/a/index.xhtml");
