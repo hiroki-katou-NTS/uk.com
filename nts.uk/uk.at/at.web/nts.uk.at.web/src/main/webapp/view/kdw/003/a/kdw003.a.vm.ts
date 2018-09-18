@@ -1431,6 +1431,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return value;
             }
         }
+        
+        convertToHours(value: any): string {
+            let self = this;
+            let hours = value < 0 ? String(0 - Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
+            let minutes = String(Math.abs(value) % 60);
+            if (Number(minutes) < 10) minutes = "0" + minutes;
+            return hours + ":" + minutes;
+        }
 
         //check data item in care and childCare 
         // child care = 0 , care = 1, other = 2;
@@ -2745,7 +2753,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value) : id.value;
+                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? self.convertToHours(id.value) : id.value;
                 totalWidthColumn += id.columnWidth;
             });
 
