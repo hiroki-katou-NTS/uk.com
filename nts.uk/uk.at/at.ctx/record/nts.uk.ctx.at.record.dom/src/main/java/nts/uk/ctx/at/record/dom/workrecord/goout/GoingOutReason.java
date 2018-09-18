@@ -10,16 +10,16 @@ package nts.uk.ctx.at.record.dom.workrecord.goout;
  * 外出理由
  */
 public enum GoingOutReason {
-	/* 私用 */
+	// 公用
 	PRIVATE(0, "Enum_Private"),
 	
-	/* 公用 */
+	// 有償
 	PUBLIC(1,"Enum_Public"),
 	
-	/* 有償 */
+	// 私用
 	COMPENSATION(2, "Enum_Compensation"),
 	
-	/* 組合 */
+	// 組合
 	UNION(3, "Enum_Union");
 
 	/** The value. */

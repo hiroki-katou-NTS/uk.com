@@ -7,7 +7,6 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,7 +17,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 // 日別勤務表の出力項目
 @Getter
-@Setter
 public class OutputItemDailyWorkSchedule extends AggregateRoot{
 	
 	/** The company ID. */
