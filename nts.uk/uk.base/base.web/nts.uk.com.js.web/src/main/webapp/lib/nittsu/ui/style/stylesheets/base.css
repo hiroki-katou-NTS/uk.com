@@ -2896,6 +2896,23 @@ button.nts-switch-button[disabled].selected {
   list-style-type: none;
 }
 
+/* line 19, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-dropindicator .ui-icon {
+	float: none !important;
+	top: 0;
+	margin-top: -1px;
+}
+
+/* line 25, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-dropindicator .ui-icon-arrowthick-1-e{
+	margin-top: -5px;
+}
+
+/* line 29, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-dropindicator p {
+	vertical-align: middle;
+}
+
 /* line 77, ../sass/components/_ignitecommons.scss */
 .ui-iggrid-table {
   /* for IE */
@@ -2977,6 +2994,11 @@ button.nts-switch-button[disabled].selected {
 /* line 20, ../sass/components/_treegridview.scss */
 .nts-treegridview .ui-icon-triangle-1-e {
   display: none;
+}
+
+/* line 24, ../sass/components/_treegridview.scss */
+.nts-treegridview .ui-igtreegrid-expandcell{
+	margin-top: -10px !important;
 }
 
 /* line 2, ../sass/components/_combobox.scss */
