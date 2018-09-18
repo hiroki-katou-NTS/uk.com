@@ -45,11 +45,9 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
-		String companyId = AppContexts.user().companyId();
 		// In case of date period are exist in the screen
 		if (command.getStartDate() != null) {
-			AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId,
-					command.getSId());
+			AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
 			if (listHist == null) {
 				throw new RuntimeException("Invalid AffCompanyHist");
 			}

@@ -133,22 +133,23 @@ public class SpecialHolidayEventAlgImpl implements SpecialHolidayEventAlgorithm{
 		List<GrantDayRelationship> lstGrantDay = grandPerOp.get().getLstGrandDayRelaShip();
 		List<Relationship> lstRelaShip = repoRelationship.findAll(companyId);
 		for (GrantDayRelationship grantDay : lstGrantDay) {
-			String relaName = this.findRelaName(lstRelaShip, grantDay.getRelationshipCd());
+			//Bug100572 - ver21
+			Relationship rela = this.findRelaName(lstRelaShip, grantDay.getRelationshipCd());
 			//OUTPUT．続柄毎の上限日数リストのコードに、ドメインモデル「続柄」に存在しないリスト項目を削除する
-			if(relaName == null){
+			if(rela == null){
 				continue;
 			}
 			//全ての「続柄に対する上限日数」をOUTPUT．続柄毎の上限日数リストに追加する
 			//ドメインモデル「続柄」．名称をOUTPUT．続柄毎の上限日数リストの続柄名に入れる
-			result.add(new DateSpecHdRelationOutput(grantDay.getRelationshipCd().v(), relaName, grantDay.getGrantedDay().v()));
+			result.add(new DateSpecHdRelationOutput(grantDay.getRelationshipCd().v(), rela.getRelationshipName().v(), grantDay.getGrantedDay().v(), rela.isThreeParentOrLess()));
 		}
 		return result;
 	}
 
-	private String findRelaName(List<Relationship> lstRelaShip, RelationshipCode relaCD){
+	private Relationship findRelaName(List<Relationship> lstRelaShip, RelationshipCode relaCD){
 		for (Relationship relationship : lstRelaShip) {
 			if(relationship.getRelationshipCode().equals(relaCD)){
-				return relationship.getRelationshipName().v();
+				return relationship;
 			}
 		}
 		return null;

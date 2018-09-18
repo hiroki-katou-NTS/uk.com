@@ -121,6 +121,8 @@ module nts.uk.at.view.kaf006.b{
         displayReason: KnockoutObservable<boolean> = ko.observable(false);
         enableReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReasonLst: Array<common.DisplayReason> = []; 
+        //ver21
+        relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -148,6 +150,9 @@ module nts.uk.at.view.kaf006.b{
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
+                    //ver21
+                    let relaS = self.findRelaSelected(codeChange);
+                    self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
                 });
             self.isCheck.subscribe(function(checkChange){
                 if(self.mournerDis()){
@@ -165,6 +170,12 @@ module nts.uk.at.view.kaf006.b{
                     self.maxDayline2(line2);
                 }
             });
+            });
+        }
+        findRelaSelected(relaCD: string): any{
+            let self = this;
+            return _.find(self.relationCombo(), function(rela){
+                return rela.relationCd == relaCD;
             });
         }
         /**
@@ -247,7 +258,8 @@ module nts.uk.at.view.kaf006.b{
             self.relationCombo([]);
             let lstRela = [];
             _.each(data.lstRela, function(rela){
-                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
+                        maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
             });
             self.relationCombo(lstRela);
             let fix = false;
