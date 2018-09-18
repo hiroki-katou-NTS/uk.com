@@ -73,7 +73,7 @@ public class DataCopyHandler {
                         this.companyId);
                 dq.executeUpdate();
             case DO_NOTHING:
-                if(!oldDatas.isEmpty()){
+                if(copyMethod != CopyMethod.REPLACE_ALL && !oldDatas.isEmpty()){
                     return;
                 }
             case ADD_NEW:
