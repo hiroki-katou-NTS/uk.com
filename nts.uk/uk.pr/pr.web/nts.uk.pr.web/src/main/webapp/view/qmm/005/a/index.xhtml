@@ -103,15 +103,15 @@
                             <div
                                     data-bind="ntsComboBox: {
                             name: 'Sample List', width:200,
-                            options: setDaySupports,
-                            optionsValue: 'processDate',
+                            options: months,
+                            optionsValue: 'code',
                             visibleItemsCount: 5,
-                            value: setDaySupportsSelectedCode,
-                            optionsText: 'paymentDate',
+                            value: monthsSelectd,
+                            optionsText: 'name',
                             enable: processInfomation.processDivisionName != '',
                             columns: [
 
-                                { prop: 'paymentDate', length: 10 },
+                                { prop: 'name', length: 10 },
                             ]}"
                                     style="width: 200px; top: 3px;"></div>
 

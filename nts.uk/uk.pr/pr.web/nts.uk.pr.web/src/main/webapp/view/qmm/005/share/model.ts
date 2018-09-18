@@ -135,7 +135,7 @@ module nts.uk.pr.view.qmm005.share.model {
         closureAccountingDate:string;
         socialInsurStanDate:string;
         empInsurdStanDate:string;
-        payMentDate:string;
+        paymentDate:string;
         numberWorkDay:number;
         constructor(params:ISetDaySupport){
             this.processCateNo=params.processCateNo;
@@ -147,7 +147,7 @@ module nts.uk.pr.view.qmm005.share.model {
             this.closureAccountingDate=ko.observable(params.closureDateAccounting);
             this.socialInsurStanDate=ko.observable(params.socialInsurdStanDate);
             this.empInsurdStanDate=ko.observable(params.empInsurdStanDate);
-            this.payMentDate=ko.observable(params.paymentDate);
+            this.paymentDate=ko.observable(params.paymentDate);
             this.numberWorkDay=ko.observable(params.numberWorkDay);
 
         }

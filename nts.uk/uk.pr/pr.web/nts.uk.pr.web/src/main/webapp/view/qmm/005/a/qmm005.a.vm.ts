@@ -93,25 +93,25 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         }
 
 
-        // getListMonth(setDaySupportList:Array<SetDaySupport>,i:number):Array<model.ItemModel>{
-        //     let self=this;
-        //         let ArrSetDaySuport:Array<SetDaySupport>=_.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
-        //             return o.processCateNo == i + 1;
-        //         }),
-        //         function (o) {
-        //             return o.processDate;
-        //         });
-        //
-        //     let Araybinding:Array<model.ItemModel>=new Array<model.ItemModel>();
-        //         for(item in ArrSetDaySuport){
-        //             Araybinding.push(new model.ItemModel(item.processDate , item.payMentDate+'-'+item.empExtraRefeDate));
-        //         }
-        //
-        //
-        //
-        //
-        //     return Araybinding;
-        // }
+        getListMonth(setDaySupportList:Array<SetDaySupport>,i:number):Array<model.ItemModel>{
+            let self=this;
+                let ArrSetDaySuport:Array<SetDaySupport>=_.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
+                    return o.processCateNo == i + 1;
+                }),
+                function (o) {
+                    return o.processDate;
+                });
+
+            let Araybinding:Array<model.ItemModel>=new Array<model.ItemModel>();
+                for(let i=0;i<ArrSetDaySuport.length;i++){
+                    Araybinding.push(new model.ItemModel(ArrSetDaySuport[i].processDate,ArrSetDaySuport[i].paymentDate+'-'+ArrSetDaySuport[i].empExtraRefeDate))
+                }
+
+
+
+
+            return Araybinding;
+        }
 
 
         startPage(): JQueryPromise<any> {
@@ -141,13 +141,12 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                             function (o) {
                                 return o.processDate;
                             }),
-                        null, [],
-                        // getYear(self.itemTable.setDaySupports[i])
                         self.getYear((_.filter(self.itemTable.setDaySupports, function (o) {
                             return o.processCateNo == i + 1;
-                        })))
+                        }))),
+                        self.getListMonth(self.itemTable.setDaySupports,i)
                     ));
-                    //self.test=self.getListMonth(self.itemTable.setDaySupports,i);
+
                 }
                 console.log(self.itemBinding());
 
@@ -156,8 +155,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-
-
     }
 
 
@@ -170,15 +167,19 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         employeeList: KnockoutObservableArray<any>;
         years:KnockoutObservableArray<model.ItemModel>;
         yaersSelected:KnockoutObservable<number>;
+        months:KnockoutObservableArray<model.ItemModel>;
+        monthsSelectd:KnockoutObservable<number>;
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array,years:Array<model.ItemModel> ) {
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, years:Array<model.ItemModel>,months:Array<model.ItemModel> ) {
             this.processInfomation = processInfomation;
             this.setDaySupports = ko.observableArray(setDaySupports);
             this.setDaySupportsSelectedCode = ko.observable(0);
-            this.employeeString = ko.observable(employeeString);
-            this.employeeList = ko.observableArray(employeeList);
+            this.employeeString = ko.observable('');
+            this.employeeList = ko.observableArray();
             this.years=ko.observableArray(years);
             this.yaersSelected=ko.observable(0);
+            this.months=ko.observableArray(months);
+            this.monthsSelectd=ko.observable(0);
         }
     }
 
