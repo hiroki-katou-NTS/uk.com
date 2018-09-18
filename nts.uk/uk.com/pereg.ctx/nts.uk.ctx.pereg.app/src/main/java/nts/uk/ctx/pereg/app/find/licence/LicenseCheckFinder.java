@@ -109,8 +109,8 @@ public class LicenseCheckFinder {
 
 		// RequestList503
 		// アルゴリズム「廃止を除いて同一契約の会社をすべて取得する」(thuật toan)
-		List<Company> listCompany = companyRepository.getAllCompanyByContractCdandAboAtr(contractCD, 0);
-		List<String> lstCompID = listCompany.stream().map(c -> c.getCompanyId()).collect(Collectors.toList());
+		
+		List<String> lstCompID = companyRepository.getAllCompanyByContractCdAndAboAtr(contractCD, 0);
 	
 		int numberPeopleEnrolled = iEmployeeDataMngInfoPub.countEmployeeByBaseDate(lstCompID, systemDate);
 

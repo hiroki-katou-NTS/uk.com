@@ -381,7 +381,8 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	private String getWorkTypeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
-		return optionalSingleDaySchedule.get().getWorkTypeCode().v();
+		return optionalSingleDaySchedule.get().getWorkTypeCode().isPresent()
+				? optionalSingleDaySchedule.get().getWorkTypeCode().get().v() : null;
 	}
 
 	/**

@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.infra.entity.datacorrectionlog.SrcdtDataCorrectionLog;
@@ -222,15 +224,13 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId,
-			DatePeriod datePeriod, YearMonthPeriod ymPeriod) {
+			YearMonth ym, GeneralDate ymd) {
 		if (targetDataType == null)
 			return Collections.emptyList();
-		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey >= :startYmd AND a.pk.ymdKey <= :endYmd"
-				+ " AND a.ymKey >= :startYm AND a.ymKey <= :endYm";
+		String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.targetDataType = :targetDataType AND a.employeeId IN :listEmpId AND a.pk.ymdKey = :startYmd AND a.ymKey = :endYm";
 		return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 				.setParameter("targetDataType", targetDataType.value).setParameter("listEmpId", listEmployeeId)
-				.setParameter("startYmd", datePeriod.start()).setParameter("endYmd", datePeriod.end())
-				.setParameter("startYm", ymPeriod.start().v()).setParameter("endYm", ymPeriod.end().v())
+				.setParameter("startYmd", ymd).setParameter("endYm", ym)
 				.getList(c -> c.toDomainToView());
 	}
 

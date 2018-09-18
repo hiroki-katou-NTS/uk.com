@@ -729,7 +729,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             $("#dpGrid").mGrid("updateCell", rowId, item, value);
             self.inputProcess(rowId, item, value).done(value => {
                 _.each(value.cellEdits, itemResult => {
-                    $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                    $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                 })
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -1131,98 +1131,101 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 });
-                let dataParent = {
-                    itemValues: dataChangeProcess,
-                    dataCheckSign: dataCheckSign,
-                    dataCheckApproval: dataCheckApproval,
-                    mode: self.displayFormat(),
-                    spr: sprStampSourceInfo,
-                    dailyOlds: self.lstDomainOld,
-                    dailyEdits: self.lstDomainEdit
-                }
-                if (self.displayFormat() == 0) {
-                    if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
-                        dataParent["employeeId"] = self.shareObject().initClock.employeeId;
-                        dataParent["dateRange"] = { startDate: self.shareObject().initClock.dateSpr.utc(), endDate: self.shareObject().initClock.dateSpr.utc() };
-                    } else {
-                        dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
-                        dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
+                if (!_.isEmpty(self.lstDomainOld)) {
+                    let dataParent = {
+                        itemValues: dataChangeProcess,
+                        dataCheckSign: dataCheckSign,
+                        dataCheckApproval: dataCheckApproval,
+                        mode: self.displayFormat(),
+                        spr: sprStampSourceInfo,
+                        dailyOlds: self.lstDomainOld,
+                        dailyEdits: self.lstDomainEdit
                     }
-                    dataParent["monthValue"] = self.valueUpdateMonth;
-                }
-                self.removeErrorRefer();
-                let dfd = $.Deferred();
-                service.calculation(dataParent).done((data) => {
-                    self.valueUpdateMonth = null;
-                    self.initScreenSPR = 1;
-                    self.clickFromExtract = false;
-                    self.showTextStyle = false;
-                    dataChange = {};
-                    if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
-                        if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
-                            $("#next-month").ntsError("clear");
-                             _.each(data.resultError.flexShortage.messageError, value => {
-                                $("#next-month").ntsError("set", value.message, value.messageId);
-                            });
+                    if (self.displayFormat() == 0) {
+                        if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
+                            dataParent["employeeId"] = self.shareObject().initClock.employeeId;
+                            dataParent["dateRange"] = { startDate: self.shareObject().initClock.dateSpr.utc(), endDate: self.shareObject().initClock.dateSpr.utc() };
                         } else {
-                            $("#next-month").ntsError("clear");
+                            dataParent["employeeId"] = dataSource.length > 0 ? dataSource[0].employeeId : null;
+                            dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                         }
+                        dataParent["monthValue"] = self.valueUpdateMonth;
                     }
-                    if (data.resultError == null || (data.resultError.errorMap[5] != null)) {
-                        self.lstDomainEdit = data.calculatedRows;
-                        let lstValue = data.resultValues;
-                        _.forEach(self.dpData, row => {
-                            let cellDatas = row.cellDatas;
-                            let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
-                            _.forEach(cellDatas, cell => {
-                                let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
-                                let editedCell2 = _.find(self.cellStates(), (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
-                                if ((editedCell == null
-                                    && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target"))))
-                                    || updateAll) {
-                                    let itemId = self.getItemIdFromColumnKey(cell.columnKey);
-                                    let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
-                                    if (itemValue)
-                                        $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value);
-                                }
+                    self.removeErrorRefer();
+                    let dfd = $.Deferred();
+                    service.calculation(dataParent).done((data) => {
+                        self.valueUpdateMonth = null;
+                        self.initScreenSPR = 1;
+                        self.clickFromExtract = false;
+                        self.showTextStyle = false;
+                        dataChange = {};
+                        if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
+                            if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
+                                $("#next-month").ntsError("clear");
+                                 _.each(data.resultError.flexShortage.messageError, value => {
+                                    $("#next-month").ntsError("set", value.message, value.messageId);
+                                });
+                            } else {
+                                $("#next-month").ntsError("clear");
+                            }
+                        }
+                        if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
+                            self.lstDomainEdit = data.calculatedRows;
+                            let lstValue = data.resultValues;
+                            _.forEach(self.dpData, row => {
+                                let cellDatas = row.cellDatas;
+                                let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
+                                _.forEach(cellDatas, cell => {
+                                    let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
+                                    let editedCell2 = _.find(self.cellStates(), (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
+                                    if ((editedCell == null
+                                        && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target"))))
+                                        || updateAll) {
+                                        let itemId = self.getItemIdFromColumnKey(cell.columnKey);
+                                        let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
+                                        if (itemValue)
+                                            $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value);
+                                    }
+                                });
                             });
-                        });
-                        self.flagCalculation = true;
+                            self.flagCalculation = true;
+                            nts.uk.ui.block.clear();
+                            if (data.resultError != null && data.resultError.errorMap[5] != null) {
+                                self.listErrorMonth = data.resultError.errorMap[5];
+                            }
+                        } else {
+                            nts.uk.ui.block.clear();
+                            if (data.resultError.errorMap[0] != undefined) {
+                                self.listCareError(data.resultError.errorMap[0])
+                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                            }
+                            if (data.resultError.errorMap[1] != undefined) {
+                                self.listCareInputError(data.resultError.errorMap[1])
+                                // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                            }
+                            if (data.resultError.errorMap[2] != undefined) {
+                                self.listCheckHolidays(data.resultError.errorMap[2]);
+                                self.loadRowScreen(false);
+                            }
+    
+                            if (data.resultError.errorMap[3] != undefined) {
+                                self.listCheck28(data.resultError.errorMap[3]);
+                            }
+    
+                            if (data.resultError.errorMap[4] != undefined) {
+                                self.listCheckDeviation = data.resultError.errorMap[4];
+                            }
+                            self.showErrorDialog();
+                        }
+                        dfd.resolve();
+                    }).fail((data) => {
                         nts.uk.ui.block.clear();
-                        if (data.resultError != null && data.resultError.errorMap[5] != null) {
-                            self.listErrorMonth = data.resultError.errorMap[5];
-                        }
-                    } else {
-                        nts.uk.ui.block.clear();
-                        if (data.resultError.errorMap[0] != undefined) {
-                            self.listCareError(data.resultError.errorMap[0])
-                            // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
-                        }
-                        if (data.resultError.errorMap[1] != undefined) {
-                            self.listCareInputError(data.resultError.errorMap[1])
-                            // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
-                        }
-                        if (data.resultError.errorMap[2] != undefined) {
-                            self.listCheckHolidays(data.resultError.errorMap[2]);
-                            self.loadRowScreen(false);
-                        }
-
-                        if (data.resultError.errorMap[3] != undefined) {
-                            self.listCheck28(data.resultError.errorMap[3]);
-                        }
-
-                        if (data.resultError.errorMap[4] != undefined) {
-                            self.listCheckDeviation = data.resultError.errorMap[4];
-                        }
-                        self.showErrorDialog();
-                    }
-                    dfd.resolve();
-                }).fail((data) => {
+                        nts.uk.ui.dialog.alert(data.message);
+                        dfd.resolve();
+                    });
+                    dfd.promise();
+                } else 
                     nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alert(data.message);
-                    dfd.resolve();
-                });
-                dfd.promise();
             }
         }
 
@@ -1606,6 +1609,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // flex
                     self.processFlex(data, false);
                     self.displayNumberZero();
+                    self.displayProfileIcon(self.displayFormat());
+                    self.dislayNumberHeaderText();
                     //check visable MIGrid
                     if (self.displayFormat() != 0) {
                         self.isVisibleMIGrid(false);
@@ -3292,7 +3297,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.calcTime(param).done((value) => {
                         __viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
-                            $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                            $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                         })
                         nts.uk.ui.block.clear();
                         //dfd.resolve(value.cellEdits);
@@ -3829,7 +3834,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 __viewContext.vm.inputProcess(rowId, "Code" + itemId, code).done(value => {
                     _.each(value.cellEdits, itemResult => {
-                        $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                        $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                     })
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -4056,18 +4061,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.nameAbsentDeductionTime = getText('KDW003_79');
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
-                let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
-                    if (val != self.noOfHolidaysOld()) {
+                    if (Number(val) != Number(self.noOfHolidaysOld())) {
                         self.calc();
                     }
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
-                let parent = ko.toJS(__viewContext.vm);
                 if (self.initLoad > 0) {
-                    if (val != self.absentDeductionTimeOld()) {
+                    if (Number(val) != Number(self.absentDeductionTimeOld())) {
                         self.calc();
                     }
                 }
@@ -4117,7 +4120,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 __viewContext.vm.valueUpdateMonth = {};
                 if (__viewContext.vm.itemMonth.length > 0) {
                     let dataFlexUpdate = __viewContext.vm.itemValueMonthParent,
-                        items = _.map(ko.toJS(__viewContext.vm).itemMonth, value => {
+                        items = _.map(__viewContext.vm.itemMonth, value => {
                             if (value.itemId == 189) {
                                 value.value = self.noOfHolidays();
                             }

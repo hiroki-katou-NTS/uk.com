@@ -1589,11 +1589,11 @@ module nts.uk.at.view.kal003.share.model {
                     self.displayRightOperator("");
                     break;
                 case 2:
-                    self.displayLeftOperator("≧");
+                    self.displayLeftOperator("≦");
                     self.displayRightOperator("");
                     break;
                 case 3:
-                    self.displayLeftOperator("≦");
+                    self.displayLeftOperator("≧");
                     self.displayRightOperator("");
                     break;
                 case 4:

@@ -13,7 +13,8 @@ module nts.uk.com.view.cdl027.demo {
         displayFormat: KnockoutObservable<number> = ko.observable(0);
         selectedEmployee: KnockoutObservableArray<string> = ko.observableArray([]);
         period: KnockoutObservable<any> = ko.observable({});
-        period2: KnockoutObservable<any> = ko.observable({});
+        yearMonth: KnockoutObservable<any> = ko.observable(null);
+        date: KnockoutObservable<any> = ko.observable(null);
         periodType: KnockoutObservable<string>;
         functionId: KnockoutObservable<number> = ko.observable(1);
         displayFormats: KnockoutObservableArray<any> = ko.observableArray([{ code: 0, name: '日付別' }, { code: 1, name: '個人別' }]);
@@ -196,13 +197,14 @@ module nts.uk.com.view.cdl027.demo {
                     case 1:
                     case 2:
                         return "fullDate";
-                    case 3:
                     case 4:
                     case 5:
                     case 6:
                     case 8:
                     case 9:
                         return "yearmonth";
+                    case 3:
+                        return "ym-ymd";
                     default:
                         return "year";
                 }
@@ -220,8 +222,9 @@ module nts.uk.com.view.cdl027.demo {
                     listEmployeeId: self.selectedEmployee(), 
                     period: self.period(), 
                     displayFormat: self.displayFormat(),
-                    period2: self.monthlyChecked() ? self.period2() : null 
                 };
+            if (self.functionId() == 3)
+                params.period = { startDate: self.yearMonth(), endDate: self.date() };
             setShared("CDL027Params", params);
             modal("com", "/view/cdl/027/a/index.xhtml");
         }
@@ -236,9 +239,7 @@ module nts.uk.com.view.cdl027.demo {
         pgid: string; //__viewContext.program.programId
         functionId: number;
         listEmployeeId: Array<string>;
-        period: any; // {startDate: string, endDate: string}
+        period: any; // {startDate: string, endDate: string};  {startDate: string 'YYYYMM', endDate: string 'YYYYMMDD'} only from the monthly correction to calling
         displayFormat: number;
-        period2?: any; // {startDate: string, endDate: string}; only from the monthly correction to calling
-        // when period2 != null: period2: ymd, period: ym
     }
 }

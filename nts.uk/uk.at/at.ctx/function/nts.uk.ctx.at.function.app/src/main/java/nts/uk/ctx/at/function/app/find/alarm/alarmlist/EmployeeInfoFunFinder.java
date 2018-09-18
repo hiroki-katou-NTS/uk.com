@@ -28,15 +28,22 @@ public class EmployeeInfoFunFinder {
 		if (listEmployeeInput.isEmpty())
 			return new ArrayList<EmployeeSendEmail>();
 
-
+		List<String> wkpIds = new ArrayList<>();
+		List<String> listSid = new ArrayList<>();
+		for (EmployeeInfoInput temp : listEmployeeInput) {
+			if (!"".equals(temp.getWorkplaceID())) {
+				wkpIds.add(temp.getWorkplaceID());
+			}
+			if (!"".equals(temp.getEmployeeID())) {
+				listSid.add(temp.getEmployeeID());
+			}
+		}
 		// 会社IDをもとにImported「社員」を取得する
-		List<String> listSid = listEmployeeInput.stream().map(c -> c.getEmployeeID()).collect(Collectors.toList());
 		List<EmployeeInfoFunAdapterDto> listEmployeeInfo = employeeInfoFun.getListPersonInfor(listSid);
 		Map<String, EmployeeInfoFunAdapterDto> mapEmployeeInfo = listEmployeeInfo.stream()
 				.collect(Collectors.toMap(EmployeeInfoFunAdapterDto::getEmployeeId, e -> e));
 
 		// 職場IDとシステム日付をもとに「職場名称」を取得する
-		List<String> wkpIds = listEmployeeInput.stream().map(c -> c.getWorkplaceID()).collect(Collectors.toList());
 		List<WorkplaceIdName> listWorkplaceInfo = workplaceAdapter.findWkpByWkpId(AppContexts.user().companyId(),
 				GeneralDate.today(), wkpIds);
 

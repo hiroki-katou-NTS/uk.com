@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.log.infra.repository.reference;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
@@ -66,7 +67,7 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 			Object[] values = (Object[])x;
 			LogDisplaySetting logDisplaySetting = new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
 					 new LogSettingCode(String.valueOf(values[2])), new LogSettingName(String.valueOf(values[3]))
-							 ,DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
+							 ,Objects.isNull(values[4])?null:DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
 							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])) ) );			
 			return logDisplaySetting;
 		}).collect(Collectors.toList());
@@ -87,7 +88,7 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 			Object[] values = (Object[])x;
 			LogDisplaySetting logDisplaySetting = new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
 					 new LogSettingCode(String.valueOf(values[2])), new LogSettingName(String.valueOf(values[3]))
-							 ,DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
+							 ,Objects.isNull(values[4])?null:DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
 							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])) ) );			
 			return logDisplaySetting;
 		}).collect(Collectors.toList());
