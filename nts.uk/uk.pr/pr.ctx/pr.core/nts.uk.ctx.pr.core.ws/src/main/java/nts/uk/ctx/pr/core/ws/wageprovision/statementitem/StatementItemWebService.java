@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.AddStatementItemDataCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.StatementItemDataCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDto;
@@ -27,6 +29,9 @@ public class StatementItemWebService extends WebService {
 
 	@Inject
 	private StatementItemNameFinder statementItemNameFinder;
+	
+	@Inject
+	private AddStatementItemDataCommandHandler addStatementItemDataCommandHandler;
 
 	@POST
 	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}")
@@ -66,4 +71,11 @@ public class StatementItemWebService extends WebService {
 	public StatementItemNameDto getByCategoryAndCode(@PathParam("salaryItemId") String salaryItemId) {
 		return this.statementItemNameFinder.findStatementItemName(salaryItemId);
 	}
+	
+	@POST
+	@Path("registerStatementItemData")
+	public void registerStatementItemData(StatementItemDataCommand command) {
+		this.addStatementItemDataCommandHandler.handle(command);
+	}
+	
 }

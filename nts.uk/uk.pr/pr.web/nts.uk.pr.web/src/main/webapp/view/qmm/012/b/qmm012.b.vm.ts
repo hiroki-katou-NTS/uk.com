@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm012.b {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import dialog = nts.uk.ui.dialog;
 
     export module viewModel {
         export class ScreenModel {
@@ -58,32 +59,94 @@ module nts.uk.pr.view.qmm012.b {
                     category = parseInt(self.selectedCategory(), 10);
                 }
                 
-                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
-                    self.statementItemDataList(data);
-                    if(data.length > 0) {
-                        self.statementItemDataSelected(new StatementItemData(data[0], self));
-                    } else {
-                        self.statementItemDataSelected(new StatementItemData(null, self));
-                    }
-                    
-                    block.clear();
-                    deferred.resolve();
-                }).fail(error => {
-                    self.statementItemDataSelected(new StatementItemData(null, self));
-                    
-                    block.clear();
-                    deferred.resolve();
-                });
+//                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
+//                    self.statementItemDataList(data);
+//                    if(data.length > 0) {
+//                        self.statementItemDataSelected(new StatementItemData(data[0], self));
+//                    } else {
+//                        self.statementItemDataSelected(new StatementItemData(null, self));
+//                    }
+//                    
+//                    block.clear();
+//                    deferred.resolve();
+//                }).fail(error => {
+//                    self.statementItemDataSelected(new StatementItemData(null, self));
+//                    
+//                    block.clear();
+//                    deferred.resolve();
+//                });
+                
+                //TODO delete, add to test
+                self.statementItemDataSelected(new StatementItemData(null, self));
+                block.clear();
+                deferred.resolve();
+                //TODO delete, add to test
                 
                 return deferred.promise();
             }
             
             public create(): void {
-                
+                let self = this;
+
+                nts.uk.ui.windows.sub.modal('../a/index.xhtml').onClosed(() => {
+                    let data = getShared("QMM012_A_Params");
+                    
+                    if(data != null) {
+                        self.statementItemDataSelected(new StatementItemData(null, self));
+                        self.statementItemDataSelected().statementItem().categoryAtr(data);
+                    }
+                });
             }
             
             public register(): void {
+                let self = this;
+                let categoryAtr = self.statementItemDataSelected().statementItem().categoryAtr();
+                let listMessage: Array<string> = [];
+                let itemRangeSet = self.statementItemDataSelected().itemRangeSet();
                 
+                if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
+                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorUpperRangeValueAmount() == null)) {
+                        listMessage.push("MsgQ_14");
+                    }
+                    
+                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && (itemRangeSet.errorLowerRangeValueAmount() == null)) {
+                        listMessage.push("MsgQ_15");
+                    }
+                    
+                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorLowerLimitSettingAtr() == 1)
+                            && (itemRangeSet.errorUpperRangeValueAmount() != null) && (itemRangeSet.errorLowerRangeValueAmount() != null)
+                            && itemRangeSet.errorUpperRangeValueAmount() <= itemRangeSet.errorLowerRangeValueAmount()) {
+                        listMessage.push("MsgQ_1");
+                    }
+                    
+                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmUpperRangeValueAmount() == null)) {
+                        listMessage.push("MsgQ_16");
+                    }
+                    
+                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerRangeValueAmount() == null)) {
+                        listMessage.push("MsgQ_16");
+                    }
+                    
+                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
+                            && (itemRangeSet.alarmUpperRangeValueAmount() != null) && (itemRangeSet.alarmLowerRangeValueAmount() != null)
+                            && itemRangeSet.alarmUpperRangeValueAmount() <= itemRangeSet.alarmLowerRangeValueAmount()) {
+                        listMessage.push("MsgQ_2");
+                    }
+                }
+                
+                if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
+                    //TODO
+                }
+                
+                if(listMessage.length == 0) {
+                    service.registerStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            //TODO
+                        });
+                    }).fail(err => {
+                        //TODO
+                    });
+                }
             }
             
             public copy(): void {
@@ -218,7 +281,7 @@ module nts.uk.pr.view.qmm012.b {
         }
         
         class StatementItem {
-            categoryAtr: number;
+            categoryAtr: KnockoutObservable<number>;
             categoryName: KnockoutObservable<string>;
             itemNameCd: KnockoutObservable<number>;
             defaultAtr: number;
@@ -231,7 +294,7 @@ module nts.uk.pr.view.qmm012.b {
                 let self = this;
                 
                 if (data) {
-                    self.categoryAtr = data.categoryAtr;
+                    self.categoryAtr = ko.observable(data.categoryAtr);
                     
                     if(data.categoryAtr == model.CategoryAtr.PAYMENT_ITEM) {
                         self.categoryName = ko.observable(getText('QMM012_3'));
@@ -248,7 +311,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.socialInsuaEditableAtr = ko.observable(data.socialInsuaEditableAtr);
                     self.intergrateCd = ko.observable(data.intergrateCd);
                 } else {
-                    self.categoryAtr = null;
+                    self.categoryAtr = ko.observable(null);
                     self.itemNameCd = ko.observable(null);
                     self.defaultAtr = 0;
                     self.valueAtr = ko.observable(null);
