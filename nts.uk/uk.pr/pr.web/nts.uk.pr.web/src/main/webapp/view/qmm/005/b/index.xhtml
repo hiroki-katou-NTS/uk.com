@@ -57,18 +57,6 @@
                                         value: processingYear,
                                         rows: 10
                                     }"></table>
-                                <!--<table id="F4_2"-->
-                                <!--data-bind="ntsGridList: {-->
-                                <!--dataSource: processingYearList,-->
-                                <!--primaryKey: 'code',-->
-                                <!--columns: [-->
-                                <!--{headerText: '#{i18n.getText('CMF002_60')}', key: 'code', width: 50, formatter: _.escape},-->
-                                <!--{headerText: '#{i18n.getText('CMF002_61')}', key: 'name', width: 170, formatter: _.escape}-->
-                                <!--],-->
-                                <!--value: processingYear,-->
-                                <!--multiple: false,-->
-                                <!--rows: 10-->
-                                <!--}"></table>-->
                             </div>
                         </div>
                     </td>
@@ -148,11 +136,11 @@
                                         <div data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td>
-                                        <div style="width: 200px">
+                                        <div style="width: 150px">
                                             <!--B4_13	社会保険徴収月-->
                                             <span data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth'}"></span>
                                             <!--B4_14	分を徴収-->
-                                            <span class="label" data-bind="if: socialInsuranceCollectionMonth">#{i18n.getText('#QMM005_37')}</span>
+                                            <span class="label" data-bind="if: socialInsuranceCollectionMonth">#{i18n.getText('QMM005_37')}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -160,12 +148,12 @@
                                         <div data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth'}"></div>
                                     </td>
                                     <td>
-                                        <div style="width: 170px;">
+                                        <div style="width: 85px;">
                                             <!--B4_16	要勤務日数-->
                                             <input data-bind="ntsNumberEditor: {value: numberOfWorkingDays}"
                                                    class="number-editor"/>
                                             <!--B4_17	日-->
-                                            <span data-bind="if:numberOfWorkingDays">#{i18n.getText('#QMM005_40')}</span></div>
+                                            <span data-bind="if:numberOfWorkingDays">#{i18n.getText('QMM005_40')}</span></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_7	社会保険基準日-->

@@ -104,7 +104,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 if (data) {
                     self.processInfomationDto = data;
                     // B3_2
-                    self.processingDivisionName = ko.observable(nts.uk.text.format(nts.uk.resource.getText("#QMM005_97"), self.processCateNo, data.processDivisionName));
+                    self.processingDivisionName(nts.uk.text.format(nts.uk.resource.getText("#QMM005_97"), self.processCateNo, data.processDivisionName));
                 }
             });
             service.getSetDaySupport(self.processCateNo).done(function (data) {
@@ -193,7 +193,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         for (index = 1; index < 13; index++) {
                             let objItem = {
                                 targetMonth: ko.observable(index),
-                                paymentDate: ko.observable(self.processingYear() + '/' + index + '/' + data.basicSetting.monthlyPaymentDate.datePayMent),
+                                paymentDate: ko.observable(self.transDate(self.processingYear() + '/' + index + '/' + data.basicSetting.monthlyPaymentDate.datePayMent)),
                                 employeeExtractionReferenceDate: ko.observable(self.processingYear() + '/' + index + '/' + data.basicSetting.employeeExtractionReferenceDate.refeDate),
                                 socialInsuranceCollectionMonth: ko.observable(Number.parseInt(self.processingYear() + self.fullMonth(index))),
                                 specificationPrintDate: ko.observable(Number.parseInt(self.processingYear() + '' + index)),
@@ -209,8 +209,20 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         self.settingPaymentList(array);
                     }
                 );
-                self.reflectSystemReference();
             }
+        }
+
+        transDate(param){
+            let date = new Date(param);
+            let newDate;
+            if(date.getDay() == 0){
+                newDate =  new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
+            }else if(date.getDate() == 6){
+                newDate =  new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+            }else {
+                newDate = date;
+            }
+            return newDate.getFullYear() + '/'+ (newDate.getMonth() + 1) + '/' +newDate.getDate();
         }
 
         //screen E mode update

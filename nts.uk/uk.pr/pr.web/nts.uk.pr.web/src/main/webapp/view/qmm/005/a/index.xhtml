@@ -140,7 +140,7 @@
                         <td>
                             <!--A3_3 雇用設定-->
                             <button
-                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo)}, enable:processInfomation.processDivisionName != '' ">#{i18n.getText('QMM005_20')}</button>
+                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable:processInfomation.processDivisionName != '' ">#{i18n.getText('QMM005_20')}</button>
                             <!--A3_4 対象雇用-->
                             <input
                                     data-bind="ntsTextEditor: {

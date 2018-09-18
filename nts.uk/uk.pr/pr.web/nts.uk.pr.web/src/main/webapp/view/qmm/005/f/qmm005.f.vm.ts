@@ -19,7 +19,7 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
                 { headerText: resource.getText('QMM005_93'), key: 'code', width: 90 },
                 { headerText: resource.getText('QMM005_94'), key: 'name', width: 200  }
             ]);
-            this.currentCodeListSwap = ko.observableArray([]);
+            this.currentCodeListSwap = ko.observableArray(self.itemShared.employeeSelectedList);
         }
 
         startPage(): JQueryPromise<any> {
