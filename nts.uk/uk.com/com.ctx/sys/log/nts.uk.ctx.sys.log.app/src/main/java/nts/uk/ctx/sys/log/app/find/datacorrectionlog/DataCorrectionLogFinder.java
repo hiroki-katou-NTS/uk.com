@@ -74,15 +74,15 @@ public class DataCorrectionLogFinder {
 		if (params.getDisplayFormat() == 0) { // by date
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getEmployeeId)
-					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		} else { // by individual
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeId)
 					.thenComparing(DataCorrectionLogDto::getTargetDate)
-					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		}

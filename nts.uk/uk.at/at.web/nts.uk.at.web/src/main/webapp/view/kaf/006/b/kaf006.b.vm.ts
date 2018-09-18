@@ -123,6 +123,7 @@ module nts.uk.at.view.kaf006.b{
         displayReasonLst: Array<common.DisplayReason> = []; 
         //ver21
         relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
+        hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -220,6 +221,11 @@ module nts.uk.at.view.kaf006.b{
                 // change workType
                 self.selectedTypeOfDuty.subscribe((value) => {
                     self.findChangeWorkType(value);
+                    if(self.holidayTypeCode() == 3){
+                        self.hdTypeDis(true);
+                    }else{
+                        self.hdTypeDis(false);
+                    }
                 });
                 self.displayWorkTimeName.subscribe((value) => {
                     self.changeDisplayWorkime();
@@ -338,12 +344,13 @@ module nts.uk.at.view.kaf006.b{
                     self.isCheck(false);
                     self.relaReason('');
                 }else{
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
+                    self.typeOfDutys(a);
                     if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
                         self.selectedTypeOfDuty(result.workTypeCode);
                     }
@@ -382,12 +389,13 @@ module nts.uk.at.view.kaf006.b{
                     self.isCheck(false);
                     self.relaReason('');
                 }else{
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
+                    self.typeOfDutys(a);
                     if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
                         self.selectedTypeOfDuty(result.workTypeCode);
                     }
@@ -488,7 +496,14 @@ module nts.uk.at.view.kaf006.b{
             }
             self.timeStart1(data.startTime1 == null ? null : data.startTime1);
             self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-            
+            if(data.holidayAppType == 3){
+                self.hdTypeDis(true);
+            }
+            //rela specHdDto
+            if(data.specHdDto != null && data.specHdDto !== undefined){
+                self.relaRelaReason(data.specHdDto.relationshipReason);
+                self.selectedRelation(data.specHdDto.relationshipCD);
+            }
             if(data.initMode == 0){
                 // display Mode
                 self.enbAllDayHalfDayFlg(false);

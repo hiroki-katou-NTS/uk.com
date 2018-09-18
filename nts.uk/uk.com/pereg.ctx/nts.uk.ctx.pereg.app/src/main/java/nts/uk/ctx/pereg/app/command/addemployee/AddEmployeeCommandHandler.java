@@ -392,7 +392,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					InfoOperateAttr.ADD,
 					lstItemInfoAvatar, 
 					new TargetDataKey(CalendarKeyType.NONE,
-					null, command.getCardNo()), Optional.empty());
+					null, null), Optional.empty());
 			DataCorrectionContext.setParameter(ctgAvatar.getHashID(), ctgAvatar);
 		}
 	}
