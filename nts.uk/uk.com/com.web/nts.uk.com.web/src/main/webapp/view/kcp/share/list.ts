@@ -961,6 +961,7 @@ module kcp.share.list {
             const gridList = $('#' + self.componentGridId);
             const allSelectedCodes = gridList.ntsGridList("getDataSource").map(item => item.code);
             self.selectedCodes(allSelectedCodes);
+            gridList.ntsGridList("setSelectedValue", allSelectedCodes);
         }
         
         /**
