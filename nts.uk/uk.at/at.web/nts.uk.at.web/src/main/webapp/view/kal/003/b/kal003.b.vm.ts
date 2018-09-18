@@ -51,6 +51,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         mulMonCheckCondSet: KnockoutObservable<sharemodel.MulMonCheckCondSet>;
         private setting: sharemodel.MulMonCheckCondSet;
         
+        
 
         constructor(isDoNothing) {
             let self = this;
@@ -769,11 +770,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                         });
                     } else {
-                        self.getListItemByAtrDaily(self.workRecordExtractingCondition().checkItem(), 1).done((lstItem) => {
+                        self.getListItemByAtrDaily(self.workRecordExtractingCondition().checkItem(), 0).done((lstItem) => {
                             let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                             //Open dialog KDW007C
                             let param = {
-                                attr: 1,
+//                                attr: 1,
                                 lstAllItems: lstItemCode,
                                 lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
                                 lstSubItems: currentAtdItemCondition.countableSubAtdItems()
@@ -833,6 +834,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                         //Open dialog KDW007C
                         let param = {
+                            attr: 1,
                             lstAllItems: lstItemCode,
                             lstAddItems: self.mulMonCheckCondSet().erAlAtdItem().countableAddAtdItems(),
                             lstSubItems: self.mulMonCheckCondSet().erAlAtdItem().countableSubAtdItems()
@@ -867,7 +869,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             return service.getAttendanceItemByAtr(conditionAtr);
         }
         
-        //GET ALL MONTHLY
+        //GET ALL DAILY
         getListItemByAtrDaily( typeCheck: number,mode: number) {
             let self = this;
             let dfd = $.Deferred<any>();
@@ -1153,6 +1155,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
 
         fillTextDisplayTarget(defered, currentAtdItemCondition) {
+            
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
             if (self.workRecordExtractingCondition().checkItem() === 3) {
@@ -1746,15 +1749,12 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                 }
                 if (!isValid) {
-                    dialog.info({ messageId: "Msg_927" });
-                    if (textBoxFocus === 1) { //max
-                        $('KAL003_65').ntsError('set', { messageId: "Msg_927" });
-                        $('KAL003_65').focus();
-                    } else {
-                        $('KAL003_64').ntsError('set', { messageId: "Msg_927" });
-                        $('KAL003_64').focus();
-                    }
+                    console.log(textBoxFocus);
+                    setTimeout(() => {
+                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
 
+                    }, 25);
                 }
                 return isValid;
             }
