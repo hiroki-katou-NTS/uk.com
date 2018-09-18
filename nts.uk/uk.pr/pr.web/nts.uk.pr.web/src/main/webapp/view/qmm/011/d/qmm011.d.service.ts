@@ -4,8 +4,8 @@ module nts.uk.com.view.qmm011.d {
          * define path to service
          */
         var path: any = {
-            getOccAccInsurBus: "exio/monsalabonus/laborinsur/getOccAccInsurBus",
-            updateOccAccInsurBus: "exio/monsalabonus/laborinsur/updateOccAccInsurBus",
+            getOccAccInsurBus: "core/monsalabonus/laborinsur/getOccAccInsurBus",
+            updateOccAccInsurBus: "core/monsalabonus/laborinsur/updateOccAccInsurBus",
         };
 
         export function getOccAccInsurBus(): JQueryPromise<any> {
