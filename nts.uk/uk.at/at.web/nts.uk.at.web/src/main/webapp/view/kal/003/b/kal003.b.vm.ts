@@ -1749,7 +1749,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                 }
                 if (!isValid) {
-                    console.log(textBoxFocus);
                     setTimeout(() => {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
