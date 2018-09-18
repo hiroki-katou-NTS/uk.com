@@ -26,7 +26,9 @@ module nts.uk.com.view.cdl002.a {
                     self.selectedMulEmployment(params.selectedCodes ? params.selectedCodes : []);
                 }
                 else {
-                    self.selectedSelEmployment(params.selectedCodes);
+                    if (params.selectedCodes.length > 0) {
+                        self.selectedSelEmployment(params.selectedCodes[0]);
+                    }
                 }
                 
                 // If Selection Mode is Multiple Then not show Unselected Row

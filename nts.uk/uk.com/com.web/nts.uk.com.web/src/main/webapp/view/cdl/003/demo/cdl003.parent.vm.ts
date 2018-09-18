@@ -9,7 +9,7 @@ module nts.uk.com.view.cdl003.parent.viewmodel {
         constructor() {
             var self = this;
             //construct codes 
-            self.canSelectClassificationCodes = ko.observable('0000000001,0000000002,0000000003,0000000005');
+            self.canSelectClassificationCodes = ko.observable('');
             self.selectMode = ko.observable(true);
             self.showNoSelection = ko.observable(false);
             self.selectClassificationCodes = ko.observable('');

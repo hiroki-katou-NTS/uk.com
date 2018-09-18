@@ -8,17 +8,19 @@ module demo.a.viewmodel {
         isShowWorkClosure: KnockoutObservable<boolean>;
         selectedCode: KnockoutObservable<string>;
         selectedCodes: KnockoutObservableArray<string>;
+        valueReturn: KnockoutObservable<string>;
         
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
-            self.selectedCodes = ko.observableArray(['01', '04']);
-            self.selectedCode = ko.observable('02');
+            self.selectedCodes = ko.observableArray([]);
+            self.selectedCode = ko.observable('');
             self.selectedItem = ko.observable(self.isMultiSelect() ? self.selectedCodes() : self.selectedCode());
             self.isDisplayUnselect = ko.observable(false);
             self.isShowWorkClosure = ko.observable(false);
+            self.valueReturn = ko.observable(null);
             self.isMultiSelect.subscribe(function(data) {
                 if (data) {
                     if (self.isDisplayUnselect()) {
@@ -57,7 +59,7 @@ module demo.a.viewmodel {
             let self = this;
             setShared('CDL002Params', {
                 isMultiple: self.isMultiSelect(),
-                selectedCodes: self.selectedItem(),
+                selectedCodes: _.split(self.selectedItem(), ','),
                 showNoSelection: self.isDisplayUnselect(),
                 isShowWorkClosure: self.isShowWorkClosure()
             }, true);
@@ -68,7 +70,7 @@ module demo.a.viewmodel {
                     return;
                 }
                 var output = getShared('CDL002Output');
-                self.selectedItem(output);
+                self.valueReturn(output);
             });
         }
         
