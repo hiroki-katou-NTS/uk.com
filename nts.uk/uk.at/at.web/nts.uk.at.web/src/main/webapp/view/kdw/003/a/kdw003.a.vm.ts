@@ -2179,19 +2179,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
             
             let valueTemp = 0;
-            _.forEach($.parseJSON(jsonColumnWith)[1], (value, key) => {
-                if (key.indexOf('A') != -1) {
-                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
-                        command.lstHeader[key.substring(1, key.length)] = value;
-                    }
+            _.forEach($.parseJSON(jsonColumnWith), (valueP, keyP) =>{
+                if (keyP != "reparer") {
+                    _.forEach(valueP, (value, key) => {
+                        if (key.indexOf('A') != -1) {
+                            if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                                command.lstHeader[key.substring(1, key.length)] = value;
+                            }
+                        }
+                        if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                            valueTemp = value;
+                        } else if (key.indexOf('Name') != -1) {
+                            command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                            valueTemp = 0;
+                        }
+                    });
                 }
-                if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
-                    valueTemp = value;
-                } else if (key.indexOf('Name') != -1) {
-                    command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
-                    valueTemp = 0;
-                }
-            });
+            })
+           
             if(self.isVisibleMIGrid()){
                 let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
                 delete columnWidthMiGrid.monthYear;

@@ -43,7 +43,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         showProfileIcon: KnockoutObservable<boolean> = ko.observable(false);
         //ccg001 component: search employee
         ccg001: any;
-        yearMonthCcg001: KnockoutObservable<string> = ko.observable(null);
         lstEmployee: KnockoutObservableArray<any> = ko.observableArray([]);
         displayFormat: KnockoutObservable<number> = ko.observable(null);
         lstDate: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -157,7 +156,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.updateActualTime();
             });
             self.yearMonth.subscribe(value => {
-                self.yearMonthCcg001(moment.utc(value, 'YYYYMM').format('YYYY/MM'));
                 //期間を変更する
                 if (nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen())
                     self.updateDate(value);
@@ -780,8 +778,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 periodFormatYM: true, // 対象期間精度
 
                 /** Required parameter */
-                periodStartDate: self.yearMonthCcg001(), // 対象期間開始日
-                periodEndDate: self.yearMonthCcg001(), // 対象期間終了日
+                periodStartDate: self.yearMonth, // 対象期間開始日
+                periodEndDate: self.yearMonth, // 対象期間終了日
                 inService: true, // 在職区分
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
