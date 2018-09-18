@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -215,22 +217,25 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					GeneralDate recordDate = x.getValue().get(0).getRecordDate();
 					RecordRootType rootType = EnumAdaptor.valueOf(x.getValue().get(0).getRootType(), RecordRootType.class);
 					String employeeID = x.getValue().get(0).getEmployeeID();
-					List<AppPhaseConfirm> listAppPhase =
-					x.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getPhaseOrder)).entrySet()
-					.stream().map(y -> {
-						Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
-						ApprovalBehaviorAtr appPhaseAtr =  EnumAdaptor.valueOf(y.getValue().get(0).getAppPhaseAtr(), ApprovalBehaviorAtr.class);
-						List<AppFrameConfirm> listAppFrame =
-						y.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getFrameOrder)).entrySet()
-						.stream().map(z -> { 
-							Integer frameOrder = z.getValue().get(0).getFrameOrder();
-							Optional<String> frameApproverID =  Optional.ofNullable(z.getValue().get(0).getApproverID());
-							Optional<String> representerID = Optional.ofNullable(z.getValue().get(0).getRepresenterID());
-							GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
-							return new AppFrameConfirm(frameOrder, frameApproverID, representerID, approvalDate);
+					List<AppPhaseConfirm> listAppPhase = new ArrayList<>();
+					Optional<FullJoinAppRootConfirm> isEmptyConfirm = x.getValue().stream().filter(y1 -> y1.getPhaseOrder()==null).findAny();
+					if(!isEmptyConfirm.isPresent()){
+						listAppPhase = x.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getPhaseOrder)).entrySet()
+						.stream().map(y -> {
+							Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
+							ApprovalBehaviorAtr appPhaseAtr =  EnumAdaptor.valueOf(y.getValue().get(0).getAppPhaseAtr(), ApprovalBehaviorAtr.class);
+							List<AppFrameConfirm> listAppFrame =
+							y.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getFrameOrder)).entrySet()
+							.stream().map(z -> { 
+								Integer frameOrder = z.getValue().get(0).getFrameOrder();
+								Optional<String> frameApproverID =  Optional.ofNullable(z.getValue().get(0).getApproverID());
+								Optional<String> representerID = Optional.ofNullable(z.getValue().get(0).getRepresenterID());
+								GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
+								return new AppFrameConfirm(frameOrder, frameApproverID, representerID, approvalDate);
+							}).collect(Collectors.toList());
+							return new AppPhaseConfirm(phaseOrder, appPhaseAtr, listAppFrame);
 						}).collect(Collectors.toList());
-						return new AppPhaseConfirm(phaseOrder, appPhaseAtr, listAppFrame);
-					}).collect(Collectors.toList());
+					}
 					return new AppRootConfirm(rootID, companyID, employeeID, recordDate, rootType, listAppPhase);
 				}).collect(Collectors.toList());
 	}
@@ -244,13 +249,13 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 						rs.getString("CID"), 
 						rs.getString("EMPLOYEE_ID"), 
 						GeneralDate.fromString(rs.getString("RECORD_DATE"), "yyyy-MM-dd HH:mm:ss"), 
-						Integer.valueOf(rs.getString("ROOT_TYPE")), 
-						Integer.valueOf(rs.getString("PHASE_ORDER")), 
-						Integer.valueOf(rs.getString("APP_PHASE_ATR")), 
-						Integer.valueOf(rs.getString("FRAME_ORDER")), 
+						Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
+						Strings.isNotBlank(rs.getString("PHASE_ORDER")) ? Integer.valueOf(rs.getString("PHASE_ORDER")) : null, 
+						Strings.isNotBlank(rs.getString("APP_PHASE_ATR")) ? Integer.valueOf(rs.getString("APP_PHASE_ATR")) : null, 
+						Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
 						rs.getString("APPROVER_ID"), 
 						rs.getString("REPRESENTER_ID"), 
-						GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss")));
+						Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null ));
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
