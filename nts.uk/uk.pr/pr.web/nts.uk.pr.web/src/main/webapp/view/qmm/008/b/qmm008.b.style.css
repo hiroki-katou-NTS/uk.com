@@ -11,37 +11,24 @@
 	margin-top:15px;
 }
 
-#C3 div {
+#B3 div {
 	display: inline-block;
 }
 
 
-#C3_container tr {
+#B3_container tr {
 	height:35px;
 }
 
-#C3_container th {
+#B3_container th {
 	text-align: center;
 }
 
-#C4 div {
-	display: inline-block;
-}
-
-
-#C4_container tr {
+#B4_container tr {
 	height:35px;
 }
 
-#C4_container th {
-	text-align: center;
-}
-
-#C5_container tr {
-	height:35px;
-}
-
-#C5_container th {
+#B4_container th {
 	text-align: center;
 }
 

@@ -63,8 +63,9 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                         let firstOffice = data[0].welfareInsuranceRateHistory
                         if (firstOffice.history.length > 0) self.selectedWelfareInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
                         else self.selectedWelfareInsurance(firstOffice.socialInsuranceCode);
+                    } else {
+                        self.changeBySelectedValue();
                     }
-                    self.changeBySelectedValue();
                 }
                 block.clear();
                 dfd.resolve();
