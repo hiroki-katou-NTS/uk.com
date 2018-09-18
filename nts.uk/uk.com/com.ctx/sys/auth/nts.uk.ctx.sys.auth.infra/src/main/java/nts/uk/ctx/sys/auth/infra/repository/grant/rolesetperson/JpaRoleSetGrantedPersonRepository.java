@@ -90,7 +90,7 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<RoleSetGrantedPerson> getByEmployeeDate(String employeeId, GeneralDate baseDate) {
-		return this.queryProxy().query(SELECT_BY_ID_DATE ,SacmtRoleSetGrantedPerson.class)
+		return this.queryProxy().query(SELECT_BY_DATE ,SacmtRoleSetGrantedPerson.class)
 		.setParameter("employeeId", employeeId)
 		.setParameter("date", baseDate).getSingle( c  -> c.toDomain());
 	}
