@@ -10,5 +10,6 @@ module nts.uk.pr.view.qmm011.share.model {
             this.name = name;
         }
     }
+    
 
 }

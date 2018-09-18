@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm011.b.viewmodel {
+module nts.uk.pr.view.qmm011.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
     import close = nts.uk.ui.windows.close;
@@ -195,6 +195,7 @@ module nts.uk.com.view.qmm011.b.viewmodel {
         
         setEmplInsurHis(emplInsurHis: EmplInsurHis) {
             let self = this;
+            let year, month: number;
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));

@@ -10,18 +10,18 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
     export class ScreenModel {
 
         listPerFracClass:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getListPerFracClass());
-        listOccAccIsHis:              KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
-        listOccAccIsPrRate:        KnockoutObservableArray<OccAccIsPrRate> = ko.observableArray([]);
-        listOccAccInsurBus: KnockoutObservableArray<IOccAccInsurBus> = ko.observableArray([]);
-        listAccInsurPreRate:KnockoutObservableArray<AccInsurPreRate> = ko.observableArray([10]);
+        listOccAccIsHis:            KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
+        listOccAccIsPrRate:         KnockoutObservableArray<OccAccIsPrRate> = ko.observableArray([]);
+        listOccAccInsurBus:         KnockoutObservableArray<IOccAccInsurBus> = ko.observableArray([]);
+        listAccInsurPreRate:        KnockoutObservableArray<AccInsurPreRate> = ko.observableArray([10]);
         selectedEmpInsHis:          KnockoutObservable<IOccAccIsHis> = ko.observable();
         hisId:                      KnockoutObservable<string> = ko.observable('');
         index:                      KnockoutObservable<number> = ko.observable(0);
         selectedEmpInsHisId:        KnockoutObservable<string> = ko.observable('');
         monthlyCalendar:            KnockoutObservable<string> = ko.observable('2010/1');
-        startYearMonth:                  KnockoutObservable<string> = ko.observable('2010/1');
-        endYearMonth:                    KnockoutObservable<string> = ko.observable('2010/1');
-        laststartYearMonth:              KnockoutObservable<string> = ko.observable('2010/1');
+        startYearMonth:             KnockoutObservable<string> = ko.observable('2010/1');
+        endYearMonth:               KnockoutObservable<string> = ko.observable('2010/1');
+        laststartYearMonth:         KnockoutObservable<string> = ko.observable('2010/1');
         indBdRatio:                 KnockoutObservable<string> = ko.observable('');
         perFracClass:               KnockoutObservable<number> = ko.observable();
         empContrRatio:              KnockoutObservable<string> = ko.observable('');
