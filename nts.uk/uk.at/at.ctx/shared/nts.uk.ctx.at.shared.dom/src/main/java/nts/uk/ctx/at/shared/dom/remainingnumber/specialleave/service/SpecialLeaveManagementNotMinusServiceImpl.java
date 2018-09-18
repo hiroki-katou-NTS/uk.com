@@ -7,9 +7,11 @@ import javax.inject.Inject;
 
 @Stateless
 public class SpecialLeaveManagementNotMinusServiceImpl implements SpecialLeaveManagementNotMinusService{
+	@Inject
+	private SpecialLeaveManagementService mngSevice;
 	@Override
-	public InPeriodOfSpecialLeave complileInPeriodOfSpecialLeaveNotMinus(InPeriodOfSpecialLeave processResult) {
-		
+	public InPeriodOfSpecialLeave complileInPeriodOfSpecialLeaveNotMinus(ComplileInPeriodOfSpecialLeaveParam param) {
+		InPeriodOfSpecialLeave processResult = mngSevice.complileInPeriodOfSpecialLeave(param);
 		//○マイナスなしの残数・使用数を計算
 		RemainDaysOfSpecialHoliday remainDayNotMinus = this.remainDaysNotMinus(processResult.getRemainDays());
 		SpecialHolidayRemainInfor beforeInfor = processResult.getRemainDays().getGrantDetailBefore();
