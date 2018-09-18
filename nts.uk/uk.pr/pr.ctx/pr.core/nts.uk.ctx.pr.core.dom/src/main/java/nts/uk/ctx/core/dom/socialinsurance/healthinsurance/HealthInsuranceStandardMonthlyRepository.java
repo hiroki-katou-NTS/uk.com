@@ -7,11 +7,10 @@ import java.util.Optional;
  */
 public interface HealthInsuranceStandardMonthlyRepository {
     /**
-     * Get 健康保険標準月額 by id
+     * Get 健康保険標準月額 by targetStartYm
      *
      * @param targetStartYm 年月開始
-     * @param targetEndYm   年月終了
      * @return Optional<HealthInsuranceStandardMonthly>
      */
-    Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyById(int targetStartYm, int targetEndYm);
+    Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyByStartYearMonth(int targetStartYm);
 }

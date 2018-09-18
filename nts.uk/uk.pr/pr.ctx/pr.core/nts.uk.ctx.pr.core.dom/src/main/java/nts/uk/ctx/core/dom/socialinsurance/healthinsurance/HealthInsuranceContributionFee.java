@@ -15,7 +15,6 @@ import nts.uk.ctx.core.dom.socialinsurance.InsuranceFee;
 /**
  * 各負担料
  */
-@AllArgsConstructor
 @Getter
 public class HealthInsuranceContributionFee extends DomainObject {
 
