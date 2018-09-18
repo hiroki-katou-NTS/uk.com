@@ -6,7 +6,7 @@ public interface SpecialLeaveManagementNotMinusService {
 	 * @param param //○期間内の特別休暇残を集計するの結果
 	 * @return
 	 */
-	InPeriodOfSpecialLeave complileInPeriodOfSpecialLeaveNotMinus(InPeriodOfSpecialLeave processResult);
+	InPeriodOfSpecialLeave complileInPeriodOfSpecialLeaveNotMinus(ComplileInPeriodOfSpecialLeaveParam param);
 	/**
 	 * マイナスなしの残数・使用数を計算	
 	 * @param remainDaysResult

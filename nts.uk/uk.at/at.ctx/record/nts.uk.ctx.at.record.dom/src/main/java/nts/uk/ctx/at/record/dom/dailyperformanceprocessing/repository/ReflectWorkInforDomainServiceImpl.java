@@ -1512,10 +1512,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		WorkInformation recordWorkInformation;
 		if (workingCondition.isPresent()) {
 			recordWorkInformation = new WorkInformation(workingCondition.get().getWorkTimeCode().orElse(null),
-					workingCondition.get().getWorkTypeCode());
+					workingCondition.get().getWorkTypeCode().orElse(null));
 		} else {
 			recordWorkInformation = new WorkInformation(category.getWorkTimeCode().orElse(null),
-					category.getWorkTypeCode());
+					category.getWorkTypeCode().orElse(null));
 		}
 		return recordWorkInformation;
 	}

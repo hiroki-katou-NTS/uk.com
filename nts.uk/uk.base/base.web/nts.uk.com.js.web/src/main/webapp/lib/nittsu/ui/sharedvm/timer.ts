@@ -7,14 +7,16 @@ module nts.uk.ui.sharedvm {
         isTimerStart: KnockoutObservable<boolean>;
         oldDated: KnockoutObservable<Date>;
         interval: any;
+        timeUnit: number;
 
-        constructor(target: string) {
+        constructor(target: string, timeUnit?: number) {
             var self = this;
             self.elapsedSeconds = 0;
             self.formatted = ko.observable(time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
             self.targetComponent = target;
             self.isTimerStart = ko.observable(false);
             self.oldDated = ko.observable(undefined);
+            self.timeUnit = nts.uk.util.isNullOrUndefined(timeUnit) ? 1000 : timeUnit;
             document.getElementById(self.targetComponent).innerHTML = self.formatted(); 
         }
         run(timer) {
@@ -30,7 +32,7 @@ module nts.uk.ui.sharedvm {
             if(!self.isTimerStart()){
                 self.oldDated(new Date());
                 self.isTimerStart(true); 
-                self.interval = setInterval(self.run, 1000, self);
+                self.interval = setInterval(self.run, self.timeUnit, self);
             }
         }
 
