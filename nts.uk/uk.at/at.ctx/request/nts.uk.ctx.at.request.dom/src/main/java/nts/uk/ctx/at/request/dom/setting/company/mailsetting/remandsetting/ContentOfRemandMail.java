@@ -28,8 +28,8 @@ public class ContentOfRemandMail extends AggregateRoot
 
 	public ContentOfRemandMail(String cid, String mailTitle, String mailBody) {
 		this.cid = cid;
-		this.mailTitle = new MailTitle(mailTitle);
-		this.mailBody = new MailBody(mailBody);
+		this.mailTitle = mailTitle == null ? null : new MailTitle(mailTitle);
+		this.mailBody = mailBody == null ? null : new MailBody(mailBody);
 	}
     
 }
