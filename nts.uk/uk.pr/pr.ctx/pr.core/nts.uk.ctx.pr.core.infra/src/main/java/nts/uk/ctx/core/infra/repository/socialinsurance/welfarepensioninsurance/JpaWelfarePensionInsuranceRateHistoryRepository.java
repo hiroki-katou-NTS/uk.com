@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaRepository implements WelfarePensionInsuranceRateHistoryRepository {
 	private static final String DELETE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
-	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
+	private static final String FIND_BY_OFFICE_CODE = "SELECT a FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode ORDER BY a.startYearMonth DESC";
 	private static final String DELETE_BY_OFFICE_CODE = "DELETE FROM QpbmtWelfarePensionInsuranceRateHistory a WHERE a.welfarePenHistPk.cid =:cid AND a.welfarePenHistPk.socialInsuranceOfficeCd =:officeCode";
 	
     /**

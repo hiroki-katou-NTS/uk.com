@@ -10,4 +10,6 @@ public interface BonusEmployeePensionInsuranceRateRepository {
     Optional<BonusEmployeePensionInsuranceRate> getBonusEmployeePensionInsuranceRateById(String historyId);
     void deleteByHistoryIds(List<String> historyIds);
     void add (BonusEmployeePensionInsuranceRate domain);
+    void update (BonusEmployeePensionInsuranceRate domain);
+    void remove (BonusEmployeePensionInsuranceRate domain);
 }

@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
     export class ScreenModel {
 
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
+        isOnStartUp = true;
         // History Tree Grid C1_1 -> C1_12 
         socialInsuranceOfficeList: KnockoutObservableArray<model.SocialInsuranceOffice> = ko.observableArray([]);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
@@ -41,8 +42,8 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             let self = this, dfd = $.Deferred();
             return self.showAllOfficeAndHistory();
         }
-        
-        showAllOfficeAndHistory () : JQueryPromise<any> {
+
+        showAllOfficeAndHistory(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
             service.findAllOffice().done(function(data) {
@@ -57,6 +58,13 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     });
                     self.socialInsuranceOfficeList(socailInsuranceOfficeList);
                     self.convertToTreeGridList();
+                    if (self.isOnStartUp) {
+                        self.isOnStartUp = false;
+                        let firstOffice = data[0].welfareInsuranceRateHistory
+                        if (firstOffice.history.length > 0) self.selectedWelfareInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
+                        else self.selectedWelfareInsurance(firstOffice.socialInsuranceCode);
+                    }
+                    self.changeBySelectedValue();
                 }
                 block.clear();
                 dfd.resolve();
@@ -66,6 +74,16 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 dialog.alertError(err.message);
             });
             return dfd.promise();
+        }
+
+        showByHistory() {
+            let self = this;
+            if (!self.isUpdateMode()) {
+                self.isUpdateMode(true);
+                self.showAllOfficeAndHistory();
+            } else {
+                self.changeBySelectedValue();
+            }
         }
 
         watchDataChanged() {
@@ -83,33 +101,37 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             });
         }
 
-        showByHistory() {
+        changeBySelectedValue() {
+            let self = this;
             // ___ represent office code and history id
-            let self = this,
-                selectedInsuranceCode = self.selectedWelfareInsurance().split('___')[0],
-                selectedHistoryId = self.selectedWelfareInsurance().split('___')[1],
-                selectedHistoryPeriod = null,
-                listInsuranceOffice = ko.toJS(self.socialInsuranceOfficeList);
-            self.selectedHistoryId = selectedHistoryId;
-            // find office
-            self.selectedOffice = _.find(listInsuranceOffice, { socialInsuranceCode: selectedInsuranceCode });
-            if (selectedHistoryId) {
-                let selectedHistoryPeriod;
-                // find history
-                if (self.selectedOffice) {
-                    selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, { historyId: selectedHistoryId });
+            if (self.selectedWelfareInsurance()) {
+                let selectedInsuranceCode = self.selectedWelfareInsurance().split('___')[0],
+                    selectedHistoryId = self.selectedWelfareInsurance().split('___')[1],
+                    selectedHistoryPeriod = null,
+                    listInsuranceOffice = ko.toJS(self.socialInsuranceOfficeList);
+                self.selectedHistoryId = selectedHistoryId;
+                // find office
+                self.selectedOffice = _.find(listInsuranceOffice, { socialInsuranceCode: selectedInsuranceCode });
+                if (selectedHistoryId) {
+                    let selectedHistoryPeriod;
+                    // find history
+                    if (self.selectedOffice) {
+                        selectedHistoryPeriod = _.find(self.selectedOffice.welfareInsuranceRateHistory.history, { historyId: selectedHistoryId });
+                    }
+                    // 201809 -> 2018/09
+                    if (selectedHistoryPeriod) {
+                        selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
+                        selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
+                        self.selectedHistoryPeriod(selectedHistoryPeriod);
+                    }
+                    self.showEmployeePensionByHistoryId(self.selectedHistoryId);
+                } else {
+                    self.selectedHistoryPeriod({ displayStart: '', displayEnd: '' });
                 }
-                // 201809 -> 2018/09
-                if (selectedHistoryPeriod) {
-                    selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
-                    selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
-                    self.selectedHistoryPeriod(selectedHistoryPeriod);
-                }
-                self.showEmployeePensionByHistoryId(self.selectedHistoryId);
             }
         }
-        
-        showEmployeePensionByHistoryId (historyId) {
+
+        showEmployeePensionByHistoryId(historyId) {
             let self = this;
             block.invisible();
             service.findEmployeePensionByHistoryId(historyId).done(function(data) {
@@ -117,7 +139,8 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     self.welfareInsuranceClassification(new model.WelfarePensionInsuranceClassification(data.welfarePensionInsuranceClassification));
                     self.employeeMonthlyInsuFee(new model.EmployeePensionMonthlyInsuFee(data.employeesPensionMonthlyInsuranceFee));
                     self.bonusEmployeePensionInsuranceRate(new model.BonusEmployeePensionInsuranceRate(data.bonusEmployeePensionInsuranceRate));
-                    
+                } else {
+                    self.isUpdateMode(true);
                 }
                 block.clear();
             }).fail(function(err) {
@@ -125,7 +148,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 dialog.alertError(err.message);
             });
         }
-        
+
         initDataByLastestHistory() {
             let self = this;
         }
@@ -155,8 +178,8 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             });
             self.welfareInsuranceRateTreeList(displayPensionList);
         }
-        
-        convertYearMonthToDisplayYearMonth (yearMonth) {
+
+        convertYearMonthToDisplayYearMonth(yearMonth) {
             return String(yearMonth).substring(0, 4) + "/" + String(yearMonth).substring(4, 6);
         }
 
@@ -166,6 +189,8 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
 
         register() {
             let self = this;
+            block.invisible();
+            // Register data
             let command = {
                 officeCode: self.selectedOffice.socialInsuranceCode,
                 bonusEmployeePensionInsuranceRate: ko.toJS(self.bonusEmployeePensionInsuranceRate),
@@ -173,9 +198,19 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 welfarePensionInsuranceClassification: ko.toJS(self.welfareInsuranceClassification),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
-             service.addEmployeePension(command).done(function(data) {
+            // Update individualExcemtionRate and employeeExemtionRate to null if not join fund
+            // Update 個人免除率, 事業主免除率
+
+
+
+            // Update historyId for case clone previous data
+            command.bonusEmployeePensionInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
+            command.employeesPensionMonthlyInsuranceFee.historyId = command.yearMonthHistoryItem.historyId;
+            command.welfarePensionInsuranceClassification.historyId = command.yearMonthHistoryItem.historyId;
+            service.addEmployeePension(command).done(function(data) {
                 block.clear();
-                dialog.info({messageId: 'Msg_15'});
+                dialog.info({ messageId: 'Msg_15' });
+                self.isUpdateMode(true);
             }).fail(function(err) {
                 block.clear();
                 dialog.alertError(err.message);
@@ -215,10 +250,10 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                             let history = office.welfareInsuranceRateHistory.history;
                             if (history.length > 0) {
                                 let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
-                                history[history.length - 1].endMonth = beforeLastestMonth.format('YYYYMM');
-                                previousHistoryId = history[history.length - 1].historyId;
+                                history[0].endMonth = beforeLastestMonth.format('YYYYMM');
+                                previousHistoryId = history[0].historyId;
                             }
-                            history.push({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
+                            history.unshift({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
                             office.welfareInsuranceRateHistory.history = history;
                             office = new model.SocialInsuranceOffice(office);
                         }
@@ -246,13 +281,14 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
-            setShared("QMM008_H_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history  });
+            setShared("QMM008_H_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#C1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
                 if (params) {
+                    self.isUpdateMode(false);
                     let selectedCode = self.selectedWelfareInsurance();
-                    self.selectedWelfareInsurance(null);
+                    let newCode;
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     // each office
                     socialInsuranceOfficeList.forEach(office => {
@@ -273,9 +309,9 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                                     history.pop();
                                     if (history.length > 0) {
                                         history[history.length - 1].endMonth = '999912';
-                                        selectedCode = office.socialInsuranceCode + "___" + history[history.length - 1].historyId;
+                                        newCode = office.socialInsuranceCode + "___" + history[history.length - 1].historyId;
                                     } else {
-                                        selectedCode = office.socialInsuranceCode;
+                                        newCode = office.socialInsuranceCode;
                                     }
                                 }
 
@@ -285,8 +321,13 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                         }
                     });
                     self.socialInsuranceOfficeList(socialInsuranceOfficeList);
+                    if (newCode && newCode != selectedCode) {
+                        self.selectedWelfareInsurance(newCode);
+
+                    } else {
+                        self.selectedWelfareInsurance.valueHasMutated();
+                    }
                     self.convertToTreeGridList();
-                    self.selectedWelfareInsurance(selectedCode);
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_BEGINNING) {
                         self.initBlankData();
                     } else {

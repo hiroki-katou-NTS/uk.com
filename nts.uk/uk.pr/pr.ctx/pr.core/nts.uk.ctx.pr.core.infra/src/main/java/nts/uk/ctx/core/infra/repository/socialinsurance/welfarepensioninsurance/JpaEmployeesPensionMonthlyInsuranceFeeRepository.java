@@ -59,6 +59,19 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	
 	@Override
 	public void add(EmployeesPensionMonthlyInsuranceFee domain) {
-		this.commandProxy().insert(QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain));		
+		this.commandProxy().insert(QpbmtEmployeesPensionMonthlyInsuranceFee.toEntity(domain));
+		List<QpbmtGradeWelfarePensionInsurancePremium> listEntity =  QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain);
+		this.commandProxy().insertAll(listEntity);		
+	}
+	public void update(EmployeesPensionMonthlyInsuranceFee domain) {
+		this.commandProxy().update(QpbmtEmployeesPensionMonthlyInsuranceFee.toEntity(domain));
+		List<QpbmtGradeWelfarePensionInsurancePremium> listEntity =  QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain);
+		this.commandProxy().updateAll(listEntity);		
+	}
+	
+	public void remove(EmployeesPensionMonthlyInsuranceFee domain) {
+		this.commandProxy().remove(QpbmtEmployeesPensionMonthlyInsuranceFee.toEntity(domain));
+		List<QpbmtGradeWelfarePensionInsurancePremium> listEntity =  QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain);
+		this.commandProxy().removeAll(listEntity);		
 	}
 }

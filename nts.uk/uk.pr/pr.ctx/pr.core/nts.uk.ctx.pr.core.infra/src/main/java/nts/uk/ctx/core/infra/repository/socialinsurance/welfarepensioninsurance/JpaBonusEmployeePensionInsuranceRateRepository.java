@@ -47,4 +47,14 @@ public class JpaBonusEmployeePensionInsuranceRateRepository extends JpaRepositor
 	public void add(BonusEmployeePensionInsuranceRate domain) {
 		this.commandProxy().insert(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
 	}
+	
+	@Override
+	public void update(BonusEmployeePensionInsuranceRate domain) {
+		this.commandProxy().update(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	}
+	
+	@Override
+	public void remove(BonusEmployeePensionInsuranceRate domain) {
+		this.commandProxy().remove(QpbmtBonusEmployeePensionInsuranceRate.toEntity(domain));
+	}
 }
