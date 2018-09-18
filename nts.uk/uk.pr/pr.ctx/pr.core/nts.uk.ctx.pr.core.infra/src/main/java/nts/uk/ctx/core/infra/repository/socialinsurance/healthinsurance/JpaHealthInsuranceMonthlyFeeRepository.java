@@ -5,6 +5,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.ScreenMode;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 
@@ -31,15 +32,16 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     }
 
     @Override
-    public void addOrUpdate(HealthInsuranceMonthlyFee domain) {
-        val entity = this.queryProxy().find(domain.getHistoryId(), QpbmtHealthInsuranceMonthlyFee.class);
-        if (entity.isPresent()) {
-            this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-            this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-        } else {
+    public void addOrUpdate(HealthInsuranceMonthlyFee domain, ScreenMode screenMode) {
+        if (ScreenMode.ADD.equals(screenMode)) {
+            //ドメインモデル「健康保険月額保険料額」を追加する
             this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
             this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+            return;
         }
+        //ドメインモデル「健康保険月額保険料額」を更新する
+        this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+        this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
     }
 
     /**
@@ -72,20 +74,20 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
     }
 
-	@Override
-	public void add(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-		this.commandProxy().insert(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-	}
+    @Override
+    public void add(HealthInsuranceMonthlyFee domain) {
+        this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+        this.commandProxy().insert(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+    }
 
-	@Override
-	public void update(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().update(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-		
-	}
+    @Override
+    public void update(HealthInsuranceMonthlyFee domain) {
+        this.commandProxy().update(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
 
-	@Override
-	public void delete(HealthInsuranceMonthlyFee domain) {
-		this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-	}
+    }
+
+    @Override
+    public void delete(HealthInsuranceMonthlyFee domain) {
+        this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+    }
 }

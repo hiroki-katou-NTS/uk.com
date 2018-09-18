@@ -143,7 +143,7 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
         }
 
         //ドメインモデル「健康保険月額保険料額」を更新する, ドメインモデル「健康保険月額保険料額」を追加する
-        this.healthInsuranceMonthlyFee.addOrUpdate(this);
+        this.healthInsuranceMonthlyFee.addOrUpdate(this, screenMode);
     }
 
     /**
