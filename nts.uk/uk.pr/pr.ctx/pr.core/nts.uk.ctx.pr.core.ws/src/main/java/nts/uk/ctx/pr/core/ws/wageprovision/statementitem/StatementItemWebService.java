@@ -36,6 +36,12 @@ public class StatementItemWebService extends WebService {
 	}
 	
 	@POST
+	@Path("getAllStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}")
+	public List<StatementItemDataDto> getAllStatementItemData(@PathParam("categoryAtr") Integer categoryAtr) {
+		return this.statementItemDataFinder.getAllStatementItemData(categoryAtr);
+	}
+	
+	@POST
 	@Path("getAllStatementItem")
 	public List<StatementItemDto> getAllStatementItem() {
 		return this.statementItemFinder.findAllStatementItem();

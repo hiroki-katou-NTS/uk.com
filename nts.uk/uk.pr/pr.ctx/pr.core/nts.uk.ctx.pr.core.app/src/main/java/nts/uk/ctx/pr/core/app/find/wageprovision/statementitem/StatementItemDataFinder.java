@@ -1,13 +1,16 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementitem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemDisplaySetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemNameRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
@@ -68,7 +71,6 @@ public class StatementItemDataFinder {
 		ItemRangeSetDto itemRangeSet = null;
 		ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet = null;
 		List<BreakdownItemSetDto> breakdownItemSet = null;
-		List<TaxExemptionLimitDto> taxExemptionLimit = null;
 		IntegratedItemDto integratedItem = null; // TODO Chưa tạo domain
 		String cid = AppContexts.user().companyId();
 
@@ -79,8 +81,6 @@ public class StatementItemDataFinder {
 		integratedItem = null; // TODO Chưa tạo domain
 		switch (EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class)) {
 		case PAYMENT_ITEM:
-			paymentItemSet = paymentItemSetRepository.getPaymentItemStById(cid, salaryItemId)
-					.map(i -> PaymentItemSetDto.fromDomain(i)).orElse(null);
 			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
 					.map(i -> StatementItemDisplaySetDto.fromDomain(i)).orElse(null);
 			itemRangeSet = itemRangeSetRepository.getItemRangeSetInitById(cid, salaryItemId)
@@ -90,9 +90,14 @@ public class StatementItemDataFinder {
 			breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStBySalaryId(salaryItemId).stream().map(i -> {
 				return BreakdownItemSetDto.fromDomain(i);
 			}).collect(Collectors.toList());
-			taxExemptionLimit = taxExemptionLimitRepository.getTaxExemptLimitByCompanyId(cid).stream().map(i -> {
-				return TaxExemptionLimitDto.fromDomain(i);
-			}).collect(Collectors.toList());
+			val paymentItemOpt = paymentItemSetRepository.getPaymentItemStById(cid, salaryItemId);
+			if (paymentItemOpt.isPresent()) {
+				val taxLimitAmountCode = paymentItemOpt.get().getLimitAmountSetting().getTaxLimitAmountCode()
+						.map(i -> i.v()).orElse(null);
+				val taxExemptOpt = taxExemptionLimitRepository.getTaxExemptLimitById(cid, taxLimitAmountCode);
+				paymentItemSet = paymentItemOpt.map(i -> PaymentItemSetDto.fromDomain(i, taxExemptOpt)).orElse(null);
+			}
+
 			break;
 
 		case DEDUCTION_ITEM:
@@ -129,7 +134,18 @@ public class StatementItemDataFinder {
 		}
 
 		return new StatementItemDataDto(statementItem, statementItemName, paymentItemSet, deductionItemSet, timeItemSet,
-				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, taxExemptionLimit,
-				integratedItem);
+				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem);
+	}
+
+	public List<StatementItemDataDto> getAllStatementItemData(Integer categoryAtr) {
+		String cid = AppContexts.user().companyId();
+		List<StatementItem> listStatementItem = categoryAtr == null ? statementItemRepository.getAllItemByCid(cid)
+				: statementItemRepository.getByCategory(cid, categoryAtr);
+		
+		List<StatementItemDataDto> result = new ArrayList<StatementItemDataDto>();
+		for (StatementItem item : listStatementItem) {
+			result.add(this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v(), item.getSalaryItemId()));
+		}
+		return result;
 	}
 }

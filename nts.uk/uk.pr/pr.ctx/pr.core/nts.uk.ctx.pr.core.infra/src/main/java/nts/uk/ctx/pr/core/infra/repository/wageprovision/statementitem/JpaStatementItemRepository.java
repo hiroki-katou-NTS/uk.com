@@ -14,16 +14,16 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatemen
 @Stateless
 public class JpaStatementItemRepository extends JpaRepository implements StatementItemRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBillingItem f";
-	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.billingItemPk.cid =:cid";
-	private static final String SELECT_BY_CATEGORY = SELECT_ALL_QUERY_STRING + " WHERE  f.billingItemPk.cid =:cid AND "
-			+ " f.billingItemPk.categoryAtr =:categoryAtr";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItem f";
+	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemPk.cid =:cid";
+	private static final String SELECT_BY_CATEGORY = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemPk.cid =:cid AND "
+			+ " f.statementItemPk.categoryAtr =:categoryAtr";
 	private static final String SELECT_BY_ITEM_NAME_CD = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.billingItemPk.cid =:cid AND " + " f.billingItemPk.categoryAtr =:categoryAtr AND "
-			+ " f.billingItemPk.itemNameCd =:itemNameCd ";
+			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
+			+ " f.statementItemPk.itemNameCd =:itemNameCd ";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.billingItemPk.cid =:cid AND " + " f.billingItemPk.categoryAtr =:categoryAtr AND "
-			+ " f.billingItemPk.itemNameCd =:itemNameCd AND" + " f.billingItemPk.salaryItemId =:salaryItemId";
+			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
+			+ " f.statementItemPk.itemNameCd =:itemNameCd AND" + " f.statementItemPk.salaryItemId =:salaryItemId";
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {

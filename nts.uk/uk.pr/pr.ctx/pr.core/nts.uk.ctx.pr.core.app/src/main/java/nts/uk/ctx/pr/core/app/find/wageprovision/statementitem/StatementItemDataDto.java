@@ -15,6 +15,5 @@ public class StatementItemDataDto {
 	private ItemRangeSetDto itemRangeSet;
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
 	private List<BreakdownItemSetDto> breakdownItemSet;
-	private List<TaxExemptionLimitDto> taxExemptionLimit;
 	private IntegratedItemDto integratedItem;
 }

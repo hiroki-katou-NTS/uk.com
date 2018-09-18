@@ -15,8 +15,8 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatemen
 public class JpaStatementItemNameRepository extends JpaRepository implements StatementItemNameRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSpecItemName f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.specItemNamePk.cid =:cid AND  f.specItemNamePk.salaryItemId =:salaryItemId ";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItemName f";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId =:salaryItemId ";
 
     @Override
     public List<StatementItemName> getAllStatementItemName(){
