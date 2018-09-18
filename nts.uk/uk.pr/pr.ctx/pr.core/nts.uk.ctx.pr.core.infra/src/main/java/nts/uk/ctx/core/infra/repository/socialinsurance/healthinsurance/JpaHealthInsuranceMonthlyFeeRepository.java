@@ -30,6 +30,18 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         return Optional.of(toDomain(entity.get(), details));
     }
 
+    @Override
+    public void addOrUpdate(HealthInsuranceMonthlyFee domain) {
+        val entity = this.queryProxy().find(domain.getHistoryId(), QpbmtHealthInsuranceMonthlyFee.class);
+        if (entity.isPresent()) {
+            this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+            this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+        } else {
+            this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+            this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+        }
+    }
+
     /**
      * Convert entity to domain
      *
