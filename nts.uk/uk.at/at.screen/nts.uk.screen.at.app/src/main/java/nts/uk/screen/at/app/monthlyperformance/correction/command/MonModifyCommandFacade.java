@@ -116,7 +116,7 @@ public class MonModifyCommandFacade {
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery);
-					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery));
+					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
 				});
 		executorService.submit(task);
 		return Collections.emptyMap();
