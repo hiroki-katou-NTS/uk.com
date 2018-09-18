@@ -62,4 +62,14 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
         this.autoCalculationCls         = EnumAdaptor.valueOf(autoCalculationCls, AutoCalculationExecutionCls.class);
         this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
     }
+
+	public HealthInsuranceMonthlyFee(String historyId, SalaryHealthInsurancePremiumRate healthInsuranceRate,
+			int autoCalculationCls,
+			List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee) {
+		super();
+		this.historyId = historyId;
+		this.healthInsuranceRate = healthInsuranceRate;
+		this.autoCalculationCls         = EnumAdaptor.valueOf(autoCalculationCls, AutoCalculationExecutionCls.class);
+		this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
+	}
 }

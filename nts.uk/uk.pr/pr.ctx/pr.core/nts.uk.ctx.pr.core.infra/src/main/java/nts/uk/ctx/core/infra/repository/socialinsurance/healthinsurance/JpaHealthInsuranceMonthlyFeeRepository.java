@@ -59,4 +59,21 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     public void deleteByHistoryIds(List<String> historyIds) {
         this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
     }
+
+	@Override
+	public void add(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+		this.commandProxy().insert(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+	}
+
+	@Override
+	public void update(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().update(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+		
+	}
+
+	@Override
+	public void delete(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+	}
 }

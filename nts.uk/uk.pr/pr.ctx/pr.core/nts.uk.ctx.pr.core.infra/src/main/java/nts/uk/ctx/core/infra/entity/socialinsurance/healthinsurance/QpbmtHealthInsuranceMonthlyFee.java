@@ -121,7 +121,7 @@ public class QpbmtHealthInsuranceMonthlyFee extends UkJpaEntity implements Seria
      * @param domain HealthInsuranceMonthlyFee
      * @return QpbmtHealthInsuranceMonthlyFee
      */
-    private QpbmtHealthInsuranceMonthlyFee toEntity(HealthInsuranceMonthlyFee domain) {
+    public static QpbmtHealthInsuranceMonthlyFee toEntity(HealthInsuranceMonthlyFee domain) {
         return new QpbmtHealthInsuranceMonthlyFee(domain.getHistoryId(), domain.getAutoCalculationCls().value,
                 domain.getHealthInsuranceRate().getIndividualBurdenRatio().getLongCareInsuranceRate().v(),
                 domain.getHealthInsuranceRate().getIndividualBurdenRatio().getBasicInsuranceRate().v(),

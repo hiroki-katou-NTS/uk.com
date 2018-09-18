@@ -17,4 +17,10 @@ public interface HealthInsuranceMonthlyFeeRepository {
     Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId);
 
     void deleteByHistoryIds(List<String> historyIds);
+    
+    void add(HealthInsuranceMonthlyFee domain);
+    
+    void update(HealthInsuranceMonthlyFee domain);
+    
+    void delete(HealthInsuranceMonthlyFee domain);
 }

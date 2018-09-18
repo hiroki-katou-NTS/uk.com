@@ -1,6 +1,10 @@
 package nts.uk.ctx.core.app.find.socialinsurance.healthinsurance;
 
 import lombok.val;
+import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.BonusHealthInsuranceRateDto;
+import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceDto;
+import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceFeeRateHistoryDto;
+import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceMonthlyFeeDto;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
@@ -56,7 +60,7 @@ public class HealthInsuranceFeeRateFinder {
 
         socialInsuranceOfficeList.forEach(office -> {
             Optional<HealthInsuranceFeeRateHistory> healthInsuranceFeeRateHistory = healthInsuranceFeeRateHistoryRepository.getHealthInsuranceFeeRateHistoryByCid(companyId, office.getCode().v());
-            healthDtoList.add(new SocialInsuranceOfficeDto(office.getCode().v(), office.getName().v(), HealthInsuranceFeeRateHistoryDto.fromDomain(healthInsuranceFeeRateHistory)));
+            healthDtoList.add(new SocialInsuranceOfficeDto(office.getCode().v(), office.getName().v(), HealthInsuranceFeeRateHistoryDto.fromDomain(office.getCode().v(), healthInsuranceFeeRateHistory)));
         });
 
         return healthDtoList;

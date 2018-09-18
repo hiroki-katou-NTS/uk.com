@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
  * 賞与健康保険料率
  */
 @Getter
+@AllArgsConstructor
 public class BonusHealthInsuranceRate extends AggregateRoot {
 
     /**
@@ -55,4 +57,19 @@ public class BonusHealthInsuranceRate extends AggregateRoot {
         this.individualBurdenRatio     = new HealthContributionRate(individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate);
         this.employeeBurdenRatio       = new HealthContributionRate(employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
     }
+
+	/**
+	 * @param historyID
+	 * @param employeeShareAmountMethod
+	 * @param individualBurdenRatio
+	 * @param employeeBurdenRatio
+	 */
+	public BonusHealthInsuranceRate(String historyID, int employeeShareAmountMethod,
+			HealthContributionRate individualBurdenRatio, HealthContributionRate employeeBurdenRatio) {
+		super();
+		this.historyID = historyID;
+		this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
+		this.individualBurdenRatio = individualBurdenRatio;
+		this.employeeBurdenRatio = employeeBurdenRatio;
+	}
 }

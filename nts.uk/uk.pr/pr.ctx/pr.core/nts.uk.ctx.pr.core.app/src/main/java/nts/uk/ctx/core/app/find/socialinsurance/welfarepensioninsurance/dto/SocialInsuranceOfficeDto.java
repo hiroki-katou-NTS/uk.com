@@ -2,7 +2,7 @@ package nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistoryDto;
+import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceFeeRateHistoryDto;
 
 @Data
 @AllArgsConstructor
