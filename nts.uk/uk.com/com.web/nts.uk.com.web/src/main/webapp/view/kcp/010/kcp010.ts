@@ -137,7 +137,13 @@ module kcp010.viewmodel {
         openDialogCDL008(){
             let self = this;
             block.grayout();
-            setShared('inputCDL008', { selectedCodes: self.workplaceId(), baseDate: moment(new Date()).toDate(), isMultiple: false, selectedSystemType:5 , isrestrictionOfReferenceRange:true , showNoSelection:false , isShowBaseDate:false });
+            setShared('inputCDL008', { selectedCodes: self.workplaceId(), 
+                                       baseDate: moment(new Date()).toDate(), 
+                                       isMultiple: false, 
+                                       selectedSystemType:5 , 
+                                       isrestrictionOfReferenceRange:true , 
+                                       showNoSelection:false , 
+                                       isShowBaseDate:true });
             modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                 block.clear();
                 let data = getShared('outputCDL008');

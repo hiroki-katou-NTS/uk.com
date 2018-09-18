@@ -60,8 +60,7 @@ public class GetSPHolidayNextGrantDate {
 		}
 		
 		// Set entry date
-		if (param.getEntryDate() != null && param.getRetireDate() != null
-				&& baseDate.afterOrEquals(param.getEntryDate()) && baseDate.beforeOrEquals(param.getRetireDate())) {
+		if (param.getEntryDate() != null && baseDate.afterOrEquals(param.getEntryDate())) {
 			entryDate = param.getEntryDate();
 		} else {
 			AffCompanyHistSharedImport affComHist = empEmployeeAdapter.GetAffComHisBySidAndBaseDate(param.getSid(),

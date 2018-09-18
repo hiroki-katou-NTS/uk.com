@@ -38,6 +38,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.adapter.employee.NarrowEmployeeAdapter;
@@ -401,6 +402,9 @@ public class DailyPerformanceCorrectionProcessor {
 		val start = System.currentTimeMillis();
 		val emp = listEmployeeId;
 		val dateRangeTemp = dateRange;
+		
+		MutableValue<Exception> exceptionAsync = new MutableValue<>(null);
+		
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 					try {
@@ -420,6 +424,8 @@ public class DailyPerformanceCorrectionProcessor {
 							// screenDto.setFlexShortage(null);
 						}
 						System.out.println("time flex : " + (System.currentTimeMillis() - start));
+					} catch (Exception ex) {
+						exceptionAsync.set(ex);
 					} finally {
 						// Count down latch.
 						countDownLatch.countDown();
@@ -489,6 +495,11 @@ public class DailyPerformanceCorrectionProcessor {
 		} catch (InterruptedException ie) {
 			throw new RuntimeException(ie);
 		}
+		
+		exceptionAsync.optional().ifPresent(ex -> {
+			throw new RuntimeException(ex);
+		});
+		
 		screenDto.setShowErrorDialog(showDialogError.showDialogError(lstError, showError, dailyPerformanceDto));
 		screenDto.setDateRange(datePeriodResult);
 		return screenDto;

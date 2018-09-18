@@ -98,15 +98,18 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 	
 	@Override
 	public List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
-		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
-
 		List<AttendanceItemName> attendanceItems = this.getAttendanceItemName(attendanceItemIds, type);
-
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
 				.getByAttendanceIdAndType(attendanceItemIds, type);
+		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
+	}
 
+	@Override
+	public List<AttendanceItemName> getNameOfAttendanceItem(List<AttendanceItemName> attendanceItems,
+			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
 		// // get list frame No 0
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeMap = attendanceItemAndFrameNos.stream()
 				.filter(item -> item.getFrameCategory().value == 0)
@@ -211,7 +214,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter
 				.getDivergenceTimeName(companyId, frameNos).stream()
-				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x));
+				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x, (x,y)-> x));
 
 		// 任意項目 8
 		Map<Integer, OptionalItemImport> optionalItems = this.optionalItemAdapter.findOptionalItem(companyId, frameNos)
@@ -403,25 +406,25 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 				attendanceDto.setTypeOfAttendanceItem(
 						frameSpecialHoliday.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			//14
-			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && totalTimes
-					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
-				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						totalTimes.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
-								.getTotalTimesName().v()));
-				attendanceDto.setFrameCategory(
-						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
-				attendanceDto.setTypeOfAttendanceItem(
-						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			//15
-			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && specialHoliday
+			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && totalTimes
 					.containsKey(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						specialHoliday.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
-								.getSpecialHolidayName().v()));
+						totalTimes.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
+						.getTotalTimesName().v()));
 				attendanceDto.setFrameCategory(
 						frameTotalTimes.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameTotalTimes.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//15
+			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && specialHoliday
+					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						specialHoliday.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
+						.getSpecialHolidayName().v()));
+				attendanceDto.setFrameCategory(
+						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			} else {
 				attendanceDto.setFrameCategory(0);
 				attendanceDto.setTypeOfAttendanceItem(0);

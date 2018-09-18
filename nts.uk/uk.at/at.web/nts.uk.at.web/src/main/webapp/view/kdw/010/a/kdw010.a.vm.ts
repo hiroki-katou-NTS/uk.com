@@ -5,6 +5,7 @@ module nts.uk.at.view.kdw010.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import errors = nts.uk.ui.errors;
 
+    const NOT_USE = 1;
     const TARGET_TYPE = 1;
     const IGNORE_TYPE = 2;
     const JOIN_CHARACTOR = ", ";
@@ -57,6 +58,7 @@ module nts.uk.at.view.kdw010.a {
                     if (codeChanged == 1) {
                         self.enableState(true);
                     } else {
+                    	$('.nts-input').ntsError('clear');
                         self.enableState(false);
                     }
                 });
@@ -155,7 +157,7 @@ module nts.uk.at.view.kdw010.a {
             registration() {
                 blockUI.invisible();
                 var self = this;
-                $('.nts-input').trigger("validate");
+                if (self.selectUse() == NOT_USE) $('.nts-input').trigger("validate");
                 _.defer(() => {
                     if (!$('.nts-editor').ntsError("hasError")) {
                         var useAtr = self.selectUse() == 1 ? true : false;
@@ -168,9 +170,8 @@ module nts.uk.at.view.kdw010.a {
                         });
                     }
                 });
-                blockUI.clear();
+            	blockUI.clear();
             }
-
         }
     }
 }

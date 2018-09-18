@@ -55,7 +55,9 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
 		this.ymd = ymd;
-		this.scheduleTimeSheets = scheduleTimeSheets; 
+		this.scheduleTimeSheets = scheduleTimeSheets;
+		//一時対応
+		this.dayOfWeek = DayOfWeek.MONDAY;
 	} 
 	
 	/**
