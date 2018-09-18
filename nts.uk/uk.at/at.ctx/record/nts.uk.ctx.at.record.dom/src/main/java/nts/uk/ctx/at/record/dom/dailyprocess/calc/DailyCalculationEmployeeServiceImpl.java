@@ -171,7 +171,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter) {
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr) {
 		//日別実績(WORK取得)
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
 		
@@ -179,7 +179,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		List<ClosureStatusManagement> closureList = getClosureList(employeeId,datePeriod);
 		
 		//計算処理を呼ぶ
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList);
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList,reCalcAtr);
 		//実績が無い社員の数を検知
 		val empIds = createList.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
 		//実績が無い社員を成功としてカウントアップ
