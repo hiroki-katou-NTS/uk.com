@@ -29,11 +29,8 @@ public class AnnLeaEmpBasicInfo {
 	// 入社年月日
 	private GeneralDate entryDate;
 	
-	// 退職年月日
-	private GeneralDate retireDate;
-
 	public AnnLeaEmpBasicInfo(String sid, GeneralDate grantDate, String grantTable, DatePeriod periodCond,
-			Integer contractTime, GeneralDate entryDate, GeneralDate retireDate) {
+			Integer contractTime, GeneralDate entryDate) {
 		super();
 		this.sid = sid;
 		this.grantDate = grantDate;
@@ -41,7 +38,6 @@ public class AnnLeaEmpBasicInfo {
 		this.periodCond = periodCond;
 		this.contractTime = contractTime;
 		this.entryDate = entryDate;
-		this.retireDate = retireDate;
 	}
 	
 	

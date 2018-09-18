@@ -83,6 +83,7 @@ public interface AttendanceTimeOfMonthlyRepository {
 	/**
 	 * 登録および更新
 	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
+	 * @param affiliation 月別実績の所属情報
 	 */
 	void persistAndUpdate(AttendanceTimeOfMonthly attendanceTimeOfMonthly, Optional<AffiliationInfoOfMonthly> affiliation) ;
 	

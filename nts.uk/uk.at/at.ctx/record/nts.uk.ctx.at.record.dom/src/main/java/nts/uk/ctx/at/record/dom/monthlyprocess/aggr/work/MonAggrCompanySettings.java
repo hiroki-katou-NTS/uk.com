@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthAc
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
@@ -123,6 +124,8 @@ public class MonAggrCompanySettings {
 	@Getter
 	private Optional<InsufficientFlexHolidayMnt> insufficientFlexOpt;
 	/** フレックス不足の繰越上限管理 */
+	@Getter
+	private Optional<FlexShortageLimit> flexShortageLimitOpt;
 	/** 休暇加算設定 */
 	@Getter
 	private VacationAddSet vacationAddSet;
@@ -201,6 +204,7 @@ public class MonAggrCompanySettings {
 		this.comIrgSetOpt = Optional.empty();
 		this.comFlexSetOpt = Optional.empty();
 		this.insufficientFlexOpt = Optional.empty();
+		this.flexShortageLimitOpt = Optional.empty();
 		this.outsideOTBDItems = new CopyOnWriteArrayList<>();
 		this.outsideOTOverTimes = new CopyOnWriteArrayList<>();
 		this.agreementOperationSet = Optional.empty();
@@ -426,6 +430,7 @@ public class MonAggrCompanySettings {
 		this.insufficientFlexOpt = repositories.getInsufficientFlex().findByCId(companyId);
 		
 		// フレックス不足の繰越上限管理
+		this.flexShortageLimitOpt = repositories.getFlexShortageLimit().get(companyId);
 		
 		// 休暇加算設定
 		this.vacationAddSet = repositories.getVacationAddSet().get(companyId);
