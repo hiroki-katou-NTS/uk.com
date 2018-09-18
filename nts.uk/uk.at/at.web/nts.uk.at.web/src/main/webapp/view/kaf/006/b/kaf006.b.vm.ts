@@ -123,6 +123,7 @@ module nts.uk.at.view.kaf006.b{
         displayReasonLst: Array<common.DisplayReason> = []; 
         //ver21
         relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
+        hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -220,6 +221,9 @@ module nts.uk.at.view.kaf006.b{
                 // change workType
                 self.selectedTypeOfDuty.subscribe((value) => {
                     self.findChangeWorkType(value);
+                    if(self.holidayTypeCode() == 3){
+                        self.hdTypeDis(true);
+                    }
                 });
                 self.displayWorkTimeName.subscribe((value) => {
                     self.changeDisplayWorkime();
@@ -488,7 +492,14 @@ module nts.uk.at.view.kaf006.b{
             }
             self.timeStart1(data.startTime1 == null ? null : data.startTime1);
             self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-            
+            if(data.holidayAppType == 3){
+                self.hdTypeDis(true);
+            }
+            //rela specHdDto
+            if(data.specHdDto != null && data.specHdDto !== undefined){
+                self.relaRelaReason(data.specHdDto.relationshipReason);
+                self.selectedRelation(data.specHdDto.relationshipCD);
+            }
             if(data.initMode == 0){
                 // display Mode
                 self.enbAllDayHalfDayFlg(false);
