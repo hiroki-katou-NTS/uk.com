@@ -939,23 +939,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		  
 		  IntegrationOfDaily calcResultIntegrationOfDaily = recordReGetClass.getIntegrationOfDaily();  
 		  if(!attendanceItemIdList.isEmpty()) {
-		   DailyRecordToAttendanceItemConverter beforDailyRecordDto = converter.setData(copyIntegrationOfDaily); 
-		   List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
-		   DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter.setData(recordReGetClass.getIntegrationOfDaily()); 
-		   afterDailyRecordDto.merge(itemValueList);
+			  DailyRecordToAttendanceItemConverter beforDailyRecordDto = converter.setData(copyIntegrationOfDaily); 
+			  List<ItemValue> itemValueList = beforDailyRecordDto.convert(attendanceItemIdList);  
+			  DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter.setData(recordReGetClass.getIntegrationOfDaily()); 
+			  afterDailyRecordDto.merge(itemValueList);
 		   
+			  //手修正された項目の値を計算前に戻す   
+			  calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
 		   
-		   
-		   //手修正された項目の値を計算前に戻す   
-		   calcResultIntegrationOfDaily = afterDailyRecordDto.toDomain();
-		   
-		   //手修正後の再計算
-		   calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,attendanceItemIdList,targetDate
+			  //手修正後の再計算
+			  calcResultIntegrationOfDaily = reCalc(calcResultIntegrationOfDaily,recordReGetClass.getCalculationRangeOfOneDay(),companyId, companyCommonSetting, converter,attendanceItemIdList,targetDate
 				   ,PremiumAtr.RegularWork,recordReGetClass.getHolidayCalcMethodSet(),recordReGetClass.getWorkTimezoneCommonSet(),recordReGetClass);
-		   //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
-		   DailyRecordToAttendanceItemConverter afterReCalcDto = converter.setData(calcResultIntegrationOfDaily); 
-		   afterReCalcDto.merge(itemValueList);
-		   calcResultIntegrationOfDaily = afterReCalcDto.toDomain();
+			  //手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
+			  DailyRecordToAttendanceItemConverter afterReCalcDto = converter.setData(calcResultIntegrationOfDaily); 
+			  afterReCalcDto.merge(itemValueList);
+			  calcResultIntegrationOfDaily = afterReCalcDto.toDomain();
 		  }
 			
 		/*日別実績への項目移送*/
