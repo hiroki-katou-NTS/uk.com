@@ -1,7 +1,5 @@
 package nts.uk.file.at.infra.schedule.daily;
 
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,14 +12,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +36,6 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
-import com.fasterxml.jackson.core.JsonParser;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -68,16 +63,24 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.record.dom.workrecord.goout.GoingOutReason;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.schedule.app.command.processbatch.ErrorContentDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
+import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -212,6 +215,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	@Inject
 	private DataDialogWithTypeProcessor dataProcessor;
 	
+	@Inject
+	private DailyAttdItemAuthRepository daiAttItemAuthRepo;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
+	
 	/** The filename. */
 	private final String filename = "report/KWR001.xlsx";
 	
@@ -262,7 +271,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		val reportContext = this.createContext(filename);
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
-		// ドメインモデル「日別勤務表の出力項目」を取得する
+		// ドメインモッ�「日別勤務表の出力雮」を取得す�
 		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v());
 		if (!optOutputItemDailyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
@@ -414,9 +423,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param outputItem the output item
 	 */
 	private void collectData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query, WorkScheduleOutputCondition condition, OutputItemDailyWorkSchedule outputItem, int dataRowCount, TaskDataSetter setter) {
+		String companyId = AppContexts.user().companyId();
+		String roleId = AppContexts.user().roles().forAttendance();
+		
 		reportData.setHeaderData(new DailyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
-		collectDisplayMap(reportData.getHeaderData(), outputItem);
+		collectDisplayMap(reportData.getHeaderData(), outputItem, companyId, roleId);
 		GeneralDate endDate = query.getEndDate();
 		GeneralDate baseDate = query.getBaseDate();
 		
@@ -485,8 +497,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (query.getEmployeeId().isEmpty())
 				throw new BusinessException(new RawErrorMessage("Msg_1396"));
 		}
-		
-		String companyId = AppContexts.user().companyId();
 		
 		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = workplaceConfigRepository.findByWkpIdsAtTime(companyId, baseDate, lstWorkplaceId);
 		queryData.setLstWorkplaceConfigInfo(lstWorkplaceConfigInfo);
@@ -565,7 +575,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
-		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
+		// 階層累計行�み出力する設定�場合、データ取得件数は0件として扱぀�エラーメヂ�ージを表示(#Msg_37#)
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplaceIdWithData); // Get lowest possible workplace level -> lowestEmployeeLevel
 		WorkScheduleSettingTotalOutput totalOutputCondition = condition.getSettingDetailTotalOutput();
 		TotalWorkplaceHierachy outputSetting = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
@@ -579,41 +589,42 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		/*
 		 *  Collect all data which uses value type = code
 		 */
-		// 勤務種類を取得する
+		// 勤務種類を取得す�
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(y -> x == y)).count() > 0) {
 			List<WorkType> lstWorkType = worktypeRepo.findByCompanyId(companyId);
 			queryData.setLstWorkType(lstWorkType);
 		}
-		// 就業時間帯を取得する
+		// 就業時間帯を取得す�
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(y -> x == y)).count() > 0) {
 			List<WorkTimeSetting> lstWorkTime = workTimeRepo.findByCompanyId(companyId);
 			queryData.setLstWorkTime(lstWorkTime);
 		}
-		// 職場を取得する
+		// 職場を取得す�
 		if (itemsId.stream().filter(x -> ATTENDANCE_ID_WORKPLACE == x).count() > 0) {
 			List<CodeName> lstWorkplaceInfo = dataProcessor.getWorkPlace(companyId, endDate).getCodeNames();
 			queryData.setLstWorkplaceInfo(lstWorkplaceInfo);
 		}
-		// 勤務場所を取得する
+		// 勤務�所を取得す�
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(y -> x == y)).count() > 0) {
 			List<CodeName> lstWorkLocation = dataProcessor.getServicePlace(companyId).getCodeNames();
 			queryData.setLstWorkLocation(lstWorkLocation);
 		}
+		// 乖離琔�を取得す�
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_REASON).anyMatch(y -> x == y)).count() > 0) {
 			List<CodeName> lstReason = dataProcessor.getReason(companyId).getCodeNames();
 			queryData.setLstReason(lstReason);
 		}
-		// 分類を取得する
+		// 刡�を取得す�
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_CLASSIFICATION).anyMatch(y -> x == y)).count() > 0) {
 			List<CodeName> lstClassification = dataProcessor.getClassification(companyId).getCodeNames();
 			queryData.setLstClassification(lstClassification);
 		}
-		// 職位を取得する
+		// 職位を取得す�
 		if (itemsId.stream().filter(x -> ATTENDANCE_ID_POSITION == x).count() > 0) {
 			List<CodeName> lstPosition = dataProcessor.getPossition(companyId, endDate).getCodeNames();
 			queryData.setLstPosition(lstPosition);
 		}
-		// 雇用を取得する
+		// 雔�を取得す�
 		if (itemsId.stream().filter(x -> ATTENDANCE_ID_EMPLOYMENT == x).count() > 0) {
 			List<CodeName> lstEmployment = dataProcessor.getEmployment(companyId).getCodeNames();
 			queryData.setLstEmployment(lstEmployment);
@@ -747,7 +758,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getWorkingDate().compareTo(date) == 0)).forEach(x -> {
 						GeneralDate workingDate = x.getWorkingDate();
 						
-						// ドメインモデル「社員の日別実績エラー一覧」を取得する
+						// ドメインモッ�「社員の日別実績エラー一覧」を取得す�
 						List<EmployeeDailyPerError> errorList = errorListAllEmployee.stream()
 								.filter(error -> StringUtils.equalsAnyIgnoreCase(error.getEmployeeID(), employeeId) && error.getDate().compareTo(workingDate) == 0).collect(Collectors.toList());
 						// Manually set error list into remark query data container
@@ -759,7 +770,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							
 							lstRemarkContent.stream().filter(remark -> remark.isUsedClassification()).forEach(remark -> {
 								
-								// Append 備考入力
+								// Append 備��
 								if (remark.getPrintItem() == RemarksContentChoice.REMARKS_INPUT) {
 									Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 									if (optRemarkInput.isPresent()) {
@@ -800,7 +811,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								}
 							}
 							
-							//personalPerformanceDate.detailedErrorData += String.join("、", lstRemarkContentStr);
+							//personalPerformanceDate.detailedErrorData += String.join("�, lstRemarkContentStr);
 						}
 						
 						// ER/AL
@@ -808,7 +819,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							boolean erMark = false, alMark = false;
 							
 							List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
-							// ドメインモデル「勤務実績のエラーアラーム」を取得する
+							// ドメインモッ�「勤務実績のエラーアラー�」を取得す�
 							//List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, lstErrorCode);
 							
 							List<ErrorAlarmWorkRecord> lstErrorRecord = lstAllErrorRecord.stream().filter(err -> {
@@ -816,12 +827,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							}).collect(Collectors.toList());
 							
 							for (ErrorAlarmWorkRecord error : lstErrorRecord) {
-								// コードから区分を取得する
+								// コードから区刂�取得す�
 								switch (error.getTypeAtr()) {
-								case ALARM: // 区分　＝　エラー　のとき　AL
+								case ALARM: // 区刀��　エラー　のとき　AL
 									alMark = true; 
 									break;
-								case ERROR: // 区分　=　アラーム　のとき　ER
+								case ERROR: // 区刀�=　アラー�　のとき　ER
 									erMark = true;
 									break;
 								case OTHER:
@@ -845,7 +856,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							if (optItemValue.isPresent()) {
 								AttendanceItemValueImport itemValue = optItemValue.get();
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
-								if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
+								if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
 									int attendanceId = itemValue.getItemId();
 									String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 									itemValue.setValue(value);
@@ -946,7 +957,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			detailedDate.setDayOfWeek(String.valueOf(workingDate.dayOfWeek()));
 			employeeData.lstDetailedPerformance.add(detailedDate);
 			
-			// ドメインモデル「社員の日別実績エラー一覧」を取得する
+			// ドメインモッ�「社員の日別実績エラー一覧」を取得す�
 			List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, workingDate);
 			// Manually set error list into remark data container
 			queryData.getRemarkDataContainter().setErrorList(errorList);
@@ -957,7 +968,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				// Get list remark check box from screen C (UI)
 				List<PrintRemarksContent> lstRemarkContent = outSche.getLstRemarkContent();
 				lstRemarkContent.stream().filter(remark -> remark.isUsedClassification()).forEach(remark -> {
-					// Append 備考入力
+					// Append 備��
 					if (remark.getPrintItem() == RemarksContentChoice.REMARKS_INPUT) {
 						Optional<AttendanceItemValueImport> optRemarkInput = x.getAttendanceItems().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 833).findFirst();
 						if (optRemarkInput.isPresent()) {
@@ -1005,16 +1016,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
 				boolean erMark = false, alMark = false;
 				List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
-				// ドメインモデル「勤務実績のエラーアラーム」を取得する
+				// ドメインモッ�「勤務実績のエラーアラー�」を取得す�
 				List<ErrorAlarmWorkRecord> lstErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, lstErrorCode);
 				
 				for (ErrorAlarmWorkRecord error : lstErrorRecord) {
-					// コードから区分を取得する
+					// コードから区刂�取得す�
 					switch (error.getTypeAtr()) {
-					case ALARM: // 区分　＝　エラー　のとき　AL
+					case ALARM: // 区刀��　エラー　のとき　AL
 						alMark = true; 
 						break;
-					case ERROR: // 区分　=　アラーム　のとき　ER
+					case ERROR: // 区刀�=　アラー�　のとき　ER
 						erMark = true;
 						break;
 					case OTHER:
@@ -1039,7 +1050,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (optItemValue.isPresent()) {
 					AttendanceItemValueImport itemValue = optItemValue.get();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
-					if (valueTypeEnum == ValueType.CODE && itemValue.getValue() != null) {
+					if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
 						int attendanceId = itemValue.getItemId();
 						String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 						itemValue.setValue(value);
@@ -1631,15 +1642,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param headerData the header data
 	 * @param condition the condition
 	 */
-	private void collectDisplayMap(DailyPerformanceHeaderData headerData, OutputItemDailyWorkSchedule condition) {
+	private void collectDisplayMap(DailyPerformanceHeaderData headerData, OutputItemDailyWorkSchedule condition, String companyId, String roleId) {
 		List<AttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
 		headerData.setLstOutputItemSettingCode(new ArrayList<>());
 		
 		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
-		List<DailyAttendanceItem> lstDailyAttendanceItem = attendanceNameService.getNameOfDailyAttendanceItem(lstAttendanceId);
+		List<AttItemNameImport> lstDailyAttendanceItem = companyDailyItemService.getDailyItems(companyId, Optional.of(roleId), lstAttendanceId, Arrays.asList(DailyAttendanceAtr.values()));
+		if (lstDailyAttendanceItem.isEmpty())
+			throw new BusinessException(new RawErrorMessage("Msg_1417"));
+		//condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
-			DailyAttendanceItem attendanceItem = lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
+			AttItemNameImport attendanceItem = lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
 			OutputItemSetting setting = new OutputItemSetting();
 			setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
 			setting.setItemName(attendanceItem.getAttendanceItemName());
@@ -1661,7 +1675,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&16&\"源ノ角ゴシック Normal,Bold\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&16&\"源ノ角ゴシヂ� Normal,Bold\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
@@ -1671,7 +1685,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cell periodCell = cells.get(dateRow,0);
 		
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M/d (E)", Locale.JAPAN);
-		String periodStr = WorkScheOutputConstants.PERIOD + " " + query.getStartDate().toLocalDate().format(jpFormatter) + " ～ " + query.getEndDate().toLocalDate().format(jpFormatter);
+		String periodStr = WorkScheOutputConstants.PERIOD + " " + query.getStartDate().toLocalDate().format(jpFormatter) + " " + query.getEndDate().toLocalDate().format(jpFormatter);
 		periodCell.setValue(periodStr);
 	}
 	
@@ -2326,7 +2340,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
 			if (iteratorWorkplaceData.hasNext()) {
-				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
+				// Page break (regardless of setting, see example template sheet �日別勤務表-日別3�1)
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
@@ -2848,7 +2862,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<EmployeeDailyPerError> errorList = remarkDataContainer.getErrorList();
 		List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
 		
-		// 遅刻早退
+		// 遈�早退
 		if (errorList.size() > 0 && (errorCodeList.contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || errorCodeList.contains(SystemFixedErrorAlarm.LATE.value))) {
 			// Late come
 			boolean isLateCome = false, isEarlyLeave = false;
@@ -2880,7 +2894,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		if (choice == RemarksContentChoice.MANUAL_INPUT || choice == RemarksContentChoice.ACKNOWLEDGMENT) {
-			// 手入力
+			// 手��
 			List<EditStateOfDailyPerformanceDto> editStateDto = remarkDataContainer.getEditStateDto();
 			List<GeneralDate> lstEditStateDate = new ArrayList<>();
 			// Likely lstEditStateDate only has 0-1 element
@@ -2891,7 +2905,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.MANUAL_INPUT.value);
 			}
 			
-			// 承認反映
+			// 承認反�
 			List<GeneralDate> lstReflectApprovalDate = new ArrayList<>();
 			lstReflectApprovalDate = editStateDto.stream().filter(x -> x.getEditStateSetting() == EditStateSetting.REFLECT_APPLICATION.value).map(x -> {return x.getYmd();}).collect(Collectors.toList());
 			if (lstReflectApprovalDate.size() > 0 && choice == RemarksContentChoice.ACKNOWLEDGMENT) {
@@ -2899,7 +2913,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 		}
 		
-		// 未計算
+		// 未計�
 		List<WorkInfoOfDailyPerformanceDetailDto> dailyPerformanceList = remarkDataContainer.getDailyPerformanceList();
 		if (dailyPerformanceList != null && !dailyPerformanceList.isEmpty() && choice == RemarksContentChoice.NOT_CALCULATED) {
 			Optional<WorkInfoOfDailyPerformanceDetailDto> optDailyPerformanceWorkInfo = dailyPerformanceList.stream().filter(info -> info.getYmd().compareTo(currentDate) == 0
@@ -2910,7 +2924,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 		}
 		
-		// 事前申請超過
+		// 事前申請趁�
 		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)) {
 			Optional<EmployeeDailyPerError> optErrorIncorrectStamp = errorList.stream()
 					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)).findFirst();
@@ -3029,6 +3043,41 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				return employment.getName();
 			}
 		}
+		
+		if (IntStream.of(ATTENDANCE_ID_CALCULATION_MAP).anyMatch(id -> id == attendanceId)) {
+			return EnumAdaptor.valueOf(Integer.valueOf(code), AutoCalAtrOvertime.class).description;
+		}
+		if (IntStream.of(ATTENDANCE_ID_OVERTIME_MAP).anyMatch(id -> id == attendanceId)) {
+			return EnumAdaptor.valueOf(Integer.valueOf(code), TimeLimitUpperLimitSetting.class).description;
+		}
+		if (IntStream.of(ATTENDANCE_ID_OUTSIDE_MAP).anyMatch(id -> id == attendanceId)) {
+			return TextResource.localize(EnumAdaptor.valueOf(Integer.valueOf(code), GoingOutReason.class).nameId);
+		}
+		if (IntStream.of(ATTENDANCE_ID_USE_MAP).anyMatch(id -> id == attendanceId)) {
+			return EnumAdaptor.valueOf(Integer.valueOf(code), UseAtr.class).description;
+		}
 		return "";
+	}
+	
+	/**
+	 * アルゴリズ�「会社の日次頛�を取得する」を実�(private version), 
+	 * There isn't step 勤�頛�に対応する名称を生成す�
+	 * @param lstRequestAttendaceId
+	 * @return
+	 */
+	private List<Integer> getListAttendanceIdByRole(List<Integer> lstRequestAttendaceId) {
+		// There is current user's role id from actual EA input
+		String roleId = AppContexts.user().roles().forAttendance();
+		String companyId = AppContexts.user().companyId();
+		
+		// Role ID always not null so go to get authority case
+		// ドメインモッ�「権限別日次頛�制御」を取得す�
+		Optional<DailyAttendanceItemAuthority> optDaiAttItemAuth = daiAttItemAuthRepo.getDailyAttdItem(companyId, roleId);
+		if (optDaiAttItemAuth.isPresent()) {
+			DailyAttendanceItemAuthority daiAttItemAuth = optDaiAttItemAuth.get();
+			List<DisplayAndInputControl> listDisplayAndInputControlEnable = daiAttItemAuth.getListDisplayAndInputControl().stream().filter(x -> x.isToUse()).collect(Collectors.toList());
+			return listDisplayAndInputControlEnable.stream().filter(x -> lstRequestAttendaceId.contains(x.getItemDailyID()) && x.isToUse()).map(y -> y.getItemDailyID()).collect(Collectors.toList());
+		}
+		return lstRequestAttendaceId;
 	}
 }

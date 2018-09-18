@@ -7,6 +7,7 @@ package nts.uk.file.at.infra.schedule.monthly;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,30 +48,23 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
-import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
-import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
-import nts.uk.ctx.at.record.app.find.monthlyattditem.MonthlyAttendanceItemFinder;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
-import nts.uk.ctx.at.shared.app.find.attendance.AttItemDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -84,23 +78,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
-import nts.uk.file.at.app.export.dailyschedule.FormOutputType;
-import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
 import nts.uk.file.at.app.export.dailyschedule.TotalWorkplaceHierachy;
-import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition;
-import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
-import nts.uk.file.at.app.export.dailyschedule.data.DailyPerformanceHeaderData;
-import nts.uk.file.at.app.export.dailyschedule.data.DailyPerformanceReportData;
-import nts.uk.file.at.app.export.dailyschedule.data.DailyPersonalPerformanceData;
-import nts.uk.file.at.app.export.dailyschedule.data.DailyReportData;
-import nts.uk.file.at.app.export.dailyschedule.data.DailyWorkplaceData;
-import nts.uk.file.at.app.export.dailyschedule.data.DetailedDailyPerformanceReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.EmployeeReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.OutputItemSetting;
-import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceDailyReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.WorkplaceReportData;
-import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalSumRowOfDailySchedule;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.WorkplaceTotal;
@@ -114,10 +96,7 @@ import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleGenerator;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
 import nts.uk.file.at.infra.schedule.RowPageTracker;
 import nts.uk.file.at.infra.schedule.daily.WorkScheOutputConstants;
-import nts.uk.file.at.infra.schedule.daily.WorkScheduleQueryData;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -165,10 +144,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private MonthlyAttendanceResultImportAdapter monthlyRecordAdapter;
 	
 	@Inject
-	private MonthlyAttendanceItemFinder monthlyAttendanceItemFinder;
-	
-	@Inject
-	private MonthlyItemControlByAuthRepository monthlyItemControlByAuthRepository;
+	private CompanyMonthlyItemService companyMonthlyItemService;
 
 	/** The Constant TEMPLATE. */
 	private static final String TEMPLATE = "report/KWR006.xlsx";
@@ -176,16 +152,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The Constant CHUNK_SIZE. */
 	private static final int CHUNK_SIZE = 13;
 
-	private static final int COL_MERGED_SIZE = 2;
-
-	/** The Constant SHEET_FILE_NAME. */
-	private static final String SHEET_FILE_NAME = "日別勤務表";
-
 	/** The Constant DATA_COLUMN_INDEX. */
 	private static final int[] DATA_COLUMN_INDEX = { 2, 8, 10, 14, 16, 32 };
 
 	/** The font family. */
-	private final String FONT_FAMILY = "ＭＳ ゴシック";
+	private final String FONT_FAMILY = "�� ゴシヂ�";
 
 	/** The font size. */
 	private final int FONT_SIZE = 9;
@@ -382,18 +353,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param headerData the header data
 	 * @param condition the condition
 	 */
-	public void collectDisplayMap(MonthlyPerformanceHeaderData headerData, OutputItemMonthlyWorkSchedule condition) {
+	public void collectDisplayMap(MonthlyPerformanceHeaderData headerData, OutputItemMonthlyWorkSchedule condition, String companyId, String roleId) {
 		List<MonthlyAttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
 		headerData.setLstOutputItemSettingCode(new ArrayList<>());
 		
-		List<Integer> lstAttendanceId = getListAttendanceIdAuth(lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList()));
-		List<AttdItemDto> lstMonthlyAttendanceItem = monthlyAttendanceItemFinder.findAll();
+		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
+		List<AttItemNameImport> lstAttendanceDto = companyMonthlyItemService.getMonthlyItems(companyId, Optional.of(roleId), lstAttendanceId, Arrays.asList(MonthlyAttendanceItemAtr.values()));
+		if (lstAttendanceDto.isEmpty())
+			throw new BusinessException(new RawErrorMessage("Msg_1417"));
+//		List<AttdItemDto> lstMonthlyAttendanceItem = monthlyAttendanceItemFinder.findAll();
 		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
-			AttdItemDto attendanceItem = lstMonthlyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
+			AttItemNameImport attendanceItem = lstAttendanceDto.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
 			OutputItemSetting setting = new OutputItemSetting();
-			setting.setItemCode(attendanceItem.getDisplayNumber());
+			setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
 			setting.setItemName(attendanceItem.getAttendanceItemName());
 			headerData.lstOutputItemSettingCode.add(setting);
 		});
@@ -582,9 +556,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 */
 	public void collectData(MonthlyPerformanceReportData reportData, MonthlyWorkScheduleQuery query, MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputItem, TaskDataSetter setter) {
 		String companyId = AppContexts.user().companyId();
+		String roleId = AppContexts.user().roles().forAttendance();
 		reportData.setHeaderData(new MonthlyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
-		collectDisplayMap(reportData.getHeaderData(), outputItem);
+		collectDisplayMap(reportData.getHeaderData(), outputItem, companyId, roleId);
 		YearMonth endDate = query.getEndYearMonth();
 		
 		WorkScheduleMonthlyQueryData queryData = new WorkScheduleMonthlyQueryData();
@@ -708,11 +683,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
-		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
+		// 階層累計行�み出力する設定�場合、データ取得件数は0件として扱぀�エラーメヂ�ージを表示(#Msg_37#)
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplaceIdWithData); // Get lowest possible workplace level -> lowestEmployeeLevel
-		TotalWorkplaceHierachy outputSetting = condition.getTotalOutputSetting().getWorkplaceHierarchyTotal();
+		WorkScheduleSettingTotalOutput totalOutputSetting = condition.getTotalOutputSetting();
+		TotalWorkplaceHierachy outputSetting = totalOutputSetting.getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if (lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) {
+		if ((lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) && !totalOutputSetting.isDetails()
+				&& !totalOutputSetting.isGrossTotal() && !totalOutputSetting.isPersonalTotal() && !totalOutputSetting.isTotalNumberDay()
+				&& !totalOutputSetting.isWorkplaceTotal()) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
@@ -875,10 +853,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param lstDisplayItem the lst display item
 	 */
 	private void collectEmployeePerformanceDataByDate(MonthlyPerformanceReportData reportData, WorkScheduleMonthlyQueryData queryData) {
-		String companyId = AppContexts.user().companyId();
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		YearMonth endDate = query.getEndYearMonth();
-		MonthlyWorkScheduleCondition condition = query.getCondition();
 		// Always has item because this has passed error check
 		//TODO domain man C
 		OutputItemMonthlyWorkSchedule outSche = new OutputItemMonthlyWorkSchedule(); //outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
@@ -903,8 +879,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getYearMonth().compareTo(date) == 0) && 
 							StringUtils.equalsAnyIgnoreCase(x.getEmployeeId(), employeeId)).forEach(x -> {
-						YearMonth workingDate = x.getYearMonth();
-						
 						MonthlyPersonalPerformanceData personalPerformanceDate = new MonthlyPersonalPerformanceData();
 						if (optEmployeeDto.isPresent())
 							personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
@@ -1872,7 +1846,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
 			if (iteratorWorkplaceData.hasNext()) {
-				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
+				// Page break (regardless of setting, see example template sheet �日別勤務表-日別3�1)
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
@@ -2350,7 +2324,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&16&\"源ノ角ゴシック Normal,Bold\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&16&\"源ノ角ゴシヂ� Normal,Bold\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
@@ -2366,7 +2340,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		builder.append(WorkScheOutputConstants.PERIOD);
 		builder.append(" ");
 		builder.append(startMonth.year() + "/" + startMonth.month());
-		builder.append(" ～ ");
+		builder.append(" ");
 		builder.append(endMonth.year() + "/" + endMonth.month());
 		
 		periodCell.setValue(builder.toString());
@@ -2479,22 +2453,5 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		PageSetup pageSetup = sheet.getPageSetup();
 		pageSetup.setPrintArea("A1:" + lastCellName);
-	}
-	
-	/**
-	 * 会社の月次項目を取得する (private version)
-	 * @param lstRegisterAttendanceId
-	 * @return
-	 */
-	private List<Integer> getListAttendanceIdAuth(List<Integer> lstRegisterAttendanceId) {
-		String roleId = AppContexts.user().roles().forAttendance();
-		String companyId = AppContexts.user().companyId();
-		Optional<MonthlyItemControlByAuthority> optData = monthlyItemControlByAuthRepository.getMonthlyAttdItem(companyId, roleId);
-		if (optData.isPresent()) {
-			MonthlyItemControlByAuthority data = optData.get();
-			List<DisplayAndInputMonthly> listDisplayAndInputMonthly = data.getListDisplayAndInputMonthly();
-			return listDisplayAndInputMonthly.stream().filter(x -> lstRegisterAttendanceId.contains(x.getItemMonthlyId()) && x.isToUse()).map(y -> y.getItemMonthlyId()).collect(Collectors.toList());
-		}
-		return lstRegisterAttendanceId;
 	}
 }
