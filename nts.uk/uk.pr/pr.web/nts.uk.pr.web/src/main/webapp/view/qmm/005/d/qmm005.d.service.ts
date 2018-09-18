@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm005.d.service {
     let paths = {
 
         registerprocessingsegment :"ctx/pr/core/ws/wageprovision/registerprocessingsegment",
-        updateprocessingsegment :"ctx/pr/core/ws/wageprovision/updateRegistedProcessing",
+        updateprocessingsegment :"ctx.pr.core.ws.wageprovision.processdatecls/updateRegistedProcessing",
         findprocessingsegment:"ctx.pr.core.ws.wageprovision.processdatecls/findfindRegistedProcessing/{0}",
         deleteprocessingsegment:"ctx.pr.core.ws.wageprovision.processdatecls/deleteRegistedProcessing/{0}"
     };

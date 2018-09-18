@@ -72,12 +72,12 @@
                                     <label
                                             data-bind="text: processInfomation.processDivisionName"></label>
                                 </div>
-                                <button id="button_">#{i18n.getText('QMM005_11')}</button>
-                            </div> <!--A2_9 編集--> <com:ko-if
-                                bind="processInfomation.processDivisionName == ''">
+                                <button id="button_" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
+                            </div> <!--A2_9 編集-->
+                            <com:ko-if bind="processInfomation.processDivisionName == ''">
                             <button
-                                    data-bind="click: function (){$vm.showDialogD_Create(processInfomation.processCateNo)}">#{i18n.getText('QMM005_21')}</button>
-                        </com:ko-if>
+                                    data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
+                            </com:ko-if>
                         </td>
                         <td>
                             <!--A2_10 詳細設定-->
@@ -85,13 +85,21 @@
                                     data-bind="enable: processInfomation.processDivisionName != '',click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
                         <td>
-                            <!--A2_11 処理年一覧--> <!--<div id="combo-box" data-bind="ntsComboBox: {-->
-                            <!--name: 'Sample List', width:80,--> <!--options: $root.setDaySupports,-->
-                            <!--optionsValue: 'processCategoryNO',--> <!--visibleItemsCount: 5,-->
-                            <!--value: $root.code,--> <!--optionsText: 'empExtraRefeDate',-->
-                            <!--columns: [--> <!--{ prop: 'empExtraRefeDate', length: 10 },-->
-                            <!--]}"></div>--> <!--A2_13 キャレット--> <span
-                                class="caret-right caret-inline"></span> <!--A2_14 次回給与支払日-->
+                            <!--A2_11 処理年一覧-->
+                            <div id="combo-box" data-bind="ntsComboBox: {
+                                name: 'Sample List', width:80,
+                                options: years,
+                                optionsValue: 'code',
+                                 visibleItemsCount: 5,
+                                 enable: processInfomation.processDivisionName != '',
+                                value:yaersSelected,
+                                columns:
+                                [ { prop: 'name', length: 10 },
+                            ]}"></div>
+                            <!--A2_13 キャレット-->
+                            <span
+                                class="caret-right caret-inline"></span>
+                            <!--A2_14 次回給与支払日-->
                             <div
                                     data-bind="ntsComboBox: {
                             name: 'Sample List', width:200,

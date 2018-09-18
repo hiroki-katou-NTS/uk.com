@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import block = nts.uk.ui.block;
     import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
     import modal = nts.uk.ui.windows.sub.modal;
+    import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
     export class ScreenModel {
         //A2_2
         itemTable: ItemTable;
@@ -14,6 +15,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         targetEmployment: KnockoutObservableArray<number>;
         processCategoryNO: number;
         itemBinding: KnockoutObservableArray<ItemBinding>;
+
+        test: Array<model.ItemModel>;
 
 
         constructor() {
@@ -28,18 +31,14 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         }
 
-        showDialogD_Create(processCateNo): void {
-            setShared("QMM005_output_D_create", processCateNo);
+        showDialogD(processInfomation, mode): void {
+            let param = {
+                mode: mode,
+                processInfomation: processInfomation
+            }
+            setShared("QMM005_output_D", param);
             modal('/view/qmm/005/d/index.xhtml', {title: '',}).onClosed(function (): any {
             })
-        }
-
-        showDialogB_Update(processCateNo): void {
-            let param = {
-                processCateNo: processCateNo,
-                modeUpdate: true,
-            }
-            setShared("QMM005_output_D_create", param);
         }
 
 
@@ -77,6 +76,44 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         }
 
+
+        getYear(setDaySupportList: Array<SetDaySupport>): Array<model.ItemModel> {
+            var array = [];
+            _.forEach(setDaySupportList, function (setDaySupport) {
+                _.forEach(setDaySupport, function (value, key) {
+                    if (key == "processDate") {
+                        let yearCode = parseInt(value.toString().substr(0, 4));
+                        let yearName = value.toString().substr(0, 4);
+                        array.push(new model.ItemModel(yearCode, yearName));
+                    }
+                });
+            });
+            return _.orderBy(_.uniqBy(array, 'code'), ['code'], ['asc']);
+
+        }
+
+
+        // getListMonth(setDaySupportList:Array<SetDaySupport>,i:number):Array<model.ItemModel>{
+        //     let self=this;
+        //         let ArrSetDaySuport:Array<SetDaySupport>=_.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
+        //             return o.processCateNo == i + 1;
+        //         }),
+        //         function (o) {
+        //             return o.processDate;
+        //         });
+        //
+        //     let Araybinding:Array<model.ItemModel>=new Array<model.ItemModel>();
+        //         for(item in ArrSetDaySuport){
+        //             Araybinding.push(new model.ItemModel(item.processDate , item.payMentDate+'-'+item.empExtraRefeDate));
+        //         }
+        //
+        //
+        //
+        //
+        //     return Araybinding;
+        // }
+
+
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -99,19 +136,31 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     self.itemBinding.push(new ItemBinding(
                         self.itemTable.processInfomations[i],
                         _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
+                                return o.processCateNo == i + 1;
+                            }),
+                            function (o) {
+                                return o.processDate;
+                            }),
+                        null, [],
+                        // getYear(self.itemTable.setDaySupports[i])
+                        self.getYear((_.filter(self.itemTable.setDaySupports, function (o) {
                             return o.processCateNo == i + 1;
-                        }), function (o) {
-                            return o.processDate;
-                        }), null, []
+                        })))
                     ));
+                    //self.test=self.getListMonth(self.itemTable.setDaySupports,i);
                 }
                 console.log(self.itemBinding());
+
+
             });
             dfd.resolve();
             return dfd.promise();
         }
 
+
     }
+
+
 
     export class ItemBinding {
         processInfomation: model.ProcessInfomation;
@@ -119,13 +168,17 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         setDaySupportsSelectedCode: KnockoutObservable<number>;
         employeeString: KnockoutObservable<string>;
         employeeList: KnockoutObservableArray<any>;
+        years:KnockoutObservableArray<model.ItemModel>;
+        yaersSelected:KnockoutObservable<number>;
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array) {
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array,years:Array<model.ItemModel> ) {
             this.processInfomation = processInfomation;
             this.setDaySupports = ko.observableArray(setDaySupports);
             this.setDaySupportsSelectedCode = ko.observable(0);
             this.employeeString = ko.observable(employeeString);
             this.employeeList = ko.observableArray(employeeList);
+            this.years=ko.observableArray(years);
+            this.yaersSelected=ko.observable(0);
         }
     }
 
@@ -158,3 +211,4 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
 }
+

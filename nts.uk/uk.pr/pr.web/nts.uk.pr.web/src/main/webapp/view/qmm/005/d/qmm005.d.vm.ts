@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
         enableCloseDate: KnockoutObservable<boolean>;
-        modeUpdate: number;
+        mode: number;
 
         valPayDateSet: model.ValPayDateSet;
         basicSetting: model.BasicSetting;
@@ -143,8 +143,10 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
             let init=getShared('QMM005_output_D');
-            self.modeUpdate=init.modeUpdate;
-            self.processCategoryNo=init.processCateNo;
+            self.mode=init.mode;
+            self.processInfomation=init.processInfomation;
+            self.processCategoryNo=self.processInfomation.processCateNo;
+
 
 
 
@@ -362,14 +364,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         saveCharacterSetting(): void {
             let self = this;
 
-            if(self.modeUpdate==0){
-                service.deleteDisplayRegister(self.processCategoryNo).done(function () {
-                    self.saveToDB();
-                })
-            }
-            if (self.modeUpdate==1){
-                self.saveToDB();
-            }
+            this.saveToDB();
 
 
 
@@ -386,7 +381,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
-            if(self.modeUpdate==0){
+            if(self.mode==0){
                 service.findDisplayRegister(this.processCategoryNo).done(function (data) {
                     console.log(data);
                     self.valPayDateSet=new model.ValPayDateSet(data);
@@ -418,7 +413,9 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                         self.employmentInsuranceStandardMonthSelectedCode(self.valPayDateSet.advancedSetting.empInsurStanDate.baseMonth);
 
 
-
+                        self.processCategoryNo=self.processInfomation.processCateNo;
+                        self.processName(self.processInfomation.processDivisionName),
+                        self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate)
 
 
                 })
@@ -498,19 +495,23 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             console.log(self.processInfomation);
             console.log(self.valPayDateSet);
             
-            if(self.modeUpdate==1){
+            if(self.mode==1){
             
                 service.registerprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
-                });
+                }).done(function () {
+                    nts.uk.ui.windows.close();
+                })
              }
             
-            if(self.modeUpdate==0){
+            if(self.mode==0){
                 service.updateprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
-                });
+                }).done(function () {
+                    nts.uk.ui.windows.close();
+                })
             }
         }
 

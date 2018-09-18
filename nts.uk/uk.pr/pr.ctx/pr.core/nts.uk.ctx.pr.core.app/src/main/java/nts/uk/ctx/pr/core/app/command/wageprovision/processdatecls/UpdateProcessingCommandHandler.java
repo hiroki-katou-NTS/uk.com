@@ -2,7 +2,9 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -15,6 +17,9 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ValPayDateSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ValPayDateSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+
+@Stateless
+@Transactional
 public class UpdateProcessingCommandHandler extends CommandHandler<ProcessingSegmentCommand>{
 	
 	@Inject
@@ -23,11 +28,6 @@ public class UpdateProcessingCommandHandler extends CommandHandler<ProcessingSeg
 	@Inject
 	ProcessInformationRepository processInformationRepository;
 	
-	@Inject
-    DeleteValPayDateSetCommand deleteValPayDateSetCommand;
-    
-    @Inject
-    DeleteProcessInformation deleteProcessInformation;
 
 
 	@Override
@@ -36,17 +36,15 @@ public class UpdateProcessingCommandHandler extends CommandHandler<ProcessingSeg
 		String cid = AppContexts.user().companyId();
 		ProcessingSegmentCommand addCommand = context.getCommand();
 		
-		deleteValPayDateSetCommand.valPayDateSetDelete(addCommand.getProcessInformation().getProcessCateNo());
-    	deleteProcessInformation.processInformationDelete(addCommand.getProcessInformation().getProcessCateNo());
 
 		
 
 		this.processInformationRepository
-				.add(new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
+				.update(new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
 						addCommand.getProcessInformation().getDeprecatCate(),
 						addCommand.getProcessInformation().getProcessDivisionName()));
 
-		this.valPayDateSetRepository.add(new ValPayDateSet(cid, addCommand.getValPayDateSet().getProcessCateNo(),
+		this.valPayDateSetRepository.update(new ValPayDateSet(cid, addCommand.getValPayDateSet().getProcessCateNo(),
 				addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),
 				addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getDisposalDay(),
 				addCommand.getValPayDateSet().getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth(),
