@@ -27,7 +27,7 @@ public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoR
 
     @Override
     public void personalInfoSelectItemEvent(String companyId, int copyMethod) {
-        new PerInfoSelectionItemCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
+        new PerInfoSelectionItemCopyHandler(this, copyMethod, companyId).doCopy();
 
     }
 }

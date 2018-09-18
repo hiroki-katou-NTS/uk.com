@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
@@ -29,10 +28,11 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 	private static final String DELETE_SELECTION = "DELETE FROM PpemtSelection s WHERE s.histId IN :histIds";
 	private static final String DELETE_SELECTION_ORDER = "DELETE FROM PpemtSelItemOrder o WHERE o.histId IN :histIds";
 
-	public PerInfoSelectionItemCopyHandler(int copyMethod, String companyId, EntityManager em) {
+	public PerInfoSelectionItemCopyHandler(JpaRepository repo, int copyMethod, String companyId) {
 		this.copyMethod = copyMethod;
 		this.companyId = companyId;
-		this.entityManager = em;
+		this.entityManager = repo.getEntityManager();
+		this.commandProxy = repo.commandProxy();
 	}
 
 	@Override
