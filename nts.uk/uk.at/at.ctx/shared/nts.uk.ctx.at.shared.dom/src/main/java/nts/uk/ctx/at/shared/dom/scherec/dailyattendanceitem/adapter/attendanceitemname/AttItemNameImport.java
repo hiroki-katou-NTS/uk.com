@@ -10,12 +10,18 @@ public class AttItemNameImport {
 	private String attendanceItemName;
 
 	private int attendanceItemDisplayNumber;
-	
+
+	private int userCanUpdateAtr;
+
 	private int typeOfAttendanceItem;
-	
+
+	private int nameLineFeedPosition;
+
 	private int frameCategory;
+
+	private AttItemAuthority authority;
 
 	public AttItemNameImport() {
 		super();
-	}	
+	}
 }
