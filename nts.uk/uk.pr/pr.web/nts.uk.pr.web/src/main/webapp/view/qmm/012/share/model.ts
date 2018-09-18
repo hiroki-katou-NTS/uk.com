@@ -263,29 +263,10 @@ module nts.uk.pr.view.qmm012.share.model {
         december: KnockoutObservable<boolean> = ko.observable(false);
         periodAtr: KnockoutObservable<number> = ko.observable(null);
         yearPeriodStart: KnockoutObservable<number> = ko.observable(null);
-        yearPeriodEnd: KnockoutObservable<number> = ko.observable(null);
-        startYearJpn: KnockoutObservable<string> = ko.observable(null);;
-        endYearJpn: KnockoutObservable<string> = ko.observable(null);;
+        yearPeriodEnd: KnockoutObservable<number> = ko.observable(null);        
 
         constructor(data: IValidityPeriodAndCycleSet) {
             let self = this;
-            self.yearPeriodStart.subscribe(data => {
-                if (data) {
-                    self.startYearJpn("（" + time.yearInJapanEmpire(data).toString().split(' ').join('') + "）");
-                }
-                else {
-                    self.startYearJpn("");
-                }
-            });
-            self.yearPeriodEnd.subscribe(data => {
-                if (data) {
-                    self.endYearJpn("（" + time.yearInJapanEmpire(data).toString().split(' ').join('') + "）");
-                }
-                else {
-                    self.endYearJpn("");
-                }
-            });
-
             self.cycleSettingAtr = ko.observable(data ? data.cycleSettingAtr : CycleSettingAtr.NOT_USE);
             self.january(data ? data.january : false);
             self.february(data ? data.february : false);

@@ -1,7 +1,6 @@
 module nts.uk.pr.view.qmm012.i.viewmodel {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
-    import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
@@ -84,7 +83,7 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 if (self.isNewMode()) {
                     // create 
                     service.addBreakdownItemSet(ko.toJS(data)).done(() => {
-                        self.getAllData(data.breakdownItemCode).done(() => {
+                        self.getAllData().done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $("#breakdownItemCode").focus();
                                 self.isNewMode(false);
@@ -100,7 +99,7 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                 } else {
                     // update
                     service.updateBreakdownItemSet(ko.toJS(data)).done(() => {
-                        self.getAllData(data.breakdownItemCode).done(() => {
+                        self.getAllData().done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
                                 self.isNewMode(false);
                                 self.currentCode(data.breakdownItemCode);

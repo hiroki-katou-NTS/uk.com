@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
 
     export class ScreenModel {
         listTaxExemptLimit: KnockoutObservableArray<TaxExemptLimit> = ko.observableArray([]);
-        selectedTaxExemptLimit: KnockoutObservable<TaxExemptLimit> = ko.observable(new TaxExemptLimit(null));
+        selectedTaxExemptLimit: KnockoutObservable<TaxExemptLimit> = ko.observable(null);
         currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;

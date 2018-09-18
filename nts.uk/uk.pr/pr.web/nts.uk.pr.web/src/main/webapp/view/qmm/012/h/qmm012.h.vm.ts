@@ -12,13 +12,18 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         currentSetting: KnockoutObservable<model.ValidityPeriodAndCycleSet> = ko.observable(null);
         validityPeriodAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getValidityPeriodAtr());
         cycleSettingAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCycleSettingAtr());
-        itemAtr: KnockoutObservable<string> = ko.observable("Test1");
-        itemNameCode: KnockoutObservable<string> = ko.observable("Test2");
-        itemName: KnockoutObservable<string> = ko.observable("Test3");
+        itemAtr: string = "Test1";
+        itemNameCode: string = "Test2";
+        itemName: string = "Test3";
         salaryItemId: string = "1234567890";
 
         constructor() {
-
+            let self = this;
+            let params = getShared("CMF002_C_PARAMS_FROM_B");
+            //self.salaryItemId = params.salaryItemId;
+            //self.itemAtr =  params.itemAtr;
+            //self.itemNameCode =  params.itemNameCode;
+            //self.itemName =  params.itemName;
         }
 
         startPage(): JQueryPromise<any> {
@@ -100,7 +105,7 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
                 }
                 service.registerValidityPeriodAndCycleSet(ko.toJS(self.currentSetting)).done(() => {
                     info({ messageId: "Msg_15" }).then(() => {
-                        setShared('QMM012_PARAMS_FROM_H', { exitStatus: model.ExitStatus.EXECUTION });
+                        setShared('QMM012_H_IS_SETTING', { exitStatus: model.ExitStatus.EXECUTION });
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(error) {
@@ -112,7 +117,7 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         }
 
         cancel() {
-            setShared('QMM012_PARAMS_FROM_H', { exitStatus: model.ExitStatus.CANCEL });
+            setShared('QMM012_H_IS_SETTING', { exitStatus: model.ExitStatus.CANCEL });
             nts.uk.ui.windows.close();
         }
     }
