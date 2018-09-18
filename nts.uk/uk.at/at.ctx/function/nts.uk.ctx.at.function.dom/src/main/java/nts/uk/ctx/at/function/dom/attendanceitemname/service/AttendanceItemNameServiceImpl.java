@@ -260,6 +260,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 			attendanceDto.setAttendanceItemDisplayNumber(item.getAttendanceItemDisplayNumber());
 			attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 			attendanceDto.setAttendanceItemName(item.getAttendanceItemName());
+			attendanceDto.setUserCanUpdateAtr(item.getUserCanUpdateAtr());
 			if (frameNoOverTimeMap.containsKey(item.getAttendanceItemId())
 					&& overTimes.containsKey(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
@@ -465,16 +466,20 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
+						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr());
+						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
 						return dto;
 					}).collect(Collectors.toList());
 			break;
-		case Monthly:			
+		case Monthly:
 			attendanceItemList = this.monthlyAttendanceItemRepository
 					.findByAttendanceItemId(companyId, attendanceItemIds).stream().map(item -> {
 						AttendanceItemName dto = new AttendanceItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName().v()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
+						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr().value);
+						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
 						return dto;
 					}).collect(Collectors.toList());
 			break;

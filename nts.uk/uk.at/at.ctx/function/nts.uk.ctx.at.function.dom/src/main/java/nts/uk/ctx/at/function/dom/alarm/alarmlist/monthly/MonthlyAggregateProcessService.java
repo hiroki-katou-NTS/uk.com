@@ -47,6 +47,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -579,10 +580,10 @@ public class MonthlyAggregateProcessService {
 									String nameErrorAlarm = "";
 									//get name attdanceName 
 									if(!erAlAtdItemCon.getCountableAddAtdItems().isEmpty()) {
-										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), 0);
+										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
 										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 									}else {
-										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), 0);
+										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
 										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 									}
 									//if type = time
@@ -636,10 +637,10 @@ public class MonthlyAggregateProcessService {
 										String nameErrorAlarm = "";
 										//get name attdanceName 
 										if(!erAlAtdItemCon2.getCountableAddAtdItems().isEmpty()) {
-											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), 0);
+											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
 											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 										}else {
-											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), 0);
+											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
 											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 										}
 										//if type = time
@@ -719,10 +720,10 @@ public class MonthlyAggregateProcessService {
 								String nameErrorAlarm = "";
 								//0 is monthly,1 is dayly
 								if(!erAlAtdItemConAdapterDto.getCountableAddAtdItems().isEmpty()) {
-									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableAddAtdItems(), 0);
+									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
 									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 								}else {
-									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableSubAtdItems(), 0);
+									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
 									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 								}
 								
