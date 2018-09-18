@@ -1131,7 +1131,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 });
-                if (!_.isEmpty(dataChangeProcess) && !_.isEmpty(self.lstDomainOld)) {
+                if (!_.isEmpty(self.lstDomainOld)) {
                     let dataParent = {
                         itemValues: dataChangeProcess,
                         dataCheckSign: dataCheckSign,
@@ -1169,7 +1169,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 $("#next-month").ntsError("clear");
                             }
                         }
-                        if (data.resultError == null || (data.resultError.errorMap[5] != null)) {
+                        if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
                             self.lstDomainEdit = data.calculatedRows;
                             let lstValue = data.resultValues;
                             _.forEach(self.dpData, row => {
@@ -1224,7 +1224,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve();
                     });
                     dfd.promise();
-                }
+                } else 
+                    nts.uk.ui.block.clear();
             }
         }
 

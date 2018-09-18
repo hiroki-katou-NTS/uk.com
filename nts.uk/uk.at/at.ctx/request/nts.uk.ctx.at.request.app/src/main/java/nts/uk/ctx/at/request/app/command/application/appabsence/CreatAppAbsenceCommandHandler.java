@@ -15,6 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SettingNo65;
@@ -298,7 +299,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・公休チェック区分＝（休暇申請設定．公休残数不足登録できる＝false）
 //		・超休チェック区分＝true
 		List<AppRemainCreateInfor> appData = new ArrayList<>();
-		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDate.today(), startDate, 
+		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDateTime.now(), startDate, 
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
 				command.getWorkTypeCode() == null ? Optional.empty() : Optional.of(command.getWorkTypeCode()), 

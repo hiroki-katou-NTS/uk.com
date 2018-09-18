@@ -232,7 +232,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if(inputParam.isChkFundingAnnual()) {
 			List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
 					.map(l -> {
-						GeneralDate annalDate = annualMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+						GeneralDate annalDate = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
 								.collect(Collectors.toList()).get(0).getYmd();
 						return TmpReserveLeaveMngWork.of(l.getResereId(), annalDate, l.getUseDays());
 					}).collect(Collectors.toList());

@@ -14,9 +14,13 @@ public class AttendanceItemName {
 	private String attendanceItemName;
 
 	private int attendanceItemDisplayNumber;
-	
+
+	private int userCanUpdateAtr;
+
+	private int nameLineFeedPosition;
+
 	private int typeOfAttendanceItem;
-	
+
 	private int frameCategory;
-	
+
 }

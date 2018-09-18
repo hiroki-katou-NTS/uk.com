@@ -102,7 +102,6 @@ public class LayoutWebService extends WebService {
 	 * @param 特休付与テーブルコード grantTableCD
 	 * @param 付与日数 grantedDays
 	 * @param 入社年月日 entryDate NULL
-	 * @param 退職年月日 retireDate NULL
 	 * @param 年休付与基準日 year NULL
 	 * @return 次回付与日 grantDate
 	 */

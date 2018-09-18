@@ -25,6 +25,9 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Re
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.ParamRegisterConfirmMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.SelfConfirm;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommand;
@@ -74,7 +77,7 @@ public class MonModifyCommandFacade {
 					dataParent.getClosureDate()));
 		});
 		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery);
-		monthModifyCommandFacade.handleUpdate(listQuery);
+		monthModifyCommandFacade.handleUpdate(listQuery, oldDtos);
 
 		// old
 //		dataParent.getMPItemDetails().forEach(item -> {
@@ -113,7 +116,7 @@ public class MonModifyCommandFacade {
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery);
-					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery));
+					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
 				});
 		executorService.submit(task);
 		return Collections.emptyMap();

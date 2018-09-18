@@ -369,14 +369,14 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 commands.push(leave);
                 if(leave.displayFlag === true && leave.optionName === '【振出】' && (!_.size(leave.lstWorkType) || leave.lstWorkType[0].workTypeCode == "")){
                     clear();
-                    $('.lagre-input-code:eq(11)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振出】']});
+                    $('.lagre-input-code:eq(12)').ntsError('set', {messageId:"Msg_1378", messageParams:['振休振出申請', '【振出】']});
                  }
                 else if (leave.displayFlag === false && leave.optionName === '【振出】') {
                     leave.lstWorkType = [];
                 }  
                 if(leave.displayFlag === true && leave.optionName === '【振休】' && (!_.size(leave.lstWorkType) || leave.lstWorkType[0].workTypeCode == "")){
                     clear();
-                    $('.lagre-input-code:eq(12)').ntsError('set', {messageId:"Msg_1378", messageParams:['休暇申請', '【振休】']});
+                    $('.lagre-input-code:eq(13)').ntsError('set', {messageId:"Msg_1378", messageParams:['振休振出申請', '【振休】']});
                  }
                 else if (leave.displayFlag === false && leave.optionName === '【振休】') {
                     leave.lstWorkType = [];
@@ -781,7 +781,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         morningAtr5: [0], 
                         afternoon5: 7,
                     }
-                    self.findAbsenceKaf022(hdShip).done(() => {
+                    self.findHdShipKaf022(hdShip).done(() => {
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 
@@ -799,7 +799,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                         morningAtr5: [1, 2, 3, 4, 5, 6, 8, 9], 
                         afternoon5: 8,
                     }
-                    self.findAbsenceKaf022(hdShip).done(() => {
+                    self.findHdShipKaf022(hdShip).done(() => {
                         workTypeCodes = _.map(self.listWTShareKDL002(), function(item: any) { return item.workTypeCode; });
                         setShared('KDL002_AllItemObj', workTypeCodes);  
                         dfd.resolve(); 

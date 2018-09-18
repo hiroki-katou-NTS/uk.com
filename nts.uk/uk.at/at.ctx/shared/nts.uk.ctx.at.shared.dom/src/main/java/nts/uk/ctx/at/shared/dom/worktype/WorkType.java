@@ -374,4 +374,25 @@ public class WorkType extends AggregateRoot {
 	}
 	
 	
+	public HolidayAtr beforeDay(){
+		switch(this.getDailyWork().getWorkTypeUnit()) {
+		case OneDay:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isOneDay()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		case MonringAndAfternoon:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isMorning()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		default:
+			throw new RuntimeException("uknown WorkTypeUnit:"+this.getDailyWork().getWorkTypeUnit());
+		}
+	}
+	
+	public HolidayAtr afterDay() {
+		switch(this.getDailyWork().getWorkTypeUnit()) {
+		case OneDay:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isOneDay()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		case MonringAndAfternoon:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isAfterNoon()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		default:
+			throw new RuntimeException("uknown WorkTypeUnit:"+this.getDailyWork().getWorkTypeUnit());
+		}	
+	}
 }

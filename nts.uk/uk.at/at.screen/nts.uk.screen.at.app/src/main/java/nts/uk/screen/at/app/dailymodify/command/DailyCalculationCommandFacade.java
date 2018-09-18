@@ -31,7 +31,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDai
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -50,7 +49,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -232,19 +230,8 @@ public class DailyCalculationCommandFacade {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
 		
 		// 乖離エラーのチェック
-		List<DPItemValue> divergenceErrors = new ArrayList<>();
-		for (IntegrationOfDaily d : dailyResults) {
-			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
-			for (EmployeeDailyPerError err : employeeError) {
-				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") 
-						&& err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().contains(TextResource.localize("Msg_1298"))) {
-					divergenceErrors.addAll(err.getAttendanceItemList().stream()
-							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
-							.collect(Collectors.toList()));
-				}
-			}
-		}
-		resultError.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
+		Map<Integer, List<DPItemValue>> divergenceErrors = validatorDataDaily.errorCheckDivergence(dailyResults, monthlyResults);
+		resultError.putAll(divergenceErrors);
 
 		// フレックス繰越時間が正しい範囲で入力されているかチェックする
 		UpdateMonthDailyParam monthParam = null;
