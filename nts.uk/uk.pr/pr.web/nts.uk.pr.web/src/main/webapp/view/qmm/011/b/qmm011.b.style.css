@@ -7,7 +7,7 @@
 }
 .right{
 	float: left;
-	width: 900px;
+	width: 800px;
 }
 .left{
 	float: left;
@@ -15,7 +15,7 @@
 }
 .table{
 	margin: 20px 20px 0 0;
-	width: 800px;
+	width: 750px;
 }
 .table th,td{
     border: 1px solid #CCC;
@@ -42,3 +42,14 @@ span.nts-editor-wrapped.ntsControl{
 	margin-left: 25px;
 }
 
+.top{
+	float: left;
+	
+}
+.bg-green {
+    height: 40px;
+}
+
+#B1_1{
+	margin-left: 25px;
+}

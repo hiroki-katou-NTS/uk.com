@@ -1,24 +1,6 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-<ui:composition template="/master/base.xhtml">
-    <ui:define name="htmlHead">
-        <com:ValidatorScript>
-            nts.uk.ctx.pr.core.dom.laborinsurance.InsuranceRate
-        </com:ValidatorScript>
-        <com:scriptfile set="IGNITE" />
-        <com:scriptfile path="../share/model.js" />
-        <com:scriptfile path="qmm011.c.start.js" />
-        <com:scriptfile path="qmm011.c.service.js" />
-        <com:scriptfile path="qmm011.c.vm.js" />
-        <com:stylefile path="qmm011.c.style.css" />
-    </ui:define>
 
-    <ui:define name="content">
+
+   <div>
         <div
                 class="sidebar-content-header flex valign-center header-content">
             <span class="title">#{i18n.getText('KDM001_149')}</span>
@@ -100,9 +82,9 @@
                         </thead>
                         <tbody data-bind="foreach: listAccInsurPreRate()">
                         <tr >
-                            <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: occAccInsurBusNo">
+<!--                             <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: occAccInsurBusNo"> -->
 
-                            </td>
+<!--                             </td> -->
                             <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: name"></td>
 
                             <td>
@@ -141,7 +123,4 @@
                 </div>
             </div>
         </div>
-    </ui:define>
-</ui:composition>
-</body>
-</html>
+   </div>

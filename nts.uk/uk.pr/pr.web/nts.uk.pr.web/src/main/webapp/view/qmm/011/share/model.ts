@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm011.share.model {
+module nts.uk.pr.view.qmm011.share.model {
     import getText = nts.uk.resource.getText;
 	
     export class ItemModel {
@@ -10,5 +10,6 @@ module nts.uk.com.view.qmm011.share.model {
             this.name = name;
         }
     }
+    
 
 }

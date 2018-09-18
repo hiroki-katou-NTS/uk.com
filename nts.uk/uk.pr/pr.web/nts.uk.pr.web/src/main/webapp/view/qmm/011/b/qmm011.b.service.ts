@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm011.b {
+module nts.uk.pr.view.qmm011.b {
     export module service {
         /**
          * define path to service

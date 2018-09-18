@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm011.e.viewmodel {
+module nts.uk.pr.view.qmm011.e.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
     import dialog  = nts.uk.ui.dialog;

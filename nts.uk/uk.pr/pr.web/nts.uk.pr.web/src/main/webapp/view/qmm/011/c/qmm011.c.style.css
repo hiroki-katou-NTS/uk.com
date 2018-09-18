@@ -1,19 +1,4 @@
-.padding-item {
-	padding: 10px 0 0 10px;
-}
 
-.content {
-	margin: 20px 0 20px 0;
-}
-.right{
-	float: left;
-	width: 900px;
-}
-.left{
-	float: left;
-	width: 350px;
-	margin-left: 20px;
-}
 
 table th{
     border: 1px solid #CCC;

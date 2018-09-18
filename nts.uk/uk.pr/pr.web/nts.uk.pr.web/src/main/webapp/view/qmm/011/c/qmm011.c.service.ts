@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm011.c {
+module nts.uk.pr.view.qmm011.c {
     export module service {
         /**
          * define path to service
@@ -13,7 +13,8 @@ module nts.uk.com.view.qmm011.c {
         };
 
         export function getListOccAccIsHis(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getListOccAccIsHis);
+            let _path = nts.uk.text.format(path.getListOccAccIsHis);
+            return nts.uk.request.ajax("pr", _path);
         }
         export function getOccAccIsPrRate(param :any): JQueryPromise<any> {
             let _path = nts.uk.text.format(path.getOccAccIsPrRate, param);
