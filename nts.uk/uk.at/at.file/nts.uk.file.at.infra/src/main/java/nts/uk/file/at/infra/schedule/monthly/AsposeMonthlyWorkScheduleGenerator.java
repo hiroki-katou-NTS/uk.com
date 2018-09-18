@@ -2340,7 +2340,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		builder.append(WorkScheOutputConstants.PERIOD);
 		builder.append(" ");
 		builder.append(startMonth.year() + "/" + startMonth.month());
-		builder.append(" ");
+		builder.append(" ～ ");
 		builder.append(endMonth.year() + "/" + endMonth.month());
 		
 		periodCell.setValue(builder.toString());

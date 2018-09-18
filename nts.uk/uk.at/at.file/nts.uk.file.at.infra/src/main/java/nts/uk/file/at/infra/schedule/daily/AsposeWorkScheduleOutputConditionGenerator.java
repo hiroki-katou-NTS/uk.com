@@ -607,7 +607,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<CodeName> lstWorkLocation = dataProcessor.getServicePlace(companyId).getCodeNames();
 			queryData.setLstWorkLocation(lstWorkLocation);
 		}
-		// 乖離琔�を取得す�
+		// 乖離理由を取得する
 		if (itemsId.stream().filter(x -> IntStream.of(ATTENDANCE_ID_REASON).anyMatch(y -> x == y)).count() > 0) {
 			List<CodeName> lstReason = dataProcessor.getReason(companyId).getCodeNames();
 			queryData.setLstReason(lstReason);
@@ -3058,8 +3058,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	}
 	
 	/**
-	 * アルゴリズ�「会社の日次頛�を取得する」を実�(private version), 
-	 * There isn't step 勤�頛�に対応する名称を生成す�
+	 * * アルゴリズム「会社の日次項目を取得する」を実行 (private version), 
+-	 * There isn't step 勤怠項目に対応する名称を生成する
 	 * @param lstRequestAttendaceId
 	 * @return
 	 */
@@ -3069,7 +3069,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		String companyId = AppContexts.user().companyId();
 		
 		// Role ID always not null so go to get authority case
-		// ドメインモッ�「権限別日次頛�制御」を取得す�
+		// ドメインモデル「権限別日次項目制御」を取得する
 		Optional<DailyAttendanceItemAuthority> optDaiAttItemAuth = daiAttItemAuthRepo.getDailyAttdItem(companyId, roleId);
 		if (optDaiAttItemAuth.isPresent()) {
 			DailyAttendanceItemAuthority daiAttItemAuth = optDaiAttItemAuth.get();
