@@ -1505,7 +1505,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 $("#daterangepicker").css("display", "none");
-                $("#cbListDate").css("display", "contents");
+                $("#cbListDate").css("display", "block");
                 $("#container").css("display", "none");
                 $("#btnVacationRemaining").hide();
                 $('#numberHoliday').hide();
