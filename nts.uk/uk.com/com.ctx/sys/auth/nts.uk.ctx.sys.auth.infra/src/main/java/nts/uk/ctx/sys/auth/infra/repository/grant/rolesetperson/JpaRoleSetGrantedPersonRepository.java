@@ -32,6 +32,10 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 			+ " AND c.roleSetCd IN :roleCDLst"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
+	private static final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
+			+ " WHERE c.employeeId = :employeeId"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	
 	@Override
 	public boolean checkRoleSetCdExist(String roleSetCd, String companyId) {
 		return !this.queryProxy().query(GET_ALL_BY_CID_AND_ROLESET_CODE, SacmtRoleSetGrantedPerson.class)
@@ -82,6 +86,13 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 				.setParameter("employeeId", employeeID)
 				.setParameter("roleCDLst", roleSetCDLst)
 				.setParameter("date", date).getSingle( c  -> c.toDomain());
+	}
+
+	@Override
+	public Optional<RoleSetGrantedPerson> getByEmployeeDate(String employeeId, GeneralDate baseDate) {
+		return this.queryProxy().query(SELECT_BY_DATE ,SacmtRoleSetGrantedPerson.class)
+		.setParameter("employeeId", employeeId)
+		.setParameter("date", baseDate).getSingle( c  -> c.toDomain());
 	}
 
 }
