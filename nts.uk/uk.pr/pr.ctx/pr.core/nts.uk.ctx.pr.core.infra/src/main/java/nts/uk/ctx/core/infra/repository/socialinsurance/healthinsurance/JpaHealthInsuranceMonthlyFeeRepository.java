@@ -25,7 +25,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         if (!entity.isPresent())
             return Optional.empty();
 
-        val details = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).getList();
+        val details = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyId).getList();
 
         return Optional.of(toDomain(entity.get(), details));
     }

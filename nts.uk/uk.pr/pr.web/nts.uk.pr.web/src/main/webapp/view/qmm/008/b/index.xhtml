@@ -51,11 +51,11 @@
 					</div>
 					<div style="margin-top: 30px;"
 						class="contents-area fixed-flex-layout">
-						<!-- C1_1 厚生年金保険料率一覧 -->
+						<!-- B1_1 健康保険料率一覧 -->
 						<div class="fixed-flex-layout-left">
 							<div style="margin-left: 30px; margin-bottom: 30px;"
 								data-bind="ntsPanel:{width: '290px', height: '550px', direction: 'right', showIcon: true, visible: true}">
-								<!-- C1_2 厚生年金保険料率一覧 -->
+								<!-- B1_2 検索 -->
 								<div style="width: 290px" tabindex="1"
 									data-bind="ntsSearchBox: {
 								targetKey: 'code', 
@@ -123,7 +123,326 @@
 							<hr></hr>
 							<div id="B2_12">#{i18n.getText('QMM008_16')}</div>
 							<hr></hr>
-							<div>Table B3</div>
+							<div id="B3_container"
+								class="nts-fixed-header-container ui-iggrid nts-fixed-header">
+								<table id="B3">
+									<colgroup>
+										<col width="160px" />
+										<col width="140px" />
+										<col width="140px" />
+										<col width="140px" />
+										<col width="140px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th class="ui-widget-header" rowspan="2"></th>
+											<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_20')}</th>
+											<th class="ui-widget-header" colspan="2">#{i18n.getText('QMM008_21')}</th>
+										</tr>
+										<tr>
+											<th class="ui-widget-header">#{i18n.getText('QMM008_22')}</th>
+											<th class="ui-widget-header">#{i18n.getText('QMM008_23')}</th>
+											<th class="ui-widget-header">#{i18n.getText('QMM008_24')}</th>
+											<th class="ui-widget-header">#{i18n.getText('QMM008_25')}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- B3 first row -->
+										<tr>
+											<td class="td-widget"><div>#{i18n.getText('QMM008_26')}</div></td>
+											<td>
+												<div>
+													<!--B3_9 介護なし健保給与個人負担率-->
+													<input tabindex="7"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_27]',
+ 													value: healthInsuranceRate().individualBurdenRatio().healthInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_11 介護なし健保給与事業主負担率	-->
+													<input tabindex="8"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_29]',
+ 													value: healthInsuranceRate().employeeBurdenRatio().healthInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_13 介護なし健保賞与個人負担率 -->
+													<input tabindex="9"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_30]',
+ 													value: $vm.bonusHealthInsuranceRate().individualBurdenRatio().healthInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_15 介護なし健保賞与事業主負担率 -->
+													<input tabindex="10"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 31
+													}, 
+													name: '#[QMM008_66]',
+ 													value: $vm.bonusHealthInsuranceRate().employeeBurdenRatio().healthInsuranceRate,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+										</tr>
+										<!-- B3 second row -->
+										<tr>
+											<td class="td-widget"><div>#{i18n.getText('QMM008_26')}</div></td>
+											<td>
+												<div>
+													<!--B3_18 介護あり健保給与個人負担率-->
+													<input tabindex="11"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_33]',
+ 													value: healthInsuranceRate().individualBurdenRatio().longCareInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_20 介護あり健保給与事業主負担率	-->
+													<input tabindex="12"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_34]',
+ 													value: healthInsuranceRate().employeeBurdenRatio().longCareInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_22 介護あり健保賞与個人負担率 -->
+													<input tabindex="13"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_35]',
+ 													value: $vm.bonusHealthInsuranceRate().individualBurdenRatio().longCareInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_24 介護あり健保賞与事業主負担率 -->
+													<input tabindex="14"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 31
+													}, 
+													name: '#[QMM008_36]',
+ 													value: $vm.bonusHealthInsuranceRate().employeeBurdenRatio().longCareInsuranceRate,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="td-widget" rowspan = "1" colspan = "5" style = "padding-left: 25px;">
+												<div>#{i18n.getText('QMM008_37')}</div>
+											</td>
+										</tr>
+										<!-- row 4 -->
+										<tr>
+											<td  style = "padding-left: 25px;" class="td-widget"><div>#{i18n.getText('QMM008_38')}</div></td>
+											<td>
+												<div>
+													<!--B3_28 特定保険給与個人負担率-->
+													<input tabindex="15"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_39]',
+ 													value: healthInsuranceRate().individualBurdenRatio().specialInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_30 特定保険給与事業主負担率	-->
+													<input tabindex="16"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_40]',
+ 													value: healthInsuranceRate().employeeBurdenRatio().specialInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_32 特定保険賞与個人負担率 -->
+													<input tabindex="17"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_41]',
+ 													value: $vm.bonusHealthInsuranceRate().individualBurdenRatio().specialInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_34 特定保険賞与事業主負担率 -->
+													<input tabindex="18"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 31
+													}, 
+													name: '#[QMM008_42]',
+ 													value: $vm.bonusHealthInsuranceRate().employeeBurdenRatio().specialInsuranceRate,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+										</tr>
+										<!-- row 5 -->
+										<tr>
+											<td  style = "padding-left: 25px;" class="td-widget"><div>#{i18n.getText('QMM008_43')}</div></td>
+											<td>
+												<div>
+													<!--B3_37 基本保険給与個人負担率-->
+													<input tabindex="19"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_44]',
+ 													value: healthInsuranceRate().individualBurdenRatio().basicInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_39  基本保険給与事業主負担率	-->
+													<input tabindex="20"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													},
+													name: '#[QMM008_45]',
+ 													value: healthInsuranceRate().employeeBurdenRatio().basicInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_41 基本保険賞与個人負担率 -->
+													<input tabindex="21"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_46]',
+ 													value: $vm.bonusHealthInsuranceRate().individualBurdenRatio().basicInsuranceRate, 
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+											<td>
+												<div>
+													<!-- B3_43 基本保険賞与事業主負担率 -->
+													<input tabindex="22"
+														data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '60px',
+														decimallength: 3
+													}, 
+													name: '#[QMM008_47]',
+ 													value: $vm.bonusHealthInsuranceRate().employeeBurdenRatio().basicInsuranceRate,
+ 													constraint: 'InsuranceRate', 
+ 													required: true, 
+ 													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
+												</div>
+												<div>/1000</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 							<div id="B2_14">#{i18n.getText('QMM008_17')}</div>
 							<hr></hr>
 							<div>Table B4</div>
@@ -133,8 +452,8 @@
 								<div data-bind="ntsFormLabel: {}">給与</div>
 								<div style="display: inline-block"
 									data-bind="with: healthInsuranceRate">
-									<!-- C2_34 賞与事業主端数区分 -->
-									<div id="C2_34" class="table-combobox" tabindex="28"
+									<!-- B2_23 給与事業主負担分計算方法 -->
+									<div class="table-combobox" tabindex="28"
 										data-bind="ntsComboBox: {
 													width: '280px',
 													name: '#[QMM008_184]',
@@ -155,8 +474,8 @@
 									data-bind="ntsFormLabel: {}">賞与</div>
 								<div style="display: inline-block"
 									data-bind="with: $vm.bonusHealthInsuranceRate">
-									<!-- C2_37賞与事業主負担分計算方法 -->
-									<div id="C2_37" class="table-combobox" tabindex="29"
+									<!-- B2_26 賞与事業主負担分計算方法 -->
+									<div class="table-combobox" tabindex="29"
 										data-bind="ntsComboBox: {
 													width: '280px',
 													name: '#[QMM008_185]',
