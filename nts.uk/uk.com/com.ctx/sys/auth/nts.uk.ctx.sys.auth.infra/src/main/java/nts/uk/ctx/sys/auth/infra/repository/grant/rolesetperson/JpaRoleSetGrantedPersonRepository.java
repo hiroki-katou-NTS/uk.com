@@ -33,7 +33,7 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
 	private static final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
-			+ " AND c.employeeId = :employeeId"
+			+ " WHERE c.employeeId = :employeeId"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
 	@Override
