@@ -1,7 +1,6 @@
 <div>
-		<div
-					class="sidebar-content-header flex valign-center header-content">
-					<span class="title">#{i18n.getText('QMM011_2')}</span>
+		<div class="sidebar-content-header flex valign-center header-content">
+					<span class="title">#{i18n.getText('QMM011_4')}</span>
 
 					<div style="margin-left: 100px">
 						<div>
@@ -18,20 +17,20 @@
 	<div class = "content">
 		<div class = "left">
 			<div id="B1_1" 
-				data-bind="ntsPanel:{width: '270px', height: '420px', showIcon:true, direction: 'none', visible: true}">
+				data-bind="ntsPanel:{width: '270px', height: '450px', direction: 'none', visible: true}">
 					<div id="functions-area">
 						<!-- B1_2 履歴追加 -->
 						<button id ="B1_2"  tabindex="1" data-bind="click: openEscreen , enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
 						<button id ="B1_3"  tabindex="2" data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
 					</div>
-					<div>
+					<div class = "flex">
 						<!--B1_4 雇用保険料率一覧 -->
 						<table id="B1_4" tabindex="3"
 								data-bind="ntsGridList: {
 												name: '#QMM011_8',
-												height: 700,
-												rows: 20,
+												height: 320,
+												rows: 15,
 		                                        dataSource: listEmpInsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
@@ -83,15 +82,15 @@
 					<tbody data-bind="foreach: listEmpInsurPreRate()">
 						<tr >
 							<td class="bg-green" style="border: 1px solid #CCC">
-<!-- 								<com:ko-if bind="empPreRateId === 2"> -->
-<!-- 									<span class = "label" id= "B3_6">#{i18n.getText('QMM011_14')}</span> -->
-<!-- 								</com:ko-if> -->
-<!-- 								<com:ko-if bind="empPreRateId === 1"> -->
-<!-- 									<span class = "label" id= "B3_15">#{i18n.getText('QMM011_16')}</span> -->
-<!-- 								</com:ko-if> -->
-<!-- 								<com:ko-if bind="empPreRateId === 0"> -->
+								<div data-bind="if: empPreRateId === 2">
+									<span class = "label" id= "B3_6">#{i18n.getText('QMM011_14')}</span>
+								</div>
+								<div data-bind="if: empPreRateId === 1">
+									<span class = "label" id= "B3_15">#{i18n.getText('QMM011_16')}</span>
+								</div>
+								<div data-bind="if: empPreRateId === 0">
 									<span class = "label" id= "B3_24">#{i18n.getText('QMM011_17')}</span>
-<!-- 								</com:ko-if> -->
+								</div>
 							</td>
 							<td >
 								<input id = "B3_7" class = "B3_7"  tabindex = "4"

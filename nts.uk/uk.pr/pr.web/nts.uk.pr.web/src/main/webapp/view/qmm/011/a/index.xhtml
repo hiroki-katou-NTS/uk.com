@@ -11,7 +11,7 @@
 		<com:scriptfile path="qmm011.a.service.js" />
 		<com:scriptfile path="qmm011.a.vm.js" />
 		<com:scriptfile path="qmm011.a.start.js" />
-<!-- 		<com:stylefile path="qmm011.a.style.css" /> -->
+ 		<com:stylefile path="qmm011.a.style.css" />
 
 
         <com:scriptfile path="../share/model.js" />
@@ -41,12 +41,11 @@
 		</ul>
 	</ui:define>
 	<ui:define name="sidebar-content">
-
 		<!-- 残数管理データ登録_振休管理 -->
 		<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB">
 			<ui:include src="../b/index.xhtml" />
 		</div>
-		残数管理データ登録_代休管理
+		
 		<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelC">
 			<ui:include src="../c/index.xhtml" />
 		</div>
