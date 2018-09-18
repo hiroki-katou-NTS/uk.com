@@ -2279,6 +2279,14 @@ public class AttendanceItemIdContainer implements ItemConst {
 		}));
 	}
 	
+	public static Map<Integer, Integer> mapOptionalItemIdsToNos() {
+		return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+				.filter(en -> en.getValue().indexOf(DailyDomainGroup.OPTIONAL_ITEM.name) == 0)
+				.collect(Collectors.toMap(i -> i.getKey(), i -> {
+			return Integer.parseInt(i.getValue().replace(i.getValue().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+		}));
+	}
+	
 	public static Map<ItemValue, Integer> mapOptionalItemsFromIdToNos(Collection<Integer> items, AttendanceItemType type) {
 		return mapOptionalItemsToNos(getIds(items, type));
 	}
@@ -2327,7 +2335,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return items.stream().filter(i -> isOptionalItem(i));
 	}
 
-	private static boolean isOptionalItem(ItemValue i) {
+	public static boolean isOptionalItem(ItemValue i) {
 		return DAY_ITEM_ID_CONTAINER.get(i.getItemId()).contains(OPTIONAL_ITEM_VALUE);
 	}
 
