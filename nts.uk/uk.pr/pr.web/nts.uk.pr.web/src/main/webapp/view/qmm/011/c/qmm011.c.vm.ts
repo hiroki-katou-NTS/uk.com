@@ -18,15 +18,15 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         hisId:                      KnockoutObservable<string> = ko.observable('');
         index:                      KnockoutObservable<number> = ko.observable(0);
         selectedEmpInsHisId:        KnockoutObservable<string> = ko.observable('');
-        monthlyCalendar:            KnockoutObservable<string> = ko.observable('2010/1');
-        startYearMonth:             KnockoutObservable<string> = ko.observable('2010/1');
-        endYearMonth:               KnockoutObservable<string> = ko.observable('2010/1');
-        laststartYearMonth:         KnockoutObservable<string> = ko.observable('2010/1');
+        monthlyCalendar:            KnockoutObservable<string> = ko.observable('');
+        startYearMonth:             KnockoutObservable<string> = ko.observable('');
+        endYearMonth:               KnockoutObservable<string> = ko.observable('');
+        laststartYearMonth:         KnockoutObservable<string> = ko.observable('');
         indBdRatio:                 KnockoutObservable<string> = ko.observable('');
         perFracClass:               KnockoutObservable<number> = ko.observable();
         empContrRatio:              KnockoutObservable<string> = ko.observable('');
         busiOwFracClass:            KnockoutObservable<string> = ko.observable('');
-        isNewMode:                  KnockoutObservable<boolean> = ko.observable();
+        isNewMode:                  KnockoutObservable<boolean> = ko.observable(2);
 
         listHisTemp:Array<IOccAccIsHis> =[];
         listAccInsurPreRateTemp :Array<IAccInsurPreRate>=[];
@@ -34,7 +34,9 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             let self = this;
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) =>{
-                let self = this;
+                if (data == HIS_ID_TEMP) {
+                    self.isNewMode(MODE.NEW);
+                }
                 self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
                 self.setOccAccIsHis(self.selectedEmpInsHis());
                 if(self.selectedEmpInsHisId() == '000'){
@@ -74,7 +76,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             service.getOccAccIsPrRate(self.selectedEmpInsHisId()).done((listOccAccIsPrRate: Array<IOccAccIsPrRate>) =>{
                 if(listOccAccIsPrRate && listOccAccIsPrRate.length > 0) {
                     self.listOccAccIsPrRate(OccAccIsPrRate.fromApp(listOccAccIsPrRate));
-                    self.isNewMode(false);
+                    self.isNewMode(MODE.UPDATE);
+                    if (self.selectedEmpInsHisId() == HIS_ID_TEMP) {
+                        self.isNewMode(MODE.NEW);
+                    }
 
                 }else {
                     console.log("không có data tới !!") ;
@@ -97,18 +102,15 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<IAccInsurPreRate>) => {
                 console.log(self.selectedEmpInsHisId().toString());
                 if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
-                    self.regColumnAccInsurPreRate(listAccInsurPreRate);
-
-
-                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(listAccInsurPreRate));
+                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(listAccInsurPreRate)));
                     self.isNewMode(false);
                 }
 
             });
         }
         regColumnAccInsurPreRate(listAccInsurPreRate : Array<IAccInsurPreRate>){
-
-            listAccInsurPreRate.length=10;
+            let arrResulf :Array<IAccInsurPreRate> =[];
+            arrResulf.length=10;
             if(listAccInsurPreRate[0] == null){
                 let data:IAccInsurPreRate = {
                     hisId: '',
@@ -120,7 +122,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 };
                 listAccInsurPreRate[0]=data;
             }
-            _.forEach( listAccInsurPreRate, function(value,key) {
+            _.forEach(arrResulf, function(value,key) {
 
                 let temp :IAccInsurPreRate = _.find(listAccInsurPreRate, function (o) {
                     if(o == null)
@@ -137,13 +139,16 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                         empConRatio: 0,
                         useArt: 0
                     };
-                    listAccInsurPreRate[key] = data;
+                    arrResulf[key] = data;
+                }
+                else{
+                    arrResulf[key] = temp;
                 }
 
 
 
             });
-            return listAccInsurPreRate;
+            return arrResulf;
 
         }
 
@@ -162,7 +167,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             occAccIsHis.endYearMonth = '999912';
             occAccIsHis.display = self.convertMonthYearToString(occAccIsHis.startYearMonth) + " ~ " + self.convertMonthYearToString(occAccIsHis.endYearMonth);
             if (list && list.length > 0) {
-                list[FIRST].display = self.convertMonthYearToString(occAccIsHis.startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
+                list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
             }
             listOccAccIsHis.push(occAccIsHis);
             _.each(list, (item) => {
@@ -212,13 +217,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     if (params != null) {
                         self.isNewMode(true);
 
+                        self.isNewMode(MODE.NEW);
                         //
                         self.startYearMonth(params.startYearMonth);
                         self.listOccAccIsHis(self.addOccAccIsHis(self.startYearMonth(), self.listOccAccIsHis()));
                         self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
-
-
-                        // sort list day tim
                         self.listOccAccIsHis(_.sortBy(self.listOccAccIsHis(), 'startYearMonth').reverse());
 
 
@@ -289,6 +292,18 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             month = self.startYearMonth().slice(5, 7);
             self.monthlyCalendar("(" + nts.uk.time.yearInJapanEmpire(year).toString() + month + "月)");
         }
+        enableRegis(){
+            return this.isNewMode() == MODE.NO;
+        }
+
+        enableNew(){
+            return this.isNewMode() == MODE.NEW;
+        }
+
+        enableUpdate(){
+            return this.isNewMode() == MODE.UPDATE;
+        }
+
 
         openFscreen(){
             let self = this;
@@ -501,4 +516,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         ACCIDENT_INSURRANCE_RATE = 0
     }
     export const FIRST = 0;
+    export enum MODE {
+        NEW = 0,
+        UPDATE = 1,
+        NO = 2
+    }
+    export const HIS_ID_TEMP = "0000"
 }
