@@ -1,11 +1,11 @@
-module nts.uk.com.view.qmm011.c.viewmodel {
+module nts.uk.pr.view.qmm011.c.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import model = qmm011.share.model;
     import modal = nts.uk.ui.windows.sub.modal;
-    import service = nts.uk.com.view.qmm011.c.service;
+    import service = nts.uk.pr.view.qmm011.c.service;
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
 
@@ -62,6 +62,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                     }
                     self.selectedEmpInsHisId(self.listOccAccIsHis()[self.index()].hisId);
                 } else {
+                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
                     self.isNewMode(true);
                 }
             }).always(() => {
@@ -76,7 +77,7 @@ module nts.uk.com.view.qmm011.c.viewmodel {
                     self.isNewMode(false);
 
                 }else {
-
+                    console.log("không có data tới !!") ;
                 }
 
             });
@@ -95,38 +96,55 @@ module nts.uk.com.view.qmm011.c.viewmodel {
             let self = this;
             service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<IAccInsurPreRate>) => {
                 console.log(self.selectedEmpInsHisId().toString());
-                listAccInsurPreRate.length=10;
                 if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
+                    self.regColumnAccInsurPreRate(listAccInsurPreRate);
 
-                    _.forEach( listAccInsurPreRate, function(value,key) {
-
-                        let temp :IAccInsurPreRate = _.find(listAccInsurPreRate, function (o) {
-                            if(o == null)
-                                return null;
-                            return o.occAccInsurBusNo == key;
-                        });
-
-                        if (temp == null) {
-                            let data:IAccInsurPreRate = {
-                                hisId: listAccInsurPreRate[0].hisId,
-                                occAccInsurBusNo: key,
-                                name: '',
-                                fracClass: 0,
-                                empConRatio: 0,
-                                useArt: 0
-                            };
-                            listAccInsurPreRate[key] = data;
-                        }
-
-
-
-                    });
 
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(listAccInsurPreRate));
                     self.isNewMode(false);
                 }
 
             });
+        }
+        regColumnAccInsurPreRate(listAccInsurPreRate : Array<IAccInsurPreRate>){
+
+            listAccInsurPreRate.length=10;
+            if(listAccInsurPreRate[0] == null){
+                let data:IAccInsurPreRate = {
+                    hisId: '',
+                    occAccInsurBusNo: 0,
+                    name: '',
+                    fracClass: 0,
+                    empConRatio: 0,
+                    useArt: 0
+                };
+                listAccInsurPreRate[0]=data;
+            }
+            _.forEach( listAccInsurPreRate, function(value,key) {
+
+                let temp :IAccInsurPreRate = _.find(listAccInsurPreRate, function (o) {
+                    if(o == null)
+                        return null;
+                    return o.occAccInsurBusNo == key;
+                });
+
+                if (temp == null) {
+                    let data:IAccInsurPreRate = {
+                        hisId: listAccInsurPreRate[0].hisId,
+                        occAccInsurBusNo: key,
+                        name: '',
+                        fracClass: 0,
+                        empConRatio: 0,
+                        useArt: 0
+                    };
+                    listAccInsurPreRate[key] = data;
+                }
+
+
+
+            });
+            return listAccInsurPreRate;
+
         }
 
         setIOccAccIsHis(param: IOccAccIsHis){
