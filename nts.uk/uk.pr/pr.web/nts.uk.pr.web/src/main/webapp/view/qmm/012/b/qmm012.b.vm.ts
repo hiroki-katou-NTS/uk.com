@@ -147,8 +147,13 @@ module nts.uk.pr.view.qmm012.b {
                 
                 if(listMessage.length == 0) {
                     let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    let command = ko.toJS(self.statementItemDataSelected);
+                    delete command.setBreakdownItem;
+                    delete command.setValidity;
+                    delete command.paymentItemSet.screenModel;
+                    delete command.paymentItemSet.setTaxExemptionLimit;
                     
-                    service.registerStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
+                    service.registerStatementItemData(command).done(function() {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.loadListData().done(function() {
                                 if((oldSalaryId != null) || (oldSalaryId != "")) {
@@ -169,11 +174,16 @@ module nts.uk.pr.view.qmm012.b {
             
             public deleteItem(): void {
                 let self = this;
-                
                 let nextSalaryId = self.getNextSalaryId();
                 
                 dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.removeStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
+                    let command = ko.toJS(self.statementItemDataSelected);
+                    delete command.setBreakdownItem;
+                    delete command.setValidity;
+                    delete command.paymentItemSet.screenModel;
+                    delete command.paymentItemSet.setTaxExemptionLimit;
+                    
+                    service.removeStatementItemData(command).done(function() {
                         dialog.info({ messageId: "Msg_16" }).then(() => {
                             self.loadListData().done(function() {
                                 if(self.statementItemDataList().length == 0) {
