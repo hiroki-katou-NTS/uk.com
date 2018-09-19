@@ -35,6 +35,9 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	private static final String GET_ALL_BY_HISTID = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " where hi.hisId IN :histIds";
 	
+	private static final String GET_BY_LIST_JOB = "select hi from BsymtAffJobTitleHistItem hi"
+			+ " where hi.hisId = :histId AND  hi.jobTitleId IN :jobTitleIds";
+	
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -180,6 +183,14 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 		List<BsymtAffJobTitleHistItem> entities = this.queryProxy()
 				.query(GET_ALL_BY_HISTID, BsymtAffJobTitleHistItem.class).setParameter("histIds", historyIds).getList();
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+	}
+	
+	// request list 515
+	@Override
+	public List<AffJobTitleHistoryItem> findHistJob(String historyId, List<String> jobIds) {
+		return this.queryProxy().query(GET_BY_LIST_JOB, BsymtAffJobTitleHistItem.class)
+				.setParameter("histId", historyId)
+				.setParameter("jobTitleIds", jobIds).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
 }

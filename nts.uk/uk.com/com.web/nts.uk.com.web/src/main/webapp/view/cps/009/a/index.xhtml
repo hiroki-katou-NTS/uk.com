@@ -391,11 +391,14 @@
 															data-bind="ntsComboBox: {
 																	options: selection,
 																	optionsValue: 'optionValue',
+																	visibleItemsCount: 5,
 																	value: selectedCode,
 																	optionsText: 'optionText',
 																	editable: false,
 																	enable: true,
 																	dropDownAttachedToBody:true,
+																	selectFirstIfNull: false,
+																	required: false,
 																	columns: [
 																		{ prop: 'optionText', length: 10 },
 																	]},
