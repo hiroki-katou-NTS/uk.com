@@ -290,7 +290,7 @@ module nts.uk.at.view.kmk008.g {
                 }
 
                 // Start component
-                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             startPage(): JQueryPromise<any> {

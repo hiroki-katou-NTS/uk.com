@@ -1431,6 +1431,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return value;
             }
         }
+        
+        convertToHours(value: any): string {
+            let self = this;
+            let hours = value < 0 ? String(0 - Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
+            let minutes = String(Math.abs(value) % 60);
+            if (Number(minutes) < 10) minutes = "0" + minutes;
+            return hours + ":" + minutes;
+        }
 
         //check data item in care and childCare 
         // child care = 0 , care = 1, other = 2;
@@ -2171,19 +2179,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
             
             let valueTemp = 0;
-            _.forEach($.parseJSON(jsonColumnWith)[1], (value, key) => {
-                if (key.indexOf('A') != -1) {
-                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
-                        command.lstHeader[key.substring(1, key.length)] = value;
-                    }
+            _.forEach($.parseJSON(jsonColumnWith), (valueP, keyP) =>{
+                if (keyP != "reparer") {
+                    _.forEach(valueP, (value, key) => {
+                        if (key.indexOf('A') != -1) {
+                            if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                                command.lstHeader[key.substring(1, key.length)] = value;
+                            }
+                        }
+                        if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                            valueTemp = value;
+                        } else if (key.indexOf('Name') != -1) {
+                            command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                            valueTemp = 0;
+                        }
+                    });
                 }
-                if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
-                    valueTemp = value;
-                } else if (key.indexOf('Name') != -1) {
-                    command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
-                    valueTemp = 0;
-                }
-            });
+            })
+           
             if(self.isVisibleMIGrid()){
                 let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
                 delete columnWidthMiGrid.monthYear;
@@ -2745,7 +2758,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value) : id.value;
+                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? self.convertToHours(id.value) : id.value;
                 totalWidthColumn += id.columnWidth;
             });
 
