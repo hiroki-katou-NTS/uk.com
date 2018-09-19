@@ -276,7 +276,29 @@ module nts.uk.pr.view.qmm008.share.model {
             this.insuredBurden(new HealthContributionFee(params ? params.healthInsuranceGrade : null));
         }
     }
+    
+    
+    //Screen I Domain
+    //拠出金率履歴
+    export interface IContributionRateHistory {
+        socialInsuranceCode: string;
+        history: IGenericHistoryYearMonthPeiod[];
+    }
+    //拠出金率履歴
+    export class ContributionRateHistory {
+        socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
+        history: KnockoutObservableArray<GenericHistoryYearMonthPeiod> = ko.observableArray([]);
 
+        constructor(params: IWelfarePensionInsuranceRateHistory) {
+            this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
+            this.history(params ? params.history.map(function(item) {
+                return new GenericHistoryYearMonthPeiod(item)
+            }) : []);
+        }
+    }
+    
+    
+    
     // Screen C Domain
 
     // 厚生年金保険料率履歴
@@ -542,6 +564,7 @@ module nts.uk.pr.view.qmm008.share.model {
         companyID: KnockoutObservable<string> = ko.observable(null);
         welfareInsuranceRateHistory: KnockoutObservable<WelfarePensionInsuranceRateHistory> = ko.observable(null);
         healthInsuranceFeeRateHistory: KnockoutObservable<HealthInsuranceFeeRateHistory> = ko.observable(null);
+        contributionRateHistory: KnockoutObservable<ContributionRateHistory> = ko.observable(null);
         constructor(params: ISocialInsuranceOffice) {
             this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
             this.socialInsuranceName(params ? params.socialInsuranceName : null);
@@ -550,6 +573,7 @@ module nts.uk.pr.view.qmm008.share.model {
             this.insuranceMasterInfomation(params ? params.insuranceMasterInfomation : null);
             this.welfareInsuranceRateHistory(new WelfarePensionInsuranceRateHistory(params ? params.welfareInsuranceRateHistory: null));
             this.healthInsuranceFeeRateHistory(new HealthInsuranceFeeRateHistory(params ? params.healthInsuranceFeeRateHistory : null));
+            this.contributionRateHistory(new ContributionRateHistory(params ? params.contributionRateHistory: null));
         }
     }
 
