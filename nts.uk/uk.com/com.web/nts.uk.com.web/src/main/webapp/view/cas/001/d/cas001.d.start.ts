@@ -8,16 +8,9 @@ module nts.uk.com.view.cas001.d {
         __viewContext["viewModel"] = screenModel;
         __viewContext["viewModel"].start().done(function(data) {
             initGrid();
-            $("#grid").igGridSelection('selectRowById', "COM1_00000000000000000000000_CS00001");
             __viewContext.bind(__viewContext['viewModel']);
            $('#search > div:nth-child(1) > span > input').focus();
-            
         })
-        
-        
-       
-
-
     });
 }
 
