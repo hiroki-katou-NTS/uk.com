@@ -783,7 +783,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						outputItemCustom.getStandardOutputItem().getOutputItemName().v());
 				result.put(RESULT_STATE, RESULT_NG);
 				result.put(LINE_DATA_CSV, lineDataCSV);
-				return lineDataCSV;
+				return result;
 			}
 			
 			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
