@@ -51,7 +51,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 				approvalRootContentOutput.getApprovalRootState().getRootStateID(), 
 				companyID, 
 				employeeID, 
-				new DatePeriod(recordDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")), 
+				new DatePeriod(GeneralDate.fromString("1900/01/01", "yyyy/MM/dd"), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")), 
 				rootType, 
 				approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState().stream()
 					.map(x -> new AppPhaseInstance(
