@@ -173,7 +173,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     block.clear();
                     return;
                 } else {
-                    let existCode = self.listOutputCodeConvert().filter(x => x.convertCode() === currentOutputCodeConvert().convertCode());
+                    let existCode = self.listOutputCodeConvert().filter(x => x.systemCode() === currentOutputCodeConvert().systemCode());
                     if (existCode.length > 0) {
                         dialog.alertError({ messageId: "Msg_661" });
                         block.clear();
@@ -184,9 +184,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
             let _outputItemDuplicate: Array<any> = [];
             for (let detail of currentOutputCodeConvert().listCdConvertDetail()) {
-                if (!_.isEmpty(detail.outputItem())) {
+                if (!_.isEmpty(detail.systemCode())) {
                     // check duplicate OutputItem detail
-                    let data = currentOutputCodeConvert().listCdConvertDetail().filter(x => x.outputItem() === detail.outputItem());
+                    let data = currentOutputCodeConvert().listCdConvertDetail().filter(x => x.systemCode() === detail.systemCode());
                     if (data.length >= 2) {
                         _outputItemDuplicate.push(detail);
                     }
@@ -197,9 +197,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             if (!_.isEmpty(_outputItemDuplicate)) {
                 let _errorOutputItemDuplicate: Array<any> = _.uniqBy(ko.toJS(_outputItemDuplicate), 'outputItem');
                 for (let i = 0; i < _errorOutputItemDuplicate.length; i++) {
-                    $('tr[data-id=' + _errorOutputItemDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_661', messageParams: [_errorOutputItemDuplicate[i].outputItem] });
+                    $('tr[data-id=' + _errorOutputItemDuplicate[i].lineNumber + ']').find("input").eq(1).ntsError('set', { messageId: 'Msg_661', messageParams: [_errorOutputItemDuplicate[i].systemCode] });
                 }
-                dialog.alertError({ messageId: "Msg_661" });
+                //dialog.alertError({ messageId: "Msg_661" });
             }
 
             if (!nts.uk.ui.errors.hasError()) {
