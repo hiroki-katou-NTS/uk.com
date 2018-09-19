@@ -101,7 +101,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 		List<AttendanceItemName> attendanceItems = this.getAttendanceItemName(attendanceItemIds, type);
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
-				.getByAttendanceIdAndType(attendanceItemIds, type);
+				.getFullDataByAttdIdAndType(attendanceItemIds, type);
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
