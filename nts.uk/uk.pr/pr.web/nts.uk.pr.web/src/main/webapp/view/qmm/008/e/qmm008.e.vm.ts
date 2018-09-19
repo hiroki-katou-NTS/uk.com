@@ -32,6 +32,20 @@ module nts.uk.pr.view.qmm008.e {
                });
                $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
            }
+           
+           /**
+            *  update
+            */
+           
+           private update() : void {
+               let self = this;
+               let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2' };
+               nts.uk.pr.view.qmm008.e.service.update(command).done(function(response) {
+                   
+               }
+               
+           }
+           
        }
     }
     
