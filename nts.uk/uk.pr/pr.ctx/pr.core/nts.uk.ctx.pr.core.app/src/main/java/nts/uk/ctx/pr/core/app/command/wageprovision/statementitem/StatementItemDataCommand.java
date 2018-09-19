@@ -26,4 +26,5 @@ public class StatementItemDataCommand {
 	private BreakdownItemSetDto breakdownItemSet;
 	private TaxExemptionLimitDto taxExemptionLimit;
 	private IntegratedItemDto integratedItem;
+	private boolean checkCreate;
 }

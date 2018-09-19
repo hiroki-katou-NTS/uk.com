@@ -91,7 +91,7 @@
 					</div>
 					
 				</div>
-				<com:ko-if bind="(statementItemDataSelected().statementItem().categoryAtr != null)">
+				<com:ko-if bind="(statementItemDataSelected().statementItem().categoryAtr() != null)">
 					<div class="fixed-flex-layout-right" data-bind="with: statementItemDataSelected">
 						<div class="valign-center control-group">
 							<!-- コード/名称 -->
@@ -152,7 +152,7 @@
 						<hr style="margin-bottom: 20px;"/>
 						<div class="screenCDEFG">
 							<!-- CategoryAtr is DEDUCTION_ITEM  -->
-							<com:ko-if bind="(statementItem().categoryAtr == '1')">
+							<com:ko-if bind="(statementItem().categoryAtr() == '1')">
 								<div class="valign-center control-group" data-bind="with: deductionItemSet">
 									<!-- 控除項目 -->
 									<div id="D1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM012_4')}</div>
@@ -172,7 +172,7 @@
 								</div>
 							</com:ko-if>
 							<!-- CategoryAtr is ATTEND_ITEM  -->
-							<com:ko-if bind="(statementItem().categoryAtr == '2')">
+							<com:ko-if bind="(statementItem().categoryAtr() == '2')">
 								<div data-bind="with: timeItemSet">
 									<div class="valign-center control-group">
 										<!-- 時間/回数区分 -->
@@ -211,7 +211,7 @@
 							</com:ko-if>
 							<div data-bind="with: paymentItemSet">
 								<!-- CategoryAtr is PAYMENT_ITEM  -->
-								<com:ko-if bind="($parent.statementItem().categoryAtr == '0')">
+								<com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
 									<div class="valign-center control-group">
 										<!-- 課税 -->
 										<div id="C1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('#QMM012_39')}</div>
@@ -392,7 +392,7 @@
 									</div>
 								</com:ko-if>
 								<!-- CategoryAtr is PAYMENT_ITEM  -->
-								<com:ko-if bind="($parent.statementItem().categoryAtr == '0')">
+								<com:ko-if bind="($parent.statementItem().categoryAtr() == '0')">
 									<div class="valign-center control-group">
 										<!-- 平均賃金 -->
 										<div id="C2_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_51')}</div>
@@ -407,7 +407,7 @@
 								</com:ko-if>
 							</div>
 							<!-- CategoryAtr is not OTHER_ITEM  -->
-							<com:ko-if bind="(statementItem().categoryAtr != '4')">
+							<com:ko-if bind="(statementItem().categoryAtr() != '4')">
 								<div class="valign-center control-group" data-bind="with: statementItemDisplaySet">
 									<!-- ゼロ表示区分 -->
 									<div id="C2_5" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_52')}</div>
@@ -424,7 +424,7 @@
 							</com:ko-if>
 							<br />
 							<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
-							<com:ko-if bind="((statementItem().categoryAtr == '0') || (statementItem().categoryAtr == '1') || (statementItem().categoryAtr == '2'))">
+							<com:ko-if bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1') || (statementItem().categoryAtr() == '2'))">
 								<div data-bind="with: itemRangeSet">
 									<div class="valign-center control-group">
 										<!-- エラー範囲 -->
@@ -493,7 +493,7 @@
 							</com:ko-if>
 							<br />
 							<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM -->
-							<com:ko-if bind="((statementItem().categoryAtr == '0') || (statementItem().categoryAtr == '1'))">
+							<com:ko-if bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1'))">
 								<div class="valign-center control-group">
 									<!-- 項目の有効期間とサイクルの設定 -->
 									<div id="C3_1" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_67')}</div>
@@ -520,7 +520,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: breakdownItemUseAtr,
-																				enable: (!$parent.checkCreate() &amp;&amp; ($parent.statementItem().defaultAtr != 1) &amp;&amp; (($parent.statementItem().categoryAtr == '1') || (($parent.statementItem().categoryAtr == '0') &amp;&amp; ((taxAtr() == 3) || (taxAtr() == 4))))) }"></div>
+																				enable: (!$parent.checkCreate() &amp;&amp; ($parent.statementItem().defaultAtr != 1) &amp;&amp; (($parent.statementItem().categoryAtr() == '1') || (($parent.statementItem().categoryAtr() == '0') &amp;&amp; ((taxAtr() == 3) || (taxAtr() == 4))))) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<div class="space1"></div>
@@ -540,7 +540,7 @@
 								<br />
 							</com:ko-if>
 							<!-- CategoryAtr is PAYMENT_ITEM or DEDUCTION_ITEM or ATTEND_ITEM  -->
-							<com:ko-if bind="((statementItem().categoryAtr == '0') || (statementItem().categoryAtr == '1') || (statementItem().categoryAtr == '2'))">
+							<com:ko-if bind="((statementItem().categoryAtr() == '0') || (statementItem().categoryAtr() == '1') || (statementItem().categoryAtr() == '2'))">
 								<div class="valign-center control-group" data-bind="with: paymentItemSet">
 									<!-- 備考 -->
 									<div id="C3_10" data-bind="ntsFormLabel: {}">#{i18n.getText('#QMM012_75')}</div>
