@@ -156,7 +156,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// 「年間勤務表（36チェックリスト）の出力項目設定」を取得する
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
 			// 36協定対象外者のチェック
-			this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
+			employeeIds = this.checkExcludeEmp36Agreement(excludeEmp, employeeIds, endYmd);
 			// アルゴリズム「年間勤務表の作成」を実行する
 			PeriodAtrOfAgreement periodAtr = null;
 			if (OutputAgreementTime.TWO_MONTH.equals(setOutItemsWoSc.getDisplayFormat())) {
@@ -268,7 +268,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	/**
 	 * 36協定対象外者のチェック
 	 */
-	private void checkExcludeEmp36Agreement(ExcludeEmp excludeEmp, List<String> employeeIds, LocalDate endYmd) {
+	private List<String> checkExcludeEmp36Agreement(ExcludeEmp excludeEmp, List<String> employeeIds, LocalDate endYmd) {
 		List<String> empId = new ArrayList<>();
 		GeneralDate endDate = GeneralDate.localDate(endYmd);
 		// 年間勤務表（36チェックリスト）の出力条件.印字区分をチェック
@@ -293,6 +293,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 			// エラーメッセージ(#Msg_1367#)を表示
 			throw new BusinessException("Msg_1367");
 		}
+		return empId;
 	}
 
 	private boolean checkIsManager(EmployeeInformationImport emp, GeneralDate endDate) {
