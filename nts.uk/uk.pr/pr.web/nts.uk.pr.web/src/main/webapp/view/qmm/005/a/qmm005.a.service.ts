@@ -4,16 +4,15 @@ module nts.uk.pr.view.qmm005.a.service {
 
     let paths = {
         findDisplayRegister: "ctx.pr.core.ws.wageprovision.processdatecls/findDisplayRegister",
-        registerProcessing :"nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls/registerProcessing"
+        registerProcessing :"ctx.pr.core.ws.wageprovision.processdatecls/registerProcessing"
     };
 
     export function findDisplayRegister(): JQueryPromise<any> {
         return ajax('pr', paths.findDisplayRegister);
     }
     
-    export function registerProcessing(): JQueryPromise<any> {
-        let _path = format(paths.registerProcessing);
-        return ajax('com', _path);
+    export function registerProcessing(command): JQueryPromise<any> {
+        return ajax('pr', paths.registerProcessing, command);
     }
 
 

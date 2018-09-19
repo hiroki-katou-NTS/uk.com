@@ -29,12 +29,12 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
 
     @Override
     public void add(EmpTiedProYear domain) {
-        this.commandProxy().insert(QpbmtEmpTiedProYear.toEntity(domain));
+        this.commandProxy().insertAll(QpbmtEmpTiedProYear.toEntity(domain));
     }
 
     @Override
     public void update(EmpTiedProYear domain) {
-        this.commandProxy().update(QpbmtEmpTiedProYear.toEntity(domain));
+        this.commandProxy().updateAll(QpbmtEmpTiedProYear.toEntity(domain));
     }
 
 

@@ -55,14 +55,14 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             let paramEmployment = {
                 processCateNo: processCateNo,
                 employeeList: employeeArr,
-                employeeSelectedList:  employeeList()
+                employeeSelectedList: employeeList()
 
             }
             setShared("QMM005_output_F", paramEmployment);
             modal('/view/qmm/005/f/index.xhtml', {title: '',}).onClosed(function (): any {
                 let employeeString = '';
                 let params = getShared("QMM005F_outParams");
-                if(!_.isUndefined(params)) {
+                if (!_.isUndefined(params)) {
                     for (let i = 0; i < params.returnList.length; i++) {
                         employeeString == '' ? employeeString += params.returnList[i].name : employeeString += (', ' + params.returnList[i].name);
                     }
@@ -168,6 +168,21 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             });
             dfd.resolve();
             return dfd.promise();
+        }
+
+        registerProcessing() {
+            let self = this;
+            let commandData = {currProcessDateCommand: [], empTiedProYearCommand: []};
+            for (let i = 0; i < 5; i++) {
+                if (self.itemBinding()[i].processInfomation.processDivisionName != '') {
+                    commandData.currProcessDateCommand.push({giveCurrTreatYear: self.itemBinding()[i].monthsSelectd()});
+                    commandData.empTiedProYearCommand.push({employmentCodes: _.map(self.itemBinding()[i].employeeList(), "code")});
+                }
+            }
+            service.registerProcessing(commandData).done(function (data) {
+                nts.uk.ui.dialog.info({messageId: "Msg_15"});
+            }).fail(function (error) {
+            });
         }
     }
 
