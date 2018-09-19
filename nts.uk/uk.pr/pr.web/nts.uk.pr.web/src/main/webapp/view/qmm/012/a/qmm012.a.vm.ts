@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm012.a.viewmodel {
             let self = this;
             self.categoryAtr(model.getCategoryAtr());
             self.selectedCategoryAtr.subscribe(category => {
-                self.item(model.getItemAtrText(category));           
+                self.item(model.getCategoryAtrText(category));           
             });
             self.selectedCategoryAtr(0);
         }

@@ -14,7 +14,7 @@ module nts.uk.pr.view.qmm012.b {
             
             // category comboBox
             categoryList: KnockoutObservableArray<model.ItemModel>;
-            selectedCategory: KnockoutObservable<string>;
+            selectedCategory: KnockoutObservable<string> = ko.observable(null);
             
             // Also display abolition
             isdisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
@@ -37,7 +37,6 @@ module nts.uk.pr.view.qmm012.b {
                     new model.ItemModel(model.CategoryAtr.REPORT_ITEM.toString(), getText('QMM012_6')),
                     new model.ItemModel(model.CategoryAtr.OTHER_ITEM.toString(), getText('QMM012_7'))
                 ]);
-                self.selectedCategory = ko.observable(null);
                 
                 self.gridColumns = [
                                         { headerText: '', key: 'salaryItemId', width: 0, formatter: _.escape, hidden: true },
@@ -66,8 +65,8 @@ module nts.uk.pr.view.qmm012.b {
                 let deferred = $.Deferred();
                 block.invisible();
                 
-                let category: number = null;
-                if(self.selectedCategory()) {
+                let category: number = -1;
+                if(!_.isEmpty(self.selectedCategory())) {
                     category = parseInt(self.selectedCategory(), 10);
                 }
                 
@@ -353,16 +352,8 @@ module nts.uk.pr.view.qmm012.b {
                 let self = this;
                 
                 if (data) {
-                    self.categoryAtr = ko.observable(data.categoryAtr);
-                    
-                    if(data.categoryAtr == model.CategoryAtr.PAYMENT_ITEM) {
-                        self.categoryName = ko.observable(getText('QMM012_3'));
-                    } else if(data.categoryAtr == model.CategoryAtr.DEDUCTION_ITEM) {
-                        self.categoryName = ko.observable(getText('QMM012_4'));
-                    } else if(data.categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
-                        self.categoryName = ko.observable(getText('QMM012_5'));
-                    }
-                    
+                    self.categoryAtr = ko.observable(data.categoryAtr);              
+                    self.categoryName =  ko.observable(model.getCategoryAtrText(data.categoryAtr));
                     self.itemNameCd = ko.observable(data.itemNameCd);
                     self.defaultAtr = data.defaultAtr;
                     self.valueAtr = ko.observable(data.valueAtr);
