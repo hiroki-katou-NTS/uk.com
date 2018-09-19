@@ -246,7 +246,7 @@ module nts.uk.ui.koExtentions {
                     },
                     dropDownClosed: (evt, ui) => {
                         let data = $element.data(DATA);
-                        
+
                         // check flag changed for validate
                         $element.trigger(CHANGED, [CHANGED, true]);
 
@@ -271,8 +271,14 @@ module nts.uk.ui.koExtentions {
                             clearTimeout(sto);
                         }, 10);
 
-                        if (data[ENABLE] && !$(":focus").length) {
-                            $element.focus();
+                        if (data[ENABLE]) {
+                            let f = $(':focus');
+
+                            if (f.hasClass('ui-igcombo-field')
+                                || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
+                                || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
+                                $element.focus();
+                            }
                         }
                     },
                     dropDownOpening: (evt, ui) => {
@@ -463,6 +469,15 @@ module nts.uk.ui.koExtentions {
                 .trigger(CHANGED, [EDITABLE, editable])
                 .trigger(CHANGED, [REQUIRED, required]);
 
+            let sto = setTimeout(() => {
+                if ($element.data("igCombo")) {
+                    $element
+                        // enable or disable 
+                        .igCombo(OPTION, "disabled", !enable)
+                    clearTimeout(sto);
+                }
+            }, 100);
+
             // if igCombo has init
             if ($element.data("igCombo")) {
                 let data = $element.data(DATA),
@@ -472,13 +487,6 @@ module nts.uk.ui.koExtentions {
                 if (!_.isEqual(olds, options)) {
                     $element.igCombo(OPTION, "dataSource", options);
                 }
-
-                let sto = setTimeout(() => {
-                    $element
-                        // enable or disable 
-                        .igCombo(OPTION, "disabled", !enable)
-                    clearTimeout(sto);
-                }, 100);
 
                 $element
                     // set new value

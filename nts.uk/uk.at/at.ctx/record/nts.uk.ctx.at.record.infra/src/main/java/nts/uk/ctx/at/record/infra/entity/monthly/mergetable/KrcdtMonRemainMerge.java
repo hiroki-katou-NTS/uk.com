@@ -8487,9 +8487,9 @@ public class KrcdtMonRemainMerge extends UkJpaEntity implements Serializable {
 		
 		return new MonthlyDayoffRemainData(this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), this.krcdtMonRemainPk.getClosureId(),
-				this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0),
+				this.krcdtMonRemainPk.getClosureDay(), (this.krcdtMonRemainPk.getIsLastDay() != 0), EnumAdaptor.valueOf(closureStatus, ClosureStatus.class), 
 				this.startDate, this.endDate,
-				occurrenceDayTimes,useDayTimes, remainingDayTimes, carryForWardDayTimes, unUsedDayTimes);
+				occurrenceDayTimes, useDayTimes, remainingDayTimes, carryForWardDayTimes, unUsedDayTimes);
 	}
 	
 	/**
