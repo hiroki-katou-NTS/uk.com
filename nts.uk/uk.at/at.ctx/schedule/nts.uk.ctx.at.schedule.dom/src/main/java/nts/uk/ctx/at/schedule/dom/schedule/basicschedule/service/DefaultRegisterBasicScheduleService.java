@@ -203,9 +203,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
 				try {
 					if (workTimeSetting == null) {
-						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode, listWorkType);
 					} else {
-						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeSetting.getWorktimeCode().v());
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeSetting.getWorktimeCode().v(), listWorkType);
 					}
 				} catch (BusinessException ex) {
 					// find and remove in listBefore because this data is not insert/update to DB
