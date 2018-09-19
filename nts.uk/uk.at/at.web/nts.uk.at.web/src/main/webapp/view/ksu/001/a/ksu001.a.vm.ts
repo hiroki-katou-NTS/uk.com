@@ -1641,6 +1641,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //            } else {
             // TO-DO
             // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
+            
             // get data from WorkScheduleState
             self.getDataWorkScheduleState().done(() => {
                 let data = [],
