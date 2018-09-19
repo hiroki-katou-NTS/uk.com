@@ -301,8 +301,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewO.initScreen().done(() => {
                 self.getDataScheduleDisplayControl(); 
                 self.getDataComPattern();
-                self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
-                self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
+                self.dtPrev(moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD'));
+                self.dtAft(moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD'));
                 self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
                 // get state of list workTypeCode
                 // get data for screen A
@@ -391,8 +391,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
-                periodStartDate: moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD').toISOString(), // 対象期間開始日
-                periodEndDate: moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD').toISOString(), // 対象期間終了日
+                periodStartDate: self.dtPrev, // 対象期間開始日
+                periodEndDate: self.dtAft, // 対象期間終了日
                 inService: true, // 在職区分
                 leaveOfAbsence: false, // 休職区分
                 closed: false, // 休業区分
@@ -1641,6 +1641,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //            } else {
             // TO-DO
             // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
+            
             // get data from WorkScheduleState
             self.getDataWorkScheduleState().done(() => {
                 let data = [],

@@ -29,7 +29,7 @@ function initGrid() {
         dataSource: __viewContext["viewModel"].categoryList() || [],
         primaryKey: 'categoryId',
         rowVirtualization: true,
-        virtualization: false,
+        virtualization: true,
         virtualizationMode: 'continuous',
         enter: 'below',
         columns: [
@@ -44,7 +44,8 @@ function initGrid() {
             {
                 name: 'Selection',
                 mode: 'row',
-                multipleSelection: true
+                multipleSelection: true,
+                rowSelectionChanged: selectionChanged.bind(this)
             }, {
                 name: "Tooltips",
                 columnSettings: [
@@ -54,6 +55,11 @@ function initGrid() {
             }
         ]
     });
+    
+    $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
+    $("#grid").setupSearchScroll("igGrid", true);
+
+  
     
     $(document).on("click", "#grid_selfAuth > span > div > label > input", function(evt, ui) {
         let _this = $(this),
@@ -80,5 +86,14 @@ function initGrid() {
             }, 1);
         });
     });
-
 }
+
+function selectionChanged(evt, ui) {
+        //console.log(evt.type);
+        var selectedRows = ui.selectedRows;
+        var arr = [];
+        for (var i = 0; i < selectedRows.length; i++) {
+            arr.push("" + selectedRows[i].id);
+        }
+        __viewContext.selectedList(arr);
+ }; 

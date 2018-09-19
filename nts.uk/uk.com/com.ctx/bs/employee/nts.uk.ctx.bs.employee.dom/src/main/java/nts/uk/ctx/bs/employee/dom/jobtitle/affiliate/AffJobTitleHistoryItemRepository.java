@@ -55,4 +55,6 @@ public interface AffJobTitleHistoryItemRepository {
 	 */
 	List<AffJobTitleHistoryItem> findByHitoryIds(List<String> historyIds);
 	
+	// request list 551
+	List<AffJobTitleHistoryItem> findHistJob(String historyId, List<String> jobIds);
 }

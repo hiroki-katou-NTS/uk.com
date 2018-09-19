@@ -36,11 +36,10 @@ public class TimeStampDto implements ItemConst {
 	private int stampSourceInfo;
 	
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(
-				c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-				!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
-				c.getStampSourceInfo().value);
+		return c == null || c.getTimeWithDay() == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
+												c.getAfterRoundingTime().valueAsMinutes(),
+												!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
+												c.getStampSourceInfo().value);
 	}
 	
 	@Override
@@ -49,9 +48,9 @@ public class TimeStampDto implements ItemConst {
 	}
 	
 	public static WorkStamp toDomain(TimeStampDto c) {
-		return c == null ? null : new WorkStamp(
+		return c == null || c.getTimesOfDay() == null ? null : new WorkStamp(
 				c.getAfterRoundingTimesOfDay() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
-				c.getTimesOfDay() == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(c.getTimesOfDay()),
+				new TimeWithDayAttr(c.getTimesOfDay()),
 				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
 				c.stampInfo());
 	}

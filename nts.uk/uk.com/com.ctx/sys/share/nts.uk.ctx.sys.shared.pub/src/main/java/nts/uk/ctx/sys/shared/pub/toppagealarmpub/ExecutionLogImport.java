@@ -1,13 +1,9 @@
-package nts.uk.ctx.sys.shared.dom.toppagealarmpub;
+package nts.uk.ctx.sys.shared.pub.toppagealarmpub;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.shared.dom.toppagealarm.ExistenceError;
-import nts.uk.ctx.sys.shared.dom.toppagealarm.IsCancelled;
-import nts.uk.ctx.sys.shared.dom.toppagealarmset.AlarmCategory;
 
 @Data
 public class ExecutionLogImport {
@@ -15,10 +11,10 @@ public class ExecutionLogImport {
 	private String companyId;
 	
 	/** エラーの有無 */
-	private ExistenceError existenceError;
+	private int existenceError;
 	
 	/** 実行内容 */
-	private AlarmCategory executionContent;
+	private int executionContent;
 	
 	/** 実行完了日時 */
 	private GeneralDateTime finishDateTime;
@@ -27,7 +23,7 @@ public class ExecutionLogImport {
 	private List<String> managerId;
 	
 	/** 中止フラグ */
-	private Optional<IsCancelled> isCancelled;
+	private Integer isCancelled;
 	
 	/** 対象社員ID */
 	private List<ExecutionLogErrorDetail> targerEmployee;
