@@ -59,6 +59,7 @@ import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
@@ -704,8 +705,18 @@ public class ScheCreExeBasicScheduleHandler {
 			// 存在しない場合
 			prescribedTimezoneSetting = optPrescribedSetting.get();
 			
-			bld.startClock(prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).map(timeZone -> timeZone.getStart().v()).collect(Collectors.toList()));
-			bld.endClock(prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).map(timeZone -> timeZone.getEnd().v()).collect(Collectors.toList()));
+			List<Integer> lstStart = new ArrayList<>();
+			List<Integer> lstEnd = new ArrayList<>();
+			prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).forEach(timeZone -> {
+				if (timeZone.getStart() != null)
+					lstStart.add(timeZone.getStart().v());
+				if (timeZone.getEnd() != null)
+					lstEnd.add(timeZone.getEnd().v());
+			});
+			bld.startClock(lstStart);
+			bld.endClock(lstEnd);
+//			bld.startClock(prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).map(timeZone -> timeZone.getStart() != null ? timeZone.getStart().v() : null).collect(Collectors.toList()));
+//			bld.endClock(prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).map(timeZone -> timeZone.getEnd() != null ? timeZone.getEnd().v() : null).collect(Collectors.toList()));
 		} else {
 			// 存在する場合
 			PrescribedTimezoneSettingDto prescribedTimezoneSettingDto = new PrescribedTimezoneSettingDto();

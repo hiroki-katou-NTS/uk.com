@@ -83,8 +83,13 @@ public class BasicScheduleSaveCommand {
 	 * @param workTimeSet the work time set
 	 */
 	public void updateWorkScheduleTimeZonesKeepBounceAtr(PrescribedTimezoneSetting workTimeSet, WorkType workType) {
-		this.workScheduleTimeZones = workTimeSet.getLstTimezone().stream().filter(timezone -> timezone.isUsed())
-				.map(timezone -> this.convertTimeZoneToScheduleTimeZoneKeepBounceAtr(timezone, workType)).collect(Collectors.toList());
+		List<WorkScheduleTimeZoneSaveCommand> lstTimeZone = new ArrayList<>();
+		workTimeSet.getLstTimezone().stream().filter(timezone -> timezone.isUsed()).forEach(timezone -> {
+			if (timezone.getStart() != null && timezone.getEnd() != null) {
+				lstTimeZone.add(this.convertTimeZoneToScheduleTimeZoneKeepBounceAtr(timezone, workType));
+			}
+		});
+		this.workScheduleTimeZones = lstTimeZone;
 	}
 	
 	/**
