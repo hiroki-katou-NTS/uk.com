@@ -74,11 +74,20 @@ public class StatementItemDataFinder {
 		List<BreakdownItemSetDto> breakdownItemSet = null;
 		IntegratedItemDto integratedItem = null; // TODO Chưa tạo domain
 		String cid = AppContexts.user().companyId();
-
+		String name = null;
+		Integer deprecatedAtr = null;
 		statementItem = statementItemRepository.getStatementItemById(cid, categoryAtr, itemNameCd, salaryItemId)
 				.map(i -> StatementItemDto.fromDomain(i)).orElse(null);
+		if (statementItem != null) {
+			deprecatedAtr = statementItem.getDeprecatedAtr();
+		}
+
 		statementItemName = statementItemNameRepository.getStatementItemNameById(cid, salaryItemId)
 				.map(i -> StatementItemNameDto.fromDomain(i)).orElse(null);
+		if (statementItemName != null) {
+			name = statementItemName.getName();
+		}
+
 		integratedItem = null; // TODO Chưa tạo domain
 		switch (EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class)) {
 		case PAYMENT_ITEM:
@@ -135,7 +144,8 @@ public class StatementItemDataFinder {
 		}
 
 		return new StatementItemDataDto(statementItem, statementItemName, paymentItemSet, deductionItemSet, timeItemSet,
-				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem);
+				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem,
+				categoryAtr, itemNameCd, name, deprecatedAtr);
 	}
 
 	public List<StatementItemDataDto> getAllStatementItemData(Integer categoryAtr, boolean isIncludeDeprecated) {

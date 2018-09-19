@@ -16,4 +16,23 @@ public class StatementItemDataDto {
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
 	private List<BreakdownItemSetDto> breakdownItemSet;
 	private IntegratedItemDto integratedItem;
+	/**
+	 * カテゴリ区分
+	 */
+	private int categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	private String itemNameCd;
+
+	/**
+	 * 名称
+	 */
+	private String name;
+
+	/**
+	 * 廃止区分
+	 */
+	private int deprecatedAtr;
 }
