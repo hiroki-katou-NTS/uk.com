@@ -16,8 +16,8 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
         constructor() {
             let params = getShared('QMM011_E_PARAMS_INPUT');
             if (params && params.startYearMonth) {
-                this.startLastYearMonth(this.convertStringToYearMonth(params.startYearMonth));
-                this.startYearMonth(Number(this.startLastYearMonth()) + 1);
+                this.startLastYearMonth(params.startYearMonth);
+                this.startYearMonth(Number(this.startLastYearMonth()));
             }
         }
 
