@@ -113,8 +113,9 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     self.registerDataSelectioItem();
                     //$("#selectionItemName").focus();
                 }
-                block.clear();
                 dfd.resolve();
+            }).always(function(){
+                block.clear();
             });
             return dfd.promise();
         }
@@ -192,7 +193,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 });
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            }).always(()=>block.clear());
+                block.clear();
+            });
         }
 
         //更新モー�
@@ -212,7 +214,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            }).always(()=> block.clear());
+                block.clear();
+            });
         }
 
         //削除ボタン
