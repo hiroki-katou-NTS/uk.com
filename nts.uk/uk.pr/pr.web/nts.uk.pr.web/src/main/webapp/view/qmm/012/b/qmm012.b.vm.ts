@@ -88,12 +88,6 @@ module nts.uk.pr.view.qmm012.b {
                     deferred.resolve();
                 });
                 
-                //TODO delete, add to test
-                self.statementItemDataSelected(new StatementItemData(null, self));
-                block.clear();
-                deferred.resolve();
-                //TODO delete, add to test
-                
                 return deferred.promise();
             }
             
