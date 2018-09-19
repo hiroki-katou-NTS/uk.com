@@ -652,7 +652,7 @@
                                             <!-- B1-1: チェック項目 - Item check-->
                                             <td class="pad_left_10px">
                                                 <com:ko bind="typeCheckItem() !== 8" tag="if">
-                                                    <div style= "margin-top: -30px ! important">#{i18n.getText('チェック条件')}</div>
+                                                    <div style= "margin-bottom: -20px! important">#{i18n.getText('チェック条件')}</div>
                                                 </com:ko>
                                             </td>
                                             <td class="pad_left_5px">
@@ -694,8 +694,8 @@
                                                 <com:ko bind="haveSelect() === true" tag="if">
                                                 	<br />
                                                     <!-- bind select -->
-                                                        <button  id="btnSettingBA2_2" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
-                                                        <input id="display-target-item" style = "margin-right : 70px" 
+                                                        <button  id="btnSettingBA2_2" style = " margin-bottom: -2px" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
+                                                        <input id="display-target-item" style = "margin-right : 70px"  
                                                         class="display-list-label nts-input "
                                                          data-bind="ntsTextEditor: {
                                                           name:'#[KAL003_59]',
