@@ -117,7 +117,7 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 			BreakTimeOfDailyPerformance breakTime, BreakTimeOfDailyPerformance breakTimeRecord) {
 		List<EditStateOfDailyPerformance> editStates = getEditStateByItems(command);
 		
-		if(editStates.isEmpty() && breakTime.getBreakTimeSheets().isEmpty()){
+		if(editStates.isEmpty() && (breakTime == null || breakTime.getBreakTimeSheets().isEmpty())){
 			return breakTime;
 		}
 		
