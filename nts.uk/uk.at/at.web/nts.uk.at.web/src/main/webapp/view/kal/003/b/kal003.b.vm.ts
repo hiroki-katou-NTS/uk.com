@@ -124,6 +124,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.mulMonCheckCondSet().typeCheckItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        // fix bug 100050 save data
+                        self.mulMonCheckCondSet().erAlAtdItem().countableAddAtdItems([])
+                        self.mulMonCheckCondSet().erAlAtdItem().countableSubAtdItems([]);
+                        
                         //check typeCheckItem initialization times = 0 
                         self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
@@ -839,12 +843,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             lstAddItems: self.mulMonCheckCondSet().erAlAtdItem().countableAddAtdItems(),
                             lstSubItems: self.mulMonCheckCondSet().erAlAtdItem().countableSubAtdItems()
                         };
-                        if ((self.checkItemTemp()
-                            || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME)
-                            && self.checkItemTemp() != self.mulMonCheckCondSet().typeCheckItem()) {
-                            param.lstAddItems = [];
-                            param.lstSubItems = [];
-                        }
                         nts.uk.ui.windows.setShared("KDW007Params", param);
                         nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
                             $(".nts-input").ntsError("clear");
@@ -1749,11 +1747,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                 }
                 if (!isValid) {
-                    setTimeout(() => {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                    if (textBoxFocus === 1) { //max
+                        setTimeout(() => {
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
 
-                    }, 25);
+                        }, 25);
+                    } else {
+                        setTimeout(() => {
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                            $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                        }, 25);
+                    }
                 }
                 return isValid;
             }
