@@ -350,7 +350,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         return _.assign(a, { state: "" });
                     });
                     self.dataAll().lstCellState = _.map(self.dataAll().lstCellState, function(a) {
-                        return _.assign(a, { state: [] });
+                        if (a.columnKey == "dailyconfirm")
+                            return a;
+                        else
+                            return _.assign(a, { state: [] });
                     });
                 }
                 self.dataBackup = _.cloneDeep(data);
@@ -1395,7 +1398,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     return _.assign(a, { state: "" });
                 });
                 self.dataAll().lstCellState = _.map(self.dataAll().lstCellState, function(a) {
-                    return _.assign(a, { state: [] });
+                    if (a.columnKey == "dailyconfirm")
+                        return a;
+                    else
+                        return _.assign(a, { state: [] });
                 });
 
                 //保持しているパラメータ「ロック状態一覧」のすべてのロック状態をアンロックに変更する
