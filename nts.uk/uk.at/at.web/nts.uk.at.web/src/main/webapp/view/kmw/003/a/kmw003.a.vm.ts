@@ -216,40 +216,40 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
         }
 
-        displayNumberZero(dataSource: Array<any>): Array<any> {
-            let self = this;
-            let dataTemp = [];
-            if (!self.displayWhenZero()) {
-                _.each(dataSource, data => {
-                    var dtt: any = {};
-                    _.each(data, (val, indx) => {
-                        if (String(val) == "0" || String(val) == "0:00") {
-                            dtt[indx] = "";
-                        } else {
-                            dtt[indx] = val;
-                        }
-                    });
-                    dataTemp.push(dtt);
-                });
-            } else {
-                let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
-                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
-                let group: any = _.groupBy(dataChange, "rowId");
-                _.each(dataSourceOld, data => {
-                    var dtt: any = {};
-                    if (group[data.id]) {
-                        dtt = data;
-                        _.each(group[data.id], val => {
-                            dtt[val.columnKey] = val.value;
-                        });
-                        dataTemp.push(dtt);
-                    } else {
-                        dataTemp.push(data);
-                    }
-                });
-            }
-            return dataTemp;
-        }
+//        displayNumberZero(dataSource: Array<any>): Array<any> {
+//            let self = this;
+//            let dataTemp = [];
+//            if (!self.displayWhenZero()) {
+//                _.each(dataSource, data => {
+//                    var dtt: any = {};
+//                    _.each(data, (val, indx) => {
+//                        if (String(val) == "0" || String(val) == "0:00") {
+//                            dtt[indx] = "";
+//                        } else {
+//                            dtt[indx] = val;
+//                        }
+//                    });
+//                    dataTemp.push(dtt);
+//                });
+//            } else {
+//                let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
+//                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+//                let group: any = _.groupBy(dataChange, "rowId");
+//                _.each(dataSourceOld, data => {
+//                    var dtt: any = {};
+//                    if (group[data.id]) {
+//                        dtt = data;
+//                        _.each(group[data.id], val => {
+//                            dtt[val.columnKey] = val.value;
+//                        });
+//                        dataTemp.push(dtt);
+//                    } else {
+//                        dataTemp.push(data);
+//                    }
+//                });
+//            }
+//            return dataTemp;
+//        }
 
         createSumColumn(data: any) {
             var self = this;
@@ -297,7 +297,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.initScreen().done((processDate, selectedClosure) => {
-                $("#dpGrid").mGrid("hideZero", true)
                 //date process
                 self.yearMonth(processDate);
                 if (selectedClosure) {
@@ -385,7 +384,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.setFixedHeader(data.lstFixedHeader);
                 self.extractionData();
                 self.loadGrid();
-                self.showHeaderNumber.valueHasMutated();
                 self.employmentCode(data.employmentCode);
                 self.dailyPerfomanceData(self.dpData);
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
@@ -480,7 +478,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.setFixedHeader(data.lstFixedHeader);
                 self.extractionData();
                 self.loadGrid();
-                self.showHeaderNumber.valueHasMutated();
                 self.employmentCode(data.employmentCode);
                 self.dailyPerfomanceData(self.dpData);
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
@@ -836,11 +833,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         loadGrid() {
             let self = this;
             self.setHeaderColor();
-            let dataSource = self.displayNumberZero(self.formatDate(self.dpData));
-
-            // self.actualTimeSelectedCode.subscribe(code => {
-            //   dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
-            // });
+            let dataSource = self.formatDate(self.dpData);
 
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
@@ -867,6 +860,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 ntsFeatures: self.getNtsFeatures(),
                 ntsControls: self.getNtsControls()
             }).create();
+            self.showHeaderNumber.valueHasMutated();
+            self.displayNumberZero1();
         };
         /**********************************
         * Grid Data Setting 
@@ -1210,7 +1205,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.receiveData(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
-                self.showHeaderNumber.valueHasMutated();
                 nts.uk.ui.block.clear();
             }, 500);
         }
@@ -1223,8 +1217,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.receiveData(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
-                self.displayNumberZero1();
-                self.showHeaderNumber.valueHasMutated();
                 nts.uk.ui.block.clear();
             }, 500);
         }
