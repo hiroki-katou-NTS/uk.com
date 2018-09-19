@@ -1749,11 +1749,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                 }
                 if (!isValid) {
-                    setTimeout(() => {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                    if (textBoxFocus === 1) { //max
+                        setTimeout(() => {
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
 
-                    }, 25);
+                        }, 25);
+                    } else {
+                        setTimeout(() => {
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                            $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                        }, 25);
+                    }
                 }
                 return isValid;
             }

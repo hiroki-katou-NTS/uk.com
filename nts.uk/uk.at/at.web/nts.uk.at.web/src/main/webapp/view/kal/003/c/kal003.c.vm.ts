@@ -418,37 +418,43 @@ module nts.uk.at.view.kal003.c.viewmodel {
             });
         }
 
-        validateRange() {
-            let self = this,
-                caic = ko.toJS(self.currentAtdItemCondition);
+        validateRange() : boolean{
+            let self = this;
+            let isValid: boolean = true;
+            let caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
             $(".value-input").filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
-                    if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+                    isValid = false;
+                    setTimeout(() => {
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                    }
-                }, 25);
+
+                    }, 25);
+                 }
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
-                    if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
+                    isValid = false;
+                    setTimeout(() => {
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+//                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                    }
-                }, 25);
+                    }, 25);
+                }
             }
+            return isValid;
         }
 
         returnData() {
             let self = this;
-
             $(".need-check").filter(":enabled").trigger("validate");
-            self.validateRange();
-
-            if (!nts.uk.ui.errors.hasError()) {
+            if (self.validateRange()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
                 param.countableAddAtdItems = _.values(param.countableAddAtdItems);
                 param.countableSubAtdItems = _.values(param.countableSubAtdItems);
