@@ -180,7 +180,7 @@ public class MonModifyCommandFacade {
 		for(MPItemCheckBox dataCheckApproval : dataCheckApprovals) {
 			empAndDates.add(Pair.of(dataCheckApproval.getEmployeeId(), endDate));
 		}
-		registerDayApproval.removeMonApproval(AppContexts.user().userId(), 
+		registerDayApproval.removeMonApproval(AppContexts.user().employeeId(), 
 				new ArrayList<>(empAndDates), 2, AppContexts.user().companyId());
 	}
 	
