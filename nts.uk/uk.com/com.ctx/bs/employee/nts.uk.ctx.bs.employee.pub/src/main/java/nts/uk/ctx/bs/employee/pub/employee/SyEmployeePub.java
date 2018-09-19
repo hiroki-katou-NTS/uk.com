@@ -149,4 +149,10 @@ public interface SyEmployeePub {
 	 */
 	List<String> getListEmployeeId(List<String> wkpIds, DatePeriod dateperiod);
 	
+	/**
+	 * 職位ID（List）と基準日から該当する社員一覧を取得する
+	 * RequestList515, RequestList466 trỏ đến RequestList515
+	 */
+	List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate);
+	
 }
