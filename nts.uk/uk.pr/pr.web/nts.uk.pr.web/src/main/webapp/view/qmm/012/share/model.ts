@@ -82,42 +82,47 @@ module nts.uk.pr.view.qmm012.share.model {
         TIME = 0,
         TIMES = 1
     }
-    
+
     export enum ExitStatus {
         CANCEL = 0,
         EXECUTION = 1
     }
+    
+    export enum Abolition {
+        NOT_ABOLISH = 0,
+        ABOLISH = 1
+    }
 
     export function getCategoryAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(CategoryAtr.PAYMENT_ITEM.toString(), getText('#QMM012_3')),
-            new model.ItemModel(CategoryAtr.DEDUCTION_ITEM.toString(), getText('#QMM012_4')),
-            new model.ItemModel(CategoryAtr.ATTEND_ITEM.toString(), getText('#QMM012_5'))
+            new model.ItemModel(CategoryAtr.PAYMENT_ITEM.toString(), getText('QMM012_3')),
+            new model.ItemModel(CategoryAtr.DEDUCTION_ITEM.toString(), getText('QMM012_4')),
+            new model.ItemModel(CategoryAtr.ATTEND_ITEM.toString(), getText('QMM012_5'))
         ];
     }
 
     export function getCycleSettingAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(CycleSettingAtr.USE.toString(), getText('#QMM012_99')),
-            new model.ItemModel(CycleSettingAtr.NOT_USE.toString(), getText('#QMM012_100'))
+            new model.ItemModel(CycleSettingAtr.USE.toString(), getText('QMM012_99')),
+            new model.ItemModel(CycleSettingAtr.NOT_USE.toString(), getText('QMM012_100'))
         ];
     }
 
     export function getValidityPeriodAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(ValidityPeriodAtr.SETUP.toString(), getText('#QMM012_94')),
-            new model.ItemModel(ValidityPeriodAtr.NOT_SETUP.toString(), getText('#QMM012_95'))
+            new model.ItemModel(ValidityPeriodAtr.SETUP.toString(), getText('QMM012_94')),
+            new model.ItemModel(ValidityPeriodAtr.NOT_SETUP.toString(), getText('QMM012_95'))
         ];
     }
 
     export function getItemAtrText(itemAtr: number): string {
         switch (itemAtr) {
             case CategoryAtr.PAYMENT_ITEM:
-                return getText('#QMM012_3');
+                return getText('QMM012_3');
             case CategoryAtr.DEDUCTION_ITEM:
-                return getText('#QMM012_4')
+                return getText('QMM012_4')
             case CategoryAtr.ATTEND_ITEM:
-                return getText('#QMM012_5')
+                return getText('QMM012_5')
             default:
                 return "";
         }
@@ -263,7 +268,7 @@ module nts.uk.pr.view.qmm012.share.model {
         december: KnockoutObservable<boolean> = ko.observable(false);
         periodAtr: KnockoutObservable<number> = ko.observable(null);
         yearPeriodStart: KnockoutObservable<number> = ko.observable(null);
-        yearPeriodEnd: KnockoutObservable<number> = ko.observable(null);        
+        yearPeriodEnd: KnockoutObservable<number> = ko.observable(null);
 
         constructor(data: IValidityPeriodAndCycleSet) {
             let self = this;

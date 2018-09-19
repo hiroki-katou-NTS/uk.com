@@ -71,7 +71,7 @@ public class QpbmtStatementItem extends UkJpaEntity implements Serializable {
 
 	public StatementItem toDomain() {
 		return new StatementItem(this.statementItemPk.cid, this.statementItemPk.categoryAtr,
-				this.statementItemPk.salaryItemId, this.statementItemPk.itemNameCd, this.defaultAtr, this.valueAtr,
+				this.statementItemPk.itemNameCd, this.statementItemPk.salaryItemId, this.defaultAtr, this.valueAtr,
 				this.deprecatedAtr, this.socialInsuaEditableAtr, this.intergrateCd);
 	}
 

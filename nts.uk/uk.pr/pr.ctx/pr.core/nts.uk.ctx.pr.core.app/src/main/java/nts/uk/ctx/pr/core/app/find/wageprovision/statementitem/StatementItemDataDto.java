@@ -34,5 +34,5 @@ public class StatementItemDataDto {
 	/**
 	 * 廃止区分
 	 */
-	private int deprecatedAtr;
+	private Integer deprecatedAtr;
 }

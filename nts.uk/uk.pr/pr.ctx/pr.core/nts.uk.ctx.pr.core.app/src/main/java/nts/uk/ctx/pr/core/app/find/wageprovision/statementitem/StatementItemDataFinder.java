@@ -158,8 +158,11 @@ public class StatementItemDataFinder {
 			if (!isIncludeDeprecated && item.getDeprecatedAtr() == Abolition.ABOLISH) {
 				continue;
 			}
-			result.add(this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v(),
-					item.getSalaryItemId()));
+			val data = this.getStatementItemData(item.getCategoryAtr().value, item.getItemNameCd().v(),
+					item.getSalaryItemId());
+			if (data != null) {
+				result.add(data);
+			}
 		}
 		return result;
 	}
