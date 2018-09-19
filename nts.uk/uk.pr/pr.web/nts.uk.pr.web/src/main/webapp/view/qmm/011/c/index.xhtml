@@ -23,7 +23,7 @@
         <div class = "content">
             <div class = "left">
                 <div id="C1_1"
-                     data-bind="ntsPanel:{width: '270px', height: '480px',direction: 'none', visible: true}">
+                     data-bind="ntsPanel:{width: '220px', height: '410px',direction: 'none', visible: true}">
                     <div id="functions-area" style="padding-right: 12px">
                         <!-- C1_2 履歴追加 -->
                         <button id ="C1_2" tabindex="1"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
@@ -35,13 +35,13 @@
                         <table id="C1_4" tabindex="3"
                                data-bind="ntsGridList: {
 												name: '#QMM011_8',
-												height: 1200,
-												rows: 17,
+												height: 300,
+												rows: 15,
 		                                        dataSource: listOccAccIsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
 		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
-																{headerText: '', key: 'display', width: 250, formatter: _.escape}
+																{headerText: '', key: 'display', width: 200, formatter: _.escape}
 
 								                		],
 								                multiple: false,
@@ -68,7 +68,7 @@
                     <div id ="C2_6" class="set-row">
                         <hr />
                     </div>
-                    <table id="C3_1" tabindex="4" style="width: 80%" >
+                    <table id="C3_1" tabindex="4" style="width: 80%">
 
                         <colgroup>
                             <col width="20px" />
