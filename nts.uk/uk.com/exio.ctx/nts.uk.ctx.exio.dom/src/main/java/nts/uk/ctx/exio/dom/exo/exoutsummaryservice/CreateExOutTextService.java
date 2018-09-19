@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +23,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.layer.app.file.storage.FileStorage;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -149,6 +152,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@Inject
 	private JapaneseErasAdapter japaneseErasAdapter;
+	
+	@Inject
+	private FileStorage fileStorage;
 
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
@@ -185,6 +191,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String SYSTEM_DATE = "SYSDATE";
 	private final static String SQL = "sql";
 	private final static String CSV = ".csv";
+	private final static String STEREO_TYPE = "csvfile";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -303,7 +310,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			ExOutSettingResult settingResult) {
 
 		String processingId = exOutSetting.getProcessingId();
-		ExIoOperationState state;
+		OperationStateResult state;
 		Optional<ExOutCtg> exOutCtg = settingResult.getExOutCtg();
 		Optional<ExOutLinkTable> exCndOutput = settingResult.getExCndOutput();
 		StdOutputCondSet stdOutputCondSet = settingResult.getStdOutputCondSet();
@@ -314,7 +321,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(processingId);
 		if (!exOutOpMngOptional.isPresent()) {
-			state = ExIoOperationState.FAULT_FINISH;
+			state = new OperationStateResult(ExIoOperationState.FAULT_FINISH);
 			createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
 			return;
 		}
@@ -323,7 +330,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMng.setOpCond(ExIoOperationState.EXPORTING);
 		if ((stdOutputCondSet == null) || !exOutCtg.isPresent() || !exCndOutput.isPresent()
 				|| (!exCndOutput.get().getForm1().isPresent() && !exCndOutput.get().getForm2().isPresent())) {
-			state = ExIoOperationState.FAULT_FINISH;
+			state = new OperationStateResult(ExIoOperationState.FAULT_FINISH);
 			createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
 			return;
 		}
@@ -346,12 +353,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ログ情報終了値
 	private void createOutputLogInfoEnd(FileGeneratorContext generatorContext, String processingId,
-			ExIoOperationState operationState, String fileName) {
+			OperationStateResult operationState, String fileName) {
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
 
 		if (!exOutOpMng.isPresent())
 			return;
-		exOutOpMng.get().setOpCond(operationState);
+		exOutOpMng.get().setOpCond(operationState.getState());
 		exOutOpMngRepo.update(exOutOpMng.get());
 
 		String companyId = AppContexts.user().companyId();
@@ -372,7 +379,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		externalOutLogRepo.add(externalOutLog);
 
 		ResultStatus statusEnd;
-		switch (operationState) {
+		switch (operationState.getState()) {
 		case INTER_FINISH:
 			statusEnd = ResultStatus.INTERRUPTION;
 			break;
@@ -383,8 +390,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			statusEnd = ResultStatus.FAILURE;
 			break;
 		}
-
-		String fileId = generatorContext.getTaskId();
+		
+		String fileId = operationState.getFileId();
 		Optional<ExterOutExecLog> exterOutExecLogOptional = exterOutExecLogRepo.getExterOutExecLogById(companyId,
 				processingId);
 		if (!exterOutExecLogOptional.isPresent())
@@ -392,7 +399,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		ExterOutExecLog exterOutExecLog = exterOutExecLogOptional.get();
 		exterOutExecLog.setProcessEndDateTime(Optional.of(GeneralDateTime.now()));
-		exterOutExecLog.setFileId(Optional.of(fileId));
+		exterOutExecLog.setFileId(Optional.ofNullable(fileId));
 		exterOutExecLog.setFileName(Optional.of(new UploadFileName(fileName)));
 		exterOutExecLog.setTotalCount(exOutOpMng.get().getProCnt());
 		exterOutExecLog.setTotalErrorCount(exOutOpMng.get().getErrCnt());
@@ -406,7 +413,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	
 	@SuppressWarnings("unchecked")
-	private ExIoOperationState serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
+	private OperationStateResult serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
 			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
 		String loginSid = AppContexts.user().employeeId();
 		List<String> header = new ArrayList<>();
@@ -446,7 +453,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
 				if ((checkResult == ExIoOperationState.FAULT_FINISH)
 						|| (checkResult == ExIoOperationState.INTER_FINISH))
-					return checkResult;
+					return new OperationStateResult(checkResult);
 
 				try {
 					sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
@@ -474,7 +481,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			
 				Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
 				if (!exOutOpMngOptional.isPresent()) {
-					return ExIoOperationState.FAULT_FINISH;
+					return new OperationStateResult(ExIoOperationState.FAULT_FINISH);
 				}
 	
 				ExOutOpMng exOutOpMng = exOutOpMngOptional.get();
@@ -486,7 +493,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
 					if ((checkResult == ExIoOperationState.FAULT_FINISH)
 							|| (checkResult == ExIoOperationState.INTER_FINISH))
-						return checkResult;
+						return new OperationStateResult(checkResult);;
 	
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
 							loginSid, stringFormat);
@@ -498,14 +505,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 			} catch (Exception e) {
 				e.printStackTrace();
 				
-				return ExIoOperationState.FAULT_FINISH;
+				return new OperationStateResult(ExIoOperationState.FAULT_FINISH);
 			}
 		}
 
 		FileData fileData = new FileData(fileName, header, csvData);
 		generator.generate(generatorContext, fileData, condSetName, drawHeader, delimiter);
 
-		return ExIoOperationState.EXPORT_FINISH;
+		// create file
+		Path pathTemp = generatorContext.getWorkingFiles().get(0).getTempFile().getPath();
+		StoredFileInfo fileInfo = fileStorage.store(pathTemp, fileName, STEREO_TYPE);
+
+		return new OperationStateResult(ExIoOperationState.EXPORT_FINISH, fileInfo.getId());
 	}
 
 	public ExIoOperationState checkInterruptAndIncreaseProCnt(String processingId) {
@@ -783,7 +794,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						outputItemCustom.getStandardOutputItem().getOutputItemName().v());
 				result.put(RESULT_STATE, RESULT_NG);
 				result.put(LINE_DATA_CSV, lineDataCSV);
-				return result;
+				return lineDataCSV;
 			}
 			
 			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
