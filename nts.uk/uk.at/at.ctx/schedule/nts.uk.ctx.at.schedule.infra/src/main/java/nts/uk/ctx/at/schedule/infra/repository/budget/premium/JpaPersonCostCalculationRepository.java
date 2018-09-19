@@ -358,8 +358,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			}).collect(Collectors.toList());
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -409,8 +408,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			
 			return krcdtTimeLeaveWorks;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw new RuntimeException(e);
 		}
 	}
 	
