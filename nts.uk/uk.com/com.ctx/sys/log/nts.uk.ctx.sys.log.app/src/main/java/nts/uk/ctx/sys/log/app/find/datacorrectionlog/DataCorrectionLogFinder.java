@@ -41,12 +41,10 @@ public class DataCorrectionLogFinder {
 		List<DataCorrectionLogDto> result = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		List<DataCorrectionLog> listCorrectionLog = new ArrayList<>();
-		if (params.getStartYmd() != null && params.getEndYmd() != null && params.getStartYm() != null
-				&& params.getEndYm() != null) {
+		if (params.getFunctionId() == 3) {
 			// ※この分岐は月別修正から呼び出し時のみ - ※ This branch only from the monthly correction to calling
 			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
-					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()),
-					new YearMonthPeriod(new YearMonth(params.getStartYm()), new YearMonth(params.getEndYm())));
+					params.getListEmployeeId(), new YearMonth(params.getStartYm()), params.getEndYmd());
 		} else if (params.getStartYmd() != null && params.getEndYmd() != null) {
 			listCorrectionLog = correctionLogRepo.getAllLogData(convertFuncId(params.getFunctionId()),
 					params.getListEmployeeId(), new DatePeriod(params.getStartYmd(), params.getEndYmd()));
@@ -76,15 +74,15 @@ public class DataCorrectionLogFinder {
 		if (params.getDisplayFormat() == 0) { // by date
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getEmployeeId)
-					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		} else { // by individual
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeId)
 					.thenComparing(DataCorrectionLogDto::getTargetDate)
-					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		}

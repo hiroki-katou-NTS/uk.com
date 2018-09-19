@@ -53,10 +53,14 @@ public class DailyModifyQueryProcessor {
 			return Pair.of(Collections.emptyList(), Collections.emptyList());
 		}
 		List<DailyRecordDto> dtoOlds = this.fullFinder.find(query.getEmployeeIds(), query.getPeriod());
-		val resultValues = dtoOlds.stream()
-				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
-						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
-				.collect(Collectors.toList());
+		val resultValues = AttendanceItemUtil.toItemValues(dtoOlds)
+		.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
+					.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
+			.collect(Collectors.toList());
+//		val resultValues = dtoOlds.stream()
+//				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+//						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+//				.collect(Collectors.toList());
 		return Pair.of(resultValues, dtoOlds);
 	}
 	
@@ -65,10 +69,14 @@ public class DailyModifyQueryProcessor {
 			return Pair.of(Collections.emptyList(), Collections.emptyList());
 		}
 		List<DailyRecordDto> dtoOlds = this.fullFinder.find(mapDate);
-		val resultValues = dtoOlds.stream()
-				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
-						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+		val resultValues = AttendanceItemUtil.toItemValues(dtoOlds)
+				.entrySet().stream().map(c -> DailyModifyResult.builder().items(c.getValue())
+						.workingDate(c.getKey().workingDate()).employeeId(c.getKey().employeeId()).completed())
 				.collect(Collectors.toList());
+//		val resultValues = dtoOlds.stream()
+//				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+//						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+//				.collect(Collectors.toList());
 		return Pair.of(resultValues, dtoOlds);
 	}
 	

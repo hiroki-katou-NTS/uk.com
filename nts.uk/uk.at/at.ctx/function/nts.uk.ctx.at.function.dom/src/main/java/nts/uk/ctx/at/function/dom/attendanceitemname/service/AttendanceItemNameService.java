@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.attendanceitemname.service;
 
 import java.util.List;
 
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 
@@ -13,4 +14,7 @@ public interface AttendanceItemNameService {
 	 * @return
 	 */
 	List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type);
+	
+	List<AttendanceItemName> getNameOfAttendanceItem(List<AttendanceItemName> attendanceItems,
+			List<AttendanceItemLinking> attendanceItemAndFrameNos);
 }

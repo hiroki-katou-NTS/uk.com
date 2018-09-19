@@ -169,15 +169,15 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				divergenceTime = timeOn = startTime < leaveGateStartTime ? 0 : startTime - leaveGateStartTime;
 				mergeOptionalTimeItemWithNo(optionalItem, timeOn, 8);
 			} else {
-				updateOptionalTimeItemWithNo(optionalItem, timeOn, 8);
+				updateOptionalTimeItemWithNo(optionalItem, timeOff, 8);
 			}
 			
 			/** 任意項目10 */
 			if(endTime != null && leaveGateEndTime != null){
-				timeOn = endTime < leaveGateEndTime ? 0 : endTime - leaveGateEndTime;
-				mergeOptionalTimeItemWithNo(optionalItem, timeOn, 10);
+				timeOn = leaveGateEndTime - endTime; 
+				mergeOptionalTimeItemWithNo(optionalItem, timeOn < 0 ? 0 : timeOn, 10);
 			} else {
-				updateOptionalTimeItemWithNo(optionalItem, timeOn, 10);
+				updateOptionalTimeItemWithNo(optionalItem, timeOff, 10);
 			}
 			
 			timeOn = 1; timeOff = 0;
@@ -442,15 +442,18 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 
 	private boolean isNotActualWork(IntegrationOfDaily d, WorkTypeUnit atr, WorkTypeClassification oneDay,
 			WorkTypeClassification morning, WorkTypeClassification afternoon) {
-		return (atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday || oneDay == WorkTypeClassification.SpecialHoliday || oneDay == WorkTypeClassification.SubstituteHoliday))
+		AttendanceTime actualWork = d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime();
+		return (atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday 
+				|| oneDay == WorkTypeClassification.SpecialHoliday || oneDay == WorkTypeClassification.SubstituteHoliday))
 			|| (atr == WorkTypeUnit.MonringAndAfternoon && 
-				((morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SpecialHoliday) ||
+						((morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SpecialHoliday) ||
 						(morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SubstituteHoliday) ||
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.SubstituteHoliday) ||
 						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
 						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.SpecialHoliday)))
-			&& d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime() != null;
+			&&  (actualWork == null || actualWork.valueAsMinutes() == 0);
 	}
 
 	private void processOptionalItem(Supplier<Boolean> condition, AnyItemValueOfDaily optionalItem,
@@ -485,9 +488,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	private void updateOptionalTimesItemWithNo(AnyItemValueOfDaily d, BigDecimal count, int... itemNo) {
 		AnyItemTimes val = count == null ? null : new AnyItemTimes(count);
 		for (int no : itemNo) {
-			if(d.getNo(no).isPresent()){
-				d.getNo(no).get().updateTimes(val);
-			} 
+			d.getNo(no).ifPresent(oi -> oi.updateTimes(val));
 		}
 	}
 	
@@ -505,9 +506,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	private void updateOptionalTimeItemWithNo(AnyItemValueOfDaily d, Integer time, int... itemNo) {
 		AnyItemTime val = time == null ? null : new AnyItemTime(time);
 		for (int no : itemNo) {
-			if(d.getNo(no).isPresent()){
-				d.getNo(no).get().updateTime(val);
-			} 
+			d.getNo(no).ifPresent(oi -> oi.updateTime(val));
 		}
 	}
 	
@@ -523,7 +522,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	}
 
 	private Integer getOnDefault(List<Integer> overTime, int idx) {
-		return overTime.get(idx) == null ? 0 : overTime.get(idx);
+		return idx >= overTime.size() || overTime.get(idx) == null ? 0 : overTime.get(idx);
 	}
 
 }

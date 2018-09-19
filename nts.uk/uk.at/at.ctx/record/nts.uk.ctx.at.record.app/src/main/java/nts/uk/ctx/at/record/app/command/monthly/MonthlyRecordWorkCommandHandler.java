@@ -11,6 +11,8 @@ import nts.uk.ctx.at.record.app.command.monthly.affliation.AffiliationInfoOfMont
 import nts.uk.ctx.at.record.app.command.monthly.annualleave.AnnLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.care.MonthCareRemainCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.childcare.MonthChildCareRemainCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.remarks.MonthlyRemarksCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
@@ -75,6 +77,18 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 		jpPropertyName = MONTHLY_REMARKS_NAME, index = 9)
 	private MonthlyRemarksCommandHandler remarks;
 
+	/** 介護休暇月別残数データ */
+	@Inject
+	@AttendanceItemLayout(layout = MONTHLY_CARE_HD_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_CARE_HD_REMAIN_NAME, index = 10)
+	private MonthCareRemainCommandHandler care;
+
+	/** 子の看護月別残数データ */
+	@Inject
+	@AttendanceItemLayout(layout = MONTHLY_CHILD_CARE_HD_REMAIN_CODE, 
+		jpPropertyName = MONTHLY_CHILD_CARE_HD_REMAIN_NAME, index = 11)
+	private MonthChildCareRemainCommandHandler childCare;
+
 	public void handleAdd(MonthlyRecordWorkCommand command) {
 		handler(command, false);
 	}
@@ -132,6 +146,12 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 			break;
 		case MONTHLY_REMARKS_CODE:
 			handler = this.remarks;
+			break;
+		case MONTHLY_CARE_HD_REMAIN_CODE:
+			handler = this.care;
+			break;
+		case MONTHLY_CHILD_CARE_HD_REMAIN_CODE:
+			handler = this.childCare;
 			break;
 		default:
 			break;

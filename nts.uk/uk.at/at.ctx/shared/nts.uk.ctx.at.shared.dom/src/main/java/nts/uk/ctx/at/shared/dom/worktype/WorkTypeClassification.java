@@ -253,5 +253,11 @@ public enum WorkTypeClassification {
 		}
 	}
 
-	
+	/**
+	 * 振休であるか判定する
+	 * @return 振休である
+	 */
+	public boolean isPause() {
+		return Pause.equals(this);
+	}
 }

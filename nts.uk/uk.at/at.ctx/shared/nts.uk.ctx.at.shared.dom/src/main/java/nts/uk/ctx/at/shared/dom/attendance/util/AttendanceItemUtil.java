@@ -173,9 +173,9 @@ public class AttendanceItemUtil implements ItemConst {
 						x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 				).entrySet().stream().forEach(idx -> {
 
-					boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
+//					boolean isNotHaveData = list.isEmpty() || list.values().size() < idx.getKey();
 
-					Map<Integer, T> idxValue = isNotHaveData ? new HashMap<>() : getItemWith(list, layout, idx.getKey(), className);
+					Map<Integer, T> idxValue = getItemWith(list, layout, idx.getKey(), className);
 
 					getItemValues(fieldValue(className, idxValue, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX,
 										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
