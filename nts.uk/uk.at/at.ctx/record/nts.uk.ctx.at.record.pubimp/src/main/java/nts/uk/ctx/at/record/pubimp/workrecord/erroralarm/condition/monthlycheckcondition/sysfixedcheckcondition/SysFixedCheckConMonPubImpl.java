@@ -63,15 +63,17 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 			CompensatoryLeaveComSetting compensatoryLeaveComSetting) {
 		Boolean data = leaveManagementService.checkDeadlineCompensatoryLeaveCom(employeeID, closing, compensatoryLeaveComSetting);
 		if(data) {
+			int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
 			YearMonth currentYearMonth = closing.getClosureMonth().getProcessingYm();
-			return Optional.of(new ValueExtractAlarmWRPubExport(null,
+			
+			return Optional.of(new ValueExtractAlarmWRPubExport(
+					null,
 					employeeID,
 					GeneralDate.ymd(currentYearMonth.year(), currentYearMonth.month(), 1),
 					TextResource.localize("KAL010_100"),
-					TextResource.localize("KAL010_278"),	
-					TextResource.localize("KAL010_279"),
+					TextResource.localize("KAL010_278"),
+					TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)),	
 					null));
-
 		}
 		return Optional.empty();
 	}

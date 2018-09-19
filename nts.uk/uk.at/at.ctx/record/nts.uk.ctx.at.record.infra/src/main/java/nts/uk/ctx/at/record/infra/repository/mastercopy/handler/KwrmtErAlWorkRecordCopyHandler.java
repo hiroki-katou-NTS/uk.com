@@ -18,7 +18,7 @@ public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
     /**
      * The select query.
      */
-    public static final String FIND_ALL_ERAL_WORK_RECORD = "SELECT w FROM KwrmtErAlWorkRecord w " +
+    public static final String FIND_ALL_ERAL_WORK_RECORD = "SELECT w FROM KwrmtErAlWorkRecord w LEFT JOIN FETCH w.krcstErAlApplication LEFT JOIN FETCH w.krcmtErAlCondition  " +
             "WHERE w.kwrmtErAlWorkRecordPK.companyId = :cid";
 
 
@@ -83,7 +83,7 @@ public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
     public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
         //find
         List<KwrmtErAlWorkRecord> weeklyWorkSetEntities = findAllByCid(sourceCid);
-        List<KwrmtErAlWorkRecord> targetWeeklyWorkSetEntities = findAllByCid(sourceCid);
+        List<KwrmtErAlWorkRecord> targetWeeklyWorkSetEntities = findAllByCid(targetCid);
 
         //data copy
         final List<KwrmtErAlWorkRecord> sourceWeeklyWorkSets = new ArrayList<>();
@@ -106,6 +106,13 @@ public class KwrmtErAlWorkRecordCopyHandler extends DataCopyHandler {
                     .filter(item -> !targetWeeklyWorkSetEntities.contains(item))
                     .collect(Collectors.toList());
         }
+
+        
+        for (KwrmtErAlWorkRecord en : addWeeklyWorkSetEntities) {
+            en.krcstErAlApplication = null;
+            en.krcmtErAlCondition = null;
+        }
+
         this.commandProxy.insertAll(addWeeklyWorkSetEntities);
     }
 }
