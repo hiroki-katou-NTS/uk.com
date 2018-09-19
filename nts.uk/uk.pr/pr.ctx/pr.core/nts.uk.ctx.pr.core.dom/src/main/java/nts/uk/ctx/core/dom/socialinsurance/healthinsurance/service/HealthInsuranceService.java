@@ -75,7 +75,7 @@ public class HealthInsuranceService {
 	public void calculationGradeFee (BonusHealthInsuranceRate bonusHealthInsuranceRate, HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {
 		if (AutoCalculationExecutionCls.AUTO.equals(healthInsuranceMonthlyFee.getAutoCalculationCls())) {
 			Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional = this.healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonth(yearMonthItem.start().v());
-			healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuranceStandardMonthlyOptional, yearMonthItem.start().v(), bonusHealthInsuranceRate);
+			healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuranceStandardMonthlyOptional, bonusHealthInsuranceRate);
 		}
 	}
 }
