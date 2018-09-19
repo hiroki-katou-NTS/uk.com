@@ -89,6 +89,7 @@ public class StatementItemDataFinder {
 		}
 
 		integratedItem = null; // TODO Chưa tạo domain
+
 		switch (EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class)) {
 		case PAYMENT_ITEM:
 			statementDisplaySet = statementItemDisplaySetRepository.getSpecItemDispSetById(cid, salaryItemId)
@@ -145,15 +146,18 @@ public class StatementItemDataFinder {
 
 		return new StatementItemDataDto(statementItem, statementItemName, paymentItemSet, deductionItemSet, timeItemSet,
 				statementDisplaySet, itemRangeSet, validityPeriodAndCycleSet, breakdownItemSet, integratedItem,
-				categoryAtr, itemNameCd, name, deprecatedAtr);
+				salaryItemId, categoryAtr, itemNameCd, name, deprecatedAtr);
 	}
 
 	public List<StatementItemDataDto> getAllStatementItemData(Integer categoryAtr, boolean isIncludeDeprecated) {
 		String cid = AppContexts.user().companyId();
-		List<StatementItem> listStatementItem = categoryAtr == null ? statementItemRepository.getAllItemByCid(cid)
-				: statementItemRepository.getByCategory(cid, categoryAtr);
+		boolean isEnumValue = EnumAdaptor.convertToValueNameList(CategoryAtr.class).stream()
+				.anyMatch(c -> c.getValue() == categoryAtr);
+		List<StatementItem> listStatementItem = isEnumValue ? statementItemRepository.getByCategory(cid, categoryAtr)
+				: statementItemRepository.getAllItemByCid(cid);
 
 		List<StatementItemDataDto> result = new ArrayList<StatementItemDataDto>();
+
 		for (StatementItem item : listStatementItem) {
 			if (!isIncludeDeprecated && item.getDeprecatedAtr() == Abolition.ABOLISH) {
 				continue;

@@ -115,7 +115,7 @@ module nts.uk.pr.view.qmm012.share.model {
         ];
     }
 
-    export function getItemAtrText(itemAtr: number): string {
+    export function getCategoryAtrText(itemAtr: number): string {
         switch (itemAtr) {
             case CategoryAtr.PAYMENT_ITEM:
                 return getText('QMM012_3');
