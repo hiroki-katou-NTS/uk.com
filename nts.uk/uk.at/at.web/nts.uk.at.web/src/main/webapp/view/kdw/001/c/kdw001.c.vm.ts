@@ -106,9 +106,9 @@ module nts.uk.at.view.kdw001.c {
                     self.dateValue().startDate = data.startDate.toString();
                     self.dateValue().endDate = data.endDate.toString();
                     self.dateValue.valueHasMutated();
-                    self.reloadCcg001();
-                    $('#ccgcomponent').focus();
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 }).always(() => {
                     self.startDateString = ko.observable("");
                     self.endDateString = ko.observable("");
@@ -122,9 +122,9 @@ module nts.uk.at.view.kdw001.c {
                         self.dateValue().endDate = value;
                         self.dateValue.valueHasMutated();
                     });
-                    self.reloadCcg001();
-                    $('#ccgcomponent').focus();
-                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                    self.reloadCcg001();
+//                    $('#ccgcomponent').focus();
+//                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 });
 
                 self.closureId.subscribe(function(value) {
@@ -179,7 +179,7 @@ module nts.uk.at.view.kdw001.c {
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
 
-
+                self.reloadCcg001();
 
             }
 
@@ -206,8 +206,6 @@ module nts.uk.at.view.kdw001.c {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
-                    periodStartDate: self.dateValue().startDate,
-                    periodEndDate: self.dateValue().endDate,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
@@ -278,17 +276,17 @@ module nts.uk.at.view.kdw001.c {
                             var timeDifferenceInDays = timeDifferenceInHours / 24;
 
                             if (timeDifferenceInDays > 31) {
-                                nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
-                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
-                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
-                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
-                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
-                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
-                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
-                                        return;
-                                    }
+                                nts.uk.ui.dialog.confirm({ messageId: "Msg_1170" }).ifYes(() => {
+//                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+//                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+//                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+//                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+//                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+//                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+//                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+//                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+//                                        return;
+//                                    }
 
 
                                     let listEmpSelectedId = [];

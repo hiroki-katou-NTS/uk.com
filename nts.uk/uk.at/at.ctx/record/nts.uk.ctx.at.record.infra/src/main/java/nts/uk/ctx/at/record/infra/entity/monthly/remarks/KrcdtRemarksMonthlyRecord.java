@@ -61,14 +61,14 @@ public class KrcdtRemarksMonthlyRecord extends UkJpaEntity implements Serializab
 public RemarksMonthlyRecord toDomain(){
 		
 		return new RemarksMonthlyRecord(
-				this.recordPK.employeeID,
-				EnumAdaptor.valueOf(this.recordPK.closureID, ClosureId.class),
+				this.recordPK.employeeId,
+				EnumAdaptor.valueOf(this.recordPK.closureId, ClosureId.class),
 				this.recordPK.remarksNo,
-				new YearMonth(this.recordPK.remarksYM),
+				new YearMonth(this.recordPK.yearMonth),
 				new DatePeriod(this.startYmd, 
 						       this.endYmd),
 				new RecordRemarks(this.recordRemarks),
-				new ClosureDate(this.recordPK.closeDay, (true))
+				new ClosureDate(this.recordPK.closureDay, (true))
 				);
 	}
 

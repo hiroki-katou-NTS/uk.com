@@ -6,8 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyRecordWorkCommand;
@@ -22,7 +23,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 
 
 @Stateless
-@Transactional
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MonthModifyCommandFacade {
 
 	@Inject
@@ -36,7 +37,8 @@ public class MonthModifyCommandFacade {
 		MonthlyRecordWorkCommand comand = createCommand(dto, query);
 		this.commandHandler.handleUpdate(comand);
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void handleUpdate(List<MonthlyModifyQuery> query) {
 		this.commandHandler.handleUpdate(createMultiCommand(query));
 	}

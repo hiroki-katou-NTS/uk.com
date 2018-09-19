@@ -371,14 +371,6 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			e.printStackTrace();
 		}
 		
-		//this.queryProxy().find(new KrcdtDayAttendanceTimePK(employeeId, ymd), KrcdtDayAttendanceTime.class).ifPresent(c -> {
-//		this.queryProxy().find(new KrcdtDayTimePK(employeeId, ymd), KrcdtDayTime.class).ifPresent(c -> {
-//			this.commandProxy().remove(c);
-//			this.getEntityManager().flush();
-//		});
-		
-//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
-//				.setParameter("ymd", ymd).executeUpdate();
 	}
 
 	@Override

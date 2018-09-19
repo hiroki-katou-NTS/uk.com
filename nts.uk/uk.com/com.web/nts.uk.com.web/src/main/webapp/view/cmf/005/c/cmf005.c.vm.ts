@@ -37,75 +37,79 @@ module nts.uk.com.view.cmf005.c.viewmodel {
             self.currentCategorySelected = ko.observableArray([]);
             var systemIdSelected;
             self.systemTypes = ko.observableArray([]);
+            
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.listCategory = ko.observableArray([]);
             self.selectedCode = ko.observable('');
 
-            self.selectedCode.subscribe(value => {
-                self.currentItem = _.find(self.systemTypes(), a => a.code === value);
-                self.getListCategory(systemTypeB, listCategoryB);
-
-            })
-            
             service.getSysTypes().done(function(data: Array<any>) {
-                if (data && data.length) {
-                    _.forOwn(data, function(index) {
-                        self.systemTypes.push(new model.ItemModel(index.systemTypeValue, index.systemTypeName));
-                    });
-
-                    if (systemTypeB != undefined) {
-                        self.selectedCode(systemTypeB.code);
-                    } else {
-                        self.selectedCode(self.systemTypes()[0].code);
-                    }
-                }
-            }).fail(function(error) {
-                alertError(error);
-
-            }).always(() => {
-
-            });
-
-            if (self.listCategoryChosed().length > 0) {
-                _.forEach(self.listCategoryChosed(), function(x) {
-                    self.listCateIdIgnore.push(x.id);
-                });
-            }
-
-
-
-            self.columns = ko.observableArray([
-                { headerText: self.headerCodeCategories, key: 'categoryId', width: 70 },
-                { headerText: self.headerNameCategories, key: 'categoryName', width: 200 }
-            ]);
-
-            self.listCategoryChosed = self.currentCategorySelected;
-        }
-
-        getListCategory(systemTypeB: KnockoutObservable<model.ItemModel>, listCategoryB: KnockoutObservableArray<model.ItemCategory>) {
-            var self = this;
-            service.getCategoryListBySystem(self.selectedCode(), self.listCateIdIgnore).done(function(data: Array<any>) {
-                if (systemTypeB != undefined) {
-                    _.forOwn(listCategoryB, function(index) {
-                        _.remove(data, function(e) {
-                            return e.categoryId == index.categoryId;
+                    if (data && data.length) {
+                        _.forOwn(data, function(index) {
+                            self.systemTypes.push(new model.ItemModel(index.systemTypeValue+'', index.systemTypeName));
                         });
-                    });
-                    self.currentCategorySelected(listCategoryB);
-                }
-                self.listCategory(data);
-            }).fail(function(error) {
-                alertError(error);
-            }).always(() => {
-                _.defer(() => {
-                    $("#grd_Condition tr:first-child").focus();
+
+                        if (systemTypeB != undefined) { 
+                            systemIdSelected = systemTypeB.code; 
+                        } else { 
+                            systemIdSelected = self.systemTypes()[0].code; 
+                        }
+                        self.selectedCode(systemIdSelected);
+                    } else {
+
+                    }
+
+                }).fail(function(error) {
+                    alertError(error);
+
+                }).always(() => {
+
                 });
-            });
+
+            self.isEnable = ko.observable(true);
+                self.isEditable = ko.observable(true);
+                self.listCategory = ko.observableArray([]);
+                self.selectedCode.subscribe(value => {
+                    if (value && value.length > 0) {
+                    self.currentItem = _.find(self.systemTypes(), a => a.code === value);
+                        service.getConditionList(parseInt(self.selectedCode())).done(function(data: Array<any>) {
+                            
+                            data = _.sortBy(data, ["categoryId"]);
+                            if (systemTypeB != undefined) {
+                                _.forOwn(listCategoryB, function(index) {
+                                     _.remove(data, function (e) {
+                                            return e.categoryId == index.categoryId;
+                                        });
+                                });
+                                self.currentCategorySelected(listCategoryB);
+                           }
+                            self.listCategory(data);
+                            $("#swap-list-grid1 tr:first-child").focus();
+                            
+                        }).fail(function(error) {
+                            alertError(error);
+                        }).always(() => {
+                            _.defer(() => {
+                                $("#grd_Condition tr:first-child").focus();
+                            });
+                        });
+                    }
+                });
+
+                self.columns = ko.observableArray([
+                    { headerText: self.headerCodeCategories, key: 'categoryId', width: 70 },
+                    { headerText: self.headerNameCategories, key: 'categoryName', width: 250 }
+                ]);
+                self.listCategoryChosed = self.currentCategorySelected;
         }
 
         closePopup() {
             close();
+        }
+
+        remove() {
+            let self = this;
+            self.listCategory.shift();
         }
 
         submit() {

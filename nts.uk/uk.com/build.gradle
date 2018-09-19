@@ -359,6 +359,30 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra') {
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
+
+project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
+	}
+}
+
+project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.pub')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
+	}
+}
 //========================sys:shared �====================================
 
 //========================sys:auth �====================================

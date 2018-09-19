@@ -743,7 +743,7 @@ public class AggregateMonthlyRecordServiceProc {
 			int flexMinutes = flexTime.getFlexTime().getFlexTime().getTime().v();
 			if (flexMinutes < 0){
 				this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-						ErrorType.FLEX,
+						ErrorType.FLEX_SUPP,
 						this.yearMonth,
 						this.employeeId,
 						this.closureId,
