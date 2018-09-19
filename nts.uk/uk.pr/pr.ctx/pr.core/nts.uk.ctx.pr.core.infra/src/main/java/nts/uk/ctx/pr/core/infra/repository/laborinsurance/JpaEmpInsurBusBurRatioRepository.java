@@ -15,7 +15,7 @@ public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements E
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurBusBurRatio f";
-    private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurBusBurRatioPk.hisId =:hisId";
+    private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurBusBurRatioPk.hisId =:hisId ORDER BY f.empInsurBusBurRatioPk.empPreRateId";
     private static final String DELETE_BY_HIS_ID = "DELETE FROM QpbmtEmpInsurBusBurRatio f "
             + "WHERE f.empInsurBusBurRatioPk.hisId =:hisId";
 

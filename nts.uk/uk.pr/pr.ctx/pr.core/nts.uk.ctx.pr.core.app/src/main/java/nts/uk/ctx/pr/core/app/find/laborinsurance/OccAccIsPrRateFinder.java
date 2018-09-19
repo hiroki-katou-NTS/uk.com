@@ -1,13 +1,12 @@
 package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.pr.core.app.find.laborinsurance.OccAccIsPrRateDto;
+
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Stateless
 /**

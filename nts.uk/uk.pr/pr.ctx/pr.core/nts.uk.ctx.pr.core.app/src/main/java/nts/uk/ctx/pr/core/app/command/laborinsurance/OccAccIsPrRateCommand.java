@@ -1,8 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.laborinsurance;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 @Value
 public class OccAccIsPrRateCommand

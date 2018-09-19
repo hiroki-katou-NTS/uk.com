@@ -1,19 +1,13 @@
 package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.laborinsurance.NameOfEachBusiness;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
-import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusinessName;
-
-
-import java.util.Comparator;
-
-import java.util.ArrayList;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
 * 労災保険事業

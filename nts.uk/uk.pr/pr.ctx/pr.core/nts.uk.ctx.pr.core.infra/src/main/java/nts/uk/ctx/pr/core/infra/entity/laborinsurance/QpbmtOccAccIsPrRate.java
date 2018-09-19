@@ -1,16 +1,20 @@
 package nts.uk.ctx.pr.core.infra.entity.laborinsurance;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurBusBurRatio;
-import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBusiBurdenRatio;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
 * 労災保険料率

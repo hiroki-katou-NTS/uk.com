@@ -1,20 +1,23 @@
 package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
-import nts.uk.ctx.pr.core.dom.laborinsurance.*;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
+import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccidentInsurService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AccInsurPreRateFinder {
     @Inject
     private OccAccIsPrRateRepository finder;
 
-    @Inject
-    private OccAccInsurBusFinder occAccInsurBusFinder;
+
 
     @Inject
     private OccAccidentInsurService workersComInsurService;
