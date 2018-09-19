@@ -66,9 +66,9 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 param.data.uncountableAtdItem = null;
             }
 
-            //            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
-            caic = ko.mapping.fromJS(param.data);
-            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+               self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+//            caic = ko.mapping.fromJS(param.data);
+//            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
 
             if (caic.compareOperator() > 5) {
                 self.enumConditionType([
@@ -91,6 +91,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             });
 
             caic.conditionAtr.subscribe(v => {
+                console.log("đâsdasd");
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
                 caic.countableAddAtdItems([]);
@@ -311,38 +312,70 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             });
         }
 
-        validateRange() {
+//        validateRange() {
+//            let self = this;
+//            caic = ko.toJS(self.currentAtdItemCondition);
+//            $('.value-input').ntsError('clear');
+//
+//            if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
+//                // fixbug 99086 : set timeout
+//                setTimeout(() => {
+//                    if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+//                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+//                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                    }
+//                }, 25);
+//            } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
+//                // fixbug 99086 : set timeout
+//                setTimeout(() => {
+//                    if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
+//                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+//                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+//                    }
+//                }, 25);
+//            }
+//        }
+        
+        validateRange(): boolean {
             let self = this;
-            caic = ko.toJS(self.currentAtdItemCondition);
+            let isValid: boolean = true;
+            let caic = ko.toJS(self.currentAtdItemCondition);
+
             $('.value-input').ntsError('clear');
+            $(".value-input").filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-                // fixbug 99086 : set timeout
-                setTimeout(() => {
-                    if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
+                    isValid = false;
+                    setTimeout(() => {
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                        //                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                    }
-                }, 25);
+
+                    }, 25);
+                }
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-                // fixbug 99086 : set timeout
-                setTimeout(() => {
-                    if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
-                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
+                    isValid = false;
+                    setTimeout(() => {
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                        //                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                    }
-                }, 25);
+                    }, 25);
+                }
             }
+            return isValid;
         }
 
         returnData() {
             let self = this;
 
             $(".need-check").trigger("validate");
-            self.validateRange();
             $('.value-input').filter(":enabled").trigger("validate");
 
-            if (!nts.uk.ui.errors.hasError()) {
+            if (self.validateRange()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
                 param.countableAddAtdItems = _.values(param.countableAddAtdItems);
                 param.countableSubAtdItems = _.values(param.countableSubAtdItems);
