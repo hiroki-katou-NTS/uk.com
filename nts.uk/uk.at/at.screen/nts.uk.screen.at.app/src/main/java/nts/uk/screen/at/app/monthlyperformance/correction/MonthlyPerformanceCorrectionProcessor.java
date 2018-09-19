@@ -207,7 +207,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// 6. どのメニューから起動したのかをチェックする (Check xem khởi động từ menu nào)
 		// 「月別実績の修正」からの場合         
 		//todo request list 133 is not available, fixed add param.getInitMenuMode() == 2
-		if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 2) {
+		if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
 			
 			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
 			// 基準日：システム日付
@@ -289,7 +289,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId,optApprovalProcessingUseSetting.get(),listEmployeeIds,companyId);
 
-			
+			//アルゴリズム「締め情報の表示」を実行する       move 実績期間の表示
+//			this.displayClosureInfo( screenDto,  companyId,  closureId,
+//					yearMonth);
 		}
 		// 「月別実績の承認」からの場合
 		else {

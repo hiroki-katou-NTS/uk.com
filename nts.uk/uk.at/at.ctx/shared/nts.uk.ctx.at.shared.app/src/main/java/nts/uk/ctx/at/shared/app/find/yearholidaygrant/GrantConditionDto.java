@@ -20,7 +20,7 @@ public class GrantConditionDto {
 	private int conditionNo;
 	
 	/* 条件値 */
-	private Integer conditionValue;
+	private Double conditionValue;
 	
 	/* 条件利用区分 */
 	private int useConditionAtr;

@@ -11,6 +11,8 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemain;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -59,6 +61,12 @@ public class IntegrationOfMonthly {
 	/** 月別実績の備考 */
 	@Setter
 	private List<RemarksMonthlyRecord> remarks;
+	/** 介護休暇月別残数データ */
+	@Setter
+	private Optional<MonCareHdRemain> care;
+	/** 子の看護月別残数データ */
+	@Setter
+	private Optional<MonChildHdRemain> childCare;
 	
 	public IntegrationOfMonthly(){
 		this.attendanceTime = Optional.empty();
@@ -72,6 +80,9 @@ public class IntegrationOfMonthly {
 		this.specialLeaveRemainList = new ArrayList<>();
 		this.attendanceTimeOfWeekList = new ArrayList<>();
 		this.employeeMonthlyPerErrorList = new ArrayList<>();
+		this.remarks = new ArrayList<>();
+		this.care = Optional.empty();
+		this.childCare = Optional.empty();
 	}
 	
 	/**
@@ -85,6 +96,9 @@ public class IntegrationOfMonthly {
 	 * @param absenceLeaveRemain 振休月別残数データ
 	 * @param monthlyDayoffRemain 代休月別残数データ
 	 * @param specialLeaveRemainList 特別休暇月別残数データ
+	 * @param remarks 月別実績の備考
+	 * @param care 介護休暇月別残数データ
+	 * @param childCare 子の看護月別残数データ
 	 */
 	public IntegrationOfMonthly(
 			Optional<AttendanceTimeOfMonthly> attendanceTime,
@@ -96,7 +110,9 @@ public class IntegrationOfMonthly {
 			Optional<AbsenceLeaveRemainData> absenceLeaveRemain,
 			Optional<MonthlyDayoffRemainData> monthlyDayoffRemain,
 			List<SpecialHolidayRemainData> specialLeaveRemainList,
-			List<RemarksMonthlyRecord> remarks){
+			List<RemarksMonthlyRecord> remarks,
+			Optional<MonCareHdRemain> care,
+			Optional<MonChildHdRemain> childCare){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
@@ -108,5 +124,7 @@ public class IntegrationOfMonthly {
 		this.monthlyDayoffRemain = monthlyDayoffRemain;
 		this.specialLeaveRemainList = specialLeaveRemainList;
 		this.remarks = remarks;
+		this.care = care;
+		this.childCare = childCare;
 	}
 }

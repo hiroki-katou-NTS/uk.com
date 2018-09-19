@@ -46,7 +46,7 @@
 										enable: showButton().enable_A1_1, click : insertUpdate" class="proceed">#{i18n.getText('KMW003_2')}</button>
 					<!--A1_2 保存ボタン--> 
 					<button data-bind="{visible: showButton().available_A1_2(),
-										enable: showButton().enable_A1_2(), click : insertUpdate2}">#{i18n.getText('KMW003_3')}</button>
+										enable: showButton().enable_A1_2, click : insertUpdate2}">#{i18n.getText('KMW003_3')}</button>
 					<!--A1_3 就業確定ボタン--> 
 					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
 					<!--A1_4 抽出条件の設定ボタン--> 
@@ -54,7 +54,8 @@
 					<!--A1_5 表示項目の選択ボタン--> 
 					<button data-bind="{click: displayItem, visible:showButton().enable_A1_5'">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
-					<!--A1_6 修正履歴ボタン-->					
+					<!--A1_6 修正履歴ボタン-->
+					<button data-bind="click: openCDL027">#{i18n.getText('KMW003_7')}</button>					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
 					<!-- class = "visibility: hidden" -->
@@ -109,20 +110,20 @@
 						<!--A4_2 対象締め日--> 
 						<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
 						<!--A4_7 -->
-						<!--
+						
 						<div id="cbClosureInfo"
-									data-bind="ntsComboBox: {
-												visibleItemsCount: 5,
-												name:'#[KMW003_10]',
-												options: closureInfoItems,
-												optionsValue: 'code',
-												value: selectedClosure,
-												optionsText: 'name',
-												enable:showButton().available_A4_7,
-												columns: [
-													{ prop: 'name', length: 10 }
-												]}">
-								</div>  -->
+							data-bind="ntsComboBox: {
+										visibleItemsCount: 5,
+										name:'#[KMW003_10]',
+										options: closureInfoItems,
+										optionsValue: 'name',
+										value: selectedClosure,
+										optionsText: 'code',
+										enable:showButton().available_A4_7,
+										columns: [
+											{ prop: 'code', length: 10 }
+										]}">
+						</div>  
 								
 						
 						<!--A4_6 複数実績メッセージ--> 

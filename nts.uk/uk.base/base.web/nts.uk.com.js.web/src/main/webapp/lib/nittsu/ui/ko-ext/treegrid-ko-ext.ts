@@ -147,9 +147,9 @@ module nts.uk.ui.koExtentions {
                     $treegrid.data("autoExpanding", true);
                     let holder: ExpandNodeHolder = $treegrid.data("expand");
 //                    if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
-                    _.forEach(holder.nodes, function(node: any){
-                        $treegrid.igTreeGrid("expandRow", node); 
-                    });
+//                    _.forEach(holder.nodes, function(node: any){
+//                        $treegrid.igTreeGrid("expandRow", node); 
+//                    });
                     
 //                    }
                     

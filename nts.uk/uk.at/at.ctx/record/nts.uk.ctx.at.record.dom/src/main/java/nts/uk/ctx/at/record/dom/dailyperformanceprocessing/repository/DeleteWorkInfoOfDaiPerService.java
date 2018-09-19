@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalS
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -22,6 +21,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
@@ -36,9 +36,9 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class DeleteWorkInfoOfDaiPerService {
-
+	
 	@Inject
-	private WorkInformationRepository workInformationRepository;
+	private DeleteWorkInfoOfDailyPerforService deleteWorkInfoOfDailyPerforService;
 
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
@@ -96,7 +96,7 @@ public class DeleteWorkInfoOfDaiPerService {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {
-		this.workInformationRepository.delete(employeeId, day);
+    	this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
 		this.deleteApprovalStaOfDailyPerforService.deleteApprovalStaOfDailyPerforService(employeeId, day);
 		this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
 		this.identificationRepository.removeByEmployeeIdAndDate(employeeId, day);

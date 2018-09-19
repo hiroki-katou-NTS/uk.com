@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.log.app.find.reference;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
@@ -63,7 +64,7 @@ public class LogDisplaySettingFinder {
         LoginUserContext loginUserContext = AppContexts.user();
          // get company id
         String cid = loginUserContext .companyId();
-        if(Integer.valueOf(logSetRecordType).intValue()==RecordTypeEnum.DATA_CORRECT.code){
+        if(!Objects.isNull(targetDataType) && Integer.valueOf(logSetRecordType).intValue()==RecordTypeEnum.DATA_CORRECT.code){
         	 return this.logDisplaySettingRepository.getLogDisplaySettingByRecordType(logSetRecordType, targetDataType, cid)
              		   .stream().map(s -> LogDisplaySettingDto.fromDomainNotLogSetOutputItems(s))
              		   .collect(Collectors.toList());

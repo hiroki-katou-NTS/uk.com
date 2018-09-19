@@ -82,10 +82,8 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		if (executionLog.get().getExecutionContent() != ExecutionContent.DAILY_CALCULATION) return status;
 		if (!executionLog.get().getDailyCalSetInfo().isPresent()) return status;
 		val executionContent = executionLog.get().getExecutionContent();
-		
 		// 実行種別　取得　（通常、再実行）
 		ExecutionType reCalcAtr = executionLog.get().getDailyCalSetInfo().get().getExecutionType();
-		
 		// ログ情報更新（実行ログ）　→　処理中
 		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.PROCESSING.value);
@@ -111,7 +109,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		};
-		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter);
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
 		/** end 並列処理、PARALLELSTREAM */
 		
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
