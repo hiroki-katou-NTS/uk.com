@@ -54,10 +54,10 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 
 	@Override
 	public EmploymentHistoryDto getSingleData(PeregQuery query) {
-		Optional<DateHistoryItem> optHis;
+		Optional<DateHistoryItem> optHis = Optional.empty();
 		if (query.getInfoId() != null) {
 			optHis = this.empHistRepo.getByHistoryId(query.getInfoId());
-		} else {
+		} else if (query.getStandardDate() != null){
 			optHis = this.empHistRepo.getByEmployeeIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}
 		if (optHis.isPresent()) {
