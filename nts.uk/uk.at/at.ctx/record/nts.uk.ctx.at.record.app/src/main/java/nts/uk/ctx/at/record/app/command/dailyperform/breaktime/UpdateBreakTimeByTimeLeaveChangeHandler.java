@@ -126,8 +126,11 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 		if (!itemsToMerge.isEmpty()) {
 			List<ItemValue> ipByHandValues = AttendanceItemUtil.toItemValues(BreakTimeDailyDto.getDto(breakTime), itemsToMerge);
 			
-			return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTimeRecord), ipByHandValues.stream()
-						.filter(c -> c != null).collect(Collectors.toList())).toDomain(command.employeeId, command.targetDate);
+			BreakTimeDailyDto record = BreakTimeDailyDto.getDto(breakTimeRecord);
+			List<ItemValue> recordVal = AttendanceItemUtil.toItemValues(record, itemsToMerge);
+			ipByHandValues.removeAll(recordVal);
+			
+			return AttendanceItemUtil.fromItemValues(record, ipByHandValues).toDomain(command.employeeId, command.targetDate);
 		}
 		
 		return breakTimeRecord;

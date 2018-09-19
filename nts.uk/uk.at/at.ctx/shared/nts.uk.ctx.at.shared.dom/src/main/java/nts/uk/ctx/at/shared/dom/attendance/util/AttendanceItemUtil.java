@@ -109,7 +109,11 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
-
+		
+		if(CollectionUtil.isEmpty(itemValues)){
+			return attendanceItems;
+		}
+		
 		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
 
 		if (root == null) {
