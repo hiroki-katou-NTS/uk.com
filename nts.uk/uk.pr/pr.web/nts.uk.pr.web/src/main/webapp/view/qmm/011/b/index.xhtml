@@ -95,10 +95,11 @@
 							<td >
 								<input id = "B3_7" class = "B3_7"  tabindex = "4"
 										data-bind="ntsNumberEditor: {
-																option : {width: '40px'},
+																option : {width: '60px', decimallength: 3},
 																name: '#{i18n.getText('QMM011_11')}',
 																value: indBdRatio,
 																required: true,
+																constraint: 'InsuranceRate',
 																enable: !$parent.enableRegis()
 																}"/>
 								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
@@ -122,9 +123,10 @@
 							<td>
 									<input id = "B3_11" class = "B3_11" tabindex = "6"
 										data-bind="ntsNumberEditor: {
-																option : {width: '40px'},
+																option : {width: '60px', decimallength: 3},
 																value: empContrRatio,
 																required: true,
+																constraint: 'InsuranceRate',
 																enable: !$parent.enableRegis(),
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
@@ -134,7 +136,6 @@
 							<td>
 								<div id = "B3_13"
 										data-bind="ntsComboBox: {
-																
 																value: busiOwFracClass, 
 																name:'#{i18n.getText('QMM011_12')}',
 																options: $parent.listPerFracClass,
