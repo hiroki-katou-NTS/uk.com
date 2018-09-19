@@ -213,7 +213,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         openEscreen(){
             let self = this;
-            let dataToPassScreenE : string = self.convertMonthYearToString(self.listOccAccIsHis()[0].startYearMonth);
+            let dataToPassScreenE : number = self.listOccAccIsHis()[0].startYearMonth;
             self.startYearMonth(dataToPassScreenE);
             setShared('QMM011_E_PARAMS_INPUT', {
                 startYearMonth:  dataToPassScreenE
