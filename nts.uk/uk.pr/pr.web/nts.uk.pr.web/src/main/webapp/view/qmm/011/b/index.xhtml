@@ -6,10 +6,10 @@
 						<div>
 							<!-- A1_1-->
 							<button class="proceed" id="A1_1" tabindex="1"
-								data-bind="click: register ,enable: !enableRegis()">#{i18n.getText('qmm011_1')}</button>
-							<!-- A1_2 -->
-							<button id="A1_2" tabindex="2"
-								data-bind="">#{i18n.getText('qmm011_2')}</button>
+								data-bind="click: register ,enable: !enableRegis()">#{i18n.getText('QMM011_1')}</button>
+							<!-- A1_3 -->
+							<button id="A1_3" tabindex="2"
+								data-bind="">#{i18n.getText('QMM011_3')}</button>
 						</div>
 					</div>
 
@@ -17,8 +17,8 @@
 	<div class = "content">
 		<div class = "left">
 			<div id="B1_1" 
-				data-bind="ntsPanel:{width: '270px', height: '450px', direction: 'none', visible: true}">
-					<div id="functions-area">
+				data-bind="ntsPanel:{width: '220px', height: '400px', direction: 'none', visible: true}">
+					<div id="action">
 						<!-- B1_2 履歴追加 -->
 						<button id ="B1_2"  tabindex="1" data-bind="click: openEscreen , enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
@@ -29,13 +29,13 @@
 						<table id="B1_4" tabindex="3"
 								data-bind="ntsGridList: {
 												name: '#QMM011_8',
-												height: 320,
+												height: 300,
 												rows: 15,
 		                                        dataSource: listEmpInsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
 		                                        				{headerText: '', key: 'hisId', width: 10, hidden: true},
-																{headerText: '', key: 'display', width: 250, formatter: _.escape}
+																{headerText: '', key: 'display', width: 200, formatter: _.escape}
 								         
 								                		],                                        
 								                multiple: false,
@@ -64,7 +64,7 @@
 				</div>
 				<table id="3_1" style="margin-top: 20px">
 					<colgroup>
-					<col width="20px" />
+					<col width="120px" />
 					<col width="150px"/>
 					<col width="150px" />
 					<col width="150px" />

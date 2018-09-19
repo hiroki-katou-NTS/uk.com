@@ -116,8 +116,8 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
     
     export function getHistoryEditMethod(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM011_61')),
-            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM011_62'))
+            new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM011_54')),
+            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM011_55'))
         ];
     }
     

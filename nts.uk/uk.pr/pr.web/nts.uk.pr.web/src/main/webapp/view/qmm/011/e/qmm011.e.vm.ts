@@ -71,8 +71,8 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
     
     export function getListtakeOver(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText('QMM011_53')),
-            new model.ItemModel(1, getText('QMM011_54'))
+            new model.ItemModel(0, getText('QMM011_48')),
+            new model.ItemModel(1, getText('QMM011_49'))
         ];
     }
     

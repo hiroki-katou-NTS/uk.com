@@ -64,6 +64,11 @@ public class OccAccidentInsurService {
     	accInsurHis.get().remove(itemToBeDelete.get());
     	occAccIsPrRateRepository.remove(hisId);
     	occAccIsHisRepository.remove(cId, hisId);
+    	if (accInsurHis.get().getHistory().size() > 0 ){
+    		YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+    		accInsurHis.get().exCorrectToRemove(lastestItem);
+    		occAccIsHisRepository.update(lastestItem, cId);
+    	}
     }
     
     public void historyCorrectionProcecessing(String cId, String hisId, YearMonth start, YearMonth end){

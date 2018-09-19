@@ -63,7 +63,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         getEmpInsurPreRate() {
             let self = this;
             let hisId :string = self.selectedEmpInsHisId();
-            if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER && self.listEmpInsHis().length > 1 && self.isNewMode == MODE.NEW) {
+            if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER && self.listEmpInsHis().length > 1 && self.isNewMode() == MODE.NEW) {
                 hisId = self.listEmpInsHis()[1].hisId;
             }
             service.getEmpInsurPreRate(hisId).done((listEmpInsurPreRate: Array<IEmpInsurPreRate>) => {
@@ -177,13 +177,15 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         addEmplInsurHis(start: number, list: Array<EmplInsurHis>){
             let listEmpInsHis: Array<EmplInsurHis> = []; 
             let self = this;
+            let to = getText('QMM011_9');
             let emplInsurHis = new EmplInsurHis();
             emplInsurHis.hisId = '00000';
             emplInsurHis.startYearMonth = start.toString();
             emplInsurHis.endYearMonth = '999912';
-            emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " ~ " + self.convertMonthYearToString(emplInsurHis.endYearMonth);
+            emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " " +to +" "+ self.convertMonthYearToString(emplInsurHis.endYearMonth);
             if (list && list.length > 0) {
-                list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start + 11) : (start - 1);
+                list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " "+ to + " "+ self.convertMonthYearToString((end).toString());
             }
             listEmpInsHis.push(emplInsurHis);
             _.each(list, (item) => {
@@ -205,6 +207,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         }
         
         validate(){
+            error.clearAll();
             $(".B3_7").trigger("validate");
             $(".B3_11").trigger("validate");
             return error.hasError();
@@ -215,7 +218,11 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         }
         
         enableNew(){
-            return this.isNewMode() == MODE.NEW;
+            let self = this;
+            if (self.listEmpInsHis().length > 0) {
+                return (this.isNewMode() == MODE.NEW || (self.listEmpInsHis()[FIRST].hisId == HIS_ID_TEMP));
+            }
+            return this.isNewMode() == MODE.NEW
         }
         
         enableUpdate(){
@@ -296,13 +303,14 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             return year + "/" + month;
         }
         static convertToDisplayHis(app) {
+            let to = getText('QMM011_9');
             let listEmp = [];
             _.each(app, (item) => {
                 let dto: EmplInsurHis = new EmplInsurHis();
                 dto.hisId = item.hisId;
                 dto.startYearMonth = item.startYearMonth;
                 dto.endYearMonth = item.endYearMonth;
-                dto.display = this.convertMonthYearToString(item.startYearMonth) + " ~ " + this.convertMonthYearToString(item.endYearMonth);
+                dto.display = this.convertMonthYearToString(item.startYearMonth) + " " + to + " "+this.convertMonthYearToString(item.endYearMonth);
                 listEmp.push(dto);
             })
             return listEmp;
@@ -371,7 +379,9 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         NO = 2
     }
     
-    export const HIS_ID_TEMP = "00000"
+    export const HIS_ID_TEMP = "00000";
 
     export const FIRST = 0;
+    
+   
 }

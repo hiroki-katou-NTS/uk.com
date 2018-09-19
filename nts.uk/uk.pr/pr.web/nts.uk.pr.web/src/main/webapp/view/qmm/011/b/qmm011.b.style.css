@@ -11,7 +11,7 @@
 }
 .left{
 	float: left;
-	width: 350px;
+	width: 310px;
 }
 .table{
 	margin: 20px 20px 0 0;
@@ -35,11 +35,11 @@ span.nts-editor-wrapped.ntsControl{
 	width: 80% !important;
 }
 #B3_8{
-	margin-left: 25px;
+	margin-left: 35px;
 }
 
 #B3_12{
-	margin-left: 25px;
+	margin-left: 35px;
 }
 
 .top{
@@ -52,4 +52,15 @@ span.nts-editor-wrapped.ntsControl{
 
 #B1_1{
 	margin-left: 25px;
+}
+#action{
+	margin-bottom: 10px;
+}
+
+#B1_2{
+	float: left;
+}
+
+#B1_2{
+	margin-left: 30px;
 }
