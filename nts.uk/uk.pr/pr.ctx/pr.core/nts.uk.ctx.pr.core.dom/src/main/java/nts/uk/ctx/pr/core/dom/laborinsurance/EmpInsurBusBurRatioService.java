@@ -72,6 +72,11 @@ public class EmpInsurBusBurRatioService {
     	empInsurHis.get().remove(itemToBeDelete.get());
     	empInsurBusBurRatioRepository.remove(hisId);
     	empInsurHisRepository.remove(cId, hisId);
+    	if (empInsurHis.get().getHistory().size() > 0 ){
+    		YearMonthHistoryItem lastestItem = empInsurHis.get().getHistory().get(0);
+    		empInsurHis.get().exCorrectToRemove(lastestItem);
+    		empInsurHisRepository.update(lastestItem, cId);
+    	}
     }
     
     public void historyCorrectionProcecessing(String cId, String hisId, YearMonth start, YearMonth end){

@@ -140,7 +140,6 @@ module nts.uk.com.view.qmm011.d.viewmodel {
             close();
         }
 
-
         convertToCommand(dto :Array<NameOfEachBusiness>){
             let self = this;
             let eachBusiness :Array <EachBusiness> = [];

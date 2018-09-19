@@ -31,4 +31,8 @@ public class EmpInsurHis extends AggregateRoot implements ContinuousResidentHist
     public List<YearMonthHistoryItem> items() {
         return this.history;
     }
+    
+    public void exCorrectToRemove(YearMonthHistoryItem latest) {
+		latest.changeSpan(latest.span().newSpanWithMaxEnd());
+	}
 }
