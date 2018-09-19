@@ -80,43 +80,43 @@
 							<th class="ui-widget-header" style ="text-align: center;" id = "E3_17">#{i18n.getText('QMM008_155')}</th>
 						</tr>
 						<tr>
-							<th class="ui-widget-header" style ="text-align: center;" >4 1</th>
-							<th class="ui-widget-header" style ="text-align: center;" >4 2</th>
-							<th class="ui-widget-header" style ="text-align: center;">4 3</th>
-							<th class="ui-widget-header" style ="text-align: center;">4 4</th>
-							<th class="ui-widget-header" style ="text-align: center;" >4 5</th>
-							<th class="ui-widget-header" style ="text-align: center;" >4 6</th>
-							<th class="ui-widget-header" style ="text-align: center;">4 7</th>
-							<th class="ui-widget-header" style ="text-align: center;">4 8</th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().emBasicInsuranceRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().emHealthInsuranceRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().emLongCareInsuranceRate"></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().emSpecialInsuranceRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().inBasicInsuranceRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().inHealthInsuranceRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().inLongCareInsuranceRate"></th>
+							<th class="ui-widget-header" style ="text-align: center;" data-bind="text: header().inSpecialInsuranceRate"></th>
 						</tr>
 						
 					</thead>
 					<tbody data-bind="foreach: dataList">
 						<tr>
 							<td><span class="limited-label"
-								data-bind="text: $data.col1"></span></td>
+								data-bind="text: $data.healthInsuranceGrade"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col2"></span></td>
+								data-bind="text: $data.standardMonthlyFee"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col3"></span></td>
+								data-bind="text: $data.rewardMonthlyLowerLimit"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col4"></span></td>
+								data-bind="text: $data.rewardMonthlyUpperLimit"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col5"></span></td>
+								data-bind="text: $data.inHealthInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col6"></span></td>
+								data-bind="text: $data.inNursingCare"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col7"></span></td>
+								data-bind="text: $data.inSpecInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col8"></span></td>
+								data-bind="text: $data.inBasicInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col9"></span></td>
+								data-bind="text: $data.emHealthInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col10"></span></td>
+								data-bind="text: $data.emNursingCare"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col11"></span></td>
+								data-bind="text: $data.emSpecInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col12"></span></td>
+								data-bind="text: $data.emBasicInsurancePremium"></span></td>
 						</tr>
 					</tbody>
 				</table>
