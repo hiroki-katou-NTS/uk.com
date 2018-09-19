@@ -116,9 +116,25 @@ public class MonthlyAggregateProcessService {
 			DatePeriod period, List<EmployeeSearchDto> employees, String companyID) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
-		
 		for(EmployeeSearchDto employee : employees) {
 			Closure closure = null;
+			if(listFixed.get(1).isUseAtr()) {
+				//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
+				closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+				//MinhVV
+				CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+				if (listFixed.get(1).isUseAtr()) {
+					Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
+							.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
+					if (checkDeadline.isPresent()) {
+						checkDeadline.get().setAlarmValueMessage(listFixed.get(1).getMessage());
+						checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+						String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
+						checkDeadline.get().setAlarmValueDate(dateString);
+						listValueExtractAlarm.add(checkDeadline.get());
+					}
+				}
+			}
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -135,22 +151,6 @@ public class MonthlyAggregateProcessService {
 								}
 							break;
 							case 1 :// tuong ung vs 6
-								//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
-								closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
-								//MinhVV
-								CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
-
-								if (listFixed.get(1).isUseAtr()) {
-									Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
-											.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
-									if (checkDeadline.isPresent()) {
-										checkDeadline.get().setAlarmValueMessage(listFixed.get(1).getMessage());
-										checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
-										String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
-										checkDeadline.get().setAlarmValueDate(dateString);
-										listValueExtractAlarm.add(checkDeadline.get());
-									}
-								}
 								break;
 							//case 2 :break;//chua co
 							//case 3 :break;//chua co
