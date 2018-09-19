@@ -66,9 +66,9 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 param.data.uncountableAtdItem = null;
             }
 
-            //            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
-            caic = ko.mapping.fromJS(param.data);
-            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+               self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+//            caic = ko.mapping.fromJS(param.data);
+//            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
 
             if (caic.compareOperator() > 5) {
                 self.enumConditionType([
@@ -91,6 +91,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             });
 
             caic.conditionAtr.subscribe(v => {
+                console.log("đâsdasd");
                 $(".value-input").ntsError("clear");
                 caic.uncountableAtdItem(null);
                 caic.countableAddAtdItems([]);
