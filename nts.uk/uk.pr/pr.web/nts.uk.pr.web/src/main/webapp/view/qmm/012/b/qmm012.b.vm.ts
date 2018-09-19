@@ -44,9 +44,21 @@ module nts.uk.pr.view.qmm012.b {
                                         { headerText: getText('QMM012_27'), key: 'categoryAtr', width: 80 , formatter: _.escape },
                                         { headerText: getText('QMM012_32'), key: 'itemNameCd', width: 60, formatter: _.escape },
                                         { headerText: getText('QMM012_33'), key: 'name', width: 200, formatter: _.escape },
-                                        { headerText: getText('QMM012_34'), key: 'deprecatedAtr', width: 50, formatter: _.escape }
+                                        { headerText: getText('QMM012_34'), key: 'deprecatedAtr', width: 50, formatter: v => {
+                                            if (v == model.Abolition.ABOLISH) {
+                                                return '<div style="text-align: center; max-height: 18px;"><i class="ui-icon ui-icon-check"></i></div>';
+                                            }
+                                            return '';
+                                        } }
                                    ];
+                
+                self.selectedCategory.subscribe(() => {
+                    self.loadListData();
+                });
 
+                self.isdisplayAbolition.subscribe(() => {
+                    self.loadListData();
+                });
             }//end constructor
             
             loadListData(): JQueryPromise<any> {
@@ -59,22 +71,22 @@ module nts.uk.pr.view.qmm012.b {
                     category = parseInt(self.selectedCategory(), 10);
                 }
                 
-//                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
-//                    self.statementItemDataList(data);
-//                    if(data.length > 0) {
-//                        self.statementItemDataSelected(new StatementItemData(data[0], self));
-//                    } else {
-//                        self.statementItemDataSelected(new StatementItemData(null, self));
-//                    }
-//                    
-//                    block.clear();
-//                    deferred.resolve();
-//                }).fail(error => {
-//                    self.statementItemDataSelected(new StatementItemData(null, self));
-//                    
-//                    block.clear();
-//                    deferred.resolve();
-//                });
+                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
+                    self.statementItemDataList(data);
+                    if(data.length > 0) {
+                        self.statementItemDataSelected(new StatementItemData(data[0], self));
+                    } else {
+                        self.statementItemDataSelected(new StatementItemData(null, self));
+                    }
+                    
+                    block.clear();
+                    deferred.resolve();
+                }).fail(error => {
+                    self.statementItemDataSelected(new StatementItemData(null, self));
+                    
+                    block.clear();
+                    deferred.resolve();
+                });
                 
                 //TODO delete, add to test
                 self.statementItemDataSelected(new StatementItemData(null, self));
