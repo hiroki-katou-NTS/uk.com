@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class HealthInsurancePerGradeFeeDto {
 	
+	private int healthInsuranceGrade;
 	private String  inHealthInsurancePremium;
 	private String  inNursingCare;
 	private String  inSpecInsurancePremium;

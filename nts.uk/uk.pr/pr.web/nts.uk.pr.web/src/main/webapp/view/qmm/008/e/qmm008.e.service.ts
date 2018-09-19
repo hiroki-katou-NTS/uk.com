@@ -3,13 +3,16 @@ module nts.uk.pr.view.qmm008.e.service {
     import format = nts.uk.text.format;
     var paths = {
         startScreen: "ctx/pr/core/socialinsurance/salaryhealth/start",
-        update: "ctx/pr/core/socialinsurance/salaryhealth/update/{0}"
+        update: "ctx/pr/core/socialinsurance/salaryhealth/update",
+        count: "ctx/pr/core/socialinsurance/salaryhealth/count"
     }
     export function startScreen(command): JQueryPromise<any> {
         return ajax(paths.startScreen, command);
     }
-    export function update(historyId): JQueryPromise<any> {
-        let _path = format(paths.update, historyId);
-        return ajax("com",_path);
+    export function update(command): JQueryPromise<any> {
+        return ajax("pr",paths.update, command);
+    }
+    export function count(command): JQueryPromise<any> {
+        return ajax("pr",paths.count, command);
     }
 }
