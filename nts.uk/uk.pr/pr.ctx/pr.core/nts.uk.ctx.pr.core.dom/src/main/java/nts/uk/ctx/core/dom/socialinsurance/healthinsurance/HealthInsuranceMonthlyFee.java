@@ -155,4 +155,8 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
             });
         }
     }
+
+    public void updateGradeFee (List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee){
+        this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
+    }
 }
