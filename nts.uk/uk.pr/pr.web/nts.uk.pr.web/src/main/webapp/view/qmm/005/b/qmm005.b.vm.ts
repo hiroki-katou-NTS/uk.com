@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         setDaySupportDtoList: any;
         targetMonth: KnockoutObservable<string>;
         processingYear: KnockoutObservable<number>;
+        processingYearJapanLabel: KnockoutObservable<string>;
         processingDivisionName: KnockoutObservable<string>;
         settingPaymentList: KnockoutObservableArray<any>;
         processingYearList: KnockoutObservableArray<model.ItemModel>;
@@ -24,6 +25,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         constructor() {
             var self = this;
             self.targetMonth = ko.observable();
+            self.processingYearJapanLabel = ko.observable();
             self.processingDivisionName = ko.observable();
             self.settingPaymentList = ko.observableArray([]);
             self.processingYearList = ko.observableArray([]);
@@ -104,7 +106,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 if (data) {
                     self.processInfomationDto = data;
                     // B3_2
-                    self.processingDivisionName(nts.uk.text.format(nts.uk.resource.getText("#QMM005_97"), self.processCateNo, data.processDivisionName));
+                    self.processingDivisionName(nts.uk.text.format(nts.uk.resource.getText("QMM005_97"), self.processCateNo, data.processDivisionName));
                 }
             });
             service.getSetDaySupport(self.processCateNo).done(function (data) {
@@ -131,6 +133,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             /* phần lớn dữ liệu lấy từ setDaySupport*/
             // B3_4				処理年
             var self = this;
+            self.processingYearJapanLabel('(' + nts.uk.time.yearInJapanEmpire(year).toString().split(' ').join('') + ')');
             service.getSelectProcessingYear(self.processCateNo, year).done(function (data) {
                 if (data.setDaySupportDtoList.length > 0) {
                     var firstArray = [];
@@ -212,17 +215,17 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             }
         }
 
-        transDate(param){
+        transDate(param) {
             let date = new Date(param);
             let newDate;
-            if(date.getDay() == 0){
-                newDate =  new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
-            }else if(date.getDate() == 6){
-                newDate =  new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
-            }else {
+            if (date.getDay() == 0) {
+                newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
+            } else if (date.getDate() == 6) {
+                newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+            } else {
                 newDate = date;
             }
-            return newDate.getFullYear() + '/'+ (newDate.getMonth() + 1) + '/' +newDate.getDate();
+            return newDate.getFullYear() + '/' + (newDate.getMonth() + 1) + '/' + newDate.getDate();
         }
 
         //screen E mode update

@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,21 +34,21 @@ public class AddRegisterProcessCommandHandler extends CommandHandler<AddRegister
 			for (int i = 0; i < dataProcessInformation.size(); i++) {
 				// ドメインモデル「現在処理年月」を更新する
 				int processCateNo = dataProcessInformation.get(i).getProcessCateNo();
-				int giveCurrTreatYear = 0;
+				int giveCurrTreatYear = addCommand.getCurrProcessDateCommand().get(i).getGiveCurrTreatYear();
 				CurrProcessDate currProcessDate = new CurrProcessDate(cid, processCateNo, giveCurrTreatYear);
 				repoCurrProcessDate.update(currProcessDate);
 				// ドメインモデル「処理年月に紐づく雇用」を取得する
 				Optional<EmpTiedProYear> dataEmpTiedProYear = repoEmpTiedProYear.getEmpTiedProYearById(cid,
 						processCateNo);
+				List<EmploymentCode> employmentCodes = addCommand.getEmpTiedProYearCommand().get(i).getEmploymentCodes().stream().map(item -> new EmploymentCode(item)).collect(Collectors.toList());
+				EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCodes);
+
 				if (dataEmpTiedProYear.isPresent()) {
 					// ドメインモデル「処理年月に紐づく雇用」を更新する
-
-					List<EmploymentCode> employmentCodes = dataEmpTiedProYear.get().getEmploymentCodes();
-					EmpTiedProYear empTiedProYear = new EmpTiedProYear(cid, processCateNo, employmentCodes);
 					repoEmpTiedProYear.update(empTiedProYear);
 				} else {
 					// ドメインモデル「処理年月に紐づく雇用」を新規追加する
-					// TODO : https://insight.3si.vn/redmine/issues/123107
+					repoEmpTiedProYear.add(empTiedProYear);
 				}
 			}
 		}

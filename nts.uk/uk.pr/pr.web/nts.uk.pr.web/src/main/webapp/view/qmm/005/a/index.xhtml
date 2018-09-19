@@ -18,7 +18,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1 登録-->
-            <button class="proceed">#{i18n.getText('QMM005_1')}</button>
+            <button class="proceed" data-bind="click: registerProcessing">#{i18n.getText('QMM005_1')}</button>
             <!--A1_2 マスタ修正ログ-->
             <button class="">#{i18n.getText('QMM005_2')}</button>
             <!--A1_3 賞与の基準日設定-->

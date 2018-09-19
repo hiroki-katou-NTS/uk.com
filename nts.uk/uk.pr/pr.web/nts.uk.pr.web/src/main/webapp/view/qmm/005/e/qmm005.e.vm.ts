@@ -94,33 +94,33 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         mapLabel(tranferModel) {
             var self = this;
             // E1_3
-            self.processingClassification = ko.observable(format(getText("#QMM005_97"), tranferModel.E1_3_0, tranferModel.E1_3_1));
+            self.processingClassification = ko.observable(format(getText("QMM005_97"), tranferModel.E1_3_0, tranferModel.E1_3_1));
             // E1_5
-            self.processingYearAD = ko.observable(format(getText("#QMM005_109"), tranferModel.E1_5_0));
+            self.processingYearAD = ko.observable(format(getText("QMM005_109"), tranferModel.E1_5_0));
             // E1_6
-            self.treatmentYearJapaneseCalendar = ko.observable('heisei calendar');
+            self.treatmentYearJapaneseCalendar = ko.observable(' (' + nts.uk.time.yearInJapanEmpire(tranferModel.E1_5_0).toString().split(' ').join('') + ')');
             // E2_2
             self.reflectionStartYear = ko.observable(tranferModel.E2_2);
             // E2_8
-            self.dailyPaymentDate = ko.observable(format(getText("#QMM005_102"), tranferModel.E2_8_0));
+            self.dailyPaymentDate = ko.observable(format(getText("QMM005_102"), tranferModel.E2_8_0));
             //E2_10
-            self.empExtractionRefDate = ko.observable(format(getText("#QMM005_102"), tranferModel.E2_10_0, tranferModel.E2_10_1));
+            self.empExtractionRefDate = ko.observable(format(getText("QMM005_102"), tranferModel.E2_10_0, tranferModel.E2_10_1));
             // E2_12
-            self.socialInsuranceCollectionMonthSetting = ko.observable(format(getText("#QMM005_104"), tranferModel.E2_12_0));
+            self.socialInsuranceCollectionMonthSetting = ko.observable(format(getText("QMM005_104"), tranferModel.E2_12_0));
             // E2_14
-            self.specificationPrintoutYearMonthSetting = ko.observable(format(getText("#QMM005_104"), tranferModel.E2_14_0));
+            self.specificationPrintoutYearMonthSetting = ko.observable(format(getText("QMM005_104"), tranferModel.E2_14_0));
             //E4_2
-            self.numberOfWorkingDaysSetting = ko.observable(format(getText("#QMM005_108"), tranferModel.E4_2_0));
+            self.numberOfWorkingDaysSetting = ko.observable(format(getText("QMM005_108"), tranferModel.E4_2_0));
             //E2_17
-            self.socialInsuranceStandardDateSetting = ko.observable(format(getText("#QMM005_106"), tranferModel.E2_17_0, tranferModel.E2_17_1, tranferModel.E2_17_2));
+            self.socialInsuranceStandardDateSetting = ko.observable(format(getText("QMM005_106"), tranferModel.E2_17_0, tranferModel.E2_17_1, tranferModel.E2_17_2));
             //E2_19
-            self.employmentInsuranceStandardDateSetting = ko.observable(format(getText("#QMM005_107"), tranferModel.E2_19_0, tranferModel.E2_19_1));
+            self.employmentInsuranceStandardDateSetting = ko.observable(format(getText("QMM005_107"), tranferModel.E2_19_0, tranferModel.E2_19_1));
             // E2_21
-            self.settingOfStandardReferenceDayForClosingTime = ko.observable(format(getText("#QMM005_106"), tranferModel.E2_21_0, tranferModel.E2_21_1, tranferModel.E2_21_2));
+            self.settingOfStandardReferenceDayForClosingTime = ko.observable(format(getText("QMM005_106"), tranferModel.E2_21_0, tranferModel.E2_21_1, tranferModel.E2_21_2));
             //E2_23
-            self.incomeTaxBaseDateSetting = ko.observable(format(getText("#QMM005_106"), tranferModel.E2_23_0, tranferModel.E2_23_1, tranferModel.E2_23_2));
+            self.incomeTaxBaseDateSetting = ko.observable(format(getText("QMM005_106"), tranferModel.E2_23_0, tranferModel.E2_23_1, tranferModel.E2_23_2));
             //E2_25
-            self.accountingClosingDateSetting = ko.observable(format(getText("#QMM005_103"), tranferModel.E2_25_0, tranferModel.E2_25_1));
+            self.accountingClosingDateSetting = ko.observable(format(getText("QMM005_103"), tranferModel.E2_25_0, tranferModel.E2_25_1));
         }
 
         reflect() {
