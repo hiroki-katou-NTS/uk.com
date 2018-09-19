@@ -14,4 +14,5 @@ public interface MonthlyHealthInsuranceCompensationRepository {
      * @return Optional<MonthlyHealthInsuranceCompensation>
      */
     Optional<MonthlyHealthInsuranceCompensation> getMonthlyHealthInsuranceCompensationById(int targetStartYm, int targetEndYm);
+    Optional<MonthlyHealthInsuranceCompensation> findByDate(int date);
 }

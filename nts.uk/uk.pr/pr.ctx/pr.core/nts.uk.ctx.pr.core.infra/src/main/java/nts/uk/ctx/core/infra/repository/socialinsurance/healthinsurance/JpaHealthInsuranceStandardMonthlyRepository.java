@@ -1,18 +1,18 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardGradePerMonth;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthlyRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardGradePerMonth;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardMonthly;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceStandardMonthlyPk;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 健康保険標準月額
@@ -20,17 +20,23 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaHealthInsuranceStandardMonthlyRepository extends JpaRepository implements HealthInsuranceStandardMonthlyRepository {
 
-    private static final String GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID = "SELECT a FROM QpbmtHealthInsuranceStandardGradePerMonth a WHERE x.healthStdGraMonPk.targetStartYm=:targetStartYm AND x.healthStdGraMonPk.targetEndYm=:targetEndYm";
+    private static final String GET_HEALTH_INSURANCE_STANDARD_MONTHLY_BY_START_YEAR_MONTH = "SELECT a FROM QpbmtHealthInsuranceStandardMonthly a WHERE a.healthInsStdMonPk.targetStartYm <=:targetStartYm AND a.healthInsStdMonPk.targetEndYm >=:targetStartYm";
+    private static final String GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID = "SELECT a FROM QpbmtHealthInsuranceStandardGradePerMonth a WHERE a.healthStdGraMonPk.targetStartYm=:targetStartYm AND a.healthStdGraMonPk.targetEndYm=:targetEndYm";
 
     @Override
-    public Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyById(int targetStartYm, int targetEndYm) {
-        Optional<QpbmtHealthInsuranceStandardMonthly> entity = this.queryProxy().find(new QpbmtHealthInsuranceStandardMonthlyPk(targetStartYm, targetEndYm), QpbmtHealthInsuranceStandardMonthly.class);
+    public Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyByStartYearMonth(int targetStartYm) {
+        Optional<QpbmtHealthInsuranceStandardMonthly> entity = this.queryProxy().query(GET_HEALTH_INSURANCE_STANDARD_MONTHLY_BY_START_YEAR_MONTH, QpbmtHealthInsuranceStandardMonthly.class)
+                .setParameter("targetStartYm", targetStartYm)
+                .getSingle();
         if (!entity.isPresent())
             return Optional.empty();
 
+        val healthInsuranceStandardMonthlyEntity = entity.get();
         List<QpbmtHealthInsuranceStandardGradePerMonth> details = this.queryProxy().query(GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID, QpbmtHealthInsuranceStandardGradePerMonth.class)
+                .setParameter("targetStartYm", healthInsuranceStandardMonthlyEntity.healthInsStdMonPk.targetStartYm)
+                .setParameter("targetEndYm", healthInsuranceStandardMonthlyEntity.healthInsStdMonPk.targetEndYm)
                 .getList();
-        return Optional.of(toDomain(entity.get(), details));
+        return Optional.of(toDomain(healthInsuranceStandardMonthlyEntity, details));
     }
 
     /**

@@ -16,4 +16,10 @@ public interface BonusHealthInsuranceRateRepository {
     Optional<BonusHealthInsuranceRate> getBonusHealthInsuranceRateById(String historyId);
     
     void deleteByHistoryIds(List<String> historyIds);
+    
+    void add(BonusHealthInsuranceRate domain);
+    
+    void update(BonusHealthInsuranceRate domain);
+    
+    void remove(BonusHealthInsuranceRate domain);
 }

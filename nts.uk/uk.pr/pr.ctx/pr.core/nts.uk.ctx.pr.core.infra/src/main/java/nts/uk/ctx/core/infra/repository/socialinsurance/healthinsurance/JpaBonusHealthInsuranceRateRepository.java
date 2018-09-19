@@ -1,14 +1,14 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRateRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtBonusHealthInsuranceRate;
-
-import javax.ejb.Stateless;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * 賞与健康保険料率
@@ -40,5 +40,20 @@ public class JpaBonusHealthInsuranceRateRepository extends JpaRepository impleme
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
 		this.commandProxy().removeAll(QpbmtBonusHealthInsuranceRate.class, historyIds);
+	}
+
+	@Override
+	public void add(BonusHealthInsuranceRate domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update(BonusHealthInsuranceRate domain) {
+		this.commandProxy().update(toEntity(domain));
+	}
+	
+	@Override
+	public void remove(BonusHealthInsuranceRate domain) {
+		this.commandProxy().remove(toEntity(domain));
 	}
 }

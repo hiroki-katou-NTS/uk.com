@@ -22,13 +22,10 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 @Stateless
-public class SocialInsuranceOfficeAndHistoryService {
+public class WelfareInsuranceService {
 	
 	@Inject
 	private WelfarePensionInsuranceRateHistoryRepository welfarePensionInsuranceRateHistoryRepository;
-	
-	@Inject
-	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	@Inject
 	private BonusEmployeePensionInsuranceRateRepository bonusEmployeePensionInsuranceRateRepository;
@@ -42,10 +39,6 @@ public class SocialInsuranceOfficeAndHistoryService {
 	
 	public void addNewHistory (String officeCode, YearMonthHistoryItem yearMonthItem, BonusEmployeePensionInsuranceRate bonusEmployeePension, EmployeesPensionMonthlyInsuranceFee employeePensonMonthly, WelfarePensionInsuranceClassification welfarePensionClassification) {
 		WelfarePensionInsuranceRateHistory welfarePensionHistory = null;
-		Optional<SocialInsuranceOffice> socialOffice = socialInsuranceOfficeRepository.findByCodeAndCid(AppContexts.user().companyId(), officeCode);
-		if (!socialOffice.isPresent()){
-			throw new BusinessException("Office not found");
-		}
 		Optional<WelfarePensionInsuranceRateHistory> opt_welfarePensionHistory = welfarePensionInsuranceRateHistoryRepository.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
 		if (opt_welfarePensionHistory.isPresent()){
 			welfarePensionHistory = opt_welfarePensionHistory.get();

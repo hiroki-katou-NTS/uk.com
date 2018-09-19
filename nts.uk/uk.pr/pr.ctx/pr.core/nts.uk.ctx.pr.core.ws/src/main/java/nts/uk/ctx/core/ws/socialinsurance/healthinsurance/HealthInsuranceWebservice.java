@@ -1,9 +1,9 @@
 package nts.uk.ctx.core.ws.socialinsurance.healthinsurance;
 
-import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.AddHealthInsuranceCommand;
 import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.AddHealthInsuranceCommandHandler;
-import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceDto;
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.command.AddHealthInsuranceCommand;
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateFinder;
+import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceDto;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
 
 import javax.inject.Inject;

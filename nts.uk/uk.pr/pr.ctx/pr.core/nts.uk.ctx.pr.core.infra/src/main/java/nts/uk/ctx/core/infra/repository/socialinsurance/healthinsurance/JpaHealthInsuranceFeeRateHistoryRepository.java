@@ -67,7 +67,7 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
      * @param endYearMonth            年月終了
      * @return QpbmtContributionRateHistory
      */
-    private QpbmtHealthInsuranceFeeRateHistory toEntity(String socialInsuranceOfficeCd, String historyId, int startYearMonth, int endYearMonth) {
+    private QpbmtHealthInsuranceFeeRateHistory toEntity(String socialInsuranceOfficeCd, String historyId, Integer startYearMonth, Integer endYearMonth) {
         return new QpbmtHealthInsuranceFeeRateHistory(new QpbmtHealthInsuranceFeeRateHistoryPk(AppContexts.user().companyId(), socialInsuranceOfficeCd, historyId),
                 startYearMonth, endYearMonth);
     }
@@ -78,5 +78,13 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
 		.setParameter("companyId", companyId)
 		.setParameter("officeCode", officeCode)
 		.executeUpdate();
+	}
+
+	@Override
+	public void add(HealthInsuranceFeeRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
+		
 	}
 }

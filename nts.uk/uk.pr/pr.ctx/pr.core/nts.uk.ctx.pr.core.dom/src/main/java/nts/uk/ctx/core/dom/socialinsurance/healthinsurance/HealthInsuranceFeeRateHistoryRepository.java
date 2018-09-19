@@ -17,4 +17,6 @@ public interface HealthInsuranceFeeRateHistoryRepository {
     Optional<HealthInsuranceFeeRateHistory> getHealthInsuranceFeeRateHistoryByCid(String companyId, String officeCode);
 
     void deleteByCidAndCode(String companyId, String officeCode);
+    
+    void add (HealthInsuranceFeeRateHistory domain);
 }
