@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.AddStatementItemDataCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.RemoveStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.StatementItemDataCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
@@ -32,6 +33,9 @@ public class StatementItemWebService extends WebService {
 	
 	@Inject
 	private AddStatementItemDataCommandHandler addStatementItemDataCommandHandler;
+	
+	@Inject
+	private RemoveStatementItemDataCommandHandler removeStatementItemDataCommandHandler;
 
 	@POST
 	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}")
@@ -76,6 +80,12 @@ public class StatementItemWebService extends WebService {
 	@Path("registerStatementItemData")
 	public void registerStatementItemData(StatementItemDataCommand command) {
 		this.addStatementItemDataCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("removeStatementItemData")
+	public void removeStatementItemData(StatementItemDataCommand command) {
+		this.removeStatementItemDataCommandHandler.handle(command);
 	}
 	
 }

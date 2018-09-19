@@ -37,7 +37,7 @@ module nts.uk.pr.view.qmm012.b {
                     new model.ItemModel(model.CategoryAtr.REPORT_ITEM.toString(), getText('QMM012_6')),
                     new model.ItemModel(model.CategoryAtr.OTHER_ITEM.toString(), getText('QMM012_7'))
                 ]);
-                self.selectedCategory = ko.observable(model.CategoryAtr.PAYMENT_ITEM.toString());
+                self.selectedCategory = ko.observable(null);
                 
                 self.gridColumns = [
                                         { headerText: '', key: 'salaryItemId', width: 0, formatter: _.escape, hidden: true },
@@ -107,6 +107,8 @@ module nts.uk.pr.view.qmm012.b {
                         self.statementItemDataSelected(new StatementItemData(null, self));
                         self.statementItemDataSelected().statementItem().categoryAtr(data);
                     }
+                    
+                    //TODO Focus
                 });
             }
             
@@ -147,16 +149,23 @@ module nts.uk.pr.view.qmm012.b {
                 }
                 
                 if(categoryAtr == model.CategoryAtr.ATTEND_ITEM) {
-                    //TODO
+                    //TODO phải chơi 2 kiểu time
                 }
                 
                 if(listMessage.length == 0) {
+                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    
                     service.registerStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
-                            //TODO
+                            self.loadListData().done(function() {
+                                if((oldSalaryId != null) || (oldSalaryId != "")) {
+                                    self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                                }
+                                //TODO focus    
+                            });
                         });
                     }).fail(err => {
-                        //TODO
+                        //TODO xử lý message lỗi, focus
                     });
                 }
             }
@@ -166,7 +175,46 @@ module nts.uk.pr.view.qmm012.b {
             }
             
             public deleteItem(): void {
+                let self = this;
                 
+                let nextSalaryId = self.getNextSalaryId();
+                
+                dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.loadListData().done(function() {
+                                if(self.statementItemDataList().length == 0) {
+                                    self.create();
+                                } else if(nextSalaryId != null) {
+                                    self.statementItemDataSelected().salaryItemId(nextSalaryId);
+                                }
+                                //TODO focus    
+                            });
+                        });
+                    }).fail(err => {
+                        //TODO xử lý message lỗi, focus
+                    });
+                })
+            }
+            
+            public getNextSalaryId(): string {
+                let self = this;
+                let nextItem: string = null;
+                let array: Array<string> = self.statementItemDataList().map(x => x.salaryItemId);
+                let value = self.statementItemDataSelected().salaryItemId();
+                
+                if(array.length > 0) {
+                    let index = array.indexOf(value);
+                    if(index >= 0) {
+                        if(index < (array.length - 1)) {
+                            nextItem = array[index + 1];
+                        } else if(index > 0){
+                            nextItem = array[index - 1];
+                        }
+                    }
+                }
+                
+                return nextItem;
             }
             
             public outputExcel(): void {
@@ -179,6 +227,9 @@ module nts.uk.pr.view.qmm012.b {
             
             public registerPrintingName(): void {
                 
+                nts.uk.ui.windows.sub.modal('../j/index.xhtml').onClosed(() => {
+                    //TODO Focus
+                });
             }
             
         }
@@ -278,6 +329,7 @@ module nts.uk.pr.view.qmm012.b {
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
+                    //TODO Focus
                 });
             }
             
@@ -288,6 +340,7 @@ module nts.uk.pr.view.qmm012.b {
 
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                     self.isSetValidity(getShared("QMM012_H_IS_SETTING"));
+                    //TODO Focus
                 });
             }
         }
@@ -501,6 +554,8 @@ module nts.uk.pr.view.qmm012.b {
                         self.taxLimitAmountCode(data.code);
                         self.taxExemptionName(data.name);
                     }
+                    
+                    //TODO Focus
                 });
             }
         }
