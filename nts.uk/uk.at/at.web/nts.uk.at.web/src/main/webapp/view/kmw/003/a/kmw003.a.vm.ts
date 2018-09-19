@@ -177,23 +177,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
 
             self.showHeaderNumber.subscribe((val) => {
-                let headerText
                 _.each(self.optionalHeader, header => {
                     if (header.headerText != "提出済みの申請" && header.headerText != "申請") {
                         if (header.group == undefined && header.group == null) {
                             if (self.showHeaderNumber()) {
-                                headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                                let headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                                 $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             } else {
-                                headerText = header.headerText.split(" ")[0];
+                                let headerText = header.headerText.split(" ")[0];
                                 $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             }
                         } else {
                             if (self.showHeaderNumber()) {
-                                headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                                let headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                                 $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             } else {
-                                headerText = header.headerText.split(" ")[0];
+                                let headerText = header.headerText.split(" ")[0];
                                 $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             }
                         }
@@ -386,6 +385,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.setFixedHeader(data.lstFixedHeader);
                 self.extractionData();
                 self.loadGrid();
+                self.showHeaderNumber.valueHasMutated();
                 self.employmentCode(data.employmentCode);
                 self.dailyPerfomanceData(self.dpData);
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
@@ -480,6 +480,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.setFixedHeader(data.lstFixedHeader);
                 self.extractionData();
                 self.loadGrid();
+                self.showHeaderNumber.valueHasMutated();
                 self.employmentCode(data.employmentCode);
                 self.dailyPerfomanceData(self.dpData);
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
@@ -1209,6 +1210,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.receiveData(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
+                self.showHeaderNumber.valueHasMutated();
                 nts.uk.ui.block.clear();
             }, 500);
         }
@@ -1221,14 +1223,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.receiveData(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
-                self.displayNumberZero();
+                self.displayNumberZero1();
+                self.showHeaderNumber.valueHasMutated();
                 nts.uk.ui.block.clear();
             }, 500);
         }
         loadHeader(mode) {
             let self = this;
             let tempList = [];
-            self.dislayNumberHeaderText();
+//            self.dislayNumberHeaderText();
             self.displayProfileIcon();
             _.forEach(self.optionalHeader, (header) => {
                 if (header.constraint == null || header.constraint == undefined) {
@@ -1331,24 +1334,25 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
         }
 
-        dislayNumberHeaderText() {
-            let self = this;
-            if (self.showHeaderNumber()) {
-                self.optionalHeader.map((header) => {
-                    if (header.headerText) {
-                        header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                    }
-                    return header;
-                });
-            } else {
-                self.optionalHeader.map((header) => {
-                    if (header.headerText) {
-                        header.headerText = header.headerText.split(" ")[0];
-                    }
-                    return header;
-                });
-            }
-        }
+//        dislayNumberHeaderText() {
+//            let self = this;
+//            if (self.showHeaderNumber()) {
+//                self.optionalHeader.map((header) => {
+//                    if (header.headerText) {
+//                        header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+//                    }
+//                    return header;
+//                });
+//            } else {
+//                self.optionalHeader.map((header) => {
+//                    if (header.headerText) {
+//                        header.headerText = header.headerText.split(" ")[0];
+//                    }
+//                    return header;
+//                });
+//            }
+//        }
+        
         helps(event, data) {
             var self = this;
             $('#tooltip').css({
