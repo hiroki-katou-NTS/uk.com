@@ -20,10 +20,8 @@ public interface StandardOutputItemOrderRepository {
 	void add(List<StandardOutputItemOrder> domain);
 
 	void update(StandardOutputItemOrder domain);
-	
-	void update(List<StandardOutputItemOrder> domain);
 
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
 	
-	void remove(List<StandardOutputItemOrder> listStandardOutputItemOrder);
+	void remove(String cid, String condSetCd);
 }

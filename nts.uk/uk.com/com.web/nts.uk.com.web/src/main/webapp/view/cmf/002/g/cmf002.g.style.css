@@ -34,3 +34,7 @@
 #F3_1_scrollContainer{
 	height: 346px !important;
 }
+.nts-fixed-table .nts-fixed-body-container {
+	width: 270px;
+	}
+

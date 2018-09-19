@@ -27,12 +27,9 @@ public interface StandardOutputItemRepository {
 
 	void update(StandardOutputItem domain);
 	
-	void update(List<StandardOutputItem> domain);
-
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
 	
-	void remove(List<StandardOutputItem> listStandardOutputItem);
-	
+	void remove(String cid, String conditionSettingCode);
 	
 	Optional<AwDataFormatSetting> getAwDataFormatSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<CharacterDataFmSetting> getCharacterDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);

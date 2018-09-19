@@ -87,6 +87,10 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             }
             return enable;
         }
+        
+        enableRegister(){
+            return errors.hasError();
+        }
 
         selectDateDataFormatSetting() {
             let self = this;

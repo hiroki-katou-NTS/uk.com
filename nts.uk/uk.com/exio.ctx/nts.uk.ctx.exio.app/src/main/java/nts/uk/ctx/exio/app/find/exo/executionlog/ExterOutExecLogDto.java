@@ -116,27 +116,22 @@ public class ExterOutExecLogDto {
 
 	public static ExterOutExecLogDto fromDomain(ExterOutExecLog domain) {
 		return new ExterOutExecLogDto(domain.getCompanyId(), 
-				domain.getOutputProcessId(), 
-				domain.getUserId().orElse(null),
-				domain.getTotalErrorCount(), 
-				domain.getTotalCount(), 
-				domain.getFileId().orElse(null), 
-				domain.getFileSize().orElse(null),
-				domain.getDeleteFile().value, 
-				domain.getFileName().map(i -> i.v()).orElse(null), 
-				domain.getCategoryID().map(i -> i.v()).orElse(null), 
+				domain.getOutputProcessId(), domain.getUserId().orElse(null), domain.getTotalErrorCount(),
+				domain.getTotalCount(), domain.getFileId().orElse(null), domain.getFileSize().orElse(null),
+				domain.getDeleteFile() != null ? domain.getDeleteFile().value : null,
+				domain.getFileName().map(i -> i.v()).orElse(null), domain.getCategoryID().map(i -> i.v()).orElse(null),
 				domain.getProcessUnit().orElse(null),
-				domain.getProcessEndDateTime().map(i -> i.toString()).orElse(null), 
-				domain.getProcessStartDateTime().toString(), 
-				domain.getStandardClass().value,
-				domain.getExecuteForm().value, 
-				domain.getExecuteId().toString(), 
-				domain.getDesignatedReferenceDate().toString(),
-				domain.getSpecifiedEndDate().toString(), 
-				domain.getSpecifiedStartDate().toString(),
-				domain.getCodeSettingCondition().v(),
+				domain.getProcessEndDateTime().map(i -> i.toString()).orElse(null),
+				domain.getProcessStartDateTime() != null ? domain.getProcessStartDateTime().toString() : null,
+				domain.getStandardClass() != null ? domain.getStandardClass().value : null,
+				domain.getExecuteForm() != null ? domain.getExecuteForm().value : null,
+				domain.getExecuteId() != null ? domain.getExecuteId().toString() : null,
+				domain.getDesignatedReferenceDate() != null ? domain.getDesignatedReferenceDate().toString() : null,
+				domain.getSpecifiedEndDate() != null ? domain.getSpecifiedEndDate().toString() : null,
+				domain.getSpecifiedStartDate() != null ? domain.getSpecifiedStartDate().toString() : null,
+				domain.getCodeSettingCondition() != null ? domain.getCodeSettingCondition().v() : null,
 				domain.getResultStatus().map(i -> i.value).orElse(null),
-				domain.getNameSetting().v());
+				domain.getNameSetting() != null ? domain.getNameSetting().v() : null);
 	}
 
 }

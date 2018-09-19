@@ -17,9 +17,9 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export enum ROUNDING_METHOD {
-        TRUNCATION = 0,
-        ROUND_UP = 1,
-        DOWN_4_UP_5 = 2
+        TRUNCATION = 1,
+        ROUND_UP = 2,
+        DOWN_4_UP_5 = 0
     }
 
     export enum FORMAT_SELECTION {

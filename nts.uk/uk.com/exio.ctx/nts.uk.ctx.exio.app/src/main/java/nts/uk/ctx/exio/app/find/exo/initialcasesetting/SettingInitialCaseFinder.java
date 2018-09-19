@@ -55,13 +55,13 @@ public class SettingInitialCaseFinder {
 					item.setLocalizedName(TextResource.localize("CMF002_503") + TextResource.localize("CMF002_368"));
 				}
 				break;
-			case INS_TIME:
-				if (inTimeDataFmSet.isPresent()) {
+			case TIME:
+				if (TimeDataFmSet.isPresent()) {
 					item.setLocalizedName(TextResource.localize("CMF002_503") + TextResource.localize("CMF002_369"));
 				}
 				break;
-			case TIME:
-				if (TimeDataFmSet.isPresent()) {
+			case INS_TIME:
+				if (inTimeDataFmSet.isPresent()) {
 					item.setLocalizedName(TextResource.localize("CMF002_503") + TextResource.localize("CMF002_370"));
 				}
 				break;

@@ -92,6 +92,9 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             }
             return enable;
         }
+        enableRegister(){
+            return errors.hasError();
+        }
         enableDecimalFraction() {
             let self = this;
             return self.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.NO_DECIMAL && self.enableGlobal();

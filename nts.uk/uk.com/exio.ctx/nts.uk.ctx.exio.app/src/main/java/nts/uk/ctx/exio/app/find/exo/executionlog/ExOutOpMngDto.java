@@ -27,9 +27,14 @@ public class ExOutOpMngDto {
 	private int opCond;
 
 	public static ExOutOpMngDto fromDomain(ExOutOpMng domain) {
-		return new ExOutOpMngDto(domain.getExOutProId(), domain.getProCnt(), domain.getErrCnt(),
-				domain.getTotalProCnt(), domain.getDoNotInterrupt().value, domain.getProUnit(),
-				domain.getOpCond().value);
+		return new ExOutOpMngDto(
+				domain.getExOutProId(),
+				domain.getProCnt(),
+				domain.getErrCnt(),
+				domain.getTotalProCnt(),
+				domain.getDoNotInterrupt() != null ? domain.getDoNotInterrupt().value : null,
+				domain.getProUnit(),
+				domain.getOpCond() != null ? domain.getOpCond().value : null);
 	}
 
 }

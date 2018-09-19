@@ -50,12 +50,16 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             service.getCtgData(self.categoryId()).done(function(data: Array<any>) {
                 if (data && data.length) {
                     let listcategoryItemData = _.map(data, x => {
-                            x.itemNo = x.itemNo.toString();
-                            return x;
+                        x.itemNo = x.itemNo.toString();
+                        return x;
                     });
                     self.categoryItemList(listcategoryItemData);
                     self.selectedItemType.subscribe(code => {
+                        if (code == 10) {
+                            self.categoryItemList(data);
+                        }else{
                         self.categoryItemList(_.filter(data, ['itemType', code]));
+                        }
                     });
                 }
             }).always(() => {
@@ -107,12 +111,12 @@ module nts.uk.com.view.cmf002.f.viewmodel {
 
         register() {
             let self = this;
-            if (self.selectedSelectionItemList().length) {
+            if (self.selectionItemList().length) {
                 block.invisible();
                 self.selectedAddOutputItem.removeAll();
                 let _listOutputItemCode = _.map(self.outputItemList(), function(o) { return parseInt(o.outputItemCode) });
-                for (let item of self.selectedSelectionItemList()) {
-                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == item });
+                for (let item of self.selectionItemList()) {
+                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == item.id });
                     self.selectedAddOutputItem.push(ko.toJS(new AddOutputItem(parseInt(_.max(_listOutputItemCode)), self.condSetCd(), _selectedItem.itemName, _selectedItem.itemType, _selectedItem.itemNo, _selectedItem.categoryId)));
                 }
                 service.addOutputItem(self.selectedAddOutputItem()).done(function() {
@@ -123,6 +127,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                             self.outputItemList(data);
                         }
                     })
+                    self.selectionItemList.removeAll();
                 }).always(function() {
                     block.clear();
                 });
@@ -142,6 +147,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
     //項目型
     export function getItemType(): Array<model.ItemModel> {
         return [
+            new model.ItemModel(10, getText("CMF002_406")),
             new model.ItemModel(0, getText("Enum_ItemType_NUMERIC")),
             new model.ItemModel(1, getText("Enum_ItemType_CHARACTER")),
             new model.ItemModel(2, getText("Enum_ItemType_DATE")),

@@ -26,6 +26,7 @@ import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumber
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumberDfsPk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtTimeDfs;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtTimeDfsPk;
+import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtCtgItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
 
@@ -74,6 +75,28 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String SELECT_TIME_FORMAT = "SELECT f FROM OiomtTimeDfs f"
 			+ " WHERE  f.timeDfsPk.cid =:cid AND f.timeDfsPk.condSetCd =:condSetCd ";
 	
+	private static final String DELETE_OUT_ITEM = "DELETE FROM OiomtStdOutItem f "
+	        + "WHERE f.stdOutItemPk.cid =:cid AND f.stdOutItemPk.condSetCd =:condSetCd ";
+	
+	private static final String DELETE_AW_DATA_FORMAT = "DELETE FROM OiomtAtWorkClsDfs f "
+            + "WHERE f.atWorkClsDfsPk.cid =:cid AND f.atWorkClsDfsPk.condSetCd =:condSetCd ";
+	
+	private static final String CHAR_FORMAT = "DELETE FROM OiomtCharacterDfs f "
+            + "WHERE f.characterDfsPk.cid =:cid AND f.characterDfsPk.condSetCd =:condSetCd ";
+    
+	private static final String DATE_FORMAT = "DELETE FROM OiomtDateDfs f "
+            + "WHERE f.dateDfsPk.cid =:cid AND f.dateDfsPk.condSetCd =:condSetCd ";
+	
+	private static final String INSTANT_TIME_FORMAT = "DELETE FROM OiomtInstantTimeDfs f "
+            + "WHERE f.instantTimeDfsPk.cid =:cid AND f.instantTimeDfsPk.condSetCd =:condSetCd ";
+	
+	private static final String NUMBER_FORMAT = "DELETE FROM OiomtNumberDfs f "
+            + "WHERE f.numberDfsPk.cid =:cid AND f.numberDfsPk.condSetCd =:condSetCd ";
+	
+	private static final String TIME_FORMAT = "DELETE FROM OiomtTimeDfs f "
+            + "WHERE f.timeDfsPk.cid =:cid AND f.timeDfsPk.condSetCd =:condSetCd ";
+	private static final String CATEGORY_ITEM = "DELETE FROM OiomtCtgItem f "
+            + "WHERE f.ctgItemPk.cid =:cid AND f.ctgItemPk.condSetCd =:condSetCd ";
 	
 	@Override
 	public List<StandardOutputItem> getAllStdOutItem() {
@@ -108,34 +131,41 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	}
 
 	@Override
-	public void update(List<StandardOutputItem> domain) {
-		this.commandProxy().updateAll(OiomtStdOutItem.toEntity(domain));
+	public void remove(String cid, String condSetCd) {
+	    this.getEntityManager().createQuery(DELETE_AW_DATA_FORMAT, OiomtAtWorkClsDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(CHAR_FORMAT, OiomtCharacterDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(DATE_FORMAT, OiomtDateDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(INSTANT_TIME_FORMAT, OiomtInstantTimeDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(NUMBER_FORMAT, OiomtNumberDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(TIME_FORMAT, OiomtTimeDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(CATEGORY_ITEM, OiomtCtgItem.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(DELETE_OUT_ITEM, OiomtStdOutItem.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	}
-
+	
 	@Override
-	public void remove(String cid, String outItemCd, String condSetCd) {
-		this.getAwDataFormatSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtAtWorkClsDfs.class, new OiomtAtWorkClsDfsPk(cid, condSetCd, outItemCd));
-		});
-		this.getCharacterDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtCharacterDfs.class, new OiomtCharacterDfsPk(cid, condSetCd, outItemCd));
-		});
-		this.getDateFormatSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtDateDfs.class, new OiomtDateDfsPk(cid, condSetCd, outItemCd));
-		});
-		this.getInstantTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtInstantTimeDfs.class, new OiomtInstantTimeDfsPk(cid, condSetCd, outItemCd));
-		});
-		this.getNumberDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtNumberDfs.class, new OiomtNumberDfsPk(cid, condSetCd, outItemCd));
-		});
-		this.getTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtTimeDfs.class, new OiomtTimeDfsPk(cid, condSetCd, outItemCd));
-		});
-		this.getStdOutItemById(cid, outItemCd, condSetCd).ifPresent(e -> {
-			this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
-		});
-	}
+    public void remove(String cid, String outItemCd, String condSetCd) {
+        this.getAwDataFormatSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtAtWorkClsDfs.class, new OiomtAtWorkClsDfsPk(cid, condSetCd, outItemCd));
+        });
+        this.getCharacterDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtCharacterDfs.class, new OiomtCharacterDfsPk(cid, condSetCd, outItemCd));
+        });
+        this.getDateFormatSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtDateDfs.class, new OiomtDateDfsPk(cid, condSetCd, outItemCd));
+        });
+        this.getInstantTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtInstantTimeDfs.class, new OiomtInstantTimeDfsPk(cid, condSetCd, outItemCd));
+        });
+        this.getNumberDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtNumberDfs.class, new OiomtNumberDfsPk(cid, condSetCd, outItemCd));
+        });
+        this.getTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtTimeDfs.class, new OiomtTimeDfsPk(cid, condSetCd, outItemCd));
+        });
+        this.getStdOutItemById(cid, outItemCd, condSetCd).ifPresent(e -> {
+            this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
+        });
+    }
 
 	@Override
 	public Optional<AwDataFormatSetting> getAwDataFormatSettingByID(String cid, String conditionSettingCode,
@@ -249,12 +279,6 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 		} else {
 			this.commandProxy().insert(OiomtTimeDfs.toEntity(domain));
 		}
-	}
-
-	@Override
-	public void remove(List<StandardOutputItem> listStandardOutputItem) {
-		listStandardOutputItem.stream()
-				.forEach(i -> this.remove(i.getCid(), i.getOutputItemCode().v(), i.getConditionSettingCode().v()));
 	}
 
 	@Override
