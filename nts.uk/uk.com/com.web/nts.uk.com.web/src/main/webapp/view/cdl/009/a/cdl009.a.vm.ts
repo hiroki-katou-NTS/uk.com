@@ -137,7 +137,10 @@ module nts.uk.com.view.cdl009.a {
                         res.forEach(item => {
                             empList.push({ id: item.employeeId, code: item.employeeCode, name: item.employeeName, workplaceName: item.workplaceName });
                         });
-                        self.employeeList(empList);
+                        
+                        let data = _.orderBy(empList, ["code"], ['asc']);
+                        
+                        self.employeeList(data);
                     } else {
                         self.employeeList([]);
                     }
