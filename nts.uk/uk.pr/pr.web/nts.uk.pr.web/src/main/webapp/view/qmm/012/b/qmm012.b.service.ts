@@ -6,7 +6,8 @@ module nts.uk.pr.view.qmm012.b {
         
         let paths = {
             getAllStatementItemData: "ctx/pr/core/wageprovision/statementitem/getAllStatementItemData/{0}/{1}",
-            registerStatementItemData: "ctx/pr/core/wageprovision/statementitem/registerStatementItemData"
+            registerStatementItemData: "ctx/pr/core/wageprovision/statementitem/registerStatementItemData",
+            removeStatementItemData: "ctx/pr/core/wageprovision/statementitem/removeStatementItemData"
         }
         
         export function getAllStatementItemData(categoryAtr: number, isdisplayAbolition: boolean): JQueryPromise<any> {
@@ -16,6 +17,10 @@ module nts.uk.pr.view.qmm012.b {
         
         export function registerStatementItemData(command: any) : JQueryPromise<any> {
             return nts.uk.request.ajax('pr', paths.registerStatementItemData, command);
+        }
+        
+        export function removeStatementItemData(command: any) : JQueryPromise<any> {
+            return nts.uk.request.ajax('pr', paths.removeStatementItemData, command);
         }
     }
 }
