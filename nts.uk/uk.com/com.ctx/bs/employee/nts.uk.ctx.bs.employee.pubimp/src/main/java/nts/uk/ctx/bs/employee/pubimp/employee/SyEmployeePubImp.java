@@ -124,7 +124,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 			EmployeeExport result = new EmployeeExport();
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -211,8 +211,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		EmployeeDataMngInfo emp = empOpt.get();
 
 		// Lay thông tin lịch sử vào ra công ty của nhân viên
-		String cid = AppContexts.user().companyId();
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
@@ -291,7 +290,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				result.setBirthDay(person.getBirthDate());
 			}
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -649,7 +648,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		EmployeeDataMngInfo emp = empOpt.get();
 
 		// Lay thông tin lịch sử vào ra công ty của nhân viên
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(companyId, emp.getEmployeeId());
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(companyId, emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 

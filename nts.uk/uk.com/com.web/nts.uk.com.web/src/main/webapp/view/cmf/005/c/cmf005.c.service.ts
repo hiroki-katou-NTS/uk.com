@@ -4,7 +4,7 @@ module nts.uk.com.view.cmf005.c {
 
     export module service {
         var paths = {
-            getCategoryBySytem: "ctx/sys/assist/app/findCategoryByCodeOrName",
+            getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
             getSystemTypes: "ctx/sys/assist/systemtype/getsystemtypes"
         }
 
@@ -13,12 +13,9 @@ module nts.uk.com.view.cmf005.c {
             return ajax("com", paths.getSystemTypes);
         }
 
-        export function getCategoryListBySystem(systemType: number, categoriesIgnore: any): JQueryPromise<any> {
-            var data = {
-                systemType: systemType,
-                categoriesIgnore: categoriesIgnore
-            };
-            return ajax('com', paths.getCategoryBySytem, data);
+        export function getConditionList(systemType: number): JQueryPromise<any> {
+            let _path = format(paths.getCategoryBySytem, systemType);
+            return ajax('com', _path);
         };
 
     }

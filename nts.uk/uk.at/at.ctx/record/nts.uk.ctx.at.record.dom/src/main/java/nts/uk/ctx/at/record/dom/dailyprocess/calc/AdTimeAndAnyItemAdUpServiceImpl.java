@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -57,6 +59,9 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
 	
+	@Inject
+	private WorkInformationRepository workInformationRepository;
+	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
 							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
@@ -64,6 +69,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			Optional<PCLogOnInfoOfDaily> pc = pcLogon.find(empId, ymd);
 			Optional<AttendanceLeavingGateOfDaily> al = attendanceGate.find(empId, ymd);
 			Optional<TimeLeavingOfDailyPerformance> tl = timeLeave.findByKey(empId, ymd);
+			wi.changeCalcState(CalculationState.Calculated);
 			IntegrationOfDaily daily = new IntegrationOfDaily(wi, null, null, Optional.empty(), pc, new ArrayList<>(),
 								Optional.empty(), new ArrayList<>(), attendanceTime, Optional.empty(), tl,
 								Optional.empty(), Optional.empty(), al, anyItem, new ArrayList<>(), Optional.empty(), new ArrayList<>());
@@ -103,6 +109,8 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Override
 	public void addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
 		storedProcedureProcess.dailyProcessing(daily, workTypes).stream().forEach(d -> {
+			//勤務情報の更新
+			workInformationRepository.updateByKey(d.getWorkInformation());
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				attendanceTimeRepository.update(at);
