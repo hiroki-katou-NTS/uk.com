@@ -23,12 +23,12 @@
         <div class = "content">
             <div class = "left">
                 <div id="C1_1"
-                     data-bind="ntsPanel:{width: '220px', height: '410px',direction: 'none', visible: true}">
-                    <div id="functions-area" style="padding-right: 22px">
+                     data-bind="ntsPanel:{width: '220px', height: '415px',direction: 'none', visible: true}">
+                    <div id="action" style="padding-bottom: 35px">
                         <!-- C1_2 履歴追加 -->
-                        <button id ="C1_2" tabindex="1"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
+                        <button style="float: left" id ="C1_2" tabindex="1"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
                         <!-- C1_3 履歴編集 -->
-                        <button id ="C1_3" tabindex="2"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
+                        <button style="float: right"  id ="C1_3" tabindex="2"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
                     </div>
                     <div>
                         <!--C1_4 労災保険料率一覧 -->
