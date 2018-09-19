@@ -2,9 +2,9 @@ module nts.uk.pr.view.qmm008.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        findAllOffice: "ctx/pr/core/socialinsurance/healthinsurance/getByCompanyId",
-        findEmployeeHealthInsuranceByHistoryId: "ctx/pr/core/socialinsurance/healthinsurance/getByHistoryId/{0}" ,
-        addEmployeeHealthInsurance: "ctx/pr/core/socialinsurance/healthinsurance/add"
+        findAllOffice: "ctx/core/socialinsurance/healthinsurance/getByCompanyId",
+        findEmployeeHealthInsuranceByHistoryId: "ctx/core/socialinsurance/healthinsurance/getByHistoryId/{0}" ,
+        addEmployeeHealthInsurance: "ctx/core/socialinsurance/healthinsurance/add"
     }
     /**
      * get all
