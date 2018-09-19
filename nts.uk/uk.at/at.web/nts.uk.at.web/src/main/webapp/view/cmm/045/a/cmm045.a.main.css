@@ -64,3 +64,11 @@
 .dateRange{
 	float: left;
 }
+#grid1 > tbody > tr > td {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#grid2 > tbody > tr > td {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}

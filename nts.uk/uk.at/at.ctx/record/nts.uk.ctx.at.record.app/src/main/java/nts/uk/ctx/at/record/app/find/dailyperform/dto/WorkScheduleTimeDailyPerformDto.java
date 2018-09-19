@@ -25,12 +25,19 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 	/** 実績所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL + FIXED_WORK)
 	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer recordPrescribedLaborTime;
+	private int recordPrescribedLaborTime;
 
 	/** 計画所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = SCHEDULE + FIXED_WORK)
 	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer schedulePrescribedLaborTime;
+	private int schedulePrescribedLaborTime;
+
+	@Override
+	public WorkScheduleTimeDailyPerformDto clone() {
+		return new WorkScheduleTimeDailyPerformDto(workSchedule == null ? null : workSchedule.clone(),
+																				recordPrescribedLaborTime,
+																				schedulePrescribedLaborTime);
+	}
 
 	public static WorkScheduleTimeDailyPerformDto fromWorkScheduleTime(WorkScheduleTimeOfDaily domain) {
 		return domain == null ? null : new WorkScheduleTimeDailyPerformDto(
@@ -47,19 +54,15 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 
 	public WorkScheduleTimeOfDaily toDomain() {
-		return new WorkScheduleTimeOfDaily(workSchedule == null ? null : new WorkScheduleTime(
-						newAttendanceTime(workSchedule.getTotal()),
-						newAttendanceTime(workSchedule.getExcessOfStatutoryTime()),
-						newAttendanceTime(workSchedule.getWithinStatutoryTime())),
-						newAttendanceTime(schedulePrescribedLaborTime), 
-						newAttendanceTime(recordPrescribedLaborTime));
-	}
-
-	private AttendanceTime newAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return new WorkScheduleTimeOfDaily(workSchedule == null ? WorkScheduleTime.defaultValue() : new WorkScheduleTime(
+																		new AttendanceTime(workSchedule.getTotal()),
+																		new AttendanceTime(workSchedule.getExcessOfStatutoryTime()),
+																		new AttendanceTime(workSchedule.getWithinStatutoryTime())),
+																		new AttendanceTime(schedulePrescribedLaborTime), 
+																		new AttendanceTime(recordPrescribedLaborTime));
 	}
 }

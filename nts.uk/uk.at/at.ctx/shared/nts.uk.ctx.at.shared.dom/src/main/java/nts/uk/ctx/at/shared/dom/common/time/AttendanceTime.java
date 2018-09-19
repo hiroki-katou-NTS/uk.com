@@ -10,6 +10,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(max = "48:00", min = "00:00")
 public class AttendanceTime extends TimeDurationPrimitiveValue<AttendanceTime> {
 
+	public static final AttendanceTime ZERO = new AttendanceTime(0);
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

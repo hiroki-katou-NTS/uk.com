@@ -17,6 +17,8 @@ import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendance
 import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendanceRecordDeleteCommandHandler;
 import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendanceRecordSaveCommand;
 import nts.uk.ctx.at.function.app.command.attendancerecord.item.SingleAttendanceRecordSaveCommandHandler;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordItemDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordKeyDto;
@@ -60,10 +62,15 @@ public class AttendanceRecordItemWebService {
 	/** The calculate attendance record delete command. */
 	@Inject
 	CalculateAttendanceRecordDeleteCommandHandler calculateAttendanceRecordDeleteCommand;
-	
+
 	/** The attendance item finder. */
 	@Inject
 	AttendanceRecordItemFinder attendanceItemFinder;
+
+	@Inject
+	AttendanceIdItemFinder atFinder;
+
+	private static final Integer DAILY = 1;
 
 	/**
 	 * Gets the single attendance record info.
@@ -140,19 +147,23 @@ public class AttendanceRecordItemWebService {
 			CalculateAttendanceRecordDeleteCommand calculateAttendanceRecordDeleteCommand) {
 		this.calculateAttendanceRecordDeleteCommand.handle(calculateAttendanceRecordDeleteCommand);
 	}
-	
+
 	/**
 	 * Gets the attendance record items by screen use atr.
 	 *
-	 * @param screenUseAtr the screen use atr
+	 * @param screenUseAtr
+	 *            the screen use atr
 	 * @return the attendance record items by screen use atr
 	 */
 	@POST
 	@Path("getAttndRecItem/{screenUseAtr}")
-	public List<AttendanceRecordItemDto> getAttendanceRecordItemsByScreenUseAtr(@PathParam("screenUseAtr") int screenUseAtr){
-		return this.attendanceItemFinder.getAttendanceItemsByScreenUseAtr(screenUseAtr);
+	public List<AttendanceIdItemDto> getAttendanceRecordItemsByScreenUseAtr(
+			@PathParam("screenUseAtr") int screenUseAtr) {
+		List<Integer> screenUseList = new ArrayList<>();
+		screenUseList.add(screenUseAtr);
+		return this.atFinder.getAttendanceItem(screenUseList, DAILY);
 	}
-	
+
 	/**
 	 * Gets the all attendance record daily.
 	 *
@@ -160,25 +171,27 @@ public class AttendanceRecordItemWebService {
 	 */
 	@POST
 	@Path("getAllAttndDaily")
-	public List<AttendanceRecordItemDto> getAllAttendanceRecordDaily(){
+	public List<AttendanceRecordItemDto> getAllAttendanceRecordDaily() {
 		List<Integer> screenUse = new ArrayList<Integer>();
 		screenUse.add(13);
 		screenUse.add(14);
 		screenUse.add(15);
 		return attendanceItemFinder.getAllAttendanceDaily(screenUse);
 	}
-	
+
 	/**
 	 * Gets the all attnd by atr and type.
 	 *
-	 * @param attendanceTypeKey the attendance type key
+	 * @param attendanceTypeKey
+	 *            the attendance type key
 	 * @return the all attnd by atr and type
 	 */
 	@POST
 	@Path("getAttndRecByAttndTypeKey")
-	public List<AttendanceRecordItemDto> getAllAttndByAtrAndType(AttendanceTypeKeyDto attendanceTypeKey){
-		return this.attendanceItemFinder.getAttndItemsByAtrAndType(attendanceTypeKey);
+	public List<AttendanceIdItemDto> getAllAttndByAtrAndType(AttendanceTypeKeyDto attendanceTypeKey) {
+		List<Integer> screenUseList = new ArrayList<>();
+		screenUseList.add(attendanceTypeKey.getScreenUseAtr());
+		return this.atFinder.getAttendanceItem(screenUseList, attendanceTypeKey.getAttendanceType());
 	}
-
 
 }

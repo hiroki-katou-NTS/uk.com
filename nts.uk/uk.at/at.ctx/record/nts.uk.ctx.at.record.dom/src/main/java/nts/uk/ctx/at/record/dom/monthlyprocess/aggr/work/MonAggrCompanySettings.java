@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -172,6 +173,9 @@ public class MonAggrCompanySettings {
 	private ConcurrentHashMap<String, EmptYearlyRetentionSetting> emptYearlyRetentionSetMap;
 	/** 実績ロック */
 	private ConcurrentMap<Integer, ActualLock> actualLockMap;
+	/** 日別実績の運用開始設定 */
+	@Getter
+	private Optional<OperationStartSetDailyPerform> operationStartSet;
 	
 	/** エラー情報 */
 	@Getter
@@ -208,6 +212,7 @@ public class MonAggrCompanySettings {
 		this.retentionYearlySet = Optional.empty();
 		this.emptYearlyRetentionSetMap = new ConcurrentHashMap<>();
 		this.actualLockMap = new ConcurrentHashMap<>();
+		this.operationStartSet = Optional.empty();
 		this.errorInfos = new ConcurrentHashMap<>();
 	}
 	
@@ -277,6 +282,9 @@ public class MonAggrCompanySettings {
 			Integer closureId = actualLock.getClosureId().value;
 			domain.actualLockMap.put(closureId, actualLock);
 		}
+		
+		// 日別実績の運用開始設定
+		domain.operationStartSet = repositories.getOperationStartSet().findByCid(new CompanyId(companyId));
 		
 		// 設定読み込み処理　（36協定時間用）
 		domain.loadSettingsForAgreementProc(companyId, repositories);
@@ -369,7 +377,10 @@ public class MonAggrCompanySettings {
 		this.roleHolidayWorkFrameList.addAll(repositories.getRoleHolidayWorkFrame().findByCID(companyId));
 		
 		// 休暇時間加算設定
-		this.holidayAdditionMap.putAll(repositories.getHolidayAddition().findByCompanyId(companyId));
+		for (val holidayAddition : repositories.getHolidayAddition().findByCompanyId(companyId).entrySet()){
+			if (holidayAddition.getValue() == null) continue;
+			this.holidayAdditionMap.put(holidayAddition.getKey(), holidayAddition.getValue());
+		}
 		
 		// 労働時間と日数の設定の利用単位の設定
 		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);

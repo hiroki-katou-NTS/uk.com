@@ -571,13 +571,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 
 	private static void setHolidayTime(WorkingConditionDto dto, SingleDaySchedule holidayTime) {
 		Optional.ofNullable(holidayTime).ifPresent(ht -> {
-			dto.setHolidayWorkTypeCode(ht.getWorkTypeCode().v());
+			dto.setHolidayWorkTypeCode(ht.getWorkTypeCode().map(i->i.v()).orElse(null));
 		});
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
 		Optional.of(weekDay).ifPresent(wd -> {
-			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().v());
+			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 			wd.getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
 
@@ -599,7 +599,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {
-		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().v());
+		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		workInHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
 
@@ -621,7 +621,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWorkInPublicHoliday(WorkingConditionDto dto, SingleDaySchedule workInPublicHoliday) {
-		dto.setWorkInPublicHolidayWorkTypeCode(workInPublicHoliday.getWorkTypeCode().v());
+		dto.setWorkInPublicHolidayWorkTypeCode(workInPublicHoliday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		workInPublicHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInPublicHolidayWorkTimeCode(wtc.v()));
 
@@ -642,7 +642,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setInLawBreakTime(WorkingConditionDto dto, SingleDaySchedule inLawBreakTime) {
-		dto.setInLawBreakTimeWorkTypeCode(inLawBreakTime.getWorkTypeCode().v());
+		dto.setInLawBreakTimeWorkTypeCode(inLawBreakTime.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		inLawBreakTime.getWorkTimeCode().ifPresent(wtc -> dto.setInLawBreakTimeWorkTimeCode(wtc.v()));
 
@@ -663,7 +663,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setOutsideLawBreakTime(WorkingConditionDto dto, SingleDaySchedule outsideLawBreakTime) {
-		dto.setOutsideLawBreakTimeWorkTypeCode(outsideLawBreakTime.getWorkTypeCode().v());
+		dto.setOutsideLawBreakTimeWorkTypeCode(outsideLawBreakTime.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		outsideLawBreakTime.getWorkTimeCode().ifPresent(wtc -> dto.setOutsideLawBreakTimeWorkTimeCode(wtc.v()));
 
@@ -684,7 +684,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setHolidayAttendanceTime(WorkingConditionDto dto, SingleDaySchedule holidayAttendanceTime) {
-		dto.setHolidayAttendanceTimeWorkTypeCode(holidayAttendanceTime.getWorkTypeCode().v());
+		dto.setHolidayAttendanceTimeWorkTypeCode(holidayAttendanceTime.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		holidayAttendanceTime.getWorkTimeCode().ifPresent(wtc -> dto.setHolidayAttendanceTimeWorkTimeCode(wtc.v()));
 

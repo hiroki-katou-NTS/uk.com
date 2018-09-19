@@ -31,23 +31,33 @@ public enum TimeSpanDuplication {
 		default:
 			throw new RuntimeException("unknown value: " + range);
 			
+		//同じ期間
 		case SAME_SPAN:
 			return SAME_SPAN;
 			
+		//比較期間の開始が基準期間の間にある		
 		case COMPARED_START_BETWEEN_BASE:
+			//thisが比較(range)のstartを含んでいる
 			return CONNOTATE_BEGINTIME;
 			
+		//比較期間の終了が基準期間の間にある
 		case COMPARED_END_BETWEEN_BASE:
+			//thisが比較(range)のendを含んでいる
 			return CONNOTATE_ENDTIME;
-
+			
+			//基準期間が完全に内包される
 		case BASE_CONTAINS_COMPLETE:
+			//基準時間が内包され、開始が同じ
 		case BASE_CONTAINS_SAME_START:
+			//基準時間が内包され、終了が同じ
 		case BASE_CONTAINS_SAME_END:
+			//thisがrangeを含んでいる
 			return CONTAINS;
 			
 		case BASE_CONTAINED_COMPLETE:
 		case BASE_CONTAINED_SAME_START:
 		case BASE_CONTAINED_SAME_END:
+			//thisがrangeの内側にある
 			return CONTAINED;
 			
 		case CONTINUOUS_AFTER_BASE:

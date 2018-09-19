@@ -46,12 +46,12 @@
 }
 
 .btnconfig.caret-right:after {
-	color: darkcyan;
-	margin-left: 4px;
+	color: #2ECC71;
+	margin-left: 3px;
 }
 
 .master_setting_caret.caret-right:after {
-	color: #2ECC71;
+	color: #92D050;
 	border-width: 51px 26px;
 	margin-top: -160px;
 }

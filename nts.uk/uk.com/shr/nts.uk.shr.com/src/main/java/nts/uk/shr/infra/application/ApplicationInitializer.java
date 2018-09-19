@@ -21,6 +21,7 @@ public class ApplicationInitializer {
 		
 		ServerError.EXPOSES_DEFAILS_OF_ERROR = true;
 		RequestPerformanceDiagnose.THRESHOLD_MILLISEC_TO_WARN = 500;
+		RepositoryLogger.ENABLE_LOGGING = false;
 		RepositoryLogger.THRESHOLD_MILLISECS_TO_WARN = 300;
 		
 		CDI.current().select(InitializeWhenDeploy.class).forEach(obj -> obj.initialize());

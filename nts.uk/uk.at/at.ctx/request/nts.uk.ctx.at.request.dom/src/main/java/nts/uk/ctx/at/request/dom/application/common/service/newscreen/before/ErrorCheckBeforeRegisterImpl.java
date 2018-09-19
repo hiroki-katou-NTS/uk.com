@@ -269,7 +269,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
 		// ドメインモデル「残業休出申請共通設定」を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
 		if (!overtimeSetingOtp.isPresent()) {
 			return Optional.empty();
 		}
@@ -299,7 +299,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 			String enteredPersonId, String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs) {
 		// ドメインモデル「残業休出申請共通設定」を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeSetingOtp = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
 		if (!overtimeSetingOtp.isPresent()) {
 			return Optional.empty();
 		}

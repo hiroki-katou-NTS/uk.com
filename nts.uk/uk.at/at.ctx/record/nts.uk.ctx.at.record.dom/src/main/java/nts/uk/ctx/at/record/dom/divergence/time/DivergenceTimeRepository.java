@@ -62,5 +62,14 @@ public interface DivergenceTimeRepository {
 	 * @return div time list
 	 */
 	List<DivergenceTime> getDivTimeListByUseSet(String companyId);
+	
+	/**
+	 * Gets the div time list by no.
+	 *
+	 * @param company the company
+	 * @param divTimeNo the div time no
+	 * @return the div time list by no
+	 */
+	List<DivergenceTime> getUsedDivTimeListByNoV2(String companyId, List<Integer> divTimeNo);
 
 }

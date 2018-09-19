@@ -27,7 +27,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             self.columns_A2 = ko.observableArray([
                 { headerText: '', key: 'serialNumber', width: 40 },
                 { headerText: nts.uk.resource.getText('KTG028_6'), key: 'topPageCode', width: 80 },
-                { headerText: nts.uk.resource.getText('KTG028_7'), key: 'topPageName', width: 150 }
+                { headerText: nts.uk.resource.getText('KTG028_7'), key: 'topPageName', width: 150, formatter: _.escape }
             ]);
             self.items_A7 = ko.observableArray([]);
             self.currentCodeList_A7 = ko.observableArray([]);

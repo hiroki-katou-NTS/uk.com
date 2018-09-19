@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -25,7 +26,7 @@ public class KmldtPremiumAttendance extends UkJpaEntity{
 	@EmbeddedId
 	public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
 		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),

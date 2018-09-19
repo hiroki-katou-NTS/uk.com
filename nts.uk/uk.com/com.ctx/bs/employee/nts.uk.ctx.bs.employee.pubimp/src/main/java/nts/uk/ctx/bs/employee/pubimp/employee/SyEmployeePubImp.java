@@ -124,7 +124,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 			EmployeeExport result = new EmployeeExport();
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -211,8 +211,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		EmployeeDataMngInfo emp = empOpt.get();
 
 		// Lay thông tin lịch sử vào ra công ty của nhân viên
-		String cid = AppContexts.user().companyId();
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(emp.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
 
@@ -291,7 +290,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				result.setBirthDay(person.getBirthDate());
 			}
 
-			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, employee.getEmployeeId());
+			AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(employee.getEmployeeId());
 
 			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
@@ -623,5 +622,68 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return null;
 			
 		}).filter(f -> f != null).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getListEmployeeId(List<String> wkpIds, DatePeriod dateperiod) {
+		// lấy List sid từ dateperiod and list workplaceId
+		List<String> lstSidFromWorkPlace = affWkpItemRepo.getSidByListWkpIdAndDatePeriod(dateperiod, wkpIds);
+		List<String> lstSidResult = affComHistRepo.getLstSidByLstSidAndPeriod(lstSidFromWorkPlace, dateperiod);
+		return lstSidResult;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#findBySIdAndCompanyId(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public EmployeeBasicInfoExport findBySIdAndCompanyId(String sId, String companyId) {
+
+		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
+		// Get Employee
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
+		if (!empOpt.isPresent()) {
+			return null;
+		}
+		
+		EmployeeDataMngInfo emp = empOpt.get();
+
+		// Lay thông tin lịch sử vào ra công ty của nhân viên
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(companyId, emp.getEmployeeId());
+
+		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
+
+		Optional.ofNullable(affComHistByEmp).ifPresent(f -> {
+			if (f.items() != null) {
+
+				List<AffCompanyHistItem> filter = f.getLstAffCompanyHistoryItem();
+				// lấy lịch sử ra vào cty gần nhất (order by RetiredDate DESC) 
+				filter.sort((x, y) -> y.getDatePeriod().end().compareTo(x.getDatePeriod().end()));
+
+				// set entryDate
+				result.setEntryDate(filter.get(0).getDatePeriod().start());
+
+				// set retireDate
+				result.setRetiredDate(filter.get(0).getDatePeriod().end());
+			}
+		});
+
+		// Lay thông tin Person
+		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
+		if (!personOpt.isPresent()) {
+			return null;
+		}
+		// Get Person
+		Person person = personOpt.get();
+
+		result.setPId(person.getPersonId());
+		result.setEmployeeId(emp.getEmployeeId());
+		result.setPName(person.getPersonNameGroup().getBusinessName().toString());
+		result.setGender(person.getGender().value);
+		result.setPMailAddr(new MailAddress(""));
+		result.setEmployeeCode(emp.getEmployeeCode().v());
+		result.setCompanyMailAddr(new MailAddress(""));
+		result.setBirthDay(person.getBirthDate());
+
+		return result;
 	}
 }

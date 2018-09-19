@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -57,7 +60,13 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	
 	private static final String GET_ALL_COMPANY_BY_CONTRACT_CD = SELECT_NO_WHERE + " WHERE c.contractCd = :contractCd ORDER BY c.companyCode ASC ";
 	
-	private static final String GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR = SELECT_NO_WHERE
+	private static final String GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR = 
+			SELECT_NO_WHERE
+			+ " WHERE c.contractCd = :contractCd "
+			+ " AND c.isAbolition = :isAbolition "
+			+ " ORDER BY c.companyCode ASC ";
+	private static final String GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOATR= 
+			"SELECT c.bcmmtCompanyInforPK.companyId FROM BcmmtCompanyInfor c "
 			+ " WHERE c.contractCd = :contractCd "
 			+ " AND c.isAbolition = :isAbolition "
 			+ " ORDER BY c.companyCode ASC ";
@@ -347,4 +356,13 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		}
 	}
 
+	@Override
+	public List<String> getAllCompanyByContractCdAndAboAtr(String contractCd, int isAbolition) {
+		List<String> lstCompanyId = this.queryProxy().query(GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOATR, String.class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("isAbolition", isAbolition)
+				.getList();
+	 return lstCompanyId;
+	}
 }
+

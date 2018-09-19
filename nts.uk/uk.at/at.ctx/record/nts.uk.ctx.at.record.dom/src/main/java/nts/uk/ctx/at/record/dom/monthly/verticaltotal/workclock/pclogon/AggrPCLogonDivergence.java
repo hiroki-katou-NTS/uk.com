@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**

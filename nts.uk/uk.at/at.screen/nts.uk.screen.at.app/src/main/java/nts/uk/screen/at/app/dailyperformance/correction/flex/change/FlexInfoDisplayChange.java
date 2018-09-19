@@ -95,7 +95,7 @@ public class FlexInfoDisplayChange {
 		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex);
 		dataMonth.createRedConditionMessage(condition);
 		dataMonth.createNotForward("");
-		if (!condition.equals("0:00")) {
+		if (condition.equals("0:00")) {
 			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
 		}
 

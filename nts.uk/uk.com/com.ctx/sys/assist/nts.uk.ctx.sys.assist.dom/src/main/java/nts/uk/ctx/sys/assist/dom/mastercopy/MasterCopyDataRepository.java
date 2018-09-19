@@ -8,18 +8,36 @@ import java.util.List;
 
 public interface MasterCopyDataRepository {
 
+	
 	/**
-	 * Find by master copy id.
+	 * Find by category no.
 	 *
-	 * @return the optional
+	 * @param categoryNo the category no
+	 * @return the master copy data
 	 */
-	List<MasterCopyData> findByMasterCopyId(String masterCopyId);
+	MasterCopyData findByCategoryNo(Integer categoryNo);
 
 	/**
 	 * Find by master copy ids.
 	 *
-	 * @param masterCopyIds the master copy ids
+	 * @param listCategoryNo the master copy ids
 	 * @return the list
 	 */
-	List<MasterCopyData> findByMasterCopyIds(List<String> masterCopyIds);
+	List<MasterCopyData> findByListCategoryNo(List<Integer> listCategoryNo);
+	
+	/**
+	 * Do copy.
+	 * @param tableName the table name
+	 * @param keys
+     * @param copyMethod the copy method
+     * @param companyId the company id
+     */
+	void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId);
+
+	/**
+	 *
+	 * @param categoryNo
+	 * @return
+	 */
+	MasterCopyCategory findCatByCategoryNo(Integer categoryNo);
 }

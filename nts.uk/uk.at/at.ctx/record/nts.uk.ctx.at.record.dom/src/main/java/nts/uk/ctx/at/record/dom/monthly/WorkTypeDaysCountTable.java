@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;

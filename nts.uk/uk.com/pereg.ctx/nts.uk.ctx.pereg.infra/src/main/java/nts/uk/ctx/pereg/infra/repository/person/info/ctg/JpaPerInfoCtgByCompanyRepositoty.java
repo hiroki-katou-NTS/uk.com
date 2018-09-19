@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
@@ -183,20 +185,24 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		HashMap<String, Integer> ctgs = new HashMap<>();
 		HashMap<String, Integer> items = new HashMap<>();
 		String companyId = AppContexts.user().companyId();
+		
+		if (categoryIds == null || categoryIds.isEmpty()) {
+			categoryIds = Arrays.asList(IdentifierUtil.randomUniqueId());
+		}
 
-		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, PpemtPerInfoCtgOrder.class)
-			.setParameter("cid", companyId)
-			.setParameter("ctgIds", categoryIds)
-			.getList().stream().forEach(ctg -> {
-				ctgs.putIfAbsent(ctg.ppemtPerInfoCtgPK.perInfoCtgId, ctg.disporder);
-			});
+		if (itemDefinitionIds == null || itemDefinitionIds.isEmpty()) {
+			itemDefinitionIds = Arrays.asList(IdentifierUtil.randomUniqueId());
+		}
 
-		this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, PpemtPerInfoItemOrder.class)
-			.setParameter("ctgIds", categoryIds)
-			.setParameter("itIds", itemDefinitionIds)
-			.getList().forEach(it -> {
-				items.putIfAbsent(it.ppemtPerInfoItemPK.perInfoItemDefId, it.disporder);
-			});
+		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, Object[].class).setParameter("cid", companyId)
+				.setParameter("ctgIds", categoryIds).getList().stream().forEach(ctg -> {
+					ctgs.putIfAbsent(ctg[0].toString(), ctg[1] == null ? -1 : new Integer(ctg[1].toString()));
+				});
+
+		this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", categoryIds)
+				.setParameter("itIds", itemDefinitionIds).getList().forEach(it -> {
+					items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
+				});
 
 		return new HashMap<Integer, HashMap<String, Integer>>() {
 			private static final long serialVersionUID = 1L;

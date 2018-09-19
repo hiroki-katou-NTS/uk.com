@@ -6,8 +6,8 @@ module nts.uk.at.view.kmk008.c {
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
-                nameErrorWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_43"));
-                nameAlarmWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_42"));
+                nameErrorWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_42"));
+                nameAlarmWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_43"));
                 nameLimitWeek: KnockoutObservable < string > = ko.observable(text("KMK008_22") + text("KMK008_44"));
                 nameErrorTwoWeeks: KnockoutObservable < string > = ko.observable(text("KMK008_23") + text("KMK008_42"));
                 nameAlarmTwoWeeks: KnockoutObservable < string > = ko.observable(text("KMK008_23") + text("KMK008_43"));
@@ -39,6 +39,7 @@ module nts.uk.at.view.kmk008.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                
                 nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
@@ -71,6 +72,7 @@ module nts.uk.at.view.kmk008.c {
                             let periodName = nts.uk.resource.getText(errorCode[1]);
                             let param1 = "期間: " + nts.uk.resource.getText(errorCode[1]) + "<br>" + nts.uk.resource.getText(errorCode[2]);
                             nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                            nts.uk.ui.block.clear();
                             return;
                         }
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(data) {
@@ -86,6 +88,7 @@ module nts.uk.at.view.kmk008.c {
                         let periodName = nts.uk.resource.getText(errorCode[1]);
                         let param1 = "期間: " + nts.uk.resource.getText(errorCode[1]) + "<br>" + nts.uk.resource.getText(errorCode[2]);
                         nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
+                        nts.uk.ui.block.clear();
                         return;
                     }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(data) {
