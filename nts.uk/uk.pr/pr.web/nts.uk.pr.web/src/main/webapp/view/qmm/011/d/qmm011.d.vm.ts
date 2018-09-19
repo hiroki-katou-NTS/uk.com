@@ -5,16 +5,17 @@ module nts.uk.com.view.qmm011.d.viewmodel {
     export class ScreenModel {
 
         listNameOfEachBusiness: KnockoutObservableArray<NameOfEachBusiness> = ko.observableArray([]);
-        businessType1: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(0,0,''));
-        businessType2: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(1,0,''));
-        businessType3: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(2,0,''));
-        businessType4: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(3,0,''));
-        businessType5: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(4,0,''));
-        businessType6: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(5,0,''));
-        businessType7: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(6,0,''));
-        businessType8: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(7,0,''));
-        businessType9: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(8,0,''));
-        businessType10: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(9,0,''));
+        templistNameOfEachBusiness: KnockoutObservableArray<NameOfEachBusiness> = ko.observableArray([]);
+        businessType1: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(0,0,'',false));
+        businessType2: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(1,0,'',false));
+        businessType3: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(2,0,'',false));
+        businessType4: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(3,0,'',false));
+        businessType5: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(4,0,'',false));
+        businessType6: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(5,0,'',false));
+        businessType7: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(6,0,'',false));
+        businessType8: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(7,0,'',false));
+        businessType9: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(8,0,'',false));
+        businessType10: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(9,0,'',false));
 
         constructor() {
             var self = this;
@@ -26,8 +27,10 @@ module nts.uk.com.view.qmm011.d.viewmodel {
             service.getOccAccInsurBus().done( (listNameOfEachBusiness: Array<INameOfEachBusiness>) => {
                 if (listNameOfEachBusiness && listNameOfEachBusiness.length > 0) {
                     self.listNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
+                    self.templistNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
                     if(self.listNameOfEachBusiness().length > 0){
                         _.each(self.listNameOfEachBusiness(),(value) => {
+                            value.flagReg = true;
                             if(value.occAccInsurBusNo === 0){
                                 self.businessType1(value);
                             }else if(value.occAccInsurBusNo === 1){
@@ -60,13 +63,18 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                 $('#D2_3').focus();
                 block.clear();
             });
-
         }
 
         update(){
             let self = this;
             nts.uk.ui.errors.clearAll();
             $("input").trigger("validate");
+            _.each($("input"),(o)=>{
+                let id = o.id ? '#' + o.id : '';
+                if(o.disabled === true){
+                    nts.uk.ui.errors.removeByElement($(id));
+                }
+            });
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -120,22 +128,44 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                     dialog.alertError(res);
             });
         }
+        hasChecked(toUse,e){
+            if(!toUse()){
+                $(e).ntsError('clear');
+                nts.uk.ui.errors.removeByElement($(e));
+            }
+            return toUse;
+        }
 
         cancel(){
             close();
         }
 
         convertToCommand(dto :Array<NameOfEachBusiness>){
+            let self = this;
             let eachBusiness :Array <EachBusiness> = [];
             _.each(dto, function(item: NameOfEachBusiness) {
-                if(item != undefined){
+                if(!item.flagReg && item.toUse() && item.name() != ''){
+                    let temp = new EachBusiness();
+                    temp.occAccInsurBusNo = item.occAccInsurBusNo;
+                    temp.toUse = item.toUse() === true ? 1 : 0;
+                    temp.name = item.name();
+                    eachBusiness.push(temp);
+                }else if(item.flagReg && !item.toUse()){
+                    let temp = new EachBusiness();
+                    let nameOfEachBusiness = _.find(self.templistNameOfEachBusiness(),function(o){
+                        return item.occAccInsurBusNo == o.occAccInsurBusNo;
+                    });
+                    temp.occAccInsurBusNo = nameOfEachBusiness.occAccInsurBusNo;
+                    temp.toUse = 0;
+                    temp.name = nameOfEachBusiness.name();
+                    eachBusiness.push(temp);
+                }else if(item.flagReg){
                     let temp = new EachBusiness();
                     temp.occAccInsurBusNo = item.occAccInsurBusNo;
                     temp.toUse = item.toUse() === true ? 1 : 0;
                     temp.name = item.name();
                     eachBusiness.push(temp);
                 }
-
             });
             return eachBusiness;
         }
@@ -157,10 +187,12 @@ module nts.uk.com.view.qmm011.d.viewmodel {
         occAccInsurBusNo: number;
         toUse: KnockoutObservable<boolean>;
         name: KnockoutObservable<string>;
-        constructor(occAccInsurBusNo: number, toUse: number, name: string) {
+        flagReg: boolean;
+        constructor(occAccInsurBusNo: number, toUse: number, name: string,flagReg: boolean) {
             this.occAccInsurBusNo = occAccInsurBusNo;
             this.toUse = toUse > 0 ? ko.observable(true) : ko.observable(false);
             this.name = ko.observable(name);
+            this.flagReg = flagReg;
         }
 
         static fromData(data){
@@ -170,9 +202,9 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                 dto.occAccInsurBusNo = item.occAccInsurBusNo;
                 dto.toUse = item.toUse > 0 ? ko.observable(true) : ko.observable(false);
                 dto.name = ko.observable(item.name);
+                dto.flagReg = item.flagReg;
                 listBus.push(dto);
             });
-
             return listBus;
         }
     }

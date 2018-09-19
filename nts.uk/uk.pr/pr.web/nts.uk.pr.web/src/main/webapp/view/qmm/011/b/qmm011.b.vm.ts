@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
     import model = qmm011.share.model;
     import error = nts.uk.ui.errors;
     import modal = nts.uk.ui.windows.sub.modal;
+    import service = nts.uk.pr.view.qmm011.b.service;
     export class ScreenModel {
 
         listPerFracClass: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getListPerFracClass());

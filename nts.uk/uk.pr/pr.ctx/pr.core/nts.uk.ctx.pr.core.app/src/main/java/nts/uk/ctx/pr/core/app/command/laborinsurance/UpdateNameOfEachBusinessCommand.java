@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.core.app.command.laborinsurance;
 
+import lombok.Value;
 import java.util.List;
 
-import lombok.Value;
 
 @Value
 public class UpdateNameOfEachBusinessCommand {
