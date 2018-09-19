@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SalaryHealthDto {
+public class CountCommand {
 	
 	List<CusDataDto> cusDataDtos;
 	SalaryHealthInsurancePremiumRateDto premiumRate;

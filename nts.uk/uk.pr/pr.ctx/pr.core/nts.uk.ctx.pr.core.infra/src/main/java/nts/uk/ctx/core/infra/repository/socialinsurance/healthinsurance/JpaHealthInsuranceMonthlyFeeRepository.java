@@ -92,4 +92,9 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
         this.commandProxy().removeAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
     }
+
+	@Override
+	public void updateGraFee(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+	}
 }

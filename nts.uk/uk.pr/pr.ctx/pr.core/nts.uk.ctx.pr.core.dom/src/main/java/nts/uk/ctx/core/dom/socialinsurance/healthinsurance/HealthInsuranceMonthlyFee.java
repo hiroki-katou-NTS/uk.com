@@ -191,4 +191,7 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
                 return new BigDecimal(0);
         }
     }
+    public void updateGradeFee (List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee){
+    	this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
+    }
 }
