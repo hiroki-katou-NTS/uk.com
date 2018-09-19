@@ -66,8 +66,8 @@
 								targetKey: 'code', 
 								mode:'igTreeDrag', 
 								comId:'I1_5', 
-								items: welfareInsuranceRateTreeList, 
-								selected: selectedWelfareInsurance, 
+								items: contributionRateTreeList, 
+								selected: selectedHealthInsurance, 
 								selectedKey: 'code', 
 								childField: 'child', 
 								fields: ['code', 'displayText']}" />
@@ -82,8 +82,8 @@
 									data-bind="ntsTreeDragAndDrop:{
 									width: 290,
 									rows: 15,
-									dataSource: welfareInsuranceRateTreeList,
-									value: selectedWelfareInsurance,
+									dataSource: contributionRateTreeList,
+									value: selectedHealthInsurance, 
 									primaryKey: 'code',
 									childDataKey: 'child',
 									primaryText: 'displayText',
@@ -95,20 +95,20 @@
 							</div>
 						</div>
 						<!-- Right Panel-->
-						<div class="fixed-flex-layout-right right-panel" data-bind="with: $vm.employeeMonthlyInsuFee">
-							<div>
+						<div class="fixed-flex-layout-right right-panel" data-bind="with: healthInsuranceMonthlyFee">
+							<div data-bind="with: $vm.selectedHistoryPeriod">
 								<!-- I2_1 期間 -->
 								<div data-bind="ntsFormLabel: {}" class="inline-element">#{i18n.getText('QMM008_12')}</div>
 								<!-- I2_2 開始年月 -->
-								<div id="I2_2" class="inline-element">2016/06</div>
+								<div id="I2_2" class="inline-element" data-bind="text: displayStart"></div>
 								<!-- I2_3 開始年月和暦 -->
 								<div id="I2_3" class="inline-element">#{i18n.getText('QMM008_12')}</div>
 								<!-- I2_4 ~ -->
 								<div class="inline-element">#{i18n.getText('QMM008_11')}</div>
 								<!-- I2_5 終了年月 -->
-								<div id="I2_5" class="inline-element">9999/12</div>
+								<div id="I2_5" class="inline-element" data-bind="text: displayEnd"></div>
 							</div>
-							<div style="margin-top: 15px; display: inline-block">
+							<div style="margin-top: 15px; display: inline-block" >
 								<!-- I2_6 自動計算 -->
 								<div data-bind="ntsFormLabel: {}" class="inline-element">#{i18n.getText('QMM008_13')}</div>
 								<!-- I2_7 自動計算区分 -->
@@ -147,7 +147,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_63]',
- 													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().individualBurdenRatio, 
+ 													value: healthInsuranceRate().individualBurdenRatio().healthInsuranceRate, 
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: true}" />

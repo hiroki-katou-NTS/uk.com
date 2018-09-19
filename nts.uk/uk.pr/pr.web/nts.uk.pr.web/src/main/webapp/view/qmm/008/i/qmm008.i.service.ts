@@ -2,19 +2,19 @@ module nts.uk.pr.view.qmm008.i.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        findAllOffice: "ctx/core/socialinsurance/welfarepensioninsurance/getAll",
-        findEmployeePensionByHistoryId: "ctx/core/socialinsurance/welfarepensioninsurance/getByHistoryId/{0}",
+        findAllOfficeAndHistory: "ctx/core/socialinsurance/contributionrate/getAll",
+        findContributionRateByHistoryId: "ctx/core/socialinsurance/contributionrate/getByHistoryId/{0}",
         addEmployeePension: "ctx/core/socialinsurance/welfarepensioninsurance/addEmployeePension"
     }
     /**
      * get all
     */
-    export function findAllOffice(): JQueryPromise<any> {
-        return ajax(paths.findAllOffice);
+    export function findAllOfficeAndHistory(): JQueryPromise<any> {
+        return ajax(paths.findAllOfficeAndHistory);
     }
     
-    export function findEmployeePensionByHistoryId (historyId: string): JQueryPromise<any> {
-        return ajax(format(paths.findEmployeePensionByHistoryId, historyId));
+    export function findContributionRateByHistoryId (historyId: string): JQueryPromise<any> {
+        return ajax(format(paths.findContributionRateByHistoryId, historyId));
     }
     
     export function addEmployeePension(command): JQueryPromise<any> {
