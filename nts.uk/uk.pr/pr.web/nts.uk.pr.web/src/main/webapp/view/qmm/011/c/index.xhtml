@@ -3,19 +3,19 @@
    <div>
         <div
                 class="sidebar-content-header flex valign-center header-content">
-            <span class="title">#{i18n.getText('qmm011_5')}</span>
+            <span class="title">#{i18n.getText('QMM011_5')}</span>
 
             <div style="margin-left: 100px">
                 <div>
                     <!-- A1_1-->
                     <button class="proceed" id="A1_1" tabindex="1"
-                            data-bind="click: register">#{i18n.getText('qmm011_1')}</button>
+                            data-bind="click: register,enable: !enableRegis()">#{i18n.getText('QMM011_1')}</button>
                     <!-- A1_2 -->
                     <button id="A1_2" tabindex="2"
-                            data-bind="click: openDscreen">#{i18n.getText('qmm011_2')}</button>
+                            data-bind="click: openDscreen">#{i18n.getText('QMM011_2')}</button>
                     <!-- A1_3-->
                     <button id="A1_3" tabindex="3"
-                            data-bind="">#{i18n.getText('qmm011_3')}</button>
+                            data-bind="">#{i18n.getText('QMM011_3')}</button>
                 </div>
             </div>
 
@@ -35,7 +35,8 @@
                         <table id="C1_4"
                                data-bind="ntsGridList: {
 												name: '#QMM011_8',
-												rows: 18,
+												height: 1200,
+												rows: 16,
 		                                        dataSource: listOccAccIsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
@@ -92,7 +93,7 @@
 
                             <td>
 
-                                <div style="float: left"> <input id = "C3_11"
+                                <div > <input id = "C3_11" style="float: left"
                                              data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																constraint: 'InsuranceRate',
@@ -102,7 +103,7 @@
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 
-                                    <span class= "label" id= "C3_12"></span></div>
+                                    <span style="float: right" class= "label" id= "C3_12">#{i18n.getText('QMM011_15')}</span></div>
 
                             </td>
                             <td>

@@ -13,7 +13,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         listOccAccIsHis:            KnockoutObservableArray<IOccAccIsHis> = ko.observableArray([]);
         listOccAccIsPrRate:         KnockoutObservableArray<OccAccIsPrRate> = ko.observableArray([]);
         listOccAccInsurBus:         KnockoutObservableArray<IOccAccInsurBus> = ko.observableArray([]);
-        listAccInsurPreRate:        KnockoutObservableArray<AccInsurPreRate> = ko.observableArray([10]);
+        listAccInsurPreRate:        KnockoutObservableArray<AccInsurPreRate> = ko.observableArray([]);
         selectedEmpInsHis:          KnockoutObservable<IOccAccIsHis> = ko.observable();
         hisId:                      KnockoutObservable<string> = ko.observable('');
         index:                      KnockoutObservable<number> = ko.observable(0);
@@ -26,6 +26,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         perFracClass:               KnockoutObservable<number> = ko.observable();
         empContrRatio:              KnockoutObservable<string> = ko.observable('');
         busiOwFracClass:            KnockoutObservable<string> = ko.observable('');
+        isNewMode:                  KnockoutObservable<number> = ko.observable(2);
         isNewMode:                  KnockoutObservable<boolean> = ko.observable(2);
 
         listHisTemp:Array<IOccAccIsHis> =[];
@@ -34,12 +35,12 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             let self = this;
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) =>{
-                if (data == HIS_ID_TEMP) {
+                if (self.listOccAccIsHis()[0].hisId == HIS_ID_TEMP) {
                     self.isNewMode(MODE.NEW);
                 }
-                self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
+                self.selectedEmpInsHis(self.getIndex(data));
                 self.setOccAccIsHis(self.selectedEmpInsHis());
-                if(self.selectedEmpInsHisId() == '000'){
+                if(self.selectedEmpInsHisId() == HIS_ID_TEMP){
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.listAccInsurPreRateTemp));
 
                 }
@@ -58,14 +59,14 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 if (listOccAccIsHis && listOccAccIsHis.length > 0) {
                     self.listHisTemp = listOccAccIsHis;
                     self.listOccAccIsHis(OccAccIsHis.convertToDisplayHis(listOccAccIsHis));
-                    self.index(self.getIndex(null));
+                    self.index(0);
                     if (hisId != null) {
                         self.index(self.getIndex(hisId));
                     }
                     self.selectedEmpInsHisId(self.listOccAccIsHis()[self.index()].hisId);
                 } else {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
-                    self.isNewMode(true);
+
                 }
             }).always(() => {
                 block.clear();
@@ -103,7 +104,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 console.log(self.selectedEmpInsHisId().toString());
                 if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(listAccInsurPreRate)));
-                    self.isNewMode(false);
+                    if(self.listOccAccIsHis()[0].hisId != HIS_ID_TEMP)
+                    self.isNewMode(MODE.UPDATE);
                 }
 
             });
@@ -158,7 +160,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             self.startYearMonth(param.startYearMonth);
             self.endYearMonth(param.startYearMonth);
         }
-        addOccAccIsHis(start: number, list: Array<OccAccIsHis>){
+        addOccAccIsHis(start: number, list: Array<OccAccIsHis>, typeCreate:number){
             let listOccAccIsHis: Array<OccAccIsHis> = [];
             let self = this;
             let occAccIsHis = new OccAccIsHis();
@@ -173,20 +175,36 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             _.each(list, (item) => {
                 listOccAccIsHis.push(item);
             })
-
-
             let dataInsurPreRate: Array<IAccInsurPreRate> = [];
-            _.forEach(self.listAccInsurPreRate(), function (value) {
-                let temp: IAccInsurPreRate = {
-                    hisId: occAccIsHis.hisId,
-                    occAccInsurBusNo: value.occAccInsurBusNo,
-                    name: value.name,
-                    fracClass: value.fracClass,
-                    empConRatio: 0,
-                    useArt: value.useArt
-                };
-                dataInsurPreRate.push(temp);
-            });
+            if(typeCreate ==0 ){
+
+                _.forEach(self.listAccInsurPreRate(), function (value) {
+                    let temp: IAccInsurPreRate = {
+                        hisId: occAccIsHis.hisId,
+                        occAccInsurBusNo: value.occAccInsurBusNo,
+                        name: value.name,
+                        fracClass: value.fracClass,
+                        empConRatio: 0,
+                        useArt: value.useArt
+                    };
+                    dataInsurPreRate.push(temp);
+                });
+            }
+            else{
+                _.forEach(self.listAccInsurPreRate(), function (value) {
+                    let temp: IAccInsurPreRate = {
+                        hisId: occAccIsHis.hisId,
+                        occAccInsurBusNo: value.occAccInsurBusNo,
+                        name: value.name,
+                        fracClass: value.fracClass,
+                        empConRatio: value.empConRatio().toString(),
+                        useArt: value.useArt
+                    };
+                    console.log(value.toString() + ' fuishuifhsduihfsudif');
+                    dataInsurPreRate.push(temp);
+                });
+            }
+
             /*refesh list pate */
             self.listAccInsurPreRate(AccInsurPreRate.fromApp(dataInsurPreRate));
             self.listAccInsurPreRateTemp = dataInsurPreRate;
@@ -215,14 +233,16 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 let params = getShared('QMM011_E_PARAMS_OUTPUT');
 
                     if (params != null) {
-                        self.isNewMode(true);
 
-                        self.isNewMode(MODE.NEW);
-                        //
-                        self.startYearMonth(params.startYearMonth);
-                        self.listOccAccIsHis(self.addOccAccIsHis(self.startYearMonth(), self.listOccAccIsHis()));
-                        self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
-                        self.listOccAccIsHis(_.sortBy(self.listOccAccIsHis(), 'startYearMonth').reverse());
+                            self.isNewMode(MODE.NEW);
+                            // Create new one OccAccIsPrRate
+                            self.startYearMonth(params.startYearMonth);
+                            self.listOccAccIsHis(self.addOccAccIsHis(self.startYearMonth(), self.listOccAccIsHis(),params.transferMethod));
+                            self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
+                            self.listOccAccIsHis(_.sortBy(self.listOccAccIsHis(), 'startYearMonth').reverse());
+
+
+
 
 
                     } else {
@@ -250,9 +270,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 block.clear();
                 return;
             }
+            let isNewMode = self.isNewMode() == MODE.NEW;
             let data: any = {
                 listAccInsurPreRate: self.convertToCommand(self.listAccInsurPreRate()),
-                isNewMode: self.isNewMode(),
+                isNewMode: isNewMode,
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth:  self.convertStringToYearMonth(self.endYearMonth()),
                 hisId: self.listAccInsurPreRate()[0].hisId
@@ -260,7 +281,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             }
             service.register(data).done(() => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.isNewMode(false);
+                    self.isNewMode(MODE.UPDATE);
                     self.initScreen(null);
                 });
             });
@@ -308,12 +329,17 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         openFscreen(){
             let self = this;
             let laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0
+            let canDelete: boolean = false;
+            if (self.listOccAccIsHis().length > 2 && self.hisId() == self.listOccAccIsHis()[FIRST].hisId) {
+                canDelete = true;
+            }
             setShared('QMM011_F_PARAMS_INPUT', {
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
                 insurrance: INSURRANCE.ACCIDENT_INSURRANCE_RATE,
                 hisId: self.hisId(),
-                laststartYearMonth: laststartYearMonth
+                laststartYearMonth: laststartYearMonth,
+                canDelete :canDelete
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
                 let params = getShared('QMM011_F_PARAMS_OUTPUT');
@@ -521,5 +547,5 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         UPDATE = 1,
         NO = 2
     }
-    export const HIS_ID_TEMP = "0000"
+    export const HIS_ID_TEMP = "000"
 }
