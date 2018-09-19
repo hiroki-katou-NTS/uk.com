@@ -1013,12 +1013,10 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         </div>
 
         <div style="width: 420px">
-            <div tabindex="4" style="width: 264px; display: inline-block;" data-bind="attr: {id: searchBoxId}">
+            <div tabindex="4" style="width: 327px; display: inline-block;" data-bind="attr: {id: searchBoxId}">
             </div>
             <div style="display: inline-block; margin-left: 2px;">
                 <!-- ko if: isShowSelectButton -->
-                    <button
-                        data-bind="click: selectAll, attr: {tabindex: isSetTabindex() ? tabindex : 5}">`+TreeComponentTextResource.KCP004_7+`</button>
                     <button
                         data-bind="click: selectSubParent, attr: {tabindex: isSetTabindex() ? tabindex : 6}">`+TreeComponentTextResource.KCP004_8+`</button>
                 <!-- /ko -->
