@@ -317,6 +317,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 else
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
             });
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 180) + 'px !IMPORTANT');
+            });
         }
         
         helps(event, data) {

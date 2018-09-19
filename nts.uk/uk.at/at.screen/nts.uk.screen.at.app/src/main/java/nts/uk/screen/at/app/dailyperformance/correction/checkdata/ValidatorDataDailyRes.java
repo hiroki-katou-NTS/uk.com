@@ -271,6 +271,7 @@ public class ValidatorDataDailyRes {
 		if (value.getValue() == null || value.getValue().equals("")) {
 			valueTemp = item28.get();
 			valueTemp.setLayoutCode(TextResource.localize("Msg_1270"));
+			valueTemp.setMessage("Msg_1270");
 			result.add(valueTemp);
 			return result;
 		}
@@ -292,6 +293,7 @@ public class ValidatorDataDailyRes {
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item1.get();
 				valueTemp.setLayoutCode(TextResource.localize("Msg_1328"));
+				valueTemp.setMessage("Msg_1328");
 				result.add(valueTemp);
 				return result;
 			}
@@ -314,6 +316,7 @@ public class ValidatorDataDailyRes {
 			if (item2.get().getValue() == null || item2.get().getValue().equals("")) {
 				valueTemp = item2.get();
 				valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
+				valueTemp.setMessage("Msg_1308");
 				result.add(valueTemp);
 				return result;
 			}
@@ -329,6 +332,7 @@ public class ValidatorDataDailyRes {
 		if (value.getValue() == null || value.getValue().equals("")) {
 			valueTemp = item1.get();
 			valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
+			valueTemp.setMessage("Msg_1308");
 			result.add(valueTemp);
 			return result;
 		}
