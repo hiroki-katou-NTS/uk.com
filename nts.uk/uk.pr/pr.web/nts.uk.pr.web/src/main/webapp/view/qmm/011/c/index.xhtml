@@ -24,19 +24,19 @@
             <div class = "left">
                 <div id="C1_1"
                      data-bind="ntsPanel:{width: '270px', height: '480px',direction: 'none', visible: true}">
-                    <div id="functions-area">
+                    <div id="functions-area" style="padding-right: 12px">
                         <!-- C1_2 履歴追加 -->
-                        <button id ="C1_2"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
+                        <button id ="C1_2" tabindex="1"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
                         <!-- C1_3 履歴編集 -->
-                        <button id ="C1_3"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
+                        <button id ="C1_3" tabindex="2"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
                     </div>
                     <div>
                         <!--C1_4 労災保険料率一覧 -->
-                        <table id="C1_4"
+                        <table id="C1_4" tabindex="3"
                                data-bind="ntsGridList: {
 												name: '#QMM011_8',
 												height: 1200,
-												rows: 16,
+												rows: 17,
 		                                        dataSource: listOccAccIsHis,
 		                                        primaryKey: 'hisId',
 		                                        columns: [
@@ -55,20 +55,20 @@
                <div class="top">
                    <div id="C2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
                    <!--C2_2 開始年月 -->
-                   <span class="label" data-bind="text: startYearMonth"></span>
+                   <span id="C2_2" class="label" data-bind="text: startYearMonth"></span>
                    <!--C2_3 開始年月和暦 -->
-                   <span class="label" data-bind="text: monthlyCalendar"></span>
+                   <span id="C2_3" class="label" data-bind="text: monthlyCalendar"></span>
                    <!--C2_4 ～  -->
                    <label id= "C2_4">#{i18n.getText('QMM011_9')}</label>
                    <!--C2_5 終了年月  -->
-                   <span class="label" data-bind="text: endYearMonth"></span>
+                   <span  id="C2_5" class="label" data-bind="text: endYearMonth"></span>
                </div>
 
                 <div class = "table" style="width: 100%">
                     <div id ="C2_6" class="set-row">
                         <hr />
                     </div>
-                    <table id="C3_1" style="width: 80%" >
+                    <table id="C3_1" tabindex="4" style="width: 80%" >
 
                         <colgroup>
                             <col width="20px" />
@@ -88,28 +88,30 @@
                         <tr >
 
                             <td class="bg-green" style="border: 1px solid #CCC">
-                            <span class= "label" data-bind="text: occAccInsurBusNo"></span>
+                            <span id = "C3_4" class= "label" data-bind="text: occAccInsurBusNo"></span>
 
                             </td>
-                            <td class="bg-green" style="border: 1px solid #CCC" data-bind="text: name"></td>
+                            <td id = "C3_5" class="bg-green" style="border: 1px solid #CCC" data-bind="text: name"></td>
 
                             <td>
 
-                                <div > <input id = "C3_11" style="float: left"
+                                <div >
+                                    <input class = "C3_6" id = "C3_6" tabindex="5"
                                              data-bind="ntsNumberEditor: {
 																option : {width: '40px'},
 																constraint: 'InsuranceRate',
 																value: empConRatio,
 																enable: useArt == 1,
-																required: true,
+																required: useArt == 1,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 
-                                    <span style="float: right" class= "label" id= "C3_12">#{i18n.getText('QMM011_15')}</span></div>
+                                    <span style="padding-left: 30px;" class= "label" id= "C3_7">#{i18n.getText('QMM011_15')}</span>
+                                </div>
 
                             </td>
                             <td>
-                                <div id = "C3_13"
+                                <div id = "C3_8" tabindex="6"
                                      data-bind="ntsComboBox: {
 
 																value: fracClass,

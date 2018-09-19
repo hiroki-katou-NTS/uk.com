@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import service = nts.uk.pr.view.qmm011.c.service;
     import dialog = nts.uk.ui.dialog;
+    import error = nts.uk.ui.errors;
     export class ScreenModel {
 
         listPerFracClass:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getListPerFracClass());
@@ -88,15 +89,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
             });
         }
-        getOccAccInsurBus(){
-            let self = this;
-            service.getOccAccInsurBus(self.selectedEmpInsHisId()).done((listOccAccInsurBus: Array<IOccAccInsurBus>) =>{
-                if(listOccAccInsurBus && listOccAccInsurBus.length > 0) {
-                    self.listOccAccInsurBus(OccAccInsurBus.fromApp(listOccAccInsurBus));
-                    self.isNewMode(false);
-                }
-            });
-        }
+
 
         getAccInsurPreRate() {
             let self = this;
@@ -154,12 +147,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         }
 
-        setIOccAccIsHis(param: IOccAccIsHis){
-            let self = this;
-            self.hisId(param.hisId);
-            self.startYearMonth(param.startYearMonth);
-            self.endYearMonth(param.startYearMonth);
-        }
+
         addOccAccIsHis(start: number, list: Array<OccAccIsHis>, typeCreate:number){
             let listOccAccIsHis: Array<OccAccIsHis> = [];
             let self = this;
@@ -184,7 +172,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                         occAccInsurBusNo: value.occAccInsurBusNo,
                         name: value.name,
                         fracClass: value.fracClass,
-                        empConRatio: 0,
+                        empConRatio: '',
                         useArt: value.useArt
                     };
                     dataInsurPreRate.push(temp);
@@ -225,8 +213,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         openEscreen(){
             let self = this;
+            let dataToPassScreenE : string = self.convertMonthYearToString(self.listOccAccIsHis()[0].startYearMonth);
+            self.startYearMonth(dataToPassScreenE);
             setShared('QMM011_E_PARAMS_INPUT', {
-                startYearMonth: self.startYearMonth()
+                startYearMonth:  dataToPassScreenE
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function() {
@@ -259,6 +249,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 self.setOccAccIsHis(self.selectedEmpInsHis());
                 self.getAccInsurPreRate();
                 self.getOccAccIsPrRate();
+                nts.uk.ui.errors.clearAll();
+
             });
 
         }
@@ -266,10 +258,19 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         register(){
             let self = this;
             block.invisible();
+
+
+
+            if(self.validate()){
+                block.clear();
+                return;
+            }
             if (nts.uk.ui.errors.hasError()) {
                 block.clear();
                 return;
             }
+
+
             let isNewMode = self.isNewMode() == MODE.NEW;
             let data: any = {
                 listAccInsurPreRate: self.convertToCommand(self.listAccInsurPreRate()),
@@ -312,6 +313,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             year = self.startYearMonth().slice(0, 4);
             month = self.startYearMonth().slice(5, 7);
             self.monthlyCalendar("(" + nts.uk.time.yearInJapanEmpire(year).toString() + month + "月)");
+        }
+        validate(){
+            $(".C3_6").trigger("validate");
+            return error.hasError();
         }
         enableRegis(){
             return this.isNewMode() == MODE.NO;
@@ -518,7 +523,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             _.each(app, (item) => {
                 let dto: OccAccIsPrRate = new OccAccIsPrRate();
                 dto.hisId = item.hisId;
-                dto.occAccInsurBusNo = item.occAccInsurBusNo;
+                dto.occAccInsurBusNo = item.occAccInsurBusNo+1;
                 dto.fracClass = ko.observable(item.fracClass);
                 dto.empConRatio = ko.observable(item.empConRatio);
 
