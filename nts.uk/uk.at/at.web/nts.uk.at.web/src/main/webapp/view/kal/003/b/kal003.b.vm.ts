@@ -873,22 +873,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (typeCheck == 1) { 
                 //With type 回数 - Times , Number  = 2
-                service.getAttendanceItemByAtr(DAILYATTENDANCEITEMATR.NumberOfTime,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.NumberOfTime,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (typeCheck == 0) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtr(DAILYATTENDANCEITEMATR.Time, mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.Time, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (typeCheck == 2) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtr(DAILYATTENDANCEITEMATR.AmountOfMoney, mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.AmountOfMoney, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             }else if (typeCheck == 2) {
                 //With type 時刻 - TimeWithDay
-                service.getAttendanceItemByAtr(DAILYATTENDANCEITEMATR.TimeOfDay, mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.TimeOfDay, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             }else{
@@ -906,7 +906,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) ) {
                         //時間
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             }else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
@@ -914,7 +914,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
                         //回数
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
@@ -922,7 +922,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         //金額   
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             }else{
@@ -937,21 +937,21 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (typeCheck == 6) { //combobox select
                 //With type 回数 - Times , Number  = 2
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.NUMBER,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (typeCheck == 4) {
                 //With type 時間 - Time
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.TIME,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (typeCheck == 7) {
                 //With type 金額 - AmountMoney
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.AMOUNT,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if(typeCheck == 5) { // 日数
-                service.getAttendanceItemByAtr(MONTHLYATTENDANCEITEMATR.DAYS,mode).done((lstAtdItem) => {
+                service.getAttendanceItemByAtrNew(MONTHLYATTENDANCEITEMATR.DAYS,mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             }else{

@@ -1,11 +1,12 @@
 module nts.uk.at.view.kal003.c1.service {
     var paths = {
         getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
-        getAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
         getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
         getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
-        getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-        getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
+        getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
+        
+        getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
+        getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/"
     }
 
     export function getAttendanceItemByCodes(codes, mode) {

@@ -14,7 +14,6 @@ module nts.uk.at.view.kal003.b.service {
             //update #100050 daily
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
             getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-            
             getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
             // start MinhVV Edit
             getEnumTypeCheckWorkRecordMultipleMonth: "/at/function/alarm/checkcondition/kal003b/get-enum-type-check-work-record-multiple-month",
@@ -34,7 +33,7 @@ module nts.uk.at.view.kal003.b.service {
             getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
             
             //getname monthly
-            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
 
             
             
