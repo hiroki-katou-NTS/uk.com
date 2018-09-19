@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
         startYearMonth:         KnockoutObservable<number> = ko.observable();
         endYearMonth:           KnockoutObservable<number> = ko.observable();
         startLastYearMonth:     KnockoutObservable<number> = ko.observable();
-        name:                   KnockoutObservable<string> = ko.observable('');
+        name:                   KnockoutObservable<string> = ko.observable('項目移送');
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         selectedId:             KnockoutObservable<string> = ko.observable('');
         methodEditing:          KnockoutObservable<number> = ko.observable(1);

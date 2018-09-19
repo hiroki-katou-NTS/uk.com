@@ -125,8 +125,12 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
 
         openEscreen() {
             let self = this;
+            let start;
+            if (self.listEmpInsHis().length > 0) {
+                start = self.listEmpInsHis()[FIRST].startYearMonth;
+            }
             setShared('QMM011_E_PARAMS_INPUT', {
-                startYearMonth: self.startYearMonth()
+                startYearMonth: start
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(() =>{

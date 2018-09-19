@@ -42,7 +42,7 @@
 										group: 'periodOption'}">
 						</div>
 						<br/>
-						<div id="F1_7"  class="cell"
+						<div id="F1_7"  class="cell" style="margin-left: 100px"
 							data-bind="ntsRadioButton: {
 										checked: methodEditing, 
 										option: itemList()[1], 
@@ -65,7 +65,8 @@
 												dateFormat: 'yearmonth'}">
 					</div>
 					<!-- F1_10 初めから作成する。 -->
-					<span id="F1_10" class="label">#{i18n.getText('QMM011_56')}</span>
+					<span id="" class="label">#{i18n.getText('QMM011_56')}</span>
+					<span id="F1_10" class="label" data-bind="text: endYearMonth"></span>
 				</div>
 			</div>
 			<div id= "functions-area-bottom">
