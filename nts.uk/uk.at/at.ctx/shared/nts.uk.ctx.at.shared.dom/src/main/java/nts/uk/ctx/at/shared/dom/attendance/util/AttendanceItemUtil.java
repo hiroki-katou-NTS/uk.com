@@ -390,8 +390,10 @@ public class AttendanceItemUtil implements ItemConst {
 						callSetMethod(attendanceItems, valueAnno, itemValue);
 
 					} else {
+						if(field.getType().isPrimitive() && itemValue.value() == null){
+							return;
+						}
 						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
-
 					}
 				}
 				return;
