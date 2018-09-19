@@ -488,7 +488,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalStatus.setReleaseAtr(ReleaseDivision.NOT_RELEASE);
 		}
 		// 承認状況．基準社員の承認アクション
-		if(approvalStatusOutput.getApprovableFlag()){
+		if(!approvalStatusOutput.getApprovableFlag()){
 			approvalStatus.setApprovalAction(ApprovalActionByEmp.NOT_APPROVAL);
 		} else if(approvalStatusOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED){
 			approvalStatus.setApprovalAction(ApprovalActionByEmp.APPROVAL_REQUIRE);
