@@ -380,9 +380,11 @@ module nts.uk.at.view.kwr006.c {
         class ItemModel {
             code: string;
             name: string;
-            constructor(code: string, name: string) {
+            id: string;
+            constructor(code: string, name: string, id: string) {
                 this.code = code;
                 this.name = name;
+                this.id = id;
             }
         }
 
