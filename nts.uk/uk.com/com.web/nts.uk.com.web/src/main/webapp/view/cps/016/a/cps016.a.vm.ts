@@ -32,8 +32,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
             ]);
 
-
-
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
                     
@@ -55,8 +53,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         $("#selectionItemName").focus();
                     });
                     self.checkCreate(false);
-                } else {
-                    self.registerDataSelectioItem(true);
+                } else if(!self.checkCreate()) {
+                    self.registerDataSelectioItem();
                 }
             });
         }
@@ -118,13 +116,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
         }
 
         //新規�タン
-        registerDataSelectioItem(unselected?:boolean) {
+        registerDataSelectioItem() {
             let self = this;
+            self.checkCreate(true);
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
             nts.uk.ui.errors.clearAll();
-            if (!unselected) {
-                perInfoSelectionItem.selectionItemId('');
-            }
+            perInfoSelectionItem.selectionItemId('');
             perInfoSelectionItem.selectionItemName('');
 
             perInfoSelectionItem.characterType(false);
@@ -136,8 +133,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             perInfoSelectionItem.integrationCode('');
             perInfoSelectionItem.memo('');
-
-            self.checkCreate(true);
+            
             $("#selectionItemName").focus();
         }
 
