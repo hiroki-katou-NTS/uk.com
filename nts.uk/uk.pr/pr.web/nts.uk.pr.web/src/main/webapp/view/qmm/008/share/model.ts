@@ -135,6 +135,15 @@ module nts.uk.pr.view.qmm008.share.model {
         healthInsuranceRate: KnockoutObservable<number> = ko.observable(null);
         fractionCls: KnockoutObservable<number> = ko.observable(null);
         specialInsuranceRate: KnockoutObservable<number> = ko.observable(null);
+        
+        // Control item
+        insurancePremiumFractionClassification: KnockoutObservableArray<EnumModel> = ko.observableArray([
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.TRUNCATION, '切り捨て'),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_UP, '切り上げ'),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND4_UP5, '四捨五入'),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND5_UP6, '五捨六入'),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_LESS_OR_EQUAL_5, '五捨五超入')
+        ]);
 
         constructor(params: IHealthContributionRate) {
             this.longCareInsuranceRate(params ? params.longCareInsuranceRate : null);
@@ -171,15 +180,16 @@ module nts.uk.pr.view.qmm008.share.model {
     export interface IBonusHealthInsuranceRate {
         historyId: string;
         employeeShareAmountMethod: number;
-        individualBurdenRatio: IHealthContributionRate;
-        employeeBurdenRatio: IHealthContributionRate;
+        individualBurdenRatio: HealthContributionRate;
+        employeeBurdenRatio: HealthContributionRate;
     }
 
+    // 賞与健康保険料率
     export class BonusHealthInsuranceRate {
         historyId: KnockoutObservable<string> = ko.observable(null);
         employeeShareAmountMethod: KnockoutObservable<number> = ko.observable(null);
-        individualBurdenRatio: KnockoutObservable<IHealthContributionRate> = ko.observable(null);
-        employeeBurdenRatio: KnockoutObservable<IHealthContributionRate> = ko.observable(null);
+        individualBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
+        employeeBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
         
          // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([

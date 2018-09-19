@@ -63,7 +63,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
                         x.employeeBasicInsuranceFee,
                         x.insuredHealthInsuranceFee,
                         x.insuredNursingCareInsuranceFee,
-                        x.insuredBasicInsuranceFee,
+                        x.insuredSpecificInsuranceFee,
                         x.insuredBasicInsuranceFee
                 )).collect(Collectors.toList())
         );
@@ -75,19 +75,21 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     }
 
     @Override
-    public void add(HealthInsuranceMonthlyFee domain) {
-        this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-        this.commandProxy().insert(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-    }
+	public void add(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+		this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+	}
 
-    @Override
-    public void update(HealthInsuranceMonthlyFee domain) {
-        this.commandProxy().update(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-
-    }
+	@Override
+	public void update(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
+		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+		
+	}
 
     @Override
     public void delete(HealthInsuranceMonthlyFee domain) {
         this.commandProxy().remove(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+        this.commandProxy().removeAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
     }
 }

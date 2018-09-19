@@ -19,18 +19,24 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
                 let selectedOffice = params.selectedOffice, displayLastestHistory = "";
                 let history = params.history;
                 if (history && history.length > 0){
-                    let lastestHistory = history[history.length-1].startMonth + "";
-                    displayLastestHistory = lastestHistory.substring(0, 4) + "/" + lastestHistory.substring(4, 6)
-                    self.lastestHistory = history[history.length-1].startMonth;
+                    let lastestHistory = history[history.length-1].startMonth;
+                    displayLastestHistory = String(lastestHistory).substring(0, 4) + "/" + String(lastestHistory).substring(4, 6)
+                    self.lastestHistory = lastestHistory;
                 }
-                self.socialInsuranceCode(selectedOffice.socialInsuranceOfficeCode);
-                self.socialInsuranceName(selectedOffice.socialInsuranceOfficeName);
-                self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY, getText('QMM008_200') + displayLastestHistory));
+                self.socialInsuranceCode(selectedOffice.socialInsuranceCode);
+                self.socialInsuranceName(selectedOffice.socialInsuranceName);
+                let lastestHistoryResoure = getText('QMM008_200');0
+                self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY,  lastestHistoryResoure.replace('{0}', displayLastestHistory)));
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
             }
         }
         addNewHistory (){ 
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             if (self.startMonth() <= self.lastestHistory.toString()){
                 dialog.alertError({ messageId: "Msg_79" });
                 return;

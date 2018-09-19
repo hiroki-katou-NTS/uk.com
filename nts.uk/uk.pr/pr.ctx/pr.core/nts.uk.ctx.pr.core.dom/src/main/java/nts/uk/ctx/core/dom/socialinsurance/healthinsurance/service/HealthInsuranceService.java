@@ -6,14 +6,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceFeeRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
-import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceRateHistory;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
@@ -28,12 +29,16 @@ public class HealthInsuranceService {
 
 	@Inject
 	private HealthInsuranceMonthlyFeeRepository healthInsuranceMonthlyFeeRepository;
+	
+	@Inject
+    private HealthInsuranceStandardMonthlyRepository healthInsuranceStandardMonthlyRepository;
 
 	public void registerHealthInsurance(String officeCode, BonusHealthInsuranceRate bonusHealthInsuranceRate,
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {
 		HealthInsuranceFeeRateHistory welfarePensionHistory = null;
 		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
 				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
+		calculationGradeFee(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, yearMonthItem);
 		if (!opt_healthInsurance.isPresent()) {
 			welfarePensionHistory = new HealthInsuranceFeeRateHistory(AppContexts.user().companyId(), officeCode,
 					Arrays.asList(yearMonthItem));
@@ -56,6 +61,9 @@ public class HealthInsuranceService {
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee) {
 		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate);
 		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee);
+		if (healthInsuranceMonthlyFee.getAutoCalculationCls() == AutoCalculationExecutionCls.AUTO){
+			
+		}
 	}
 
 	public void updateHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
@@ -63,5 +71,11 @@ public class HealthInsuranceService {
 		bonusHealthInsuranceRateRepository.update(bonusHealthInsuranceRate);
 		healthInsuranceMonthlyFeeRepository.update(healthInsuranceMonthlyFee);
 	}
-
+	
+	public void calculationGradeFee (BonusHealthInsuranceRate bonusHealthInsuranceRate, HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {
+		if (AutoCalculationExecutionCls.AUTO.equals(healthInsuranceMonthlyFee.getAutoCalculationCls())) {
+			Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional = this.healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonth(yearMonthItem.start().v());
+			healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuranceStandardMonthlyOptional, yearMonthItem.start().v(), bonusHealthInsuranceRate);
+		}
+	}
 }

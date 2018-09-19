@@ -190,6 +190,11 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
 
         register() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             block.invisible();
             // Register data
             let command = {
@@ -219,19 +224,30 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         }
 
         printPDF() {
-            console.log('printPDF');
+            // TODO
+            console.log('TODO');
         }
 
         registerBusinessEstablishment() {
-            console.log('registerBusinessEstablishment');
+            let self = this;
+            modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
+                if(getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
+            });
         }
 
         standardRemunerationMonthlyAmount() {
-            console.log('standardRemunerationMonthlyAmount');
+            let self = this;
+            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
+            let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
+            setShared("QMM008_F_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
+            modal("/view/qmm/008/f/index.xhtml").onClosed(() => {
+                if(getShared("QMM008_F_RES_PARAMS")) self.showAllOfficeAndHistory();
+            });
         }
 
         masterCorrectionLog() {
-            console.log('masterCorrectionLog');
+            // TODO
+            console.log('TODO');
         }
 
         createNewHistory() {

@@ -55,7 +55,11 @@ public class WelfareInsuranceService {
 			welfarePensionInsuranceRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		} else{
 			welfarePensionHistory = new WelfarePensionInsuranceRateHistory(AppContexts.user().companyId(), officeCode, Arrays.asList(yearMonthItem));
-		}
-		welfarePensionInsuranceRateHistoryRepository.add(welfarePensionHistory);
+			welfarePensionInsuranceRateHistoryRepository.add(welfarePensionHistory);
+			bonusEmployeePensionInsuranceRateRepository.add(bonusEmployeePension);
+			employeesPensionMonthlyInsuranceFeeRepository.add(employeePensonMonthly);
+			welfarePensionInsuranceClassificationRepository.add(welfarePensionClassification);
+		}	
+		
 	}
 }

@@ -29,6 +29,17 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             $("#B4").ntsFixedTable({});
             self.watchDataChanged();
             self.initBlankData();
+
+            self.bonusHealthInsuranceRate().individualBurdenRatio().healthInsuranceRate.subscribe(item => {
+                console.log(item);
+                console.log(ko.toJS(self.bonusHealthInsuranceRate));
+            });
+
+
+            self.healthInsuranceMonthlyFee().healthInsuranceRate().individualBurdenRatio().healthInsuranceRate.subscribe(item => {
+                console.log(item);
+                console.log(ko.toJS(self.healthInsuranceMonthlyFee));
+            });
         }
 
         initBlankData() {
@@ -39,6 +50,11 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
 
         register() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             block.invisible();
             // Register data
             let command = {
@@ -65,16 +81,30 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             });
         }
         printPDF() {
-            console.log('printPDF');
+            // TODO
+            console.log('TODO');
         }
+
         registerBusinessEstablishment() {
-            console.log('registerBusinessEstablishment');
+            let self = this;
+            modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
+                if(getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
+            });
         }
+
         standardRemunerationMonthlyAmount() {
-            console.log('standardRemunerationMonthlyAmount');
+            let self = this;
+            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
+            let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
+            setShared("QMM008_E_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
+            modal("/view/qmm/008/e/index.xhtml").onClosed(() => {
+                if(getShared("QMM008_E_RES_PARAMS")) self.showAllOfficeAndHistory();
+            });
         }
+
         masterCorrectionLog() {
-            console.log('masterCorrectionLog');
+            // TODO
+            console.log('TODO');
         }
         startPage(): JQueryPromise<any> {
             let self = this;
@@ -101,7 +131,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                         let firstOffice = data[0].healthInsuranceFeeRateHistory
                         if (firstOffice.history.length > 0) self.selectedHealthInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
                         else self.selectedHealthInsurance(firstOffice.socialInsuranceCode);
-                    } else  self.changeBySelectedValue();
+                    } else self.changeBySelectedValue();
                 }
                 block.clear();
                 dfd.resolve();
@@ -121,7 +151,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     if (selectedValue.length >= 36) {
                         self.isSelectedHistory(true);
                     } else {
-                        self.isSelectedHistory(true);
+                        self.isSelectedHistory(false);
                         self.initBlankData();
                     }
                 }
@@ -158,12 +188,12 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         self.showEmployeeHealthInsuranceByHistoryId(self.selectedHistoryId);
                     } else {
-                        self.selectedHistoryPeriod({ displayStart: '', displayEnd: '' });    
+                        self.selectedHistoryPeriod({ displayStart: '', displayEnd: '' });
                     }
                 }
             }
         }
-        
+
         showEmployeeHealthInsuranceByHistoryId(historyId) {
             let self = this;
             block.invisible();
@@ -213,7 +243,6 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
                 let params = getShared("QMM008_G_RES_PARAMS");
                 if (params) {
-                    self.isUpdateMode(false);
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     let historyId = nts.uk.util.randomId();
                     socialInsuranceOfficeList.forEach(office => {
@@ -236,6 +265,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     } else {
 
                     }
+                    self.isUpdateMode(false);
                 }
                 $("#B2_7").focus();
             });
@@ -290,11 +320,6 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     }
                 }
             });
-        }
-
-        changeMode() {
-            let self = this;
-            self.isUpdateMode(self.isUpdateMode() ? false : true);
         }
     }
 }

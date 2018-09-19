@@ -55,9 +55,9 @@ public class HealthContributionRate extends DomainObject {
      * @param specialInsuranceRate  特定保険料率
      */
     public HealthContributionRate(BigDecimal longCareInsuranceRate, BigDecimal basicInsuranceRate, BigDecimal healthInsuranceRate, int individualFractionCls, BigDecimal specialInsuranceRate) {
-        this.healthInsuranceRate   = new InsuranceRate(longCareInsuranceRate);
-        this.longCareInsuranceRate = new InsuranceRate(basicInsuranceRate);
-        this.basicInsuranceRate    = new InsuranceRate(healthInsuranceRate);
+        this.longCareInsuranceRate   = new InsuranceRate(longCareInsuranceRate);
+        this.basicInsuranceRate = new InsuranceRate(basicInsuranceRate);
+        this.healthInsuranceRate    = new InsuranceRate(healthInsuranceRate);
         this.fractionCls           = EnumAdaptor.valueOf(individualFractionCls, InsurancePremiumFractionClassification.class);
         this.specialInsuranceRate  = new InsuranceRate(specialInsuranceRate);
     }

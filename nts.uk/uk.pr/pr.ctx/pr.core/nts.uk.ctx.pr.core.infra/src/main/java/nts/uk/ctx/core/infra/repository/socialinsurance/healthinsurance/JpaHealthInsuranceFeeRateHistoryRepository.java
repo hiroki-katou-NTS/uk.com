@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository implements HealthInsuranceFeeRateHistoryRepository {
 
     private static final String GET_HEALTH_INSURANCE_FEE_RATE_HISTORY_BY_CID = "SELECT a FROM QpbmtHealthInsuranceFeeRateHistory a WHERE a.healthInsFeeHistPk.cid =:companyId";
-    private static final String WHERE_OFFICE_CODE = " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode";
+    private static final String WHERE_OFFICE_CODE = " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode ORDER BY a.startYearMonth";
     private static final String STRING_EMPTY = "";
     private static final String DELETE = "DELETE FROM QpbmtHealthInsuranceFeeRateHistory a WHERE a.healthInsFeeHistPk.cid =:companyId"
     		+ " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode";

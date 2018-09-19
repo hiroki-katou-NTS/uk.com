@@ -6,9 +6,11 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import model = nts.uk.pr.view.qmm008.share.model;
+    import service = nts.uk.pr.view.qmm008.h.service;
     export class ScreenModel {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable('');
-        socialInsuranceName: KnockoutObservable<string> = ko.observable('');        startMonth: KnockoutObservable<string> = ko.observable('');
+        socialInsuranceName: KnockoutObservable<string> = ko.observable('');        
+        startMonth: KnockoutObservable<string> = ko.observable('');
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
         isLastestHistory: KnockoutObservable<boolean> = ko.observable(false);
@@ -47,10 +49,32 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                         return;
                     }
                 }
+                let newHistory = self.selectedHistory;
+                newHistory.startMonth = self.startMonth();
+                service.editHealthInsuranceHistory (newHistory).done(function(){
+                    dialog.info({messageId: 15}).then(function(){
+                        setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    })
+                }).fail(function(err){
+                    dialog.alertError(err.message);
+                });
+            } else {
+                service.deleteHealthInsuranceHistory (self.selectedHistory).done(function(){
+                    dialog.info({messageId: 15}).then(function(){
+                        setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    })
+                }).fail(function(err){
+                    dialog.alertError(err.message);
+                });
             }
-            setShared('QMM008_H_RES_PARAMS', { startMonth: self.startMonth(), modifyMethod: self.modifyMethod() });
-            nts.uk.ui.windows.close();
         }
+        
+        editHealthInsuranceHistory (){
+            let self = this;    
+        }
+        
         cancel() {
             nts.uk.ui.windows.close();
         } 
