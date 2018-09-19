@@ -23,7 +23,8 @@ module nts.uk.ui.koExtentions {
                 .mergeRelativePath(iconFileName)
                 .serialize();
             
-            let $icon = $(element);
+            let $icon = $(element),
+                $parent = $icon.closest("td[role='gridcell']");
             $icon.addClass("img-icon");
             $icon.css({
                 "background-image": "url(" + iconPath + ")",
@@ -31,6 +32,9 @@ module nts.uk.ui.koExtentions {
                 width: width,
                 height: height
             });
+            if(!_.isNil($parent)){
+                $parent.css("white-space", "nowrap");
+            }
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
