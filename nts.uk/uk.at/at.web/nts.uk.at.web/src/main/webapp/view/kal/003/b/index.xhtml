@@ -1346,7 +1346,7 @@
 									</td>
 									<td class="pad_left_5px">
 										<!-- B2-2-->
-										<div id="colorpicker"
+										<div id="colorpicker" tabindex = "8"
 											data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 60}" />
 									</td>
 								</tr>
@@ -1358,7 +1358,7 @@
 									<td class="pad_left_5px">
 										<!-- B3-2-->
 										<div id="inpMessage">
-											<textarea style="width: 462px; height: 90px;"
+											<textarea style="width: 462px; height: 90px;" tabindex="9"
 												data-name="message"
 												data-bind="ntsMultilineEditor: {
 												name: '#[KAL003_25]',
@@ -1373,7 +1373,7 @@
 								<tr class="row">
 									<td class="pad_left_10px"></td>
 									<td>
-										<div data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
+										<div tabindex = "10" data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
 									</td>
 								</tr>
 							</table>

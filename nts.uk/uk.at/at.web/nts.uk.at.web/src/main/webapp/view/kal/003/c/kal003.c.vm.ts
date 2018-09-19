@@ -55,9 +55,9 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 countableAddAtdItems: _.values(param.data.countableAddAtdItems || []),
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
-
-            caic = ko.mapping.fromJS(param.data);
-            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+//            caic = ko.mapping.fromJS(param.data);
+//            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
             
             caic.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
