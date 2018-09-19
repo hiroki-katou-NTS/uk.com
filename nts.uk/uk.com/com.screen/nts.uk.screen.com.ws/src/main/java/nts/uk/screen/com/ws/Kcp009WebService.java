@@ -34,7 +34,7 @@ public class Kcp009WebService extends WebService {
 	 * @return the kcp 009 employee search data
 	 */
 	@POST
-	@Path("employeesearch/")
+	@Path("employeesearch#/")
 	public Kcp009EmployeeSearchData searchEmployee(Kcp009Dto dto) {
 		return this.queryProcessor.searchByCode(dto.getEmployeeCode(),
 				System.valueOfCode(dto.getSystem())).get();
