@@ -287,6 +287,7 @@ module nts.custom.component {
                             if (categoryType == IT_CAT_TYPE.MULTI) {
                                 if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
                                     confirm({ messageId: "Msg_18" }).ifYes(() => {
+                                        __viewContext.viewModel.layout.outData.refresh();
                                         let outData = __viewContext.viewModel.layout.outData(),
                                             query = {
                                                 recordId: ko.toJS(params.gridlist.value),
