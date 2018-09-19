@@ -39,8 +39,8 @@
                     <colgroup>
                         <col width="50px"/>
                         <col width="250px"/>
-                        <col width="130px"/>
-                        <col width="400px"/>
+                        <col width="90px"/>
+                        <col width="330px"/>
                     </colgroup>
                     <thead>
                     <tr>
@@ -84,7 +84,7 @@
                             <button
                                     data-bind="enable: processInfomation.processDivisionName != '',click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
-                        <td>
+                        <td data-bind="attr: { 'data-id': processInfomation.processCateNo }">
                             <!--A2_11 処理年一覧-->
                             <div id="combo-box" data-bind="ntsComboBox: {
                                 name: 'Sample List', width:80,
@@ -103,7 +103,7 @@
                             <div
                                     data-bind="ntsComboBox: {
                             name: 'Sample List', width:200,
-                            options: months,
+                            options: monthsSubcriceYear,
                             optionsValue: 'code',
                             visibleItemsCount: 5,
                             value: monthsSelectd,

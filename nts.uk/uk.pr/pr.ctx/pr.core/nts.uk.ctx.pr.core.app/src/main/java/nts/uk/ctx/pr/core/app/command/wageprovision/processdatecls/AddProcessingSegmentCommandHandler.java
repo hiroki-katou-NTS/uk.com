@@ -104,7 +104,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 		}
 		if (montOption == PreviousMonthClassification.LAST_MONTH.value) {
 			for (int i = 1; i < 25; i++) {
-				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(1).v(),
+				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(i).v(),
 						printDate.addMonths(i-1).v()));
 			}
 		}	

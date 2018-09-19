@@ -1,3 +1,6 @@
+
+
+
 module nts.uk.pr.view.qmm005.a.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
@@ -8,6 +11,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
     import modal = nts.uk.ui.windows.sub.modal;
     import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
+    //import parseInt = require("lodash/parseInt");
     export class ScreenModel {
         //A2_2
         itemTable: ItemTable;
@@ -21,8 +25,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         constructor() {
             var self = this;
-            $("#A2_2").ntsFixedTable({height: 300, width: 1000});
-            $("#A3_1").ntsFixedTable({height: 300, width: 400});
+            $("#A2_2").ntsFixedTable({height: 247, width: 1000});
+            $("#A3_1").ntsFixedTable({height: 247, width: 400});
             //A3_4 対象雇用
             self.targetEmployment = ko.observable([]);
 
@@ -32,12 +36,27 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         }
 
         showDialogD(processInfomation, mode): void {
+            let self=this;
             let param = {
                 mode: mode,
                 processInfomation: processInfomation
             }
             setShared("QMM005_output_D", param);
             modal('/view/qmm/005/d/index.xhtml', {title: '',}).onClosed(function (): any {
+                let param=getShared("QMM005_output_A");
+                let action:number=param.action;
+                let processInformationUpdate=param.processInfomationUpdate;
+                if(action==0){
+                    let procescateno=processInformationUpdate.processCateNo;
+
+
+                    self.itemBinding()[procescateno-1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
+
+                }
+                if(action==1){
+                    self.itemBinding.removeAll();
+                    self.startPage();
+                }
             })
         }
 
@@ -45,6 +64,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         showDialogB(param): void {
             setShared("QMM005_output_B", param);
             modal('/view/qmm/005/b/index.xhtml', {title: '',}).onClosed(function (): any {
+
+
             })
         }
 
@@ -78,23 +99,31 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         }
 
 
-        getYear(setDaySupportList: Array<SetDaySupport>): Array<model.ItemModel> {
-            var array = [];
-            _.forEach(setDaySupportList, function (setDaySupport) {
-                _.forEach(setDaySupport, function (value, key) {
-                    if (key == "processDate") {
-                        let yearCode = parseInt(value.toString().substr(0, 4));
-                        let yearName = value.toString().substr(0, 4);
-                        array.push(new model.ItemModel(yearCode, yearName));
-                    }
+        getYear(setDaySupportList: Array<SetDaySupport>,i:number): Array<ItemComboBox> {
+            let self = this;
+            let ArrSetDaySuport: Array<SetDaySupport> = _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
+                    return o.processCateNo == i + 1;
+                }),
+                function (o) {
+                    return o.processDate;
                 });
-            });
-            return _.orderBy(_.uniqBy(array, 'code'), ['code'], ['asc']);
+            let Araybinding: Array<ItemComboBox> = new Array<ItemComboBox>();
+            for (let i = 0; i < ArrSetDaySuport.length; i++) {
+                Araybinding.push(new ItemComboBox(
+                    ArrSetDaySuport[i].processCateNo,
+                    parseInt(ArrSetDaySuport[i].processDate/100),
+                    parseInt(ArrSetDaySuport[i].processDate/100).toString()
+                    )
+                )
+            }
+            return _.sortBy(_.uniqBy(Araybinding,function(o){return o.code;}),function (o) {return o.code;})
+
+
 
         }
 
 
-        getListMonth(setDaySupportList: Array<SetDaySupport>, i: number): Array<model.ItemModel> {
+        getListMonth(setDaySupportList: Array<SetDaySupport>, i: number): Array<ItemComboBox> {
             let self = this;
             let ArrSetDaySuport: Array<SetDaySupport> = _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
                     return o.processCateNo == i + 1;
@@ -103,13 +132,23 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     return o.processDate;
                 });
 
-            let Araybinding: Array<model.ItemModel> = new Array<model.ItemModel>();
+            let Araybinding: Array<ItemComboBox> = new Array<ItemComboBox>();
             for (let i = 0; i < ArrSetDaySuport.length; i++) {
-                Araybinding.push(new model.ItemModel(ArrSetDaySuport[i].processDate, ArrSetDaySuport[i].paymentDate + '-' + ArrSetDaySuport[i].empExtraRefeDate))
+                Araybinding.push(new ItemComboBox(
+                    ArrSetDaySuport[i].processCateNo,
+                    ArrSetDaySuport[i].processDate,
+                    nts.uk.time.applyFormat("Short_YMDW", ArrSetDaySuport[i].paymentDate)+ ' | ' + ArrSetDaySuport[i].empExtraRefeDate
+                    )
+                )
             }
-
-
             return Araybinding;
+        }
+
+
+        resetEmployee(processCateNo){
+            let self = this;
+            self.itemBinding()[processCateNo - 1].employeeString('');
+            self.itemBinding()[processCateNo - 1].employeeList([]);
         }
 
 
@@ -135,7 +174,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     let employeeString = '';
                     let employeeList = [];
                     let employeeSetting = _.find(self.itemTable.empTiedProYear, x => {
-                        return x.processCateNo == i + 1;
+                        if (x != null){
+                            return x.processCateNo == i + 1;
+                        }
                     })
                     if (employeeSetting) {
                         for (let i = 0; i < employeeSetting.getEmploymentCodes.length; i++) {
@@ -155,9 +196,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                                 return o.processDate;
                             }),
                         employeeString, employeeList,
-                        self.getYear((_.filter(self.itemTable.setDaySupports, function (o) {
-                            return o.processCateNo == i + 1;
-                        }))),
+
+                        self.getYear(self.itemTable.setDaySupports, i)
+                        ,
                         self.getListMonth(self.itemTable.setDaySupports, i)
                     ));
 
@@ -173,27 +214,46 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
     export class ItemBinding {
+
         processInfomation: model.ProcessInfomation;
         setDaySupports: KnockoutObservableArray<model.SetDaySupport>;
         setDaySupportsSelectedCode: KnockoutObservable<number>;
         employeeString: KnockoutObservable<string>;
         employeeList: KnockoutObservableArray<any>;
-        years: KnockoutObservableArray<model.ItemModel>;
+        years: KnockoutObservableArray<ItemComboBox>;
         yaersSelected: KnockoutObservable<number>;
-        months: KnockoutObservableArray<model.ItemModel>;
+        months: KnockoutObservableArray<ItemComboBox>;
+        monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<model.ItemModel>, months: Array<model.ItemModel>) {
-            this.processInfomation = processInfomation;
-            this.setDaySupports = ko.observableArray(setDaySupports);
-            this.setDaySupportsSelectedCode = ko.observable(0);
-            this.employeeString = ko.observable(employeeString);
-            this.employeeList = ko.observableArray(employeeList);
-            this.years = ko.observableArray(years);
-            this.yaersSelected = ko.observable(0);
-            this.months = ko.observableArray(months);
-            this.monthsSelectd = ko.observable(0);
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>) {
+            var self=this;
+            self.processInfomation = processInfomation;
+            self.setDaySupports = ko.observableArray(setDaySupports);
+            self.setDaySupportsSelectedCode = ko.observable(0);
+            self.employeeString = ko.observable(employeeString);
+            self.employeeList = ko.observableArray(employeeList);
+            self.years = ko.observableArray(years);
+            self.yaersSelected = ko.observable(0);
+            self.months = ko.observableArray(months);
+            self.monthsSelectd = ko.observable(0);
+
+
+            self.yaersSelected.subscribe(function (data) {
+                self.monthsSubcriceYear.removeAll();
+                self.monthsSubcriceYear(
+                    _.filter(self.months(), function (o) {
+                        return parseInt(o.code/100)==data;
+                    })
+                )
+            })
+
         }
+
+
+
+
+
     }
 
 
@@ -222,6 +282,23 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
     }
+
+    export class ItemComboBox{
+        processNO:number;
+        code:number;
+        name:string;
+        constructor(processNO:number, code:number, name:string
+        ){
+            this.processNO=processNO;
+            this.code=code;
+            this.name=name;
+
+        }
+    }
+
+
+
+
 
 
 }

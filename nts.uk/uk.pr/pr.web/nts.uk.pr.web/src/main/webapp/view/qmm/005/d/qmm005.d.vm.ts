@@ -162,7 +162,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.Abolition.Abolition, 'Abolition'),
                 new model.ItemModel(model.Abolition.Not_Abolition, 'Not_Abolition')
             ]);
-            self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(0);
+
 
             //D4_42
             self.yearSelectClassification = ko.observableArray([
@@ -355,7 +355,16 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.selectedId = ko.observable(0);
             self.labelRequired = ko.observable(true);
             self.isEnable = ko.observable(true);
-            self.enableChecckBox = ko.observable(true);
+
+            self.enableChecckBox = ko.observable(false);
+            if(self.mode==0){
+                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableChecckBox() ? 0:1);
+            }
+
+            self.DiscontinueThisProcessClassificationSelectedCode=ko.observable(1);
+
+
+
 
 
 
@@ -363,18 +372,38 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
         saveCharacterSetting(): void {
             let self = this;
-
             this.saveToDB();
-
-
-
-
-
         }
 
         cancelCharacterSetting(): void {
+            let self=this;
+            let param={
+                action:3,
+                processInfomationUpdate:self.processInfomation
+            }
+
+            setShared("QMM005_output_A",param);
             nts.uk.ui.windows.close();
+
         }
+
+        reSize():void{
+            let windowSize = nts.uk.ui.windows.getSelf();
+            if(windowSize.$dialog.height()<480){
+                windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 300);
+            }
+            if(windowSize.$dialog.height()>480)
+            {
+                windowSize.setHeight(windowSize.parent.globalContext.innerHeight - 300);
+            }
+
+
+
+
+        }
+
+
+
 
 
         startPage(): JQueryPromise<any> {
@@ -414,8 +443,8 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
                         self.processCategoryNo=self.processInfomation.processCateNo;
-                        self.processName(self.processInfomation.processDivisionName),
-                        self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate)
+                        self.processName(self.processInfomation.processDivisionName);
+                        self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate);
 
 
                 })
@@ -501,6 +530,12 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
                 }).done(function () {
+                    let param={
+                        action:1,
+                        processInfomationUpdate:self.processInfomation
+                    }
+
+                    setShared("QMM005_output_A",param);
                     nts.uk.ui.windows.close();
                 })
              }
@@ -510,6 +545,12 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
                 }).done(function () {
+                    let param={
+                        action:0,
+                        processInfomationUpdate:self.processInfomation
+                    }
+
+                    setShared("QMM005_output_A",ko.toJS(param));
                     nts.uk.ui.windows.close();
                 })
             }
