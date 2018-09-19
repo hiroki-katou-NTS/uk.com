@@ -31,4 +31,6 @@ public interface HealthInsuranceMonthlyFeeRepository {
     void update(HealthInsuranceMonthlyFee domain);
 
     void delete(HealthInsuranceMonthlyFee domain);
+    
+    void updateGraFee(HealthInsuranceMonthlyFee domain);
 }
