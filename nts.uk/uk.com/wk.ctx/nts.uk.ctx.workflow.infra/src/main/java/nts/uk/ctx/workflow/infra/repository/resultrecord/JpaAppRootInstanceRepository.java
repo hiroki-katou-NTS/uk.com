@@ -72,29 +72,15 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE > 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'"+
-			" UNION"+
-			" SELECT TOP 1 * FROM ("+
-			BASIC_SELECT + 
-			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
+			" AND appRoot.END_DATE >= 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'";
 	
 	private final String FIND_BY_APPROVER_PERIOD = BASIC_SELECT + 
 			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE > 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'"+
-			" UNION"+
-			" SELECT TOP 1 * FROM ("+
-			BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
+			" AND appRoot.END_DATE >= 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {

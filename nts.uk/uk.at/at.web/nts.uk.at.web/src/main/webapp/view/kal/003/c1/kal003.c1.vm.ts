@@ -314,17 +314,12 @@ module nts.uk.at.view.kal003.c1.viewmodel {
         validateRange() {
             let self = this;
             caic = ko.toJS(self.currentAtdItemCondition);
-            console.log(caic.conditionType);
-            console.log(caic.compareOperator);
-            console.log(caic.compareStartValue);
-            console.log(caic.compareEndValue);
             $('.value-input').ntsError('clear');
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
                 // fixbug 99086 : set timeout
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
-                        console.log('7 or 9');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
@@ -333,7 +328,6 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 // fixbug 99086 : set timeout
                 setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
-                        console.log('6 or 8');
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }

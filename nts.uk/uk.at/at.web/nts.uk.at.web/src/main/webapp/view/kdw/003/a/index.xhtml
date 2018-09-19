@@ -89,23 +89,23 @@
                     <div id="right-content">
                         <div class="valign-center control-group">
                             <div style="margin-top: -20px">
-                                <!-- <div> -->
-                                <div id="daterangepicker" style="width: 315px; display: inline-flex;"
-                                     data-bind="ntsDateRangePicker: { 
+							<div id = "date-extract" style="width: 315px; display: inline-flex;">
+								<div id="daterangepicker"
+									data-bind="ntsDateRangePicker: { 
 									required: true, 
 									enable: showDateRange, 
 									showNextPrevious: true, 
 									value: dateRanger, 
 									maxRange: 'oneMonth'}" />
-                                <div id="cbListDate" style="position: relative; display: inline-flex;">
-                                    <div id="choosenDate" style="top: -12px"
-                                         data-bind="ntsDatePicker: {value: selectedDate, 
+								<div id="cbListDate">
+									<div id="choosenDate" style="top: -12px"
+										data-bind="ntsDatePicker: {value: selectedDate, 
 										dateFormat: 'YYYY/MM/DD', 
 										showJumpButtons: true, 
 										enable: showDateRange}" />
-                                </div>
-                                <!-- </div> -->
-                                <div id="dislayFormatLbl" data-bind="ntsFormLabel: {}"
+								</div>
+							</div>
+							<div id="dislayFormatLbl" data-bind="ntsFormLabel: {}"
                                      style="top: -12px!importance">#{i18n.getText('KDW003_19')}</div>
                                 <div id="cbDisplayFormat"
                                      data-bind="ntsComboBox: {
