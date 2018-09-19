@@ -7,9 +7,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SalaryHealthDto {
+public class UpdateCommand {
 	
 	List<CusDataDto> cusDataDtos;
-	SalaryHealthInsurancePremiumRateDto premiumRate;
+	String historyId;
 	
 }
