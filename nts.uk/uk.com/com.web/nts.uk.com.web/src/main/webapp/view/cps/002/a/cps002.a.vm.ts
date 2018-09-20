@@ -180,7 +180,7 @@ module cps002.a.vm {
             });
 
             self.categorySelectedCode.subscribe(code => {
-                if (!_.isNil(code)) {
+                if (!_.isNil(code) && !_.isEmpty(code)) {
                     self.itemSettingList.removeAll();
 
                     if (self.createTypeId() === 2) {
