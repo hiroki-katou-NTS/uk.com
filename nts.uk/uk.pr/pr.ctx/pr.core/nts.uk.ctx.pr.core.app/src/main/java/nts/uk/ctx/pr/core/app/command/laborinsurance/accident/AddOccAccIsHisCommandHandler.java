@@ -44,8 +44,6 @@ public class AddOccAccIsHisCommandHandler extends CommandHandler<AccInsurHisComm
         }
         occAccIsPrRateRepository.add(temp,newHistID);
         repository.add(new YearMonthHistoryItem(newHistID, new YearMonthPeriod(new YearMonth(addCommand.getStartMonthYear()),new YearMonth(999912))), cId);
-
-
     }
 
 }

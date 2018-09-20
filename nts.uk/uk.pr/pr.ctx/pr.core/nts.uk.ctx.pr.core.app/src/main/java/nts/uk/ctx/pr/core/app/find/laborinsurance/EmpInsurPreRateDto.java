@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Value
 		
 public class EmpInsurPreRateDto {
+
 		private String hisId;
 	    private int empPreRateId;
 	    private BigDecimal indBdRatio;

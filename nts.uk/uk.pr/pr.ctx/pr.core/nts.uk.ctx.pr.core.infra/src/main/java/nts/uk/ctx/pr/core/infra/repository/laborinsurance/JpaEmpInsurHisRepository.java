@@ -17,14 +17,11 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
-public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurHisRepository
-{
+public class JpaEmpInsurHisRepository extends JpaRepository implements EmpInsurHisRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid AND  f.empInsurHisPk.hisId =:hisId ";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurHisPk.cid =:cid ORDER BY f.startYearMonth DESC ";
-    
-
 
     @Override
     public Optional<EmpInsurHis> getEmpInsurHisById(String cid, String hisId){

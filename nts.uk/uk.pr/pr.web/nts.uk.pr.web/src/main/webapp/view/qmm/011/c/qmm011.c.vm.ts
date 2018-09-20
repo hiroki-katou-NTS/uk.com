@@ -90,7 +90,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             });
         }
 
-
         getAccInsurPreRate() {
             let self = this;
             service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<IAccInsurPreRate>) => {
@@ -140,13 +139,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     arrResulf[key] = temp;
                 }
 
-
-
             });
             return arrResulf;
 
         }
-
 
         addOccAccIsHis(start: number, list: Array<OccAccIsHis>, typeCreate:number){
             let listOccAccIsHis: Array<OccAccIsHis> = [];
@@ -234,10 +230,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                             self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
                             self.listOccAccIsHis(_.sortBy(self.listOccAccIsHis(), 'startYearMonth').reverse());
 
-
-
-
-
                     } else {
                         self.initScreen(null);
                     }
@@ -255,15 +247,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 nts.uk.ui.errors.clearAll();
 
             });
-
         }
 
         register(){
             let self = this;
             block.invisible();
-
-
-
             if(self.validate()){
                 block.clear();
                 return;

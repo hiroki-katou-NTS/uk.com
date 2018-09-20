@@ -17,13 +17,10 @@ import javax.ejb.Stateless;
 
 
 @Stateless
-public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsHisRepository
-{
+public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsHisRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsHis f";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsHisPk.cid =:cid ORDER BY f.startYearMonth DESC";
-
-
 
     @Override
     public Optional<OccAccIsHis> getAllOccAccIsHisByCid(String cid) {
@@ -41,7 +38,6 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
     public void update(YearMonthHistoryItem domain, String cId) {
         this.commandProxy().update(QpbmtOccAccIsHis.toEntity(domain,cId));
     }
-
 
     private List<YearMonthHistoryItem> toDomain(List<QpbmtOccAccIsHis> entities) {
         if (entities == null || entities.isEmpty()) {
