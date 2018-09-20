@@ -30,18 +30,18 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.yearMonth = :yearMonth "
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.yearMonth = :yearMonth "
 			+ "AND a.recordPK.closureId = :closureId "
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
-			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.yearMonth = :yearMonth "
 			+ "AND a.recordPK.closureId = :closureId "
 			+ "AND a.recordPK.closureDay = :closureDay "
 			+ "AND a.recordPK.isLastDay = :isLastDay "
@@ -49,7 +49,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
-			+ "AND a.recordPK.yearMonth IN :yearMonths "
+			+ "AND a.yearMonth IN :yearMonths "
 			+ "ORDER BY a.recordPK.employeeId, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
@@ -65,7 +65,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.recordPK.yearMonth = :yearMonth ";
+			+ "AND a.yearMonth = :yearMonth ";
 
 	@Override
 	public Optional<RemarksMonthlyRecord> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
