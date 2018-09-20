@@ -31,14 +31,13 @@ public class JpaSetPeriodCycleRepository extends JpaRepository implements SetPer
 	}
 
 	@Override
-	public void add(SetValidityPeriodCycle domain) {
-		this.remove(domain.getSalaryItemId());
-		this.commandProxy().insert(QpbmtSetPeriodCycle.toEntity(domain));
-	}
-
-	@Override
-	public void update(SetValidityPeriodCycle domain) {
-		this.commandProxy().update(QpbmtSetPeriodCycle.toEntity(domain));
+	public void register(SetValidityPeriodCycle domain) {
+		if (this.getSetPeriodCycleById(domain.getSalaryItemId()).isPresent()) {
+			this.commandProxy().update(QpbmtSetPeriodCycle.toEntity(domain));
+		}
+		else {
+			this.commandProxy().insert(QpbmtSetPeriodCycle.toEntity(domain));
+		}
 	}
 
 	@Override

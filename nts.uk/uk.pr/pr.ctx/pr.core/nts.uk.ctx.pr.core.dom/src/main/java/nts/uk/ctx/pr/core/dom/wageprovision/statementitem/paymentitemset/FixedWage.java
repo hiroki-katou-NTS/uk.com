@@ -29,11 +29,11 @@ public class FixedWage extends DomainObject {
 	 */
 	private PerSalaryContractType perSalaryContractType;
 
-	public FixedWage(int settingAtr, int everyoneEqualSet, Integer monthlySalary, Integer hourlyPay, Integer dayPayee,
+	public FixedWage(int settingAtr, Integer everyoneEqualSet, Integer monthlySalary, Integer hourlyPay, Integer dayPayee,
 			Integer monthlySalaryPerday) {
 		super();
 		this.settingAtr = EnumAdaptor.valueOf(settingAtr, SettingClassification.class);
-		this.everyoneEqualSet = Optional.ofNullable(EnumAdaptor.valueOf(everyoneEqualSet, CategoryFixedWage.class));
+		this.everyoneEqualSet = everyoneEqualSet == null? Optional.empty() : Optional.of(EnumAdaptor.valueOf(everyoneEqualSet, CategoryFixedWage.class));
 		this.perSalaryContractType = new PerSalaryContractType(monthlySalary, hourlyPay, dayPayee, monthlySalaryPerday);
 	}
 }

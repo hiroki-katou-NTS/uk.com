@@ -21,7 +21,7 @@ public class RegisterValidityPeriodAndCycleSetCommandHandler extends CommandHand
 	protected void handle(CommandHandlerContext<ValidityPeriodAndCycleSetCommand> context) {
 		ValidityPeriodAndCycleSetCommand command = context.getCommand();
 
-		setPeriodCycleRepository.add(new SetValidityPeriodCycle(command.getSalaryItemId(), command.getCycleSettingAtr(),
+		setPeriodCycleRepository.register(new SetValidityPeriodCycle(command.getSalaryItemId(), command.getCycleSettingAtr(),
 				command.isJanuary() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
 				command.isFebruary() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,
 				command.isMarch() ? MonthlyTargetAtr.COVERED.value : MonthlyTargetAtr.NOT_COVERED.value,

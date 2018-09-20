@@ -35,17 +35,17 @@ public class QpbmtStatementItemPk implements Serializable {
 	public int categoryAtr;
 
 	/**
-	 * 給与項目ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "SALARY_ITEM_ID")
-	public String salaryItemId;
-
-	/**
 	 * 項目名コード
 	 */
 	@Basic(optional = false)
 	@Column(name = "ITEM_NAME_CD")
 	public String itemNameCd;
+	
+	/**
+	 * 給与項目ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "SALARY_ITEM_ID")
+	public String salaryItemId;
 
 }
