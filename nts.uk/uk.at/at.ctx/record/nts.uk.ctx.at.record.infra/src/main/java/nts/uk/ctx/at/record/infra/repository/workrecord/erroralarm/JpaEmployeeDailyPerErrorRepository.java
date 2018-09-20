@@ -131,7 +131,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertAttendanceItem));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -213,7 +213,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 //   	List<KrcdtSyainDpErList> result = findEntities(sid, date);
 // 		if (!result.isEmpty()) {

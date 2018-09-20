@@ -69,10 +69,8 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 			});
 			return krcdtDaiBreakTimes.map(c -> this.toDomain(c));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return Optional.empty();
 	}
 
 	/**

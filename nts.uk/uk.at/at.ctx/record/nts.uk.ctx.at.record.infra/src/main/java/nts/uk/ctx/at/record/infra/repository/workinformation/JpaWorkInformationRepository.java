@@ -165,17 +165,12 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String sqlQuery = "Delete From KRCDT_WORK_SCHEDULE_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
 		String perWorkInfo = "Delete From KRCDT_DAI_PER_WORK_INFO Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
+			con.createStatement().executeUpdate(sqlQuery);
 			con.createStatement().executeUpdate(perWorkInfo);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 //		this.getEntityManager().createQuery(DEL_BY_KEY_ID).setParameter("employeeId", employeeId).setParameter("ymd", ymd)

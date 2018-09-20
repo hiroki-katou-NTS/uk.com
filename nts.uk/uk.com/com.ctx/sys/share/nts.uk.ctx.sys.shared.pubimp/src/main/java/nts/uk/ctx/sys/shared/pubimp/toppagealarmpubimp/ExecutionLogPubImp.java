@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.shared.dom.toppagealarmpub;
+package nts.uk.ctx.sys.shared.pubimp.toppagealarmpubimp;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +12,9 @@ import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
 import nts.uk.ctx.sys.shared.dom.toppagealarmset.TopPageAlarmSet;
 import nts.uk.ctx.sys.shared.dom.toppagealarmset.TopPageAlarmSetRepository;
+import nts.uk.ctx.sys.shared.pub.toppagealarmpub.ExecutionLogErrorDetail;
+import nts.uk.ctx.sys.shared.pub.toppagealarmpub.ExecutionLogImport;
+import nts.uk.ctx.sys.shared.pub.toppagealarmpub.ExecutionLogPub;
 
 @Stateless
 public class ExecutionLogPubImp implements ExecutionLogPub{
@@ -29,7 +32,7 @@ public class ExecutionLogPubImp implements ExecutionLogPub{
 			return;
 		}
 		// Nếu không có errors thì insert vào toppage
-		if(param.getExistenceError().value == 0){
+		if(param.getExistenceError() == 0){
 			for(String item : param.getManagerId()){
 				String executionLogId = UUID.randomUUID().toString();
 				topPageAlarmRepository.insertTopPage(executionLogId, item);
@@ -51,9 +54,9 @@ public class ExecutionLogPubImp implements ExecutionLogPub{
 	
 	public boolean checkTopPage(ExecutionLogImport param){
 		// get top page by companyId and execution content
-		List<TopPageAlarm> getTopPageAlarm = topPageAlarmRepository.findByExecutionContent(param.getCompanyId(), param.getExecutionContent().value);
+		List<TopPageAlarm> getTopPageAlarm = topPageAlarmRepository.findByExecutionContent(param.getCompanyId(), param.getExecutionContent());
 		// get top page set by companyId and execution content
-		Optional<TopPageAlarmSet> getTopPageSet = topPageAlarmSetRepository.getByAlarmCategory(param.getCompanyId(), param.getExecutionContent().value);
+		Optional<TopPageAlarmSet> getTopPageSet = topPageAlarmSetRepository.getByAlarmCategory(param.getCompanyId(), param.getExecutionContent());
 		// nế không lấy được toppage => return fasle
 		if(getTopPageAlarm.isEmpty()){
 			return false;
