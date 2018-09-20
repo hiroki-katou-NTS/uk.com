@@ -137,47 +137,42 @@ module cps002.a.vm {
                 }
             });
 
-            self.initSettingSelectedCode.subscribe((initCode) => {
-                if (initCode === '') {
-                    return;
-                }
-
-                let InitSetting = _.find(self.initValueList(), item => {
-                    return item.itemCode == initCode;
-                });
-
-                if (InitSetting) {
-                    let currentCtgCode = self.categorySelectedCode();
-                    service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                        if (result.length) {
-                            self.categoryList(_.map(result, item => {
-                                return new CategoryItem(item);
-                            }));
-
-                            self.categorySelectedCode.valueWillMutate();
-
-                            if (currentCtgCode === "") {
-                                self.categorySelectedCode(result[0].categoryCd);
-                            } else {
-
-                                let currentCtg = _.find(result, item => {
-                                    return item.categoryCd == currentCtgCode;
-                                });
-                                if (currentCtg) {
-                                    self.categorySelectedCode.valueHasMutated()
-                                } else {
-                                    self.categorySelectedCode(result[0].categoryCd);
-                                }
-                            }
-
-                        } else {
-                            self.categoryList.removeAll();
-                        }
+            self.initSettingSelectedCode.subscribe(initCode => {
+                if (!_.isNil(initCode)) {
+                    let InitSetting = _.find(self.initValueList(), item => {
+                        return item.itemCode == initCode;
                     });
 
-                    self.currentInitSetting(InitSetting);
-                }
+                    if (InitSetting) {
+                        let currentCtgCode = self.categorySelectedCode();
 
+                        service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
+                            if (result.length) {
+                                self.categoryList(_.map(result, item => {
+                                    return new CategoryItem(item);
+                                }));
+
+                                if (currentCtgCode === "") {
+                                    self.categorySelectedCode(result[0].categoryCd);
+                                } else {
+                                    let currentCtg = _.find(result, item => {
+                                        return item.categoryCd == currentCtgCode;
+                                    });
+                                    if (currentCtg) {
+                                        self.categorySelectedCode.valueHasMutated()
+                                    } else {
+                                        self.categorySelectedCode(result[0].categoryCd);
+                                    }
+                                }
+
+                            } else {
+                                self.categoryList.removeAll();
+                            }
+                        });
+
+                        self.currentInitSetting(InitSetting);
+                    }
+                }
             });
 
             self.copyEmployee.subscribe((CopyEmployee) => {
@@ -185,8 +180,9 @@ module cps002.a.vm {
             });
 
             self.categorySelectedCode.subscribe(code => {
-                if (code) {
+                if (!_.isNil(code)) {
                     self.itemSettingList.removeAll();
+
                     if (self.createTypeId() === 2) {
                         let command = ko.toJS(self.currentEmployee());
 
@@ -347,20 +343,23 @@ module cps002.a.vm {
 
         loadCopySettingItemData() {
             let self = this,
+                step = ko.toJS(self.currentStep),
                 currentCopyEmployeeId = self.copyEmployee().employeeId,
                 categorySelectedCode = self.categorySelectedCode(),
                 baseDate = self.currentEmployee().hireDate();
 
-            if (currentCopyEmployeeId != "" && categorySelectedCode) {
-                service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
-                    if (result.length) {
-                        self.itemSettingList(_.map(result, item => {
-                            return new SettingItem(item);
-                        }));
-                    }
-                }).fail(error => {
-                    dialog({ messageId: error.message });
-                });
+            if (step == 'CPS002_14') {
+                if (!_.isNil(currentCopyEmployeeId) && !_.isNil(categorySelectedCode)) {
+                    service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
+                        if (result.length) {
+                            self.itemSettingList(_.map(result, item => {
+                                return new SettingItem(item);
+                            }));
+                        }
+                    }).fail(error => {
+                        dialog({ messageId: error.message });
+                    });
+                }
             }
         }
 
@@ -400,11 +399,11 @@ module cps002.a.vm {
             let self = this;
 
             self.currentEmployee().clearData();
-            
+
             setShared("imageId", null);
             setShared("CPS002A", null);
             self.defaultImgId("");
-            
+
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 _.set(__viewContext, 'primitiveValueConstraints.StampNumber.maxLength', data.digitsNumber);
@@ -630,11 +629,11 @@ module cps002.a.vm {
 
             nts.uk.ui.errors.clearAll();
             self.listItemCls.removeAll();
-            
+
             setShared("CPS002A", null);
             setShared("imageId", null);
             self.defaultImgId("");
-            
+
             if (['CPS002_14'].indexOf(step) > -1) {
                 self.currentStep('CPS002_13');
             } else {
@@ -834,7 +833,7 @@ module cps002.a.vm {
         categoryName: KnockoutObservable<string> = ko.observable("");
         itemName: KnockoutObservable<string> = ko.observable("");
         fileName: KnockoutObservable<string> = ko.observable("");
-        
+
         clearData() {
             let self = this;
             self.employeeName("");
