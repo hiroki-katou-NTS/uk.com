@@ -108,7 +108,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 						.collect(Collectors.toList());
 			});
 			if (check == true) {
-				results.put(employeeID + yearMonth.toString(),1);
+				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
 			}
 		}
 		return results;
