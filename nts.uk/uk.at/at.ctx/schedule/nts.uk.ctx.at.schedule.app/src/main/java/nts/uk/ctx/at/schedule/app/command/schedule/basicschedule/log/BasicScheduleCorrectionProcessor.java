@@ -22,6 +22,8 @@ import nts.uk.ctx.at.schedule.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
+import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
+import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,6 +49,8 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 	private SyClassificationAdapter syClassificationAdapter;
 	@Inject
 	private ScEmploymentAdapter scEmploymentAdapter;
+	@Inject
+	private ScheduleItemManagementRepository scheduleItemManagementRepository;
 
 	@Override
 	public CorrectionProcessorId getId() {
@@ -65,6 +69,8 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 		List<String> listJobId =  new ArrayList<>();
 		List<String> listWorkplaceCd =  new ArrayList<>();
 		List<GeneralDate> listDate =  new ArrayList<>();
+		
+		List<ScheduleItem> listScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);
 		
 		parameter.getTargets().forEach(target -> {
 			listDate.add(target.getDate());
@@ -194,13 +200,15 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 					break;
 				}
 				
+				int showOrder = listScheduleItem.stream().filter(x -> x.getScheduleItemId().equals(correctedItem.getItemNo().toString())).findFirst().get().getDispOrder();
+				
 				val correction = this.newCorrection(
 						targetUser,
 						correctedItem.getAttr(),
 						itemInfo,
 						correctedItem.getRemark(),
 						target.getDate(),
-						correctedItem.getItemNo());
+						showOrder);
 				
 				context.addCorrection(correction);
 			}

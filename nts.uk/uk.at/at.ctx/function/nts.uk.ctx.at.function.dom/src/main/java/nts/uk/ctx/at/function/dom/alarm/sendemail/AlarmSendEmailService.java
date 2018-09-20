@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailAttachedFile;
 import nts.gul.mail.send.MailContents;
@@ -19,7 +20,6 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.MailDestinationAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 
 @Stateless
@@ -39,21 +39,32 @@ public class AlarmSendEmailService implements SendEmailService {
 	@Inject
 	private AlarmListGenerator alarmListGenerator;
 	
-	public String alarmSendEmail(SendEmailParamDto sendEmailParamDto) {
+	public String alarmSendEmail(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
+			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
+			MailSettingsParamDto mailSettingsParamDto) {
+		return process(companyID, executeDate, employeeTagetIds, managerTagetIds, valueExtractAlarmDtos,mailSettingsParamDto);
+	}
+	
+	private String process(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
+			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
+			MailSettingsParamDto mailSettingsParamDto){
 		List<String> errors = new ArrayList<>();
+		Integer functionID = 9; //function of Alarm list = 9
 		FileGeneratorContext generatorContext = new FileGeneratorContext();
-		String companyID = AppContexts.user().companyId(); // get company Id of user login
 		boolean isErrorSendMailEmp = false;
 		//Send mail for employee
 		// get address email
-		if (!CollectionUtil.isEmpty(sendEmailParamDto.getEmployeeTagetIds())) {
-			for (String employeeId : sendEmailParamDto.getEmployeeTagetIds()) {
+		if (!CollectionUtil.isEmpty(employeeTagetIds)) {
+			// 本人送信対象のアラーム抽出結果を抽出する
+			List<ValueExtractAlarmDto> valueExtractAlarmEmpDtos = valueExtractAlarmDtos.stream()
+					.filter(c -> employeeTagetIds.contains(c.getEmployeeID())).collect(Collectors.toList());
+			for (String employeeId : employeeTagetIds) {
 				try {
 					// Do send email
-					boolean isError = sendMail(companyID, employeeId, sendEmailParamDto.getFunctionID(),
-							sendEmailParamDto.getValueExtractAlarmDtos(), generatorContext,
-							sendEmailParamDto.getMailSettingsParamDto().getSubject(),
-							sendEmailParamDto.getMailSettingsParamDto().getText());
+					boolean isError = sendMail(companyID, employeeId, functionID,
+							valueExtractAlarmEmpDtos, generatorContext,
+							mailSettingsParamDto.getSubject(),
+							mailSettingsParamDto.getText());
 					if (isError) {
 						errors.add(employeeId);
 					}
@@ -66,30 +77,24 @@ public class AlarmSendEmailService implements SendEmailService {
 		}
 		// Send mail for Manager
 		// get list employeeId of manager
-		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(sendEmailParamDto.getManagerTagetIds())) {
-			for (String workplaceId : sendEmailParamDto.getManagerTagetIds()) {
+		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
+			// 本人送信対象のアラーム抽出結果を抽出する
+			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = valueExtractAlarmDtos.stream()
+					.filter(c -> managerTagetIds.contains(c.getWorkplaceID())).collect(Collectors.toList());
+			for (String workplaceId : managerTagetIds) {
 				// call request list 218 return list employee Id
-				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId);
+				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
 
 				if (!CollectionUtil.isEmpty(listEmployeeId)) {
-					// get list data alarm by list employee id
-					List<ValueExtractAlarmDto> listDataAlarmExport = new ArrayList<>();
-					for (String employeeId : listEmployeeId) {
-						List<ValueExtractAlarmDto> listValueExtractAlarmDtoTemp = sendEmailParamDto
-								.getValueExtractAlarmDtos().stream().filter(e -> e.getEmployeeID() == employeeId)
-								.collect(Collectors.toList());
-						if (!CollectionUtil.isEmpty(listValueExtractAlarmDtoTemp)) {
-							listDataAlarmExport.add(listValueExtractAlarmDtoTemp.get(0));
-						}
-					}
+					
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
 							// Get subject , body mail
-							boolean isError = sendMail(companyID, employeeId, sendEmailParamDto.getFunctionID(),
-									listDataAlarmExport, generatorContext,
-									sendEmailParamDto.getMailSettingsParamDto().getSubjectAdmin(),
-									sendEmailParamDto.getMailSettingsParamDto().getTextAdmin());
+							boolean isError = sendMail(companyID, employeeId, functionID,
+									valueExtractAlarmManagerDtos, generatorContext,
+									mailSettingsParamDto.getSubjectAdmin(),
+									mailSettingsParamDto.getTextAdmin());
 							if (isError) {
 								errors.add(employeeId);
 							}
@@ -117,7 +122,7 @@ public class AlarmSendEmailService implements SendEmailService {
                 }   
 			}
 		}
-
+		
 		return empployeeNameError;
 	}
 	

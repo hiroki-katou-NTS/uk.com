@@ -5788,8 +5788,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.calcIrregularLegalOverTime)));
 		
 		return RegularAndIrregularTimeOfMonthly.of(
-				new AttendanceTimeMonth(this.monthlyTotalPremiumTime),
 				new AttendanceTimeMonth(this.weeklyTotalPremiumTime),
+				new AttendanceTimeMonth(this.monthlyTotalPremiumTime),
 				irregularWorkingTime);
 	}
 	

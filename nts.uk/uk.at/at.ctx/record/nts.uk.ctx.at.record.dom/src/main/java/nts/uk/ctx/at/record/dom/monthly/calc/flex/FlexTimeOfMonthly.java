@@ -1081,9 +1081,6 @@ public class FlexTimeOfMonthly {
 		// 「控除前のフレックス不足時間」を入れておく
 		this.flexShortDeductTime.setFlexShortTimeBeforeDeduct(this.flexShortageTime);
 		
-		// 年休控除日数に値が入っているか確認する
-		if (this.flexShortDeductTime.getAnnualLeaveDeductDays().lessThanOrEqualTo(0.0)) return;
-		
 		// 年休控除日数を時間換算する
 		this.deductDaysAndTime.timeConversionOfDeductAnnualLeaveDays(
 				companyId, employeeId, period, workingConditionItem, repositories);
@@ -1091,6 +1088,9 @@ public class FlexTimeOfMonthly {
 			this.errorInfos.addAll(this.deductDaysAndTime.getErrorInfos());
 			return;
 		}
+		
+		// 年休控除日数に値が入っているか確認する
+		if (this.flexShortDeductTime.getAnnualLeaveDeductDays().lessThanOrEqualTo(0.0)) return;
 		
 		// 控除前の年休控除時間を保存する
 		this.annualLeaveTimeBeforeDeduct = this.deductDaysAndTime.getAnnualLeaveDeductTime();
@@ -1245,7 +1245,6 @@ public class FlexTimeOfMonthly {
 				}
 			}
 		}
-		
 	}
 	
 	/**

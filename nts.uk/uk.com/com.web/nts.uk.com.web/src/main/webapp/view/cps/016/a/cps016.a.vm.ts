@@ -68,7 +68,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             if (groupCompanyAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
-                })
+                });
 
             } else {
                 let dfd = $.Deferred();
@@ -107,7 +107,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
                 self.listItems.removeAll();
                 if (itemList && itemList.length > 0) {
-                    itemList.forEach(x => self.listItems.push(x));
+                    self.listItems(itemList);
+                     //itemList.forEach(x => self.listItems.push(x));
                 } else {//0件の場� エラーメヂ�ージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
