@@ -26,8 +26,8 @@ public class MonthlyScopeOfWelfarePensionCompensation extends AggregateRoot {
     /**
      * 厚生年金報酬月額範囲
      *
-     * @param targetStartYm              対象期間
-     * @param targetEndYm                対象期間
+     * @param targetStartYm                            対象期間
+     * @param targetEndYm                              対象期間
      * @param welfarePensionGradePerRewardMonthlyRange 等級毎報酬月額範囲
      */
     public MonthlyScopeOfWelfarePensionCompensation(int targetStartYm, int targetEndYm, List<WelfarePensionGradePerRewardMonthlyRange> welfarePensionGradePerRewardMonthlyRange) {
