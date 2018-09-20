@@ -93,6 +93,8 @@ module nts.uk.pr.view.qmm012.b {
             
             public create(): void {
                 let self = this;
+                
+                nts.uk.ui.errors.clearAll();
 
                 nts.uk.ui.windows.sub.modal('../a/index.xhtml').onClosed(() => {
                     let data = getShared("QMM012_A_Params");
@@ -156,7 +158,10 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
                     
+                    block.invisible();
                     service.registerStatementItemData(command).done(function() {
+                        block.clear();
+                        
                         dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.loadListData().done(function() {
                                 if((oldSalaryId != null) || (oldSalaryId != "")) {
@@ -167,7 +172,17 @@ module nts.uk.pr.view.qmm012.b {
                             });
                         });
                     }).fail(err => {
-                        $("#B3_3").focus();
+                        block.clear();
+                        
+                        if(err == "Msg_3") {
+                            $('#B3_2').ntsError('set', { messageId: "Msg_3" });
+                            $("#B3_2").focus();
+                        }
+                        
+                        if(err == "Msg_358") {
+                            $('#B3_3').ntsError('set', { messageId: "Msg_358" });
+                            $("#B3_3").focus();
+                        }
                     });
                 }
             }
@@ -187,7 +202,10 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
                     
+                    block.invisible();
                     service.removeStatementItemData(command).done(function() {
+                        block.clear();
+                        
                         dialog.info({ messageId: "Msg_16" }).then(() => {
                             self.loadListData().done(function() {
                                 if(self.statementItemDataList().length == 0) {
@@ -199,6 +217,7 @@ module nts.uk.pr.view.qmm012.b {
                             });
                         });
                     }).fail(err => {
+                        block.clear();
                         $("#B3_3").focus();
                     });
                 })
