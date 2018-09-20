@@ -70,6 +70,10 @@ public class PpemtPersonInitValueSettingItem extends UkJpaEntity implements Seri
 
 			}
 
+		}else {
+			this.stringValue = null;
+			this.intValue = null;
+			this.dateValue = null;
 		}
 
 		return this;

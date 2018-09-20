@@ -71,13 +71,19 @@
 						bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
 						<div id="compareOperator-cbb"
 							data-bind=" ntsComboBox: {
-							options: enumCompareOperator,
+							options: function(){
+                                 if(currentAtdItemCondition.conditionType() == 0){
+                                     return enumlistCompareTypes;
+                                 } else {
+                                     return enumSingleValueCompareTypes;
+                                 }
+                            }(),
 							optionsValue: 'code',
 							value: currentAtdItemCondition.compareOperator,
 							optionsText: 'name',
 							enable: true,
 							visibleItemsCount: 4,
-							width : 262,
+							width : 280,
 							columns: [
 								{ prop: 'name', length: 18 },
 							]}"></div>
