@@ -3,9 +3,7 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -55,7 +53,10 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 			
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
 					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),
-					emp.getPersonId(), (person.isPresent() && person.get().getPersonNameGroup().getBusinessName() != null) ? person.get().getPersonNameGroup().getPersonName().getFullName().v() : null);
+					emp.getPersonId(), 
+					(person.isPresent() && person.get().getPersonNameGroup().getBusinessName() != null) ?
+					 person.get().getPersonNameGroup().getBusinessName().v() : 
+					(person.get().getPersonNameGroup().getPersonName().getFullName() != null ? (person.get().getPersonNameGroup().getPersonName().getFullName().v()) : null));
 			return Optional.of(result);
 
 		}
