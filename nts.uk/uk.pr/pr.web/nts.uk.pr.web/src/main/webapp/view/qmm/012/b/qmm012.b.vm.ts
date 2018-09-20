@@ -74,6 +74,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.statementItemDataList(data);
                     if(data.length > 0) {
                         self.statementItemDataSelected(new StatementItemData(data[0], self));
+                        $("#B3_3").focus();
                     } else {
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
@@ -101,7 +102,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.statementItemDataSelected().statementItem().categoryAtr(data);
                     }
                     
-                    //TODO Focus
+                    $("#B3_2").focus();
                 });
             }
             
@@ -159,11 +160,13 @@ module nts.uk.pr.view.qmm012.b {
                                 if((oldSalaryId != null) || (oldSalaryId != "")) {
                                     self.statementItemDataSelected().salaryItemId(oldSalaryId);
                                 }
-                                //TODO focus    
+                                
+                                $("#B3_3").focus();
                             });
                         });
                     }).fail(err => {
-                        //TODO xử lý message lỗi, focus
+                        //TODO xử lý message lỗi
+                        $("#B3_3").focus();
                     });
                 }
             }
@@ -190,12 +193,13 @@ module nts.uk.pr.view.qmm012.b {
                                     self.create();
                                 } else if(nextSalaryId != null) {
                                     self.statementItemDataSelected().salaryItemId(nextSalaryId);
+                                    $("#B3_3").focus();
                                 }
-                                //TODO focus    
                             });
                         });
                     }).fail(err => {
-                        //TODO xử lý message lỗi, focus
+                        //TODO xử lý message lỗi
+                        $("#B3_3").focus();
                     });
                 })
             }
@@ -225,13 +229,26 @@ module nts.uk.pr.view.qmm012.b {
             }
             
             public modifyLog(): void {
+                let self = this;
                 
+//                nts.uk.ui.windows.sub.modal('../???/index.xhtml').onClosed(() => {
+//                    if(self.statementItemDataSelected().checkCreate()) {
+//                        $("#B3_2").focus();
+//                    } else {
+//                        $("#B3_3").focus();
+//                    }
+//                });
             }
             
             public registerPrintingName(): void {
+                let self = this;
                 
                 nts.uk.ui.windows.sub.modal('../j/index.xhtml').onClosed(() => {
-                    //TODO Focus
+                    if(self.statementItemDataSelected().checkCreate()) {
+                        $("#B3_2").focus();
+                    } else {
+                        $("#B3_3").focus();
+                    }
                 });
             }
             
@@ -332,7 +349,7 @@ module nts.uk.pr.view.qmm012.b {
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
-                    //TODO Focus
+                    $("#C3_8").focus();
                 });
             }
             
@@ -343,7 +360,7 @@ module nts.uk.pr.view.qmm012.b {
 
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                     self.isSetValidity(getShared("QMM012_H_IS_SETTING"));
-                    //TODO Focus
+                    $("#C3_2").focus();
                 });
             }
         }
@@ -550,7 +567,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.taxExemptionName(data.name);
                     }
                     
-                    //TODO Focus
+                    $("#C5_2").focus();
                 });
             }
         }
