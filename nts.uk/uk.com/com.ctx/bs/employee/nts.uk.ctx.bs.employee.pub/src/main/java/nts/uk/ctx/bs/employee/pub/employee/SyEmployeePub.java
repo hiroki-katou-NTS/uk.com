@@ -164,4 +164,11 @@ public interface SyEmployeePub {
 	 */
 	List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate);
 	
+	/**
+	 * RequestList101
+	 * @param cid
+	 * @param pid
+	 */
+	EmpInfoRegistered getEmpInfo(String cid, String pid);
+	
 }

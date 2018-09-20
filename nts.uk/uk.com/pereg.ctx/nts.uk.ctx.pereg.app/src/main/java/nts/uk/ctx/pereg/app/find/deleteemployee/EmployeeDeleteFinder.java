@@ -44,7 +44,7 @@ public class EmployeeDeleteFinder {
 				if (!person.isPresent()){
 					continue;
 				}
-				listResult.add(EmployeeToDeleteDto.fromDomain(employeeDataMngInfo.getEmployeeCode().v(), "",
+				listResult.add(EmployeeToDeleteDto.fromDomain(employeeDataMngInfo.getEmployeeCode().v()+" "+ person.get().getPersonNameGroup().getBusinessName().v().trim(), "",
 						person.get().getPersonNameGroup().getBusinessName().v().trim(),
 						employeeDataMngInfo.getEmployeeId().toString()));
 			}

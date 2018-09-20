@@ -317,6 +317,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 else
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
             });
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 180) + 'px !IMPORTANT');
+            });
         }
         
         helps(event, data) {
@@ -791,6 +795,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
                 self.valueUpdateMonth = self.itemValueMonthParent;
                 self.valueUpdateMonth["redConditionMessage"] = monthResult.flexShortage.redConditionMessage;
+                //co can kiem tra loi flex ko
+                self.valueUpdateMonth["hasFlex"] = true && self.canFlex();
                 dfd.resolve();
                 nts.uk.ui.block.clear();
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
@@ -798,6 +804,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 self.showFlex(false);
                 self.lstErrorFlex = [];
+                if (self.displayFormat() === 0) {
+                    self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                    self.valueUpdateMonth = self.itemValueMonthParent;
+                    self.valueUpdateMonth["hasFlex"] = false;
+                }
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }

@@ -257,7 +257,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     self.selectedTitleAtr(1);
                     //  self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
                      // self.employeeList = ko.observableArray([]);
-                     data.listEmployee=_.orderBy(data.listEmployee,['employeeCode'], ['asc', 'asc']);
+                     data.listEmployee=_.orderBy(data.listEmployee,['workplaceCode'], ['asc', 'asc']);
                     self.employeeList();
                     if (self.activeStep() == 1) {
                         self.initEmployeeList(data.listEmployee);
@@ -736,7 +736,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: "calc(100% - 5px)",
+                height: "calc(100% - 15px)",
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -784,12 +784,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         foreignKey: "operationId",
                         columns: [
                             { key: "childrentKey", headerText: "", dataType: "string" , hidden: true },
-                            { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%",formatter: _.escape },
-                            { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
-                            { key: "itemName", headerText: "itemName", dataType: "string", width: "15%",formatter: _.escape },
-                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "20%" },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "15%",formatter: _.escape },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "15%",formatter: _.escape }
+                            { key: "categoryName", headerText: "categoryName", dataType: "string", width: "120px",formatter: _.escape },
+                            { key: "targetDate", headerText: "targetDate", dataType: "string", width: "120px" },
+                            { key: "itemName", headerText: "itemName", dataType: "string", width: "120px",formatter: _.escape },
+                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "120px" },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "170px",formatter: _.escape },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "170px",formatter: _.escape }
 
                         ],
                         features: [
@@ -830,6 +830,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                     {
                                         columnIndex: 5,
                                         allowSorting: false
+                                    },
+                                    {
+                                        columnIndex: 7,
+                                        allowSorting: false
                                     }
                                 ]
                             },
@@ -856,7 +860,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: "calc(100% - 5px)",
+                height: "calc(100% - 15px)",
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -903,11 +907,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         foreignKey: "operationId",
                         columns: [
                             { key: "childrentKey", headerText: "", dataType: "string" , hidden: true},
-                            { key: "targetDate", headerText: "targetDate", dataType: "string", width: "20%" },
-                            { key: "itemName", headerText: "itemName", dataType: "string", width: "20%",formatter: _.escape },
-                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%",formatter: _.escape },
-                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%",formatter: _.escape },
-                            { key: "correctionAttr", headerText: "correctionAttr", dataType: "string", width: "20%" }
+                            { key: "targetDate", headerText: "targetDate", dataType: "string", width: "170px" },
+                            { key: "itemName", headerText: "itemName", dataType: "string", width: "170px",formatter: _.escape },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "170px",formatter: _.escape },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "170px",formatter: _.escape },
+                            { key: "correctionAttr", headerText: "correctionAttr", dataType: "string", width: "170px" }
                         ],
                         features: [
                             {
@@ -939,27 +943,47 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
         }
         checkSubHeader() {
+//            $("#igGridLog").scroll(function(){
+//                var showedIcon = $("#igGridLog").data("icon-showed");
+//                if(!_.isNil(showedIcon)){
+//                    showedIcon.click();    
+//                }
+//            });
             var self = this;
             $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
                 var headerSetting = $(ui.element).data("headersetting");
                 var header = ui.element.find("th[role='columnheader']");
                 let screenModel = new viewmodel.ScreenModel();
-                let helpButton = "<button id=\"F3_113\" data-bind=\"ntsHelpButton: {textId: \'CLI003_68\', textParams:[\'{#CLI003_68}\'], position: \'right center\' }\">？</button>";
-                ko.bindingHandlers["ntsHelpButton"].init($("#F3_113"), function() {
-                    return {textId: 'CLI003_68', textParams:['{#CLI003_68}'], position: 'right center' };
-                }, null, null, null);
+                let helpButton = $('<button>', {
+                    text: getText('?'),
+                    'data-bind': 'ntsHelpButton: { textId: "CLI003_68", textParams: ["{#CLI003_68}"], position: "right center" }'
+                });
+                
                 let textHeaderCheck = getText('CLI003_61');
                 for (var i = 0; i < headerSetting.length; i++) {
                     var currentSetting = headerSetting[i];
                     
 //                    if (currentSetting.headerText == textHeaderCheck) {
-//                        header.filter("th[aria-label='" + currentSetting.key + "']")
-//                            .find(".ui-iggrid-headertext").text(currentSetting.headerText).append($(helpButton));
+//                        var x = header.filter("th[aria-label='" + currentSetting.key + "']")
+//                            .find(".ui-iggrid-headertext").text(currentSetting.headerText);
+//                        x.append(helpButton);
 //                    } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
 //                    }
                 }
+//                helpButton.click(function(){
+//                    var tooltip = helpButton.find("nts-help-button-image");
+//                    if(tooltip.css("display") !== "none"){
+//                        helpButton.closest(".igscroll-touchscrollable").css("overflow" , "visible");
+//                        $("#igGridLog").data("icon-showed", helpButton);
+//                    } else {
+//                        helpButton.closest(".igscroll-touchscrollable").css("overflow" , "auto hidden");
+//                        $("#igGridLog").data("icon-showed", null);
+//                    }
+//                })
+                // binding new viewmodel for only button help
+                ko.applyBindings({}, helpButton[0]);
             });
 
             $(document).delegate("#igGridLog", "igchildgridcreating", function(evt, ui) {
@@ -2279,6 +2303,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         dataType: string;
         hidden: boolean;
         itemName: string;
+        width : string;
         constructor(headerText: string, itemNo: number, recordType: number) {
             this.headerText = headerText;
             this.hidden = false;
@@ -2297,27 +2322,41 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
                 case ITEM_NO.ITEM_NO2: {
                     this.key = ITEM_PROPERTY.ITEM_USER_NAME_LOGIN;
+                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                        this.width = "120px";
+                    } else {
+                        this.width = "170px";
+                    }    
+                    
                     break;
                 }
                 case ITEM_NO.ITEM_NO3: {
                     this.key = ITEM_PROPERTY.ITEM_EMP_CODE_LOGIN;
+                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                        this.width = "120px";
+                    } else {
+                        this.width = "170px";
+                    }
                     break;
                 }
                 case ITEM_NO.ITEM_NO7: {
                     this.key = ITEM_PROPERTY.ITEM_MODIFY_DATE;
+                     this.width = "170px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO18: {
                     this.key = ITEM_PROPERTY.ITEM_NOTE;
-
+                    this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO19: {
                     if (recordType == RECORD_TYPE.LOGIN) {
                         this.key = ITEM_PROPERTY.ITEM_LOGIN_STATUS;
+                        this.width = "120px";
                     }
                     if (recordType == RECORD_TYPE.START_UP) {
                         this.key = ITEM_PROPERTY.ITEM_MENU_NAME;
+                        this.width = "170px";
                     }
                     break;
                 }
@@ -2329,12 +2368,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         || recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.key = ITEM_PROPERTY.ITEM_USER_NAME_TAGET;
                     }
+                    this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO21: {
                     if (recordType == RECORD_TYPE.DATA_CORRECT
                         || recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.key = ITEM_PROPERTY.ITEM_EMP_CODE_TAGET;
+                    }
+                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                        this.width = "170px";
+                    } else {
+                        this.width = "120px";
                     }
                     break;
                 }
@@ -2348,6 +2393,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.key = ITEM_PROPERTY.ITEM_PROCESS_ATTR;
                     }
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO23: {
@@ -2357,6 +2403,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.key = ITEM_PROPERTY.ITEM_CATEGORY_NAME;
                     }
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO24: {
@@ -2366,24 +2413,29 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.key = ITEM_PROPERTY.ITEM_INFO_OPERATE_ATTR;
                     }
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO26: {
                     this.key = ITEM_PROPERTY.ITEM_CORRECT_ATTR;
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO27: {
                     if (recordType == RECORD_TYPE.DATA_CORRECT) {
                         this.key = ITEM_PROPERTY.ITEM_NAME;
                     }
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO29: {
                     this.key = ITEM_PROPERTY.ITEM_NAME;
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO30: {
                     this.key = ITEM_PROPERTY.ITEM_VALUE_BEFOR;
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO31: {
@@ -2393,18 +2445,22 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                         this.key = ITEM_PROPERTY.ITEM_VALUE_BEFOR;
                     }
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO33: {
                     this.key = ITEM_PROPERTY.ITEM_VALUE_AFTER;
+                     this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO36: {
                     this.key = ITEM_PROPERTY.ITEM_NOTE;
+                    this.width = "120px";
                     break;
                 }
                 case ITEM_NO.ITEM_NO99: {
                     this.key = ITEM_PROPERTY.ITEM_TAGET_DATE;
+                     this.width = "120px";
                     break;
                 }
                 default: {

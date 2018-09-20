@@ -17,20 +17,20 @@ public class NumericItem extends DataTypeState {
 	private NumericItemMin numericItemMin;
 	private NumericItemMax numericItemMax;
 
-	private NumericItem(int numericItemMinus, int numericItemAmount, int integerPart, int decimalPart,
+	private NumericItem(int numericItemMinus, int numericItemAmount, int integerPart, Integer decimalPart,
 			BigDecimal numericItemMin, BigDecimal numericItemMax) {
 		super();
 		this.dataTypeValue = DataTypeValue.NUMERIC;
 		this.numericItemMinus = EnumAdaptor.valueOf(numericItemMinus, NumericItemMinus.class);
 		this.numericItemAmount = EnumAdaptor.valueOf(numericItemAmount, NumericItemAmount.class);
 		this.integerPart = new IntegerPart(integerPart);
-		this.decimalPart = new DecimalPart(decimalPart);
+		this.decimalPart = decimalPart == null? null : new DecimalPart(decimalPart);
 		this.numericItemMin = numericItemMin != null ? new NumericItemMin(numericItemMin) : null;
 		this.numericItemMax = numericItemMax != null ? new NumericItemMax(numericItemMax) : null;
 	}
 
 	public static NumericItem createFromJavaType(int numericItemMinus, int numericItemAmount, int integerPart,
-			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+			Integer decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
 		return new NumericItem(numericItemMinus, numericItemAmount, integerPart, decimalPart, numericItemMin,
 				numericItemMax);
 	}
