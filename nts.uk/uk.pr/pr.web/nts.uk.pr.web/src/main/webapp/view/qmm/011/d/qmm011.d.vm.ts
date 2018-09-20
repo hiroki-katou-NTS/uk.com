@@ -122,7 +122,9 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                 listEachBusiness: self.convertToCommand(self.listNameOfEachBusiness()),
             }
             service.updateOccAccInsurBus(data).done(()=>{
-                close();
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+                    close();
+                });
             }).fail(function(res: any) {
                 if (res)
                     dialog.alertError(res);
