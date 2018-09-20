@@ -92,6 +92,7 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
      */
     public void algorithmMonthlyHealthInsurancePremiumCalculation(Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional, BonusHealthInsuranceRate bonusHealthInsuranceRate) {
         // ドメインモデル「健康保険標準月額」を全て取得する
+    	this.healthInsurancePerGradeFee.clear();
         if (healthInsuranceStandardMonthlyOptional.isPresent()) {
             val standardGradePerMonth = healthInsuranceStandardMonthlyOptional.get().getStandardGradePerMonth();
 

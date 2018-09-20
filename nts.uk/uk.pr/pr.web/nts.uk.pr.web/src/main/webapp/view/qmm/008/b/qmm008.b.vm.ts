@@ -63,11 +63,6 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 healthInsuranceMonthlyFee: ko.toJS(self.healthInsuranceMonthlyFee),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
-            // Update individualExcemtionRate and employeeExemtionRate to null if not join fund
-            // Update 個人免除率, 事業主免除率
-
-
-
             // Update historyId for case clone previous data
             command.bonusHealthInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.healthInsuranceMonthlyFee.historyId = command.yearMonthHistoryItem.historyId;
@@ -201,9 +196,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 if (data) {
                     self.healthInsuranceMonthlyFee(new model.HealthInsuranceMonthlyFee(data.healthInsuranceMonthlyFeeDto));
                     self.bonusHealthInsuranceRate(new model.BonusHealthInsuranceRate(data.bonusHealthInsuranceRateDto));
-                } else {
-                    self.isUpdateMode(true);
                 }
+                if (!self.isUpdateMode()) $('#B2_7').focus();
                 block.clear();
             }).fail(function(err) {
                 block.clear();
@@ -287,13 +281,19 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 if (params) {
                     self.showAllOfficeAndHistory();
                     self.convertToTreeGridList();
-                    self.selectedHealthInsurance(null);
                     if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
                         if (history.length <= 1){
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
                         } else {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)    
                         }
+                    } else {
+                        let selectedHealthInsurance = self.selectedHealthInsurance();
+                        setTimeout(function(){
+                            self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
+                            self.selectedHealthInsurance(selectedHealthInsurance);
+                        }, 50);
+                        
                     }
                 }
             });

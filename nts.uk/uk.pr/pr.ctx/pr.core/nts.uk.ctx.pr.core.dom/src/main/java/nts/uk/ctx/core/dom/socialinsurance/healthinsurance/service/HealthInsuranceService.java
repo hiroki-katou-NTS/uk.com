@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -63,9 +64,6 @@ public class HealthInsuranceService {
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee) {
 		bonusHealthInsuranceRateRepository.add(bonusHealthInsuranceRate);
 		healthInsuranceMonthlyFeeRepository.add(healthInsuranceMonthlyFee);
-		if (healthInsuranceMonthlyFee.getAutoCalculationCls() == AutoCalculationExecutionCls.AUTO){
-			
-		}
 	}
 
 	public void updateHealthInsurance(BonusHealthInsuranceRate bonusHealthInsuranceRate,
@@ -78,6 +76,8 @@ public class HealthInsuranceService {
 		if (AutoCalculationExecutionCls.AUTO.equals(healthInsuranceMonthlyFee.getAutoCalculationCls())) {
 			Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional = this.healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonth(yearMonthItem.start().v());
 			healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuranceStandardMonthlyOptional, bonusHealthInsuranceRate);
+		} else {
+			healthInsuranceMonthlyFee.updateGradeFee(Collections.EMPTY_LIST);
 		}
 		return healthInsuranceMonthlyFee;
 	}
