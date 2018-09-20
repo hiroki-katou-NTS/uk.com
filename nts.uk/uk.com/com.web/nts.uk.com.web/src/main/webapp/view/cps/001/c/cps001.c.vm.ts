@@ -38,8 +38,8 @@ module cps001.c.vm {
                     service.getDetail(x).done((data: IEmployee) => {
                         if (data) {
                             emp.id(iem.id);
-                            emp.code(iem.code);
-                            emp.name(iem.name);
+                            emp.code(data.code);
+                            emp.name(data.name);
 
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
