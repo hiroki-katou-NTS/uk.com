@@ -33,6 +33,10 @@
 	margin-right: 100px;
 }
 
+#B2_1 {
+	margin-right: 30px;
+}
+
 #B2_3 {
 	width: 150px;
 }
@@ -51,8 +55,14 @@
 	width: 180px;
 }
 
-#C3_1 label, #C2_24 {
+#C3_1 label, #C2_24, #C4_2 button {
 	white-space: initial;
+    line-height: 25px;
+}
+
+#C2_24 {
+	width: 400px;
+    display: inline-block;
 }
 
 #B3_12 {
@@ -61,7 +71,8 @@
 
 #C1_16 {
 	margin-left: 25px;
-	width: 235px;
+	margin-right: 125px;
+	width: 110px;
 }
 
 #C2_9 {
@@ -74,6 +85,12 @@
 
 #C4_2 button {
 	height: 75px;
+	width: 130px;
+	float: left;
+}
+
+#C4_2 button:first-child {
+	width: 80px;
 }
 
 #C4_10 .ntsRadioBox:first-child {
