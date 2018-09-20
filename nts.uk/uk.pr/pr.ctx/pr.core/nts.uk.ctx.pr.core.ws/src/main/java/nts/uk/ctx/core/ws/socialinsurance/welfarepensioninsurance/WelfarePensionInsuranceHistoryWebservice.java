@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.DeleteWelfarePensionInsuranceCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.EditWelfarePensionInsuranceCommnadHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance.command.WelfarePensionInsuraceRateCommand;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceFinder;
@@ -21,6 +23,12 @@ public class WelfarePensionInsuranceHistoryWebservice {
 	@Inject
 	private WelfarePensionInsuranceCommandHandler welfarePensionInsuranceCommandHandler;
 	
+	@Inject
+	private EditWelfarePensionInsuranceCommnadHandler editWelfarePensionInsuranceCommnadHandler;
+	
+	@Inject
+	private DeleteWelfarePensionInsuranceCommandHandler deleteWelfarePensionInsuranceCommnadHandler;
+	
 	@POST
 	@Path("/getByHistoryId/{historyId}")
 	public WelfarePensionInsuraceRateDto getByHistoryId(@PathParam("historyId") String historyId) {
@@ -31,5 +39,17 @@ public class WelfarePensionInsuranceHistoryWebservice {
 	@Path("/registerEmployeePension")
 	public void addEmployeePension(WelfarePensionInsuraceRateCommand command) {
 		welfarePensionInsuranceCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/editHistory")
+	public void editEmployeePension(WelfarePensionInsuraceRateCommand command) {
+		editWelfarePensionInsuranceCommnadHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/deleteHistory")
+	public void deleteEmployeePension(WelfarePensionInsuraceRateCommand command) {
+		deleteWelfarePensionInsuranceCommnadHandler.handle(command);
 	}
 }

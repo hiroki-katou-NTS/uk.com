@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
@@ -20,6 +21,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensio
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class WelfareInsuranceService {
@@ -91,5 +93,38 @@ public class WelfareInsuranceService {
 		bonusEmployeePensionInsuranceRateRepository.update(bonusEmployeePension);
 		employeesPensionMonthlyInsuranceFeeRepository.update(employeePensonMonthly);
 		welfarePensionInsuranceClassificationRepository.update(welfarePensionClassification);
+	}
+	
+	public void updateHistory (String officeCode, YearMonthHistoryItem yearMonth) {
+		Optional<WelfarePensionInsuranceRateHistory> opt_WelfarePensionHist = welfarePensionInsuranceRateHistoryRepository
+				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
+		if (!opt_WelfarePensionHist.isPresent()) {
+			return;
+		}
+		WelfarePensionInsuranceRateHistory welfarePensionHist = opt_WelfarePensionHist.get();
+		Optional<YearMonthHistoryItem> currentSpan = welfarePensionHist.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
+		if (!currentSpan.isPresent()) return;
+		welfarePensionHist.changeSpan(currentSpan.get(), new YearMonthPeriod(yearMonth.start() , yearMonth.end()));
+		welfarePensionInsuranceRateHistoryRepository.update(welfarePensionHist);
+	}
+	
+	public void deleteHistory (String officeCode, YearMonthHistoryItem yearMonth) {
+		Optional<WelfarePensionInsuranceRateHistory> opt_WelfarePensionHist = welfarePensionInsuranceRateHistoryRepository
+				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
+		if (!opt_WelfarePensionHist.isPresent()) {
+			return;
+		}
+		WelfarePensionInsuranceRateHistory welfarePensionHist = opt_WelfarePensionHist.get();
+		if (welfarePensionHist.getHistory().size() == 0) return;
+		YearMonthHistoryItem lastestHistory = welfarePensionHist.getHistory().get(0);
+		welfarePensionHist.remove(lastestHistory);
+		if (welfarePensionHist.getHistory().size() > 0){
+			lastestHistory = welfarePensionHist.getHistory().get(0);
+			welfarePensionHist.changeSpan(welfarePensionHist.getHistory().get(0),  new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
+		}
+		welfarePensionInsuranceRateHistoryRepository.remove(welfarePensionHist);
+		bonusEmployeePensionInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+		employeesPensionMonthlyInsuranceFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+		welfarePensionInsuranceClassificationRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 	}
 }

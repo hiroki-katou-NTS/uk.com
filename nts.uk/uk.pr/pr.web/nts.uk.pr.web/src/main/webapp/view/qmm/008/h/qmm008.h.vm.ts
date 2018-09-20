@@ -72,7 +72,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                     dialog.alertError(err.message);
                 });
             } else if (self.screen == "C"){
-                service.editWelfareInsuranceHistory(newHistory).done(function(){ 
+                service.editWelfareInsuranceHistory(command).done(function(){ 
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
@@ -96,7 +96,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                     dialog.alertError(err.message);
                 });
             } else if (self.screen == "C"){
-                service.deleteWelfareInsuranceHistory (self.selectedHistory).done(function(){
+                service.deleteWelfareInsuranceHistory (command).done(function(){
                     dialog.info({ messageId: "Msg_15" }).then(function(){
                         setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();

@@ -290,59 +290,28 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
 
         editHistory() {
             let self = this;
-            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
+            let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId, history = selectedOffice.welfareInsuranceRateHistory.history;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
-            setShared("QMM008_H_PARAMS", {screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
+            setShared("QMM008_H_PARAMS", {screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#C1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
                 if (params) {
                     self.isUpdateMode(false);
-                    let selectedCode = self.selectedWelfareInsurance();
-                    let newCode;
-                    let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
-                    // each office
-                    socialInsuranceOfficeList.forEach(office => {
-                        if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
-                            let history = office.welfareInsuranceRateHistory.history;
-                            if (history.length > 0) {
-                                // edit selected history and previous history
-                                if (params.modifyMethod == model.MOFIDY_METHOD.UPDATE) {
-                                    history.forEach((historyItem, index) => {
-                                        if (selectedHistory.historyId == historyItem.historyId) {
-                                            let currentPreviousMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
-                                            historyItem.startMonth = params.startMonth;
-                                            if (index > 0) history[index - 1].endMonth = currentPreviousMonth.format('YYYYMM');
-                                        }
-                                    });
-                                } else {
-                                    // delete history and update previous history
-                                    history.pop();
-                                    if (history.length > 0) {
-                                        history[history.length - 1].endMonth = '999912';
-                                        newCode = office.socialInsuranceCode + "___" + history[history.length - 1].historyId;
-                                    } else {
-                                        newCode = office.socialInsuranceCode;
-                                    }
-                                }
-
-                            }
-                            office.welfareInsuranceRateHistory.history = history;
-                            office = new model.SocialInsuranceOffice(office);
-                        }
-                    });
-                    self.socialInsuranceOfficeList(socialInsuranceOfficeList);
-                    if (newCode && newCode != selectedCode) {
-                        self.selectedWelfareInsurance(newCode);
-
-                    } else {
-                        self.selectedWelfareInsurance.valueHasMutated();
-                    }
+                    self.showAllOfficeAndHistory();
                     self.convertToTreeGridList();
-                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_BEGINNING) {
-                        self.initBlankData();
+                    if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
+                        if (history.length <= 1){
+                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
+                        } else {
+                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)    
+                        }
                     } else {
-                        self.initDataByLastestHistory();
+                        let selectedWelfareInsurance = self.selectedWelfareInsurance();
+                        setTimeout(function(){
+                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
+                            self.selectedWelfareInsurance(selectedWelfareInsurance);
+                        }, 50);
                     }
                 }
             });

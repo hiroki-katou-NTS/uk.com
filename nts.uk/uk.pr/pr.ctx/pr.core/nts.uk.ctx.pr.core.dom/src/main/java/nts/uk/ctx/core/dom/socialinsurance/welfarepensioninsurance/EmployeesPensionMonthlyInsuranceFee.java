@@ -67,6 +67,7 @@ public class EmployeesPensionMonthlyInsuranceFee extends AggregateRoot {
                                                                       WelfarePensionInsuranceClassification welfarePensionInsuranceCls) {
 
         //ドメインモデル「厚生年金標準月額」を全て取得する
+    	this.pensionInsurancePremium.clear();
         welfarePensionStandardMonthlyFee.ifPresent(x -> x.getStandardMonthlyPrice().forEach(stdMonthlyFee -> {
             val healthInsuranceGrade = stdMonthlyFee.getWelfarePensionGrade();
             val standardMonthlyFee   = stdMonthlyFee.getStandardMonthlyFee();

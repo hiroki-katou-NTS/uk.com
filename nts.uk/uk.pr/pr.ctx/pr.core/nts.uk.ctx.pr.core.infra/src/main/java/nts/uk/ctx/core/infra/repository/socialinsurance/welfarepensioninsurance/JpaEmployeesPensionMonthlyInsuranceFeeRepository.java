@@ -1,21 +1,28 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.*;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtBonusEmployeePensionInsuranceRate;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtEmployeesPensionMonthlyInsuranceFee;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtGradeWelfarePensionInsurancePremium;
-
-import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.ContributionFee;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionClassification;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionContributionRate;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFeeRepository;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.GradeWelfarePensionInsurancePremium;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.SalaryEmployeesPensionInsuranceRate;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtEmployeesPensionMonthlyInsuranceFee;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtGradeWelfarePensionInsurancePremium;
 
 @Stateless
 public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaRepository implements EmployeesPensionMonthlyInsuranceFeeRepository {
 
     private static final String GET_GRADE_WELFARE_PENSION_INSURANCE_PREMIUM_BY_HISTORY_ID = "SELECT a from QpbmtGradeWelfarePensionInsurancePremium a WHERE a.gradeWelfarePremiPk.historyId =:historyId";
-
+    private static final String DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID = "DELETE from QpbmtGradeWelfarePensionInsurancePremium a WHERE a.gradeWelfarePremiPk.historyId IN :historyId";
+    
     @Override
     public Optional<EmployeesPensionMonthlyInsuranceFee> getEmployeesPensionMonthlyInsuranceFeeByHistoryId(String historyId) {
         Optional<QpbmtEmployeesPensionMonthlyInsuranceFee> entity = this.queryProxy().find(historyId, QpbmtEmployeesPensionMonthlyInsuranceFee.class);
@@ -55,6 +62,7 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	@Override
 	public void deleteByHistoryIds(List<String> historyIds) {
 		this.commandProxy().removeAll(QpbmtEmployeesPensionMonthlyInsuranceFee.class, historyIds);
+		this.deleteGradeWelfareByHistoryIds(historyIds);
 	}
 	
 	@Override
@@ -74,4 +82,8 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 		List<QpbmtGradeWelfarePensionInsurancePremium> listEntity =  QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain);
 		this.commandProxy().removeAll(listEntity);		
 	}
+	
+	public void deleteGradeWelfareByHistoryIds(List<String> historyIds) {
+		this.getEntityManager().createQuery(DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID, QpbmtGradeWelfarePensionInsurancePremium.class).setParameter("historyId", historyIds).executeUpdate();
+	} 
 }
