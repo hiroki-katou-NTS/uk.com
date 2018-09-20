@@ -98,11 +98,12 @@
                                 <div >
                                     <input class = "C3_6" id = "C3_6" tabindex="5"
                                              data-bind="ntsNumberEditor: {
-																option : {width: '40px'},
+																option : {width: '60px'},
 																constraint: 'InsuranceRate',
 																value: empConRatio,
 																enable: useArt == 1,
 																required: useArt == 1,
+																decimalength:3,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 

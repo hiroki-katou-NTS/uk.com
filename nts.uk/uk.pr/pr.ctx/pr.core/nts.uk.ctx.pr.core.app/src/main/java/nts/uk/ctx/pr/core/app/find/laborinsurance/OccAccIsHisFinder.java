@@ -19,7 +19,9 @@ public class OccAccIsHisFinder {
         String companyId = AppContexts.user().companyId();
         Optional<OccAccIsHis> occAccIsHis =  workersComInsurService.initDataAcquisition(companyId);
         List<OccAccIsHisDto> occAccIsHisDtoList = new ArrayList<OccAccIsHisDto>();
-        occAccIsHisDtoList = occAccIsHis.isPresent() ?  OccAccIsHisDto.fromDomain(occAccIsHis.get()) :  occAccIsHisDtoList;
+        if (occAccIsHis.isPresent() && occAccIsHis.get().getHistory() != null) {
+            occAccIsHisDtoList = OccAccIsHisDto.fromDomain(occAccIsHis.get());
+        }
         return occAccIsHisDtoList;
     }
 
