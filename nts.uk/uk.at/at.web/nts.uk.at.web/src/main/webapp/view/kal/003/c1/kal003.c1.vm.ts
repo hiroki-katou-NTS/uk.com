@@ -18,20 +18,6 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             { code: 0, name: nts.uk.resource.getText("KDW007_108") },
             { code: 1, name: nts.uk.resource.getText("KDW007_107") }
         ]);
-
-        enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: "等しくない（≠）" },
-            { code: 1, name: "等しい（＝）" },
-            { code: 2, name: "以下（≦）" },
-            { code: 3, name: "以上（≧）" },
-            { code: 4, name: "より小さい（＜）" },
-            { code: 5, name: "より大きい（＞）" },
-            { code: 6, name: "範囲の間（境界値を含まない）（＜＞）" },
-            { code: 7, name: "範囲の間（境界値を含む）（≦≧）" },
-            { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
-            { code: 9, name: "範囲の外（境界値を含む）（≧≦）" }
-        ]);
-
         enumSingleValueCompareTypes: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "等しくない（≠）" },
             { code: 1, name: "等しい（＝）" },
@@ -132,7 +118,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
 
             self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 if (value > 5) {
-                    self.enumConditionType([
+                    self.([
                         { code: 0, name: "固定値", enable: true },
                         { code: 1, name: "勤怠項目", enable: false }
                     ]);
