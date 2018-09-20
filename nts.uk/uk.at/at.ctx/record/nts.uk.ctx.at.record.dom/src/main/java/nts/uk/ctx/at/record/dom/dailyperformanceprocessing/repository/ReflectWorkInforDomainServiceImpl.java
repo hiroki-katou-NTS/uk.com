@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -70,7 +71,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ClosureOfDaily
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.NewReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
@@ -162,8 +162,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomainService {
 
@@ -278,6 +278,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
