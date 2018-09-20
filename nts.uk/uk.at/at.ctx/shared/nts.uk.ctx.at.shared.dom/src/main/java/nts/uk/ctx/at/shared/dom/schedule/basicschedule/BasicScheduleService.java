@@ -21,6 +21,18 @@ public interface BasicScheduleService {
 	 * @param workTimeCode
 	 */
 	void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode);
+	
+	/**
+	 * check Pair WorkType and WorkTime With List WorkType
+	 * Return state of error checking process: nothing or throw error
+	 * For response
+	 * 勤務種類・就業時間帯ペアチェック
+	 * 
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param listWorkType
+	 */
+	void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType);
 
 	/**
 	 * 勤務種類のマスタチェック
