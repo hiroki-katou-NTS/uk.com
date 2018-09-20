@@ -75,10 +75,10 @@
                             <!--B3_5	処理年和暦-->
                             <span><label data-bind="text: processingYearJapanLabel"></label></span>
                             <!--B3_6	反映-->
-                            <button class=""
+                            <button class="small"
                                     data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
                             <!--B3_7	システム基準日情報反映-->
-                            <button style="margin-left: 50px;" data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
+                            <button class="small" style="margin-left: 50px;" data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
                         </div>
                         <table id="expand-example">
                             <tbody>
@@ -87,7 +87,7 @@
                                 <!--B5_1	展開-->
                                 <!--B6_1	縮小-->
                                 <th>
-                                    <button style="float: right;" class="toggle-expand" data-bind="click: toggle"><span
+                                    <button style="float: right;" class="toggle-expand small" data-bind="click: toggle"><span
                                             data-bind="text: btnText"></span></button>
                                 </th>
                             </tr>
