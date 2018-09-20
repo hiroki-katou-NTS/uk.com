@@ -1575,7 +1575,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            		}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
-			            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 			            		cell.putValue(value, true);
 			            	}
 			            	setFontStyle(style);
@@ -1647,7 +1647,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
@@ -1773,7 +1773,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
-				            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
 				            	setFontStyle(style);
@@ -2225,7 +2225,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
@@ -2288,7 +2288,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
