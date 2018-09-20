@@ -56,9 +56,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 					emp.getPersonId(), 
 					(person.isPresent() && person.get().getPersonNameGroup().getBusinessName() != null) ?
 					 person.get().getPersonNameGroup().getBusinessName().v() : 
-					(person.get().getPersonNameGroup().getPersonName().getFullName() != null ? (person.get().getPersonNameGroup().getPersonName().getFullName().v()) : null));
+					((person.isPresent() && person.get().getPersonNameGroup().getPersonName().getFullName() != null) ? (person.get().getPersonNameGroup().getPersonName().getFullName().v()) : null));
 			return Optional.of(result);
-
 		}
 	}
 
