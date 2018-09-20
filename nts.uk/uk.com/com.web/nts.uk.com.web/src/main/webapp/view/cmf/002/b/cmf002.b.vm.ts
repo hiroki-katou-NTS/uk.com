@@ -357,8 +357,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     //条件名出力選択, 項目名出力選択
     export function getNotUseAtrItems(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText('CMF002_47')),
-            new model.ItemModel(1, getText('CMF002_48'))
+            new model.ItemModel(1, getText('CMF002_47')),
+            new model.ItemModel(0, getText('CMF002_48'))
         ];
     }
 
