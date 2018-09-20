@@ -136,4 +136,13 @@ public interface IntermediateDataPub {
 	 */
 	public void createApprovalStatus(String employeeID, GeneralDate date, Integer rootType);
 	
+	/**
+	 * RequestList 424
+	 * [No.424](中間データ版)承認状態を削除する
+	 * @param employeeID-対象者
+	 * @param targetDate-対象日
+	 * @param rootType-実績確認ルート種類
+	 */
+	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType);
+	
 }

@@ -109,7 +109,11 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
-
+		
+		if(CollectionUtil.isEmpty(itemValues)){
+			return attendanceItems;
+		}
+		
 		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
 
 		if (root == null) {
@@ -173,9 +177,9 @@ public class AttendanceItemUtil implements ItemConst {
 						x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 				).entrySet().stream().forEach(idx -> {
 
-					boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
+//					boolean isNotHaveData = list.isEmpty() || list.values().size() < idx.getKey();
 
-					Map<Integer, T> idxValue = isNotHaveData ? new HashMap<>() : getItemWith(list, layout, idx.getKey(), className);
+					Map<Integer, T> idxValue = getItemWith(list, layout, idx.getKey(), className);
 
 					getItemValues(fieldValue(className, idxValue, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX,
 										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
@@ -386,8 +390,10 @@ public class AttendanceItemUtil implements ItemConst {
 						callSetMethod(attendanceItems, valueAnno, itemValue);
 
 					} else {
+						if(field.getType().isPrimitive() && itemValue.value() == null){
+							return;
+						}
 						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
-
 					}
 				}
 				return;

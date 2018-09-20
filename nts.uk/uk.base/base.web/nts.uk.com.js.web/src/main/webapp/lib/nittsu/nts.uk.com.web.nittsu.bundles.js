@@ -790,9 +790,6 @@ var nts;
                         responseText_1 = res;
                     }).fail(function () {
                     });
-                    if (responseText_1.length == 0 || responseText_1 === messageId) {
-                        return messageId;
-                    }
                     message = responseText_1;
                     messages[messageId] = message;
                 }
@@ -15596,8 +15593,13 @@ var nts;
                                             .trigger(SHOWVALUE);
                                         clearTimeout(sto);
                                     }, 10);
-                                    if (data[ENABLE] && !$(":focus").length) {
-                                        $element.focus();
+                                    if (data[ENABLE]) {
+                                        var f = $(':focus');
+                                        if (f.hasClass('ui-igcombo-field')
+                                            || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
+                                            || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
+                                            $element.focus();
+                                        }
                                     }
                                 },
                                 dropDownOpening: function (evt, ui) {
@@ -15756,6 +15758,13 @@ var nts;
                                 .trigger(CHANGED, [ENABLE, enable])
                                 .trigger(CHANGED, [EDITABLE, editable])
                                 .trigger(CHANGED, [REQUIRED, required]);
+                            var sto = setTimeout(function () {
+                                if ($element.data("igCombo")) {
+                                    $element
+                                        .igCombo(OPTION, "disabled", !enable);
+                                    clearTimeout(sto);
+                                }
+                            }, 100);
                             // if igCombo has init
                             if ($element.data("igCombo")) {
                                 var data = $element.data(DATA), olds = data[DATA];
@@ -15763,11 +15772,6 @@ var nts;
                                 if (!_.isEqual(olds, options)) {
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
-                                var sto_1 = setTimeout(function () {
-                                    $element
-                                        .igCombo(OPTION, "disabled", !enable);
-                                    clearTimeout(sto_1);
-                                }, 100);
                                 $element
                                     .igCombo("value", value);
                                 if (!enable) {
@@ -19525,7 +19529,7 @@ var nts;
                      */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var CHECKBOX_WIDTH = 70;
+                        var CHECKBOX_WIDTH = 40;
                         var SEARCH_AREA_HEIGHT = 45;
                         var BUTTON_SEARCH_WIDTH = 70;
                         var INPUT_SEARCH_PADDING = 65;
@@ -19547,7 +19551,7 @@ var nts;
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
-                        var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+                        var enableRowNumbering = false;
                         var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
                         var beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
@@ -19634,7 +19638,7 @@ var nts;
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
                             //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
                         var leftCriterion = _.map(leftColumns(), function (c) { return c.key === undefined ? c.prop : c.key; });

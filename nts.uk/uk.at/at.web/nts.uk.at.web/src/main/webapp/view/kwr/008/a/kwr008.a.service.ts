@@ -5,11 +5,11 @@ module nts.uk.at.view.kwr008.a.service{
         getPeriod : "at/function/annualworkschedule/get/period",
         getPageBreakSelection : "at/function/annualworkschedule/get/enum/pagebreak",
         getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting",
-        getPermissionOfEmploymentForm: "at/function/annualworkschedule/getPermissionOfEmploymentForm"
+        getCurrentLoginerRole: "at/function/annualworkschedule/getCurrentLoginerRole"
     }
 
-    export function getPermissionOfEmploymentForm() : JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getPermissionOfEmploymentForm);
+    export function getCurrentLoginerRole() : JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getCurrentLoginerRole);
     }
 
     export function getPeriod(): JQueryPromise<any>{
