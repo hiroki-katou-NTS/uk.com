@@ -298,7 +298,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
-            setShared("QMM008_H_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
+            setShared("QMM008_H_PARAMS", {screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#C1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
