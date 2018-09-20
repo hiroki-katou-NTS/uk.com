@@ -114,31 +114,31 @@ module nts.uk.pr.view.qmm012.b {
                 
                 if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
                     if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorUpperRangeValueAmount() == null)) {
-                        listMessage.push("MsgQ_14");
+                        $('#C2_12').ntsError('set', { messageId: "MsgQ_14" });
                     }
                     
                     if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && (itemRangeSet.errorLowerRangeValueAmount() == null)) {
-                        listMessage.push("MsgQ_15");
+                        $('#C2_15').ntsError('set', { messageId: "MsgQ_15" });
                     }
                     
                     if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.errorUpperRangeValueAmount() != null) && (itemRangeSet.errorLowerRangeValueAmount() != null)
                             && itemRangeSet.errorUpperRangeValueAmount() <= itemRangeSet.errorLowerRangeValueAmount()) {
-                        listMessage.push("MsgQ_1");
+                        $('#C2_15').ntsError('set', { messageId: "MsgQ_1" });
                     }
                     
                     if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmUpperRangeValueAmount() == null)) {
-                        listMessage.push("MsgQ_16");
+                        $('#C2_19').ntsError('set', { messageId: "MsgQ_16" });
                     }
                     
                     if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerRangeValueAmount() == null)) {
-                        listMessage.push("MsgQ_16");
+                        $('#C2_22').ntsError('set', { messageId: "MsgQ_16" });
                     }
                     
                     if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.alarmUpperRangeValueAmount() != null) && (itemRangeSet.alarmLowerRangeValueAmount() != null)
                             && itemRangeSet.alarmUpperRangeValueAmount() <= itemRangeSet.alarmLowerRangeValueAmount()) {
-                        listMessage.push("MsgQ_2");
+                        $('#C2_22').ntsError('set', { messageId: "MsgQ_2" });
                     }
                 }
                 
@@ -146,7 +146,9 @@ module nts.uk.pr.view.qmm012.b {
                     //TODO phải chơi 2 kiểu time
                 }
                 
-                if(listMessage.length == 0) {
+                $(".check-validate").trigger("validate");
+                
+                if(!nts.uk.ui.errors.hasError()) {
                     let oldSalaryId = self.statementItemDataSelected().salaryItemId();
                     let command = ko.toJS(self.statementItemDataSelected);
                     delete command.setBreakdownItem;
@@ -165,7 +167,6 @@ module nts.uk.pr.view.qmm012.b {
                             });
                         });
                     }).fail(err => {
-                        //TODO xử lý message lỗi
                         $("#B3_3").focus();
                     });
                 }
@@ -198,7 +199,6 @@ module nts.uk.pr.view.qmm012.b {
                             });
                         });
                     }).fail(err => {
-                        //TODO xử lý message lỗi
                         $("#B3_3").focus();
                     });
                 })
@@ -312,6 +312,7 @@ module nts.uk.pr.view.qmm012.b {
                 }
                 
                 self.salaryItemId.subscribe(x => {
+                    
                     if(x) {
                         data = _.filter(screenModel.statementItemDataList(), function(o) {
                             return x == o.salaryItemId;
@@ -339,7 +340,10 @@ module nts.uk.pr.view.qmm012.b {
                         
                         self.checkCreate(false);
                         screenModel.statementItemDataSelected(self);
+                        $("#B3_3").focus();
                     }
+                    
+                    nts.uk.ui.errors.clearAll();
                 });
             }
             

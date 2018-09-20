@@ -40,7 +40,7 @@
 				<!-- Excel出力 -->
 				<button id="B1_5" tabindex="5" class="outputExcelBtn" data-bind="click: outputExcel, enable: false">#{i18n.getText('QMM012_24')}</button>
 				<!-- マスタ修正ログ -->
-				<button id="B1_6" tabindex="6" class="modifyLogBtn" data-bind="click: modifyLog, enable: true">#{i18n.getText('QMM012_25')}</button>
+				<button id="B1_6" tabindex="6" class="modifyLogBtn" data-bind="click: modifyLog, enable: false">#{i18n.getText('QMM012_25')}</button>
 				<!-- 印字名称の登録 -->
 				<button id="B1_7" tabindex="7" class="registerPrintingBtn" data-bind="click: registerPrintingName, enable: true">#{i18n.getText('QMM012_10')}</button>
 			</div>
@@ -59,7 +59,6 @@
 																	value: selectedCategory,
 																	optionsText: 'name',
 																	enable: true,
-																	required: true,
 																	selectFirstIfNull: false,
 																	columns: [
 																		{ prop: 'name', length: 12 }
@@ -69,13 +68,13 @@
 						</div>
 						<!-- B2_6, B2_7, B2_8 -->
 						<div style="width: 410px" tabindex="10" data-bind="ntsSearchBox: {searchMode: 'highlight',
-																			label: '#[QMM012_29]',
+																			label: 'コード/名称',
 																			targetKey: 'salaryItemId', 
 																			comId: 'statementList', 
 																			items: statementItemDataList, 
 																			selected: statementItemDataSelected().salaryItemId, 
 																			selectedKey: 'salaryItemId',
-																			searchText: '#[QMM012_30]',
+																			searchText: '検索',
 																			fields: ['itemNameCd'], 
 																			mode: 'igGrid'}" />
 						<!-- B2_9 -->
@@ -98,7 +97,7 @@
 							<div id="B3_1" data-bind="ntsFormLabel: {required: true, constraint: ['ItemNameCode', 'ItemName'] }">#{i18n.getText('QMM012_29')}</div>
 							<div data-bind="with: statementItem" style="display: inline-block;">
 								<!-- 項目名コード -->
-								<input id="B3_2" tabindex="12"
+								<input id="B3_2" class="check-validate" tabindex="12"
 										data-bind="ntsTextEditor :{
 											name: '#[QMM012_32]',
 											value: itemNameCd,
@@ -110,7 +109,7 @@
 							</div>
 							<div data-bind="with: statementItemName" style="display: inline-block;">
 								<!-- 項目名コード -->
-								<input id="B3_3" tabindex="13"
+								<input id="B3_3" class="check-validate" tabindex="13"
 										data-bind="ntsTextEditor :{
 											name: '#[QMM012_33]',
 											value: name,
@@ -134,7 +133,7 @@
 						 	<!-- 略名 -->
 							<div id="B3_4" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_35')}</div>
 							<!-- 項目名コード -->
-							<input id="B3_5" tabindex="14"
+							<input id="B3_5" class="check-validate" tabindex="14"
 									data-bind="ntsTextEditor :{
 										name: '#[QMM012_35]',
 										value: shortName,
@@ -250,7 +249,7 @@
 													<!-- 限度金額 -->
 													<div id="C4_7" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM012_81')}</div>
 													<!-- 限度金額入力 -->
-													<input id="C4_8" tabindex="20" data-bind="ntsNumberEditor: {
+													<input id="C4_8" class="check-validate" tabindex="20" data-bind="ntsNumberEditor: {
 																	name: '#[QMM012_81]',
 																	value: limitAmount,
 																	constraint: 'LimitAmount',
@@ -432,7 +431,7 @@
 										<!-- エラー範囲上限チェック -->
 										<div id="C2_11" tabindex="31" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
 										<!-- エラー範囲上限入力 -->
-										<input id="C2_12" tabindex="35" data-bind="ntsNumberEditor: {
+										<input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_57]',
 														value: errorUpperRangeValueAmount,
 														constraint: 'MonetaryValue',
@@ -446,7 +445,7 @@
 										<!-- エラー範囲下限チェック -->
 										<div id="C2_14" tabindex="36" data-bind="ntsCheckBox: { checked: errorLowerLimitSettingAtrCus }"></div>
 										<!-- エラー範囲下限入力 -->
-										<input id="C2_15" tabindex="37" data-bind="ntsNumberEditor: {
+										<input id="C2_15" class="check-validate" tabindex="37" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_59]',
 														value: errorLowerRangeValueAmount,
 														constraint: 'MonetaryValue',
@@ -461,7 +460,7 @@
 										<!-- アラーム範囲上限チェック -->
 										<div id="C2_18" tabindex="38" data-bind="ntsCheckBox: { checked: alarmUpperLimitSettingAtrCus }"></div>
 										<!-- アラーム範囲上限入力 -->
-										<input id="C2_19" tabindex="39" data-bind="ntsNumberEditor: {
+										<input id="C2_19" class="check-validate" tabindex="39" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_62]',
 														value: alarmUpperRangeValueAmount,
 														constraint: 'MonetaryValue',
@@ -475,7 +474,7 @@
 										<!-- アラーム範囲下限チェック -->
 										<div id="C2_21" tabindex="40" data-bind="ntsCheckBox: { checked: alarmLowerLimitSettingAtrCus }"></div>
 										<!-- アラーム範囲下限入力 -->
-										<input id="C2_22" tabindex="41" data-bind="ntsNumberEditor: {
+										<input id="C2_22" class="check-validate" tabindex="41" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_64]',
 														value: alarmLowerRangeValueAmount,
 														constraint: 'MonetaryValue',
@@ -487,7 +486,7 @@
 									<div class="valign-center control-group">
 										<div class="space1"></div>
 										<!-- ※エラーの場合はデータが登録されません。アラームの場合は、メッセージが表示されます。（データが登録されます）-->
-										<label id="C2_24">#{i18n.getText('#QMM012_66')}</label>
+										<div id="C2_24">#{i18n.getText('QMM012_66')}</div>
 									</div>
 								</div>
 							</com:ko-if>
