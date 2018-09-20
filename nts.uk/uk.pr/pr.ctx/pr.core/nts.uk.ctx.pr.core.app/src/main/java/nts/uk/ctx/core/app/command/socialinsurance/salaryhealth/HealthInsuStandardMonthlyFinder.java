@@ -35,7 +35,7 @@ public class HealthInsuStandardMonthlyFinder {
 	private HealthInsuranceMonthlyFeeRepository healthInsuranceMonthlyFeeRepository;
 	
 	
-	public SalaryHealthDto initScreen(int date, String historyId) {
+	public SalaryHealthDto initScreen(int date, String historyId, Boolean check) {
 		
 		List<HealthInsuranceStandardGradePerMonthDto> healthInsuranceStandardGradePerMonthDtos = new ArrayList<>();
 		List<HealthInsuranceGradePerRewardMonthlyRangeDto> healthInsuranceGradePerRewardMonthlyRangesDtos = new ArrayList<>();
@@ -63,7 +63,14 @@ public class HealthInsuStandardMonthlyFinder {
 		SalaryHealthInsurancePremiumRateDto salaryHealthInsurancePremiumRateDto = new SalaryHealthInsurancePremiumRateDto();
 		List<HealthInsurancePerGradeFeeDto> healthInsurancePerGradeFeeDtos = new ArrayList<>();
 		Optional<HealthInsuranceMonthlyFee> dataFee = healthInsuranceMonthlyFeeRepository.getHealthInsuranceMonthlyFeeById(historyId);
+		
+		
 		if(dataFee.isPresent()) {
+			
+			if(check) {
+				dataFee.get().algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuStandarMonthly);
+			}
+			
 			for (int i = 0; i < dataFee.get().getHealthInsurancePerGradeFee().size(); i++) {
 				HealthInsurancePerGradeFeeDto healthInsurancePerGradeFeeDto = new HealthInsurancePerGradeFeeDto(dataFee.get().getHealthInsurancePerGradeFee().get(i).getHealthInsuranceGrade(),dataFee.get().getHealthInsurancePerGradeFee().get(i).getInsuredBurden().getHealthInsurancePremium().v().toString(),
 						dataFee.get().getHealthInsurancePerGradeFee().get(i).getInsuredBurden().getNursingCare().v().toString(), 
@@ -113,15 +120,6 @@ public class HealthInsuStandardMonthlyFinder {
 			response.add(data);
 		}
 		return response;
-	}
-	
-	public SalaryHealthDto countHealthRate(StartCommandHealth startCommandHealth) {
-		
-		Optional<HealthInsuranceStandardMonthly> healthInsuStandarMonthly = healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonth(startCommandHealth.getDate());
-		HealthInsuranceMonthlyFee healthInsuranceMonthlyFee = new HealthInsuranceMonthlyFee();
-		healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuStandarMonthly);
-		
-		return null;
 	}
 	
 }

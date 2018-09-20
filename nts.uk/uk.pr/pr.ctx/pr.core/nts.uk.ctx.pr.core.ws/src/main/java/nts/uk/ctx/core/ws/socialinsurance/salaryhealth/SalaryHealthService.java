@@ -28,7 +28,7 @@ public class SalaryHealthService {
 	@POST
 	@Path("/start")
 	public SalaryHealthDto startScreen(StartCommandHealth startCommand) {
-		return healthInsuStandardMonthlyFinder.initScreen(startCommand.getDate(), startCommand.getHistoryId());
+		return healthInsuStandardMonthlyFinder.initScreen(startCommand.getDate(), startCommand.getHistoryId(),false);
 	}
 	
 	@POST
@@ -40,7 +40,7 @@ public class SalaryHealthService {
 	@POST
 	@Path("/count")
 	public SalaryHealthDto countHealthInsu(StartCommandHealth startCommand) {
-		return healthInsuStandardMonthlyFinder.countHealthRate(startCommand);
+		return healthInsuStandardMonthlyFinder.initScreen(startCommand.getDate(), startCommand.getHistoryId(),true);
 	}
 	
 	@POST
