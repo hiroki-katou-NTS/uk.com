@@ -42,6 +42,8 @@ public class JpaItemRangeSetInitRepository extends JpaRepository implements Item
 
 	@Override
 	public void remove(String cid, String salaryItemId) {
-		this.commandProxy().remove(QpbmtItemRangeSetInit.class, new QpbmtItemRangeSetInitPk(cid, salaryItemId));
+		if (this.getItemRangeSetInitById(cid, salaryItemId).isPresent()) {
+			this.commandProxy().remove(QpbmtItemRangeSetInit.class, new QpbmtItemRangeSetInitPk(cid, salaryItemId));
+		}
 	}
 }

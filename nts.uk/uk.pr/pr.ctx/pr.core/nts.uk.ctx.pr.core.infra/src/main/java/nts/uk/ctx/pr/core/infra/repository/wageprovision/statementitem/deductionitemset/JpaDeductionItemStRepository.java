@@ -42,6 +42,8 @@ public class JpaDeductionItemStRepository extends JpaRepository implements Deduc
 
 	@Override
 	public void remove(String cid, String salaryItemId) {
-		this.commandProxy().remove(QpbmtDeductionItemSt.class, new QpbmtDeductionItemStPk(cid, salaryItemId));
+		if (this.getDeductionItemStById(cid, salaryItemId).isPresent()) {
+			this.commandProxy().remove(QpbmtDeductionItemSt.class, new QpbmtDeductionItemStPk(cid, salaryItemId));
+		}
 	}
 }

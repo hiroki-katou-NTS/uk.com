@@ -41,6 +41,8 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
 
 	@Override
 	public void remove(String cid, String salaryItemId) {
-		this.commandProxy().remove(QpbmtTimeItemSt.class, new QpbmtTimeItemStPk(cid, salaryItemId));
+		if (this.getTimeItemStById(cid, salaryItemId).isPresent()) {
+			this.commandProxy().remove(QpbmtTimeItemSt.class, new QpbmtTimeItemStPk(cid, salaryItemId));
+		}
 	}
 }

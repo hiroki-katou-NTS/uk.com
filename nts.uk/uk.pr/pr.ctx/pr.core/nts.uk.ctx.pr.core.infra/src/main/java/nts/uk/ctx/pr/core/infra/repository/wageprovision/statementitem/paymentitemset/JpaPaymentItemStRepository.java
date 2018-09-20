@@ -42,6 +42,8 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
 
 	@Override
 	public void remove(String cid, String salaryItemId) {
-		this.commandProxy().remove(QpbmtPaymentItemSt.class, new QpbmtPaymentItemStPk(cid, salaryItemId));
+		if (this.getPaymentItemStById(cid, salaryItemId).isPresent()) {
+			this.commandProxy().remove(QpbmtPaymentItemSt.class, new QpbmtPaymentItemStPk(cid, salaryItemId));
+		}
 	}
 }
