@@ -1,12 +1,14 @@
-#contents-area {
-	position: relative;
-	padding: 10px;
-	overflow-y: auto;
-}
 #master-wrapper {
 	height: 100vh;
+    div#contents-area {
+		position: relative;
+		padding: 10px;
+		overflow-y: auto;
+        &:first-child {
+            max-height: calc(100vh - 86px) !important; 
+        }
+    }
 }
-
 	
 .fixed-flex-layout {
 	display: flex;

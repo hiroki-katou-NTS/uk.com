@@ -14,5 +14,7 @@
 	border-top: solid 1px $frame_border_color;
 	text-align: center;
 	padding-top: 8px;
-  	white-space: nowrap;
+    white-space: nowrap;
+    background-color: #fff;
+    z-index: 999999;
 }
