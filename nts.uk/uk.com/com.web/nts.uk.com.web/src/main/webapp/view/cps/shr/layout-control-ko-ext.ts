@@ -2600,7 +2600,7 @@ module nts.custombinding {
                 // write primitive constraints to viewContext
                 primitiveConsts();
 
-                if (typeof $editable === 'boolean' ? $editable === false : $editable !== 2) {
+                if (typeof $editable === 'boolean' || $editable !== 2) {
                     // init data for save layout
                     opts.sortable.outData(_(data || []).map((item, i) => {
                         return {
