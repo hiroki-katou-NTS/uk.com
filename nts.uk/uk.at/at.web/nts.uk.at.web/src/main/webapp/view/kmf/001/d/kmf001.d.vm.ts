@@ -62,7 +62,7 @@ module nts.uk.pr.view.kmf001.d {
                 
                 self.retentionYearsAmount = ko.observable(0);
                 self.maxDaysCumulation = ko.observable(0);
-                self.yearsAmountByEmp = ko.observable(0);
+                self.yearsAmountByEmp = ko.observable(99);
                 self.maxDaysCumulationByEmp = ko.observable(0);
                 
                 self.deleteEnable = ko.observable(true);
