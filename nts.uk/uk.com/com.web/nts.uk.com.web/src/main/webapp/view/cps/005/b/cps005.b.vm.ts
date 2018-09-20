@@ -52,7 +52,7 @@ module nts.uk.com.view.cps005.b {
                 service.getAllPerInfoItemDefByCtgId(self.currentCtg.categoryId, self.currentCtg.currentCtg.personEmployeeType).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
-                        self.currentItemData().selectionItemLst(_.orderBy(data.selectionItemLst, 'selectionItemName'));
+                        self.currentItemData().selectionItemLst(data.selectionItemLst);
                         // resset lai selectiuon Item List
                         self.isUpdate = true;
                         self.currentItemData().isEnableButtonProceed(true);
@@ -321,7 +321,7 @@ module nts.uk.com.view.cps005.b {
                 let personEmployeeType = __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType,
                     dataTypeEnumArray = (personEmployeeType == 2) ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4, 5];
                 
-                self.personInfoItemList(_.orderBy(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }), 'itemName'));
+                self.personInfoItemList(_.map(params.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                 self.dataTypeEnum = params.dataTypeEnum || new Array();
                 self.dataTypeEnumFilter = _.filter(params.dataTypeEnum, function(c) {
                     return dataTypeEnumArray.indexOf(c.value) > -1;
@@ -333,7 +333,7 @@ module nts.uk.com.view.cps005.b {
                 self.stringItemDataTypeEnum = params.stringItemDataTypeEnum || new Array();
                 self.stringItemDataTypeEnum.reverse();
                 self.dateItemTypeEnum = params.dateItemTypeEnum || new Array();
-                self.selectionItemLst(_.orderBy(params.selectionItemLst, 'selectionItemName') || []);
+                self.selectionItemLst(params.selectionItemLst || []);
                 self.selectionId("");
                 self.selectionLst([]);
                 //subscribe select category code
@@ -565,7 +565,7 @@ module nts.uk.com.view.cps005.b {
                 if (currentItemData.currentItemSelected.fixedAtr === ISFIXED.FIXED) {
                     self.decimalPart(data.decimalPart || 0);
                 } else {
-                    self.decimalPart(data.decimalPart || null);
+                    self.decimalPart(data.decimalPart == 0 ? 0 : data.decimalPart || data.decimalPart == null ? null : data.decimalPart);
                 }
 
                 self.integerPart(data.integerPart || 0);
