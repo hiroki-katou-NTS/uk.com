@@ -1,17 +1,15 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
-import java.math.BigDecimal;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeeShareAmountMethod;
 
+import java.math.BigDecimal;
+
 /**
  * 給与健康保険料率
  */
-@AllArgsConstructor
 @Getter
 public class SalaryHealthInsurancePremiumRate extends DomainObject {
 
@@ -49,15 +47,15 @@ public class SalaryHealthInsurancePremiumRate extends DomainObject {
                                             BigDecimal individualLongCareInsuranceRate, BigDecimal individualBasicInsuranceRate, BigDecimal individualHealthInsuranceRate, int individualFractionCls, BigDecimal individualSpecialInsuranceRate,
                                             BigDecimal employeeLongCareInsuranceRate, BigDecimal employeeBasicInsuranceRate, BigDecimal employeeHealthInsuranceRate, int employeeFractionCls, BigDecimal employeeSpecialInsuranceRate) {
         this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
-        this.individualBurdenRatio     = new HealthContributionRate(individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate);
-        this.employeeBurdenRatio       = new HealthContributionRate(employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
+        this.individualBurdenRatio = new HealthContributionRate(individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate);
+        this.employeeBurdenRatio = new HealthContributionRate(employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
     }
 
-	public SalaryHealthInsurancePremiumRate(int employeeShareAmountMethod,
-			HealthContributionRate individualBurdenRatio, HealthContributionRate employeeBurdenRatio) {
-		super();
-		this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
-		this.individualBurdenRatio = individualBurdenRatio;
-		this.employeeBurdenRatio = employeeBurdenRatio;
-	}
+    public SalaryHealthInsurancePremiumRate(int employeeShareAmountMethod,
+                                            HealthContributionRate individualBurdenRatio, HealthContributionRate employeeBurdenRatio) {
+        super();
+        this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
+        this.individualBurdenRatio = individualBurdenRatio;
+        this.employeeBurdenRatio = employeeBurdenRatio;
+    }
 }

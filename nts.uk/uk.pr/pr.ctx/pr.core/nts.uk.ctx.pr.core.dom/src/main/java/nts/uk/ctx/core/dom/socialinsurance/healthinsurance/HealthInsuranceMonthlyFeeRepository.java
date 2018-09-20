@@ -16,14 +16,6 @@ public interface HealthInsuranceMonthlyFeeRepository {
      */
     Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId);
 
-    /**
-     * Add or update 健康保険月額保険料額
-     *
-     * @param domain     HealthInsuranceMonthlyFeen
-     * @param screenMode ScreenMode
-     */
-    void addOrUpdate(HealthInsuranceMonthlyFee domain, ScreenMode screenMode);
-
     void deleteByHistoryIds(List<String> historyIds);
 
     void add(HealthInsuranceMonthlyFee domain);
