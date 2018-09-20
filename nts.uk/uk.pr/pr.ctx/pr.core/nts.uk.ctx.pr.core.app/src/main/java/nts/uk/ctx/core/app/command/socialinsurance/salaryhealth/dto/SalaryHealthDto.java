@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SalaryHealthDto {
 	
-	List<CusDataDto> cusDataDtos;
+	List<CusHealthInsuDto> cusDataDtos;
 	SalaryHealthInsurancePremiumRateDto premiumRate;
 	
 }

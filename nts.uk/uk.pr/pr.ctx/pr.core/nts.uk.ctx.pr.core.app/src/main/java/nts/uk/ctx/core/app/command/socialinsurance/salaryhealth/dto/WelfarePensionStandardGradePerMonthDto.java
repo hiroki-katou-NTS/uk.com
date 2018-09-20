@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class StartCommand {
+public class WelfarePensionStandardGradePerMonthDto {
 	
-	private String historyId;
-	private int date;
+	 private int welfarePensionGrade;
+	 private long standardMonthlyFee;
 	
 }

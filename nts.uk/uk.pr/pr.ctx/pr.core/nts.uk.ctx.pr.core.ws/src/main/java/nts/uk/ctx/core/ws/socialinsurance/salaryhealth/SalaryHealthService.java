@@ -9,10 +9,9 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.HealthInsuCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.HealthInsuStandardMonthlyFinder;
-import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.CountCommand;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryHealthDto;
-import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommand;
-import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommandHealth;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateCommandHealth;
 
 @Path("ctx/pr/core/socialinsurance/salaryhealth")
 @Produces("application/json")
@@ -24,22 +23,30 @@ public class SalaryHealthService {
 	@Inject
 	private HealthInsuCommandHandler healthInsuCommandHandler;
 	
+	
+	
 	@POST
 	@Path("/start")
-	public SalaryHealthDto startScreen(StartCommand startCommand) {
+	public SalaryHealthDto startScreen(StartCommandHealth startCommand) {
 		return healthInsuStandardMonthlyFinder.initScreen(startCommand.getDate(), startCommand.getHistoryId());
 	}
 	
 	@POST
 	@Path("/update")
-	public List<String> update (UpdateCommand updateCommand) {
+	public List<String> update (UpdateCommandHealth updateCommand) {
 		return healthInsuCommandHandler.handle(updateCommand);
 	}
 	
 	@POST
 	@Path("/count")
-	public SalaryHealthDto countHealthInsu(CountCommand countCommand) {
-		return healthInsuStandardMonthlyFinder.countHealthRate(countCommand);
+	public SalaryHealthDto countHealthInsu(StartCommandHealth startCommand) {
+		return healthInsuStandardMonthlyFinder.countHealthRate(startCommand);
+	}
+	
+	@POST
+	@Path("/startwelfare")
+	public void startScreenWelfare(StartCommandHealth startCommand) {
+		
 	}
 	
 }
