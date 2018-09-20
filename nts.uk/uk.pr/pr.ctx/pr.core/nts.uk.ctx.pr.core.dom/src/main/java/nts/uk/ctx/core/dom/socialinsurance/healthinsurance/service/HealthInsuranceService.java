@@ -39,19 +39,25 @@ public class HealthInsuranceService {
 	public void registerHealthInsurance(String officeCode, BonusHealthInsuranceRate bonusHealthInsuranceRate,
 			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem) {
 		HealthInsuranceFeeRateHistory welfarePensionHistory = null;
+		// find history
 		Optional<HealthInsuranceFeeRateHistory> opt_healthInsurance = healthInsuranceFeeRateHistoryRepository
 				.getHealthInsuranceFeeRateHistoryByCid(AppContexts.user().companyId(), officeCode);
+		// calculation
+		// アルゴリズム「月額健康保険料計算処理」を実行する
 		healthInsuranceMonthlyFee = calculationGradeFee(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, yearMonthItem);
 		if (!opt_healthInsurance.isPresent()) {
+			// add new history if no history existed
 			welfarePensionHistory = new HealthInsuranceFeeRateHistory(AppContexts.user().companyId(), officeCode,
 					Arrays.asList(yearMonthItem));
 			healthInsuranceFeeRateHistoryRepository.add(welfarePensionHistory);
 			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
 			return;
 		}
+		// delete old history
 		healthInsuranceFeeRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		welfarePensionHistory = opt_healthInsurance.get();
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
+			// add history if not exist
 			welfarePensionHistory.add(yearMonthItem);
 			this.addHealthInsurance(bonusHealthInsuranceRate, healthInsuranceMonthlyFee);
 		} else {

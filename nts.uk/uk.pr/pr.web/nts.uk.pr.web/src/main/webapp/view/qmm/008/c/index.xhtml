@@ -224,7 +224,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
 													<!-- C3_15 男子賞与事業主負担率 -->
 													<input id="C3_15" tabindex="10"
 														data-bind="ntsNumberEditor: {
@@ -233,7 +233,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_66]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().employeeContributionRatio,
+ 													value: employeeContributionRatio,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -278,7 +278,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 													<!-- C3_22  女子賞与個人負担率 -->
 													<input id="C3_22" tabindex="13"
 														data-bind="ntsNumberEditor: {
@@ -287,7 +287,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_70]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().individualBurdenRatio,
+ 													value: individualBurdenRatio,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -295,7 +295,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 													<!-- C3_24  女子賞与事業主負担率 -->
 													<input id="C3_24" tabindex="14"
 														data-bind="ntsNumberEditor: {
@@ -304,7 +304,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_71]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().employeeContributionRatio,
+ 													value: employeeContributionRatio,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -383,7 +383,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
 													<!-- C4_14  男子賞与個人保険料率 -->
 													<input id="C4_14"
 														data-bind="ntsNumberEditor: {
@@ -391,7 +391,7 @@
  														width: '60px',
 														decimallength: 3
 													}, 
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
+ 													value: remainBurdenRatio, 
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
@@ -400,7 +400,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
 													<!-- C4_16  男子賞与事業主保険料率 -->
 													<input id="C4_16"
 														data-bind="ntsNumberEditor: {
@@ -408,7 +408,7 @@
  														width: '60px',
 														decimallength: 3
 													}, 
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio,
+ 													value: remainEmployeeContributionRatio,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
@@ -453,7 +453,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
 													<!-- C4_23  男子賞与個人免除保険料率 -->
 													<input tabindex="17"
 														data-bind="ntsNumberEditor: {
@@ -462,7 +462,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_86]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().individualExemptionRate, 
+ 													value: individualExemptionRate, 
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -470,7 +470,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
 													<!-- C4_25  男子賞与事業主免除保険料率 -->
 													<input tabindex="18"
 														data-bind="ntsNumberEditor: {
@@ -479,7 +479,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_87]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate().employeeExemptionRate,
+ 													value: employeeExemptionRate,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -524,7 +524,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 													<!-- C4_33  女子賞与個人保険料率 -->
 													<input
 														data-bind="ntsNumberEditor: {
@@ -532,7 +532,7 @@
  														width: '60px',
 														decimallength: 3
 													}, 
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().remainBurdenRatio, 
+ 													value: remainBurdenRatio, 
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
@@ -541,7 +541,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 													<!-- C4_35  女子賞与事業主保険料率 -->
 													<input
 														data-bind="ntsNumberEditor: {
@@ -549,7 +549,7 @@
  														width: '60px',
 														decimallength: 3
 													}, 
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().remainEmployeeContributionRatio,
+ 													value: remainEmployeeContributionRatio,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: false}" />
@@ -594,7 +594,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 													<!-- C4_42  女子賞与個人免除保険料率 -->
 													<input tabindex="21"
 														data-bind="ntsNumberEditor: {
@@ -603,7 +603,7 @@
 														decimallength: 3
 													},
 													name: '#[QMM008_95]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().individualExemptionRate, 
+ 													value: individualExemptionRate, 
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
@@ -611,7 +611,7 @@
 												<div>/1000</div>
 											</td>
 											<td>
-												<div>
+												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 													<!-- C4_44  女子賞与事業主免除保険料率 -->
 													<input tabindex="22"
 														data-bind="ntsNumberEditor: {
@@ -620,7 +620,7 @@
 														decimallength: 3
 													}, 
 													name: '#[QMM008_96]',
- 													value: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate().employeeExemptionRate,
+ 													value: employeeExemptionRate,
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />

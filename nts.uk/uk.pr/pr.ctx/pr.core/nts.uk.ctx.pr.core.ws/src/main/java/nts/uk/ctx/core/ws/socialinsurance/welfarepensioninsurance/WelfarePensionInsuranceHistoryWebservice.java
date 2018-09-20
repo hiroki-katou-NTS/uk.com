@@ -28,7 +28,7 @@ public class WelfarePensionInsuranceHistoryWebservice {
 	}
 	
 	@POST
-	@Path("/addEmployeePension")
+	@Path("/registerEmployeePension")
 	public void addEmployeePension(WelfarePensionInsuraceRateCommand command) {
 		welfarePensionInsuranceCommandHandler.handle(command);
 	}

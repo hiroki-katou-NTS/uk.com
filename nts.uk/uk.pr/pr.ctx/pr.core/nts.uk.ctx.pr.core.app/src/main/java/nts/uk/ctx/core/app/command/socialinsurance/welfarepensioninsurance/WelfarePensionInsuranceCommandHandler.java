@@ -25,7 +25,7 @@ public class WelfarePensionInsuranceCommandHandler extends CommandHandler<Welfar
 		BonusEmployeePensionInsuranceRate bonusEmployeePension = context.getCommand().getBonusEmployeePensionInsuranceRate().fromCommandToDomain();
 		EmployeesPensionMonthlyInsuranceFee employeePensonMonthly = context.getCommand().getEmployeesPensionMonthlyInsuranceFee().fromCommandToDomain();
 		WelfarePensionInsuranceClassification welfarePensionClassification = context.getCommand().getWelfarePensionInsuranceClassification().fromCommandToDomain();
-		socialInsuranceOfficeAndHistoryService.addNewHistory(officeCode, yearMonthItem, bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
+		socialInsuranceOfficeAndHistoryService.registerWelfarePensionInsurance(officeCode, yearMonthItem, bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
 	}
 
 }

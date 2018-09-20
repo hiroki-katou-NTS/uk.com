@@ -26,7 +26,7 @@ public class JpaWelfarePensionStandardMonthlyFeeRepository extends JpaRepository
                 .setParameter("targetStartYm", startYearMonth)
                 .getSingle();
 
-        if (entityOptional.isPresent())
+        if (!entityOptional.isPresent())
             return Optional.empty();
 
         val entity = entityOptional.get();
