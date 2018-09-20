@@ -222,9 +222,8 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Override
 	public void checkPassLimitExpire(String embeddedURLID) {
-		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「埋込URL実行情報」を取得する(Get domain model 「埋込URL実行情報」)
-		Optional<UrlExecInfo> opUrlExecInfo = urlExcecInfoRepo.getUrlExecInfoById(embeddedURLID, companyID);
+		Optional<UrlExecInfo> opUrlExecInfo = urlExcecInfoRepo.getUrlExecInfoByUrlID(embeddedURLID);
 		if(!opUrlExecInfo.isPresent()){
 			throw new BusinessException("Msg_1095");
 		}
