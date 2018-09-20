@@ -340,20 +340,24 @@ public class LogBasicInformationFinder {
 						UserInfo userDto = logBasicInformation.getUserInfo();
 						
 						// convert log basic info to DTO
-						String programName = "";
-						if (startPageLog.getStartPageBeforeInfo().isPresent()) {
+					//	String programName = "";
+						/*if (startPageLog.getStartPageBeforeInfo().isPresent()) {
 							ScreenIdentifier screenIdentifier = startPageLog.getStartPageBeforeInfo().get();
 							String key = screenIdentifier.getProgramId() + screenIdentifier.getScreenId()
 									+ screenIdentifier.getQueryString();
 							programName = mapProgramNames.get(key);
-						}
+						}*/
+						String key = logBasicInformation.getTargetProgram().getProgramId()
+								+ logBasicInformation.getTargetProgram().getScreenId()
+								+ logBasicInformation.getTargetProgram().getQueryString();
+						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
 						// Get employee code user login
 						if (userDto != null) {
 							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
 						}
 						// get user login name
 						logBasicInfoDto.setUserNameLogin(userDto.getUserName());
-						logBasicInfoDto.setMenuName(programName);
+					//	logBasicInfoDto.setMenuName(programName);
 						logBasicInfoDto.setNote(
 								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
 						// add to list
