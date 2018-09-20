@@ -691,7 +691,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				numericItemMax = numericItem.getNumericItemMax() != null ? numericItem.getNumericItemMax().v() : null;
 				numericItemAmountAtr = new BigDecimal(numericItem.getNumericItemAmount().value);
 				numericItemMinusAtr = new BigDecimal(numericItem.getNumericItemMinus().value);
-				numericItemDecimalPart = new BigDecimal(numericItem.getDecimalPart().v());
+				numericItemDecimalPart = numericItem.getDecimalPart() == null? null: new BigDecimal(numericItem.getDecimalPart().v());
 				numericItemIntegerPart = new BigDecimal(numericItem.getIntegerPart().v());
 				break;
 			case DATE:
@@ -766,6 +766,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 	// Sonnlb Code start
 
+	
 	private PerInfoItemDefOrder toDomainItemOrder(PpemtPerInfoItemOrder entity) {
 		return new PerInfoItemDefOrder(String.valueOf(entity.ppemtPerInfoItemPK.perInfoItemDefId),
 				String.valueOf(entity.perInfoCtgId), Integer.parseInt(String.valueOf(entity.disporder)),

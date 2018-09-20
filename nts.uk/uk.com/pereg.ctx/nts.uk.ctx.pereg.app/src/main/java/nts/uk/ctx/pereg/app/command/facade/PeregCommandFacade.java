@@ -518,14 +518,6 @@ public class PeregCommandFacade {
 									}
 								}
 							}
-						
-							
-						}else {
-							if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
-								info = InfoOperateAttr.ADD;
-							}else {
-								info = InfoOperateAttr.UPDATE;
-							}
 						}
 						break;
 						

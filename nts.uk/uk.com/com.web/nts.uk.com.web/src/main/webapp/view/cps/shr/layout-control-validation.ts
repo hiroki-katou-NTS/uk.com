@@ -63,11 +63,15 @@ module nts.layout {
                     //.orderBy((x: any) => x.dispOrder)
                     .find((x: any) => !!ko.toJS(x.editable));
 
-                if (_item) {
-                    if ((_item.item || {}).dataTypeValue != ITEM_SINGLE_TYPE.DATE) {
-                        _item.hasFocus(true);
-                    } else {
-                        $('#COM1000000000000000CS00001IS00001').find('input').focus();
+                if ($('input[tabindex="17"].ntsDatepicker').length) {
+                    $('input[tabindex="17"].ntsDatepicker').focus();
+                } else {
+                    if (_item) {
+                        if ((_item.item || {}).dataTypeValue != ITEM_SINGLE_TYPE.DATE) {
+                            _item.hasFocus(true);
+                        } else {
+                            $('#COM1000000000000000CS00001IS00001').find('input').focus();
+                        }
                     }
                 }
 
