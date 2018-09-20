@@ -14,9 +14,7 @@ public interface SetPeriodCycleRepository {
 
 	Optional<SetValidityPeriodCycle> getSetPeriodCycleById(String salaryItemId);
 
-	void add(SetValidityPeriodCycle domain);
-
-	void update(SetValidityPeriodCycle domain);
+	void register(SetValidityPeriodCycle domain);
 
 	void remove(String salaryItemId);
 

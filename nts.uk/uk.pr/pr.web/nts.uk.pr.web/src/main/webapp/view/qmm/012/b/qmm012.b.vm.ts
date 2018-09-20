@@ -74,6 +74,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.statementItemDataList(data);
                     if(data.length > 0) {
                         self.statementItemDataSelected(new StatementItemData(data[0], self));
+                        $("#B3_3").focus();
                     } else {
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
@@ -86,12 +87,6 @@ module nts.uk.pr.view.qmm012.b {
                     block.clear();
                     deferred.resolve();
                 });
-                
-                //TODO delete, add to test
-                self.statementItemDataSelected(new StatementItemData(null, self));
-                block.clear();
-                deferred.resolve();
-                //TODO delete, add to test
                 
                 return deferred.promise();
             }
@@ -107,7 +102,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.statementItemDataSelected().statementItem().categoryAtr(data);
                     }
                     
-                    //TODO Focus
+                    $("#B3_2").focus();
                 });
             }
             
@@ -153,18 +148,25 @@ module nts.uk.pr.view.qmm012.b {
                 
                 if(listMessage.length == 0) {
                     let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    let command = ko.toJS(self.statementItemDataSelected);
+                    delete command.setBreakdownItem;
+                    delete command.setValidity;
+                    delete command.paymentItemSet.screenModel;
+                    delete command.paymentItemSet.setTaxExemptionLimit;
                     
-                    service.registerStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
+                    service.registerStatementItemData(command).done(function() {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.loadListData().done(function() {
                                 if((oldSalaryId != null) || (oldSalaryId != "")) {
                                     self.statementItemDataSelected().salaryItemId(oldSalaryId);
                                 }
-                                //TODO focus    
+                                
+                                $("#B3_3").focus();
                             });
                         });
                     }).fail(err => {
-                        //TODO xử lý message lỗi, focus
+                        //TODO xử lý message lỗi
+                        $("#B3_3").focus();
                     });
                 }
             }
@@ -175,23 +177,29 @@ module nts.uk.pr.view.qmm012.b {
             
             public deleteItem(): void {
                 let self = this;
-                
                 let nextSalaryId = self.getNextSalaryId();
                 
                 dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.removeStatementItemData(ko.toJS(self.statementItemDataSelected)).done(function() {
+                    let command = ko.toJS(self.statementItemDataSelected);
+                    delete command.setBreakdownItem;
+                    delete command.setValidity;
+                    delete command.paymentItemSet.screenModel;
+                    delete command.paymentItemSet.setTaxExemptionLimit;
+                    
+                    service.removeStatementItemData(command).done(function() {
                         dialog.info({ messageId: "Msg_16" }).then(() => {
                             self.loadListData().done(function() {
                                 if(self.statementItemDataList().length == 0) {
                                     self.create();
                                 } else if(nextSalaryId != null) {
                                     self.statementItemDataSelected().salaryItemId(nextSalaryId);
+                                    $("#B3_3").focus();
                                 }
-                                //TODO focus    
                             });
                         });
                     }).fail(err => {
-                        //TODO xử lý message lỗi, focus
+                        //TODO xử lý message lỗi
+                        $("#B3_3").focus();
                     });
                 })
             }
@@ -221,13 +229,26 @@ module nts.uk.pr.view.qmm012.b {
             }
             
             public modifyLog(): void {
+                let self = this;
                 
+//                nts.uk.ui.windows.sub.modal('../???/index.xhtml').onClosed(() => {
+//                    if(self.statementItemDataSelected().checkCreate()) {
+//                        $("#B3_2").focus();
+//                    } else {
+//                        $("#B3_3").focus();
+//                    }
+//                });
             }
             
             public registerPrintingName(): void {
+                let self = this;
                 
                 nts.uk.ui.windows.sub.modal('../j/index.xhtml').onClosed(() => {
-                    //TODO Focus
+                    if(self.statementItemDataSelected().checkCreate()) {
+                        $("#B3_2").focus();
+                    } else {
+                        $("#B3_3").focus();
+                    }
                 });
             }
             
@@ -317,6 +338,7 @@ module nts.uk.pr.view.qmm012.b {
                         }
                         
                         self.checkCreate(false);
+                        screenModel.statementItemDataSelected(self);
                     }
                 });
             }
@@ -328,7 +350,7 @@ module nts.uk.pr.view.qmm012.b {
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
-                    //TODO Focus
+                    $("#C3_8").focus();
                 });
             }
             
@@ -339,7 +361,7 @@ module nts.uk.pr.view.qmm012.b {
 
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                     self.isSetValidity(getShared("QMM012_H_IS_SETTING"));
-                    //TODO Focus
+                    $("#C3_2").focus();
                 });
             }
         }
@@ -546,7 +568,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.taxExemptionName(data.name);
                     }
                     
-                    //TODO Focus
+                    $("#C5_2").focus();
                 });
             }
         }

@@ -67,9 +67,9 @@ public class PaymentItemSet extends AggregateRoot {
 	private Optional<Memo> note;
 
 	public PaymentItemSet(String cid, String salaryItemId, int breakdownItemUseAtr, int laborInsuranceCategory,
-			int settingAtr, int everyoneEqualSet, int monthlySalary, int hourlyPay, int dayPayee,
-			int monthlySalaryPerday, int averageWageAtr, int socialInsuranceCategory, int taxAtr, int taxableAmountAtr,
-			long limitAmount, int limitAmountAtr, String taxLimitAmountCode, String note) {
+			int settingAtr, Integer everyoneEqualSet, Integer monthlySalary, Integer hourlyPay, Integer dayPayee,
+			Integer monthlySalaryPerday, int averageWageAtr, int socialInsuranceCategory, int taxAtr, Integer taxableAmountAtr,
+			Long limitAmount, Integer limitAmountAtr, String taxLimitAmountCode, String note) {
 		super();
 		this.cid = cid;
 		this.salaryItemId = salaryItemId;
