@@ -125,7 +125,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             }
             if (!hasError()) {
 
-                if (self.characterDataFormatSetting().startDigit() > self.characterDataFormatSetting().endDigit()) {
+                if (parseInt(self.characterDataFormatSetting().startDigit()) > parseInt(self.characterDataFormatSetting().endDigit()) && self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) {
                     $("#J2_2_1").ntsError('set', { messageId: "Msg_830" });
                     $('#J2_2_3').ntsError('set', { messageId: "Msg_830" });
                 } else {

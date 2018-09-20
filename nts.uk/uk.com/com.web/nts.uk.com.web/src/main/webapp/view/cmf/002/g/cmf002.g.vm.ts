@@ -25,8 +25,8 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 184, width: 600 });
 
             self.acceptWithoutSettingItems = ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_131')),
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_132')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_131')),
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_132')),
             ]);
 
             self.selectedCodeConvert.subscribe(function(convertCode: string) {
@@ -94,6 +94,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
+                    self.enableBtn(false);
                     self.settingCreateMode();
                 }
             }).fail(function(error) {
@@ -173,9 +174,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     block.clear();
                     return;
                 } else {
-                    let existCode = self.listOutputCodeConvert().filter(x => x.systemCode() === currentOutputCodeConvert().systemCode());
+                    let existCode = self.listOutputCodeConvert().filter(x => x.convertCode() === currentOutputCodeConvert().convertCode());
                     if (existCode.length > 0) {
-                        dialog.alertError({ messageId: "Msg_661" });
+                        dialog.alertError({ messageId: "Msg_3" });
                         block.clear();
                         return;
                     }
@@ -297,7 +298,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
             self.codeConvertCurrent().convertCode('');
             self.codeConvertCurrent().convertName('');
-            self.codeConvertCurrent().acceptWithoutSetting(1);
+            self.codeConvertCurrent().acceptWithoutSetting(0);
 
             self.codeConvertCurrent().listCdConvertDetail.removeAll();
             self.selectedConvertDetail(0);
