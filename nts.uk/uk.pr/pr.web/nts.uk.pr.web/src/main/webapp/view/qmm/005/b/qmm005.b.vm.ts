@@ -19,7 +19,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         processingYearList: KnockoutObservableArray<model.ItemModel>;
         btnText: any;
         isNewMode: KnockoutObservable<boolean>;
-        processingYearListSelectedCode: KnockoutObservable<number>;
         show: KnockoutObservable<boolean>;
 
         constructor() {
@@ -60,8 +59,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
             });
             self.isNewMode = ko.observable(false);
-
-            self.processingYearListSelectedCode = ko.observable(-1);
             self.processingYear = ko.observable(2018);
             self.processingYear.subscribe(function (newValue) {
                 self.processingYear(newValue);
@@ -126,7 +123,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     self.processingYear(self.processingYearList()[0].code);
                 }
             });
-
         }
 
         selectProcessingYear(year) {
@@ -140,7 +136,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     var index = 0;
                     _.forEach(data.setDaySupportDtoList, function (setDaySupport) {
                         var obj = {};
-                        obj["targetMonth"] = ko.observable(++index);
+                        obj["targetMonth"] = ko.observable(++index + '月の設定');
                         // B4_10 支払年月日
                         obj["paymentDate"] = ko.observable(setDaySupport.paymentDate);
                         // B4_11 支払曜日
@@ -256,7 +252,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                          ※10 勤怠締め日チェックが入っている場合のみ更新する
                          */
                         if (params.checkbox.dailyPaymentDateCheck && params.checkbox.timeClosingDateCheck) {
-                            // not exist
                             settingPayment.paymentDate(self.processingYear() + '/' + index + '/' + basicSetting.monthlyPaymentDate.datePayMent);
                         }
                         // B4_11    支払曜日
@@ -363,7 +358,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         fullMonth(month) {
             return (month < 10 ? '0' + month : month).toString();
         }
-
 
         transactionSuccess() {
             let self = this;
