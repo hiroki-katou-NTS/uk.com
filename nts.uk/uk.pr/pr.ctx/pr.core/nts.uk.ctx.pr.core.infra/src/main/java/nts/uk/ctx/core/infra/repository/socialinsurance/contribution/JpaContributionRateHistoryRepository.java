@@ -87,14 +87,12 @@ public class JpaContributionRateHistoryRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public Optional<ContributionRate> getContributionRateByHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+	public void add(ContributionRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceCode().v(), item.identifier(),
+					item.start().v(), item.end().v()));
+		});
+
 	}
 
-	@Override
-	public List<ContributionByGrade> getContributionByGradeByHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

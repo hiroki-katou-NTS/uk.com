@@ -20,32 +20,21 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         selectedHealthInsurance: KnockoutObservable<number> = ko.observable(null);
 
         // Health insurance item
-        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '' });
+        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '',displayStartJM: '' });
         bonusHealthInsuranceRate: KnockoutObservable<model.BonusHealthInsuranceRate> = ko.observable(null);
-        healthInsuranceMonthlyFee: KnockoutObservable<model.HealthInsuranceMonthlyFee> = ko.observable(null);
+        contributionRate: KnockoutObservable<model.ContributionRate> = ko.observable(null);
         constructor() {
             let self = this;
-            $("#B3").ntsFixedTable({});
-            $("#B4").ntsFixedTable({});
+
             self.watchDataChanged();
             self.initBlankData();
 
-            self.bonusHealthInsuranceRate().individualBurdenRatio().healthInsuranceRate.subscribe(item => {
-                console.log(item);
-                console.log(ko.toJS(self.bonusHealthInsuranceRate));
-            });
-
-
-            self.healthInsuranceMonthlyFee().healthInsuranceRate().individualBurdenRatio().healthInsuranceRate.subscribe(item => {
-                console.log(item);
-                console.log(ko.toJS(self.healthInsuranceMonthlyFee));
-            });
         }
 
         initBlankData() {
             let self = this;
             self.bonusHealthInsuranceRate(new model.BonusHealthInsuranceRate(null));
-            self.healthInsuranceMonthlyFee(new model.HealthInsuranceMonthlyFee(null));
+            self.contributionRate(new model.ContributionRate(null));
         }
 
         register() {
@@ -59,8 +48,8 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             // Register data
             let command = {
                 officeCode: self.selectedOffice.socialInsuranceCode,
-                bonusHealthInsuranceRate: ko.toJS(self.bonusHealthInsuranceRate),
-                healthInsuranceMonthlyFee: ko.toJS(self.healthInsuranceMonthlyFee),
+                //bonusHealthInsuranceRate: ko.toJS(self.bonusHealthInsuranceRate),
+                contributionRate: ko.toJS(self.contributionRate),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
             // Update individualExcemtionRate and employeeExemtionRate to null if not join fund
@@ -68,10 +57,9 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
 
 
 
-            // Update historyId for case clone previous data
-            command.bonusHealthInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
-            command.healthInsuranceMonthlyFee.historyId = command.yearMonthHistoryItem.historyId;
-            service.addEmployeeHealthInsurance(command).done(function(data) {
+            // Update historyId for case clone previous data           
+            command.contributionRate.historyId = command.yearMonthHistoryItem.historyId;
+            service.addContributionRateHis(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' });
                 self.isUpdateMode(true);
@@ -185,6 +173,8 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                     if (selectedHistoryPeriod) {
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
+                        //Todo
+                        selectedHistoryPeriod.displayStartJM = nts.uk.time.formatYearMonth(selectedHistoryPeriod.displayStart);
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         //アルゴリズム「選択処理」を実行する
                         self.showContributionRateByHistoryId(self.selectedHistoryId);
@@ -200,8 +190,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             block.invisible();
             service.findContributionRateByHistoryId(historyId).done(function(data) {
                 if (data) {
-                    self.healthInsuranceMonthlyFee(new model.HealthInsuranceMonthlyFee(data.healthInsuranceMonthlyFeeDto));
-                    self.bonusHealthInsuranceRate(new model.BonusHealthInsuranceRate(data.bonusHealthInsuranceRateDto));
+                    self.contributionRate(new model.ContributionRate(data));
                 } else {
                     self.isUpdateMode(true);
                 }

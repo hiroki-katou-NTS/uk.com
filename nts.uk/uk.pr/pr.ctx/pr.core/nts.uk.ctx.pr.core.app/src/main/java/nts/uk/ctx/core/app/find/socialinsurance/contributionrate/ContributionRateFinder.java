@@ -16,6 +16,7 @@ import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionByGrade;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistoryRepository;
+import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOffice;
 import nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,20 +24,22 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ContributionRateFinder {
 	@Inject
+	private ContributionRateRepository contributionRateRepository;
+
+	@Inject
 	private ContributionRateHistoryRepository contributionRateHistoryRepository;
 
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	public ContributionRateDto findContributionRateByHistoryID(String historyId) {
-		List<ContributionByGrade> contributionByGrade = contributionRateHistoryRepository
-				.getContributionByGradeByHistoryId(historyId);
-		Optional<ContributionRate> contributionRate = contributionRateHistoryRepository
+
+		Optional<ContributionRate> contributionRate = contributionRateRepository
 				.getContributionRateByHistoryId(historyId);
-		
+
 		if (contributionRate.isPresent()) {
 			List<ContributionByGradeDto> contributionByGradeDto = new ArrayList<>();
-			contributionByGradeDto = contributionByGrade.stream()
+			contributionByGradeDto = contributionRate.get().getContributionByGrade().stream()
 					.map(x -> new ContributionByGradeDto(x.getWelfarePensionGrade(), x.getChildCareContribution().v()))
 					.collect(Collectors.toList());
 

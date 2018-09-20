@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm008.i.service {
     var paths = {
         findAllOfficeAndHistory: "ctx/core/socialinsurance/contributionrate/getAll",
         findContributionRateByHistoryId: "ctx/core/socialinsurance/contributionrate/getByHistoryId/{0}",
-        addEmployeePension: "ctx/core/socialinsurance/welfarepensioninsurance/addEmployeePension"
+        addContributionRateHis: "ctx/core/socialinsurance/contributionrate/addContributionRateHistory"
     }
     /**
      * get all
@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm008.i.service {
         return ajax(format(paths.findContributionRateByHistoryId, historyId));
     }
     
-    export function addEmployeePension(command): JQueryPromise<any> {
-        return ajax(paths.addEmployeePension, command);
+    export function addContributionRateHis(command): JQueryPromise<any> {
+        return ajax(paths.addContributionRateHis, command);
     }
 }

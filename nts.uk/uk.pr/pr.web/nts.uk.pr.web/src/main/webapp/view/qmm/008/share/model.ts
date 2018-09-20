@@ -258,6 +258,56 @@ module nts.uk.pr.view.qmm008.share.model {
             }) : []);
         }
     }
+    
+    
+    //拠出金率
+    export interface IContributionRate {
+        childContributionRatio: number;
+        autoCalculationCls: number;
+        historyId: string;
+        contributionByGrade: Array<IContributionByGrade>;
+    }
+    
+     //拠出金率
+    export class ContributionRate {
+        childContributionRatio: KnockoutObservable<number> = ko.observable(null);
+        autoCalculationCls: KnockoutObservable<number> = ko.observable(null);
+        historyId: KnockoutObservable<string> = ko.observable(null);
+        contributionByGrade: KnockoutObservableArray<ContributionByGrade> = ko.observableArray(null);
+
+        // Control item
+        autoCalculationClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
+            new EnumModel(AUTOMATIC_CALCULATE_CLASSIFICATION.USE, getText('QMM008_14')),
+            new EnumModel(AUTOMATIC_CALCULATE_CLASSIFICATION.NOT_USE, getText('QMM008_15'))
+        ]);
+        
+        constructor(params: IContributionRate) {
+            this.autoCalculationCls(params ? params.autoCalculationCls : 1);
+            this.historyId(params ? params.historyId : null);
+            this.childContributionRatio(params ? params.childContributionRatio : null);
+            this.contributionByGrade(params ? params.contributionByGrade.map(function(item) {
+                return new ContributionByGrade(item);
+            }) : []);
+        }
+    }
+    
+    //等級毎拠出金
+    export interface IContributionByGrade {
+        welfarePensionGrade: number;
+        childCareContribution: number;
+    }
+
+    export class ContributionByGrade {
+        welfarePensionGrade: KnockoutObservable<number> = ko.observable(null);
+        childCareContribution: KnockoutObservable<number> = ko.observable(null);
+        constructor(params: IContributionByGrade) {
+            this.welfarePensionGrade(params ? params.welfarePensionGrade : null);
+            this.childCareContribution(params ? params.childCareContribution : null);
+        }
+    }
+    
+    
+    
 
     // 等級毎健康保険料
     export interface IHealthInsurancePerGradeFee {

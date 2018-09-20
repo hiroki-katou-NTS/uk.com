@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.AddContributionRateHistoryCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.command.AddContributionRateHistoryCommand;
 import nts.uk.ctx.core.app.find.socialinsurance.contributionrate.ContributionRateFinder;
 import nts.uk.ctx.core.app.find.socialinsurance.contributionrate.dto.ContributionRateDto;
 
@@ -14,6 +16,8 @@ import nts.uk.ctx.core.app.find.socialinsurance.contributionrate.dto.Contributio
 public class ContributionRateWebservice {
 	@Inject
 	private ContributionRateFinder contributionRateFinder;
+	@Inject
+	private AddContributionRateHistoryCommandHandler addContributionRateHistoryCommandHandler;
 
 	@POST
 	@Path("/getByHistoryId/{historyId}")
@@ -21,4 +25,10 @@ public class ContributionRateWebservice {
 		return this.contributionRateFinder.findContributionRateByHistoryID(historyId);
 	}
 
+	@POST
+	@Path("/addContributionRateHistory")
+	public void addContributionRateHistory(AddContributionRateHistoryCommand command) {
+		addContributionRateHistoryCommandHandler.handle(command);
+	}
+    
 }
