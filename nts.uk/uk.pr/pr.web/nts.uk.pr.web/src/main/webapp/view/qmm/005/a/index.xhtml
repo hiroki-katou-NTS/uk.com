@@ -82,7 +82,7 @@
                         <td>
                             <!--A2_10 詳細設定-->
                             <button
-                                    data-bind="enable: processInfomation.processDivisionName != '',click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
+                                    data-bind="enable: processInfomation.processDivisionName,click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
                         <td data-bind="attr: { 'data-id': processInfomation.processCateNo }">
                             <!--A2_11 処理年一覧-->

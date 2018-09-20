@@ -525,7 +525,6 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             console.log(self.valPayDateSet);
             
             if(self.mode==1){
-            
                 service.registerprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),
                     valPayDateSet: ko.toJS(self.valPayDateSet)
@@ -539,7 +538,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                     nts.uk.ui.windows.close();
                 })
              }
-            
+
             if(self.mode==0){
                 service.updateprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),

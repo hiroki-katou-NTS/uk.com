@@ -179,33 +179,61 @@ public class QpbmtValPayDateSet extends UkJpaEntity implements Serializable {
 
 	public ValPayDateSet toDomain() {
 		return new ValPayDateSet(valPayDateSetPk.cid, valPayDateSetPk.processCateNo, processMonth, disposalDay,
-				refeMonth, refeDate, datePayMent, workDay, printingMonth, socialInsuColleMonth, incomeRefeDate,
-				incomeBaseMonth, incomeRefeDate, incomeBaseYear, empBaseMonth, sociInsuBaseMonth, sociInsuBaseYear,
+				refeMonth, refeDate, datePayMent, workDay, printingMonth, socialInsuColleMonth, empReferDate,
+				empBaseMonth, incomeRefeDate, incomeBaseYear, incomeBaseMonth, sociInsuBaseMonth, sociInsuBaseYear,
 				sociInsuRefeDate, timeCloseDate, closeDateBaseMonth, closeDateBaseYear, closeDateRefeDate);
+
+		//return new ValPayDateSet(valPayDateSetPk.cid, valPayDateSetPk.processCateNo, datePayMent)
 	}
 
 	public static QpbmtValPayDateSet toEntity(ValPayDateSet domain) {
 		return new QpbmtValPayDateSet(new QpbmtValPayDateSetPk(domain.getCid(), domain.getProcessCateNo()),
-				domain.getBasicSetting().getAccountingClosureDate().getProcessMonth().value,
-				domain.getBasicSetting().getAccountingClosureDate().getDisposalDay().value,
+				domain.getBasicSetting().getMonthlyPaymentDate().getDatePayMent().value,
 				domain.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth().value,
 				domain.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate().value,
-				domain.getBasicSetting().getMonthlyPaymentDate().getDatePayMent().value,
+				domain.getBasicSetting().getAccountingClosureDate().getProcessMonth().value,
+				domain.getBasicSetting().getAccountingClosureDate().getDisposalDay().value,
 				domain.getBasicSetting().getWorkDay().v(),
 				domain.getAdvancedSetting().getItemPrintingMonth().getPrintingMonth().value,
 				domain.getAdvancedSetting().getSocialInsuColleMon().getMonthCollected().value,
-				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value,
-				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value,
-				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value,
-				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseYear().value,
-				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseMonth().value,
+				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value,
 				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseMonth().value,
 				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseYear().value,
-				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value,
+				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseMonth().value,
+				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseYear().value,
+				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value,
 				domain.getAdvancedSetting().getCloseDate().getTimeCloseDate(),
 				domain.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null),
 				domain.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null),
-				domain.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null));
+				domain.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null),
+				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value,
+				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value
+		);
+
+
+
+
+
+//				domain.getBasicSetting().getAccountingClosureDate().getProcessMonth().value,
+//				domain.getBasicSetting().getAccountingClosureDate().getDisposalDay().value,
+//				domain.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth().value,
+//				domain.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate().value,
+//				domain.getBasicSetting().getMonthlyPaymentDate().getDatePayMent().value,
+//				domain.getBasicSetting().getWorkDay().v(),
+//				domain.getAdvancedSetting().getItemPrintingMonth().getPrintingMonth().value,
+//				domain.getAdvancedSetting().getSocialInsuColleMon().getMonthCollected().value,
+//				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value,
+//				domain.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value,
+//				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value,
+//				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseYear().value,
+//				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseMonth().value,
+//				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseMonth().value,
+//				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseYear().value,
+//				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value,
+//				domain.getAdvancedSetting().getCloseDate().getTimeCloseDate(),
+//				domain.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null),
+//				domain.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null),
+//				domain.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null));
 	}
 
 }

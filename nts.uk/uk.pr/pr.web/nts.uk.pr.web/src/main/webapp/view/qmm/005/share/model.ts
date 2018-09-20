@@ -168,12 +168,12 @@ module nts.uk.pr.view.qmm005.share.model {
 
     export class ProcessInfomation{
         processCateNo:number;
-        processDivisionName:KnockoutObservable<string> = ko.observable('');
+        processDivisionName:string;
         deprecatCate:number;
 
         constructor(params:IProcessInfomation){
             this.processCateNo=params.processCateNo;
-            this.processDivisionName(params.processDivisionName);
+            this.processDivisionName=params.processDivisionName;
             this.deprecatCate=params.deprecatCate;
         }
     }

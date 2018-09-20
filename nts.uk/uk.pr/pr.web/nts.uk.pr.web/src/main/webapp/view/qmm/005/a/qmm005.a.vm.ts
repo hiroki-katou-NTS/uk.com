@@ -156,15 +156,21 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.findDisplayRegister().done(data => {
-                self.itemTable = new ItemTable(data);
+                self.itemTable = new ItemTable(null);
+
+                if(data){
+                    self.itemTable =new ItemTable(data);
+
+                }
+
                 console.log(self.itemTable);
 
 
-                var sizetalbe = self.itemTable.processInfomations.length;
-                for (let i: number = sizetalbe; i < 5; i++) {
+
+                for (let i: number = self.itemTable.processInfomations.length; i < 5; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
                             processCateNo: i + 1,
-                            processDivisionName: '',
+                            processDivisionName:'',
                             deprecatCate: 0
                         }
                     ));
@@ -215,7 +221,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             let self = this;
             let commandData = {currProcessDateCommand: [], empTiedProYearCommand: []};
             for (let i = 0; i < 5; i++) {
-                if (self.itemBinding()[i].processInfomation.processDivisionName != '') {
+                if (self.itemBinding()[i].processInfomation.processDivisionName() != '') {
                     commandData.currProcessDateCommand.push({giveCurrTreatYear: self.itemBinding()[i].monthsSelectd()});
                     commandData.empTiedProYearCommand.push({employmentCodes: _.map(self.itemBinding()[i].employeeList(), "code")});
                 }
@@ -281,18 +287,21 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     }
 
     export class ItemTable {
-        processInfomations: Array<model.ProcessInfomation>;
-        setDaySupports: Array<model.SetDaySupport>;
-        currentProcessDates: Array<model.CurrentProcessDate>;
-        empCdNameImports: Array<model.EmpCdNameImport>;
-        empTiedProYear: Array<model.EmpTiedProYear>;
+        processInfomations: Array<model.ProcessInfomation>  = [];
+        setDaySupports: Array<model.SetDaySupport> = [];
+        currentProcessDates: Array<model.CurrentProcessDate>=[];
+        empCdNameImports: Array<model.EmpCdNameImport>=[];
+        empTiedProYear: Array<model.EmpTiedProYear>=[];
 
         constructor(param: IitemTable) {
-            this.processInfomations = param.informationDto;
-            this.currentProcessDates = param.currProcessDateDto;
-            this.setDaySupports = param.setDaySupportDto;
-            this.empCdNameImports = param.empCdNameImports;
-            this.empTiedProYear = param.empTiedProYearDto;
+            if(param){
+                this.processInfomations = param.informationDto ;
+                this.currentProcessDates = param.currProcessDateDto ;
+                this.setDaySupports = param.setDaySupportDto ;
+                this.empCdNameImports = param.empCdNameImports  ;
+                this.empTiedProYear = param.empTiedProYearDto ;
+            }
+
         }
 
 
