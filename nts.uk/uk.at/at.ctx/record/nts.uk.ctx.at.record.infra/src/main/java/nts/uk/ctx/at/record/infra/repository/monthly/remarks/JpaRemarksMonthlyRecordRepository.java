@@ -73,7 +73,6 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 		return this.queryProxy()
 				.find(new KrcdtRemarksMonthlyRecordPK(
 						employeeId,
-						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)),
@@ -157,7 +156,6 @@ val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toL
 		this.commandProxy().remove(KrcdtRemarksMonthlyRecord.class,
 				new KrcdtRemarksMonthlyRecordPK(
 						employeeId,
-						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)));
