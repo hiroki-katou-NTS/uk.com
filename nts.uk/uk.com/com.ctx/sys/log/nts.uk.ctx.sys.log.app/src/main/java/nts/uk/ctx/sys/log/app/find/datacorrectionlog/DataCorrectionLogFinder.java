@@ -5,16 +5,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
+import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
@@ -36,6 +37,9 @@ public class DataCorrectionLogFinder {
 
 	@Inject
 	private LogBasicInfoRepository basicInfoRepo;
+	
+	@Inject
+	private PersonEmpBasicInfoAdapter personEmpInfo;
 
 	public List<DataCorrectionLogDto> getDataLog(DataCorrectionLogParams params) {
 		List<DataCorrectionLogDto> result = new ArrayList<>();
@@ -60,6 +64,7 @@ public class DataCorrectionLogFinder {
 		if (listCorrectionLog.isEmpty())
 			throw new BusinessException("Msg_37");
 
+		Map<String, String> empIdCode = personEmpInfo.getEmployeeCodesByEmpIds(params.getListEmployeeId());
 		for (DataCorrectionLog d : listCorrectionLog) {
 			Optional<LogBasicInformation> basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId());
 			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey(),
@@ -68,18 +73,18 @@ public class DataCorrectionLogFinder {
 					d.getCorrectedItem().getValueAfter().getViewValue(),
 					basicInfo.isPresent() ? basicInfo.get().getUserInfo().getUserName() : null,
 					basicInfo.isPresent() ? basicInfo.get().getModifiedDateTime() : null, d.getCorrectionAttr().value,
-					d.getTargetUser().getEmployeeId(), d.getShowOrder());
+					empIdCode.get(d.getTargetUser().getEmployeeId()), d.getShowOrder());
 			result.add(log);
 		}
 		if (params.getDisplayFormat() == 0) { // by date
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
-					.thenComparing(DataCorrectionLogDto::getEmployeeId)
+					.thenComparing(DataCorrectionLogDto::getEmployeeCode)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
 		} else { // by individual
-			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeId)
+			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeCode)
 					.thenComparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(DataCorrectionLogDto::getDisplayOrder)

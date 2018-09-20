@@ -247,11 +247,11 @@ public class DailyCalculationCommandFacade {
 				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.of(domainMonth);
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), domainMonthOpt, new DatePeriod(
-								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage());
+								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage(), month.getHasFlex());
 			}else{
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), Optional.empty(), new DatePeriod(
-								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage());
+								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage(), month.getHasFlex());
 			}
 		}
 		FlexShortageRCDto flexError = validatorDataDaily.errorCheckFlex(monthlyResults, monthParam);

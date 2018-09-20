@@ -183,10 +183,10 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			}
 			// ループ終了フラグをチェックする
 			if(loopCompleteFlg){
-				appRootConfirmRepository.update(appRootConfirm);
 				break;
 			}
 		}
+		appRootConfirmRepository.update(appRootConfirm);
 		return cleanComplete;
 	}
 

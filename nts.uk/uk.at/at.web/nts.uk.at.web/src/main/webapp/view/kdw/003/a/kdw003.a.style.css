@@ -104,6 +104,10 @@
 	width: 110px;
 }
 
+#vacationRemaining-content table td {
+	padding: 2px 2px
+}
+
 .nts-legendbutton-panel {
 	z-index: 2 !IMPORTANT;
 }
@@ -153,13 +157,15 @@
 	padding: 0 2px;
 	/* width: 400px; */
 }
+
 #numberHoliday {
 	/* margin-left: 5px;
 	height: 80px;
-	margin-top: 4px; */
-	float: right;
-	/* margin-left: 120px; */
-	}
+	 */
+	float: left;
+	margin-left: 60px;
+	margin-top: -20px;
+}
 	
 #fixed-table tr td {
 	border: none !important;

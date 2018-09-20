@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -44,7 +43,6 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master) {
-		Stopwatches.start("ERALALL");
 		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = integrationOfDaily.getEmployeeError() == null? integrationOfDaily.getEmployeeError() :new ArrayList<>();
 		List<ErrorAlarmWorkRecord> divergenceError = new ArrayList<>();
@@ -77,7 +75,6 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		addItemList.addAll(divergenceErrorCheck(integrationOfDaily, master, divergenceError));
 		addItemList = addItemList.stream().filter(tc -> tc != null).collect(Collectors.toList());
 		integrationOfDaily.setEmployeeError(addItemList);
-		Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 	
