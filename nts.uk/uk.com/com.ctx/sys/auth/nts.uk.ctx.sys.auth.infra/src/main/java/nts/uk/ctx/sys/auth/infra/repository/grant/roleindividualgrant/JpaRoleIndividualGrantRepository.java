@@ -172,5 +172,21 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 				.setParameter("userId", userId).getList();
 		this.commandProxy().removeAll(entities);
 	}
+	private static final String FIND = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyId"
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType"
+			+ " AND c.roleId IN :roleIDLst"
+			+ " AND c.strD <= :date AND c.endD >= :date";
+
+	@Override
+	public List<RoleIndividualGrant> findRoleIndividual(String companyId, int roleType, List<String> roleIDLst,
+			GeneralDate date) {
+		return this.queryProxy().query(FIND, SacmtRoleIndiviGrant.class)
+				.setParameter("companyId", companyId)
+				.setParameter("roleType", roleType)
+				.setParameter("roleIDLst", roleIDLst)
+				.setParameter("date", date)
+				.getList(c -> c.toDomain());
+	}
 
 }
