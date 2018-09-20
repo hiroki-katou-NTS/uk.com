@@ -257,7 +257,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     self.selectedTitleAtr(1);
                     //  self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
                      // self.employeeList = ko.observableArray([]);
-                     data.listEmployee=_.orderBy(data.listEmployee,['employeeCode'], ['asc', 'asc']);
+                     data.listEmployee=_.orderBy(data.listEmployee,['workplaceCode'], ['asc', 'asc']);
                     self.employeeList();
                     if (self.activeStep() == 1) {
                         self.initEmployeeList(data.listEmployee);

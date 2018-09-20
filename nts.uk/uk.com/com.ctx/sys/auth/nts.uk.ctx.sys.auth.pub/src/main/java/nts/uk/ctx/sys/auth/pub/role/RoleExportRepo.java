@@ -93,4 +93,12 @@ public interface RoleExportRepo {
 	 */
 	//	RequestList84  ロールを取得する
 	Optional<RoleExport> findByRoleId(String roleId);
+	
+	/**
+	 * Gets the current loginer role.
+	 *
+	 * @return the current loginer role
+	 */
+	//	RequestList525
+	RoleWhetherLoginPubExport  getCurrentLoginerRole();
 }

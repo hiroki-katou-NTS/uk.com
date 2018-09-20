@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -141,7 +142,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// ドメインモデル「就業実績確認状態」を取得する
 		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpDate(companyID, employeeID, date, rootType);
 		if(!opAppRootConfirm.isPresent()){
-			return new AppRootConfirm("", companyID, employeeID, date, rootType, new ArrayList<>());
+			return new AppRootConfirm(UUID.randomUUID().toString(), companyID, employeeID, date, rootType, new ArrayList<>());
 		}
 		return opAppRootConfirm.get();
 	}
@@ -487,7 +488,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			approvalStatus.setReleaseAtr(ReleaseDivision.NOT_RELEASE);
 		}
 		// 承認状況．基準社員の承認アクション
-		if(approvalStatusOutput.getApprovableFlag()){
+		if(!approvalStatusOutput.getApprovableFlag()){
 			approvalStatus.setApprovalAction(ApprovalActionByEmp.NOT_APPROVAL);
 		} else if(approvalStatusOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED){
 			approvalStatus.setApprovalAction(ApprovalActionByEmp.APPROVAL_REQUIRE);

@@ -43,6 +43,8 @@ public class ActualValue {
 			return null;
 		}
 		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);
+		if (valueType == ValueType.ATTR)
+			return (T) this.value;
 		if (valueType.isInteger()) {
 			return (T) new Integer(this.value);
 		}

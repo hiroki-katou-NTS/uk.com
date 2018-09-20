@@ -301,6 +301,27 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			throw new BusinessException("Msg_434");
 		}
 	}
+	
+	/**
+	 * check Pair WorkType and WorkTime With List WorkType
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param listWorkType
+	 */
+	@Override
+	public void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType) {
+		SetupType setupType = this.checkNeedWorkTimeSetByList(workTypeCode, listWorkType);
+
+		// In case of Required and work time is not set.
+		if (setupType == SetupType.REQUIRED && !this.isWorkTimeValid(workTimeCode)) {
+			throw new BusinessException("Msg_435");
+		}
+
+		// In case of Not Required and work time is set.
+		if (setupType == SetupType.NOT_REQUIRED && this.isWorkTimeValid(workTimeCode)) {
+			throw new BusinessException("Msg_434");
+		}
+	}
 
 	@Override
 	public void checkWorkTypeMaster(String companyId, String worktypeCode) {
