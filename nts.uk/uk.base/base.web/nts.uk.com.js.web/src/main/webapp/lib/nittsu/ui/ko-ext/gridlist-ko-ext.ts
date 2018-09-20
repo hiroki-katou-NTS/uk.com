@@ -28,6 +28,7 @@ module nts.uk.ui.koExtentions {
             var columnResize: boolean = ko.unwrap(data.columnResize);
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
+            let rowVirtualization = ko.unwrap(data.rowVirtualization) ? true : false;
             var virtualization = true;
             
             let rows = ko.unwrap(data.rows);
@@ -173,6 +174,7 @@ module nts.uk.ui.koExtentions {
                 columns: iggridColumns,
                 virtualization: virtualization,
                 virtualizationMode: 'continuous',
+                rowVirtualization: rowVirtualization,
                 features: features,
                 tabIndex: -1
             });
