@@ -42,15 +42,19 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 	private StatementItemDisplaySetRepository statementItemDisplaySetRepository;
 	@Inject
 	private ItemRangeSetRepository itemRangeSetRepository;
+	@Inject
+	private ValidateStatementItemData validateStatementItemData;
 
 	@Override
 	protected void handle(CommandHandlerContext<StatementItemDataCommand> context) {
 		val command = context.getCommand();
+		validateStatementItemData.validate(command);
+		
 		String cid = AppContexts.user().companyId();
 		String salaryItemId = command.getSalaryItemId();
 		val statementItem = command.getStatementItem();
 		val categoryAtr = EnumAdaptor.valueOf(command.getCategoryAtr(), CategoryAtr.class);
-		
+	
 		// ドメインモデル「明細書項目」を新規追加する
 		if (statementItem != null) {
 			statementItemRepository.update(new StatementItem(cid, categoryAtr.value,

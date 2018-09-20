@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.statementitem;
 
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -44,10 +46,13 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 	private StatementItemDisplaySetRepository statementItemDisplaySetRepository;
 	@Inject
 	private ItemRangeSetRepository itemRangeSetRepository;
+	@Inject
+	private ValidateStatementItemData validateStatementItemData;
 
 	@Override
 	protected void handle(CommandHandlerContext<StatementItemDataCommand> context) {
 		val command = context.getCommand();
+		validateStatementItemData.validate(command);
 		String cid = AppContexts.user().companyId();
 		String salaryItemId = IdentifierUtil.randomUniqueId();
 
@@ -57,21 +62,12 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 			return;
 		}
 
-		val listStatementItem = statementItemRepository.getByCategory(cid, statementItem.getCategoryAtr());
-		if (listStatementItem.stream().anyMatch(i -> i.getItemNameCd().v().equals(statementItem.getItemNameCd()))) {
-			throw new BusinessException("Msg_3");
-		}
-		
-		if (listStatementItem.stream().anyMatch(i -> i.getItemNameCd().v().equals(statementItem.getItemNameCd()))) {
-			throw new BusinessException("Msg_3");
-		}
-
 		statementItemRepository
-				.add(new StatementItem(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(), salaryItemId,
+				.add(new StatementItem(cid, command.getCategoryAtr(), statementItem.getItemNameCd(), salaryItemId,
 						statementItem.getDefaultAtr(), statementItem.getValueAtr(), statementItem.getDeprecatedAtr(),
 						statementItem.getSocialInsuaEditableAtr(), statementItem.getIntergrateCd()));
 
-		switch (EnumAdaptor.valueOf(command.getStatementItem().getCategoryAtr(), CategoryAtr.class)) {
+		switch (EnumAdaptor.valueOf(command.getCategoryAtr(), CategoryAtr.class)) {
 		case PAYMENT_ITEM:
 			// ドメインモデル「支給項目設定」を新規追加する
 

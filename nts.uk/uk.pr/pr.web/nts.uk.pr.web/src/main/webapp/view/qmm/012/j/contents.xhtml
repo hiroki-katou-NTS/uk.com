@@ -4,24 +4,46 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-	<div class="contents-area">
-		<table id="I2_7" style="margin-left: 10p; padding: 30px;"
-							data-bind="ntsGridList: {
+	<!-- <div class="contents-area" style="padding: 25px;">
+		<table id="I2_7" data-bind="ntsGridList: {
 								name:'#{i18n.getText('QMM012_95')}',
 							    multiple: false,
 								options: lstCustomes,
 								optionsValue: 'itemNameCd',
 								rows: 15,
-								columns: [
-										{ headerText: '#{i18n.getText('QMM012_20')}', key: 'itemNameCd', width: 90, formatter: _.escape },
-										{ headerText: '#{i18n.getText('QMM012_21')}', key: 'name', width: 100, formatter: _.escape },
-										{ headerText: '#{i18n.getText('QMM012_25')}', key: 'shortName', width: 100, formatter: _.escape },
-										{ headerText: '#{i18n.getText('QMM012_96')}', key: 'englishName', width: 100, formatter: _.escape },
-										{ headerText: '#{i18n.getText('QMM012_97')}', key: 'otherLanguageName', width: 100, formatter: _.escape }
-										], 
-								
+								columns: columns,
 								value: currentCode
 					}"></table>
-	</div>
+	</div> -->
+	<table id="fixed-table">
+								<colgroup>
+									<col width="30px"/>
+									<col width="150px"/>
+									<col width="200px"/>
+									<col width="110px"/>
+									<col width="100px"/>
+									<col width="100px"/>
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header"></th>
+										<th class="ui-widget-header">#{i18n.getText('QMM012_32')}</th>
+										<th class="ui-widget-header">#{i18n.getText('QMM012_33')}</th>
+										<th class="ui-widget-header">#{i18n.getText('QMM012_35')}</th>
+										<th class="ui-widget-header">#{i18n.getText('QMM012_120')}</th>
+										<th class="ui-widget-header">#{i18n.getText('QMM012_121')}</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: lstCustomes">
+									<tr>
+										<td></td>
+										<td ><span class="label" data-bind="text: itemNameCd"></span></td>
+										<td><span class="label" data-bind="text: name"></span></td>
+										<td><span class="label" data-bind="text: shortName"></span></td>
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+	
 
 </ui:composition>
