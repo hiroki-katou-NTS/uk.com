@@ -1271,7 +1271,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 				WorkType workTypeNeed = null;
 				for (WorkType workType : workTypeOneDayList) {
-					WorkTypeSet workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay);
+					Optional<WorkTypeSet> workTypeSet = workType.getWorkTypeSetByAtr(WorkAtr.OneDay);
 					if (recStatusOfEmployeeImport.getStatusOfEmployment() == 2
 							&& WorkTypeClassification.LeaveOfAbsence == workType.getDailyWork().getOneDay()) {
 						// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
@@ -1310,7 +1310,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							break;
 						}
 
-						if (closeAtr == workTypeSet.getCloseAtr().value) {
+						if (workTypeSet.isPresent() && closeAtr == workTypeSet.get().getCloseAtr().value) {
 							// 日別実績の勤務種類を更新(Update Worktype của 日別実績)
 							workTypeNeed = workType;
 							break;

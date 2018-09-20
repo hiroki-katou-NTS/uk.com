@@ -814,6 +814,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             new ItemCode("IS00239", "IS00241", "IS00242", "IS00244", "IS00245"),
             new ItemCode("IS00185", "IS00187", "IS00188", "IS00190", "IS00191"),
         ];
+//        isFirstSelected : number = 0;
 
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
@@ -931,7 +932,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
-                    self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
+                    self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
 
                     break;
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -950,7 +951,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
 
-                    self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
+                    self.selectionName = ko.observable((objSel == undefined ? text("CPS001_107") : objSel.optionText) || text("CPS001_107"));
 
                     break;
 
@@ -978,6 +979,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value !== 2) {
                     error.clearAll();
                 }
+//                if(value == 2){
+//                   self.isFirstSelected = self.isFirstSelected + 1;
+//                    if (self.isFirstSelected > 1) {
+//                        setTimeout(function(c) {
+//                            let x = "#" + self.perInfoItemDefId(), content: string = $("#" + self.perInfoItemDefId()).val();
+//                            if (!_.isNil(content)) {
+//                                $("#" + self.perInfoItemDefId()).trigger("validate");
+//                            }
+//                        }, 100);
+//                    }
+//                }
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }

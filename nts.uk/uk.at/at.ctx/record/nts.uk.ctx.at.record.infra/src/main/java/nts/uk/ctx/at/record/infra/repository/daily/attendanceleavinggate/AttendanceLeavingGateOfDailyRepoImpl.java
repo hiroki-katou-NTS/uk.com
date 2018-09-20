@@ -180,7 +180,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 //		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)

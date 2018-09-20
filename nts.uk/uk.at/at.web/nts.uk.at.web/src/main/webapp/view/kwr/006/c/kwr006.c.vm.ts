@@ -31,6 +31,10 @@ module nts.uk.at.view.kwr006.c {
             remarkInputContents: KnockoutObservableArray<ItemModel>;
             currentRemarkInputContent: KnockoutObservable<number>;
             isEnableRemarkInputContents: KnockoutComputed<boolean>;
+            
+             // store map to convert id and code attendance item
+            mapIdCodeAtd: any;
+            mapCodeIdAtd: any;
 
             constructor() {
                 var self = this;
@@ -82,6 +86,8 @@ module nts.uk.at.view.kwr006.c {
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
             }
 
             /*
@@ -94,7 +100,7 @@ module nts.uk.at.view.kwr006.c {
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
                     lstSwapRight = lstDisplayedAttendance.map(item => {
-                        return { code: item.attendanceDisplay, name: item.attendanceName };
+                        return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
                     }).sort((a, b) =>a.code - b.code);
                 }
 
@@ -129,6 +135,9 @@ module nts.uk.at.view.kwr006.c {
                     if (!_.isNil(KWR006DOutput)) {
                         self.selectedCodeC2_3('');
                         if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
+                            _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
+                                value.code = self.mapIdCodeAtd[value.id];    
+                            })
                             const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
@@ -189,7 +198,7 @@ module nts.uk.at.view.kwr006.c {
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
                 
                 _.map(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
+                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code]});
                 });
 
                 if (self.selectedCodeA8_2() == 1) {
@@ -305,6 +314,12 @@ module nts.uk.at.view.kwr006.c {
                         arrCodeName.push({ code: value.itemCode, name: value.itemName });
                     });
                     self.outputItemList(arrCodeName);
+                    
+                    _.forEach(data.monthlyAttendanceItem, (value) => {
+                        self.mapCodeIdAtd[value.code] = value.id;
+                        self.mapIdCodeAtd[value.id] = value.code;        
+                    })
+                    
                     self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
                     dfd.resolve();
                 })
