@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository implements HealthInsuranceFeeRateHistoryRepository {
 
     private static final String GET_HEALTH_INSURANCE_FEE_RATE_HISTORY_BY_CID = "SELECT a FROM QpbmtHealthInsuranceFeeRateHistory a WHERE a.healthInsFeeHistPk.cid =:companyId";
-    private static final String WHERE_OFFICE_CODE = " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode ORDER BY a.startYearMonth";
+    private static final String WHERE_OFFICE_CODE = " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode ORDER BY a.startYearMonth DESC";
     private static final String STRING_EMPTY = "";
     private static final String DELETE = "DELETE FROM QpbmtHealthInsuranceFeeRateHistory a WHERE a.healthInsFeeHistPk.cid =:companyId"
     		+ " AND a.healthInsFeeHistPk.socialInsuranceOfficeCd =:officeCode";
@@ -86,5 +86,20 @@ public class JpaHealthInsuranceFeeRateHistoryRepository extends JpaRepository im
 			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
 		});
 		
+	}
+
+	@Override
+	public void update(HealthInsuranceFeeRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().update(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
+	}
+
+	@Override
+	public void remove(HealthInsuranceFeeRateHistory domain) {
+		this.deleteByCidAndCode(AppContexts.user().companyId(), domain.getSocialInsuranceOfficeCode().v());
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
 	}
 }

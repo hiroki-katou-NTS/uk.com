@@ -2,6 +2,7 @@ package nts.uk.ctx.core.app.command.socialinsurance.welfarepensioninsurance;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -13,6 +14,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.service.Welfa
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 @Stateless
+@Transactional
 public class WelfarePensionInsuranceCommandHandler extends CommandHandler<WelfarePensionInsuraceRateCommand> {
 	
 	@Inject
@@ -25,7 +27,7 @@ public class WelfarePensionInsuranceCommandHandler extends CommandHandler<Welfar
 		BonusEmployeePensionInsuranceRate bonusEmployeePension = context.getCommand().getBonusEmployeePensionInsuranceRate().fromCommandToDomain();
 		EmployeesPensionMonthlyInsuranceFee employeePensonMonthly = context.getCommand().getEmployeesPensionMonthlyInsuranceFee().fromCommandToDomain();
 		WelfarePensionInsuranceClassification welfarePensionClassification = context.getCommand().getWelfarePensionInsuranceClassification().fromCommandToDomain();
-		socialInsuranceOfficeAndHistoryService.addNewHistory(officeCode, yearMonthItem, bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
+		socialInsuranceOfficeAndHistoryService.registerWelfarePensionInsurance(officeCode, yearMonthItem, bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
 	}
 
 }

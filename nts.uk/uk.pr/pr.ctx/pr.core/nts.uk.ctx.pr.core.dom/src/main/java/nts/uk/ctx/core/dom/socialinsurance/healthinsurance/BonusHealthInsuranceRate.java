@@ -52,24 +52,24 @@ public class BonusHealthInsuranceRate extends AggregateRoot {
     public BonusHealthInsuranceRate(String historyId, int employeeShareAmountMethod,
                                     BigDecimal individualLongCareInsuranceRate, BigDecimal individualBasicInsuranceRate, BigDecimal individualHealthInsuranceRate, int individualFractionCls, BigDecimal individualSpecialInsuranceRate,
                                     BigDecimal employeeLongCareInsuranceRate, BigDecimal employeeBasicInsuranceRate, BigDecimal employeeHealthInsuranceRate, int employeeFractionCls, BigDecimal employeeSpecialInsuranceRate) {
-        this.historyID                 = historyId;
+        this.historyID = historyId;
         this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
-        this.individualBurdenRatio     = new HealthContributionRate(individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate);
-        this.employeeBurdenRatio       = new HealthContributionRate(employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
+        this.individualBurdenRatio = new HealthContributionRate(individualLongCareInsuranceRate, individualBasicInsuranceRate, individualHealthInsuranceRate, individualFractionCls, individualSpecialInsuranceRate);
+        this.employeeBurdenRatio = new HealthContributionRate(employeeLongCareInsuranceRate, employeeBasicInsuranceRate, employeeHealthInsuranceRate, employeeFractionCls, employeeSpecialInsuranceRate);
     }
 
-	/**
-	 * @param historyID
-	 * @param employeeShareAmountMethod
-	 * @param individualBurdenRatio
-	 * @param employeeBurdenRatio
-	 */
-	public BonusHealthInsuranceRate(String historyID, int employeeShareAmountMethod,
-			HealthContributionRate individualBurdenRatio, HealthContributionRate employeeBurdenRatio) {
-		super();
-		this.historyID = historyID;
-		this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
-		this.individualBurdenRatio = individualBurdenRatio;
-		this.employeeBurdenRatio = employeeBurdenRatio;
-	}
+    /**
+     * @param historyID                 履歴ID
+     * @param employeeShareAmountMethod 事業主負担分計算方法
+     * @param individualBurdenRatio     個人負担率
+     * @param employeeBurdenRatio       事業主負担率
+     */
+    public BonusHealthInsuranceRate(String historyID, int employeeShareAmountMethod,
+                                    HealthContributionRate individualBurdenRatio, HealthContributionRate employeeBurdenRatio) {
+        super();
+        this.historyID = historyID;
+        this.employeeShareAmountMethod = EnumAdaptor.valueOf(employeeShareAmountMethod, EmployeeShareAmountMethod.class);
+        this.individualBurdenRatio = individualBurdenRatio;
+        this.employeeBurdenRatio = employeeBurdenRatio;
+    }
 }

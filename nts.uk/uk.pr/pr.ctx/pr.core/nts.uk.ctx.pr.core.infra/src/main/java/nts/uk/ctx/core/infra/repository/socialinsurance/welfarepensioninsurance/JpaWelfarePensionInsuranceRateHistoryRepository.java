@@ -78,4 +78,19 @@ public class JpaWelfarePensionInsuranceRateHistoryRepository extends JpaReposito
 			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
 		});
 	}
+	
+	@Override
+	public void update(WelfarePensionInsuranceRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().update(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
+	}
+	
+	@Override
+	public void remove(WelfarePensionInsuranceRateHistory domain) {
+		this.deleteByCidAndCode(AppContexts.user().companyId(), domain.getSocialInsuranceOfficeCode().v());
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceOfficeCode().v(), item.identifier(), item.start().v(), item.end().v()));
+		});
+	}
 }

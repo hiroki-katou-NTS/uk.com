@@ -44,4 +44,9 @@ public class SalaryEmployeesPensionInsuranceRate extends DomainObject {
         this.femaleContributionRate = femaleContributionRate;
         this.fractionClassification = fractionClassification;
     }
+    
+    public void changeDataWhenNotJoinFund (){
+    	this.maleContributionRate.changeDataWhenNotJoinFund();
+    	this.femaleContributionRate.changeDataWhenNotJoinFund();
+    }
 }

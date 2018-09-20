@@ -5,11 +5,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.ScreenMode;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 
 import javax.ejb.Stateless;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +19,8 @@ import java.util.stream.Collectors;
 public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implements HealthInsuranceMonthlyFeeRepository {
 
     private static final String GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId=:historyId";
-
+    private static final String DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId IN :historyId";
+    
     @Override
     public Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId) {
         val entity = this.queryProxy().find(historyId, QpbmtHealthInsuranceMonthlyFee.class);
@@ -29,19 +31,6 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         val details = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyId).getList();
 
         return Optional.of(toDomain(entity.get(), details));
-    }
-
-    @Override
-    public void addOrUpdate(HealthInsuranceMonthlyFee domain, ScreenMode screenMode) {
-        if (ScreenMode.ADD.equals(screenMode)) {
-            //ドメインモデル「健康保険月額保険料額」を追加する
-            this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-            this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-            return;
-        }
-        //ドメインモデル「健康保険月額保険料額」を更新する
-        this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-        this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
     }
 
     /**
@@ -72,6 +61,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     @Override
     public void deleteByHistoryIds(List<String> historyIds) {
         this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
+        this.deleteHealthInsurancePerGradeByHistoryId(historyIds);
     }
 
     @Override
@@ -83,7 +73,8 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 	@Override
 	public void update(HealthInsuranceMonthlyFee domain) {
 		this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+		this.deleteHealthInsurancePerGradeByHistoryId(Arrays.asList(domain.getHistoryId()));
+		this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
 		
 	}
 
@@ -97,4 +88,14 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 	public void updateGraFee(HealthInsuranceMonthlyFee domain) {
 		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
 	}
+	
+	@Override
+	public void insertGraFee(HealthInsuranceMonthlyFee domain) {
+		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+	}
+
+	@Override
+	public void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds){
+    	this.getEntityManager().createQuery(DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyIds).executeUpdate();
+    }
 }

@@ -8,7 +8,7 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGra
 
 @Data
 @AllArgsConstructor
-public class CusDataDto {
+public class CusHealthInsuDto {
 	
 	private int healthInsuranceGrade;
 	private long standardMonthlyFee;

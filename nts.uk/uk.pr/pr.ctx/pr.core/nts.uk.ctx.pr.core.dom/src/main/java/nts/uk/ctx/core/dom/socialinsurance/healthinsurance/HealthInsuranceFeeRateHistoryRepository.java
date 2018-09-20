@@ -19,4 +19,8 @@ public interface HealthInsuranceFeeRateHistoryRepository {
     void deleteByCidAndCode(String companyId, String officeCode);
     
     void add (HealthInsuranceFeeRateHistory domain);
+    
+    void update (HealthInsuranceFeeRateHistory domain);
+    
+    void remove (HealthInsuranceFeeRateHistory domain);
 }

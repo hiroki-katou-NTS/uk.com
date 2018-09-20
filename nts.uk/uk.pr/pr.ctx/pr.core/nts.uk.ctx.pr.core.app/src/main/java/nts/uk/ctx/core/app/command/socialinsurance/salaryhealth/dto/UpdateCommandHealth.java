@@ -7,9 +7,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UpdateCommand {
+public class UpdateCommandHealth {
 	
-	List<CusDataDto> cusDataDtos;
+	List<CusHealthInsuDto> cusDataDtos;
 	String historyId;
 	
 }

@@ -2,8 +2,8 @@ module nts.uk.pr.view.qmm008.h.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        editHealthInsuranceHistory: "ctx/core/socialinsurance/welfarepensioninsurance/editHistory",
-        deleteHealthInsuranceHistory: "ctx/core/socialinsurance/welfarepensioninsurance/deleteHistory",
+        editHealthInsuranceHistory: "ctx/core/socialinsurance/healthinsurance/editHistory",
+        deleteHealthInsuranceHistory: "ctx/core/socialinsurance/healthinsurance/deleteHistory",
         editWelfareInsuranceHistory: "ctx/core/socialinsurance/welfarepensioninsurance/editHistory",
         deleteWelfareInsuranceHistory: "ctx/core/socialinsurance/welfarepensioninsurance/deleteHistory"
     }

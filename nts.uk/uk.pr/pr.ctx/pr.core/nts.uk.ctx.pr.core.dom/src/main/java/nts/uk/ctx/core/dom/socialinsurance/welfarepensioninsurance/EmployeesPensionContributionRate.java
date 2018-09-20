@@ -48,4 +48,9 @@ public class EmployeesPensionContributionRate extends DomainObject {
         this.individualExemptionRate   = Optional.ofNullable(Objects.isNull(individualExemptionRate) ? null : new InsuranceRate(individualExemptionRate));
         this.employeeExemptionRate     = Optional.ofNullable(Objects.isNull(employeeExemptionRate) ? null : new InsuranceRate(employeeExemptionRate));
     }
+    
+    public void changeDataWhenNotJoinFund () {
+    	this.individualExemptionRate = Optional.empty();
+    	this.employeeExemptionRate = Optional.empty();
+    }
 }

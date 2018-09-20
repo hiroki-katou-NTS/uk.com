@@ -19,7 +19,7 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
                 let selectedOffice = params.selectedOffice, displayLastestHistory = "";
                 let history = params.history;
                 if (history && history.length > 0){
-                    let lastestHistory = history[history.length-1].startMonth;
+                    let lastestHistory = history[0].startMonth;
                     displayLastestHistory = String(lastestHistory).substring(0, 4) + "/" + String(lastestHistory).substring(4, 6)
                     self.lastestHistory = lastestHistory;
                 }
