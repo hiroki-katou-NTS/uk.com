@@ -129,6 +129,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.mulMonCheckCondSet().erAlAtdItem().countableAddAtdItems([])
                         self.mulMonCheckCondSet().erAlAtdItem().countableSubAtdItems([]);
                         
+                        // fix khoi tao khi typecheck thay doi
+                        self.comparisonRange().minAmountOfMoneyValue(null);
+                        self.comparisonRange().maxAmountOfMoneyValue(null);
+                        self.comparisonRange().minTimeValue(null);
+                        self.comparisonRange().maxTimeValue(null);
+                        //回数
+                        self.comparisonRange().minTimesValue(null);
+                        self.comparisonRange().maxTimesValue(null);
+                        
+                        
                         //check typeCheckItem initialization times = 0 
                         self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
