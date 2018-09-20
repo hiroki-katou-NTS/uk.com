@@ -171,7 +171,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -700,9 +700,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		WorkScheduleSettingTotalOutput totalOutputSetting = condition.getTotalOutputSetting();
 		TotalWorkplaceHierachy outputSetting = totalOutputSetting.getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if ((lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) && !totalOutputSetting.isDetails()
+		if ((lowestEmployeeLevel < highestOutputLevel && !totalOutputSetting.isDetails()
 				&& !totalOutputSetting.isGrossTotal() && !totalOutputSetting.isPersonalTotal() && !totalOutputSetting.isTotalNumberDay()
-				&& !totalOutputSetting.isWorkplaceTotal()) {
+				&& !totalOutputSetting.isWorkplaceTotal()) || lstMonthlyRecordValueExport.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
