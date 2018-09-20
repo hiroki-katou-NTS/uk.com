@@ -7,10 +7,10 @@ import java.util.Optional;
  */
 public interface EmpTiedProYearRepository {
 
-	Optional<EmpTiedProYear> getEmpTiedProYearById(String cid, int processCateNo);
+    Optional<EmpTiedProYear> getEmpTiedProYearById(String cid, int processCateNo);
 
-	void add(EmpTiedProYear domain);
+    void add(EmpTiedProYear domain);
 
-	void update(EmpTiedProYear domain);
+    void update(EmpTiedProYear oldDomain, EmpTiedProYear newDomain);
 
 }
