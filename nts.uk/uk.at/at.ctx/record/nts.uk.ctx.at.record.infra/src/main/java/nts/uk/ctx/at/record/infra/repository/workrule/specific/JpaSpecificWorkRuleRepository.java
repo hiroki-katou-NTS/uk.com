@@ -171,8 +171,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 				return Optional.of(toDomain(opt.get()));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 		return Optional.empty();

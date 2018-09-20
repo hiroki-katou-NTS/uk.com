@@ -131,16 +131,16 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	}
 
 	public boolean checkTarget(Function<List<Integer>, List<Integer>> getItemValue) {
-		if (!this.useAtr) {
+		if (!isUse()) {
 			return false;
 		}
 		Integer targetValue = calculateTargetValue(getItemValue);
 
 		if(this.inputCheck != null){
 			if(this.inputCheck.getInputCheckCondition() == InputCheckCondition.INPUT_DONE){
-				return targetValue == null;
+				return targetValue != null;
 			}
-			return targetValue != null;
+			return targetValue == null;
 		} else if (this.compareRange != null) {
 			return this.compareRange.checkRange(targetValue, c -> getVValue(c));
 		} else {

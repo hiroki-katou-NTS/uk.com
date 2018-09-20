@@ -284,5 +284,11 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		
 		this.appRootConfirmRepository.insert(newDomain);
 	}
+
+	@Override
+	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType) {
+		String companyID =  AppContexts.user().companyId();
+		this.appRootConfirmRepository.deleteByRequestList424(companyID, employeeID, date, rootType);
+	}
 	
 }
