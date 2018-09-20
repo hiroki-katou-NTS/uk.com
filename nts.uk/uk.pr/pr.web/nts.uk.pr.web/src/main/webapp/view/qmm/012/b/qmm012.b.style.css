@@ -51,6 +51,10 @@
 	width: 180px;
 }
 
+#C3_1 label, #C2_24 {
+	white-space: initial;
+}
+
 #B3_12 {
 	margin-left: 30px;
 }

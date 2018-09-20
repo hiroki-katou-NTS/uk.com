@@ -338,6 +338,7 @@ module nts.uk.pr.view.qmm012.b {
                         }
                         
                         self.checkCreate(false);
+                        screenModel.statementItemDataSelected(self);
                     }
                 });
             }
