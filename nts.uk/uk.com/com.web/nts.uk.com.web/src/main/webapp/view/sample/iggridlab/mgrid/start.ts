@@ -273,7 +273,7 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'Header2', key: 'header2', dataType: 'string', width: '150px', ntsControl: 'Link1' }
                                            ]},
                                 { headerText: 'Header3', key: 'header3', dataType: 'number', width: '150px'/*, ntsControl: 'TextEditor'*/ },
-                                { headerText: 'Header4', key: 'header4', dataType: 'string', width: '150px'},
+                                { headerText: 'Header4', key: 'header4', dataType: 'string', width: '150px', japanese: true },
                                 { headerText: 'Header56',
                                     group: [
                                             { headerText: 'Header<br/>5', key: 'header5', dataType: 'string', width: '150px', ntsType: 'code_header6', onChange: search,
