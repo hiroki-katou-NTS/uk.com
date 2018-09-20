@@ -729,9 +729,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 					List<String> employeetemp = object.getLstAffCompanyHistByEmployee().stream().map(x -> x.getSId())
 							.collect(Collectors.toList());
 					employee.addAll(employeetemp);
-					return employee;
 				}
 			}
+			return employee;
 		}
 		return new ArrayList<>();
 	}
