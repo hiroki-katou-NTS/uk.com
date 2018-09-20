@@ -17,7 +17,7 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItemName f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId =:salaryItemId ";
-
+    private static final String SELECT_BY_LIST_SALARYID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId IN :salaryItemIds ";
     @Override
     public List<StatementItemName> getAllStatementItemName(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStatementItemName.class)
@@ -31,6 +31,14 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
         .setParameter("salaryItemId", salaryItemId)
         .getSingle(c->c.toDomain());
     }
+    
+    @Override
+	public List<StatementItemName> getStatementItemNameByListSalaryItemId(String cid, List<String> salaryItemIds) {
+    	return this.queryProxy().query(SELECT_BY_LIST_SALARYID, QpbmtStatementItemName.class)
+    	        .setParameter("cid", cid)
+    	        .setParameter("salaryItemIds", salaryItemIds)
+    	        .getList(item -> item.toDomain());
+	}
 
     @Override
     public void add(StatementItemName domain){
@@ -46,4 +54,6 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
     public void remove(String cid, String salaryItemId){
         this.commandProxy().remove(QpbmtStatementItemName.class, new QpbmtStatementItemNamePk(cid, salaryItemId)); 
     }
+
+	
 }
