@@ -42,8 +42,8 @@ public class UpdateAgreementMonthSettingCommandHandler extends CommandHandlerWit
 //		agreementMonthSetting.validate();
 		
 		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
-
-		return this.agreementMonthSetDomainService.update(agreementMonthSetting, workingConditionItem);
+		Integer yearMonthValueOld = command.getYearMonthValueOld();
+		return this.agreementMonthSetDomainService.update(agreementMonthSetting, workingConditionItem, yearMonthValueOld);
 	}
 
 }
