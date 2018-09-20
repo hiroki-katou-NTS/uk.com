@@ -23,7 +23,7 @@ public class AccInsurPreRateDto {
         for (OccAccInsurBusDto temp : occAccInsurBusDtos) {
             for (OccAccIsPrRateDto temp2: occAccIsPrRateDtos) {
                 if(temp.getOccAccInsurBusNo() == temp2.getOccAccInsurBusNo())
-                	accInsurPreRateDtos1.add(new AccInsurPreRateDto(temp2.getHisId(),temp.getOccAccInsurBusNo(),temp.getName(),temp2.getFracClass(),temp2.getEmpConRatio(),temp.getToUse()));
+                	accInsurPreRateDtos1.add(new AccInsurPreRateDto(temp2.getHisId(),temp.getOccAccInsurBusNo()+1,temp.getName(),temp2.getFracClass(),temp2.getEmpConRatio(),temp.getToUse()));
             }
         }
         return accInsurPreRateDtos1;

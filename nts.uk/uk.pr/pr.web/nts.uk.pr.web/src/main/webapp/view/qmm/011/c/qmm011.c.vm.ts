@@ -117,7 +117,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 listAccInsurPreRate[0]=data;
             }
             _.forEach(arrResulf, function(value,key) {
-
+                key++;
                 let temp :IAccInsurPreRate = _.find(listAccInsurPreRate, function (o) {
                     if(o == null)
                         return null;
@@ -133,10 +133,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                         empConRatio: 0,
                         useArt: 0
                     };
-                    arrResulf[key] = data;
+                    arrResulf[key-1] = data;
                 }
                 else{
-                    arrResulf[key] = temp;
+                    arrResulf[key-1] = temp;
                 }
 
             });
@@ -252,17 +252,14 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         register(){
             let self = this;
             block.invisible();
-            if(self.validate()){
+            if(self.validate() || nts.uk.ui.errors.hasError()){
                 block.clear();
                 return;
             }
-            if (nts.uk.ui.errors.hasError()) {
-                block.clear();
-                return;
-            }
-
-
             let isNewMode = self.isNewMode() == MODE.NEW;
+            _.each(self.listAccInsurPreRate(), function(item: AccInsurPreRate) {
+                item.occAccInsurBusNo--;
+            });
             let data: any = {
                 listAccInsurPreRate: self.convertToCommand(self.listAccInsurPreRate()),
                 isNewMode: isNewMode,
@@ -286,7 +283,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 temp.empConRatio = Number(item.empConRatio());
                 temp.fracClass = Number(item.fracClass());
                 listOccAccIsPrRate.push(temp);
-            })
+            });
             return listOccAccIsPrRate;
         }
         convertStringToYearMonth(yearMonth: any){
@@ -473,6 +470,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         static fromApp(app) {
             let listEmp = [];
             _.each(app, (item) => {
+
                 let dto: AccInsurPreRate = new AccInsurPreRate();
                 dto.hisId = item.hisId;
                 dto.occAccInsurBusNo = item.occAccInsurBusNo;
