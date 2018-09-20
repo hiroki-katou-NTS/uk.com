@@ -6,6 +6,7 @@ module nts.uk.com.view.cps016.a.service {
         getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
         saveDataSelectionItem: "ctx/pereg/person/info/setting/selection/addSelectionItem",
         updateDataSelectionItem: "ctx/pereg/person/info/setting/selection/updateSelectionItem",
+        checkUseSelectionItem: "ctx/pereg/person/info/setting/selection/checkUseSelectionItem",
         removeDataSelectionItem: "ctx/pereg/person/info/setting/selection/removeSelectionItem",
         checkExistedSelectionItemId: "ctx/pereg/person/info/ctgItem/checkExistItem/{0}"
 
@@ -28,6 +29,10 @@ module nts.uk.com.view.cps016.a.service {
         return ajax(paths.updateDataSelectionItem, command);
     }
 
+    export function checkUseSelectionItem(selectionItemId: string) {
+        return ajax(paths.checkUseSelectionItem+'/' + selectionItemId);
+    }
+    
     export function removeDataSelectionItem(command) {
         return ajax(paths.removeDataSelectionItem, command);
     }

@@ -891,12 +891,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public boolean checkExistedSelectionItemId(String selectionItemId) {
 		List<PpemtPerInfoItemCm> itemCm = this.queryProxy().query(SEL_ITEM_BY_SELECTIONS, PpemtPerInfoItemCm.class)
 				.setParameter("selectionItemId", selectionItemId).getList();
-		if (itemCm != null) {
-			if (itemCm.size() > 0) {
-				return true;
-			}
-		}
-		return false;
+		return itemCm.size() > 0;
 	}
 
 	@Override
