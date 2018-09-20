@@ -795,7 +795,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
                 self.valueUpdateMonth = self.itemValueMonthParent;
                 self.valueUpdateMonth["redConditionMessage"] = monthResult.flexShortage.redConditionMessage;
-                self.valueUpdateMonth["hasFlex"] = true;
+                //co can kiem tra loi flex ko
+                self.valueUpdateMonth["hasFlex"] = true && self.canFlex();
                 dfd.resolve();
                 nts.uk.ui.block.clear();
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
