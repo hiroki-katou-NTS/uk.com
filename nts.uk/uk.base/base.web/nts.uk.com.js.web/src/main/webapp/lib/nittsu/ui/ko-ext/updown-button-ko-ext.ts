@@ -131,9 +131,17 @@ module nts.uk.ui.koExtentions {
                         data.targetSource(source);
                         //                        $targetElement.igGrid("option", "dataSource", source);
                         //                        $targetElement.igGrid("dataBind");
-                        var index = upDown + grouped["group1"][0].index;
+//                        var index = upDown + grouped["group1"][0].index;
+                        var id = grouped["group1"][0].id;
                         //                        var index = $targetElement.igGrid("selectedRows")[0].index;
-                        _.defer(() => { $targetElement.igGrid("virtualScrollTo", index); });
+                        _.defer(() => { 
+                            var row = { element: $targetElement.igGrid("rowById", id), id: id };
+                            if($targetElement.igGrid("option").virtualization === true){
+                                nts.uk.ui.ig.grid.virtual.expose(row, $targetElement);
+                            } else {
+                                nts.uk.ui.ig.grid.expose(row, $targetElement);    
+                            }
+                        });
                     }
                 }
             }
