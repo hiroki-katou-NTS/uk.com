@@ -11,6 +11,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeeShare
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -92,6 +93,7 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
      */
     public void algorithmMonthlyHealthInsurancePremiumCalculation(Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional, BonusHealthInsuranceRate bonusHealthInsuranceRate) {
         // ドメインモデル「健康保険標準月額」を全て取得する
+        this.healthInsurancePerGradeFee.clear();
         if (healthInsuranceStandardMonthlyOptional.isPresent()) {
             val standardGradePerMonth = healthInsuranceStandardMonthlyOptional.get().getStandardGradePerMonth();
 
@@ -102,7 +104,10 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
                 val individualBurdenRatio = this.getHealthInsuranceRate().getIndividualBurdenRatio();
                 val employeeBurdenRatio = this.getHealthInsuranceRate().getEmployeeBurdenRatio();
                 val individualFractionCls = individualBurdenRatio.getFractionCls();
-                val bonusHealthInsuranceRateIndividualBurden = bonusHealthInsuranceRate.getIndividualBurdenRatio();
+                HealthContributionRate bonusHealthInsuranceRateIndividualBurden = null;
+                if (!Objects.isNull(bonusHealthInsuranceRate)) {
+                    bonusHealthInsuranceRateIndividualBurden = bonusHealthInsuranceRate.getIndividualBurdenRatio();
+                }
 
                 // 取得した値と画面上の値を元に、「健康保険月額保険料額.等級毎健康保険料.被保険者負担」の計算処理を実施する
                 val insuredHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
@@ -122,7 +127,7 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
 
                 // 取得した値と画面上の値を元に、「健康保険月額保険料額.等級毎健康保険料.事業主負担」の計算処理を実施する
                 // 「事業主負担率を用いて計算する」が選択されている場合
-                if (EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod)) {
+                if (EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod) && !Objects.isNull(bonusHealthInsuranceRateIndividualBurden)) {
                     employeeHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
                             bonusHealthInsuranceRateIndividualBurden.getHealthInsuranceRate().v(),
                             individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
@@ -156,7 +161,16 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
         }
     }
 
-    public void updateGradeFee (List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee){
+    /**
+     * アルゴリズム「月額健康保険料計算処理」を実行する
+     *
+     * @param healthInsuranceStandardMonthlyOptional HealthInsuranceStandardMonthly
+     */
+    public void algorithmMonthlyHealthInsurancePremiumCalculation(Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional) {
+        this.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuranceStandardMonthlyOptional, null);
+    }
+
+    public void updateGradeFee(List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee) {
         this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;
     }
 }

@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm008.b.service {
     var paths = {
         findAllOffice: "ctx/core/socialinsurance/healthinsurance/getByCompanyId",
         findEmployeeHealthInsuranceByHistoryId: "ctx/core/socialinsurance/healthinsurance/getByHistoryId/{0}" ,
-        addEmployeeHealthInsurance: "ctx/core/socialinsurance/healthinsurance/add"
+        registerEmployeeHealthInsurance: "ctx/core/socialinsurance/healthinsurance/register"
     }
     /**
      * get all
@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm008.b.service {
         return ajax(format(paths.findEmployeeHealthInsuranceByHistoryId, historyId));
     }
     
-    export function addEmployeeHealthInsurance(command): JQueryPromise<any> {
-        return ajax(paths.addEmployeeHealthInsurance, command);
+    export function registerEmployeeHealthInsurance(command): JQueryPromise<any> {
+        return ajax(paths.registerEmployeeHealthInsurance, command);
     }
 }

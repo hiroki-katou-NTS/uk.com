@@ -6,17 +6,17 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.command.AddHealthInsuranceCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.command.HealthInsuranceCommand;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.service.HealthInsuranceService;
 @Stateless
 @Transactional
-public class UpdateHealthInsuranceFeeRateHistoryCommandHandler  extends CommandHandler<AddHealthInsuranceCommand>{
+public class UpdateHealthInsuranceFeeRateHistoryCommandHandler  extends CommandHandler<HealthInsuranceCommand>{
 
 	@Inject
 	private HealthInsuranceService healthInsuranceService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<AddHealthInsuranceCommand> context) {
+	protected void handle(CommandHandlerContext<HealthInsuranceCommand> context) {
 		healthInsuranceService.updateHistory(context.getCommand().getOfficeCode(), context.getCommand().getYearMonthHistoryItem().fromCommandToDomain());
 	}
 

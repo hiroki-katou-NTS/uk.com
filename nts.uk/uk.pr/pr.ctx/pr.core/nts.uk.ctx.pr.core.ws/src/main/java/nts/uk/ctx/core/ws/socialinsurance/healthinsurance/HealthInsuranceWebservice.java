@@ -8,10 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.AddHealthInsuranceCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.DeleteHealthInsuranceCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.UpdateHealthInsuranceFeeRateHistoryCommandHandler;
-import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.command.AddHealthInsuranceCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.command.HealthInsuranceCommand;
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.HealthInsuranceFeeRateFinder;
 import nts.uk.ctx.core.app.find.socialinsurance.healthinsurance.dto.HealthInsuranceDto;
 import nts.uk.ctx.core.app.find.socialinsurance.welfarepensioninsurance.dto.SocialInsuranceOfficeDto;
@@ -24,7 +24,7 @@ public class HealthInsuranceWebservice {
     private HealthInsuranceFeeRateFinder healthInsuranceFeeRateFinder;
 
     @Inject
-    private AddHealthInsuranceCommandHandler addHealthInsuranceCommandHandler;
+    private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
     
     @Inject
     private UpdateHealthInsuranceFeeRateHistoryCommandHandler updateHealthInsuranceCommandHandler;
@@ -45,20 +45,20 @@ public class HealthInsuranceWebservice {
     }
 
     @POST
-    @Path("add")
-    public void addHealthInsuranceFeeRateByCompanyId(AddHealthInsuranceCommand addHealthInsuranceCommand) {
-        this.addHealthInsuranceCommandHandler.handle(addHealthInsuranceCommand);
+    @Path("register")
+    public void addHealthInsuranceFeeRateByCompanyId(HealthInsuranceCommand healthInsuranceCommand) {
+        this.registerHealthInsuranceCommandHandler.handle(healthInsuranceCommand);
     }
 
     @POST
     @Path("editHistory")
-    public void updateHealthInsuranceFeeRateByCompanyId(AddHealthInsuranceCommand command) {
+    public void updateHealthInsuranceFeeRateByCompanyId(HealthInsuranceCommand command) {
     	updateHealthInsuranceCommandHandler.handle(command);
     }
     
     @POST
     @Path("deleteHistory")
-    public void deleteHealthInsuranceFeeRateByCompanyId(AddHealthInsuranceCommand command) {
+    public void deleteHealthInsuranceFeeRateByCompanyId(HealthInsuranceCommand command) {
     	deleteHealthInsuranceCommandHandler.handle(command);
     }
 }

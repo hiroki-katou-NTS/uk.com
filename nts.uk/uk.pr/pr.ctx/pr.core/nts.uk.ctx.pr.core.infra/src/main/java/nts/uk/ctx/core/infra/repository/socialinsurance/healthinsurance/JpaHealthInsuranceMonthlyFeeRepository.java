@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implements HealthInsuranceMonthlyFeeRepository {
 
     private static final String GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID = "SELECT a FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId=:historyId";
-
+    private static final String DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtHealthInsurancePerGradeFee a WHERE a.healthMonPerGraPk.historyId IN :historyId";
+    
     @Override
     public Optional<HealthInsuranceMonthlyFee> getHealthInsuranceMonthlyFeeById(String historyId) {
         val entity = this.queryProxy().find(historyId, QpbmtHealthInsuranceMonthlyFee.class);
@@ -72,6 +73,7 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     @Override
     public void deleteByHistoryIds(List<String> historyIds) {
         this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
+        this.deleteHealthInsurancePerGradeByHistoryId(historyIds);
     }
 
     @Override
@@ -102,4 +104,9 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 	public void insertGraFee(HealthInsuranceMonthlyFee domain) {
 		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
 	}
+
+	@Override
+	public void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds){
+    	this.getEntityManager().createQuery(DELETE_HEALTH_INSURANCE_PER_GRADE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyIds).executeUpdate();
+    }
 }

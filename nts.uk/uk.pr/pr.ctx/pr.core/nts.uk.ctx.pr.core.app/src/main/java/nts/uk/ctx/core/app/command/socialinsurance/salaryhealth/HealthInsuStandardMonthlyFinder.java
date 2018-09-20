@@ -119,7 +119,7 @@ public class HealthInsuStandardMonthlyFinder {
 		
 		Optional<HealthInsuranceStandardMonthly> healthInsuStandarMonthly = healthInsuranceStandardMonthlyRepository.getHealthInsuranceStandardMonthlyByStartYearMonth(startCommandHealth.getDate());
 		HealthInsuranceMonthlyFee healthInsuranceMonthlyFee = new HealthInsuranceMonthlyFee();
-		healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuStandarMonthly, null);
+		healthInsuranceMonthlyFee.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuStandarMonthly);
 		
 		return null;
 	}

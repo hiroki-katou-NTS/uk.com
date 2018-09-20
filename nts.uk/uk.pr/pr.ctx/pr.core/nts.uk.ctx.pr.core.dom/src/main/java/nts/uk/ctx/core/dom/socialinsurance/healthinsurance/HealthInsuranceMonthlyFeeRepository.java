@@ -35,4 +35,6 @@ public interface HealthInsuranceMonthlyFeeRepository {
     void updateGraFee(HealthInsuranceMonthlyFee domain);
     
     void insertGraFee(HealthInsuranceMonthlyFee domain);
+    
+    void deleteHealthInsurancePerGradeByHistoryId (List<String> historyIds);
 }
