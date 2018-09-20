@@ -64,8 +64,13 @@ module nts.layout {
                     .find((x: any) => !!ko.toJS(x.editable));
 
                 if (_item) {
-                    _item.hasFocus(true);
+                    if ((_item.item || {}).dataTypeValue != ITEM_SINGLE_TYPE.DATE) {
+                        _item.hasFocus(true);
+                    } else {
+                        $('#COM1000000000000000CS00001IS00001').find('input').focus();
+                    }
                 }
+
                 clearTimeout(tout);
             }, 50);
         },
@@ -1537,7 +1542,7 @@ module nts.layout {
                         if (timeClick - safeClick <= 500) {
                             return;
                         }
-                        
+
                         initCDL008Data(ko.toJS(CS00017_IS00085.data));
 
                         if (!!getShared('inputCDL008')) {
