@@ -19,12 +19,6 @@
 			<com:scriptfile path="cdl009.a.service.js" />
 			<com:scriptfile path="cdl009.a.start.js" />
 			<com:scriptfile path="cdl009.a.vm.js" />
-			
-			<style type="text/css">
-				.ui-iggrid-table {
-					border-collapse: collapse;
-				}
-			</style>
 		</ui:define>
 
 		<ui:define name="content">
@@ -33,42 +27,40 @@
 				<br></br>
 				<table>
 					<tr>
-						<td><div id="workplace-component" tabindex="1"></div></td>
+						<td><div id="workplace-component"></div></td>
 						<td style="width: 90px; padding-left: 15px; padding-top: 50px"><div
 								id="status-control">
 								<table>
 									<tr>
-										<td style="height: 40px"><div style="width: 85px"
+										<td style="height: 40px"><div style="width: 85px" tabindex="-1"
 												data-bind="ntsCheckBox: { checked: isIncumbent }">#{i18n.getText('CDL009_4')}</div></td>
 									</tr>
 									<tr>
-										<td style="height: 40px"><div style="width: 85px"
+										<td style="height: 40px"><div style="width: 85px" tabindex="-1"
 												data-bind="ntsCheckBox: { checked: isHoliday }">#{i18n.getText('CDL009_5')}</div></td>
 									</tr>
 									<tr>
-										<td style="height: 40px"><div style="width: 85px"
+										<td style="height: 40px"><div style="width: 85px" tabindex="-1"
 												data-bind="ntsCheckBox: { checked: isLeaveOfAbsence }">#{i18n.getText('CDL009_6')}</div></td>
 									</tr>
 									<tr>
-										<td style="height: 40px"><div style="width: 85px"
+										<td style="height: 40px"><div style="width: 85px" tabindex="-1"
 												data-bind="ntsCheckBox: { checked: isRetirement }">#{i18n.getText('CDL009_7')}</div></td>
 									</tr>
 									<tr>
 										<td style="height: 60px; padding-top: 20px"><button
-												data-bind="click: searchEmp" tabindex="7">#{i18n.getText('CDL009_3')}</button></td>
+												data-bind="click: searchEmp">#{i18n.getText('CDL009_3')}</button></td>
 									</tr>
 								</table>
 							</div></td>
-						<td style="padding-top: 50px"><div id="emp-component"
-								tabindex="8"></div></td>
+						<td style="padding-top: 50px"><div id="emp-component"></div></td>
 					</tr>
 				</table>
 			</div>
 			<div id="ruled-line" style="border: 1px solid;"></div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: decideData"
-					tabindex="9">#{i18n.getText('CDL009_8')}</button>
-				<button class="large" data-bind="click: closeDialog" tabindex="10">#{i18n.getText('CDL009_9')}</button>
+				<button class="proceed x-large" data-bind="click: decideData">#{i18n.getText('CDL009_8')}</button>
+				<button class="large" data-bind="click: closeDialog">#{i18n.getText('CDL009_9')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
