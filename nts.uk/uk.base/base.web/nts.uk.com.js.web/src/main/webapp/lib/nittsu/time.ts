@@ -77,7 +77,7 @@ module nts.uk.time {
                 endEraYear = moment(i.end).year();
             if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
                 let diff = formattedYear - startEraYear;
-                return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month());
+                return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
             }               
         }
         return null;
