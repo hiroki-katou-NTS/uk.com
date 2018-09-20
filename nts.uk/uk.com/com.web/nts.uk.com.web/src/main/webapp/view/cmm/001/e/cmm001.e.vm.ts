@@ -9,6 +9,7 @@ module nts.uk.com.view.cmm001.e {
             switchOptions: KnockoutObservableArray<any>;
             isCheckedAll: KnockoutObservable<boolean>;
             switchHeader: KnockoutObservable<number>;
+            comName: string;
 
             constructor() {
                 let self = this;
@@ -36,6 +37,7 @@ module nts.uk.com.view.cmm001.e {
                     });
                 });
 
+                self.comName = nts.uk.text.format(nts.uk.resource.getText('CMM001_75'), nts.uk.ui.windows.getShared('companyName'));
             }
 
             start(): JQueryPromise<any> {

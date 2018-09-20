@@ -384,7 +384,8 @@ module cmm001.a {
         openEDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('companyId', self.currentCompany().companyId());
-            nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', { title: '', }).onClosed(function(): any {
+            nts.uk.ui.windows.setShared('companyName', self.currentCompany().companyName());
+            nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', {title: '',}).onClosed(function (): any {
             })
         }
     }
