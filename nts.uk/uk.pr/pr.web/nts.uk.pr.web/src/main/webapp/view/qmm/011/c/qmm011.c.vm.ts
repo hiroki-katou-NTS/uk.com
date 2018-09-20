@@ -213,7 +213,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         openEscreen(){
             let self = this;
-            let dataToPassScreenE : number = self.listOccAccIsHis()[0].startYearMonth;
+            let dataToPassScreenE : number = 0;
+            if(self.listOccAccIsHis().length>0){
+                dataToPassScreenE = self.listOccAccIsHis()[0].startYearMonth;
+            }
             self.startYearMonth(dataToPassScreenE);
             setShared('QMM011_E_PARAMS_INPUT', {
                 startYearMonth:  dataToPassScreenE
@@ -484,7 +487,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             _.each(app, (item) => {
                 let dto: AccInsurPreRate = new AccInsurPreRate();
                 dto.hisId = item.hisId;
-                dto.occAccInsurBusNo = item.occAccInsurBusNo+1;
+                dto.occAccInsurBusNo = item.occAccInsurBusNo;
                 dto.name = item.name;
                 dto.fracClass = ko.observable(item.fracClass);
                 dto.empConRatio = ko.observable(item.empConRatio);
