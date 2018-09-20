@@ -1,16 +1,10 @@
 package nts.uk.ctx.core.dom.socialinsurance.healthinsurance;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.List;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.core.dom.socialinsurance.InsuranceFee;
+
+import java.math.BigDecimal;
 
 /**
  * 各負担料

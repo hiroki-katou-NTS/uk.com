@@ -5,7 +5,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.ScreenMode;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 
@@ -30,19 +29,6 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
         val details = this.queryProxy().query(GET_HEALTH_INSURANCE_PER_GRADE_FEE_BY_HISTORY_ID, QpbmtHealthInsurancePerGradeFee.class).setParameter("historyId", historyId).getList();
 
         return Optional.of(toDomain(entity.get(), details));
-    }
-
-    @Override
-    public void addOrUpdate(HealthInsuranceMonthlyFee domain, ScreenMode screenMode) {
-        if (ScreenMode.ADD.equals(screenMode)) {
-            //ドメインモデル「健康保険月額保険料額」を追加する
-            this.commandProxy().insert(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-            this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
-            return;
-        }
-        //ドメインモデル「健康保険月額保険料額」を更新する
-        this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-        this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
     }
 
     /**
