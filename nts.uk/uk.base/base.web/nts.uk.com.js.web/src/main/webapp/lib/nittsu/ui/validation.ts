@@ -234,17 +234,8 @@ module nts.uk.ui.validation {
                 return result;
             }
             //let validateResult;
-            // Check CharType
-            result= checkCharType(inputText,this.charType);
-            if(!result.isValid) return result;
             // Check Constraint
             if (this.constraint !== undefined && this.constraint !== null) {
-                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
-                    let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
-                                [ this.name, maxLength ]), result.errorCode);
-                    return result;
-                }
                 
                 if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
                     if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
@@ -252,6 +243,17 @@ module nts.uk.ui.validation {
                         return result;
                     }  
                 }
+            }
+            
+            // Check CharType
+            result= checkCharType(inputText,this.charType);
+            if(!result.isValid) return result;
+            
+            if (!_.isNil(this.constraint) && this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                let maxLength = this.constraint.maxLength;
+                result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                            [ this.name, maxLength ]), result.errorCode);
+                return result;
             }
             
             result.success(inputText);
