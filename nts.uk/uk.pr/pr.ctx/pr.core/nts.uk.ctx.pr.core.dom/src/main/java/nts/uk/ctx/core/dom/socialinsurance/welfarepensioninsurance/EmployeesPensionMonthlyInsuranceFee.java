@@ -152,4 +152,8 @@ public class EmployeesPensionMonthlyInsuranceFee extends AggregateRoot {
     public void updateGradeList (List<GradeWelfarePensionInsurancePremium> pensionInsurancePremium){
         this.pensionInsurancePremium = pensionInsurancePremium;
     }
+    
+    public void changeDataWhenNotJoinFund (){
+    	this.salaryEmployeesPensionInsuranceRate.changeDataWhenNotJoinFund();
+    }
 }

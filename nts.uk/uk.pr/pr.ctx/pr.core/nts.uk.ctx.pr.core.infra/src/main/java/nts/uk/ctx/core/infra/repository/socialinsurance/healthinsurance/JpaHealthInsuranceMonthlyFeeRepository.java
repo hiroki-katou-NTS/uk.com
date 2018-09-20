@@ -9,6 +9,8 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthI
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 
 import javax.ejb.Stateless;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,7 +73,8 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 	@Override
 	public void update(HealthInsuranceMonthlyFee domain) {
 		this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-		this.commandProxy().updateAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+		this.deleteHealthInsurancePerGradeByHistoryId(Arrays.asList(domain.getHistoryId()));
+		this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
 		
 	}
 

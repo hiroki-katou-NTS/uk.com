@@ -1,5 +1,7 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -50,5 +52,10 @@ public class BonusEmployeePensionInsuranceRate extends AggregateRoot {
         this.maleContributionRate      = maleContributionRate;
         this.femaleContributionRate    = femaleContributionRate;
         this.fractionClassification    = fractionClassification;
+    }
+    
+    public void changeDataWhenNotJoinFund () {
+    	this.maleContributionRate.changeDataWhenNotJoinFund();
+    	this.femaleContributionRate.changeDataWhenNotJoinFund();
     }
 }

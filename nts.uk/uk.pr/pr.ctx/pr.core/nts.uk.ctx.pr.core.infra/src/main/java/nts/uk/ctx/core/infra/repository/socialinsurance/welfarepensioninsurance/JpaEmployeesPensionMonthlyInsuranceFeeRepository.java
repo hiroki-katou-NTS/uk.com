@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.infra.repository.socialinsurance.welfarepensioninsurance;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,7 +75,8 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	public void update(EmployeesPensionMonthlyInsuranceFee domain) {
 		this.commandProxy().update(QpbmtEmployeesPensionMonthlyInsuranceFee.toEntity(domain));
 		List<QpbmtGradeWelfarePensionInsurancePremium> listEntity =  QpbmtGradeWelfarePensionInsurancePremium.toEntity(domain);
-		this.commandProxy().updateAll(listEntity);		
+		this.deleteGradeWelfareByHistoryIds(Arrays.asList(domain.getHistoryId()));
+		this.commandProxy().insertAll(listEntity);		
 	}
 	
 	public void remove(EmployeesPensionMonthlyInsuranceFee domain) {

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.BonusEmployeePensionInsuranceRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
@@ -45,21 +46,32 @@ public class WelfareInsuranceService {
 		WelfarePensionInsuranceRateHistory welfarePensionHistory = null;
 		Optional<WelfarePensionInsuranceRateHistory> opt_welfarePensionHistory = welfarePensionInsuranceRateHistoryRepository
 				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
+		// Update exemption rate to null when not join fund
+		if (welfarePensionClassification.getFundClassification() == FundClassification.NOT_JOIN){
+			bonusEmployeePension.changeDataWhenNotJoinFund();
+			employeePensonMonthly.changeDataWhenNotJoinFund();
+		}
+		// アルゴリズム「月額厚生年金保険料計算処理」を実行する
 		employeePensonMonthly = calculationWelfarePensionInsurance(employeePensonMonthly, welfarePensionClassification,
 				yearMonthItem);
+		
 		if (!opt_welfarePensionHistory.isPresent()) {
+			// add new history if there are no history
 			welfarePensionHistory = new WelfarePensionInsuranceRateHistory(AppContexts.user().companyId(), officeCode,
 					Arrays.asList(yearMonthItem));
 			welfarePensionInsuranceRateHistoryRepository.add(welfarePensionHistory);
 			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
 			return;
 		}
+		// delete old history 
 		welfarePensionHistory = opt_welfarePensionHistory.get();
 		welfarePensionInsuranceRateHistoryRepository.deleteByCidAndCode(AppContexts.user().companyId(), officeCode);
 		if (!welfarePensionHistory.getHistory().contains(yearMonthItem)) {
+			// add new item to history 
 			welfarePensionHistory.add(yearMonthItem);
 			addWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
 		} else {
+			// update if existed
 			updateWelfarePensionInsurance(bonusEmployeePension, employeePensonMonthly, welfarePensionClassification);
 		}
 		welfarePensionInsuranceRateHistoryRepository.add(welfarePensionHistory);
@@ -68,7 +80,8 @@ public class WelfareInsuranceService {
 	private EmployeesPensionMonthlyInsuranceFee calculationWelfarePensionInsurance(
 			EmployeesPensionMonthlyInsuranceFee employeePensonMonthly,
 			WelfarePensionInsuranceClassification welfarePension, YearMonthHistoryItem yearMonthItem) {
-		if (welfarePension.getFundClassification() == FundClassification.JOIN) {
+		// calculate if yes, empty list if other
+		if (employeePensonMonthly.getAutoCalculationCls() == AutoCalculationExecutionCls.AUTO) {
 			Optional<WelfarePensionStandardMonthlyFee> welfarePensionStandardMonthlyFee = welfarePensionStandardMonthlyFeeRepository
 					.getWelfarePensionStandardMonthlyFeeByStartYearMonth(yearMonthItem.start().v());
 			employeePensonMonthly.algorithmMonthlyWelfarePensionInsuranceFeeCalculation(
@@ -101,6 +114,7 @@ public class WelfareInsuranceService {
 		if (!opt_WelfarePensionHist.isPresent()) {
 			return;
 		}
+		// get history and change span
 		WelfarePensionInsuranceRateHistory welfarePensionHist = opt_WelfarePensionHist.get();
 		Optional<YearMonthHistoryItem> currentSpan = welfarePensionHist.getHistory().stream().filter(item -> item.identifier().equals(yearMonth.identifier())).findFirst();
 		if (!currentSpan.isPresent()) return;
@@ -114,6 +128,7 @@ public class WelfareInsuranceService {
 		if (!opt_WelfarePensionHist.isPresent()) {
 			return;
 		}
+		// remove last history and update previous history
 		WelfarePensionInsuranceRateHistory welfarePensionHist = opt_WelfarePensionHist.get();
 		if (welfarePensionHist.getHistory().size() == 0) return;
 		YearMonthHistoryItem lastestHistory = welfarePensionHist.getHistory().get(0);

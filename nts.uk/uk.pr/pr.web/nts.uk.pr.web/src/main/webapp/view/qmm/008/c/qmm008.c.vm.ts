@@ -52,18 +52,21 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                         self.registerBusinessEstablishment();
                         return;
                     }
+                    // from json to model
                     let socailInsuranceOfficeList: Array<model.SocialInsuranceOffice> = [];
                     data.forEach(office => {
                         socailInsuranceOfficeList.push(new model.SocialInsuranceOffice(office));
                     });
                     self.socialInsuranceOfficeList(socailInsuranceOfficeList);
                     self.convertToTreeGridList();
+                    // select first office and last history
                     if (self.isOnStartUp) {
                         self.isOnStartUp = false;
                         let firstOffice = data[0].welfareInsuranceRateHistory
                         if (firstOffice.history.length > 0) self.selectedWelfareInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
                         else self.selectedWelfareInsurance(firstOffice.socialInsuranceCode);
                     } else {
+                        // update selected item
                         self.changeBySelectedValue();
                     }
                 }
@@ -92,9 +95,10 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             self.selectedWelfareInsurance.subscribe(function(selectedValue: any) {
                 if (selectedValue) {
                     self.showByHistory();
+                    // if select history
                     if (selectedValue.length >= 36) {
                         self.isSelectedHistory(true);
-                    } else {
+                    } else { // if select office
                         self.isSelectedHistory(false);
                         self.initBlankData();
                     }
@@ -163,10 +167,13 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 pensionList = ko.toJS(self.socialInsuranceOfficeList),
                 displayPensionList: Array<model.TreeGridNode> = [],
                 pensionItem = {};
+            
+            // each office
             pensionList.forEach(function(office) {
                 let pensionItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
                 if (office.welfareInsuranceRateHistory) {
                     let displayStart, displayEnd = "";
+                    // each history
                     office.welfareInsuranceRateHistory.history.forEach(function(history) {
                         displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
                         displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
@@ -181,10 +188,6 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return String(yearMonth).substring(0, 4) + "/" + String(yearMonth).substring(4, 6);
-        }
-
-        convertYMPeriodToDisplayYMPeriod() {
-
         }
 
         register() {
@@ -255,11 +258,12 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 if (params) {
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     let historyId = nts.uk.util.randomId();
+                    // update previous history
                     if (history.length > 0) {
                         let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
                         history[0].endMonth = beforeLastestMonth.format('YYYYMM');
-                        previousHistoryId = history[0].historyId;
                     }
+                    // add new history
                     history.unshift({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
                     // each office
                     socialInsuranceOfficeList.forEach(office => {
@@ -301,12 +305,14 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     self.showAllOfficeAndHistory();
                     self.convertToTreeGridList();
                     if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
+                        // select office if no history
                         if (history.length <= 1){
                             self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
                         } else {
                             self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)    
                         }
                     } else {
+                         // reselect for highlight
                         let selectedWelfareInsurance = self.selectedWelfareInsurance();
                         setTimeout(function(){
                             self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
