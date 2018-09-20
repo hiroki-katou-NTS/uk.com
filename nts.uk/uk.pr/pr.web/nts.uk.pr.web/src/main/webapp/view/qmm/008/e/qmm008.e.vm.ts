@@ -39,13 +39,15 @@ module nts.uk.pr.view.qmm008.e {
             */
            private count() : void {
                let self = this;
-               let command = {
-                cusDataDtos :    ko.toJS(self.dataList()) ,
-                premiumRate : ko.toJS(self.header())
-               };
+               let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
                nts.uk.pr.view.qmm008.e.service.count(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                   
+                       self.dataList([]);
+                       for (var i = 0; i < response.cusDataDtos.length; i++) {
+                           self.dataList.push(response.cusDataDtos[i]);
+                       }
+                       self.header(response.premiumRate);
+                       
                    });
                }
            }
@@ -98,12 +100,13 @@ module nts.uk.pr.view.qmm008.e {
     }
     
     interface IHeaderData {
+        inHealthInsuranceRate: KnockoutObservable<string>,
         emBasicInsuranceRate: KnockoutObservable<string>,
         emHealthInsuranceRate: KnockoutObservable<string>,
         emLongCareInsuranceRate: KnockoutObservable<string>,
         emSpecialInsuranceRate: KnockoutObservable<string>,
         inBasicInsuranceRate: KnockoutObservable<string>,
-        inHealthInsuranceRate: KnockoutObservable<string>,
+        
         inLongCareInsuranceRate: KnockoutObservable<string>,
         inSpecialInsuranceRate: KnockoutObservable<string>
     }
@@ -119,12 +122,12 @@ module nts.uk.pr.view.qmm008.e {
         inSpecialInsuranceRate: KnockoutObservable<string>  = ko.observable(null);
         
         constructor(parameter?: IHeaderData) {
+             this.inHealthInsuranceRate(parameter ? parameter.inHealthInsuranceRate : '');
              this.emBasicInsuranceRate(parameter ? parameter.emBasicInsuranceRate : '');
              this.emHealthInsuranceRate(parameter ? parameter.emHealthInsuranceRate : '');
              this.emLongCareInsuranceRate(parameter ? parameter.emLongCareInsuranceRate : '');
              this.emSpecialInsuranceRate(parameter ? parameter.emSpecialInsuranceRate : '');
              this.inBasicInsuranceRate(parameter ? parameter.inBasicInsuranceRate : '');
-             this.inHealthInsuranceRate(parameter ? parameter.inHealthInsuranceRate : '');
              this.inLongCareInsuranceRate(parameter ? parameter.inLongCareInsuranceRate : '');
              this.inSpecialInsuranceRate(parameter? parameter.inSpecialInsuranceRate : '');
         }
