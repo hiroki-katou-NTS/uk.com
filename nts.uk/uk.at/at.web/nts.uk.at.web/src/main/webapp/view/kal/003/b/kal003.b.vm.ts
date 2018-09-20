@@ -143,6 +143,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
+                        if (self.comparisonRange().comparisonOperator() > 5) {
+                            setTimeout(() => {
+                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                }
+                            }, 25);
+                        } else {
+                            $(".nts-input").ntsError("clear");
+                        }
                     });
                     break;
                 }
@@ -1063,7 +1072,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         let erAlAtdItemCondition = listErAlAtdItemCondition[0];
                         if (self.comparisonRange().checkValidOfRange(
                             workRecordExtractingCondition.checkItem()
-        
                             , 1)) {
                             erAlAtdItemCondition.compareOperator(self.comparisonRange().comparisonOperator());
                             erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
