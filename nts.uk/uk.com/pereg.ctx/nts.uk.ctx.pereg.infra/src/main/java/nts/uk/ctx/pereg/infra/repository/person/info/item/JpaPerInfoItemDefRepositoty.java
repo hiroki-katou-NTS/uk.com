@@ -310,10 +310,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE_BYCATEGORYCODE, "WHERE",
 			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
 	
-	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName, i.ppemtPerInfoItemPK.perInfoItemDefId, i.requiredAtr  FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND i.requiredAtr = 1 AND ic.itemType <> 1";
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND ic.itemType <> 1";
 	
 	
 	@Override
@@ -1128,7 +1128,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		result = perInfoItemDefByList.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
 					List<Object[]> listItem = e.getValue();
-					return listItem.stream().map(x-> new ItemBasicInfo(String.valueOf(x[0]),String.valueOf(x[2]))).collect(Collectors.toList());
+					return listItem.stream()
+							.map(x -> new ItemBasicInfo(String.valueOf(x[0]), String.valueOf(x[2]),
+									String.valueOf(x[3]), Integer.parseInt(String.valueOf(x[4]))))
+							.collect(Collectors.toList());
 				}));
 
 		return result;

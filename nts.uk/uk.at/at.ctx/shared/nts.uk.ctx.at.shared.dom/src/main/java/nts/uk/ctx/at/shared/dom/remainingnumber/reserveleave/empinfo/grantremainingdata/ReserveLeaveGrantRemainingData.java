@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,6 +59,7 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
+		
 		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
 		domain.rsvLeaID = id;
 		domain.employeeId = employeeId;
@@ -132,5 +135,35 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 		if (domain.getGrantDate().compareTo(domain.getDeadline()) > 0) {
 			throw new BusinessException("Msg_1023");
 		}
+	}
+	
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays , String grantDateItemName, String  deadlineDateItemName) {
+		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
+			return false;
+
+		if (grantDays != null || usedDays != null || remainDays != null) {
+			if (deadlineDate == null || grantDate == null) {
+				if (grantDate == null) {
+					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
+				}
+				if (deadlineDate == null) {
+					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
+				}
+			}
+		}
+		if (grantDate == null && deadlineDate != null) {
+			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
+		}
+		if (deadlineDate == null && grantDate != null) {
+			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
+		}
+		if (grantDate != null && deadlineDate != null) {
+			// 付与日＞使用期限の場合はエラー #Msg_1023
+			if (grantDate.compareTo(deadlineDate) > 0) {
+				throw new BusinessException("Msg_1023");
+			}
+		}
+		return true;
 	}
 }

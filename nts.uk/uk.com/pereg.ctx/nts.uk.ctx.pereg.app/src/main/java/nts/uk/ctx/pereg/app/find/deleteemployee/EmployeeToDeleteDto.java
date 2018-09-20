@@ -7,18 +7,15 @@ public class EmployeeToDeleteDto {
 
 	// employeeCode
 	private String code;
-
 	// ReasonRemove
 	private String reason;
-
-	// ReasonRemove
+	// BusinessName
 	private String name;
-	
-	//
+	//employeeId
 	private String id;
-	
-	public static EmployeeToDeleteDto fromDomain(String scd, String reason, String name , String id) {
-		return new EmployeeToDeleteDto(scd, reason, name , id);
+
+	public static EmployeeToDeleteDto fromDomain(String scd, String reason, String name, String id) {
+		return new EmployeeToDeleteDto(scd, reason, name, id);
 	}
 
 	public static EmployeeToDeleteDto fromDomain(String scd, String reason) {
@@ -28,7 +25,6 @@ public class EmployeeToDeleteDto {
 	public static EmployeeToDeleteDto fromDomain(String name) {
 		return new EmployeeToDeleteDto(name);
 	}
-	
 
 	public EmployeeToDeleteDto(String name) {
 		super();
@@ -39,15 +35,14 @@ public class EmployeeToDeleteDto {
 		super();
 		this.code = code;
 		this.reason = reason;
-	} 
-	
+	}
+
 	public EmployeeToDeleteDto(String code, String reason, String name, String id) {
 		super();
 		this.code = code;
 		this.reason = reason;
-		this.name= name;
-		this.id= id;
-	} 
-	
-	
+		this.name = name;
+		this.id = id;
+	}
+
 }
