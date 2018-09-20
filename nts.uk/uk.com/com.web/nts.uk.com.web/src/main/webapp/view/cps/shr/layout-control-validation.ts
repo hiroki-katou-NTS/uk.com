@@ -1612,11 +1612,8 @@ module nts.layout {
                 CS00020_IS00120: IFindData = finder.find('CS00020', 'IS00120'),
                 CS00020_IS00253: IFindData = finder.find('CS00020', 'IS00253');
 
-            if (CS00024_IS00279 &&
-                CS00024_IS00280 &&
-                CS00024_IS00281 &&
-                CS00024_IS00282 &&
-                CS00024_IS00283) {
+             if (CS00024_IS00279 &&
+                CS00024_IS00280) {
                 CS00024_IS00279.data.value.subscribe(x => {
                     let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
@@ -1627,9 +1624,15 @@ module nts.layout {
                         conTime: number = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : null;
 
                     if (!x || !grantTable) {
-                        CS00024_IS00281.data.value('');
-                        CS00024_IS00282.data.value('');
-                        CS00024_IS00283.data.value('');
+                        if (CS00024_IS00281) {
+                            CS00024_IS00281.data.value('');
+                        }
+                        if (CS00024_IS00282) {
+                            CS00024_IS00282.data.value('');
+                        }
+                        if (CS00024_IS00283) {
+                            CS00024_IS00283.data.value('');
+                        }
                         return;
                     }
 
@@ -1655,15 +1658,22 @@ module nts.layout {
                         endWorkCond: moment.utc(endWork).toDate(),
                         contactTime: conTime
                     }).done(result => {
-                        CS00024_IS00281.data.value(result.nextTimeGrantDate);
-                        CS00024_IS00282.data.value(result.nextTimeGrantDays);
-                        CS00024_IS00283.data.value(result.nextTimeMaxTime);
+                        if (CS00024_IS00281) {
+                            CS00024_IS00281.data.value(result.nextTimeGrantDate);
+                        }
+                        if (CS00024_IS00282) {
+                            CS00024_IS00282.data.value(result.nextTimeGrantDays);
+                        }
+                        if (CS00024_IS00283) {
+                            CS00024_IS00283.data.value(result.nextTimeMaxTime);
+                        }
                     });
                 });
 
                 CS00024_IS00280.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 CS00024_IS00280.data.value.valueHasMutated();
-                if (CS00003_IS00020) {
+                
+                 if (CS00003_IS00020) {
                     CS00003_IS00020.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 }
                 if (CS00020_IS00119) {
