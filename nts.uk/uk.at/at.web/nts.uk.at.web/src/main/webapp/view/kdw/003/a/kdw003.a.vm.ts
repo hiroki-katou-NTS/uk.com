@@ -804,9 +804,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 self.showFlex(false);
                 self.lstErrorFlex = [];
-                self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
-                self.valueUpdateMonth = self.itemValueMonthParent;
-                self.valueUpdateMonth["hasFlex"] = false;
+                if (self.displayFormat() === 0) {
+                    self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                    self.valueUpdateMonth = self.itemValueMonthParent;
+                    self.valueUpdateMonth["hasFlex"] = false;
+                }
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }
