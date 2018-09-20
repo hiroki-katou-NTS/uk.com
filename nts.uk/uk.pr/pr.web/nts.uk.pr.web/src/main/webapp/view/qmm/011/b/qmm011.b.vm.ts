@@ -84,7 +84,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             let self = this;
             let listEmpInsurPreRate: Array<EmpInsurPreRate> = [];
             let empInsurPreRate: EmpInsurPreRate;
-            for(let i = 0; i< 3; i++) {
+            for(let i = 2; i >= 0; i--) {
                 empInsurPreRate = new EmpInsurPreRate();
                 empInsurPreRate.hisId = self.hisId();
                 empInsurPreRate.empPreRateId = i;
@@ -95,6 +95,21 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 listEmpInsurPreRate.push(empInsurPreRate);
             }
             return listEmpInsurPreRate;
+        }
+        
+        setTabIndex(id: number, stt: number){
+                if (id == 2 && stt == 2) return 5;
+                if (id == 1 && stt == 2) return 9;
+                if (id == 0 && stt == 2) return 13;
+                if (id == 2 && stt == 1) return 4;
+                if (id == 1 && stt == 1) return 8;
+                if (id == 0 && stt == 1) return 12;
+                if (id == 2 && stt == 3) return 6;
+                if (id == 1 && stt == 3) return 10;
+                if (id == 0 && stt == 3) return 14;
+                if (id == 2 && stt == 4) return 7;
+                if (id == 1 && stt == 4) return 11;
+                if (id == 0 && stt == 4) return 15;
         }
         
         convertToCommand(dto :Array<EmpInsurPreRate>){
@@ -241,7 +256,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 laststartYearMonth = self.listEmpInsHis().length > 1 ? self.listEmpInsHis()[self.index() + 1].startYearMonth : 0;
             }
             let canDelete: boolean = false;
-            if (self.listEmpInsHis().length > 2 && self.hisId() == self.listEmpInsHis()[FIRST].hisId) {
+            if (self.listEmpInsHis().length > 1 && self.hisId() == self.listEmpInsHis()[FIRST].hisId) {
                 canDelete = true;
             }
             

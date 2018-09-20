@@ -71,12 +71,21 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
                 });
             } else {
                 service.updateAccInsurHis(param).done(() => {
-                    dialog.info({ messageId: "Msg_16" }).then(() => {
-                        setShared('QMM011_F_PARAMS_OUTPUT', {
-                            methodEditing: self.methodEditing()
+                    if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
                         });
-                        close();
-                    });
+                    } else {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            setShared('QMM011_F_PARAMS_OUTPUT', {
+                                methodEditing: self.methodEditing()
+                            });
+                            close();
+                        });
+                    }
                 }).fail(function(res: any) {
                     if (res)
                         dialog.alertError(res);

@@ -9,7 +9,7 @@
 								data-bind="click: register ,enable: !enableRegis()">#{i18n.getText('QMM011_1')}</button>
 							<!-- A1_3 -->
 							<button id="A1_3" tabindex="2"
-								data-bind="">#{i18n.getText('QMM011_3')}</button>
+								data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
 						</div>
 					</div>
 
@@ -93,9 +93,10 @@
 								</div>
 							</td>
 							<td >
-								<input id = "B3_7" class = "B3_7"  tabindex = "4"
-										data-bind="ntsNumberEditor: {
-																option : {width: '60px', decimallength: 3},
+								<input id = "B3_7" class = "B3_7" 
+										data-bind=" attr: {tabindex: $parent.setTabIndex(empPreRateId,1)},
+										ntsNumberEditor: {
+																option : {width: '70px', decimallength: 3},
 																name: '#{i18n.getText('QMM011_11')}',
 																value: indBdRatio,
 																required: true,
@@ -105,9 +106,9 @@
 								<span class ="label" id= "B3_8">#{i18n.getText('QMM011_15')}</span>
 							</td>
 							<td>
-								<div class = "B3_9" tabindex = "5"
-										data-bind="ntsComboBox: {
-																
+								<div class = "B3_9"
+										data-bind="		attr: {tabindex: $parent.setTabIndex(empPreRateId,2)},
+														ntsComboBox: {
 																name: '#{i18n.getText('QMM011_12')}',
 																value: perFracClass,
 																options: $parent.listPerFracClass,
@@ -121,9 +122,10 @@
 																}"/>
 							</td>
 							<td>
-									<input id = "B3_11" class = "B3_11" tabindex = "6"
-										data-bind="ntsNumberEditor: {
-																option : {width: '60px', decimallength: 3},
+									<input id = "B3_11" class = "B3_11" 
+										data-bind="	attr: {tabindex: $parent.setTabIndex(empPreRateId,3)},
+													ntsNumberEditor: {
+																option : {width: '70px', decimallength: 3},
 																value: empContrRatio,
 																required: true,
 																constraint: 'InsuranceRate',
@@ -134,8 +136,9 @@
 								<span class= "label" id= "B3_12">#{i18n.getText('QMM011_15')}</span>
 							</td>
 							<td>
-								<div id = "B3_13"
-										data-bind="ntsComboBox: {
+								<div id = "B3_13" 
+										data-bind=" attr: {tabindex: $parent.setTabIndex(empPreRateId,4)},
+													ntsComboBox: {
 																value: busiOwFracClass, 
 																name:'#{i18n.getText('QMM011_12')}',
 																options: $parent.listPerFracClass,
