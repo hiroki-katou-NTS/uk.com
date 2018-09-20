@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.laborinsurance;
 
-import nts.uk.ctx.pr.core.app.find.laborinsurance.EmpInsurHisDto;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHis;
 import nts.uk.ctx.pr.core.dom.laborinsurance.EmpInsurHisRepository;
 import nts.uk.shr.com.context.AppContexts;

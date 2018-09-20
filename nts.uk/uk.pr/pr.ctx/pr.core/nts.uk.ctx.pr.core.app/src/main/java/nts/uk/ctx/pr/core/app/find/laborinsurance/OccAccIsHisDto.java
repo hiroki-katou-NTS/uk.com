@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsHis;
+
 @AllArgsConstructor
 @Value
 public class OccAccIsHisDto {

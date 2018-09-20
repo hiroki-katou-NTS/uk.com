@@ -15,12 +15,10 @@ import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
-public class AddOccAccIsPrRateCommandHandler extends CommandHandler<AddOccAccIsPrRateCommand>
-{
+public class AddOccAccIsPrRateCommandHandler extends CommandHandler<AddOccAccIsPrRateCommand> {
 
     @Inject
     private OccAccInsurBusiBurdenRatioService occAccInsurBusiBurdenRatioService;
-
 
     @Override
     protected void handle(CommandHandlerContext<AddOccAccIsPrRateCommand> context) {

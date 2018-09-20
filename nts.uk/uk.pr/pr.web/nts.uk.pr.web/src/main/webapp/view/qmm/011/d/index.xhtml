@@ -27,7 +27,7 @@
                 <span id="D1_2" class="label">#{i18n.getText('QMM011_20')}</span>
             </div>
             <div>
-                <table id="D2_1">
+            <table id="D2_1">
                         <tr class="bg-green">
                             <!--<th id="D2_22">#{i18n.getText('QMM011_')}</th>
                             <th id="D2_23">#{i18n.getText('QMM011_')}</th>
@@ -36,8 +36,8 @@
                             <th id="D2_23">利用する</th>
                             <th id="D2_24">事業名称</th>
                         </tr>
-                    <tbody>
-                        <tr data-bind = "with: businessType1">
+            <tbody>
+              <tr data-bind = "with: businessType1">
                   <td><span id="D2_2">#{i18n.getText('QMM011_21')}</span></td>
                   <td><div id="D2_25" data-bind="ntsCheckBox: { checked: $parent.hasChecked(toUse,'#D2_3')}"></div></td>
                   <td><input id="D2_3" data-bind="ntsTextEditor: {value: name,

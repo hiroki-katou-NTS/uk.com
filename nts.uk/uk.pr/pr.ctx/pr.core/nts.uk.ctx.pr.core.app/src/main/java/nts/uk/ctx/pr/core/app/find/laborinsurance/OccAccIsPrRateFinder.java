@@ -12,17 +12,13 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRateRepository;
 /**
 * 労災保険料率
 */
-public class OccAccIsPrRateFinder
-{
+public class OccAccIsPrRateFinder {
 
     @Inject
     private OccAccIsPrRateRepository finder;
 
     public List<OccAccIsPrRateDto> getAllOccAccIsPrRate(String hisId){
         OccAccIsPrRate temp = finder.getOccAccIsPrRateByHisId(hisId);
-        if(temp.getEachBusBurdenRatio()==null){
-            return null;
-        }
         return OccAccIsPrRateDto.fromDomain(temp);
     }
 

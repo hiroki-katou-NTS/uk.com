@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
-public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAccIsPrRateRepository
-{
+public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAccIsPrRateRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtOccAccIsPrRate f";
     private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.occAccIsPrRatePk.hisId =:hisId";
@@ -30,10 +29,11 @@ public class JpaOccAccIsPrRateRepository extends JpaRepository implements OccAcc
         return new OccAccIsPrRate(hisId,toDomain(occAccIsPrRateList));
     }
     private List<OccAccInsurBusiBurdenRatio> toDomain(List<QpbmtOccAccIsPrRate> entities) {
-        if (entities == null || entities.isEmpty()) {
-            return null;
-        }
+
         List<OccAccInsurBusiBurdenRatio> occAccInsurBusiBurdenRatio = new ArrayList<OccAccInsurBusiBurdenRatio>();
+        if (entities == null || entities.isEmpty()) {
+            return occAccInsurBusiBurdenRatio;
+        }
         entities.forEach(entity -> {
             occAccInsurBusiBurdenRatio.add( new OccAccInsurBusiBurdenRatio(entity.occAccIsPrRatePk.occAccInsurBusNo,
                     EnumAdaptor.valueOf(entity.fracClass,InsuPremiumFractionClassification.class),new InsuranceRate(entity.empConRatio)));

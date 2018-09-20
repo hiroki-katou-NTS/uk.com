@@ -14,14 +14,12 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AccInsurPreRateFinder {
+
     @Inject
     private OccAccIsPrRateRepository finder;
 
-
-
     @Inject
     private OccAccidentInsurService workersComInsurService;
-
 
     public List<AccInsurPreRateDto> getAccInsurPreRate(String hisId) {
         String companyId = AppContexts.user().companyId();

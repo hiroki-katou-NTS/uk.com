@@ -13,8 +13,8 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccIsPrRate;
 */
 @AllArgsConstructor
 @Value
-public class OccAccIsPrRateDto
-{
+public class OccAccIsPrRateDto {
+
     private String hisId;
     private int occAccInsurBusNo;
     private int fracClass;

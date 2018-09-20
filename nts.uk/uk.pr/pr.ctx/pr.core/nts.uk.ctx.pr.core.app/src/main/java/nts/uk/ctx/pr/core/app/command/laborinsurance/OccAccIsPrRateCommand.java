@@ -3,8 +3,7 @@ package nts.uk.ctx.pr.core.app.command.laborinsurance;
 import lombok.Value;
 
 @Value
-public class OccAccIsPrRateCommand
-{
+public class OccAccIsPrRateCommand {
     /**
     * 労災保険事業No
     */
@@ -19,7 +18,5 @@ public class OccAccIsPrRateCommand
     * 事業主負担率
     */
     private Long empConRatio;
-
-
 
 }

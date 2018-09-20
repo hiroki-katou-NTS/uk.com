@@ -11,8 +11,7 @@ import nts.uk.ctx.pr.core.infra.entity.laborinsurance.QpbmtEmpInsurBusBurRatio;
 
 
 @Stateless
-public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements EmpInsurBusBurRatioRepository
-{
+public class JpaEmpInsurBusBurRatioRepository extends JpaRepository implements EmpInsurBusBurRatioRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpInsurBusBurRatio f";
     private static final String SELECT_BY_HIS_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.empInsurBusBurRatioPk.hisId =:hisId ORDER BY f.empInsurBusBurRatioPk.empPreRateId DESC";

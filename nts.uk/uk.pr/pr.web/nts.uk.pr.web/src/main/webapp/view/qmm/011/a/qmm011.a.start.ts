@@ -7,11 +7,7 @@ module nts.uk.pr.view.qmm011.a {
             viewmodelA: viewmodelA,
             viewmodelB: viewmodelB,
             viewmodelC: viewmodelC
-        
-            
         };
         __viewContext.bind(__viewContext.viewModel);
-        
-        
     });
 }

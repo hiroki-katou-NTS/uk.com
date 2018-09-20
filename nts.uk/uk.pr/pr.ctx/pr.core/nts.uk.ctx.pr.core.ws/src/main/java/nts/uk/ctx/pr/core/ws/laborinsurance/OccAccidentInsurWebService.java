@@ -10,14 +10,12 @@ import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateNameOfEachBusinessCom
 import nts.uk.ctx.pr.core.app.command.laborinsurance.UpdateNameOfEachBusinessCommandHandler;
 import nts.uk.ctx.pr.core.app.find.laborinsurance.*;
 
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
-
 
 @Path("core/monsalabonus/laborinsur")
 @Produces("application/json")
@@ -39,6 +37,7 @@ public class OccAccidentInsurWebService extends WebService {
 
     @Inject
     private AddOccAccIsHisCommandHandler addOccAccIsHisCommandHandler;
+
     @Inject
     private UpdateNameOfEachBusinessCommandHandler updateNameOfEachBusinessCommandHandler;
 
@@ -71,6 +70,7 @@ public class OccAccidentInsurWebService extends WebService {
     public  List<AccInsurPreRateDto> getAccInsurPreRate(@PathParam("hisId") String hisId) {
         return accInsurPreRateFinder.getAccInsurPreRate(hisId);
     }
+
     @POST
     @Path("registerOccAccInsur")
     public void registerOccAccInsurPreRate(AddOccAccIsPrRateCommand command){

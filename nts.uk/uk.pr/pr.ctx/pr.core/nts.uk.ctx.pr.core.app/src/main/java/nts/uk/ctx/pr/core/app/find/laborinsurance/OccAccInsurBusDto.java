@@ -14,8 +14,7 @@ import nts.uk.ctx.pr.core.dom.laborinsurance.OccAccInsurBus;
 */
 @AllArgsConstructor
 @Value
-public class OccAccInsurBusDto
-{
+public class OccAccInsurBusDto {
 
     /**
      * 会社ID

@@ -29,7 +29,5 @@ public class UpdateAccInsurHisCommandHandler extends CommandHandler<AccInsurHisC
 		} else {
 			accidentInsurService.historyCorrectionProcecessing(cid, hisId, start, end);
 		}
-
 	}
-
 }

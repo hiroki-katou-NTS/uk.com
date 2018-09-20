@@ -10,12 +10,14 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class AccInsurPreRateDto {
+
     private String hisId;
     private int occAccInsurBusNo;
     private String name;
     private int fracClass;
     private BigDecimal empConRatio;
     private int useArt;
+
     public static List<AccInsurPreRateDto> fromDomain(List<OccAccInsurBusDto> occAccInsurBusDtos,List<OccAccIsPrRateDto> occAccIsPrRateDtos) {
         List<AccInsurPreRateDto> accInsurPreRateDtos1 = new ArrayList<AccInsurPreRateDto>();
         for (OccAccInsurBusDto temp : occAccInsurBusDtos) {

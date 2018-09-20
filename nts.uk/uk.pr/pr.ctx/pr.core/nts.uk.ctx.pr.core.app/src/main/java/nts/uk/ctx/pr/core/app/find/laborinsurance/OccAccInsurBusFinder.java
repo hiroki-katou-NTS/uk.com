@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Stateless
 public class OccAccInsurBusFinder {
+
     @Inject
     private OccAccidentInsurService workersComInsurService;
 
@@ -22,6 +23,4 @@ public class OccAccInsurBusFinder {
         occAccIsHisDtoList = occAccInsurBus.isPresent() ?  OccAccInsurBusDto.fromDomain(occAccInsurBus.get()) :  occAccIsHisDtoList;
         return occAccIsHisDtoList;
     }
-
-
 }
