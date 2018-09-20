@@ -58,15 +58,15 @@
 							<div class="drop-down-attendance"><div class="labelCombo"><span >#{i18n.getText('KWR002_136')}</span></div>
 								<div  tabindex="2" style="width: 110px;margin-left:15px;" id="combo-box" class="combo"
 									data-bind="ntsComboBox: {
-																name: '#[KWR002_137]',
+																name: '#[KWR002_135]',
 																options: listAttendanceType,
 																optionsValue: 'attendanceTypeCode',
 																value: typeAttendanceCodeSelected,
 																optionsText: 'attendanceTypeName',
 																editable: false,
 																enable: true,
-																required: false,
-																selectFirstIfNull: false,
+																required: true,
+																selectFirstIfNull: true,
 																columns: [
 																	{ prop: 'attendanceTypeName', length: 7 },
 																]}"></div>

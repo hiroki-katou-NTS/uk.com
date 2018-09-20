@@ -49,6 +49,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -160,6 +161,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private CommonCompanySettingForCalc commonCompanySettingForCalc;
 	
+	/** リポジトリ：対象者ログ */
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
+	
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -171,7 +176,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter) {
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		//日別実績(WORK取得)
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
 		
@@ -179,7 +184,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		List<ClosureStatusManagement> closureList = getClosureList(employeeId,datePeriod);
 		
 		//計算処理を呼ぶ
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList);
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList,reCalcAtr);
 		//実績が無い社員の数を検知
 		val empIds = createList.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
 		//実績が無い社員を成功としてカウントアップ
@@ -187,6 +192,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(!empIds.contains(tc)) {
 					counter.accept(ProcessState.SUCCESS);
 			}
+			//１：日別計算(ENUM)
+			//0:計算完了
+			targetPersonRepository.updateWithContent(tc, empCalAndSumExecLogID, 1, 0);
 		});
 		
 		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {

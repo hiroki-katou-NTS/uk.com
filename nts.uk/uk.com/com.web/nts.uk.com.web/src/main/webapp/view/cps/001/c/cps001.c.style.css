@@ -70,4 +70,5 @@
 .reason {
     display: inline-block;
     max-width: 300px;
+    margin-top: 8px;
 }

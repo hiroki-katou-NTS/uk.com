@@ -155,7 +155,11 @@ public class MonthlyAggregateProcessService {
 					Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
 							.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
 					if (checkDeadline.isPresent()) {
-						checkDeadline.get().setAlarmValueMessage(listFixed.get(1).getMessage());
+						
+						int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+						
+						checkDeadline.get().setComment(Optional.ofNullable(listFixed.get(1).getMessage()));
+						checkDeadline.get().setAlarmValueMessage(TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)));
 						checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
 						String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
 						checkDeadline.get().setAlarmValueDate(dateString);

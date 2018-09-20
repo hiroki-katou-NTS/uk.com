@@ -12,6 +12,8 @@
 				nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayName
 				nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayNote
 				nts.uk.ctx.at.shared.dom.yearholidaygrant.ConditionValue
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.WorkingDays
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.AttendanceRate
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
@@ -116,8 +118,16 @@
 							<tr>
 								<td width="200"></td>
 								<td width="20"></td>
-								<td width="80"><input id="cond01" class="a7_7"
-									data-bind="ntsNumberEditor: { value: conditionValue01, enable: conditionValue01Enable, constraint: 'ConditionValue', name: '#[KMF003_23]', required: useCls01 }" /></td>
+								<td width="80">
+									<div data-bind="visible:A7_4SelectedRuleCode() ==0">
+										<input id="cond01" class="a7_7"
+											data-bind="ntsNumberEditor: { value: conditionValue01Percent,constraint:'AttendanceRate', enable: conditionValue01Enable, name: '#[KMF003_23]', required: useCls01}" />
+									</div>
+									<div data-bind="visible:A7_4SelectedRuleCode() ==1">
+										<input id="cond01" class="a7_7"
+											data-bind="ntsNumberEditor: { value: conditionValue01Day,constraint:'WorkingDays', enable: conditionValue01Enable, name: '#[KMF003_23]', required: useCls01,option: {decimallength: 1 }}" />
+									</div>	
+								</td>
 								<td width="120"><label class="a7_8"><span
 										data-bind="text: symbols"></span> ~ <span
 										data-bind="text: limitedValue01"></span><span
@@ -132,8 +142,16 @@
 								<td></td>
 								<td><div class="a7_10"
 										data-bind="ntsCheckBox: { checked: useCls02, enable: useCls02Enable }"></div></td>
-								<td><input id="cond02" class="a7_11"
-									data-bind="ntsNumberEditor: { value: conditionValue02, enable: conditionValue02Enable, constraint: 'ConditionValue', name: '#[KMF003_24]', required: useCls02 }" /></td>
+								<td>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==0">
+										<input id="cond02" class="a7_11"
+											data-bind="ntsNumberEditor: { value: conditionValue02Percent,constraint:'AttendanceRate', enable: conditionValue02Enable, name: '#[KMF003_24]', required: useCls02 }" />
+									</com:ko-if>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==1">
+										<input id="cond02" class="a7_11"
+											data-bind="ntsNumberEditor: { value: conditionValue02Day,constraint:'WorkingDays', enable: conditionValue02Enable, name: '#[KMF003_24]', required: useCls02 , option:  {decimallength: 1 }}" />
+									</com:ko-if>
+								</td>
 								<td><label class="a7_12"><span
 										data-bind="text: symbols"></span> ~ <span
 										data-bind="text: limitedValue02"></span><span
@@ -148,8 +166,16 @@
 								<td></td>
 								<td><div class="a7_14"
 										data-bind="ntsCheckBox: { checked: useCls03, enable: useCls03Enable }"></div></td>
-								<td><input id="cond03" class="a7_15"
-									data-bind="ntsNumberEditor: { value: conditionValue03, enable: conditionValue03Enable, constraint: 'ConditionValue', name: '#[KMF003_25]', required: useCls03 }" /></td>
+								<td>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==0">
+										<input id="cond03" class="a7_15"
+											data-bind="ntsNumberEditor: { value: conditionValue03Percent,constraint:'AttendanceRate', enable: conditionValue03Enable, name: '#[KMF003_25]', required: useCls03 }" />
+									</com:ko-if>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==1">
+										<input id="cond03" class="a7_15"
+											data-bind="ntsNumberEditor: { value: conditionValue03Day,constraint:'WorkingDays', enable: conditionValue03Enable, name: '#[KMF003_25]', required: useCls03 , option:  {decimallength: 1 }}" />
+									</com:ko-if>
+								</td>
 								<td><label class="a7_16"><span
 										data-bind="text: symbols"></span> ~ <span
 										data-bind="text: limitedValue03"></span><span
@@ -164,8 +190,16 @@
 								<td></td>
 								<td><div class="a7_18"
 										data-bind="ntsCheckBox: { checked: useCls04, enable: useCls04Enable }"></div></td>
-								<td><input id="cond04" class="a7_19"
-									data-bind="ntsNumberEditor: { value: conditionValue04, enable: conditionValue04Enable, constraint: 'ConditionValue', name: '#[KMF003_26]', required: useCls04 }" /></td>
+								<td>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==0">
+										<input id="cond04" class="a7_19"
+											data-bind="ntsNumberEditor: { value: conditionValue04Percent,constraint:'AttendanceRate', enable: conditionValue04Enable, name: '#[KMF003_26]', required: useCls04 }" />
+									</com:ko-if>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==1">
+										<input id="cond04" class="a7_19"
+											data-bind="ntsNumberEditor: { value: conditionValue04Day,constraint:'WorkingDays', enable: conditionValue04Enable, name: '#[KMF003_26]', required: useCls04 , option:  {decimallength: 1 }}" />
+									</com:ko-if>
+								</td>
 								<td><label class="a7_20"><span
 										data-bind="text: symbols"></span> ~ <span
 										data-bind="text: limitedValue04"></span><span
@@ -180,8 +214,16 @@
 								<td></td>
 								<td><div class="a7_22"
 										data-bind="ntsCheckBox: { checked: useCls05, enable: useCls05Enable }"></div></td>
-								<td><input id="cond05" class="a7_23"
-									data-bind="ntsNumberEditor: { value: conditionValue05, enable: conditionValue05Enable, constraint: 'ConditionValue', name: '#[KMF003_27]', required: useCls05 }" /></td>
+								<td>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==0">
+										<input id="cond05" class="a7_23"
+											data-bind="ntsNumberEditor: { value: conditionValue05Percent,constraint:'AttendanceRate', enable: conditionValue05Enable, name: '#[KMF003_27]', required: useCls05 }" />
+									</com:ko-if>
+									<com:ko-if bind="A7_4SelectedRuleCode() ==1">
+										<input id="cond05" class="a7_23"
+											data-bind="ntsNumberEditor: { value: conditionValue05Day,constraint:'WorkingDays', enable: conditionValue05Enable, name: '#[KMF003_27]', required: useCls05  , option:  {decimallength: 1 }}" />
+									</com:ko-if>
+								</td>
 								<td><label class="a7_24"><span
 										data-bind="text: symbols"></span> ~ <span
 										data-bind="text: limitedValue05"></span><span

@@ -31,6 +31,10 @@ module nts.uk.at.view.kwr006.c {
             remarkInputContents: KnockoutObservableArray<ItemModel>;
             currentRemarkInputContent: KnockoutObservable<number>;
             isEnableRemarkInputContents: KnockoutComputed<boolean>;
+            
+             // store map to convert id and code attendance item
+            mapIdCodeAtd: any;
+            mapCodeIdAtd: any;
 
             constructor() {
                 var self = this;
@@ -82,6 +86,8 @@ module nts.uk.at.view.kwr006.c {
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
             }
 
             /*
@@ -90,12 +96,12 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
 
-                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => parseInt(i.code));
+                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
                     lstSwapRight = lstDisplayedAttendance.map(item => {
-                        return { code: item.attendanceDisplay + "", name: item.attendanceName };
-                    }).sort((a, b) => parseInt(a.code) - parseInt(b.code));
+                        return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
+                    }).sort((a, b) =>a.code - b.code);
                 }
 
                 // refresh data for C7_8
@@ -106,12 +112,12 @@ module nts.uk.at.view.kwr006.c {
 
             public sortItems(): void {
                 let self = nts.uk.ui._viewModel.content;
-                self.items(_.sortBy(self.items(), item => parseInt(item.code)));
+                self.items(_.sortBy(self.items(), item => item.code));
             }
 
             public sortCurrentCodeListSwap(): void {
                 let self = nts.uk.ui._viewModel.content;
-                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
+                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => item.code));
             }
 
             /*
@@ -129,6 +135,9 @@ module nts.uk.at.view.kwr006.c {
                     if (!_.isNil(KWR006DOutput)) {
                         self.selectedCodeC2_3('');
                         if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
+                            _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
+                                value.code = self.mapIdCodeAtd[value.id];    
+                            })
                             const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
@@ -187,8 +196,9 @@ module nts.uk.at.view.kwr006.c {
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
-                _.forEach(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
+                
+                _.map(self.currentCodeListSwap(), function(value, index) {
+                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code]});
                 });
 
                 if (self.selectedCodeA8_2() == 1) {
@@ -301,9 +311,15 @@ module nts.uk.at.view.kwr006.c {
 
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemMonthlyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode + "", name: value.itemName });
+                        arrCodeName.push({ code: value.itemCode, name: value.itemName });
                     });
                     self.outputItemList(arrCodeName);
+                    
+                    _.forEach(data.monthlyAttendanceItem, (value) => {
+                        self.mapCodeIdAtd[value.code] = value.id;
+                        self.mapIdCodeAtd[value.id] = value.code;        
+                    })
+                    
                     self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
                     dfd.resolve();
                 })

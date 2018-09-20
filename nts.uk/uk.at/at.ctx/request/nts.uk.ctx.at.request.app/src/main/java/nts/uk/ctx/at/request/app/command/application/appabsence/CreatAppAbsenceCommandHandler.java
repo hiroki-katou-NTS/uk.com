@@ -323,19 +323,19 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkPause()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.SHIFT);
 				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkAnnual()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.ANNUAL_HD);
 				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkFundingAnnual()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.YEARLY_RESERVED);
 				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			if(checkResult.isChkSpecial()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
+				nametmp = this.findHdNameErr(lstHdName, HdAppType.SPECIAL_VACATION);
 				name = name != "" && name != "" ? name + "," + nametmp : name;
 			}
 			

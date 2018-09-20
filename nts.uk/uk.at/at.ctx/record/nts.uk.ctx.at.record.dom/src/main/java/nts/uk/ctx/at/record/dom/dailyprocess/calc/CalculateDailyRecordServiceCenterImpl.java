@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
@@ -115,7 +116,11 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	public List<IntegrationOfDaily> calculatePassCompanySetting(
 			CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily,
-			Optional<ManagePerCompanySet> companySet){
+			Optional<ManagePerCompanySet> companySet,
+			ExecutionType reCalcAtr){
+		if(reCalcAtr.isRerun()) {
+			//integrationOfDailyの編集状態から時間・回数の勤怠項目を削除する
+		}
 		return commonPerCompany(
 				calcOption,
 				integrationOfDaily,
@@ -133,18 +138,25 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<AsyncCommandHandlerContext> asyncContext,
 			Optional<Consumer<ProcessState>> counter,
-			List<ClosureStatusManagement> closureList){
+			List<ClosureStatusManagement> closureList,
+			ExecutionType reCalcAtr){
+		if(reCalcAtr.isRerun()) {
+			//時間・回数の勤怠項目だけ　integrationの編集状態から削除
+			//時間・回数の勤怠項目だけ　編集状態テーブルから削除
+		}
 		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,asyncContext,counter,Optional.empty(),closureList);
 	}
 
 
 	@Override
+	//更新処理自動実行から呼び出す窓口
 	public CalcStatus calculateForclosure(
 			List<IntegrationOfDaily> integrationOfDaily,
 			ManagePerCompanySet companySet,
 			List<ClosureStatusManagement> closureList) {
 		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),closureList);
 	}
+	
 	
 	/**
 	 * 会社共通の処理達

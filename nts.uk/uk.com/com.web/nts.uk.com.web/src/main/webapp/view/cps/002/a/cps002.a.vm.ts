@@ -400,6 +400,11 @@ module cps002.a.vm {
             let self = this;
 
             self.currentEmployee().clearData();
+            
+            setShared("imageId", null);
+            setShared("CPS002A", null);
+            self.defaultImgId("");
+            
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
                 _.set(__viewContext, 'primitiveValueConstraints.StampNumber.maxLength', data.digitsNumber);
@@ -625,7 +630,11 @@ module cps002.a.vm {
 
             nts.uk.ui.errors.clearAll();
             self.listItemCls.removeAll();
-
+            
+            setShared("CPS002A", null);
+            setShared("imageId", null);
+            self.defaultImgId("");
+            
             if (['CPS002_14'].indexOf(step) > -1) {
                 self.currentStep('CPS002_13');
             } else {
@@ -682,16 +691,14 @@ module cps002.a.vm {
 
                     nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
+                            self.checkLicense();
                             self.currentStep('CPS002_13');
-
                             self.start();
                             self.getUserSetting();
                         } else {
                             jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
-
-                    self.checkLicense();
                 }).fail(error => {
                     alertError({ messageId: error.messageId, messageParams: error.parameterIds });
                 })
@@ -766,16 +773,15 @@ module cps002.a.vm {
             if (avatarId != "") {
                 setShared("CPS002A", avatarId);
             }
-
             if (self.isAllowAvatarUpload()) {
                 setShared("openIDialog", self.currentEmployee().avatarOrgId());
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
                     let dataShare = getShared("imageId");
-
                     if (dataShare) {
-                        self.currentEmployee().avatarOrgId(dataShare.imageOriginalId),
-                            self.currentEmployee().avatarCropedId(dataShare.imageCropedId),
-                            self.currentEmployee().fileName(dataShare.fileName)
+                        self.currentEmployee().avatarOrgId(dataShare.imageOriginalId);
+                        self.currentEmployee().avatarCropedId(dataShare.imageCropedId);
+                        self.currentEmployee().fileName(dataShare.fileName);
+                        self.defaultImgId(dataShare.imageOriginalId);
                     }
                 });
             }

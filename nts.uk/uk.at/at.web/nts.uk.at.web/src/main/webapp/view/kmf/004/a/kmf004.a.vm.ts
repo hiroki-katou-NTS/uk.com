@@ -33,9 +33,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         expYearEnable: KnockoutObservable<boolean>;
         expMonth: KnockoutObservable<number>;
         expMonthEnable: KnockoutObservable<boolean>;
-        startDate: KnockoutObservable<number>;
         startDateEnable: KnockoutObservable<boolean>;
-        endDate: KnockoutObservable<number>;
         endDateEnable: KnockoutObservable<boolean>;
         genderSelected: KnockoutObservable<boolean>;
         empSelected: KnockoutObservable<boolean>;
@@ -66,6 +64,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
         ageBaseDateReq: KnockoutObservable<boolean>;
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
+        dateRange: KnockoutObservableArray<any> = ko.observable({});
         
         constructor() {
             let self = this;
@@ -108,8 +107,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
                         self.expYears(data.grantPeriodicDto.expirationDate.years);
                         self.expMonth(data.grantPeriodicDto.expirationDate.months);
-                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate);
-                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate);
+                        self.dateRange({ startDate: data.grantPeriodicDto.availabilityPeriod.startDate, endDate: data.grantPeriodicDto.availabilityPeriod.endDate });
                         
                         self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
                         self.selectedGender(data.specialLeaveRestrictionDto.gender);
@@ -255,16 +253,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.expYearEnable = ko.observable(false);
             self.expMonth = ko.observable();
             self.expMonthEnable = ko.observable(false);
-            self.startDate = ko.observable();
             self.startDateEnable = ko.observable(false);
-            self.endDate = ko.observable();
             self.endDateEnable = ko.observable(false);
             
-            self.startDate.subscribe(function(value) {
-                if(value != null || value !== "") {
-                    $('.end-date .ntsControl.nts-datepicker-wrapper').removeClass('error');
-                }
-            });
             
             self.selectedTimeMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
@@ -278,8 +269,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.endDateEnable(false);
                         self.expYears('');
                         self.expMonth('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.dateRange({ startDate: "", endDate: "" });
                         break;
                     case 1:
                         self.limitedDaysEnable(false);
@@ -288,8 +278,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startDateEnable(false);
                         self.endDateEnable(false);
                         self.limitedDays('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.dateRange({ startDate: "", endDate: "" });
                         break;
                     case 2:
                         self.limitedDaysEnable(false);
@@ -300,8 +289,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays('');
                         self.expYears('');
                         self.expMonth('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.dateRange({ startDate: "", endDate: "" });
                         break;
                     case 3:
                         self.limitedDaysEnable(false);
@@ -559,20 +547,22 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 grantTime: grantTime
             };
             
-            let start = null;
-            let end = null;
-            if (self.startDate()) {
-                if (self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
-                    start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
+            let start = null,
+                end = null,
+                startDate = self.dateRange().startDate,
+                endDate = self.dateRange().endDate;
+            if (startDate) {
+                if (startDate.indexOf("T") > -1 && startDate.indexOf("-") > -1) {
+                    start = startDate != "" ? startDate.substring(0, startDate.indexOf('T')).replace("-", "/").replace("-", "/") : null;
                 } else {
-                    start = self.startDate() != "" ? self.startDate() : null;
+                    start = startDate != "" ? startDate : null;
                 }
             }
-            if (self.endDate()) {
-                if (self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
-                    end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
+            if (endDate) {
+                if (endDate.indexOf("T") > -1 && endDate.indexOf("-") > -1) {
+                    end = endDate != "" ? endDate.substring(0, endDate.indexOf('T')).replace("-", "/").replace("-", "/") : null;
                 } else {
-                    end = self.endDate() != "" ? self.endDate() : null;
+                    end = endDate != "" ? endDate : null;
                 }
             }
             let availabilityPeriod : service.AvailabilityPeriod = {
@@ -678,21 +668,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if(self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
                 $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "FND_E_REQ_INPUT");
             }
-            
-            if(self.selectedTimeMethod() == 3) {
-                if(self.startDate() === "") {
-                    $("#start-date-inp").ntsError("set", "使用可能期間開始日入力してください", "FND_E_REQ_INPUT");
-                }
-                
-                if(self.endDate() === "") {
-                    $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
-                }
-                
-                if(self.startDate() > self.endDate()) {
-                    $(".period-date-inp").ntsError("set", "期間入力フォームの開始と終了が逆転しています", "FND_E_SPAN_REVERSED");
-                    $('.end-date .ntsControl.nts-datepicker-wrapper').addClass('error');
-                }
-            }
+           
             
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
@@ -838,9 +814,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.limitedDays('');
             self.expYears('');
             self.expMonth('');
-            self.startDate('');
-            self.endDate('');
-            
+            self.dateRange({ startDate: "", endDate: "" });
             self.genderSelected(false);
             self.empSelected(false);
             self.clsSelected(false);
