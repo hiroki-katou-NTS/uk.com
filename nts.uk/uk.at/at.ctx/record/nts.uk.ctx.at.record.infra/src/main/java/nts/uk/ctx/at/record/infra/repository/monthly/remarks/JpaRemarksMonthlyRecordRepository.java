@@ -30,18 +30,18 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.yearMonth = :yearMonth "
+			+ "AND a.recordPK.yearMonth = :yearMonth "
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.yearMonth = :yearMonth "
+			+ "AND a.recordPK.yearMonth = :yearMonth "
 			+ "AND a.recordPK.closureId = :closureId "
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
-			+ "AND a.yearMonth = :yearMonth "
+			+ "AND a.recordPK.yearMonth = :yearMonth "
 			+ "AND a.recordPK.closureId = :closureId "
 			+ "AND a.recordPK.closureDay = :closureDay "
 			+ "AND a.recordPK.isLastDay = :isLastDay "
@@ -49,7 +49,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId IN :employeeIds "
-			+ "AND a.yearMonth IN :yearMonths "
+			+ "AND a.recordPK.yearMonth IN :yearMonths "
 			+ "ORDER BY a.recordPK.employeeId, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtRemarksMonthlyRecord a "
@@ -65,7 +65,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.yearMonth = :yearMonth ";
+			+ "AND a.recordPK.yearMonth = :yearMonth ";
 
 	@Override
 	public Optional<RemarksMonthlyRecord> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
@@ -73,6 +73,7 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 		return this.queryProxy()
 				.find(new KrcdtRemarksMonthlyRecordPK(
 						employeeId,
+						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)),
@@ -156,6 +157,7 @@ val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toL
 		this.commandProxy().remove(KrcdtRemarksMonthlyRecord.class,
 				new KrcdtRemarksMonthlyRecordPK(
 						employeeId,
+						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)));
