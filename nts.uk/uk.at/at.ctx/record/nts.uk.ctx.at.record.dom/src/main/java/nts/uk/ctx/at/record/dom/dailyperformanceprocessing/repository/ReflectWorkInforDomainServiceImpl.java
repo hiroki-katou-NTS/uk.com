@@ -1793,8 +1793,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new TimeActualStamp());
 				}
 
-				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().get();
-				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().get();
+				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().orElse(null);
+				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().orElse(null);
 
 				// 出勤反映 = true
 				// 出勤に自動打刻セットする
