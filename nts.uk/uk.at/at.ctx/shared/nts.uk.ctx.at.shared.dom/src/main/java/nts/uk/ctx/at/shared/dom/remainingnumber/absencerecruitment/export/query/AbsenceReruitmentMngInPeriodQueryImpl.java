@@ -104,8 +104,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid, GeneralDate ymd) {
 		// ドメインモデル「振休管理データ」
-		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBySidDate(cid, sid, ymd);		
-		return lstAbsConfirmData.stream().filter(x -> x.getRemainDays().v() > 0).collect(Collectors.toList());
+		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBysiD(cid, sid);
+		List<SubstitutionOfHDManagementData> lstOutput = new ArrayList<>();
+		for (SubstitutionOfHDManagementData x : lstAbsConfirmData) {
+			if(x.getRemainDays().v() <= 0 
+					||(x.getHolidayDate().getDayoffDate().isPresent() && x.getHolidayDate().getDayoffDate().get().afterOrEquals(ymd))) {
+				continue;
+			}
+			lstOutput.add(x);
+		}
+		return lstOutput;
 	}	
 
 	@Override
@@ -136,14 +144,17 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd) {
 		//2-1.確定振出から未使用の振出を取得する
-		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCodDate(cid, sid, DigestionAtr.UNUSED.value, ymd)
+		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCod(cid, sid, DigestionAtr.UNUSED.value)
 				.stream().filter(x -> x.getUnUsedDays().v() > 0)
 				.collect(Collectors.toList());
 		if(lstConfirmRec.isEmpty()) {
 			return lstDataDetail;
 		}
 		for (PayoutManagementData confirmRecData : lstConfirmRec) {
-			
+			if(confirmRecData.getPayoutDate().getDayoffDate().isPresent()
+					&& confirmRecData.getPayoutDate().getDayoffDate().get().afterOrEquals(ymd)) {
+				continue;
+			}
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
 			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
 			double unUseDays = confirmRecData.getUnUsedDays().v();

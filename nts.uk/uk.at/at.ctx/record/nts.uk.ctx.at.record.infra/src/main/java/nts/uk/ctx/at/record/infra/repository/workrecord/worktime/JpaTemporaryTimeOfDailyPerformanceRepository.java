@@ -77,17 +77,12 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String sqlQuery = "Delete From KRCDT_TIME_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" + "and TIME_LEAVING_TYPE = 1" ;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
 		String daiLeavingWorkQuery = "Delete From KRCDT_DAI_TEMPORARY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
+			con.createStatement().executeUpdate(sqlQuery);
 			con.createStatement().executeUpdate(daiLeavingWorkQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 //		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)

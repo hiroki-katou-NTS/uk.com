@@ -134,7 +134,6 @@ public class WithinStatutoryTimeOfDaily {
 										:new AttendanceTime(0);
 		}
 		//就業時間の計算
-		//実働時間の計算
 		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = recordReget.getWorkTimezoneCommonSet().isPresent() && recordReget.getWorkTimezoneCommonSet().get().getLateEarlySet().getCommonSet().isDelFromEmTime()
 							?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
 							:Optional.empty();
