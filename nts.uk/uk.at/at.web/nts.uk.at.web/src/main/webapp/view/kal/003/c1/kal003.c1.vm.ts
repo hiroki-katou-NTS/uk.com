@@ -18,8 +18,15 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             { code: 0, name: nts.uk.resource.getText("KDW007_108") },
             { code: 1, name: nts.uk.resource.getText("KDW007_107") }
         ]);
-
-        enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
+        enumSingleValueCompareTypes: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: "等しくない（≠）" },
+            { code: 1, name: "等しい（＝）" },
+            { code: 2, name: "以下（≦）" },
+            { code: 3, name: "以上（≧）" },
+            { code: 4, name: "より小さい（＜）" },
+            { code: 5, name: "より大きい（＞）" }
+        ]);
+        enumlistCompareTypes : KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "等しくない（≠）" },
             { code: 1, name: "等しい（＝）" },
             { code: 2, name: "以下（≦）" },
@@ -31,7 +38,8 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
             { code: 9, name: "範囲の外（境界値を含む）（≧≦）" }
         ]);
-
+        
+        
         currentAtdItemCondition: ErAlAtdItemCondition;
         displayTargetAtdItems: KnockoutObservable<string> = ko.observable("");
         displayCompareAtdItems: KnockoutObservable<string> = ko.observable("");
@@ -66,11 +74,11 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 param.data.uncountableAtdItem = null;
             }
 
-               self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
-//            caic = ko.mapping.fromJS(param.data);
-//            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+               //self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+            caic = ko.mapping.fromJS(param.data);
+            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
 
-            if (caic.compareOperator() > 5) {
+            if (self.currentAtdItemCondition.compareOperator() > 5) {
                 self.enumConditionType([
                     { code: 0, name: "固定値", enable: true },
                     { code: 1, name: "勤怠項目", enable: false }
@@ -82,38 +90,39 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 ]);
             }
 
-            caic.compareStartValue.subscribe(v => {
+            self.currentAtdItemCondition.compareStartValue.subscribe(v => {
+                 console.log("5");
                 self.validateRange();
             });
 
-            caic.compareEndValue.subscribe(v => {
+            self.currentAtdItemCondition.compareEndValue.subscribe(v => {
+                 console.log("6");
                 self.validateRange();
             });
 
-            caic.conditionAtr.subscribe(v => {
-                console.log("đâsdasd");
+            self.currentAtdItemCondition.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
-                caic.uncountableAtdItem(null);
-                caic.countableAddAtdItems([]);
-                caic.countableSubAtdItems([]);
-                caic.conditionType(0);
-                caic.compareOperator(0);
-                caic.singleAtdItem(0);
-                caic.compareStartValue(0);
-                caic.compareEndValue(0);
+                console.log("10");
+                self.currentAtdItemCondition.uncountableAtdItem(null);
+                self.currentAtdItemCondition.countableAddAtdItems([]);
+                self.currentAtdItemCondition.countableSubAtdItems([]);
+                self.currentAtdItemCondition.conditionType(0);
+                self.currentAtdItemCondition.compareOperator(0);
+                self.currentAtdItemCondition.singleAtdItem(0);
+                self.currentAtdItemCondition.compareStartValue(0);
+                self.currentAtdItemCondition.compareEndValue(0);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
             });
 
-            caic.compareOperator.subscribe((value) => {
+            self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 if (value > 5) {
-                    self.enumConditionType([
+                    self.([
                         { code: 0, name: "固定値", enable: true },
                         { code: 1, name: "勤怠項目", enable: false }
                     ]);
-
-                    caic.conditionType(0);
+                    self.currentAtdItemCondition.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
@@ -123,14 +132,17 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 self.validateRange();
             });
 
-            caic.conditionType.subscribe((value) => {
+            self.currentAtdItemCondition.conditionType.subscribe((value) => {
                 if (value === 0) {
+                    console.log ("0");
                     $('#display-compare-item').ntsError('clear');
                     $(".value-input").trigger("validate");
                 } else if (value === 1) {
+                    console.log ("1");
                     $('.value-input').ntsError('clear');
-                    $("#display-compare-item").trigger("validate");
+                    $('#display-compare-item').trigger("validate");
                 } else {
+                    console.log ("2");
                     $('#display-compare-item').ntsError('clear');
                     $('.value-input').ntsError('clear');
                 }
@@ -321,7 +333,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
             let self = this;
             let isValid: boolean = true;
             let caic = ko.toJS(self.currentAtdItemCondition);
-
+            
             $('.value-input').ntsError('clear');
             $(".value-input").filter(":enabled").trigger("validate");
 
@@ -352,11 +364,11 @@ module nts.uk.at.view.kal003.c1.viewmodel {
 
         returnData() {
             let self = this;
-
+//            $('display-target-item').trigger("validate");
             $(".need-check").trigger("validate");
             $('.value-input').filter(":enabled").trigger("validate");
-
-            if (self.validateRange()) {
+            
+            if (self.validateRange() && !nts.uk.ui.errors.hasError()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
                 param.countableAddAtdItems = _.values(param.countableAddAtdItems);
                 param.countableSubAtdItems = _.values(param.countableSubAtdItems);
