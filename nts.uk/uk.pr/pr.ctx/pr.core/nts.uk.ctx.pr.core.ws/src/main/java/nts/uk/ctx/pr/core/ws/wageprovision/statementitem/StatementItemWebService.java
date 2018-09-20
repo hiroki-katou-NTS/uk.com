@@ -12,6 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.AddStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.RemoveStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.StatementItemDataCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.UpdateStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDto;
@@ -30,10 +31,13 @@ public class StatementItemWebService extends WebService {
 
 	@Inject
 	private StatementItemNameFinder statementItemNameFinder;
-	
+
 	@Inject
 	private AddStatementItemDataCommandHandler addStatementItemDataCommandHandler;
-	
+
+	@Inject
+	private UpdateStatementItemDataCommandHandler updateStatementItemDataCommandHandler;
+
 	@Inject
 	private RemoveStatementItemDataCommandHandler removeStatementItemDataCommandHandler;
 
@@ -75,17 +79,21 @@ public class StatementItemWebService extends WebService {
 	public StatementItemNameDto getByCategoryAndCode(@PathParam("salaryItemId") String salaryItemId) {
 		return this.statementItemNameFinder.findStatementItemName(salaryItemId);
 	}
-	
+
 	@POST
 	@Path("registerStatementItemData")
 	public void registerStatementItemData(StatementItemDataCommand command) {
-		this.addStatementItemDataCommandHandler.handle(command);
+		if (command.isCheckCreate()) {
+			this.addStatementItemDataCommandHandler.handle(command);
+		} else {
+			this.updateStatementItemDataCommandHandler.handle(command);
+		}
 	}
-	
+
 	@POST
 	@Path("removeStatementItemData")
 	public void removeStatementItemData(StatementItemDataCommand command) {
 		this.removeStatementItemDataCommandHandler.handle(command);
 	}
-	
+
 }
