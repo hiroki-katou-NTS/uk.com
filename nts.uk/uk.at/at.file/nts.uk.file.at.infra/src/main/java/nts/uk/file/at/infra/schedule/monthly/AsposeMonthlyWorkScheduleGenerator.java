@@ -1111,7 +1111,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Sum of all workplace total and workplace hierarchy total
 			workplaceData.lstChildWorkplaceReportData.forEach((k,child) -> {
-				child.getGrossTotal().forEach(item -> {
+				child.getWorkplaceTotal().getTotalWorkplaceValue().forEach(item -> {
 					if (item.value() == null) return;
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
@@ -1468,7 +1468,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 										cell.setValue(getTimeAttr("0"));
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
-				            	else if (valueTypeEnum.isDouble()) {
+				            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 				            		cell.putValue(value, true);
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
@@ -2015,7 +2015,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 									cell.setValue(getTimeAttr("0"));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
-			            	else if (valueTypeEnum.isDouble()) {
+			            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 			            		cell.putValue(value, true);
 			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
