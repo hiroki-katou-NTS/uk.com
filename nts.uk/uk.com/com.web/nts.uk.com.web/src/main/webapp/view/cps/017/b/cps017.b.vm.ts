@@ -60,7 +60,7 @@ module nts.uk.com.view.cps017.b.viewmodel {
             _.each(self.listSelection(), function(item, index){
                 lstData.push(new SelOrder(item.selectionID, item.histId, item.selectionCD, index+1, item.selectionID == self.currentSelectedId() ? true : false));
             });
-            console.log(lstData);
+            //console.log(lstData);
             service.updateSelOrder(lstData).done(function(){
                 //情報メッセージ（#Msg_15）を表示する (Hiển thị InfoMessage Msg_15)
                 info({ messageId: "Msg_15" }).then(function() {

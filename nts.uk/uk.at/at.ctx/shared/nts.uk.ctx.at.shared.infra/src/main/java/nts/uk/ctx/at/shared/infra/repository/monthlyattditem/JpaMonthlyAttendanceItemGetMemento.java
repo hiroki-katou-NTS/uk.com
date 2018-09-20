@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
+import java.util.Optional;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 
 /**
@@ -103,6 +106,19 @@ public class JpaMonthlyAttendanceItemGetMemento implements MonthlyAttendanceItem
 	@Override
 	public int getNameLineFeedPosition() {
 		return this.entity.getLineBreakPosName();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.monthlyattendanceitem.
+	 * MonthlyAttendanceItemGetMemento#getPrimitiveValue()
+	 */
+	@Override
+	public Optional<PrimitiveValueOfAttendanceItem> getPrimitiveValue() {
+		return this.entity.getPrimitiveValue() == null ? Optional.empty()
+				: Optional.ofNullable(
+						EnumAdaptor.valueOf(this.entity.getPrimitiveValue(), PrimitiveValueOfAttendanceItem.class));
 	}
 
 }

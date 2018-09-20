@@ -74,7 +74,6 @@ public class LoginRecordRegistService {
 		default:
 			break;
 		}
-		String employeeId = null;
 		if (param.remark != null) {
 			if (param.remark.length() > 100) {
 				param.remark = param.remark.substring(0, 99);
@@ -82,7 +81,7 @@ public class LoginRecordRegistService {
 		}
 
 		LoginRecordInput infor = new LoginRecordInput(programId, screenId, queryParam, param.loginStatus,
-				param.loginMethod, url, param.remark, employeeId);
+				param.loginMethod, url, param.remark, param.employeeId);
 
 		// アルゴリズム「ログイン記録」を実行する１
 		this.loginRecord(infor, param.companyId);
@@ -116,11 +115,15 @@ public class LoginRecordRegistService {
 		UserInfo userInfor = new UserInfo(" ", " ", " ");
 
 		if (!(user instanceof NullLoginUserContext) && user.userId() != null) {
-			UserInfo u = this.userInfoAdaptorForLog.findByUserId(user.userId());
-			userInfor = new UserInfo(u.getUserId(), user.employeeId() == null? " " : user.employeeId(), u.getUserName());
+			if (user.isEmployee()){
+				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(user.employeeId(), user.companyId());
+			} else {
+				UserInfo u = this.userInfoAdaptorForLog.findByUserId(user.userId());
+				userInfor = new UserInfo(u.getUserId(), user.employeeId() == null? " " : user.employeeId(), u.getUserName());
+			}
 		} else {
 			if (infor.employeeId != null) {
-				userInfor = this.userInfoAdaptorForLog.findByEmployeeId(user.employeeId());
+				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(infor.employeeId, companyId);
 			}
 		}
 		// set operationId

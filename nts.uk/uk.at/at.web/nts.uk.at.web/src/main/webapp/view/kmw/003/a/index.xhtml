@@ -46,7 +46,7 @@
 										enable: showButton().enable_A1_1, click : insertUpdate" class="proceed">#{i18n.getText('KMW003_2')}</button>
 					<!--A1_2 保存ボタン--> 
 					<button data-bind="{visible: showButton().available_A1_2(),
-										enable: showButton().enable_A1_2(), click : insertUpdate2}">#{i18n.getText('KMW003_3')}</button>
+										enable: showButton().enable_A1_2, click : insertUpdate2}">#{i18n.getText('KMW003_3')}</button>
 					<!--A1_3 就業確定ボタン--> 
 					<!-- <button data-bind="{}">#{i18n.getText('KMW003_4')}</button> -->
 					<!--A1_4 抽出条件の設定ボタン--> 
@@ -54,7 +54,8 @@
 					<!--A1_5 表示項目の選択ボタン--> 
 					<button data-bind="{click: displayItem, visible:showButton().enable_A1_5'">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
-					<!--A1_6 修正履歴ボタン-->					
+					<!--A1_6 修正履歴ボタン-->
+					<button data-bind="click: openCDL027">#{i18n.getText('KMW003_7')}</button>					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
 					<!-- class = "visibility: hidden" -->
@@ -69,7 +70,7 @@
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">				
-					<div style="min-width: 100px">
+					<div style="min-width: 50px">
 						<!--A1_11 ロック解除中--> 
 						<div class="label warning" data-bind="{visible:showButton().available_A1_11}">#{i18n.getText('KMW003_34')}</div>	
 						<!--A2_1 社員範囲選択--> 						
@@ -91,7 +92,7 @@
 						<!--A4_3 実績期間--> 
 						<div id="dislayFormatLbl" class="label" style="width: 80px">#{i18n.getText('KMW003_11')}</div>
 						<!--A4_4 実績期間選択--> 
-						<div  id="dislayFormatLbl" style="width:218px" data-bind="ntsComboBox: {
+						<div  id="dislayFormatLbl" style="width:218px; vertical-align: middle;" data-bind="ntsComboBox: {
 								options: actualTimeOptionDisp,
 								optionsValue: 'code',
 								value: actualTimeSelectedCode,
@@ -109,20 +110,20 @@
 						<!--A4_2 対象締め日--> 
 						<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
 						<!--A4_7 -->
-						<!--
+						
 						<div id="cbClosureInfo"
-									data-bind="ntsComboBox: {
-												visibleItemsCount: 5,
-												name:'#[KMW003_10]',
-												options: closureInfoItems,
-												optionsValue: 'code',
-												value: selectedClosure,
-												optionsText: 'name',
-												enable:showButton().available_A4_7,
-												columns: [
-													{ prop: 'name', length: 10 }
-												]}">
-								</div>  -->
+							data-bind="ntsComboBox: {
+										visibleItemsCount: 5,
+										name:'#[KMW003_10]',
+										options: closureInfoItems,
+										optionsValue: 'name',
+										value: selectedClosure,
+										optionsText: 'code',
+										enable:showButton().available_A4_7,
+										columns: [
+											{ prop: 'code', length: 10 }
+										]}">
+						</div>  
 								
 						
 						<!--A4_6 複数実績メッセージ--> 
@@ -174,8 +175,10 @@
 					<div class="compact-grid grid-container" id="gid">
 						<table id="dpGrid"></table>
 					</div>
+					
+					<!-- <span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span> -->
 					<!--A7_1 コメント--> 
-					<span style="margin: 10px 0 0 0px; display: inline-block; width : 50%" data-bind="text: comment"></span>
+					<div style="margin-top: 705px; width : 50%" data-bind="text: comment"></div>
 				</div>
 				<div id="tooltip"><span id="textLock"></span></div>
 			</div>

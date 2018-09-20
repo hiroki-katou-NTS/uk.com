@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -19,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 
@@ -29,6 +32,12 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 
 	/** The entity. */
 	private KshmtWorkingCondItem entity;
+	/** The entity. */
+	private List<KshmtPerWorkCat> perWorkCat;
+	/** The entity. */
+	private List<KshmtPersonalDayOfWeek> perDayWeek;
+	/** The entity. */
+	private KshmtScheduleMethod method;
 
 	/**
 	 * Instantiates a new jpa working condition item get memento.
@@ -39,6 +48,15 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity) {
 		super();
 		this.entity = entity;
+	}
+	
+	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity, List<KshmtPerWorkCat> perWorkCat, 
+			List<KshmtPersonalDayOfWeek> perDayWeek, KshmtScheduleMethod method) {
+		super();
+		this.entity = entity;
+		this.perWorkCat = perWorkCat;
+		this.perDayWeek = perDayWeek;
+		this.method = method;
 	}
 
 	/*
@@ -86,8 +104,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public PersonalWorkCategory getWorkCategory() {
-		return new PersonalWorkCategory(
-				new JpaPerWorkCatGetMemento(this.entity.getKshmtPerWorkCats()));
+		if(perWorkCat == null){
+			perWorkCat = this.entity.getKshmtPerWorkCats();
+		}
+		
+		return new PersonalWorkCategory(new JpaPerWorkCatGetMemento(perWorkCat));
 	}
 
 	/*
@@ -135,8 +156,11 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public PersonalDayOfWeek getWorkDayOfWeek() {
-		return new PersonalDayOfWeek(
-				new JpaPerDayOfWeekGetMemento(this.entity.getKshmtPersonalDayOfWeeks()));
+		if(perDayWeek == null){
+			perDayWeek = this.entity.getKshmtPersonalDayOfWeeks();
+		}
+		
+		return new PersonalDayOfWeek(new JpaPerDayOfWeekGetMemento(perDayWeek));
 	}
 
 	/*
@@ -172,10 +196,12 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public Optional<ScheduleMethod> getScheduleMethod() {
-		KshmtScheduleMethod method = this.entity.getKshmtScheduleMethod();
-		return method != null
-				? Optional.of(new ScheduleMethod(new JpaScheduleMethodGetMemento(method)))
-				: Optional.empty();
+		if(method == null){
+			method = this.entity.getKshmtScheduleMethod();
+		}
+		
+		return method == null ? Optional.empty() : 
+			Optional.of(new ScheduleMethod(new JpaScheduleMethodGetMemento(method)));
 	}
 
 	/*

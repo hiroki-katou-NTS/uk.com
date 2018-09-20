@@ -1,16 +1,25 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.otkcustomize;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkVacationCk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkWtNonTarget;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkWtTarget;
@@ -18,7 +27,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Stateless
 public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements ContinuousHolCheckSetRepo {
-	
+
+	@Override
 	public List<ContinuousHolCheckSet> find(List<String> companyIds){
 		if(companyIds.isEmpty()){
 			return new ArrayList<>();
@@ -26,18 +36,68 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 		return this.queryProxy().query("SELECT v FROM KrcctOtkVacationCk v WHERE v.cid IN :cid", KrcctOtkVacationCk.class)
 				.setParameter("cid", companyIds).getList(c -> c.toDomain());
 	}
-	
+
+	@Override
 	public Optional<ContinuousHolCheckSet> find(String companyId){
 		return find(Arrays.asList(companyId)).stream()
 					.filter(c -> c.getCompanyId().equals(companyId)).findFirst();
 	}
 	
+	@Override
+	public Optional<ContinuousHolCheckSet> findSpecial(String companyId) {
+		try {/** TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
+//			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
+//			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
+//			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
+//			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCCT_OTK_WT_NONTARGET c ");
+//			queryString.append(" WHERE a.CID = c.CID FOR XML PATH('')), 1, 1, '') [NONTARGET] ");
+			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
+			queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
+			queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
+			queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
+			queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
+			queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
+			PreparedStatement statement = this.connection().prepareStatement(queryString.toString());
+
+			statement.setString(1, companyId);
+			statement.setInt(2, 1);
+			val result = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				Map<String, Object> val = new HashMap<>();
+				val.put("NONTARGET", rec.getString("NONTARGET"));
+				val.put("TARGET", rec.getInt("TARGET"));
+				val.put("MESSAGE_DISPLAY", rec.getInt("MESSAGE_DISPLAY"));
+				val.put("CONTINUOUS_DAYS", rec.getInt("CONTINUOUS_DAYS"));
+				val.put("CID", rec.getGeneralDate("CID"));
+				return val;
+			});
+			
+			if(result.isEmpty()){
+				return Optional.empty();
+			}
+			 return Optional.of(new ContinuousHolCheckSet(companyId, 
+					 getType(result, "TARGET"), 
+					 getType(result, "NONTARGET"), 
+					 true, new DisplayMessage(result.get(0).get("MESSAGE_DISPLAY").toString()), 
+					 new ContinuousVacationDays(Integer.parseInt(result.get(0).get("CONTINUOUS_DAYS").toString())))); 
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private List<WorkTypeCode> getType(final List<Map<String, Object>> result, String column) {
+		return result.stream().filter(c -> c.get(column) != null).map(c -> c.get(column).toString().trim())
+				.distinct().map(c -> new WorkTypeCode(c)).collect(Collectors.toList());
+	}
+
+	@Override
 	public void insert(ContinuousHolCheckSet setting){
 		this.commandProxy().insert(KrcctOtkVacationCk.fromDomain(setting));
 		this.commandProxy().insertAll(toNonTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
 		this.commandProxy().insertAll(toTarget(setting.getTargetWorkType(), setting.getCompanyId()));
 	}
-	
+
+	@Override
 	public void update(ContinuousHolCheckSet setting){
 		KrcctOtkVacationCk entity = findEntity(setting.getCompanyId());
 		if(entity != null){
@@ -56,7 +116,8 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			this.getEntityManager().flush();
 		}
 	}
-	
+
+	@Override
 	public void remove(String cid){
 		KrcctOtkVacationCk entity = findEntity(cid);
 		if(entity != null){

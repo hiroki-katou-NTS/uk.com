@@ -89,7 +89,7 @@ public class HolidayShipmentScreenBFinder {
 		if (appOutputOpt.isPresent()) {
 			Application_New appOutput = appOutputOpt.get();
 
-			setEmployeeDisplayText(employeeID, appOutput, screenInfo);
+			setEmployeeDisplayText(appOutput, screenInfo);
 
 			screenInfo.setApplication(ApplicationDto_New.fromDomain(appOutput));
 
@@ -148,19 +148,17 @@ public class HolidayShipmentScreenBFinder {
 
 	}
 
-	private void setEmployeeDisplayText(String employeeID, Application_New appOutput, HolidayShipmentDto screenInfo) {
-		String resultName = "", appEmployeeID = appOutput.getEnteredPersonID(), loginEmployeeID = employeeID;
+	private void setEmployeeDisplayText(Application_New appOutput, HolidayShipmentDto screenInfo) {
+		String resultName = "", enterEmployeeID = appOutput.getEnteredPersonID(), targetEmployeeID = appOutput.getEmployeeID();
 
-		boolean isSameLogin = loginEmployeeID.equals(appEmployeeID);
+		boolean isSameLogin = targetEmployeeID.equals(enterEmployeeID);
 		if (isSameLogin) {
-
-			resultName = empAdaptor.getEmployeeName(employeeID);
-
+			resultName = empAdaptor.getEmployeeName(enterEmployeeID);
 		} else {
 
-			String appEmployeeName = empAdaptor.getEmployeeName(appEmployeeID);
-			String loginEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(loginEmployeeID) + ")";
-			resultName = appEmployeeName + loginEmployeeName;
+			String targetEmployeeName = empAdaptor.getEmployeeName(targetEmployeeID);
+			String enterEmployeeName = " (入力者 : " + empAdaptor.getEmployeeName(enterEmployeeID) + ")";
+			resultName = targetEmployeeName + enterEmployeeName;
 
 		}
 		screenInfo.setEmployeeName(resultName);

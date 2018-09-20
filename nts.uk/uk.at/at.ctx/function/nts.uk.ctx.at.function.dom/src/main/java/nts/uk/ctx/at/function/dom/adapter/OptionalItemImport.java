@@ -16,11 +16,15 @@ public class OptionalItemImport {
 	/** The optional item name. */
 	// 任意項目名称
 	private String optionalItemName;
+	
+	//任意項目の単位
+	private String optionalItemUnit;
 
-	public OptionalItemImport(int optionalItemNo, String optionalItemName) {
+	public OptionalItemImport(int optionalItemNo, String optionalItemName, String optionalItemUnit) {
 		super();
 		this.optionalItemNo = optionalItemNo;
 		this.optionalItemName = optionalItemName;
+		this.optionalItemUnit = optionalItemUnit;
 	}
 	
 }

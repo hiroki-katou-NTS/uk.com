@@ -29,6 +29,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.shr.com.i18n.TextResource;
@@ -126,7 +127,7 @@ public class MultipleMonthAggregateProcessService {
 			String nameErrorAlarm = "";
 			List<Integer> listAttendanceItemIds = new ArrayList<>();
 			if (!CollectionUtil.isEmpty(tmp)) {
-				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, TypeOfItem.Monthly.value);
 				listAttendanceItemIds= listAttdName.stream()
                         .map(AttendanceItemName::getAttendanceItemId)
                         .collect(Collectors.toList());
@@ -135,7 +136,7 @@ public class MultipleMonthAggregateProcessService {
 				
 			} else {
 				if (!CollectionUtil.isEmpty(tmp2)) {
-					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,0);
+					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,TypeOfItem.Monthly.value);
 					listAttendanceItemIds= listAttdName.stream()
 	                        .map(AttendanceItemName::getAttendanceItemId)
 	                        .collect(Collectors.toList());
@@ -249,172 +250,51 @@ public class MultipleMonthAggregateProcessService {
 		
 	}
 
-//	private boolean checkMulMonth(MulMonCheckCondDomainEventDto extra, int count) {
-//		boolean check = false;
-//		if (compareSingle(extra.getTimes(), count, extra.getCompareOperator())) {
-//			check = true;
-//		}
-//		return check;
-//	}
-
-//	private boolean checkPerMonth(MulMonCheckCondDomainEventDto extra, float sumActual) {
-//		boolean check = false;
-//		BigDecimal sumActualBD = new BigDecimal(sumActual);
-//		if (extra.getCompareOperator() <= 5) {
-//			if (compareSingle(extra.getErAlAtdItem().getCompareStartValue(), sumActualBD,
-//					extra.getErAlAtdItem().getCompareOperator())) {
-//				check = true;
-//			}
-//		} else {
-//			if (CompareDouble(extra.getErAlAtdItem().getCompareStartValue(),
-//					extra.getErAlAtdItem().getCompareEndValue(), sumActualBD,
-//					extra.getErAlAtdItem().getCompareOperator())) {
-//				check = true;
-//			}
-//		}
-//		return check;
-//	}
-//
-//	private boolean compareSingle(double valueAgreement, double value, int compareType) {
-//		boolean check = false;
-//		switch (compareType) {
-//		case 0:/* 等しい（＝） */
-//			if (value == valueAgreement)
-//				check = true;
-//			break;
-//		case 1:/* 等しくない（≠） */
-//			if (value != valueAgreement)
-//				check = true;
-//			break;
-//		case 2:/* より大きい（＞） */
-//			if (value > valueAgreement)
-//				check = true;
-//			break;
-//		case 3:/* 以上（≧） */
-//			if (value >= valueAgreement)
-//				check = true;
-//			break;
-//		case 4:/* より小さい（＜） */
-//			if (value < valueAgreement)
-//				check = true;
-//			break;
-//		default:/* 以下（≦） */
-//			if (value <= valueAgreement)
-//				check = true;
-//			break;
-//		}
-//
-//		return check;
-//	}
-//
-//	private boolean compareSingle(BigDecimal valueAgreement, BigDecimal value, int compareType) {
-//		boolean check = false;
-//		switch (compareType) {
-//		case 0:/* 等しい（＝） */
-//			if (valueAgreement == value)
-//				check = true;
-//			break;
-//		case 1:/* 等しくない（≠） */
-//			if (value != valueAgreement)
-//				check = true;
-//			break;
-//		case 2:/* より大きい（＞） */
-//			if (value.compareTo(valueAgreement) == 1)
-//				check = true;
-//			break;
-//		case 3:/* 以上（≧） */
-//			if (value.compareTo(valueAgreement) >= 0)
-//				check = true;
-//			break;
-//		case 4:/* より小さい（＜） */
-//			if (value.compareTo(valueAgreement) == -1)
-//				check = true;
-//			break;
-//		default:/* 以下（≦） */
-//			if (value.compareTo(valueAgreement) <= 0)
-//				check = true;
-//			break;
-//		}
-//
-//		return check;
-//	}
-//
-//	private boolean CompareDouble(BigDecimal value, BigDecimal valueAgreementStart, BigDecimal valueAgreementEnd,
-//			int compare) {
-//		boolean check = false;
-//		switch (compare) {
-//		/* 範囲の間（境界値を含まない）（＜＞） */
-//		case 6:
-//			if (value.compareTo(valueAgreementStart) > 0 && value.compareTo(valueAgreementEnd) < 0) {
-//				check = true;
-//			}
-//			break;
-//		/* 範囲の間（境界値を含む）（≦≧） */
-//		case 7:
-//			if (value.compareTo(valueAgreementStart) >= 0 && value.compareTo(valueAgreementEnd) <= 0) {
-//				check = true;
-//			}
-//			break;
-//		/* 範囲の外（境界値を含まない）（＞＜） */
-//		case 8:
-//			if (value.compareTo(valueAgreementStart) < 0 || value.compareTo(valueAgreementEnd) > 0) {
-//				check = true;
-//			}
-//			break;
-//		/* 範囲の外（境界値を含む）（≧≦） */
-//		default:
-//			if (value.compareTo(valueAgreementStart) <= 0 || value.compareTo(valueAgreementEnd) >= 0) {
-//				check = true;
-//			}
-//			break;
-//		}
-//		return check;
-//	}
 
 	private CompareOperatorText convertCompareType(int compareOperator) {
 		CompareOperatorText compare = new CompareOperatorText();
-		switch (compareOperator) {
-		case 0:/* 等しい（＝） */
-			compare.setCompareLeft("＝");
-			compare.setCompareright("");
-			break;
-		case 1:/* 等しくない（≠） */
+		switch(compareOperator) {
+		case 0 :/* 等しくない（≠） */
 			compare.setCompareLeft("≠");
 			compare.setCompareright("");
-			break;
-		case 2:/* より大きい（＞） */
-			compare.setCompareLeft("＞");
+			break; 
+		case 1 :/* 等しい（＝） */
+			compare.setCompareLeft("＝");
 			compare.setCompareright("");
-			break;
-		case 3:/* 以上（≧） */
-			compare.setCompareLeft("≧");
-			compare.setCompareright("");
-			break;
-		case 4:/* より小さい（＜） */
-			compare.setCompareLeft("＜");
-			compare.setCompareright("");
-			break;
-		case 5:/* 以下（≦） */
+			break; 
+		case 2 :/* 以下（≦） */
 			compare.setCompareLeft("≦");
 			compare.setCompareright("");
 			break;
-		case 6:/* 範囲の間（境界値を含まない）（＜＞） */
+		case 3 :/* 以上（≧） */
+			compare.setCompareLeft("≧");
+			compare.setCompareright("");
+			break;
+		case 4 :/* より小さい（＜） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("");
+			break;
+		case 5 :/* より大きい（＞） */
+			compare.setCompareLeft("＞");
+			compare.setCompareright("");
+			break;
+		case 6 :/* 範囲の間（境界値を含まない）（＜＞） */
 			compare.setCompareLeft("＜");
 			compare.setCompareright("＜");
 			break;
-		case 7:/* 範囲の間（境界値を含む）（≦≧） */
+		case 7 :/* 範囲の間（境界値を含む）（≦≧） */
 			compare.setCompareLeft("≦");
 			compare.setCompareright("≦");
 			break;
-		case 8:/* 範囲の外（境界値を含まない）（＞＜） */
-			compare.setCompareLeft("＞");
-			compare.setCompareright("＞");
+		case 8 :/* 範囲の外（境界値を含まない）（＞＜） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
 			break;
-
-		default:/* 範囲の外（境界値を含む）（≧≦） */
-			compare.setCompareLeft("≧");
-			compare.setCompareright("≧");
-			break;
+		
+		default :/* 範囲の外（境界値を含む）（≧≦） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
+			break; 
 		}
 
 		return compare;

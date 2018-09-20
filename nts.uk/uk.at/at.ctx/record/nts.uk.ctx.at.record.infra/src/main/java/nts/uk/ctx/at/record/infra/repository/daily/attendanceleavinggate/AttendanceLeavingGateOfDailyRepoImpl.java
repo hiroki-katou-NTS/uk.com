@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayLea
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
 
@@ -136,23 +140,23 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 				
 				// AttendanceLeavingGate - attendance
 				String attPlaceCode = leavingGate.getAttendance().isPresent() && leavingGate.getAttendance().get().getLocationCode().isPresent()
-						? leavingGate.getAttendance().get().getLocationCode().get().v() : null;
+						? "'" + leavingGate.getAttendance().get().getLocationCode().get().v() + "'" : null;
 				Integer attStampSource = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getStampSourceInfo().value : null;
 				Integer attTime = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getTimeWithDay().valueAsMinutes() : null;
 				
 				// AttendanceLeavingGate - leave
 				String leavePlaceCode = leavingGate.getLeaving().isPresent() && leavingGate.getLeaving().get().getLocationCode().isPresent()
-						? leavingGate.getLeaving().get().getLocationCode().get().v() : null;
+						? "'" + leavingGate.getLeaving().get().getLocationCode().get().v() + "'" : null;
 				Integer leaveStampSource = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getStampSourceInfo().value : null;
 				Integer leaveTime = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeWithDay().valueAsMinutes() : null;
 				String insertTableSQL = "INSERT INTO KRCDT_DAY_LEAVE_GATE ( SID , YMD , AL_NO, ATTENDANCE_PLACE_CODE , ATTENDANCE_STAMP_SOURCE , ATTENDANCE_TIME , LEAVE_PLACE_CODE , LEAVE_STAMP_SOURCE , LEAVE_TIME ) "
 						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
 						+ domain.getYmd() + "' , "
-						+ leavingGate.getWorkNo().v() + " , '"
-						+ attPlaceCode + "' , "
+						+ leavingGate.getWorkNo().v() + " , "
+						+ attPlaceCode + " , "
 						+ attStampSource + " , "
-						+ attTime + " , '"
-						+ leavePlaceCode + "' , "
+						+ attTime + " , "
+						+ leavePlaceCode + " , "
 						+ leaveStampSource + " , "
 						+ leaveTime + " )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
@@ -167,11 +171,21 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		removeByKey(domain.getEmployeeId(), domain.getYmd());
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
-		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
-				.setParameter("ymd", baseDate).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAY_LEAVE_GATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", baseDate).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 	
 

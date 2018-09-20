@@ -1,16 +1,20 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
+import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /** 日別実績の勤怠時間 */
@@ -20,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 
 	/** 年月日: 年月日 */
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate date;
 
 	/** 社員ID: 社員ID */
@@ -59,12 +64,27 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
 			//items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
 			items.setBudgetTimeVariance(getAttendanceTime(domain.getBudgetTimeVariance()));
-			items.setDate(domain.getYmd());
-			items.setEmployeeID(domain.getEmployeeId());
 			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
 			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
 			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
 			items.setUnemployedTime(getAttendanceTime(domain.getUnEmployedTime()));
+			items.exsistData();
+		}
+		return items;
+	}
+
+	@Override
+	public AttendanceTimeDailyPerformDto clone() {
+		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		items.setEmployeeID(employeeId());
+		items.setDate(workingDate());
+		items.setActualWorkTime(actualWorkTime == null ? null : actualWorkTime.clone());
+		items.setBudgetTimeVariance(budgetTimeVariance);
+		items.setMedicalTime(medicalTime == null ? null : medicalTime.clone());
+		items.setScheduleTime(scheduleTime == null ? null : scheduleTime.clone());
+		items.setStayingTime(stayingTime == null ? null : stayingTime.clone());
+		items.setUnemployedTime(unemployedTime);
+		if(isHaveData()){
 			items.exsistData();
 		}
 		return items;
@@ -95,10 +115,10 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new AttendanceTimeOfDailyPerformance(emp, date,
-				scheduleTime == null ? null : scheduleTime.toDomain(), 
-				actualWorkTime == null ? null : actualWorkTime.toDomain(),
-				stayingTime == null ? null : stayingTime.toDomain(), 
-				budgetTimeVariance == null ? null : new AttendanceTimeOfExistMinus(budgetTimeVariance),
-				unemployedTime == null ? null : new AttendanceTimeOfExistMinus(unemployedTime));
+				scheduleTime == null ? WorkScheduleTimeOfDaily.defaultValue() : scheduleTime.toDomain(), 
+				actualWorkTime == null ? ActualWorkingTimeOfDaily.defaultValue() : actualWorkTime.toDomain(),
+				stayingTime == null ? StayingTimeDto.defaultDomain() : stayingTime.toDomain(), 
+				budgetTimeVariance == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(budgetTimeVariance),
+				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime));
 	}
 }

@@ -69,11 +69,11 @@ public class ShortWorkTimeOfDaily {
 		if(recordClass.getCalculatable()
 		 &&recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
 			//短時間勤務回数
-//			workTimes = new WorkTimes(recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream()
-//																														  .filter(tc -> tc.getChildCareAttr().equals(careAtr))
-//																														  .collect(Collectors.toList())
-//																														  .size());
-			workTimes = calcWorkTimes(recordClass,careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care);
+			workTimes = new WorkTimes(recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream()
+																														  .filter(tc -> tc.getChildCareAttr().equals(careAtr))
+																														  .collect(Collectors.toList())
+																														  .size());
+//			workTimes = calcWorkTimes(recordClass,careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care);
 			totalTime = calculationDedBreakTime(careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
 												DeductionAtr.Appropriate,
 												recordClass.getCalculationRangeOfOneDay(),premiumAtr,holidayCalcMethodSet,commonSetting);
@@ -98,6 +98,9 @@ public class ShortWorkTimeOfDaily {
 		DeductionAtr dedAtr = DeductionAtr.Appropriate;
 		//就業時間内時間帯
 		WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
+		//就業時間帯育児時間帯
+		list.addAll(withinWorkTimeSheet.getShortTimeSheet().stream().filter(tc -> tc.calcTotalTime(dedAtr).greaterThan(0)).collect(Collectors.toList()));
+		
 		for(WithinWorkTimeFrame withinWorkTimeFrame:withinWorkTimeSheet.getWithinWorkTimeFrame()) {
 			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(dedAtr, condition));
 			//遅刻
@@ -131,7 +134,7 @@ public class ShortWorkTimeOfDaily {
 		
 		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list){
-			if(timeSheetOfDeductionItem.calcTotalTime().greaterThan(0)) {
+			if(timeSheetOfDeductionItem.calcTotalTime(dedAtr).greaterThan(0)) {
 				result.add(timeSheetOfDeductionItem);
 			}
 		}

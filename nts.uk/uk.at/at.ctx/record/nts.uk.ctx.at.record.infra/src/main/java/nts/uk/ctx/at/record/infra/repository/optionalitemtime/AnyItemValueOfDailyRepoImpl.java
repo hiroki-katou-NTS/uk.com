@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.record.infra.repository.optionalitemtime;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
@@ -16,7 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValue;
+import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValueMerge;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -27,18 +30,18 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDayAnyItemValue a ");
-		builderString.append("WHERE a.krcdtDayAnyItemValuePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayAnyItemValuePK.generalDate = :processingDate ");
+		builderString.append("FROM KrcdtDayAnyItemValueMerge a ");
+		builderString.append("WHERE a.krcdtDayTimePk.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePk.generalDate = :processingDate ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
 	}
 
 	@Override
 	public Optional<AnyItemValueOfDaily> find(String employeeId, GeneralDate baseDate) {
-		List<KrcdtDayAnyItemValue> result = findP(employeeId, baseDate);
-		if(!result.isEmpty()) {
-			return Optional.of(new AnyItemValueOfDaily(result.get(0).krcdtDayAnyItemValuePK.employeeID, result.get(0).krcdtDayAnyItemValuePK.generalDate,
-					result.stream().map(e -> e.toDomain()).collect(Collectors.toList())));
+		Optional<KrcdtDayAnyItemValueMerge> anyEntity = this.queryProxy()
+				.find(new KrcdtDayTimePK(employeeId, baseDate), KrcdtDayAnyItemValueMerge.class);
+		if (anyEntity.isPresent()) {
+			return Optional.of(anyEntity.get().toDomainAnyItemValueOfDaily());
 		}
 		return Optional.empty();
 	}
@@ -48,143 +51,142 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		if(baseDate.isEmpty()) {
 			return new ArrayList<>();
 		}
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate IN :date");
-		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
-										.setParameter("empId", employeeId)
-										.setParameter("date", baseDate).getList();
+		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
+		query.append(" WHERE op.krcdtDayTimePk.employeeID = :empId");
+		query.append(" AND op.krcdtDayTimePk.generalDate IN :date");
+		List<KrcdtDayAnyItemValueMerge> result = queryProxy()
+				.query(query.toString(), KrcdtDayAnyItemValueMerge.class)
+				.setParameter("empId", employeeId)
+				.setParameter("date", baseDate)
+				.getList();
 		if(!result.isEmpty()) {
-			return result.stream().collect(
-					Collectors.groupingBy(e -> e.krcdtDayAnyItemValuePK.employeeID + e.krcdtDayAnyItemValuePK.generalDate.toString(),
-					Collectors.toList())).entrySet().stream()
-						.map(l -> new AnyItemValueOfDaily(l.getValue().get(0).krcdtDayAnyItemValuePK.employeeID, 
-															l.getValue().get(0).krcdtDayAnyItemValuePK.generalDate,
-															l.getValue().stream().map(el -> el.toDomain()).collect(Collectors.toList())))
-						.collect(Collectors.toList());
+			return result.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
 	public List<AnyItemValueOfDaily> find(String employeeId) {
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
-		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
-										.setParameter("empId", employeeId).getList();
+		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
+		query.append(" WHERE op.krcdtDayTimePk.employeeID = :empId");
+		List<KrcdtDayAnyItemValueMerge> result = queryProxy()
+				.query(query.toString(), KrcdtDayAnyItemValueMerge.class)
+				.setParameter("empId", employeeId)
+				.getList();
 		if(!result.isEmpty()) {
-			return result.stream().collect(
-					Collectors.groupingBy(e -> e.krcdtDayAnyItemValuePK.employeeID + e.krcdtDayAnyItemValuePK.generalDate.toString(),
-					Collectors.toList())).entrySet().stream()
-						.map(l -> new AnyItemValueOfDaily(l.getValue().get(0).krcdtDayAnyItemValuePK.employeeID, 
-															l.getValue().get(0).krcdtDayAnyItemValuePK.generalDate,
-															l.getValue().stream().map(el -> el.toDomain()).collect(Collectors.toList())))
-						.collect(Collectors.toList());
+			return result.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList());
 		}
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<AnyItemValueOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
+	public List<AnyItemValueOfDaily> finds(List<String> employeeIds, DatePeriod baseDate) {
 		List<AnyItemValueOfDaily> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID IN :empId");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate >= :start");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate <= :end");
-		TypedQueryWrapper<KrcdtDayAnyItemValue> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class);
-		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			List<KrcdtDayAnyItemValue> r = tQuery.setParameter("empId", empIds)
-													.setParameter("start", baseDate.start())
-													.setParameter("end", baseDate.end()).getList();
-			if(!r.isEmpty()) {
-				result.addAll(r.stream().collect(
-						Collectors.groupingBy(e -> e.krcdtDayAnyItemValuePK.employeeID + e.krcdtDayAnyItemValuePK.generalDate.toString(),
-						Collectors.toList())).entrySet().stream()
-							.map(l -> new AnyItemValueOfDaily(l.getValue().get(0).krcdtDayAnyItemValuePK.employeeID, 
-																l.getValue().get(0).krcdtDayAnyItemValuePK.generalDate,
-																l.getValue().stream().map(el -> el.toDomain()).collect(Collectors.toList())))
-							.collect(Collectors.toList()));
+		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
+		query.append(" WHERE op.krcdtDayTimePk.employeeID IN :empId");
+		query.append(" AND op.krcdtDayTimePk.generalDate >= :start");
+		query.append(" AND op.krcdtDayTimePk.generalDate <= :end");
+		TypedQueryWrapper<KrcdtDayAnyItemValueMerge> tQuery = this.queryProxy()
+				.query(query.toString(), KrcdtDayAnyItemValueMerge.class);
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			List<KrcdtDayAnyItemValueMerge> r = tQuery
+					.setParameter("empId", empIds)
+					.setParameter("start", baseDate.start())
+					.setParameter("end", baseDate.end())
+					.getList();
+			if (!r.isEmpty()) {
+				result.addAll(r.stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
 			}
 		});
-		
 		return result;
 	}
 
 	@Override
 	public List<AnyItemValueOfDaily> finds(Map<String, List<GeneralDate>> param) {
 		List<AnyItemValueOfDaily> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID IN :employeeId");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate IN :date");
-		TypedQueryWrapper<KrcdtDayAnyItemValue> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class);
+		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValueMerge op");
+		query.append(" WHERE op.krcdtDayTimePk.employeeID IN :employeeId");
+		query.append(" AND op.krcdtDayTimePk.generalDate IN :date");
+		TypedQueryWrapper<KrcdtDayAnyItemValueMerge> tQuery = this.queryProxy()
+				.query(query.toString(), KrcdtDayAnyItemValueMerge.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-								.getList().stream()
-								.filter(c -> p.get(c.krcdtDayAnyItemValuePK.employeeID).contains(c.krcdtDayAnyItemValuePK.generalDate))
-								.collect(Collectors.groupingBy(
-										c -> c.krcdtDayAnyItemValuePK.employeeID + c.krcdtDayAnyItemValuePK.generalDate.toString()))
-								.entrySet().stream()
-								.map(l -> new AnyItemValueOfDaily(l.getValue().get(0).krcdtDayAnyItemValuePK.employeeID, 
-										l.getValue().get(0).krcdtDayAnyItemValuePK.generalDate,
-										l.getValue().stream().map(el -> el.toDomain()).collect(Collectors.toList())))
-								.collect(Collectors.toList()));
+			result.addAll(tQuery
+					.setParameter("employeeId", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream().map(op -> op.toDomainAnyItemValueOfDaily()).collect(Collectors.toList()));
 		});
 		return result;
 	}
 
 	@Override
 	public void update(AnyItemValueOfDaily domain) {
-		if(domain.getItems().isEmpty()) {
-			remove(domain);
+		if (domain == null) return;
+		
+		// キー
+		val key = new KrcdtDayTimePK(domain.getEmployeeId(), domain.getYmd());
+
+		// 登録・更新
+		KrcdtDayAnyItemValueMerge entity = this.getEntityManager().find(KrcdtDayAnyItemValueMerge.class, key);
+		if (entity == null) {
+			entity = new KrcdtDayAnyItemValueMerge();
+			entity.setKrcdtDayTimePk(key);
+			entity.toEntityAnyItemValueOfDaily(domain);
+			this.getEntityManager().persist(entity);
 		}
-		List<KrcdtDayAnyItemValue> oldEntities = findP(domain.getEmployeeId(), domain.getYmd());
-		Set<Integer> noList = domain.getItems().stream().map(d -> d.getItemNo().v()).collect(Collectors.toSet());
-		List<KrcdtDayAnyItemValue> toRemove = oldEntities.stream().filter(e -> !noList.contains(e.krcdtDayAnyItemValuePK.itemNo)).collect(Collectors.toList());
-		if(!toRemove.isEmpty()) {
-			commandProxy().removeAll(toRemove);
+		else {
+			// 既存のデータがあれば、消してから更新する
+			entity.clearAllValues();
+			entity.toEntityAnyItemValueOfDaily(domain);
 		}
-		domain.getItems().stream().forEach(c -> {
-			Optional<KrcdtDayAnyItemValue> oE = oldEntities.stream().filter(e -> e.krcdtDayAnyItemValuePK.itemNo == c.getItemNo().v()).findFirst();
-			if(oE.isPresent()) {
-				oE.ifPresent(e -> {
-					e.setData(c);
-					commandProxy().update(e);
-				});
-			} else {
-				commandProxy().insert(KrcdtDayAnyItemValue.create(domain.getEmployeeId(), domain.getYmd(), c));
-			}
-		});
 	}
 
 	@Override
 	public void add(AnyItemValueOfDaily domain) {
-		List<KrcdtDayAnyItemValue> entity = KrcdtDayAnyItemValue.create(domain);
-		commandProxy().insertAll(entity);
+		if (domain == null) return;
+		this.persistAndUpdate(domain);
 	}
 
 	@Override
-	public void remove(AnyItemValueOfDaily domain) {
-		List<KrcdtDayAnyItemValue> entities = findP(domain.getEmployeeId(), domain.getYmd());
-		if(!entities.isEmpty()) {
-			commandProxy().removeAll(entities);
+	public void persistAndUpdate(AnyItemValueOfDaily domain) {
+		if (domain == null) return;
+		
+		// キー
+		val key = new KrcdtDayTimePK(domain.getEmployeeId(), domain.getYmd());
+
+		// 登録・更新
+		KrcdtDayAnyItemValueMerge entity = this.getEntityManager().find(KrcdtDayAnyItemValueMerge.class, key);
+		if (entity == null) {
+			entity = new KrcdtDayAnyItemValueMerge();
+			entity.setKrcdtDayTimePk(key);
+			entity.toEntityAnyItemValueOfDaily(domain);
+			this.getEntityManager().persist(entity);
+		}
+		else {
+			entity.toEntityAnyItemValueOfDaily(domain);
 		}
 	}
-
-	private List<KrcdtDayAnyItemValue> findP(String employeeId, GeneralDate baseDate) {
-		StringBuilder query = new StringBuilder("SELECT op FROM KrcdtDayAnyItemValue op");
-		query.append(" WHERE op.krcdtDayAnyItemValuePK.employeeID = :empId");
-		query.append(" AND op.krcdtDayAnyItemValuePK.generalDate = :date");
-		List<KrcdtDayAnyItemValue> result = queryProxy().query(query.toString(), KrcdtDayAnyItemValue.class)
-										.setParameter("empId", employeeId)
-										.setParameter("date", baseDate).getList();
-		return result;
+	
+	@Override
+	public void remove(AnyItemValueOfDaily domain) {
+		this.removeWithJdbc(domain.getEmployeeId(), domain.getYmd());
 	}
-
+	
+	@SneakyThrows
+	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
+		val statement = this.connection().prepareStatement(
+				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
+				+ " WHERE SID = ? AND YMD = ?");
+		statement.setString(1, employeeId);
+		statement.setDate(2, Date.valueOf(baseDate.localDate()));
+		statement.executeUpdate();
+	}
+	
 	@Override
 	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingDate) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-		.setParameter("processingDate", processingDate).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE)
+				.setParameter("employeeId", employeeId)
+				.setParameter("processingDate", processingDate)
+				.executeUpdate();
 		this.getEntityManager().flush();
 	}
 }

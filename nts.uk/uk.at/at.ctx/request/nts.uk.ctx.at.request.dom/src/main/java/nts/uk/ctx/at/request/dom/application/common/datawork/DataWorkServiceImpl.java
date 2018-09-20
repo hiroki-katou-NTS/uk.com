@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -44,7 +45,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 
 	@Override
 	public DataWork getDataWork(String companyId, String sId, GeneralDate appDate,
-			AppCommonSettingOutput appCommonSetting) {
+			AppCommonSettingOutput appCommonSetting,int apptype) {
 		DataWork dataWork = new DataWork();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSetting.approvalFunctionSetting;
@@ -53,7 +54,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		}
 		List<AppEmploymentSetting> appEmploymentWorkType = appCommonSetting.appEmploymentWorkType;
 		// 勤務種類取得
-		List<String> workTypeCodes = getWorkType(companyId, sId, approvalFunctionSetting, appEmploymentWorkType);
+		List<String> workTypeCodes = getWorkType(companyId, sId, approvalFunctionSetting, appEmploymentWorkType,apptype);
 		dataWork.setWorkTypeCodes(workTypeCodes);
 		// 就業時間帯取得
 		List<String> workTimeCodes = getSiftType(companyId, sId, approvalFunctionSetting);
@@ -72,10 +73,11 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	 * @param employeeID
 	 * @param requestAppDetailSetting
 	 * @param appEmploymentSettings
+	 * @param apptype 
 	 * @return
 	 */
 	public List<String> getWorkType(String companyID, String employeeID,
-			ApprovalFunctionSetting approvalFunctionSetting, List<AppEmploymentSetting> appEmploymentSettings) {
+			ApprovalFunctionSetting approvalFunctionSetting, List<AppEmploymentSetting> appEmploymentSettings, int apptype) {
 		List<String> result = new ArrayList<>();
 		if (approvalFunctionSetting == null) {
 			return result;
@@ -99,11 +101,13 @@ public class DataWorkServiceImpl implements IDataWorkService {
 					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 			return result;
 		}
-		List<Integer> allDayAtrs = allDayAtrs();
-		List<Integer> halfAtrs = halfAtrs();
 		// ドメインモデル「勤務種類」を取得
-		result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
-				.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		if (ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value == apptype) {
+			List<Integer> allDayAtrs = allDayAtrs();
+			List<Integer> halfAtrs = halfAtrs();
+			result = workTypeRepository.findWorkType(companyID, 0, allDayAtrs, halfAtrs).stream()
+					.map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
+		}
 		return result;
 	}
 
@@ -166,7 +170,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			Optional<WorkType> workType = workTypeRepository.findByPK(companyId,
 					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
 			selectedData.setSelectedWorkTypeCd(
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().v());
+					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().map(item ->item.v()).orElse(null));
 			if (workType.isPresent()) {
 				selectedData.setSelectedWorkTypeName(workType.get().getName().v());
 			}

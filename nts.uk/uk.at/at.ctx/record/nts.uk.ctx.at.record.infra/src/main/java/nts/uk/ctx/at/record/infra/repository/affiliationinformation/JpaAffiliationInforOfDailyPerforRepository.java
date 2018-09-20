@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +50,18 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_AFFILIATION_INF Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -71,7 +81,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -131,7 +141,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

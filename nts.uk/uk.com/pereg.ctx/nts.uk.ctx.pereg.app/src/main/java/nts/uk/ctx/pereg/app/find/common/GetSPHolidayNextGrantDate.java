@@ -60,8 +60,7 @@ public class GetSPHolidayNextGrantDate {
 		}
 		
 		// Set entry date
-		if (param.getEntryDate() != null && param.getRetireDate() != null
-				&& baseDate.afterOrEquals(param.getEntryDate()) && baseDate.beforeOrEquals(param.getRetireDate())) {
+		if (param.getEntryDate() != null && baseDate.afterOrEquals(param.getEntryDate())) {
 			entryDate = param.getEntryDate();
 		} else {
 			AffCompanyHistSharedImport affComHist = empEmployeeAdapter.GetAffComHisBySidAndBaseDate(param.getSid(),
@@ -80,7 +79,7 @@ public class GetSPHolidayNextGrantDate {
 		}
 		
 		// Set 年休付与基準日
-		if (param.getYearRefDate() == null){
+		if (param.getYearRefDate() == null && param.getSid() != null){
 			// アルゴリズム「年休社員基本情報を取得する」を実行し、年休付与基準日を取得する
 			Optional<AnnualLeaveEmpBasicInfo> annualBasicInfo = annLeaEmpBasicInfoRepository.get(param.getSid());
 			

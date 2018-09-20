@@ -63,6 +63,10 @@
 							value: period, 
 							maxRange: 'none'}"/>
 					</span>
+					<span data-bind="if: periodType() == 'ym-ymd'">
+						<div data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+						<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+					</span>
 				</div>
 				<div class="valign-center control-group cf">
 					<div data-bind="ntsFormLabel: { required: true, text: 'Select Employee' }"></div>

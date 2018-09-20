@@ -510,7 +510,7 @@ module nts.uk.ui.koExtentions {
                 }
 
                 // remove currency symbol if number mode
-                $parent.removeClass('symbol').removeClass('symbol-left').removeClass('symbol-right');
+//                $parent.removeClass('symbol').removeClass('symbol-left').removeClass('symbol-right');
             }
             
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 

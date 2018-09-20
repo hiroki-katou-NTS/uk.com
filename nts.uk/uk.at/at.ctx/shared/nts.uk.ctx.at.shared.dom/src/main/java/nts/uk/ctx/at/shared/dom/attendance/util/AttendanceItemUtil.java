@@ -5,9 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +20,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
+
+import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -33,20 +37,10 @@ public class AttendanceItemUtil implements ItemConst {
 
 		return toItemValues(attendanceItems, AttendanceItemType.DAILY_ITEM);
 	}
-
-	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType, Collection<ItemValue> attendanceItems) {
-
-		return fromItemValues(classType, attendanceItems, AttendanceItemType.DAILY_ITEM);
-	}
-
+	
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems, AttendanceItemType type) {
 
 		return toItemValues(attendanceItems, Collections.emptyList());
-	}
-
-	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType, Collection<ItemValue> attendanceItems, AttendanceItemType type) {
-
-		return fromItemValues(ReflectionUtil.newInstance(classType), attendanceItems);
 	}
 
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems, Collection<Integer> itemIds) {
@@ -54,11 +48,21 @@ public class AttendanceItemUtil implements ItemConst {
 		return toItemValues(attendanceItems, itemIds, AttendanceItemType.DAILY_ITEM);
 	}
 
-	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
+	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems) {
 
-		return fromItemValues(attendanceItems, itemValues, AttendanceItemType.DAILY_ITEM);
+		return toItemValues(attendanceItems, AttendanceItemType.DAILY_ITEM);
 	}
 
+	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems, AttendanceItemType type) {
+
+		return toItemValues(attendanceItems, Collections.emptyList());
+	}
+	
+	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems, Collection<Integer> itemIds) {
+
+		return toItemValues(attendanceItems, itemIds, AttendanceItemType.DAILY_ITEM);
+	}
+	
 	public static <T extends ConvertibleAttendanceItem> List<ItemValue> toItemValues(T attendanceItems, Collection<Integer> itemIds, AttendanceItemType type) {
 
 		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
@@ -67,14 +71,49 @@ public class AttendanceItemUtil implements ItemConst {
 			return new ArrayList<>();
 		}
 
+		return toItemValues(Arrays.asList(attendanceItems), itemIds, type).get(attendanceItems);
+	}
+
+	public static <T extends ConvertibleAttendanceItem> Map<T, List<ItemValue>> toItemValues(List<T> attendanceItems, 
+			Collection<Integer> itemIds, AttendanceItemType type) {
+
+		if(CollectionUtil.isEmpty(attendanceItems)){
+			return new HashMap<>();
+		}
+		
+		AttendanceItemRoot root = attendanceItems.get(0).getClass().getAnnotation(AttendanceItemRoot.class);
+
+		if (root == null) {
+			return new HashMap<>();
+		}
+
 		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
 
 		return getItemValues(attendanceItems, layout, EMPTY_STRING, root.isContainer() ? EMPTY_STRING : root.rootName(), 
 					EMPTY_STRING, DEFAULT_IDX, getItemMap(type, itemIds, null, layout));
 	}
+	
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType, Collection<ItemValue> attendanceItems) {
+
+		return fromItemValues(classType, attendanceItems, AttendanceItemType.DAILY_ITEM);
+	}
+
+	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType, Collection<ItemValue> attendanceItems, AttendanceItemType type) {
+
+		return fromItemValues(ReflectionUtil.newInstance(classType), attendanceItems);
+	}
+
+	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues) {
+
+		return fromItemValues(attendanceItems, itemValues, AttendanceItemType.DAILY_ITEM);
+	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
-
+		
+		if(CollectionUtil.isEmpty(itemValues)){
+			return attendanceItems;
+		}
+		
 		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
 
 		if (root == null) {
@@ -89,10 +128,110 @@ public class AttendanceItemUtil implements ItemConst {
 								getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
+	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String layoutCode, String path,
+			String extraCondition, int index, Map<String, List<ItemValue>> groups){
+		Map<Integer, T> atMap = attendanceItems.stream().collect(HashMap::new,
+																(m,v)->m.put(v == null ? 0 : v.hashCode(), v), 
+																HashMap::putAll);
+		Map<Integer, List<ItemValue>> result = atMap.entrySet().stream().collect(Collectors.toMap(t -> t.getKey(), t -> new ArrayList<>()));
+		
+		getItemValues(atMap, layoutIdx, layoutCode, path, extraCondition, index, groups, result);
+		
+		return result.entrySet().stream().collect(HashMap::new,
+													(m,v)->m.put(atMap.get(v.getKey()), v.getValue()), 
+													HashMap::putAll);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> void getItemValues(Map<Integer, T> attendanceItems, int layoutIdx, String layoutCode, String path,
+														String extraCondition, int index, Map<String, List<ItemValue>> groups,
+														Map<Integer, List<ItemValue>> result) {
+		if(attendanceItems.isEmpty()){
+			return;
+		}
+		T oneV = attendanceItems.values().iterator().next();
+		Map<String, Field> fields = getFieldMap(oneV.getClass(), groups);
+
+		groups.entrySet().stream().forEach(c -> {
+
+			Field field = fields.get(c.getKey());
+
+			if (field == null) {
+				return;
+			}
+
+			AttendanceItemLayout layout = getLayoutAnnotation(field);
+
+			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
+
+			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
+
+			String pathName = getPath(path, layout, getRootAnnotation(field)),
+					currentLayout = mergeLayout(layoutCode, layout.layout()),
+					exCon = getExCondition(extraCondition, oneV, layout);
+
+			if (isList) {
+				Map<Integer, List<T>> list = getListAndSort(attendanceItems, field, className, layout);
+
+				mapByPath(c.getValue(),
+						x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
+				).entrySet().stream().forEach(idx -> {
+
+//					boolean isNotHaveData = list.isEmpty() || list.values().size() < idx.getKey();
+
+					Map<Integer, T> idxValue = getItemWith(list, layout, idx.getKey(), className);
+
+					getItemValues(fieldValue(className, idxValue, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX,
+										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
+										pathName, exCon, layout.listNoIndex() ? -1 : idx.getKey(),
+										mapByPath(idx.getValue(),
+												id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)), 
+										result);
+							});
+				return;
+			}
+			Map<Integer, T> value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
+
+			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
+
+			if (valueAnno == null) {
+				getItemValues(fieldValue(className, value, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exCon, index,
+							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)),
+							result);
+				return;
+			}
+
+			String currentPath = getKey(pathName, EMPTY_STRING, false, index);
+
+			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
+
+			c.getValue().stream().filter(id -> getTextWithNoCondition(id.path()).equals(currentPath)).forEach(item -> {
+				String fLayout = currentLayout + getTextWithCondition(item.path());
+				if (item.path().equals(currentFullPath)) {
+					result.entrySet().stream().forEach(r -> {
+						r.getValue().add(ItemValue.build(item.path(), item.itemId())
+													.value(value.get(r.getKey()))
+													.layout(fLayout)
+													.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
+													.completed());
+					});
+
+				} else {
+					result.entrySet().stream().forEach(r -> {
+						r.getValue().add(ItemValue.build(item.path(), item.itemId())
+													.layout(fLayout)
+													.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
+													.completed());
+					});
+				}
+			});
+		});
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static <T> List<ItemValue> getItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path,
 														String extraCondition, int index, Map<String, List<ItemValue>> groups) {
-		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
+		Map<String, Field> fields = getFieldMap(attendanceItems.getClass(), groups);
 
 		return groups.entrySet().stream().map(c -> {
 
@@ -169,14 +308,13 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 
 	@SuppressWarnings("unchecked")
-
 	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path, int index,
 										boolean needCheckWithIdx, Map<String, List<ItemValue>> groups) {
 		if (attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class) != null) {
 			ReflectionUtil.invoke(attendanceItems.getClass(), attendanceItems, DEFAULT_MARK_DATA_FIELD);
 		}
 
-		Map<String, Field> fields = getFieldMap(attendanceItems, groups);
+		Map<String, Field> fields = getFieldMap(attendanceItems.getClass(), groups);
 
 		groups.entrySet().stream().forEach(c -> {
 			Field field = fields.get(c.getKey());
@@ -226,7 +364,7 @@ public class AttendanceItemUtil implements ItemConst {
 					}
 				});
 
-				 correctList(listNoIdx, idxField, itemsForIdx, originalIdx,  list);
+				correctList(idxField, itemsForIdx, originalIdx,  list);
 
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 
@@ -252,8 +390,10 @@ public class AttendanceItemUtil implements ItemConst {
 						callSetMethod(attendanceItems, valueAnno, itemValue);
 
 					} else {
+						if(field.getType().isPrimitive() && itemValue.value() == null){
+							return;
+						}
 						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
-
 					}
 				}
 				return;
@@ -282,6 +422,13 @@ public class AttendanceItemUtil implements ItemConst {
 		}).findFirst().orElse(null);
 
 	}
+	
+	private static <T> Map<Integer, T> getItemWith(Map<Integer, List<T>> list, AttendanceItemLayout layout, int targetIdx, Class<T> className) {
+
+		return list.entrySet().stream().collect(HashMap::new,
+												(m,v)->m.put(v.getKey(), getItemWith(v.getValue(), layout, targetIdx, className)), 
+												HashMap::putAll);
+	}
 
 	private static <T> Field getIdxField(AttendanceItemLayout layout, Class<T> className, boolean listNoIdx) {
 
@@ -297,7 +444,7 @@ public class AttendanceItemUtil implements ItemConst {
 		return originalL == null ? new ArrayList<>() : originalL;
 	}
 
-	private static <T> void correctList(boolean listNoIdx, Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
+	private static <T> void correctList(Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
 											List<Integer> originalIdx, List<T> list) {
 		if (idxField == null) {
 			return;
@@ -310,9 +457,7 @@ public class AttendanceItemUtil implements ItemConst {
 				return false;
 			}
 
-			int idx = (int) value;
-
-			return !(originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx));
+			return !(originalIdx.contains((int) value) || itemsForIdx.containsKey((int) value));
 		});
 
 	}
@@ -433,10 +578,29 @@ public class AttendanceItemUtil implements ItemConst {
 
 		return ReflectionUtil.getFieldValue(field, attendanceItems);
 	}
+	
+	private static <T> Map<Integer, T> getOptionalFieldValue(Map<Integer, T> attendanceItems, Field field, boolean isOptional) {
+		
+		return attendanceItems.entrySet().stream().collect(HashMap::new,
+															(m,v)->m.put(v.getKey(), getOptionalFieldValue(v.getValue(), field, isOptional)), 
+															HashMap::putAll);
+	}
 
 	private static <T> T fieldValue(Class<T> className, T idxValue) {
 
 		return idxValue == null ? ReflectionUtil.newInstance(className) : idxValue;
+	}
+	
+	private static <T> Map<Integer, T> fieldValue(Class<T> className, Map<Integer, T> idxValue, Map<Integer, T> parent) {
+		
+		return parent.entrySet().stream().collect(HashMap::new,
+				(m,v)-> {
+					if(idxValue.get(v.getKey()) != null){
+						m.put(v.getKey(), idxValue.get(v.getKey()));
+					} else {
+						m.put(v.getKey(), ReflectionUtil.newInstance(className));
+					}
+				}, HashMap::putAll);
 	}
 
 	private static <T> Map<T, List<ItemValue>> mapByPath(List<ItemValue> ids, Function<ItemValue, T> grouping) {
@@ -456,9 +620,9 @@ public class AttendanceItemUtil implements ItemConst {
 
 	}
 
-	public static <T> Map<String, Field> getFieldMap(T attendanceItems, Map<String, List<ItemValue>> groups) {
+	public static <T> Map<String, Field> getFieldMap(Class<T> attendanceItemClass, Map<String, List<ItemValue>> groups) {
 
-		return ReflectionUtil.getStreamOfFieldsAnnotated(attendanceItems.getClass(), Condition.ALL, AttendanceItemLayout.class)
+		return ReflectionUtil.getStreamOfFieldsAnnotated(attendanceItemClass, Condition.ALL, AttendanceItemLayout.class)
 							.filter(c -> groups.get(c.getAnnotation(AttendanceItemLayout.class).jpPropertyName()) != null)
 							.collect(Collectors.toMap(c -> c.getAnnotation(AttendanceItemLayout.class).jpPropertyName(), c -> c));
 
@@ -498,6 +662,13 @@ public class AttendanceItemUtil implements ItemConst {
 		}
 
 		return list;
+	}
+
+	private static <T> Map<Integer, List<T>> getListAndSort(Map<Integer, T> attendanceItems, Field field, Class<T> className, AttendanceItemLayout layout) {
+
+		return attendanceItems.entrySet().stream().collect(HashMap::new, 
+															(m, v) -> m.put(v.getKey(), getListAndSort(v.getValue(), field, className, layout)), 
+															HashMap::putAll);
 	}
 
 	private static <T> List<T> processListToMax(List<T> list, AttendanceItemLayout layout, Class<T> targetClass, String path, Set<Integer> keySet) {
@@ -549,7 +720,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		Field idxField = getField(idxFieldName, targetClass);
 
-		List<T> returnList = new ArrayList<>(list);
+		List<T> returnList = new ArrayList<>(list.stream().filter(c -> c != null).collect(Collectors.toList()));
 
 		if (returnList.size() < max) {
 
@@ -558,7 +729,9 @@ public class AttendanceItemUtil implements ItemConst {
 				int index = x;
 
 				Optional<T> idxValue = returnList.stream().filter(c -> {
-
+					if(c == null){
+						return false;
+					}
 					Integer idx = ReflectionUtil.getFieldValue(idxField, c);
 
 					return idx == null ? false : idx == (index + DEFAULT_NEXT_IDX);

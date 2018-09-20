@@ -44,6 +44,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -202,9 +203,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
 				try {
 					if (workTimeSetting == null) {
-						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode, listWorkType);
 					} else {
-						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeSetting.getWorktimeCode().v());
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeSetting.getWorktimeCode().v(), listWorkType);
 					}
 				} catch (BusinessException ex) {
 					// find and remove in listBefore because this data is not insert/update to DB
@@ -225,13 +226,16 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			Optional<BasicSchedule> basicSchedule = basicScheduleListBefore.stream()
 					.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0))
 					.findFirst();
-
+			
+			// ver32 trong document
+			boolean isOptional = basicScheduleService.checkNeedWorkTimeSetByList(workTypeCode, listWorkType) == SetupType.OPTIONAL;
+			
 			if (basicSchedule.isPresent()) {
 				// UPDATE
 				BasicSchedule basicSche = basicSchedule.get();
 				isInsertMode = false;
 				
-				if (workTimeSetting != null) {
+				if (!isOptional && workTimeSetting != null) {
 					// add scheTimeZone
 					if (modeDisplay.intValue() == 2) {
 						// get schedule time zone from user input
@@ -306,7 +310,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			} else {
 				// INSERT
 				isInsertMode = true;
-				if (workTimeSetting != null) {
+				if (!isOptional && workTimeSetting != null) {
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 					// add breakTime
@@ -343,6 +347,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 				basicScheduleRepo.insert(bSchedule); 
 			}
+			
+			// clear list
+			startClock.clear();
+			endClock.clear();
+			breakStartTime.clear();
+			breakEndTime.clear();
+			childCareStartTime.clear();
+			childCareEndTime.clear();
 			
 			basicScheduleListAfter.add(bSchedule);
 			
@@ -561,7 +573,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	}
 
 	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
-		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
+		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(null, param);
 		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for (int i = 0; i < listPersonFeeTime.size(); i++) {
@@ -569,7 +581,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		}
 		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
 				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
-				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+				scTimeImport.getTotalWorkTime(), scTimeImport.getChildTime(), scTimeImport.getCareTime(),
+				scTimeImport.getFlexTime());
 		bSchedule.setWorkScheduleTime(scheduleTime);
 	}
 
@@ -897,9 +910,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				listId.add(36);
 			if (scheTimeAfter.diffWeekdayTime(scheTimeBefore.getWeekdayTime()))
 				listId.add(37);
-			if (scheTimeAfter.diffChildCareTime(scheTimeBefore.getChildCareTime()))
-				listId.add(38);
-			// TODO 39 chua co
+			if (scheTimeAfter.diffFlexTime(scheTimeBefore.getFlexTime()))
+				listId.add(39);
+			if (scheTimeAfter.diffChildTime(scheTimeBefore.getChildTime()))
+				listId.add(102);
+			if (scheTimeAfter.diffCareTime(scheTimeBefore.getCareTime()))
+				listId.add(103);
 			// compare personFeeTime
 			List<PersonFeeTime> personFeeTimeAfter = scheTimeAfter.getPersonFeeTime();
 			List<PersonFeeTime> personFeeTimeBefore = scheTimeBefore.getPersonFeeTime();
@@ -914,8 +930,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			listId.add(35);
 			listId.add(36);
 			listId.add(37);
-			listId.add(38);
-//			listId.add(39);
+			listId.add(39);
+			listId.add(102);
+			listId.add(103);
 			int sizeFeeTime = 0;
 			if(optScheTimeAfter.isPresent()){
 				sizeFeeTime = optScheTimeAfter.get().getPersonFeeTime().size();

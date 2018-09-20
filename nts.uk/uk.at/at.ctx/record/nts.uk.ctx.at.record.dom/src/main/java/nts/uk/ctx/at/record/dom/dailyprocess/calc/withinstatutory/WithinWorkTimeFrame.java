@@ -266,8 +266,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		//丸め処理
 		TimeRoundingSetting rounding = this.timeSheet.getRounding();
-		if(rounding != null)
-			workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
+		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
 						
 		return workTime;
 	}
@@ -297,8 +296,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		//丸め設定の取得
 		TimeRoundingSetting rounding = this.timeSheet.getRounding();
 		//丸め処理
-		if(rounding != null)
-			result = new AttendanceTime(rounding.round(result.valueAsMinutes()));
+		result = new AttendanceTime(rounding.round(result.valueAsMinutes()));
 		//溢れ時間を加算する(いずれ実装する)
 		
 		return result;
@@ -482,7 +480,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                    optional,
                    coreTimeSetting,breakTimeList,workType,predetermineTimeForSet);
   		//遅刻時間を計算する
-  		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);  	
+  		AttendanceTime lateDeductTime = lateTimeSheet.getForDeducationTimeSheet().isPresent()?lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);  	
   		if(lateDesClock.isPresent()) {//←のifはフレックスの最低勤務時間利用の場合に下記処理を走らせたくない為追加
   	  		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
   	  			//就業時間内時間帯から控除するか判断し控除する      
@@ -522,7 +520,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
                      optional,
                      coreTimeSetting, breakTimeList,workType,predetermineTimeForSet);  
   		//早退時間を計算する
-  		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime():new AttendanceTime(0);
+  		AttendanceTime LeaveEarlyDeductTime = LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent()?LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);
   		
   		if(leaveEarlyDesClock.isPresent()) {//←のifはフレックスの最低勤務時間利用の場合に下記処理を走らせたくない為追加
   	  		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
@@ -604,9 +602,10 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 																			    :NotUseAtr.NOT_USE;
 		
 		boolean result = false;
-//		if(premiumAtr.isRegularWork()&&workTimeDeductLateLeaveEarly == NotUseAtr.NOT_USE) {
-//			return true;
-//		}else 
+		
+		if(premiumAtr.isRegularWork()&&workTimeDeductLateLeaveEarly == NotUseAtr.USE) {
+			return true;
+		} 
 		if(premiumAtr.isPremium()
 				 &&workTimeDeductLateLeaveEarly == NotUseAtr.USE
 				 &&premiumDeductLateLeaveEarly==NotUseAtr.NOT_USE){
@@ -656,6 +655,23 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			throw new RuntimeException("unknown attr:" + workType.getAttendanceHolidayAttr());
 		}
 			
+	}
+	
+	/**
+	 * 自身が持つ短時間勤務時間帯(控除)を収集
+	 * @return　短時間勤務時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> collectShortTimeSheetInFrame(){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>(); 
+		//自身が持つ短時間時間帯を保持
+		returnList.addAll(this.collectShortTimeSheet());
+		//遅刻時間帯の短時間時間帯を保持
+		if(this.getLateTimeSheet() != null && this.getLateTimeSheet().isPresent())
+			returnList.addAll(this.getLateTimeSheet().get().getShortTimeSheet());
+		//早退時間帯の短時間時間帯を保持
+		if(this.getLeaveEarlyTimeSheet() != null && this.getLeaveEarlyTimeSheet().isPresent())
+			returnList.addAll(this.getLeaveEarlyTimeSheet().get().getShortTimeSheet());
+		return returnList;
 	}
 
 }

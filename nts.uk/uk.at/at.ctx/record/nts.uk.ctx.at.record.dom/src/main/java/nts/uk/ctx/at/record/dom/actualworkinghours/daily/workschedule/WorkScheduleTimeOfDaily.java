@@ -26,4 +26,7 @@ public class WorkScheduleTimeOfDaily {
 	//実績所定労働時間
 	private AttendanceTime recordPrescribedLaborTime;
 	
+	public static WorkScheduleTimeOfDaily defaultValue(){
+		return new WorkScheduleTimeOfDaily(WorkScheduleTime.defaultValue(), new AttendanceTime(0), new AttendanceTime(0));
+	}
 }

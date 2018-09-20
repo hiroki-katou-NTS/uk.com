@@ -18,8 +18,8 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -100,9 +100,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
-			IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
-			timeAndAnyItemUpService.addAndUpdate(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate(), 
-					calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
+			IntegrationOfDaily calculateData = calculate.calculate(daily,null,null,Optional.empty(),Optional.empty());
+			timeAndAnyItemUpService.addAndUpdate(calculateData);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -138,9 +137,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		TimeLeavingOfDailyPerformance a = new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(1), lstTimeLeavingWork, baseDate);
 		daily.setAttendanceLeave(Optional.of(a));
 		daily.setWorkInformation(workInformation);
-		IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
-		timeAndAnyItemUpService.addAndUpdate(employeeId, baseDate, 
-				calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
+		IntegrationOfDaily calculateData = calculate.calculate(daily,null,null,Optional.empty(),Optional.empty());
+		timeAndAnyItemUpService.addAndUpdate(calculateData);
 		return daily;
 	}
 

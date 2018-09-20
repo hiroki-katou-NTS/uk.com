@@ -68,16 +68,19 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
             self.appType = ko.observable('');
             self.appTypeDto.subscribe((value) => {
-                let result = "";
-                let listAppType = __viewContext.enums.ApplicationType;
-                _.forEach(value.appTypes(), function(item) {
+                let temp = nts.uk.ui.windows.getShared("kdw006HResult");
+                let result = "",valueSort = _.sortBy(value.appTypes()),listAppType = __viewContext.enums.ApplicationType;
+                if(temp){
+                    valueSort = value.appTypes();
+                }
+                _.forEach(valueSort, function(item) {
                     let itemModel = _.find(listAppType, function(obj) {
                         return obj.value == item;
                     });
-                    result += itemModel.name;
-                    result += ",";
+                    result += itemModel.name + ",";
                 })
-                self.appType(result);
+                let size = result.length - 1;
+                self.appType(result.slice(0, size));
             });
         }
 
@@ -185,8 +188,10 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                         service.updateDaily(ko.toJS(self.daiPerformanceFunDto)).done(function() {
                             service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
                                 service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
+                                    nts.uk.ui.block.invisible();
                                     //self.start();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                    nts.uk.ui.block.clear();
                                 })
                             });
                         });

@@ -33,7 +33,6 @@ module ccg013.a.viewmodel {
             // WebMenu
             self.listWebMenu = ko.observableArray([]);
             self.webMenuColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
                 { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50, formatter: _.escape }
             ]);
@@ -140,10 +139,11 @@ module ccg013.a.viewmodel {
                     });
 
                 });
-
             }).fail(function(error) {             
                 self.isDefaultMenu(true);
-                nts.uk.ui.dialog.alertError(error.message);
+//                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function() {
+                });
             }).always(function() {
                 nts.uk.ui.block.clear();
             });

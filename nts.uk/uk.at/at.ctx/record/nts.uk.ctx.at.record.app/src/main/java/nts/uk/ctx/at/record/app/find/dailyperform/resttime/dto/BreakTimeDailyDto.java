@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
@@ -25,10 +28,11 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 
 	private String employeeId;
 	
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD, 
-			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
+			listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private List<TimeSheetDto> timeZone;
 
 	/** 休憩種類 */
@@ -62,8 +66,21 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		return dto;
 	}
 	
+	@Override
+	public BreakTimeDailyDto clone() {
+		BreakTimeDailyDto dto = new BreakTimeDailyDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setAttr(attr);
+		dto.setTimeZone(ConvertHelper.mapTo(timeZone, t -> t.clone()));
+		if(isHaveData()){
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
 	private static TimeStampDto getTimeStamp(TimeWithDayAttr c) {
-		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, null);
+		return c == null ? null : new TimeStampDto(c.valueAsMinutes(), null, null, 0);
 	}
 
 	@Override
@@ -87,15 +104,22 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
+		
 		return new BreakTimeOfDailyPerformance(emp,
-					EnumAdaptor.valueOf(attr, BreakType.class),
-					ConvertHelper.mapTo(timeZone,
-							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getNo()),
-									createWorkStamp(d.getStart()),
-									createWorkStamp(d.getEnd()),
-									// TODO: calculate break time
-									new AttendanceTime(d.getBreakTime()))),
+					attr == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
+					timeZone.stream().filter(c -> judgNotNull(c)).map(c -> toTimeSheet(c)).collect(Collectors.toList()),
 					date);
+	}
+	
+	private boolean judgNotNull(TimeSheetDto d){
+		return d != null && ((d.getEnd() != null && d.getEnd().getTimesOfDay() != null) || (d.getStart() != null && d.getStart().getTimesOfDay() != null));
+	}
+	
+	private BreakTimeSheet toTimeSheet(TimeSheetDto d){
+		return new BreakTimeSheet(new BreakFrameNo(d.getNo()),
+				createWorkStamp(d.getStart()),
+				createWorkStamp(d.getEnd()),
+				new AttendanceTime(d.getBreakTime()));
 	}
 
 	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {

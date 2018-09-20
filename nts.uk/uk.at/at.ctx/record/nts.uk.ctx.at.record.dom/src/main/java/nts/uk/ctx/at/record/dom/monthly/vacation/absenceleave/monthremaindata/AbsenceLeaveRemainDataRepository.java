@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
@@ -18,6 +19,17 @@ public interface AbsenceLeaveRemainDataRepository {
 	 */
 	List<AbsenceLeaveRemainData> getDataBySidYmClosureStatus(String employeeId, YearMonth ym, ClosureStatus status);
 
+	/**
+	 * 検索
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @return 振休月別残数データリスト
+	 */
+	Optional<AbsenceLeaveRemainData> find(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate);
+	
 	/**
 	 * 検索　（年月）
 	 * @param employeeId 社員ID

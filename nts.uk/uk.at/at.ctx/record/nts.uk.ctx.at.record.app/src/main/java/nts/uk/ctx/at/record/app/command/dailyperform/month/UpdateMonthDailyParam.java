@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 @AllArgsConstructor
@@ -26,5 +27,11 @@ public class UpdateMonthDailyParam {
 	private ClosureDateDto closureDate;
 	
 	private Optional<IntegrationOfMonthly> domainMonth;
+	
+	private DatePeriod datePeriod;
+	
+	private String messageRed;
+	
+	private Boolean hasFlex;
 
 }

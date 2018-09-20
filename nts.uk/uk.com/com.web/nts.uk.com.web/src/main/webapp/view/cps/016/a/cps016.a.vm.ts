@@ -26,18 +26,15 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.closeUp = ko.observable(false);
             if (self.param) {
                 self.isDialog(self.param.isDialog);
-
             };
             self.rulesFirst = ko.observableArray([
                 { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
                 { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
             ]);
 
-
-
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
-                    nts.uk.ui.errors.clearAll();
+                    block.invisible();
                     service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem1) => {
                         if (_perInfoSelectionItem) {
                             perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
@@ -52,16 +49,18 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
                         }
+                        block.clear();
+                        nts.uk.ui.errors.clearAll();
                         $("#selectionItemName").focus();
                     });
                     self.checkCreate(false);
-                } else {
-                    self.registerDataSelectioItem(true);
+                } else if(!self.checkCreate()) {
+                    self.registerDataSelectioItem();
                 }
             });
         }
 
-        //開�
+        //開�
         start(): JQueryPromise<any> {
             let self = this;
             let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
@@ -69,13 +68,13 @@ module nts.uk.com.view.cps016.a.viewmodel {
             if (groupCompanyAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
-                })
+                });
 
             } else {
                 let dfd = $.Deferred();
 
                 nts.uk.ui.errors.clearAll();
-
+                block.invisible();
                 // get selection items
                 self.getAllSelectionItems().done(() => {
                     if (nts.uk.util.isNullOrUndefined(self.param)){
@@ -93,7 +92,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         
                         self.listItems.valueHasMutated();
                     }
-                    
+                    block.clear();
                     $("#selectionItemName").focus();
                     dfd.resolve();
                 });
@@ -104,27 +103,31 @@ module nts.uk.com.view.cps016.a.viewmodel {
         getAllSelectionItems(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.grayout();
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
+                self.listItems.removeAll();
                 if (itemList && itemList.length > 0) {
-                    itemList.forEach(x => self.listItems.push(x));
-                } else {//0件の場� エラーメヂ�ージの表示(#Msg_455)
+                    self.listItems(itemList);
+                     //itemList.forEach(x => self.listItems.push(x));
+                } else {//0件の場� エラーメヂ�ージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
                     //$("#selectionItemName").focus();
                 }
                 dfd.resolve();
+            }).always(function(){
+                block.clear();
             });
             return dfd.promise();
         }
 
-        //新規�タン
-        registerDataSelectioItem(unselected?:boolean) {
+        //新規�タン
+        registerDataSelectioItem() {
             let self = this;
+            self.checkCreate(true);
             let perInfoSelectionItem: SelectionItem1 = self.perInfoSelectionItem();
             nts.uk.ui.errors.clearAll();
-            if (!unselected) {
-                perInfoSelectionItem.selectionItemId('');
-            }
+            perInfoSelectionItem.selectionItemId('');
             perInfoSelectionItem.selectionItemName('');
 
             perInfoSelectionItem.characterType(false);
@@ -136,12 +139,11 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             perInfoSelectionItem.integrationCode('');
             perInfoSelectionItem.memo('');
-
-            self.checkCreate(true);
+            
             $("#selectionItemName").focus();
         }
 
-        //検証チェヂ�
+        //検証チェヂ�
         validate() {
             $(".nts-editor").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
@@ -163,59 +165,48 @@ module nts.uk.com.view.cps016.a.viewmodel {
             }
         }
 
-        //新規モー�
+        //新規モー�
         add() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
             block.invisible();    
             //「個人惱の選択雮」を登録する
             service.addDataSelectionItem(command).done(function(selectId:any) {
-                self.listItems.removeAll();
-                //画面頛�「選択雮名称一覧�選択雮名称一覧」を登録する
+                //画面頛�「選択雮名称一覧�選択雮名称一覧」を登録する
                 self.getAllSelectionItems().done(() => {
-                    $("#selectionItemName").focus();
+                    self.perInfoSelectionItem().selectionItemId(selectId);
+ 
+                    //「CPS017_個人惱の選択肢の登録」をモーダルダイアログで起動す�
+                    setTimeout(() => {
+                        confirm({ messageId: "Msg_456" }).ifYes(() => {
+                            let params = {
+                                isDialog: true,
+                                selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+                            }
+                            setShared('CPS017_PARAMS', params);
+                            modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
+                            });
 
-                    //「CPS017_個人惱の選択肢の登録」をモーダルダイアログで起動す�
-                    confirm({ messageId: "Msg_456" }).ifYes(() => {
-                        let params = {
-                            isDialog: true,
-                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
-                        }
-                        setShared('CPS017_PARAMS', params);
-
-                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
-                        });
-
-                        self.listItems.valueHasMutated();
-                        $("#selectionItemName").focus();
-                    }).ifNo(() => {
-                        self.listItems.valueHasMutated();
-                        $("#selectionItemName").focus();
-                        return;
-                    })
-                    self.listItems.valueHasMutated();
-                    $("#selectionItemName").focus();
+                        }).then(() => {
+                            $("#selectionItemName").focus();
+                        })
+                    }, 1);
                 });
-                self.listItems.valueHasMutated();
-                self.perInfoSelectionItem().selectionItemId(selectId);
-                $("#selectionItemName").focus();
-
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            }).always(()=>block.clear());
+                block.clear();
+            });
         }
 
-        //更新モー�
+        //更新モー�
         update() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
             block.invisible();    
             //「個人惱の選択雮」を更新する
             service.updateDataSelectionItem(command).done(function() {
-
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.listItems.removeAll();
-                    //画面頛�「選択雮名称一覧�選択雮名称一覧」を更新する
+                    //画面頛�「選択雮名称一覧�選択雮名称一覧」を更新する
                     self.getAllSelectionItems().done(() => {
                         $("#selectionItemName").focus();
                     });
@@ -224,7 +215,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            }).always(()=> block.clear());
+                block.clear();
+            });
         }
 
         //削除ボタン
@@ -243,7 +235,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
 				service.removeDataSelectionItem(command).done(function() {
                 
 					nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-						self.listItems.removeAll();
 						self.getAllSelectionItems().done(() => {
 							if (self.listItems().length > 0) {
 								if (oldIndex == lastIndex) {

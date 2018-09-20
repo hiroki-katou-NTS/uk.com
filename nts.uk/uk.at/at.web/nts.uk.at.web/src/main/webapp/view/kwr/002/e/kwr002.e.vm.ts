@@ -41,6 +41,9 @@ module nts.uk.com.view.kwr002.e {
                 ]);
                 self.selectionTypeValue = ko.observable(0);
                 self.selectionTypeValue.subscribe(function(codeChange) {
+                    if (codeChange == 0) {
+                        return;
+                    }
                     self.gridItems([]);
                     self.currentCodeList([]);
                     self.selectedGridItems([]);
@@ -123,10 +126,10 @@ module nts.uk.com.view.kwr002.e {
                 return dfd.promise();
             }
 
-            private findAttndRecByScreen(value: number): void {
+            private findAttndRecByScreen(value: any): void {
                 var self = this;
                 var itemList: Array<model.GridItem> = [];
-                var attendanceTypeKey:model.AttendanceTypeKey = new model.AttendanceTypeKey(value,self.attendanceItem().exportAtr);
+                var attendanceTypeKey: model.AttendanceTypeKey = new model.AttendanceTypeKey(value, self.attendanceItem().exportAtr);
                 service.getAllAttndByAtrAndType(attendanceTypeKey).done(function(attData: Array<model.AttendanceRecordItemDto>) {
                     if (attData.length > 0) {
                         attData.forEach(item => {
@@ -194,7 +197,7 @@ module nts.uk.com.view.kwr002.e {
             decide() {
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
-                    if (!$('.nts-editor').ntsError("hasError")) {
+                    if (!$('.nts-editor').ntsError("hasError") && !$('.ntsControl').ntsError("hasError")) {
                         var self = this;
                         var outputItems: Array<model.SelectedItem>;
                         outputItems = self.selectedGridItems();

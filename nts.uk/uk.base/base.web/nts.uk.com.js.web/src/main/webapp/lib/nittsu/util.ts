@@ -695,7 +695,7 @@
 
         export function getText(code: string, params?: any[]): string {
             let text = names[code];
-            if (text) {
+            if (!_.isNil(text)) {
                 text = formatParams(text, params);
                 text = formatCompCustomizeResource(text);
                 return text.replace(/\\r\\n/g, '\r\n');
@@ -711,9 +711,6 @@
                     responseText=res;
                 }).fail(function() {
                 });
-                if (responseText.length == 0 || responseText === messageId) {
-                    return messageId;
-                }
                 message = responseText;
                 messages[messageId] = message;
             }

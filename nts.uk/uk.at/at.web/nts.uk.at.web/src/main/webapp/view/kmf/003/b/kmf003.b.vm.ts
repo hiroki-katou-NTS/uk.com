@@ -458,21 +458,21 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         //Set check or uncheck checkbox list
         checkAllowPayBelow(index: number, value: boolean): void {
             var self = this;
-            var checkMonths = self.checkTotalMonths(index);
-            
-            if (!checkMonths && value) {
-                if(self.flag()) {
-                    self.count(1);
-                    self.flag(false);
-                    self.items()[index].grantSimultaneity(false);   
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
-                        self.items()[index].grantSimultaneity(false);
-                        $('.year-input' + index).focus();
-                        self.flag(true);
-                    });
-                    return;
-                }
-            }
+//            var checkMonths = self.checkTotalMonths(index);
+//            
+//            if (!checkMonths && value) {
+//                if(self.flag()) {
+//                    self.count(1);
+//                    self.flag(false);
+//                    self.items()[index].grantSimultaneity(false);   
+//                    nts.uk.ui.dialog.alert({ messageId: "Msg_267" }).then(() => {
+//                        self.items()[index].grantSimultaneity(false);
+//                        $('.year-input' + index).focus();
+//                        self.flag(true);
+//                    });
+//                    return;
+//                }
+//            }
             
             if (value) {
                 for (let i = index; i < self.items().length; i++) {

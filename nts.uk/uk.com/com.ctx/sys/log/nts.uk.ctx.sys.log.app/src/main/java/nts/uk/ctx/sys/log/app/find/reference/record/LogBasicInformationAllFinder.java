@@ -36,6 +36,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -78,18 +79,21 @@ public class LogBasicInformationAllFinder {
 		LoginUserContext loginUserContext = AppContexts.user();
 		// get company id
 		String cid = loginUserContext.companyId();
-		Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
-		
+		Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);	
 		DatePeriod datePeriodTaget = new DatePeriod(logParams.getStartDateTaget(), logParams.getEndDateTaget());
-		List<LogBasicInformation> lstLogBasicInformation = this.logBasicInfoRepository.findByOperatorsAndDate(cid,
-				logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
-				logParams.getEndDateOperator());
+		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());
+		List<LogBasicInformation> lstLogBasicInformation=new ArrayList<>();
+		if(recordTypeEnum.code !=RecordTypeEnum.START_UP.code){
+		 lstLogBasicInformation = this.logBasicInfoRepository.findByOperatorsAndDate(cid,
+					logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
+					logParams.getEndDateOperator());
+		}
+		
 		TargetDataType targetDataType = null;
 		if (!Objects.isNull(logParams.getTargetDataType())) {
 			targetDataType = TargetDataType.of(logParams.getTargetDataType());
 		}
-		if (!CollectionUtil.isEmpty(lstLogBasicInformation)) {
-			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());
+		if (!CollectionUtil.isEmpty(lstLogBasicInformation)) {			
 			List<String> listOperationId= new ArrayList<>();
 			Map<String, LogBasicInformation> map=new HashMap<>();
 			List<String> employeeIds = new ArrayList<>();
@@ -201,103 +205,108 @@ public class LogBasicInformationAllFinder {
 				break;
 			case START_UP:
 				
-				List<StartPageLog> listStartPageLog=this.startPageLogRepository.find(listOperationId);
-				if(!CollectionUtil.isEmpty(listStartPageLog)){
-					
-					for(StartPageLog oPStartPageLog:listStartPageLog){					
-						LogBasicInformation	logBasicInformation=map.get(oPStartPageLog.getBasicInfo().getOperationId());
-						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-						// Set user login name
-						// itemNo 3
-						UserInfo userDto = logBasicInformation.getUserInfo();
-						if (userDto != null) {
-							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
-							// itemNo 1
-							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
-							// itemNo 2
-							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
-						}	
-					
-						// itemNo 4
-						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
-							logBasicInfoDto
-									.setIpAddress(logBasicInformation.getLoginInformation().getIpAddress().get());
-						} else {
-							logBasicInfoDto.setIpAddress("");
-						}
-						// itemNo 5
-						logBasicInfoDto.setPcName(logBasicInformation.getLoginInformation().getPcName().isPresent()
-								? logBasicInformation.getLoginInformation().getPcName().get() : "");
-						// itemNo 6
-						logBasicInfoDto.setAccount(logBasicInformation.getLoginInformation().getAccount().isPresent()
-								? logBasicInformation.getLoginInformation().getAccount().get() : "");
-
-						// itemNo 7
-						// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
-
-						// itemNo 8 return nname
-						LoginUserRoles loginUserRoles = logBasicInformation.getAuthorityInformation();
-						logBasicInfoDto.setEmploymentAuthorityName(
-								loginUserRoles.forAttendance()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forAttendance()):"");
-						// itemNo 9
-						logBasicInfoDto.setSalarytAuthorityName(
-								loginUserRoles.forPayroll()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPayroll()):"");
-						;
-						// itemNo 10
-						logBasicInfoDto.setPersonelAuthorityName(
-								loginUserRoles.forPersonnel()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonnel()):"");
-						// itemNo 11
-						logBasicInfoDto.setOfficeHelperAuthorityName(
-								loginUserRoles.forOfficeHelper()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forOfficeHelper()):"");
-						// itemNo 12
-						/*
-						 * logBasicInfoDto.setAccountAuthorityName(
-						 * roleExportAdapter
-						 * .getNameByRoleId(logBasicInformation.
-						 * getAuthorityInformation().forSystemAdmin()));
-						 */
-						// itemNo 13
-						/*
-						 * logBasicInfoDto.setMyNumberAuthorityName(
-						 * roleExportAdapter
-						 * .getNameByRoleId(logBasicInformation.
-						 * getAuthorityInformation().forAttendance()));
-						 */
-						// itemNo 14
-						logBasicInfoDto.setGroupCompanyAddminAuthorityName(
-								loginUserRoles.forGroupCompaniesAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forGroupCompaniesAdmin()):"");
-						// itemNo 15
-						logBasicInfoDto.setCompanyAddminAuthorityName(
-						loginUserRoles.forCompanyAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forCompanyAdmin()):"");
-						// itemNo 16
-						logBasicInfoDto.setSystemAdminAuthorityName(
-						loginUserRoles.forSystemAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forSystemAdmin()):"");
-						// itemNo 17
-						logBasicInfoDto.setPersonalInfoAuthorityName(
-						loginUserRoles.forPersonalInfo()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonalInfo()):"");
-
-						// itemNo 18
-						logBasicInfoDto.setNote(
-								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
-						// itemNo 19
-						String key = logBasicInformation.getTargetProgram().getProgramId()
-								+ logBasicInformation.getTargetProgram().getScreenId()
-								+ logBasicInformation.getTargetProgram().getQueryString();
-						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
-						// itemNo 20
-						//StartPageLog startPageLog = oPStartPageLog.get();
-						if (oPStartPageLog.getStartPageBeforeInfo().isPresent()) {
-							String keyResource = oPStartPageLog.getStartPageBeforeInfo().get().getProgramId()
-									+ oPStartPageLog.getStartPageBeforeInfo().get().getScreenId()
-									+ oPStartPageLog.getStartPageBeforeInfo().get().getQueryString();
-									
-							logBasicInfoDto.setMenuNameReSource(mapProgramNames.get(keyResource));
-						}
-
-						// add to list
-						lstLogBacsicInfo.add(logBasicInfoDto);
-					}
-				}
+//				List<StartPageLog> listStartPageLog=this.startPageLogRepository.findBy(cid,
+//						logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
+//						logParams.getEndDateOperator());
+//				
+//			//	List<StartPageLog> listStartPageLog=this.startPageLogRepository.find(listOperationId);
+//				if(!CollectionUtil.isEmpty(listStartPageLog)){
+//					
+//					for(StartPageLog oPStartPageLog:listStartPageLog){					
+//					//	LogBasicInformation	logBasicInformation=map.get(oPStartPageLog.getBasicInfo().getOperationId());
+//						LogBasicInformation	logBasicInformation=oPStartPageLog.getBasicInfo();
+//						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
+//						// Set user login name
+//						// itemNo 3
+//						UserInfo userDto = logBasicInformation.getUserInfo();
+//						if (userDto != null) {
+//							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+//							// itemNo 1
+//							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+//							// itemNo 2
+//							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+//						}	
+//					
+//						// itemNo 4
+//						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
+//							logBasicInfoDto
+//									.setIpAddress(logBasicInformation.getLoginInformation().getIpAddress().get());
+//						} else {
+//							logBasicInfoDto.setIpAddress("");
+//						}
+//						// itemNo 5
+//						logBasicInfoDto.setPcName(logBasicInformation.getLoginInformation().getPcName().isPresent()
+//								? logBasicInformation.getLoginInformation().getPcName().get() : "");
+//						// itemNo 6
+//						logBasicInfoDto.setAccount(logBasicInformation.getLoginInformation().getAccount().isPresent()
+//								? logBasicInformation.getLoginInformation().getAccount().get() : "");
+//
+//						// itemNo 7
+//						// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
+//
+//						// itemNo 8 return nname
+//						LoginUserRoles loginUserRoles = logBasicInformation.getAuthorityInformation();
+//						logBasicInfoDto.setEmploymentAuthorityName(
+//								loginUserRoles.forAttendance()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forAttendance()):"");
+//						// itemNo 9
+//						logBasicInfoDto.setSalarytAuthorityName(
+//								loginUserRoles.forPayroll()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPayroll()):"");
+//						;
+//						// itemNo 10
+//						logBasicInfoDto.setPersonelAuthorityName(
+//								loginUserRoles.forPersonnel()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonnel()):"");
+//						// itemNo 11
+//						logBasicInfoDto.setOfficeHelperAuthorityName(
+//								loginUserRoles.forOfficeHelper()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forOfficeHelper()):"");
+//						// itemNo 12
+//						/*
+//						 * logBasicInfoDto.setAccountAuthorityName(
+//						 * roleExportAdapter
+//						 * .getNameByRoleId(logBasicInformation.
+//						 * getAuthorityInformation().forSystemAdmin()));
+//						 */
+//						// itemNo 13
+//						/*
+//						 * logBasicInfoDto.setMyNumberAuthorityName(
+//						 * roleExportAdapter
+//						 * .getNameByRoleId(logBasicInformation.
+//						 * getAuthorityInformation().forAttendance()));
+//						 */
+//						// itemNo 14
+//						logBasicInfoDto.setGroupCompanyAddminAuthorityName(
+//								loginUserRoles.forGroupCompaniesAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forGroupCompaniesAdmin()):"");
+//						// itemNo 15
+//						logBasicInfoDto.setCompanyAddminAuthorityName(
+//						loginUserRoles.forCompanyAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forCompanyAdmin()):"");
+//						// itemNo 16
+//						logBasicInfoDto.setSystemAdminAuthorityName(
+//						loginUserRoles.forSystemAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forSystemAdmin()):"");
+//						// itemNo 17
+//						logBasicInfoDto.setPersonalInfoAuthorityName(
+//						loginUserRoles.forPersonalInfo()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonalInfo()):"");
+//
+//						// itemNo 18
+//						logBasicInfoDto.setNote(
+//								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
+//						// itemNo 19
+//						String key = logBasicInformation.getTargetProgram().getProgramId()
+//								+ logBasicInformation.getTargetProgram().getScreenId()
+//								+ logBasicInformation.getTargetProgram().getQueryString();
+//						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+//						// itemNo 20
+//						//StartPageLog startPageLog = oPStartPageLog.get();
+//						if (oPStartPageLog.getStartPageBeforeInfo().isPresent()) {
+//							String keyResource = oPStartPageLog.getStartPageBeforeInfo().get().getProgramId()
+//									+ oPStartPageLog.getStartPageBeforeInfo().get().getScreenId()
+//									+ oPStartPageLog.getStartPageBeforeInfo().get().getQueryString();
+//									
+//							logBasicInfoDto.setMenuNameReSource(mapProgramNames.get(keyResource));
+//						}
+//
+//						// add to list
+//						lstLogBacsicInfo.add(logBasicInfoDto);
+//					}
+//				}
 		
 				break;
 			case UPDATE_PERSION_INFO:
@@ -314,109 +323,118 @@ public class LogBasicInformationAllFinder {
 					}
 					Map<String, String> mapEmployeeCodePersons = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeePerSonIds);
 					for (PersonInfoCorrectionLog personInfoCorrectionLog : listPersonInfoCorrectionLog) {
-						LogBasicInformation	logBasicInformation=map.get(personInfoCorrectionLog.getOperationId());
-						// convert log basic info to DTO
-						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
-						// Set user login name
-						UserInfo userDto = logBasicInformation.getUserInfo();
-						if (userDto != null) {
-							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
-							// itemNo 1
-							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
-							// itemNo 2
-							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
-						}						
-						// itemNo 4
-						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
-							logBasicInfoDto.setIpAddress(logBasicInformation.getLoginInformation().getIpAddress().get());
-						} else {
-							logBasicInfoDto.setIpAddress("");
-						}
-						// itemNo 5
-						logBasicInfoDto.setPcName(logBasicInformation.getLoginInformation().getPcName().isPresent()
-								? logBasicInformation.getLoginInformation().getPcName().get() : "");
-						// itemNo 6
-						logBasicInfoDto.setAccount(logBasicInformation.getLoginInformation().getAccount().isPresent()
-								? logBasicInformation.getLoginInformation().getAccount().get() : "");
-						// itemNo 8 return nname
-						LoginUserRoles loginUserRoles = logBasicInformation.getAuthorityInformation();
-						logBasicInfoDto.setEmploymentAuthorityName(
-								loginUserRoles.forAttendance()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forAttendance()):"");
-						// itemNo 9
-						logBasicInfoDto.setSalarytAuthorityName(
-								loginUserRoles.forPayroll()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPayroll()):"");
-						;
-						// itemNo 10
-						logBasicInfoDto.setPersonelAuthorityName(
-								loginUserRoles.forPersonnel()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonnel()):"");
-						// itemNo 11
-						logBasicInfoDto.setOfficeHelperAuthorityName(
-								loginUserRoles.forOfficeHelper()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forOfficeHelper()):"");
-						// itemNo 12
-						/*
-						 * logBasicInfoDto.setAccountAuthorityName(
-						 * roleExportAdapter
-						 * .getNameByRoleId(logBasicInformation.
-						 * getAuthorityInformation().forSystemAdmin()));
-						 */
-						// itemNo 13
-						/*
-						 * logBasicInfoDto.setMyNumberAuthorityName(
-						 * roleExportAdapter
-						 * .getNameByRoleId(logBasicInformation.
-						 * getAuthorityInformation().forAttendance()));
-						 */
-						// itemNo 14
-						logBasicInfoDto.setGroupCompanyAddminAuthorityName(
-								loginUserRoles.forGroupCompaniesAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forGroupCompaniesAdmin()):"");
-						// itemNo 15
-						logBasicInfoDto.setCompanyAddminAuthorityName(
-						loginUserRoles.forCompanyAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forCompanyAdmin()):"");
-						// itemNo 16
-						logBasicInfoDto.setSystemAdminAuthorityName(
-						loginUserRoles.forSystemAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forSystemAdmin()):"");
-						// itemNo 17
-						logBasicInfoDto.setPersonalInfoAuthorityName(
-						loginUserRoles.forPersonalInfo()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonalInfo()):"");
-						// itemNo 18
-						String key = logBasicInformation.getTargetProgram().getProgramId()
-								+ logBasicInformation.getTargetProgram().getScreenId()
-								+ logBasicInformation.getTargetProgram().getQueryString();
-						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
-						UserInfo userInfo	=personInfoCorrectionLog.getTargetUser();
-						// itemNO 19
-						logBasicInfoDto.setUserIdTaget(userInfo.getUserId());
-						// itemNO 20
-						logBasicInfoDto.setUserNameTaget(userInfo.getUserName());
-						// itemNo 21
-//						persionInfor = null;
-//						persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(
-//								personInfoCorrectionLog.getTargetUser().getEmployeeId());
-//						if (persionInfor != null) {
-//							logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
-//						} else {
-//							logBasicInfoDto.setEmployeeCodeTaget("");
-//						}
-						logBasicInfoDto.setEmployeeCodeTaget(mapEmployeeCodePersons.get(userInfo.getEmployeeId()));
-						// itemNo 22
-						logBasicInfoDto.setCategoryProcess(
-								getPersonInfoProcessAttr(personInfoCorrectionLog.getProcessAttr().value));
-						// item 36
-						logBasicInfoDto.setNote(personInfoCorrectionLog.getRemark());
+					
 						List<CategoryCorrectionLog> rsListCategoryCorrectionLog = personInfoCorrectionLog
 								.getCategoryCorrections();
 						if (!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)) {
 							for (CategoryCorrectionLog categoryCorrectionLog : rsListCategoryCorrectionLog) {
 								List<ItemInfo> rsItemInfo = categoryCorrectionLog.getItemInfos();
+						
 								if (!CollectionUtil.isEmpty(rsItemInfo)) {
 									for (ItemInfo itemInfo : rsItemInfo) {
-
+									//ADDNEW
+										LogBasicInformation	logBasicInformation=map.get(personInfoCorrectionLog.getOperationId());
+										
+										// convert log basic info to DTO
+										LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
+										Optional<ReviseInfo> rsReviseInfo=categoryCorrectionLog.getReviseInfo();
+										if(rsReviseInfo.isPresent()){
+											// item 34
+											logBasicInfoDto.setItemEditAddition(rsReviseInfo.get().getItemName());
+											// item 35
+											if(rsReviseInfo.get().getDate().isPresent()){									
+												logBasicInfoDto.setTarGetYmdEditAddition(rsReviseInfo.get().getDate().get().toString());
+											}									
+										
+										}
+										// Set user login name
+										UserInfo userDto = logBasicInformation.getUserInfo();
+										if (userDto != null) {
+											logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+											// itemNo 1
+											logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+											// itemNo 2
+											logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+										}						
+										// itemNo 4
+										if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
+											logBasicInfoDto.setIpAddress(logBasicInformation.getLoginInformation().getIpAddress().get());
+										} else {
+											logBasicInfoDto.setIpAddress("");
+										}
+										// itemNo 5
+										logBasicInfoDto.setPcName(logBasicInformation.getLoginInformation().getPcName().isPresent()
+												? logBasicInformation.getLoginInformation().getPcName().get() : "");
+										// itemNo 6
+										logBasicInfoDto.setAccount(logBasicInformation.getLoginInformation().getAccount().isPresent()
+												? logBasicInformation.getLoginInformation().getAccount().get() : "");
+										// itemNo 8 return nname
+										LoginUserRoles loginUserRoles = logBasicInformation.getAuthorityInformation();
+										logBasicInfoDto.setEmploymentAuthorityName(
+												loginUserRoles.forAttendance()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forAttendance()):"");
+										// itemNo 9
+										logBasicInfoDto.setSalarytAuthorityName(
+												loginUserRoles.forPayroll()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPayroll()):"");
+										;
+										// itemNo 10
+										logBasicInfoDto.setPersonelAuthorityName(
+												loginUserRoles.forPersonnel()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonnel()):"");
+										// itemNo 11
+										logBasicInfoDto.setOfficeHelperAuthorityName(
+												loginUserRoles.forOfficeHelper()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forOfficeHelper()):"");
+										// itemNo 12
+										/*
+										 * logBasicInfoDto.setAccountAuthorityName(
+										 * roleExportAdapter
+										 * .getNameByRoleId(logBasicInformation.
+										 * getAuthorityInformation().forSystemAdmin()));
+										 */
+										// itemNo 13
+										/*
+										 * logBasicInfoDto.setMyNumberAuthorityName(
+										 * roleExportAdapter
+										 * .getNameByRoleId(logBasicInformation.
+										 * getAuthorityInformation().forAttendance()));
+										 */
+										// itemNo 14
+										logBasicInfoDto.setGroupCompanyAddminAuthorityName(
+												loginUserRoles.forGroupCompaniesAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forGroupCompaniesAdmin()):"");
+										// itemNo 15
+										logBasicInfoDto.setCompanyAddminAuthorityName(
+										loginUserRoles.forCompanyAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forCompanyAdmin()):"");
+										// itemNo 16
+										logBasicInfoDto.setSystemAdminAuthorityName(
+										loginUserRoles.forSystemAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forSystemAdmin()):"");
+										// itemNo 17
+										logBasicInfoDto.setPersonalInfoAuthorityName(
+										loginUserRoles.forPersonalInfo()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonalInfo()):"");
+										// itemNo 18
+										String key = logBasicInformation.getTargetProgram().getProgramId()
+												+ logBasicInformation.getTargetProgram().getScreenId()
+												+ logBasicInformation.getTargetProgram().getQueryString();
+										logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+										UserInfo userInfo	=personInfoCorrectionLog.getTargetUser();
+										// itemNO 19
+										logBasicInfoDto.setUserIdTaget(userInfo.getUserId());
+										// itemNO 20
+										logBasicInfoDto.setUserNameTaget(userInfo.getUserName());
+										// itemNo 21
+//									
+										logBasicInfoDto.setEmployeeCodeTaget(mapEmployeeCodePersons.get(userInfo.getEmployeeId()));
+										// itemNo 22
+										logBasicInfoDto.setCategoryProcess(
+												getPersonInfoProcessAttr(personInfoCorrectionLog.getProcessAttr().value));
+										// item 36
+										logBasicInfoDto.setNote(personInfoCorrectionLog.getRemark());	
+										// END NEW									
 										// item 23
 										logBasicInfoDto.setCategoryName(categoryCorrectionLog.getCategoryName());
 										// item 24
 										logBasicInfoDto.setMethodCorrection(this.getinfoOperateAttr(
 												categoryCorrectionLog.getInfoOperateAttr().value));
-										if (!Objects.isNull(categoryCorrectionLog.getTargetKey())) {
+										
+										if (!Objects.isNull(categoryCorrectionLog.getTargetKey()) && 
+											categoryCorrectionLog.getTargetKey().getDateKey().isPresent()) {
 											
 											Optional<GeneralDate> datekey = categoryCorrectionLog.getTargetKey()
 														.getDateKey();
@@ -440,33 +458,29 @@ public class LogBasicInformationAllFinder {
 										// item 29
 										logBasicInfoDto.setItemName(itemInfo.getName());
 										// item 30
-										logBasicInfoDto.setItemvalueBefor(itemInfo.getValueBefore().getViewValue());
+										if(!Objects.isNull(itemInfo.getValueBefore().getRawValue())){
+											logBasicInfoDto.setItemvalueBefor(itemInfo.getValueBefore().getRawValue().getValue().toString());
+										
+										}
 										// item 31
 										logBasicInfoDto
 												.setItemContentValueBefor(itemInfo.getValueBefore().getViewValue());
 										// item 32
-										logBasicInfoDto.setItemvalueAppter(itemInfo.getValueAfter().getViewValue());
+										if(!Objects.isNull(itemInfo.getValueAfter().getRawValue())){
+											logBasicInfoDto.setItemvalueAppter(itemInfo.getValueAfter().getRawValue().getValue().toString());
+										}
+										
 										// item 33
 										logBasicInfoDto
 												.setItemContentValueAppter(itemInfo.getValueAfter().getViewValue());
-										// item 34
-										logBasicInfoDto.setItemEditAddition("");
-										// item 35
-										logBasicInfoDto.setTarGetYmdEditAddition("");
+										
 
 										lstLogBacsicInfo.add(logBasicInfoDto);
 									}
 
-								} else {
-									lstLogBacsicInfo.add(logBasicInfoDto);
-
-								}
+								} 
 							}
 
-						} else {
-							// add to list
-
-							lstLogBacsicInfo.add(logBasicInfoDto);
 						}
 
 					}
@@ -626,6 +640,123 @@ public class LogBasicInformationAllFinder {
 			default:
 				break;
 			}
+		}else{
+			if(recordTypeEnum.code ==RecordTypeEnum.START_UP.code){
+				
+			List<StartPageLog> listStartPageLog=this.startPageLogRepository.findBy(cid,
+						logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
+						logParams.getEndDateOperator());
+				
+			
+				if(!CollectionUtil.isEmpty(listStartPageLog)){
+					  List<String> employeeIds = new ArrayList<>();
+						for(StartPageLog startPageLog : listStartPageLog){
+							LogBasicInformation	lgBasicInformation=startPageLog.getBasicInfo();
+							if(!Objects.isNull(lgBasicInformation) && !Objects.isNull(lgBasicInformation.getUserInfo()) &&
+									!Objects.isNull(lgBasicInformation.getUserInfo().getEmployeeId())  ){
+								employeeIds.add(lgBasicInformation.getUserInfo().getEmployeeId());
+								
+							}
+						}
+						// Get list employee code
+					Map<String, String> mapEmployeeCodes = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeeIds);
+					for(StartPageLog oPStartPageLog:listStartPageLog){					
+					//	LogBasicInformation	logBasicInformation=map.get(oPStartPageLog.getBasicInfo().getOperationId());
+						LogBasicInformation	logBasicInformation=oPStartPageLog.getBasicInfo();
+						LogBasicInfoAllDto logBasicInfoDto = LogBasicInfoAllDto.fromDomain(logBasicInformation);
+						// Set user login name
+						// itemNo 3
+						UserInfo userDto = logBasicInformation.getUserInfo();
+						if (userDto != null) {
+							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
+							// itemNo 1
+							logBasicInfoDto.setUserIdLogin(userDto.getUserId());
+							// itemNo 2
+							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+						}	
+					
+						// itemNo 4
+						if (logBasicInformation.getLoginInformation().getIpAddress().isPresent()) {
+							logBasicInfoDto
+									.setIpAddress(logBasicInformation.getLoginInformation().getIpAddress().get());
+						} else {
+							logBasicInfoDto.setIpAddress("");
+						}
+						// itemNo 5
+						logBasicInfoDto.setPcName(logBasicInformation.getLoginInformation().getPcName().isPresent()
+								? logBasicInformation.getLoginInformation().getPcName().get() : "");
+						// itemNo 6
+						logBasicInfoDto.setAccount(logBasicInformation.getLoginInformation().getAccount().isPresent()
+								? logBasicInformation.getLoginInformation().getAccount().get() : "");
+
+						// itemNo 7
+						// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
+
+						// itemNo 8 return nname
+						LoginUserRoles loginUserRoles = logBasicInformation.getAuthorityInformation();
+						logBasicInfoDto.setEmploymentAuthorityName(
+								loginUserRoles.forAttendance()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forAttendance()):"");
+						// itemNo 9
+						logBasicInfoDto.setSalarytAuthorityName(
+								loginUserRoles.forPayroll()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPayroll()):"");
+						;
+						// itemNo 10
+						logBasicInfoDto.setPersonelAuthorityName(
+								loginUserRoles.forPersonnel()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonnel()):"");
+						// itemNo 11
+						logBasicInfoDto.setOfficeHelperAuthorityName(
+								loginUserRoles.forOfficeHelper()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forOfficeHelper()):"");
+						// itemNo 12
+						/*
+						 * logBasicInfoDto.setAccountAuthorityName(
+						 * roleExportAdapter
+						 * .getNameByRoleId(logBasicInformation.
+						 * getAuthorityInformation().forSystemAdmin()));
+						 */
+						// itemNo 13
+						/*
+						 * logBasicInfoDto.setMyNumberAuthorityName(
+						 * roleExportAdapter
+						 * .getNameByRoleId(logBasicInformation.
+						 * getAuthorityInformation().forAttendance()));
+						 */
+						// itemNo 14
+						logBasicInfoDto.setGroupCompanyAddminAuthorityName(
+								loginUserRoles.forGroupCompaniesAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forGroupCompaniesAdmin()):"");
+						// itemNo 15
+						logBasicInfoDto.setCompanyAddminAuthorityName(
+						loginUserRoles.forCompanyAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forCompanyAdmin()):"");
+						// itemNo 16
+						logBasicInfoDto.setSystemAdminAuthorityName(
+						loginUserRoles.forSystemAdmin()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forSystemAdmin()):"");
+						// itemNo 17
+						logBasicInfoDto.setPersonalInfoAuthorityName(
+						loginUserRoles.forPersonalInfo()!=null?roleExportAdapter.getNameByRoleId(loginUserRoles.forPersonalInfo()):"");
+
+						// itemNo 18
+						logBasicInfoDto.setNote(
+								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
+						// itemNo 19
+						String key = logBasicInformation.getTargetProgram().getProgramId()
+								+ logBasicInformation.getTargetProgram().getScreenId()
+								+ logBasicInformation.getTargetProgram().getQueryString();
+						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+						// itemNo 20
+						//StartPageLog startPageLog = oPStartPageLog.get();
+						if (oPStartPageLog.getStartPageBeforeInfo().isPresent()) {
+							String keyResource = oPStartPageLog.getStartPageBeforeInfo().get().getProgramId()
+									+ oPStartPageLog.getStartPageBeforeInfo().get().getScreenId()
+									+ oPStartPageLog.getStartPageBeforeInfo().get().getQueryString();
+									
+							logBasicInfoDto.setMenuNameReSource(mapProgramNames.get(keyResource));
+						}
+
+						// add to list
+						lstLogBacsicInfo.add(logBasicInfoDto);
+					}
+				}
+				
+			}
 		}
 		return lstLogBacsicInfo;
 	}
@@ -634,19 +765,19 @@ public class LogBasicInformationAllFinder {
 		PersonInfoProcessAttr personInfoProcessAttr = PersonInfoProcessAttr.valueOf(attr);
 		switch (personInfoProcessAttr) {
 		case ADD:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_ADD");
+			return TextResource.localize("Enum_PersonInfoProcess_ADD");
 		case UPDATE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_UPDATE");
+			return TextResource.localize("Enum_PersonInfoProcess_UPDATE");
 		case LOGICAL_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_LOGICAL_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_LOGICAL_DELETE");
 		case COMPLETE_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_COMPLETE_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_COMPLETE_DELETE");
 		case RESTORE_LOGICAL_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_RESTORE_LOGICAL_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_RESTORE_LOGICAL_DELETE");
 		case TRANSFER:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_TRANSFER");
+			return TextResource.localize("Enum_PersonInfoProcess_TRANSFER");
 		case RETURN:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_RETURN");
+			return TextResource.localize("Enum_PersonInfoProcess_RETURN");
 		default:
 			return "";
 		}
@@ -656,15 +787,15 @@ public class LogBasicInformationAllFinder {
 		InfoOperateAttr infoOperateAttr = InfoOperateAttr.valueOf(attr);
 		switch (infoOperateAttr) {
 		case ADD:
-			return TextResource.localize("Enum_InfoOperateAttr_ADD");
+			return TextResource.localize("Enum_InfoOperate_ADD");
 		case UPDATE:
-			return TextResource.localize("Enum_InfoOperateAttr_UPDATE");
+			return TextResource.localize("Enum_InfoOperate_UPDATE");
 		case DELETE:
-			return TextResource.localize("Enum_InfoOperateAttr_DELETE");
+			return TextResource.localize("Enum_InfoOperate_DELETE");
 		case ADD_HISTORY:
-			return TextResource.localize("Enum_InfoOperateAttr_ADD_HISTORY");
+			return TextResource.localize("Enum_InfoOperate_ADD_HISTORY");
 		case DELETE_HISTORY:
-			return TextResource.localize("Enum_InfoOperateAttr_DELETE_HISTORY");
+			return TextResource.localize("Enum_InfoOperate_DELETE_HISTORY");
 		default:
 			return "";
 		}
@@ -701,7 +832,7 @@ public class LogBasicInformationAllFinder {
 									// 0 like,1 bang,2 khac  
 									if (logSetItemDetailDto.getSybol().intValue() == 0) {
 										
-										if (entry.getValue().toString().contains(logSetItemDetailDto.getCondition())) {
+										if (!Objects.isNull(entry.getValue()) && entry.getValue().toString().contains(logSetItemDetailDto.getCondition())) {
 											check = true;
 											break;
 										}else{

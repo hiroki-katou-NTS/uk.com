@@ -6,23 +6,31 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="ScreenC">		
+		<div class="ScreenC">
 			<div>
 				<label id="C1_1">#{i18n.getText('CLI003_14')}</label>
 			</div>
 			<div class="panel panel-frame" id="C1_2">
 				<div class="inlinec">
-					<div id="C1_3"  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CLI003_15')}</div>
-					<div id="C1_4" tabindex="1" >
-							<div id="daterangepicker" class="validate_form"
-							 data-bind="ntsDateRangePicker: { required: required, enable: enable,
+					<div id="C1_3" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CLI003_15')}</div>
+					<div id="C1_4" tabindex="1">
+					  <com:ko-if bind="checkFormatDate()=== '1'">	
+						<div id="daterangepicker" class="validate_form"
+							data-bind="ntsDateRangePicker: { required: required, enable: enable,
 							  showNextPrevious: false, value: dateValue,startName: startDateNameOperator, endName:endDateNameOperator, maxRange: 'oneYear'}">
-							</div>
+						</div>
+					</com:ko-if>
+					 <com:ko-if bind="checkFormatDate()=== '2'">	
+						<div id="daterangepicker" class="validate_form"
+							data-bind="ntsDateRangePicker: { required: required, enable: enable,type: 'yearmonth',
+							  showNextPrevious: false, value: dateValue,startName: startDateNameOperator, endName:endDateNameOperator, maxRange: 'oneYear'}">
+						</div>
+					</com:ko-if>
 					</div>
 				</div>
 			</div>
 
-			<div class="panel panel-frame" id="C2_2" >
+			<div class="panel panel-frame" id="C2_2">
 				<table>
 					<tr>
 						<div id="C2_4" class="inline45" data-bind=" ntsFormLabel: { }">#{i18n.getText('CLI003_16')}</div>
@@ -39,7 +47,7 @@
 					</tr>
 					<!-- List employee -->
 					<tr>
-						<div id="C2_3" tabindex="4" class="selectionEmployee" >
+						<div id="C2_3" tabindex="4" class="selectionEmployee">
 							<div id="employeeSearch"></div>
 						</div>
 					</tr>
@@ -47,8 +55,10 @@
 				</table>
 			</div>
 			<div style="height: 80px;">
-				<button id="C3_1" class="large" tabindex="5" data-bind="click: backScreenCtoB">#{i18n.getText('CLI003_20')}</button>
-				<button id="C3_2" class="x-large proceed" tabindex="6" data-bind="click: nextScreenCtoD">#{i18n.getText('CLI003_13')}</button>
+				<button id="C3_1" class="large" tabindex="5"
+					data-bind="click: backScreenCtoB">#{i18n.getText('CLI003_20')}</button>
+				<button id="C3_2" class="x-large proceed" tabindex="6"
+					data-bind="click: nextScreenCtoD">#{i18n.getText('CLI003_13')}</button>
 			</div>
 		</div>
 	</ui:composition>
