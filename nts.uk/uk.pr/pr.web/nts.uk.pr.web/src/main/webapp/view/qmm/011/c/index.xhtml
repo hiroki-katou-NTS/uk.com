@@ -95,19 +95,18 @@
 
                             <td>
 
-                                <div >
+                                <div style="float: left" >
                                     <input class = "C3_6" id = "C3_6" tabindex="5"
                                              data-bind="ntsNumberEditor: {
-																option : {width: '60px'},
+															option : {width: '60px', decimallength: 3},
 																constraint: 'InsuranceRate',
 																value: empConRatio,
 																enable: useArt == 1,
 																required: useArt == 1,
-																decimalength:3,
 																name: '#{i18n.getText('QMM011_13')}'
 																	}"/>
 
-                                    <span style="padding-left: 30px;" class= "label" id= "C3_7">#{i18n.getText('QMM011_15')}</span>
+                                    <span style="padding-left: 50px;" class= "label" id= "C3_7">#{i18n.getText('QMM011_15')}</span>
                                 </div>
 
                             </td>
