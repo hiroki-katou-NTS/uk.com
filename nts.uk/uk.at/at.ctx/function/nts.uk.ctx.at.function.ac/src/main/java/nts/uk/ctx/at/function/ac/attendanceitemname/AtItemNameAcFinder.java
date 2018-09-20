@@ -30,6 +30,8 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 					dto.setAttendanceItemDisplayNumber(x.getAttendanceItemDisplayNumber());
 					dto.setTypeOfAttendanceItem(x.getTypeOfAttendanceItem());
 					dto.setFrameCategory(x.getFrameCategory());
+					dto.setNameLineFeedPosition(x.getNameLineFeedPosition());
+					dto.setUserCanUpdateAtr(x.getUserCanUpdateAtr());
 					return dto;
 				}).collect(Collectors.toList());
 	}

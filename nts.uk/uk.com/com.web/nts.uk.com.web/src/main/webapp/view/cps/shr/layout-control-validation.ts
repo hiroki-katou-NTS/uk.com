@@ -913,121 +913,153 @@ module nts.layout {
 
                     if (!workTime) {
 
-                        workType.ctrl.on('click', () => {
-                            setShared("KDL002_Multiple", false, true);
-                            setShared('kdl002isSelection', false, true);
-                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
-                            setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+                        workType.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workType.ctrl.data('safeClick');
 
-                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
-                                let childData: Array<any> = getShared('KDL002_SelectedNewItem');
-
-                                if (childData[0]) {
-                                    setData(workType, childData[0].code);
+                                // prevent multi click
+                                workType.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
                                 }
-                            });
-                        });
-                    } else {
 
-                        validateEditable(group, workTime.data.value, mt);
-
-                        workType.ctrl.on('click', () => {
-
-                            if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
-                                setShared('parentCodes', {
-                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                                }, true);
-
-                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                    let childData: IChildData = getShared('childData');
-
-                                    if (childData) {
-                                        setData(workType, childData.selectedWorkTypeCode);
-
-                                        setData(workTime, childData.selectedWorkTimeCode);
-
-                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
-
-                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
-
-                                        validateEditable(group, workTime.data.value);
-                                    }
-                                });
-                            } else {
                                 setShared("KDL002_Multiple", false, true);
-                                setShared('kdl002isSelection', true, true);
+                                setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                     let childData: Array<any> = getShared('KDL002_SelectedNewItem');
 
-                                    if (childData.length > 0) {
+                                    if (childData[0]) {
                                         setData(workType, childData[0].code);
                                     }
                                 });
-                            }
-                        });
+                            });
+                    } else {
 
-                        // handle click event of workTime
-                        workTime.ctrl.on('click', () => {
-                            if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
-                                setShared('parentCodes', {
-                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                                }, true);
+                        validateEditable(group, workTime.data.value, mt);
 
-                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                    let childData: IChildData = getShared('childData');
+                        workType.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workType.ctrl.data('safeClick');
 
-                                    if (childData) {
-                                        setData(workType, childData.selectedWorkTypeCode);
+                                // prevent multi click
+                                workType.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
 
-                                        setData(workTime, childData.selectedWorkTimeCode);
+                                if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
+                                    setShared('parentCodes', {
+                                        workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                        workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                    }, true);
 
-                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+                                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                        let childData: IChildData = getShared('childData');
 
-                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+                                        if (childData) {
+                                            setData(workType, childData.selectedWorkTypeCode);
 
-                                        validateEditable(group, workTime.data.value);
-                                    }
-                                });
-                            } else {
+                                            setData(workTime, childData.selectedWorkTimeCode);
 
+                                            firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                            firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
 
-                                setShared("kml001multiSelectMode", false);
-                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
-                                setShared("kml001isSelection", true);
-                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
-
-                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
-                                    let childData: Array<any> = getShared('kml001selectedTimes');
-                                    if (childData) {
-                                        if (childData.length > 0) {
-                                            let data: any = childData[0];
-                                            setData(workTime, data.selectedWorkTimeCode);
-
-                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
-                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
-
-                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
-                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+                                            secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                            secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
 
                                             validateEditable(group, workTime.data.value);
                                         }
-                                    }
-                                });
-                            }
-                        });
+                                    });
+                                } else {
+                                    setShared("KDL002_Multiple", false, true);
+                                    setShared('kdl002isSelection', true, true);
+                                    setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                    setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                    modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                        let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                                        if (childData.length > 0) {
+                                            setData(workType, childData[0].code);
+                                        }
+                                    });
+                                }
+                            });
+
+                        // handle click event of workTime
+                        workTime.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workTime.ctrl.data('safeClick');
+
+                                // prevent multi click
+                                workTime.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
+
+                                if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
+                                    setShared('parentCodes', {
+                                        workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                        workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                    }, true);
+
+                                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                        let childData: IChildData = getShared('childData');
+
+                                        if (childData) {
+                                            setData(workType, childData.selectedWorkTypeCode);
+
+                                            setData(workTime, childData.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                            firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                            secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                            secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    });
+                                } else {
+
+
+                                    setShared("kml001multiSelectMode", false);
+                                    setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                    setShared("kml001isSelection", true);
+                                    setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                    modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                        let childData: Array<any> = getShared('kml001selectedTimes');
+                                        if (childData) {
+                                            if (childData.length > 0) {
+                                                let data: any = childData[0];
+                                                setData(workTime, data.selectedWorkTimeCode);
+
+                                                firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                                firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                                secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                                secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                                validateEditable(group, workTime.data.value);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
                     }
                 });
             });
@@ -1153,41 +1185,52 @@ module nts.layout {
                         label: IFindData = finder.find(btn.ctgCode, btn.lblCode);
 
                     if (button) {
-                        $(button.id).on('click', (evt) => {
-                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
-                            setShared('CPS001GHI_VALUES', {
-                                ctgCode: button.data.categoryCode,
-                                sid: sid
-                            });
+                        $(button.id)
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = $(button.id).data('safeClick');
 
-                            modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
-                                // load lai du lieu
-
-                                if (!sid) {
+                                // prevent multi click
+                                $(button.id).data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
                                     return;
                                 }
 
-                                switch (btn.dialogId) {
-                                    case "g":
-                                        fetch.get_annLeaNumber(sid).done(data => {
-                                            button.data.value(data.annualLeaveNumber);
-                                            if (label) {
-                                                label.data.value(data.lastGrantDate);
-                                            }
-                                        });
-                                        break;
-                                    case "h":
-                                        fetch.get_resvLeaNumber(sid).done(data => {
-                                            button.data.value(data);
-                                        });
-                                        break;
-                                    case "i":
-                                        fetch.get_calDayTime(sid, btn.specialCd).done(data => {
-                                            button.data.value(data);
-                                        });
-                                }
+                                let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
+                                setShared('CPS001GHI_VALUES', {
+                                    ctgCode: button.data.categoryCode,
+                                    sid: sid
+                                });
+
+                                modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
+                                    // load lai du lieu
+
+                                    if (!sid) {
+                                        return;
+                                    }
+
+                                    switch (btn.dialogId) {
+                                        case "g":
+                                            fetch.get_annLeaNumber(sid).done(data => {
+                                                button.data.value(data.annualLeaveNumber);
+                                                if (label) {
+                                                    label.data.value(data.lastGrantDate);
+                                                }
+                                            });
+                                            break;
+                                        case "h":
+                                            fetch.get_resvLeaNumber(sid).done(data => {
+                                                button.data.value(data);
+                                            });
+                                            break;
+                                        case "i":
+                                            fetch.get_calDayTime(sid, btn.specialCd).done(data => {
+                                                button.data.value(data);
+                                            });
+                                    }
+                                });
                             });
-                        });
                     }
                 };
 
@@ -1451,45 +1494,67 @@ module nts.layout {
             }
 
             if (CS00017_IS00084) {
-                CS00017_IS00084.ctrl.on('click', () => {
-                    initCDL008Data(ko.toJS(CS00017_IS00084.data));
+                CS00017_IS00084.ctrl
+                    .data('safeClick', new Date().getTime())
+                    .on('click', () => {
+                        let timeClick = new Date().getTime(),
+                            safeClick = CS00017_IS00084.ctrl.data('safeClick');
 
-                    if (!!getShared('inputCDL008')) {
-                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                            // Check is cancel.
-                            if (getShared('CDL008Cancel')) {
-                                return;
-                            }
+                        // prevent multi click
+                        CS00017_IS00084.ctrl.data('safeClick', timeClick);
+                        if (timeClick - safeClick <= 500) {
+                            return;
+                        }
 
-                            //view all code of selected item
-                            let output = getShared('outputCDL008');
-                            if (!_.isNil(output)) {
-                                CS00017_IS00084.data.value(output);
-                            }
-                        });
-                    }
-                });
+                        initCDL008Data(ko.toJS(CS00017_IS00084.data));
+
+                        if (!!getShared('inputCDL008')) {
+                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                // Check is cancel.
+                                if (getShared('CDL008Cancel')) {
+                                    return;
+                                }
+
+                                //view all code of selected item
+                                let output = getShared('outputCDL008');
+                                if (!_.isNil(output)) {
+                                    CS00017_IS00084.data.value(output);
+                                }
+                            });
+                        }
+                    });
             }
 
             if (CS00017_IS00085) {
-                CS00017_IS00085.ctrl.on('click', () => {
-                    initCDL008Data(ko.toJS(CS00017_IS00085.data));
+                CS00017_IS00085.ctrl
+                    .data('safeClick', new Date().getTime())
+                    .on('click', () => {
+                        let timeClick = new Date().getTime(),
+                            safeClick = CS00017_IS00085.ctrl.data('safeClick');
 
-                    if (!!getShared('inputCDL008')) {
-                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                            // Check is cancel.
-                            if (getShared('CDL008Cancel')) {
-                                return;
-                            }
+                        // prevent multi click
+                        CS00017_IS00085.ctrl.data('safeClick', timeClick);
+                        if (timeClick - safeClick <= 500) {
+                            return;
+                        }
+                        
+                        initCDL008Data(ko.toJS(CS00017_IS00085.data));
 
-                            //view all code of selected item
-                            let output = getShared('outputCDL008');
-                            if (!_.isNil(output)) {
-                                CS00017_IS00085.data.value(output);
-                            }
-                        });
-                    }
-                });
+                        if (!!getShared('inputCDL008')) {
+                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                // Check is cancel.
+                                if (getShared('CDL008Cancel')) {
+                                    return;
+                                }
+
+                                //view all code of selected item
+                                let output = getShared('outputCDL008');
+                                if (!_.isNil(output)) {
+                                    CS00017_IS00085.data.value(output);
+                                }
+                            });
+                        }
+                    });
             }
 
             if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
@@ -1557,7 +1622,6 @@ module nts.layout {
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value),
                         hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
-                        retireDates: string = null,
                         startWork: string = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : null,
                         endWork: string = CS00020_IS00120 ? ko.toJS(CS00020_IS00120.data.value) : null,
                         conTime: number = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : null;
@@ -1577,18 +1641,9 @@ module nts.layout {
 
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
-                        retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
                         startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
                         endWork = '9999/12/31';
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
-                    }
-
-                    if (CS00003_IS00021 && !retireDates) {
-                        let retireTemp = ko.toJS(CS00003_IS00021.data.value);
-                        retireDates = '9999/12/31';
-                        if (retireTemp) {
-                            retireDates = retireTemp;
-                        }
                     }
 
                     fetch.get_ro_data({
@@ -1596,7 +1651,6 @@ module nts.layout {
                         standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
                         grantTable: grantTable,
                         entryDate: moment.utc(hireDate).toDate(),
-                        retireDate: moment.utc(retireDates).toDate(),
                         startWorkCond: moment.utc(startWork).toDate(),
                         endWorkCond: moment.utc(endWork).toDate(),
                         contactTime: conTime
@@ -1611,9 +1665,6 @@ module nts.layout {
                 CS00024_IS00280.data.value.valueHasMutated();
                 if (CS00003_IS00020) {
                     CS00003_IS00020.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
-                }
-                if (CS00003_IS00021) {
-                    CS00003_IS00021.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 }
                 if (CS00020_IS00119) {
                     CS00020_IS00119.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
@@ -1895,7 +1946,6 @@ module nts.layout {
                         grantTbl: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboGrantTbl),
                         result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result),
                         CS00003_IS00020: IFindData = finder.find('CS00003', 'IS00020'),
-                        CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021'),
                         CS00024_IS00279: IFindData = finder.find('CS00024', 'IS00279');
 
                     if (inp && cbx) {
@@ -1928,18 +1978,7 @@ module nts.layout {
 
                             if (location.href.indexOf('/view/cps/002') > -1) {
                                 hireDate = __viewContext.viewModel.currentEmployee().hireDate();
-                                retireDates = CS00003_IS00021 ? ko.toJS(CS00003_IS00021.data.value) : '9999/12/31';
                             }
-
-                            if (CS00003_IS00021 && !retireDates) {
-                                let retireTemp = ko.toJS(CS00003_IS00021.data.value);
-                                retireDates = '9999/12/31';
-                                if (retireTemp) {
-                                    retireDates = retireTemp;
-                                }
-                            }
-
-
                             fetch.get_sphd_nextGrantDate({
                                 sid: sid,
                                 grantDate: moment.utc(grantDate).toDate(),
@@ -1948,7 +1987,6 @@ module nts.layout {
                                 grantDays: grantDays,
                                 grantTable: grantTbls,
                                 entryDate: moment.utc(hireDate).toDate(),
-                                retireDate: moment.utc(retireDates).toDate(),
                                 yearRefDate: moment.utc(yearRefDates).toDate()
                             }).done(res => {
                                 if (!result) {
@@ -1981,9 +2019,6 @@ module nts.layout {
                         }
                         if (CS00003_IS00020) {
                             CS00003_IS00020.data.value.subscribe(x => inp.data.value.valueHasMutated());
-                        }
-                        if (CS00003_IS00021) {
-                            CS00003_IS00021.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
 
                         if (CS00024_IS00279) {
@@ -2364,7 +2399,6 @@ module nts.layout {
         standardDate: Date;
         grantTable: string;
         entryDate: Date;
-        retireDate: Date;
         startWorkCond: Date;
         endWorkCond: Date;
         contactTime: number;
@@ -2440,7 +2474,6 @@ module nts.layout {
         grantDays?: number;
         grantTable?: string;
         entryDate: Date;
-        retireDate: Date;
         yearRefDate: Date;
     }
 

@@ -24,7 +24,7 @@ public class MonthlyGetNameAttendance {
 		
 		List<AttdItemDto> listAttendanceItemName = companyMonthlyItemService.getMonthlyItems(companyId,  Optional.empty(), null, null).stream()
 				.map(x -> new AttdItemDto(x.getAttendanceItemId(), x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber(),
-						0, 0, 0, 0)).collect(Collectors.toList());
+						x.getNameLineFeedPosition(), x.getAttendanceItemDisplayNumber(), x.getAttendanceItemDisplayNumber(), x.getUserCanUpdateAtr())).collect(Collectors.toList());
 		return listAttendanceItemName;
 	}
 }

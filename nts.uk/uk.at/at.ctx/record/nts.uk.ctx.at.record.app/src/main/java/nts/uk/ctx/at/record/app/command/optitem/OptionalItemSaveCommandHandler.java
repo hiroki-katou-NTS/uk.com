@@ -14,14 +14,13 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemPolicy;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUpdateDomainEvent;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemPolicy;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
-import nts.uk.ctx.at.record.dom.optitem.event.OptionalItemAtrDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -94,10 +93,6 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 			OptionalItemUpdateDomainEvent event = new OptionalItemUpdateDomainEvent(dom.getOptionalItemNo(), dom.getOptionalItemAtr(), dom.getPerformanceAtr());
 			event.toBePublished();
 		}
-		// Event
-		OptionalItemAtrDomainEvent event = new OptionalItemAtrDomainEvent(dom.getPerformanceAtr(),
-				dom.getOptionalItemAtr(), dom.getOptionalItemNo());
-		event.toBePublished();
 	}
 
 }

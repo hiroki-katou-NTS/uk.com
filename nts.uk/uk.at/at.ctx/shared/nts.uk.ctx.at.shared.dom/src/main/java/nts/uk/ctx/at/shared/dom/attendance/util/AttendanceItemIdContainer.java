@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -2232,6 +2233,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
+	public static List<Integer> getItemIdByDailyDomains(Collection<DailyDomainGroup> domains, 
+			BiFunction<DailyDomainGroup, String, Boolean> customCondition){
+		return domains.stream().map(e -> {
+			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.filter(en -> customCondition.apply(e, en.getValue()))
+										.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
 	public static List<Integer> getItemIdByMonthlyDomains(MonthlyDomainGroup... domains){
 		return Arrays.stream(domains).map(e -> {
 			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream()
@@ -2265,6 +2276,14 @@ public class AttendanceItemIdContainer implements ItemConst {
 	public static Map<Integer, Integer> mapOptionalItemIdsToNos(Collection<ItemValue> items) {
 		return toFilterStream(items).collect(Collectors.toMap(i -> i.getItemId(), i -> {
 			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
+		}));
+	}
+	
+	public static Map<Integer, Integer> mapOptionalItemIdsToNos() {
+		return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+				.filter(en -> en.getValue().indexOf(DailyDomainGroup.OPTIONAL_ITEM.name) == 0)
+				.collect(Collectors.toMap(i -> i.getKey(), i -> {
+			return Integer.parseInt(i.getValue().replace(i.getValue().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
 		}));
 	}
 	
@@ -2316,7 +2335,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return items.stream().filter(i -> isOptionalItem(i));
 	}
 
-	private static boolean isOptionalItem(ItemValue i) {
+	public static boolean isOptionalItem(ItemValue i) {
 		return DAY_ITEM_ID_CONTAINER.get(i.getItemId()).contains(OPTIONAL_ITEM_VALUE);
 	}
 

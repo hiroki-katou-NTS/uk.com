@@ -96,7 +96,15 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Override
 	public boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
 			RequestSetting optRequesSetting, ExecutionTypeExImport refAppResult,TaskDataSetter dataSetter) {
-		
+		//データ更新
+		//状態確認
+		Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
+		//処理した社員の実行状況を「完了」にする
+		execuLog.updateLogInfo(sid, workId, 2, 0);
+		dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);
+		if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
+			return false;
+		}
 		//ドメインモデル「締め状態管理」を取得する
 		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
 		//「申請期間」を作成する
@@ -128,15 +136,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		boolean countError = false;
 		for (Application_New appData : lstApp) {
 			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData);
-			//データ更新
-			//状態確認
-			Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
-			//処理した社員の実行状況を「完了」にする
-			execuLog.updateLogInfo(sid, workId, 2, 0);
-			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);
-			if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
-				return false;
-			}
+			
 			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
 				

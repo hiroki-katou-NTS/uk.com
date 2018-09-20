@@ -7,14 +7,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.command.monthly.absenceleave.AbsenceLeaveRemainMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.affliation.AffiliationInfoOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.annualleave.AnnLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.care.MonthCareRemainCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.childcare.MonthChildCareRemainCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.dayoff.DayOffRemainMonthlyCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.remarks.MonthlyRemarksCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
+import nts.uk.ctx.at.record.app.command.monthly.specialholiday.SpecialHolidayRemainMonthlyCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -57,19 +60,19 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	@AttendanceItemLayout(layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE, 
 		jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, index = 6)
-	private AnyItemOfMonthlyCommandHandler specialHoliday;
+	private SpecialHolidayRemainMonthlyCommandHandler specialHoliday;
 
 	/** 代休月別残数データ */
 	@Inject
 	@AttendanceItemLayout(layout = MONTHLY_OFF_REMAIN_CODE, 
 		jpPropertyName = MONTHLY_OFF_REMAIN_NAME, index = 7)
-	private AnnLeaRemNumEachMonthCommandHandler dayOff;
+	private DayOffRemainMonthlyCommandHandler dayOff;
 
 	/** 振休月別残数データ */
 	@Inject
 	@AttendanceItemLayout(layout = MONTHLY_ABSENCE_LEAVE_REMAIN_CODE, 
 		jpPropertyName = MONTHLY_ABSENCE_LEAVE_REMAIN_NAME, index = 8)
-	private RsvLeaRemNumEachMonthCommandHandler absenceLeave;
+	private AbsenceLeaveRemainMonthlyCommandHandler absenceLeave;
 
 	/** 月別実績の備考 */
 	@Inject

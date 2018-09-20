@@ -16,17 +16,22 @@ public class PerInfoCategoryPubImp implements PerInfoCategoryPub {
     CopyPerInfoRepository repo;
 
     @Override
-    public void doCopyA(String companyId, int copyMethod) {
-        repo.doCopyA(companyId,copyMethod);
+    public void personalInfoDefEvent(String companyId, int copyMethod) {
+        repo.personalInfoDefEvent(companyId,copyMethod);
     }
 
     @Override
-    public void doCopyB(String companyId, int copyMethod) {
-        repo.doCopyB(companyId,copyMethod);
+    public void newLayoutEvent(String companyId, int copyMethod) {
+        repo.newLayoutEvent(companyId,copyMethod);
     }
 
     @Override
-    public void doCopyC(String companyId, int copyMethod) {
-        repo.doCopyC(companyId,copyMethod);
+    public void personalInfoItemGroupEvent(String companyId, int copyMethod) {
+        repo.personalInfoItemGroupEvent(companyId,copyMethod);
+    }
+
+    @Override
+    public void personalInfoSelectItemEvent(String companyId, int copyMethod) {
+        repo.personalInfoSelectItemEvent(companyId,copyMethod);
     }
 }

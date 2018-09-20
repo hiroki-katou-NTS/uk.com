@@ -101,7 +101,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 		List<AttendanceItemName> attendanceItems = this.getAttendanceItemName(attendanceItemIds, type);
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
-				.getByAttendanceIdAndType(attendanceItemIds, type);
+				.getFullDataByAttdIdAndType(attendanceItemIds, type);
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
@@ -260,6 +260,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 			attendanceDto.setAttendanceItemDisplayNumber(item.getAttendanceItemDisplayNumber());
 			attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 			attendanceDto.setAttendanceItemName(item.getAttendanceItemName());
+			attendanceDto.setUserCanUpdateAtr(item.getUserCanUpdateAtr());
 			if (frameNoOverTimeMap.containsKey(item.getAttendanceItemId())
 					&& overTimes.containsKey(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
@@ -406,25 +407,25 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 				attendanceDto.setTypeOfAttendanceItem(
 						frameSpecialHoliday.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			//14
-			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && totalTimes
-					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
-				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						totalTimes.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
-								.getTotalTimesName().v()));
-				attendanceDto.setFrameCategory(
-						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
-				attendanceDto.setTypeOfAttendanceItem(
-						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			//15
-			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && specialHoliday
+			}else if (frameTotalTimes.containsKey(item.getAttendanceItemId()) && totalTimes
 					.containsKey(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						specialHoliday.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
-								.getSpecialHolidayName().v()));
+						totalTimes.get(frameTotalTimes.get(item.getAttendanceItemId()).getFrameNo().v())
+						.getTotalTimesName().v()));
 				attendanceDto.setFrameCategory(
 						frameTotalTimes.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameTotalTimes.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			//15
+			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && specialHoliday
+					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						specialHoliday.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
+						.getSpecialHolidayName().v()));
+				attendanceDto.setFrameCategory(
+						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						specialHoliday15.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			} else {
 				attendanceDto.setFrameCategory(0);
 				attendanceDto.setTypeOfAttendanceItem(0);
@@ -465,16 +466,20 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
+						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr());
+						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
 						return dto;
 					}).collect(Collectors.toList());
 			break;
-		case Monthly:			
+		case Monthly:
 			attendanceItemList = this.monthlyAttendanceItemRepository
 					.findByAttendanceItemId(companyId, attendanceItemIds).stream().map(item -> {
 						AttendanceItemName dto = new AttendanceItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName().v()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
+						dto.setUserCanUpdateAtr(item.getUserCanUpdateAtr().value);
+						dto.setNameLineFeedPosition(item.getNameLineFeedPosition());
 						return dto;
 					}).collect(Collectors.toList());
 			break;

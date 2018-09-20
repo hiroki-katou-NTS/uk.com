@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -271,6 +272,7 @@ public class ValidatorDataDailyRes {
 		if (value.getValue() == null || value.getValue().equals("")) {
 			valueTemp = item28.get();
 			valueTemp.setLayoutCode(TextResource.localize("Msg_1270"));
+			valueTemp.setMessage("Msg_1270");
 			result.add(valueTemp);
 			return result;
 		}
@@ -292,6 +294,7 @@ public class ValidatorDataDailyRes {
 			if (workTypeCode == null || workTypeCode.equals("")) {
 				valueTemp = item1.get();
 				valueTemp.setLayoutCode(TextResource.localize("Msg_1328"));
+				valueTemp.setMessage("Msg_1328");
 				result.add(valueTemp);
 				return result;
 			}
@@ -314,6 +317,7 @@ public class ValidatorDataDailyRes {
 			if (item2.get().getValue() == null || item2.get().getValue().equals("")) {
 				valueTemp = item2.get();
 				valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
+				valueTemp.setMessage("Msg_1308");
 				result.add(valueTemp);
 				return result;
 			}
@@ -329,6 +333,7 @@ public class ValidatorDataDailyRes {
 		if (value.getValue() == null || value.getValue().equals("")) {
 			valueTemp = item1.get();
 			valueTemp.setLayoutCode(TextResource.localize("Msg_1308"));
+			valueTemp.setMessage("Msg_1308");
 			result.add(valueTemp);
 			return result;
 		}
@@ -378,17 +383,16 @@ public class ValidatorDataDailyRes {
 	private Optional<EmployeeMonthlyPerError> getDataErrorMonth(List<IntegrationOfMonthly> lstDomain,
 			UpdateMonthDailyParam monthParam) {
 		for (IntegrationOfMonthly month : lstDomain) {
-			Optional<EmployeeMonthlyPerError> result = month.getEmployeeMonthlyPerErrorList().stream()
+			List<EmployeeMonthlyPerError> results = month.getEmployeeMonthlyPerErrorList().stream()
 					.filter(x -> x.getErrorType().value == ErrorType.FLEX.value
 							&& x.getClosureId().value == monthParam.getClosureId()
 							&& x.getEmployeeID().equals(monthParam.getEmployeeId())
 							&& x.getClosureDate().getClosureDay().v().intValue() == monthParam.getClosureDate()
 									.getClosureDay().intValue()
 							&& x.getClosureDate().getLastDayOfMonth() == monthParam.getClosureDate().getLastDayOfMonth()
-									.booleanValue())
-					.findFirst();
-			if (result.isPresent())
-				return result;
+									.booleanValue()).collect(Collectors.toList());
+			if (!results.isEmpty())
+				return results.stream().findFirst();
 		}
 		return Optional.empty();
 	}
@@ -401,7 +405,7 @@ public class ValidatorDataDailyRes {
 		List<DPItemValue> items = new ArrayList<>();
 		for (IntegrationOfMonthly month : lstMonthDomain) {
 			val lstEmpError = month.getEmployeeMonthlyPerErrorList().stream()
-					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
+					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value && x.getErrorType().value != ErrorType.FLEX_SUPP.value).collect(Collectors.toList());
 			val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
 			
 			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByListCode(companyId, listNo)

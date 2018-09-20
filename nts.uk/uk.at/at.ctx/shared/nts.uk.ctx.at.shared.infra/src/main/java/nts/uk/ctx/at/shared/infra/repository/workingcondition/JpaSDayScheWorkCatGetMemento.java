@@ -44,8 +44,9 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	 * getWorkTypeCode()
 	 */
 	@Override
-	public WorkTypeCode getWorkTypeCode() {
-		return new WorkTypeCode(this.entity.getWorkTypeCode());
+	public Optional<WorkTypeCode> getWorkTypeCode() {
+		return Optional.ofNullable(this.entity.getWorkTypeCode() != null
+				? new WorkTypeCode(this.entity.getWorkTypeCode()) : null);
 	}
 
 	/*

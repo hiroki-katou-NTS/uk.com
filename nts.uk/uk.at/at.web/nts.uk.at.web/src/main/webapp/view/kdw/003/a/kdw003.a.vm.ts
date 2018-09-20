@@ -317,6 +317,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 else
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
             });
+            $(window).on('resize', function() {
+                var win = $(this); //this = window
+                $(".grid-container").attr('style', 'height: ' + (win.height() - 180) + 'px !IMPORTANT');
+            });
         }
         
         helps(event, data) {
@@ -729,7 +733,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             $("#dpGrid").mGrid("updateCell", rowId, item, value);
             self.inputProcess(rowId, item, value).done(value => {
                 _.each(value.cellEdits, itemResult => {
-                    $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                    $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                 })
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -791,6 +795,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
                 self.valueUpdateMonth = self.itemValueMonthParent;
                 self.valueUpdateMonth["redConditionMessage"] = monthResult.flexShortage.redConditionMessage;
+                //co can kiem tra loi flex ko
+                self.valueUpdateMonth["hasFlex"] = true && self.canFlex();
                 dfd.resolve();
                 nts.uk.ui.block.clear();
                 //self.flexShortage(new FlexShortage(self, self.calcFlex(),  self.breakTimeDay()));
@@ -798,6 +804,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 self.showFlex(false);
                 self.lstErrorFlex = [];
+                self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                self.valueUpdateMonth = self.itemValueMonthParent;
+                self.valueUpdateMonth["hasFlex"] = false;
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }
@@ -1131,7 +1140,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 });
-                if (!_.isEmpty(dataChangeProcess) && !_.isEmpty(self.lstDomainOld)) {
+                if (!_.isEmpty(self.lstDomainOld)) {
                     let dataParent = {
                         itemValues: dataChangeProcess,
                         dataCheckSign: dataCheckSign,
@@ -1169,7 +1178,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 $("#next-month").ntsError("clear");
                             }
                         }
-                        if (data.resultError == null || (data.resultError.errorMap[5] != null)) {
+                        if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
                             self.lstDomainEdit = data.calculatedRows;
                             let lstValue = data.resultValues;
                             _.forEach(self.dpData, row => {
@@ -1224,7 +1233,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve();
                     });
                     dfd.promise();
-                }
+                } else 
+                    nts.uk.ui.block.clear();
             }
         }
 
@@ -1430,6 +1440,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return value;
             }
         }
+        
+        convertToHours(value: any): string {
+            let self = this;
+            let hours = value < 0 ? String(0 - Math.floor(Math.abs(value / 60))) : String(Math.floor(value / 60));
+            let minutes = String(Math.abs(value) % 60);
+            if (Number(minutes) < 10) minutes = "0" + minutes;
+            return hours + ":" + minutes;
+        }
 
         //check data item in care and childCare 
         // child care = 0 , care = 1, other = 2;
@@ -1504,7 +1522,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 $("#daterangepicker").css("display", "none");
-                $("#cbListDate").css("display", "contents");
+                $("#cbListDate").css("display", "block");
                 $("#container").css("display", "none");
                 $("#btnVacationRemaining").hide();
                 $('#numberHoliday').hide();
@@ -1608,6 +1626,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // flex
                     self.processFlex(data, false);
                     self.displayNumberZero();
+                    self.displayProfileIcon(self.displayFormat());
+                    self.dislayNumberHeaderText();
                     //check visable MIGrid
                     if (self.displayFormat() != 0) {
                         self.isVisibleMIGrid(false);
@@ -2168,19 +2188,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let jsonColumnWidthMiGrid = localStorage.getItem(window.location.href + '/miGrid');
             
             let valueTemp = 0;
-            _.forEach($.parseJSON(jsonColumnWith)[1], (value, key) => {
-                if (key.indexOf('A') != -1) {
-                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
-                        command.lstHeader[key.substring(1, key.length)] = value;
-                    }
+            _.forEach($.parseJSON(jsonColumnWith), (valueP, keyP) =>{
+                if (keyP != "reparer") {
+                    _.forEach(valueP, (value, key) => {
+                        if (key.indexOf('A') != -1) {
+                            if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                                command.lstHeader[key.substring(1, key.length)] = value;
+                            }
+                        }
+                        if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                            valueTemp = value;
+                        } else if (key.indexOf('Name') != -1) {
+                            command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                            valueTemp = 0;
+                        }
+                    });
                 }
-                if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
-                    valueTemp = value;
-                } else if (key.indexOf('Name') != -1) {
-                    command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
-                    valueTemp = 0;
-                }
-            });
+            })
+           
             if(self.isVisibleMIGrid()){
                 let columnWidthMiGrid = $.parseJSON(jsonColumnWidthMiGrid.replace(/_/g, ''));
                 delete columnWidthMiGrid.monthYear;
@@ -2742,7 +2767,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 );
-                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? nts.uk.time.format.byId("Time_Short_HM", id.value) : id.value;
+                dataSourceMIGrid[0]['_' + attendanceItemId.attendanceItemId] = (id.value != null && cDisplayType == 'Clock') ? self.convertToHours(id.value) : id.value;
                 totalWidthColumn += id.columnWidth;
             });
 
@@ -3294,7 +3319,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.calcTime(param).done((value) => {
                         __viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
-                            $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                            $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                         })
                         nts.uk.ui.block.clear();
                         //dfd.resolve(value.cellEdits);
@@ -3831,7 +3856,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 __viewContext.vm.inputProcess(rowId, "Code" + itemId, code).done(value => {
                     _.each(value.cellEdits, itemResult => {
-                        $("#dpGrid").mGrid("updateCell", itemResult.rowId, itemResult.item, itemResult.value, true);
+                        $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                     })
                     nts.uk.ui.block.clear();
                     dfd.resolve();

@@ -257,7 +257,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     self.selectedTitleAtr(1);
                     //  self.employeeDeletionList(_.orderBy(self.employeeDeletionList(), ['code'], ['asc']));
                      // self.employeeList = ko.observableArray([]);
-                     data.listEmployee=_.orderBy(data.listEmployee,['employeeCode'], ['asc', 'asc']);
+                     data.listEmployee=_.orderBy(data.listEmployee,['workplaceCode'], ['asc', 'asc']);
                     self.employeeList();
                     if (self.activeStep() == 1) {
                         self.initEmployeeList(data.listEmployee);
@@ -699,13 +699,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
         generateIgGrid() {
             var self = this;
             $("#igGridLog").igGrid({
-                width: '100%',
-                height: '348px',
+                width: "100%",
+                height: "calc(100% - 5px)",
                 features: [
                     {
                         name: "Paging",
                         type: "local",
-                        pageSize: 10
+                        pageSize: 100
                     },
                     {
                         name: "Sorting",
@@ -736,7 +736,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '405px',
+                height: "calc(100% - 5px)",
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -755,7 +755,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     },
                     {
                         name: "Paging",
-                        pageSize: 10,
+                        pageSize: 100,
                         type: "local",
                         inherit: true
                     },
@@ -840,7 +840,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             },
                             {
                                 name: "Paging",
-                                pageSize: 20,
+                                pageSize: 100,
                                 type: "local",
                                 inherit: true
                             }
@@ -856,7 +856,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '405',
+                height: "calc(100% - 5px)",
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -874,7 +874,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     },
                     {
                         name: "Paging",
-                        pageSize: 10,
+                        pageSize: 100,
                         type: "local",
                         inherit: true
                     },
@@ -926,7 +926,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             },
                             {
                                 name: "Paging",
-                                pageSize: 20,
+                                pageSize: 100,
                                 type: "local",
                                 inherit: true
                             }

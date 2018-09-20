@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -150,6 +151,9 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			// ループする社員の「承認ルート中間データ」を取得する
 			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
 					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			if(appRootInstance == null){
+				throw new BusinessException("Msg_1430",approverID);
+			}
 			// 対象日の就業実績確認状態を取得する
 			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
 			// (中間データ版)承認する
@@ -279,6 +283,12 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				EnumAdaptor.valueOf(rootType, RecordRootType.class), Collections.emptyList());
 		
 		this.appRootConfirmRepository.insert(newDomain);
+	}
+
+	@Override
+	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType) {
+		String companyID =  AppContexts.user().companyId();
+		this.appRootConfirmRepository.deleteByRequestList424(companyID, employeeID, date, rootType);
 	}
 	
 }
