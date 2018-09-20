@@ -51,8 +51,17 @@ public class JpaBreakdownItemStRepository extends JpaRepository implements Break
 
 	@Override
 	public void remove(String salaryItemId, String breakdownItemCode) {
-		this.commandProxy().remove(QpbmtBreakdownItemSt.class,
-				new QpbmtBreakdownItemStPk(salaryItemId, breakdownItemCode));
+		if (this.getBreakdownItemStById(salaryItemId, breakdownItemCode).isPresent()) {
+			this.commandProxy().remove(QpbmtBreakdownItemSt.class,
+					new QpbmtBreakdownItemStPk(salaryItemId, breakdownItemCode));
+		}
+	}
+
+	@Override
+	public void removeAll(String salaryItemId) {
+		List<BreakdownItemSet> entities = this.getBreakdownItemStBySalaryId(salaryItemId);
+		entities.forEach(entity -> this.remove(entity.getSalaryItemId(), entity.getBreakdownItemCode().v()));
+
 	}
 
 }

@@ -47,18 +47,18 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 	protected void handle(CommandHandlerContext<StatementItemDataCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		String salaryItemId = command.getSalaryItemId();
 		val statementItem = command.getStatementItem();
-		if (statementItem == null) {
-			return;
-		}
-		String salaryItemId = statementItem.getSalaryItemId();
-
+		val categoryAtr = EnumAdaptor.valueOf(command.getCategoryAtr(), CategoryAtr.class);
+		
 		// ドメインモデル「明細書項目」を新規追加する
-		statementItemRepository.update(
-				new StatementItem(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(), salaryItemId,
-						statementItem.getDefaultAtr(), statementItem.getValueAtr(), statementItem.getDeprecatedAtr(),
-						statementItem.getSocialInsuaEditableAtr(), statementItem.getIntergrateCd()));
-		val categoryAtr = EnumAdaptor.valueOf(command.getStatementItem().getCategoryAtr(), CategoryAtr.class);
+		if (statementItem != null) {
+			statementItemRepository.update(new StatementItem(cid, categoryAtr.value,
+					statementItem.getItemNameCd(), salaryItemId, statementItem.getDefaultAtr(),
+					statementItem.getValueAtr(), statementItem.getDeprecatedAtr(),
+					statementItem.getSocialInsuaEditableAtr(), statementItem.getIntergrateCd()));
+		}
+		
 		switch (categoryAtr) {
 		case PAYMENT_ITEM:
 			// ドメインモデル「支給項目設定」を新規追加する

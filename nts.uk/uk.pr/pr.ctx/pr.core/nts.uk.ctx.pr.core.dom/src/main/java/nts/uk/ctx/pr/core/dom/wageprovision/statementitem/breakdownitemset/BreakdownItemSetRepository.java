@@ -21,5 +21,7 @@ public interface BreakdownItemSetRepository {
 	void update(BreakdownItemSet domain);
 
 	void remove(String salaryItemId, String breakdownItemCode);
+	
+	void removeAll(String salaryItemId);
 
 }

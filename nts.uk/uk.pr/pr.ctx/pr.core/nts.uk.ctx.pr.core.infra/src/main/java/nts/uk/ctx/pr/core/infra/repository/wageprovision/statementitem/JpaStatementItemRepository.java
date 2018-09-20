@@ -16,8 +16,8 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItem f";
 	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemPk.cid =:cid";
-	private static final String SELECT_BY_CATEGORY = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemPk.cid =:cid AND "
-			+ " f.statementItemPk.categoryAtr =:categoryAtr";
+	private static final String SELECT_BY_CATEGORY = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr";
 	private static final String SELECT_BY_ITEM_NAME_CD = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
 			+ " f.statementItemPk.itemNameCd =:itemNameCd ";
@@ -70,8 +70,10 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 
 	@Override
 	public void remove(String cid, int categoryAtr, String itemNameCd, String salaryItemId) {
-		this.commandProxy().remove(QpbmtStatementItem.class,
-				new QpbmtStatementItemPk(cid, categoryAtr, itemNameCd, salaryItemId));
+		if (this.getStatementItemById(cid, categoryAtr, itemNameCd, salaryItemId).isPresent()) {
+			this.commandProxy().remove(QpbmtStatementItem.class,
+					new QpbmtStatementItemPk(cid, categoryAtr, itemNameCd, salaryItemId));
+		}
 	}
 
 }

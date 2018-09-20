@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.statementitem;
 
+import java.util.List;
+
 import lombok.Value;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.BreakdownItemSetDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.DeductionItemSetDto;
@@ -23,8 +25,32 @@ public class StatementItemDataCommand {
 	private StatementItemDisplaySetDto statementDisplaySet;
 	private ItemRangeSetDto itemRangeSet;
 	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
-	private BreakdownItemSetDto breakdownItemSet;
+	private List<BreakdownItemSetDto> breakdownItemSet;
 	private TaxExemptionLimitDto taxExemptionLimit;
 	private IntegratedItemDto integratedItem;
 	private boolean checkCreate;
+	/**
+	 * 給与項目ID
+	 */
+	private String salaryItemId;
+	
+	/**
+	 * カテゴリ区分
+	 */
+	private int categoryAtr;
+
+	/**
+	 * 項目名コード
+	 */
+	private String itemNameCd;
+
+	/**
+	 * 名称
+	 */
+	private String name;
+
+	/**
+	 * 廃止区分
+	 */
+	private Integer deprecatedAtr;
 }

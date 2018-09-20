@@ -46,13 +46,13 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 	protected void handle(CommandHandlerContext<StatementItemDataCommand> context) {
 		val command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		
+
 		val statementItem = command.getStatementItem();
-		String salaryItemId = statementItem.getSalaryItemId();
+		String salaryItemId = command.getSalaryItemId();
 		statementItemRepository.remove(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(),
 				salaryItemId);
 		statementItemNameRepository.remove(cid, salaryItemId);
-		
+
 		switch (EnumAdaptor.valueOf(command.getStatementItem().getCategoryAtr(), CategoryAtr.class)) {
 		case PAYMENT_ITEM:
 			paymentItemSetRepository.remove(cid, salaryItemId);
@@ -60,7 +60,7 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 				setPeriodCycleRepository.remove(salaryItemId);
 			}
 			if (command.getBreakdownItemSet() != null) {
-				breakdownItemSetRepository.remove(salaryItemId, command.getBreakdownItemSet().getBreakdownItemCode());
+				breakdownItemSetRepository.removeAll(salaryItemId);
 			}
 			break;
 		case DEDUCTION_ITEM:
@@ -69,7 +69,7 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 				setPeriodCycleRepository.remove(salaryItemId);
 			}
 			if (command.getBreakdownItemSet() != null) {
-				breakdownItemSetRepository.remove(salaryItemId, command.getBreakdownItemSet().getBreakdownItemCode());
+				breakdownItemSetRepository.removeAll(salaryItemId);
 			}
 			break;
 		case ATTEND_ITEM:
@@ -81,7 +81,7 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 			break;
 
 		}
-		
+
 		itemRangeSetRepository.remove(cid, salaryItemId);
 		statementItemDisplaySetRepository.remove(cid, salaryItemId);
 	}
