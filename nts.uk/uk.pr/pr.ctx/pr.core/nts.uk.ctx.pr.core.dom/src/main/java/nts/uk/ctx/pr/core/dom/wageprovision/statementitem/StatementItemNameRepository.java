@@ -11,6 +11,8 @@ public interface StatementItemNameRepository {
 	List<StatementItemName> getAllStatementItemName();
 
 	Optional<StatementItemName> getStatementItemNameById(String cid, String salaryItemId);
+	
+	List<StatementItemName> getStatementItemNameByListSalaryItemId(String cid, List<String> salaryItemIds);
 
 	void add(StatementItemName domain);
 
