@@ -40,10 +40,11 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
     }
 
     private List<YearMonthHistoryItem> toDomain(List<QpbmtOccAccIsHis> entities) {
-        if (entities == null || entities.isEmpty()) {
-            return null;
-        }
         List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<YearMonthHistoryItem>();
+        if (entities == null || entities.isEmpty()) {
+            return yearMonthHistoryItemList;
+        }
+
         entities.forEach(entity -> {
             yearMonthHistoryItemList.add( new YearMonthHistoryItem(entity.occAccIsHisPk.hisId,
                     new YearMonthPeriod(new YearMonth(entity.startYearMonth),
