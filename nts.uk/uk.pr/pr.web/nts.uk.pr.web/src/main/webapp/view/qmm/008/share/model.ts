@@ -411,11 +411,9 @@ module nts.uk.pr.view.qmm008.share.model {
             this.employeeExemptionRate(params ? params.employeeExemptionRate : null);
 
             this.remainBurdenRatio = ko.computed(function() {
-                console.log(this.individualBurdenRatio());
                 return this.individualBurdenRatio() - this.individualExemptionRate();
             }, this);
             this.remainEmployeeContributionRatio = ko.computed(function() {
-                console.log(this.individualBurdenRatio());
                 return this.employeeContributionRatio() - this.employeeExemptionRate();
             }, this);
         }

@@ -39,10 +39,7 @@ public class WelfareInsuranceService {
 	@Inject
 	private WelfarePensionStandardMonthlyFeeRepository welfarePensionStandardMonthlyFeeRepository;
 
-	public void registerWelfarePensionInsurance(String officeCode, YearMonthHistoryItem yearMonthItem,
-			BonusEmployeePensionInsuranceRate bonusEmployeePension,
-			EmployeesPensionMonthlyInsuranceFee employeePensonMonthly,
-			WelfarePensionInsuranceClassification welfarePensionClassification) {
+	public void registerWelfarePensionInsurance(String officeCode, YearMonthHistoryItem yearMonthItem, BonusEmployeePensionInsuranceRate bonusEmployeePension, EmployeesPensionMonthlyInsuranceFee employeePensonMonthly, WelfarePensionInsuranceClassification welfarePensionClassification) {
 		WelfarePensionInsuranceRateHistory welfarePensionHistory = null;
 		Optional<WelfarePensionInsuranceRateHistory> opt_welfarePensionHistory = welfarePensionInsuranceRateHistoryRepository
 				.getWelfarePensionInsuranceRateHistoryByOfficeCode(officeCode);
@@ -91,8 +88,8 @@ public class WelfareInsuranceService {
 	private void updateWelfarePensionInsurance(BonusEmployeePensionInsuranceRate bonusEmployeePension,
 			EmployeesPensionMonthlyInsuranceFee employeePensonMonthly,
 			WelfarePensionInsuranceClassification welfarePensionClassification) {
-		bonusEmployeePensionInsuranceRateRepository.add(bonusEmployeePension);
-		employeesPensionMonthlyInsuranceFeeRepository.add(employeePensonMonthly);
-		welfarePensionInsuranceClassificationRepository.add(welfarePensionClassification);
+		bonusEmployeePensionInsuranceRateRepository.update(bonusEmployeePension);
+		employeesPensionMonthlyInsuranceFeeRepository.update(employeePensonMonthly);
+		welfarePensionInsuranceClassificationRepository.update(welfarePensionClassification);
 	}
 }

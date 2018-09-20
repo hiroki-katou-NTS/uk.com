@@ -32,11 +32,11 @@ public class RoundCalculatedValue {
             case ROUND_4_UP_5:
                 return new BigDecimal(calculation).setScale(scale, RoundingMode.HALF_UP);
             // 五捨六入
-            case ROUND_5_UP_6:
+            case ROUND_SUPER_5:
                 return new BigDecimal(calculation).setScale(scale, RoundingMode.HALF_DOWN);
             // 五捨五超入
-            case ROUND_SUPER_5:
-                return new BigDecimal(calculation + ROUND_1_AFTER_DOT == scale ? 0.400 : 0.004).setScale(scale, RoundingMode.DOWN);
+            case ROUND_5_UP_6:
+                return new BigDecimal(calculation + (ROUND_1_AFTER_DOT == scale ? 0.400 : 0.004)).setScale(scale, RoundingMode.DOWN);
             default:
                 return new BigDecimal(0);
         }

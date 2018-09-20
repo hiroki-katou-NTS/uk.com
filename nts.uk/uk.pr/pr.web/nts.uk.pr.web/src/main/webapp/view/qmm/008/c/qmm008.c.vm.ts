@@ -277,7 +277,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                         self.initBlankData();
                     } else {
                         if (history.length > 1){
-                            self.showEmployeeHealthInsuranceByHistoryId(history[1].historyId);    
+                            self.showEmployeePensionByHistoryId(history[1].historyId);    
                         } else {
                             self.initBlankData();    
                         }
@@ -291,7 +291,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         editHistory() {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
-            let selectedHis tory = ko.toJS(self.selectedHistoryPeriod);
+            let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
             setShared("QMM008_H_PARAMS", {screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#C1_5").focus();
