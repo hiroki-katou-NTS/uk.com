@@ -1,6 +1,7 @@
 module nts.uk.at.view.ktg029.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
+    import info = nts.uk.ui.dialog.info;
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
         currentMonth: KnockoutObservable<period>;
@@ -474,8 +475,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         afterGrantDateInfo: YearlyHolidayInfo;
         attendanceRate: number;
         workingDays: number;
-        calculationMethod: boolean;
-        useSimultaneousGrant: boolean;
+        calculationMethod: number;
+        useSimultaneousGrant: number;
         constructor(dto: YearlyHolidayDto){
             this.nextTime = dto.nextTime == null ? '': dto.nextTime.substr(-8);
             this.grantedDaysNo = dto.grantedDaysNo;
@@ -485,8 +486,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
             this.attendanceRate = dto.attendanceRate;
             this.workingDays = dto.workingDays;
-            this.calculationMethod = dto.calculationMethod == 1?true:false;
-            this.useSimultaneousGrant = dto.useSimultaneousGrant == 1?true:false;
+            if(dto.calculationMethod==3){
+                info({ messageId: "Msg_1315" });
+            }
+            this.calculationMethod = dto.calculationMethod;
+            this.useSimultaneousGrant = dto.useSimultaneousGrant;
         }
     }
     export class RemainingNumber{
