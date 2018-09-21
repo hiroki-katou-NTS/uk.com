@@ -1,46 +1,102 @@
 module nts.uk.com.view.qmm008.f {
     export module viewmodel {
-       export class ScreenModel {
-           
-           dataList: KnockoutObservableArray<RowData>;
-           
-           constructor(){
-               var self = this;
-               self.dataList = ko.observableArray([]);
-               self.dataList.push(new RowData("1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1"));
-               $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
-           }
-       }
-    }
-    
-    
-    export class RowData {
-        col1: KnockoutObservable<string>;
-        col2: KnockoutObservable<string>;
-        col3: KnockoutObservable<string>;
-        col4: KnockoutObservable<string>;
-        col5: KnockoutObservable<string>;
-        col6: KnockoutObservable<string>;
-        col7: KnockoutObservable<string>;
-        col8: KnockoutObservable<string>;
-        col9: KnockoutObservable<string>;
-        col10: KnockoutObservable<string>;
-        col11: KnockoutObservable<string>;
-        col12: KnockoutObservable<string>;
-        constructor(col1: string, col2: string, col3: string, col4: string, col5: string, col6: string, col7: string, col8: string, col9: string, col10: string, col11: string, col12: string) {
-            this.col1 = ko.observable(col1);
-            this.col2 = ko.observable(col2);
-            this.col3 = ko.observable(col3);
-            this.col4 = ko.observable(col4);
-            this.col5 = ko.observable(col5);
-            this.col6 = ko.observable(col6);
-            this.col7 = ko.observable(col7);
-            this.col8 = ko.observable(col8);
-            this.col9 = ko.observable(col9);
-            this.col10 = ko.observable(col10);
-            this.col11 = ko.observable(col11);
-            this.col12 = ko.observable(col12);
+        export class ScreenModel {
+
+            dataList: KnockoutObservableArray<RowData>;
+            header : KnockoutObservable<HeaderData> = ko.observable(new HeaderData ());
+            constructor() {
+                var self = this;
+                self.dataList = ko.observableArray([]);
+                nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
+                    for (var i = 0; i < response.cusDataDtos.length; i++) {
+                        self.dataList.push(response.cusDataDtos[i]);
+                    }
+                    self.header(response.premiumRate);
+                });
+
+                $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
+            }
         }
     }
     
+    interface IRowData {
+        welfarePensionGrade: KnockoutObservable<string> ,
+        standardMonthlyFee: KnockoutObservable<string> ,
+        rewardMonthlyLowerLimit: KnockoutObservable<string> ,
+        rewardMonthlyUpperLimit: KnockoutObservable<string> ,
+        inMaleInsurancePremium: KnockoutObservable<string>,
+        emMaleInsurancePremium: KnockoutObservable<string>,
+        inMaleExemptionInsurance: KnockoutObservable<string>,
+        emMaleExemptionInsurance: KnockoutObservable<string>,
+        inFemaleInsurancePremium: KnockoutObservable<string> ,
+        emFemaleInsurancePremium: KnockoutObservable<string> ,
+        inFemaleExemptionInsurance: KnockoutObservable<string> ,
+        emFemaleExemptionInsurance: KnockoutObservable<string>
+    
+    }
+    
+
+    export class RowData {
+        welfarePensionGrade: KnockoutObservable<string>  = ko.observable(null);
+        standardMonthlyFee: KnockoutObservable<string>  = ko.observable(null);
+        rewardMonthlyLowerLimit: KnockoutObservable<string>  = ko.observable(null);
+        rewardMonthlyUpperLimit: KnockoutObservable<string> = ko.observable(null);
+        inMaleInsurancePremium: KnockoutObservable<string> = ko.observable(null);
+        emMaleInsurancePremium: KnockoutObservable<string> = ko.observable(null);
+        inMaleExemptionInsurance: KnockoutObservable<string> = ko.observable(null);
+        emMaleExemptionInsurance: KnockoutObservable<string> = ko.observable(null);
+        inFemaleInsurancePremium: KnockoutObservable<string> = ko.observable(null);
+        emFemaleInsurancePremium: KnockoutObservable<string> = ko.observable(null);
+        inFemaleExemptionInsurance: KnockoutObservable<string> = ko.observable(null);
+        emFemaleExemptionInsurance: KnockoutObservable<string> = ko.observable(null);
+        constructor(parameter? :IRowData) {
+            this.welfarePensionGrade(parameter ? parameter.welfarePensionGrade : '');
+            this.standardMonthlyFee(parameter ? parameter.standardMonthlyFee : '');
+            this.rewardMonthlyLowerLimit(parameter ? parameter.rewardMonthlyLowerLimit : '');
+            this.rewardMonthlyUpperLimit(parameter ? parameter.rewardMonthlyUpperLimit : '');
+            this.inMaleInsurancePremium(parameter ? parameter.inMaleInsurancePremium : '');
+            this.emMaleInsurancePremium (parameter ? parameter.emMaleInsurancePremium : '');
+            this.inMaleExemptionInsurance(parameter ? parameter.inMaleExemptionInsurance : '');
+            this.emMaleExemptionInsurance (parameter ? parameter.emMaleExemptionInsurance : '');
+            this.inFemaleInsurancePremium(parameter ? parameter.inFemaleInsurancePremium : '');
+            this.emFemaleInsurancePremium (parameter ? parameter.emFemaleInsurancePremium : '');
+            this.inFemaleExemptionInsurance (parameter ? parameter.inFemaleExemptionInsurance : '');
+            this.emFemaleExemptionInsurance(parameter ? parameter.emFemaleExemptionInsurance : '');
+        }
+    }
+    
+     interface IHeaderData {
+        fIndividualBurdenRatio: KnockoutObservable<string>,
+        mIndividualBurdenRatio: KnockoutObservable<string>,
+        fEmployeeContributionRatio: KnockoutObservable<string>,
+        mEmployeeContributionRatio: KnockoutObservable<string>,
+        fIndividualExemptionRate: KnockoutObservable<string>,
+        mIndividualExemptionRate: KnockoutObservable<string>,
+        fEmployeeExemptionRate: KnockoutObservable<string>,
+        mEmployeeExemptionRate: KnockoutObservable<string>
+    }
+    
+    export class HeaderData {
+        fIndividualBurdenRatio: KnockoutObservable<string>  = ko.observable(null);
+        mIndividualBurdenRatio: KnockoutObservable<string>  = ko.observable(null);
+        fEmployeeContributionRatio: KnockoutObservable<string>  = ko.observable(null);
+        mEmployeeContributionRatio: KnockoutObservable<string>  = ko.observable(null);
+        fIndividualExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        mIndividualExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        fEmployeeExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        mEmployeeExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        
+        constructor(parameter?: IHeaderData) {
+             this.fIndividualBurdenRatio(parameter ? parameter.fIndividualBurdenRatio : '');
+             this.mIndividualBurdenRatio(parameter ? parameter.mIndividualBurdenRatio : '');
+             this.fEmployeeContributionRatio(parameter ? parameter.fEmployeeContributionRatio : '');
+             this.mEmployeeContributionRatio(parameter ? parameter.mEmployeeContributionRatio : '');
+             this.fIndividualExemptionRate(parameter ? parameter.fIndividualExemptionRate : '');
+             this.mIndividualExemptionRate(parameter ? parameter.mIndividualExemptionRate : '');
+             this.fEmployeeExemptionRate(parameter ? parameter.fEmployeeExemptionRate : '');
+             this.mEmployeeExemptionRate(parameter? parameter.mEmployeeExemptionRate : '');
+        }
+        
+    }
+
 }

@@ -14,7 +14,6 @@ import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.HealthInsura
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.HealthInsuranceStandardGradePerMonthDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryHealthDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryHealthInsurancePremiumRateDto;
-import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommandHealth;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthly;
@@ -66,22 +65,20 @@ public class HealthInsuStandardMonthlyFinder {
 		
 		
 		if(dataFee.isPresent()) {
-			
 			if(check) {
 				dataFee.get().algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuStandarMonthly);
 			}
+			healthInsurancePerGradeFeeDtos = dataFee.get().getHealthInsurancePerGradeFee().stream().map(x -> new HealthInsurancePerGradeFeeDto(x.getHealthInsuranceGrade(), 
+					x.getInsuredBurden().getHealthInsurancePremium().v().toString(), 
+					x.getInsuredBurden().getNursingCare().v().toString(), 
+					x.getInsuredBurden().getSpecInsurancePremium().v().toString(), 
+					x.getInsuredBurden().getBasicInsurancePremium().v().toString(), 
+					x.getEmployeeBurden().getHealthInsurancePremium().v().toString(), 
+					x.getEmployeeBurden().getNursingCare().v().toString(), 
+					x.getEmployeeBurden().getSpecInsurancePremium().v().toString(), 
+					x.getEmployeeBurden().getBasicInsurancePremium().v().toString())).collect(Collectors.toList());
 			
-			for (int i = 0; i < dataFee.get().getHealthInsurancePerGradeFee().size(); i++) {
-				HealthInsurancePerGradeFeeDto healthInsurancePerGradeFeeDto = new HealthInsurancePerGradeFeeDto(dataFee.get().getHealthInsurancePerGradeFee().get(i).getHealthInsuranceGrade(),dataFee.get().getHealthInsurancePerGradeFee().get(i).getInsuredBurden().getHealthInsurancePremium().v().toString(),
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getInsuredBurden().getNursingCare().v().toString(), 
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getInsuredBurden().getSpecInsurancePremium().v().toString(), 
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getInsuredBurden().getBasicInsurancePremium().v().toString(), 
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getEmployeeBurden().getHealthInsurancePremium().v().toString(), 
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getEmployeeBurden().getNursingCare().v().toString(), 
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getEmployeeBurden().getSpecInsurancePremium().v().toString(), 
-						dataFee.get().getHealthInsurancePerGradeFee().get(i).getEmployeeBurden().getBasicInsurancePremium().v().toString());
-				healthInsurancePerGradeFeeDtos.add(healthInsurancePerGradeFeeDto);
-			}
+			
 			salaryHealthInsurancePremiumRateDto = new SalaryHealthInsurancePremiumRateDto(dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getHealthInsuranceRate().v().toString(), 
 					dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getLongCareInsuranceRate().v().toString(), 
 					dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getSpecialInsuranceRate().v().toString(), 
@@ -101,12 +98,11 @@ public class HealthInsuStandardMonthlyFinder {
 			List<HealthInsuranceGradePerRewardMonthlyRangeDto> healthInsuranceGradePerRewardMonthlyRangesDtos,
 			List<HealthInsurancePerGradeFeeDto> healthInsurancePerGradeFeeDtos) {
 		List<CusHealthInsuDto> response = new ArrayList<>();
-		for (int i = 0; i < healthInsuranceStandardGradePerMonthDtos.size(); i++) {
-			int count = i;
-			Optional<HealthInsuranceGradePerRewardMonthlyRangeDto> gradePerRewardMonthlyRangesDtos = healthInsuranceGradePerRewardMonthlyRangesDtos.stream().filter( x -> x.getHealthInsuranceGrade() == healthInsuranceStandardGradePerMonthDtos.get(count).getHealthInsuranceGrade()).findFirst();
-			Optional<HealthInsurancePerGradeFeeDto> healthInsurancePerGradeFeeDto = healthInsurancePerGradeFeeDtos.stream().filter(x -> x.getHealthInsuranceGrade() == healthInsuranceStandardGradePerMonthDtos.get(count).getHealthInsuranceGrade()).findFirst();
-			CusHealthInsuDto data = new CusHealthInsuDto(healthInsuranceStandardGradePerMonthDtos.get(i).getHealthInsuranceGrade(), 
-					healthInsuranceStandardGradePerMonthDtos.get(i).getStandardMonthlyFee(), 
+		for (HealthInsuranceStandardGradePerMonthDto standardGradePerMonthDto : healthInsuranceStandardGradePerMonthDtos) {
+			Optional<HealthInsuranceGradePerRewardMonthlyRangeDto> gradePerRewardMonthlyRangesDtos = healthInsuranceGradePerRewardMonthlyRangesDtos.stream().filter( x -> x.getHealthInsuranceGrade() == standardGradePerMonthDto.getHealthInsuranceGrade()).findFirst();
+			Optional<HealthInsurancePerGradeFeeDto> healthInsurancePerGradeFeeDto = healthInsurancePerGradeFeeDtos.stream().filter(x -> x.getHealthInsuranceGrade() == standardGradePerMonthDto.getHealthInsuranceGrade()).findFirst();
+			CusHealthInsuDto data = new CusHealthInsuDto(standardGradePerMonthDto.getHealthInsuranceGrade(), 
+					standardGradePerMonthDto.getStandardMonthlyFee(), 
 					gradePerRewardMonthlyRangesDtos.isPresent() ? gradePerRewardMonthlyRangesDtos.get().getRewardMonthlyLowerLimit() : null, 
 					gradePerRewardMonthlyRangesDtos.isPresent() ? gradePerRewardMonthlyRangesDtos.get().getRewardMonthlyUpperLimit() : null, 
 					healthInsurancePerGradeFeeDto.isPresent() ? healthInsurancePerGradeFeeDto.get().getInHealthInsurancePremium() : null, 
