@@ -194,7 +194,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         decimalSelectionCls() {
             let self = this;
             let enable = (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if(!enable) {
+            if(enable) {
                 $('#L3_1').ntsError('clear');
                 self.timeDataFormatSetting().minuteFractionDigit(null);
             }

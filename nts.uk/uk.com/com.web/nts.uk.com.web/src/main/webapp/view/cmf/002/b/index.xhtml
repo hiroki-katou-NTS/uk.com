@@ -195,7 +195,7 @@
 							<div class="pull-left">
 								<!--B13 条件設定選択(パネル)-->
 								<div id="B13"
-									data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', visible: true}">
+									data-bind="ntsPanel:{width: '280px', height: '400px', direction: 'none', visible: true}">
 									<div class="div-line">
 										<!--B13_1 出力項目(ラベル)-->
 										<label>#{i18n.getText('CMF002_59')}</label>
@@ -210,9 +210,9 @@
 													dataSource: $parent.outputItemList,
 													primaryKey: 'outItemCd',
 													columns: [	
-																{headerText:'', key: 'order', width: 40, formatter: _.escape},
+																{headerText:'', key: 'order', width: 30, formatter: _.escape},
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 50, formatter: _.escape},
-																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 170, formatter: _.escape}
+																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 160, formatter: _.escape}
 															],
 													value: $parent.outItemCd,
 													multiple: false

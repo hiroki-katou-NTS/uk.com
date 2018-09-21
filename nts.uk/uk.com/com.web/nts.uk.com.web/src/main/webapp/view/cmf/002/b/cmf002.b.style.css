@@ -2,8 +2,12 @@
 	padding: 10px 0 0 10px;
 }
 
+.fixed-flex-layout-left {
+    margin-right: 10px;
+}
+
 .layout-right-column-1 {
-	width: 490px;
+	width: 480px;
 }
 
 .panel.ntsPanel.direction-right {
@@ -33,5 +37,12 @@
 .title-left{
 	margin-left: 10px !important;
 }
-
-
+body{
+	overflow: hidden;
+	
+}
+#contents-area {
+    position: relative;
+    padding: 10px;
+    overflow: hidden;
+}
