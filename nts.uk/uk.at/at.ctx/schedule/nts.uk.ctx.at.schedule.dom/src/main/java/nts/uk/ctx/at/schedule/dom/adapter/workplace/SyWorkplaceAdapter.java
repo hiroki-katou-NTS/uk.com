@@ -17,6 +17,6 @@ public interface SyWorkplaceAdapter {
 	
 	Optional<SWkpHistImported> findBySid(String employeeId, GeneralDate baseDate);
 	
-	Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+	Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates);
 }
