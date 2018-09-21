@@ -348,8 +348,8 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			statement.setInt(2, rootType.value);
 			statement.setDate(3, Date.valueOf(date.end().localDate()));
 			statement.setDate(4, Date.valueOf(date.start().localDate()));
-			for (int i = 1; i <= employeeIDs.size(); i++) {
-				statement.setString(i + 4, employeeIDs.get(i));
+			for (int i = 0; i < employeeIDs.size(); i++) {
+				statement.setString(i + 5, employeeIDs.get(i));
 			}
 			return toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootConfirm(rs)));
 			
