@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.resultrecord;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -32,6 +35,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppPhaseConfirmPK;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -322,5 +326,51 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			return Optional.empty();
 		}
 	}
+
+	@Override
+	public List<AppRootConfirm> findByEmpDate(String companyID, List<String> employeeIDs, DatePeriod date,
+			RecordRootType rootType) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, ");
+		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
+		sql.append(" FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase ");
+		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
+		sql.append(" LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame ");
+		sql.append(" ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER");
+		sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.RECORD_DATE <= ? AND appRoot.RECORD_DATE >= ?");
+		sql.append(" AND appRoot.EMPLOYEE_ID IN (");
+		sql.append(employeeIDs.stream().map(s -> "?").collect(Collectors.joining(",")));
+		sql.append(" )");
+		
+		try {
+			PreparedStatement statement = this.connection().prepareStatement(sql.toString());
+			statement.setString(1, companyID);
+			statement.setInt(2, rootType.value);
+			statement.setDate(3, Date.valueOf(date.end().localDate()));
+			statement.setDate(4, Date.valueOf(date.start().localDate()));
+			for (int i = 1; i <= employeeIDs.size(); i++) {
+				statement.setString(i + 4, employeeIDs.get(i));
+			}
+			return toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootConfirm(rs)));
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
+	private FullJoinAppRootConfirm createFullJoinAppRootConfirm(NtsResultRecord rs){
+		return new FullJoinAppRootConfirm(
+				rs.getString("ROOT_ID"), 
+				rs.getString("CID"), 
+				rs.getString("EMPLOYEE_ID"), 
+				rs.getGeneralDate("RECORD_DATE"), 
+				rs.getInt("ROOT_TYPE"), 
+				rs.getInt("PHASE_ORDER"), 
+				rs.getInt("APP_PHASE_ATR"), 
+				rs.getInt("FRAME_ORDER"), 
+				rs.getString("APPROVER_ID"), 
+				rs.getString("REPRESENTER_ID"), 
+				rs.getGeneralDate("APPROVAL_DATE"));
+			
+	}
 }

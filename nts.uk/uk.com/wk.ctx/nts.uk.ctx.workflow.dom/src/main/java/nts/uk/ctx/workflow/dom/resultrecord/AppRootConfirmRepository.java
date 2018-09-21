@@ -1,8 +1,10 @@
 package nts.uk.ctx.workflow.dom.resultrecord;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -32,6 +34,8 @@ public interface AppRootConfirmRepository {
 	public void createNewStatus(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
 	public Optional<AppRootConfirm> findByEmpDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
+	
+	public List<AppRootConfirm> findByEmpDate(String companyID, List<String> employeeID, DatePeriod date, RecordRootType rootType);
 
 	public void deleteByRequestList424(String companyID, String employeeID, GeneralDate date, Integer rootType);
 	
