@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-// domain name: 積立年休付与残数データ
+// domain name CS00038: 積立年休付与残数データ 
 public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 	
 	/**
@@ -137,11 +137,11 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 		}
 	}
 	
+	// hàm validate cho domain để khi add command hay ghi log cho domain thì sẽ xem xét xem có được add hay không
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays , String grantDateItemName, String  deadlineDateItemName) {
-		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
-			return false;
-
+		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
+		if(isNull == false) return false;
 		if (grantDays != null || usedDays != null || remainDays != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
@@ -164,6 +164,11 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 				throw new BusinessException("Msg_1023");
 			}
 		}
+		return true;
+	}
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays ) {
+		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
+			return false;
 		return true;
 	}
 }
