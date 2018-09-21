@@ -41,14 +41,13 @@
 								<!--P5_2 絞り込み検索-->
 								<div tabindex="2" style="width: 320px"
 									data-bind="ntsSearchBox: {
-										searchMode: 'filter', 
-										targetKey: 'code', 
-										comId: 'grd_Condition', 
-										items: listCondition, 
-										selected: selectedConditionCd, 
+										searchMode: 'filter',
+										targetKey: 'code',
+										comId: 'grd_Condition',
+										items: listCondition,
+										selected: selectedConditionCd,
 										selectedKey: 'code',
-										enable : mode() != 2,
-										fields: ['code', 'name'], 
+										fields: ['code', 'name'],
 										mode: 'igGrid'}" />
 								<!--P5_3 条件設定一覧-->
 								<table id="grd_Condition"
@@ -61,7 +60,7 @@
 											{ headerText: '#{i18n.getText('CMF002_37')}', key: 'code', width: 60, formatter: _.escape },
 										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'name', width: 220, formatter: _.escape },
 										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'catelogoryId', width: 220, formatter: _.escape,hidden:'true' }
-										], 
+										],
 										multiple: false,
 										value: selectedConditionCd}">
 								</table>
@@ -84,11 +83,10 @@
 									<td>
 										<!--P6_1 実行期間-->
 										<div id="P6_1" tabindex="3"
-											data-bind="ntsDateRangePicker: { 
+											data-bind="ntsDateRangePicker: {
 												required: true,
-												enable : mode() != 2,
 												value: periodDateValue,
-												name: '#[CMF002_224]' }" />	
+												name: '#[CMF002_224]' }" />
 									</td>
 								</tr>
 								<tr>
@@ -114,7 +112,7 @@
 						<button tabindex="4" class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
 						<!--P20_2 次へ→-->
 						<button tabindex="5" class="proceed x-large" style="margin-left: 10px"
-							data-bind="click: todoScreenQ, disable : mode() == 2,">#{i18n.getText('CMF002_226')}</button>
+							data-bind="click: todoScreenQ">#{i18n.getText('CMF002_226')}</button>
 					</td>
 				</tr>
 			</table>
