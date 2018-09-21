@@ -48,7 +48,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.getOutItem(data);
                 self.settingCurrentCondition();
                 self.isNewMode(false);
-                block.clear();   
+                block.clear();
             });
             
             self.isNewMode.subscribe((data) => {
@@ -100,19 +100,19 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             if (!self.conditionSettingList()) {
                 return;
             }
-            let condSet: IConditionSet = self.conditionSettingList()[self.index()];
-            self.conditionSetData().cId(condSet.cId);
-            self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
-            self.conditionSetData().conditionSetName(condSet.conditionSetName);
-            self.conditionSetData().categoryId(condSet.categoryId);
-            if (self.listCategory() && self.listCategory().length > 0 && self.getCategoryName(condSet.categoryId)) {
-                self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
-            }
-            self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
-            self.conditionSetData().autoExecution(condSet.autoExecution);
-            self.conditionSetData().delimiter(condSet.delimiter);
-            self.conditionSetData().stringFormat(condSet.stringFormat);
-            self.conditionSetData().itemOutputName(condSet.itemOutputName);
+                let condSet: IConditionSet = self.conditionSettingList()[self.index()];
+                self.conditionSetData().cId(condSet.cId);
+                self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
+                self.conditionSetData().conditionSetName(condSet.conditionSetName);
+                self.conditionSetData().categoryId(condSet.categoryId);
+                if (self.listCategory() && self.listCategory().length > 0 && self.getCategoryName(condSet.categoryId)) {
+                    self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
+                }
+                self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
+                self.conditionSetData().autoExecution(condSet.autoExecution);
+                self.conditionSetData().delimiter(condSet.delimiter);
+                self.conditionSetData().stringFormat(condSet.stringFormat);
+                self.conditionSetData().itemOutputName(condSet.itemOutputName);
         }
         
         getOutItem(selectedConditionSettingCode: string){
@@ -289,6 +289,23 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
         }
         
+        clear(){
+            let self = this;
+            self.conditionSetData(new ConditionSet ({
+                                                    cId: '',
+                                                    conditionSetCode: '',
+                                                    conditionSetName: '',
+                                                    categoryId: '',
+                                                    conditionOutputName: 0,
+                                                    autoExecution: 1,
+                                                    delimiter: 1,
+                                                    stringFormat: 0,
+                                                    itemOutputName: ''
+                                                    }));
+            self.categoryName('');
+            
+        }
+        
         createNewCondition() {
             let self = this;
             let outputItem: Array<IOutputItem> = [];
@@ -376,9 +393,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     //文字列形式選択
     export function getStringFormatItems(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(2, getText('CMF002_363')),
-            new model.ItemModel(3, getText('CMF002_364')),
-            new model.ItemModel(4, getText('CMF002_365'))
+            new model.ItemModel(0, getText('CMF002_363')),
+            new model.ItemModel(1, getText('CMF002_364')),
+            new model.ItemModel(2, getText('CMF002_365'))
         ];
     }
 

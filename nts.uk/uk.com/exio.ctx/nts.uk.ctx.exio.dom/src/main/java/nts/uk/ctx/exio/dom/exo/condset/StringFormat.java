@@ -4,15 +4,15 @@ public enum StringFormat {
 	/**
 	 * なし
 	 */
-	NONE(2, ""),
+	NONE(0, ""),
 	/**
 	 * ダブルコーテーション（"）
 	 */
-	DOUBLE_QUOTATION(3, "\""),
+	DOUBLE_QUOTATION(1, "\""),
 	/**
 	 * シングルコーテーション（'）
 	 */
-	SINGLE_QUOTATION(4, "'");
+	SINGLE_QUOTATION(2, "'");
 
 	/** The value. */
 	public final int value;
