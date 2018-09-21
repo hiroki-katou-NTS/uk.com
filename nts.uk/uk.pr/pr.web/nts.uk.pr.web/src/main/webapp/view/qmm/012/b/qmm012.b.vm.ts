@@ -158,13 +158,22 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
                     
+                    if(self.statementItemDataSelected().checkCreate()) {
+                         oldSalaryId = nts.uk.util.randomId();
+                         command.salaryItemId = oldSalaryId;
+                    }
+                    
                     block.invisible();
                     service.registerStatementItemData(command).done(function() {
                         block.clear();
                         
                         dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.loadListData().done(function() {
-                                if((oldSalaryId != null) || (oldSalaryId != "")) {
+                                let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
+                                    return oldSalaryId == o.salaryItemId;
+                                });
+                                
+                                if(matchSalaryID.length > 0) {
                                     self.statementItemDataSelected().salaryItemId(oldSalaryId);
                                 }
                                 
@@ -248,15 +257,7 @@ module nts.uk.pr.view.qmm012.b {
             }
             
             public modifyLog(): void {
-                let self = this;
                 
-//                nts.uk.ui.windows.sub.modal('../???/index.xhtml').onClosed(() => {
-//                    if(self.statementItemDataSelected().checkCreate()) {
-//                        $("#B3_2").focus();
-//                    } else {
-//                        $("#B3_3").focus();
-//                    }
-//                });
             }
             
             public registerPrintingName(): void {
@@ -364,6 +365,8 @@ module nts.uk.pr.view.qmm012.b {
                     
                     nts.uk.ui.errors.clearAll();
                 });
+                
+                nts.uk.ui.errors.clearAll();
             }
             
             public setBreakdownItem(): void {
