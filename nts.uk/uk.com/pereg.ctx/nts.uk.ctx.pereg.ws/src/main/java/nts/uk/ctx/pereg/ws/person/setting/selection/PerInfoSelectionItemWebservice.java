@@ -126,6 +126,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void removeSelectionItem(RemoveSelectionItemCommand command) {
 		this.removeCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("checkUseSelectionItem/{selectedId}")
+	public Boolean checkUseSelectionItem(@PathParam("selectedId") String selectionItemId) {
+		return this.removeCommandHandler.checkSelectionItemId(selectionItemId);
+	}
 
 	// history:
 	@POST

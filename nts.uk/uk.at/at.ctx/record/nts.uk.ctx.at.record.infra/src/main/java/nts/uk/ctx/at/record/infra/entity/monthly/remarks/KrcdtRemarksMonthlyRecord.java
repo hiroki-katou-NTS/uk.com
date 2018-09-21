@@ -39,19 +39,19 @@ public class KrcdtRemarksMonthlyRecord extends UkJpaEntity implements Serializab
 	@EmbeddedId
 	public KrcdtRemarksMonthlyRecordPK recordPK;
 	
+	
 	/** 期間 - start */
 	@Column(name = "STR_YMD")
 	public GeneralDate startYmd;
 	
-	/** 期間 - end */
-	@Column(name = "END_YMD")
-	public GeneralDate endYmd;
-
 	/** 備考 */
 	@Column(name = "RECORD_REMARKS")
 	public String recordRemarks;
 	
-
+	/** 期間 - end */
+	@Column(name = "END_YMD")
+	public GeneralDate endYmd;
+	
 	
 	@Override
 	protected Object getKey() {

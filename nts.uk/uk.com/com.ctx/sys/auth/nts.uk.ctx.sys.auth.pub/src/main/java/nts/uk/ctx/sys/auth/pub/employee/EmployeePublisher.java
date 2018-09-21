@@ -20,4 +20,7 @@ public interface EmployeePublisher {
 	
 	/** RequestList218 [No.218]職場、基準日からアラーム通知先の社員を取得する  **/
 	List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate);
+	
+	/** RequestList526 [No.526]就業担当者(社員IDList)を取得する **/
+	List<String> getListEmpID(String companyID , GeneralDate referenceDate);
 }

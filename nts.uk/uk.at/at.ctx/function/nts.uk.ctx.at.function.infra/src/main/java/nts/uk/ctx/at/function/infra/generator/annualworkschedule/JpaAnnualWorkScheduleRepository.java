@@ -290,8 +290,8 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		}
 		// パラメータ.対象社員ID（List）の件数をチェックする
 		if (empId.isEmpty()) {
-			// エラーメッセージ(#Msg_1367#)を表示
-			throw new BusinessException("Msg_1367");
+			// エラーメッセージ(#Msg_1397#)を表示
+			throw new BusinessException("Msg_1397");
 		}
 		return empId;
 	}

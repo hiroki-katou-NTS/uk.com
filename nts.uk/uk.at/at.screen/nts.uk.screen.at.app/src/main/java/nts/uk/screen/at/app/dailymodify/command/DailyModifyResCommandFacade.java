@@ -192,13 +192,13 @@ public class DailyModifyResCommandFacade {
 						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage());
+						month.getRedConditionMessage(), month.getHasFlex());
 			} else {
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), Optional.empty(),
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage());
+						month.getRedConditionMessage(), month.getHasFlex());
 			}
 		}
 
@@ -287,7 +287,7 @@ public class DailyModifyResCommandFacade {
 						resultError.putAll(errorDivergence);
 						hasError = true;
 					}
-					if (dataParent.getMode() == 0) {
+					if (dataParent.getMode() == 0 && monthParam.getHasFlex()) {
 						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
 								monthParam);
 						dataResultAfterIU.setFlexShortage(flexShortageRCDto);

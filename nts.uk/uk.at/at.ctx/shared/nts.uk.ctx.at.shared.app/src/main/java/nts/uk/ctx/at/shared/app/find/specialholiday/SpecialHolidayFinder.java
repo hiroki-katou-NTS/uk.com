@@ -115,12 +115,14 @@ public class SpecialHolidayFinder {
 	}
 
 	private List<Integer> getDuplicateNursings(List<Integer> settingCodes, List<NursingLeaveSettingDto> nursings) {
-		nursings.forEach(x -> {
-			Integer code = x.specialHolidayFrame;
-			if (!settingCodes.contains(code)) {
-				settingCodes.add(code);
-			}
-		});
+		if (!CollectionUtil.isEmpty(nursings)) {
+			nursings.forEach(x -> {
+				Integer code = x.specialHolidayFrame;
+				if (!settingCodes.contains(code)) {
+					settingCodes.add(code);
+				}
+			});
+		}
 		return settingCodes;
 	}
 
