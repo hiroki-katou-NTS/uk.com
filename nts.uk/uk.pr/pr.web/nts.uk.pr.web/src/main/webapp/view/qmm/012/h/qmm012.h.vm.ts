@@ -55,11 +55,12 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
 
         isValidForm() {
             let self = this;
+            let isValid: boolean = true;
             if (self.isEnableYearPeriod()) {
                 if (self.currentSetting().yearPeriodStart() && self.currentSetting().yearPeriodEnd()
                     && self.currentSetting().yearPeriodStart() > self.currentSetting().yearPeriodEnd()) {
-                    $('#H2_2').ntsError('set', { messageId: "MsgQ_3" });
-                    return false;
+                    $('#validityPeriod').ntsError('set', { messageId: "MsgQ_3" });
+                    isValid = false;
                 }
             }
 
@@ -70,11 +71,11 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
                     && self.currentSetting().july() == false && self.currentSetting().august() == false
                     && self.currentSetting().september() == false && self.currentSetting().october() == false
                     && self.currentSetting().november() == false && self.currentSetting().december() == false) {
-                    $('#H3_2').ntsError('set', { messageId: "MsgQ_4" });
-                    return false;
+                    $('#cycleSetting').ntsError('set', { messageId: "MsgQ_4" });
+                    isValid = false;
                 }
             }
-            return true;
+            return isValid;
         }
 
         execution() {

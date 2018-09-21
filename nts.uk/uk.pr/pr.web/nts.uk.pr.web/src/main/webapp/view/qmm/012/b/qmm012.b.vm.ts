@@ -405,7 +405,7 @@ module nts.uk.pr.view.qmm012.b {
                 let self = this;
 
                 setShared("QMM012_B_TO_H_SALARY_ITEM_ID", {
-                    salaryItemId: self.salaryItemId,
+                    salaryItemId: self.salaryItemId(),
                     categoryAtr: self.statementItem().categoryAtr(),
                     itemNameCd: self.statementItem().itemNameCd(),
                     name: self.statementItemName().name(),
