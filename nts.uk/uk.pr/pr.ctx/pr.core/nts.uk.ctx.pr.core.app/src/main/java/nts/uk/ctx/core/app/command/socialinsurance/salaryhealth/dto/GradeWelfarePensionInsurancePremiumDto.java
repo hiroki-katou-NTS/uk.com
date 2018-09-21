@@ -8,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class GradeWelfarePensionInsurancePremiumDto {
 	
+	private int welfarePensionGrade;
 	private String inMaleInsurancePremium;
 	private String emMaleInsurancePremium;
 	private String inMaleExemptionInsurance;

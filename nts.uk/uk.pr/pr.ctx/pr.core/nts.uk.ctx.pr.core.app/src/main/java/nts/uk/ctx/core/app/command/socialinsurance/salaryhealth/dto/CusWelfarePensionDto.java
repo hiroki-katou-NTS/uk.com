@@ -11,13 +11,14 @@ public class CusWelfarePensionDto {
 	private long standardMonthlyFee;
 	private long rewardMonthlyLowerLimit;
 	private long rewardMonthlyUpperLimit;
-	private String fIndividualBurdenRatio;
-	private String mIndividualBurdenRatio;
-	private String fEmployeeContributionRatio;
-	private String mEmployeeContributionRatio;
-	private String fIndividualExemptionRate;
-	private String mIndividualExemptionRate;
-	private String fEmployeeExemptionRate;
-	private String mEmployeeExemptionRate;
+	private String inMaleInsurancePremium;
+	private String emMaleInsurancePremium;
+	private String inMaleExemptionInsurance;
+	private String emMaleExemptionInsurance;
+	private String inFemaleInsurancePremium;
+	private String emFemaleInsurancePremium;
+	private String inFemaleExemptionInsurance;
+	private String emFemaleExemptionInsurance;
+	
 	
 }

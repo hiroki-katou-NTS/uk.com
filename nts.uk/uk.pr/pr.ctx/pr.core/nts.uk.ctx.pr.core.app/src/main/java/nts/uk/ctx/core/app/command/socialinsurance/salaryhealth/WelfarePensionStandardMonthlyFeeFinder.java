@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.CusWelfarePensionDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.GradeWelfarePensionInsurancePremiumDto;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.ResponseWelfarePension;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryEmployeesPensionInsuranceRateDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommandHealth;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionGradePerRewardMonthlyRangeDto;
@@ -32,10 +34,10 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 	@Inject
 	private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
 
-	public void findAllWelfarePensionAndRate(StartCommandHealth startCommand) {
+	public ResponseWelfarePension findAllWelfarePensionAndRate(StartCommandHealth startCommand) {
 
 		List<WelfarePensionStandardGradePerMonthDto> welfarePensionStandardGradePerMonthDtos = new ArrayList<>();
-		List<WelfarePensionGradePerRewardMonthlyRangeDto> welfarePensionGradePerRewardMonthlyRangeDto = new ArrayList<>();
+		List<WelfarePensionGradePerRewardMonthlyRangeDto> welfarePensionGradePerRewardMonthlyRangeDtos = new ArrayList<>();
 		SalaryEmployeesPensionInsuranceRateDto salaryEmployeesPensionInsuranceRateDto = new SalaryEmployeesPensionInsuranceRateDto();
 		List<GradeWelfarePensionInsurancePremiumDto> gradeWelfarePensionInsurancePremiumDtos = new ArrayList<>();
 
@@ -53,7 +55,7 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		Optional<MonthlyScopeOfWelfarePensionCompensation> monthlyScopeOfWelfarePensionCompensation = monthlyScopeOfWelfarePensionCompensationRepository
 				.getMonthlyScopeOfWelfarePensionCompensationByStartYearMonth(startCommand.getDate());
 		if (monthlyScopeOfWelfarePensionCompensation.isPresent()) {
-			welfarePensionGradePerRewardMonthlyRangeDto = monthlyScopeOfWelfarePensionCompensation.get()
+			welfarePensionGradePerRewardMonthlyRangeDtos = monthlyScopeOfWelfarePensionCompensation.get()
 					.getWelfarePensionGradePerRewardMonthlyRange().stream()
 					.map(x -> new WelfarePensionGradePerRewardMonthlyRangeDto(x.getWelfarePensionGrade(),
 							x.getRewardMonthlyLowerLimit(), x.getRewardMonthlyUpperLimit()))
@@ -73,7 +75,7 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().get().v().toString() : null , 
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeExemptionRate().get().v().toString() : null);
 			
-			gradeWelfarePensionInsurancePremiumDtos = employeesPensionMonthlyInsuranceFee.get().getPensionInsurancePremium().stream().map(x -> new GradeWelfarePensionInsurancePremiumDto(x.getInsuredBurden().getMaleInsurancePremium().v().toString(), 
+			gradeWelfarePensionInsurancePremiumDtos = employeesPensionMonthlyInsuranceFee.get().getPensionInsurancePremium().stream().map(x -> new GradeWelfarePensionInsurancePremiumDto(x.getWelfarePensionGrade(),x.getInsuredBurden().getMaleInsurancePremium().v().toString(), 
 					x.getEmployeeBurden().getMaleInsurancePremium().v().toString(), 
 					x.getInsuredBurden().getMaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getMaleExemptionInsurance().get().v().toString() : null, 
 					x.getEmployeeBurden().getMaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getMaleExemptionInsurance().get().v().toString() :null, 
@@ -82,10 +84,34 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 					x.getInsuredBurden().getFemaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getFemaleExemptionInsurance().get().v().toString() : null, 
 					x.getEmployeeBurden().getFemaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getFemaleExemptionInsurance().get().v().toString() : null)).collect(Collectors.toList());
 		}
-
+		List<CusWelfarePensionDto> response = mapping(welfarePensionStandardGradePerMonthDtos, welfarePensionGradePerRewardMonthlyRangeDtos, gradeWelfarePensionInsurancePremiumDtos);
+		return new ResponseWelfarePension(salaryEmployeesPensionInsuranceRateDto, response);
 	}
 	
-	
+	public List<CusWelfarePensionDto> mapping(List<WelfarePensionStandardGradePerMonthDto> standardGradePerMonthDtos,
+			List<WelfarePensionGradePerRewardMonthlyRangeDto> gradePerRewardMonthlyRangeDtos,
+			List<GradeWelfarePensionInsurancePremiumDto> insurancePremiumDtos) {
+		
+		List<CusWelfarePensionDto> response = new ArrayList<>();
+		for (WelfarePensionStandardGradePerMonthDto standardGradePerMonthDto : standardGradePerMonthDtos) {
+			Optional<WelfarePensionGradePerRewardMonthlyRangeDto> rewardMonthlyRange = gradePerRewardMonthlyRangeDtos.stream().filter(x -> x.getWelfarePensionGrade() == standardGradePerMonthDto.getWelfarePensionGrade()).findFirst();
+			Optional<GradeWelfarePensionInsurancePremiumDto> nsurancePremium = insurancePremiumDtos.stream().filter(x -> x.getWelfarePensionGrade() == standardGradePerMonthDto.getWelfarePensionGrade()).findFirst();
+			CusWelfarePensionDto data = new CusWelfarePensionDto(standardGradePerMonthDto.getWelfarePensionGrade(), 
+					standardGradePerMonthDto.getStandardMonthlyFee(), 
+					rewardMonthlyRange.isPresent() ? rewardMonthlyRange.get().getRewardMonthlyLowerLimit(): null, 
+					rewardMonthlyRange.isPresent() ? rewardMonthlyRange.get().getRewardMonthlyUpperLimit() : null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getInMaleInsurancePremium(): null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getEmMaleInsurancePremium(): null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getInMaleExemptionInsurance(): null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getEmMaleExemptionInsurance(): null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getInFemaleInsurancePremium():null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getEmFemaleInsurancePremium():null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getInFemaleExemptionInsurance() : null, 
+					nsurancePremium.isPresent() ? nsurancePremium.get().getEmFemaleExemptionInsurance() : null);
+			response.add(data);
+		}
+		return response;
+	}
 	
 	
 }

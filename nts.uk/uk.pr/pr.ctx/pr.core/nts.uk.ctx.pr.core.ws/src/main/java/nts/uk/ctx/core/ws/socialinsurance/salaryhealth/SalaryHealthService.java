@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.HealthInsuCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.HealthInsuStandardMonthlyFinder;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.WelfarePensionStandardMonthlyFeeFinder;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.ResponseWelfarePension;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryHealthDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommandHealth;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateCommandHealth;
@@ -23,7 +25,8 @@ public class SalaryHealthService {
 	@Inject
 	private HealthInsuCommandHandler healthInsuCommandHandler;
 	
-	
+	@Inject
+	private WelfarePensionStandardMonthlyFeeFinder feeFinder;
 	
 	@POST
 	@Path("/start")
@@ -45,8 +48,8 @@ public class SalaryHealthService {
 	
 	@POST
 	@Path("/startwelfare")
-	public void startScreenWelfare(StartCommandHealth startCommand) {
-		
+	public ResponseWelfarePension startScreenWelfare(StartCommandHealth startCommand) {
+		return feeFinder.findAllWelfarePensionAndRate(startCommand);
 	}
 	
 }
