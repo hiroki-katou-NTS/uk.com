@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.ws.exo.dataformat;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.find.exo.charoutputsetting.GetCdConvertName;
@@ -26,8 +27,8 @@ public class CharacterDataSettingWebService {
 	}
 	
 	@POST
-	@Path("getcconvertname")
-	public String getCdConvertName(String cdConvertCode){
+	@Path("getcconvertname/{cdConvertCode}")
+	public String getCdConvertName(@PathParam("cdConvertCode") String cdConvertCode){
 		return getCdConvertName.getCdConvertName(cdConvertCode);
 	}
 }

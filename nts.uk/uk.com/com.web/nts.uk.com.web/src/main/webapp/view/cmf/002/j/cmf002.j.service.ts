@@ -4,7 +4,7 @@ module nts.uk.com.view.cmf002.j.service {
     var paths = {
         getCharacterDataFormatSetting: "exio/exo/char/getdatatype",
         setCharacterDataFormatSetting: "exio/exo/character/add",
-        getCdConvertName: "exio/exo/char/getcconvertname"
+        getCdConvertName: "exio/exo/char/getcconvertname/{0}"
     }
 
     export function getCharacterDataFormatSetting(): JQueryPromise<any> {
@@ -13,7 +13,6 @@ module nts.uk.com.view.cmf002.j.service {
     export function setCharacterDataFormatSetting(data): JQueryPromise<any> {
         return ajax("com", paths.setCharacterDataFormatSetting, data);
     }
-    export function getCdConvertName(cdConvertCode: number): JQueryPromise<any> {
-        let _path = format(paths.getCdConvertName, cdConvertCode);
-        return ajax('com', _path);
+    export function getCdConvertName(cdConvertCode: any): JQueryPromise<any> {
+        return ajax('com', format(paths.getCdConvertName, cdConvertCode);
 }
