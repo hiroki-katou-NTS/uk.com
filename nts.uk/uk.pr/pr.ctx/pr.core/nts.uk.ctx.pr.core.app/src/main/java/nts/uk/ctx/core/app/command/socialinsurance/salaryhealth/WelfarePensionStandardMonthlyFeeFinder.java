@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -23,6 +24,7 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensio
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 
 @Transactional
+@Stateless
 public class WelfarePensionStandardMonthlyFeeFinder {
 
 	@Inject
