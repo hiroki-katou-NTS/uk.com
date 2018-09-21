@@ -68,6 +68,9 @@ public class StatementItemFinder {
 		String cid = AppContexts.user().companyId();
 		List<StatementItem> listStatementItem = statementItemRepository.getByCategory(cid, categoryAtr);
 		val salaryItemIds = listStatementItem.stream().map(item -> item.getSalaryItemId()).collect(Collectors.toList());
+		if(salaryItemIds.size() == 0){
+			return null;
+		}
 		List<StatementItemName> statementItemName = statementItemNameRepository
 				.getStatementItemNameByListSalaryItemId(cid, salaryItemIds);
 		return listStatementItem.stream().map(domain -> {

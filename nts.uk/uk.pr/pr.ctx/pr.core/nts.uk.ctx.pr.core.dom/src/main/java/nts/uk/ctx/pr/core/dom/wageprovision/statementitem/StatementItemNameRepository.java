@@ -17,6 +17,8 @@ public interface StatementItemNameRepository {
 	void add(StatementItemName domain);
 
 	void update(StatementItemName domain);
+	
+	void updateListStatementItemName(List<StatementItemName> domain);
 
 	void remove(String cid, String salaryItemId);
 
