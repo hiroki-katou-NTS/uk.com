@@ -698,11 +698,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	// request list 515
 	@Override
 	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+		String cid = AppContexts.user().companyId();
 		List<AffJobTitleHistoryItem> listAffItem = new ArrayList<>();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
 		List<String> employee = new ArrayList<>();
 		// Lấy domain [AffJobHistory]
-		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate);
+		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate, cid);
 		if (affHist.isPresent()) {
 			// (Lấy domain [AffJobHistoryItem])
 			for (String item : affHist.get().getHistoryIds()) {
