@@ -625,7 +625,7 @@ module nts.uk.pr.view.qmm012.b {
             public setTaxExemptionLimit(): void {
                 let self = this;
 
-                setShared("QMM012_B_TO_K_SALARY_ITEM_ID", self.screenModel.statementItemDataSelected().salaryItemId);
+                setShared("QMM012_B_TO_K_PARAMS", self.taxLimitAmountCode());
 
                 nts.uk.ui.windows.sub.modal('../k/index.xhtml').onClosed(() => {
                     let data = getShared("QMM012_K_DATA");
