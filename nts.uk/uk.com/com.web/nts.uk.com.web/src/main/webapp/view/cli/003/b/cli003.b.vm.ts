@@ -703,7 +703,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 height: "calc(100% - 5px)",
                 features: [
                     {
-                        name: "Tooltips"
+                        name: "Tooltips",
+                        tooltipShown : function(evt, args) {
+                            setTimeout(() => {
+                            let lengthToolTip = args.value.length * 16 ;
+                            let maxPx = lengthToolTip <= 240 ? "max-content" : "240px" ;
+                            $("#igGridLog_tooltips").css("max-width",maxPx);
+                            $("#igGridLog_tooltips_content").css("width","max-content");
+                            console.log(maxPx);
+                            }, 1);
+                        }
                     },
                     {
                         name: "Paging",
@@ -726,6 +735,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         filterDropDownWidth: 200
                     }
                 ],
+                enableTooltip : true,
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -744,7 +754,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 features: [
                     {
                         name: "Tooltips",
-                        inherit: true
+                        inherit: true,
+                        tooltipShown : function(evt, args) {
+                            setTimeout(() => {
+                            let lengthToolTip = args.value.length * 16 ;
+                            let maxPx = lengthToolTip <= 240 ? "max-content" : "240px" ;
+                            $("#igGridLog_tooltips").css("max-width",maxPx);
+                            $("#igGridLog_tooltips_content").css("width","max-content");
+                            console.log(maxPx);
+                            }, 1);
+                        }
                     },
                     {
                         name: "Responsive",
@@ -757,7 +776,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     },
                     {
                         name: "Sorting",
-                        inherit: true
+                        inherit: false
 
                     },
                     {
@@ -801,10 +820,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         ],
                         features: [
                             {
-                                name: "Tooltips",
-                                inherit: true
-                            },
-                            {
                                 name: 'Selection',
                                 mode: "row",
                                 multipleSelection: false
@@ -813,38 +828,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
                                 columnSettings: []
-                            },
-                            {
-                                name: "Sorting",
-                                columnSettings: [
-                                    {
-                                        columnKey: 'categoryName',
-                                        allowSorting: false
-                                    },
-                                    {
-                                        columnKey: 'targetDate',
-                                        allowSorting: false
-                                    },
-                                    {
-                                        columnKey: 'itemName',
-                                        allowSorting: false
-                                    }
-                                    ,
-                                    {
-                                        columnKey: 'infoOperateAttr',
-                                        allowSorting: false
-                                    }
-                                    ,
-                                    {
-                                        columnKey: 'valueBefore',
-                                        allowSorting: false
-                                    }
-                                    ,
-                                    {
-                                        columnKey: 'valueAfter',
-                                        allowSorting: false
-                                    }
-                                ]
                             },
                             {
                                 name: "Resizing",
@@ -873,7 +856,17 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 dataSource: listLogBasicInfor,
                 features: [
                     {
-                        name: "Tooltips"
+                        name: "Tooltips",
+                        inherit: true,
+                        tooltipShown: function(evt, args) {
+                            setTimeout(() => {
+                                let lengthToolTip = args.value.length * 16;
+                                let maxPx = lengthToolTip <= 240 ? "max-content" : "240px";
+                                $("#igGridLog_tooltips").css("max-width", maxPx);
+                                $("#igGridLog_tooltips_content").css("width", "max-content");
+                                console.log(maxPx);
+                            }, 1);
+                        }
                     },
                     {
                         name: "Responsive",
@@ -1055,6 +1048,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     ui.options.dataSource = newSource;
                     $(ui.element).data("headersetting", headerSetting);
                 }
+            });
+             
+        
+            $(document).delegate("#igGridLog", "iggridtooltipstooltipshowing", function(evt, args) {
+                console.log(args.columnKey);
             });
         }
 
