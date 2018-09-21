@@ -67,7 +67,12 @@ public class StartPageLogWriter implements Filter {
 				getValue(context, c -> c.companyId()),
 				UserInfo.employee(
 						getValue(context, c -> c.userId()), 
-						getValue(context, c -> c.employeeId()),
+						getValue(context, c -> {
+							if(c.employeeId() == null){
+								return c.userId();
+							}
+							return c.employeeId();
+						}),
 						getValue(context, c -> {
 							UserInfoAdaptorForLog userAdapter = CDI.current().select(UserInfoAdaptorForLog.class).get();
 							if(context.isEmployee()){
