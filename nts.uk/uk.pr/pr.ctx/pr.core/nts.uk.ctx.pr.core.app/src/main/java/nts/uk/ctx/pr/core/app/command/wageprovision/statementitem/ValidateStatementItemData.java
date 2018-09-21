@@ -42,7 +42,9 @@ public class ValidateStatementItemData {
 		val listSalaryItemId = listStatementItem.stream().map(i -> {
 			return i.getSalaryItemId();
 		}).collect(Collectors.toList());
-
+		if (listSalaryItemId.size() == 0) {
+			return;
+		}
 		val listStatementItemName = statementItemNameRepository.getStatementItemNameByListSalaryItemId(cid,
 				listSalaryItemId);
 		if (listStatementItemName.stream().anyMatch(i -> i.getName().v().equals(statementItemName.getName()))) {

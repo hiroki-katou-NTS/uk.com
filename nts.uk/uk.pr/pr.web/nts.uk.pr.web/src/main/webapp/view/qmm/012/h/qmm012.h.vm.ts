@@ -12,18 +12,18 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         currentSetting: KnockoutObservable<model.ValidityPeriodAndCycleSet> = ko.observable(null);
         validityPeriodAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getValidityPeriodAtr());
         cycleSettingAtrList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getCycleSettingAtr());
-        itemAtr: string = "Test1";
-        itemNameCode: string = "Test2";
-        itemName: string = "Test3";
-        salaryItemId: string = "1234567890";
+        salaryItemId: string;
+        categoryAtr: string;
+        itemNameCd: string;
+        name: string;
 
         constructor() {
             let self = this;
-            let params = getShared("CMF002_C_PARAMS_FROM_B");
-            //self.salaryItemId = params.salaryItemId;
-            //self.itemAtr =  params.itemAtr;
-            //self.itemNameCode =  params.itemNameCode;
-            //self.itemName =  params.itemName;
+            let params = getShared("QMM012_B_TO_H_SALARY_ITEM_ID");
+            self.salaryItemId = params.salaryItemId;
+            self.categoryAtr = model.getCategoryAtrText(params.categoryAtr);
+            self.itemNameCd = params.itemNameCd;
+            self.name = params.name;
         }
 
         startPage(): JQueryPromise<any> {
