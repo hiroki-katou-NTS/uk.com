@@ -503,7 +503,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 targetDataType: self.dataTypeSelectedCode()
             };
             if (self.checkFormatDate() === '2') {
-                paramLog.endDateTaget = moment(self.dateValue().endDate).endOf('month').toDate();
+                paramLog.endDateTaget = moment(self.dateValue().endDate, "YYYY/MM/DD" ).endOf('month').toDate();
             } else {
                 paramLog.endDateTaget = moment.utc(self.dateValue().endDate, "YYYY/MM/DD").toISOString();
             }
