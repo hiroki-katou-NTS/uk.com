@@ -120,8 +120,9 @@ module nts.uk.pr.view.qmm012.b {
                     let data = getShared("QMM012_A_Params");
                     
                     if(data != null) {
+                        let categoryAtr = parseInt(data, 10);
                         self.statementItemDataSelected(new StatementItemData(null, self));
-                        self.statementItemDataSelected().statementItem().categoryAtr(data);
+                        self.statementItemDataSelected().statementItem().categoryAtr(categoryAtr);
                     }
                     
                     $("#B3_2").focus();
@@ -392,7 +393,7 @@ module nts.uk.pr.view.qmm012.b {
             public setBreakdownItem(): void {
                 let self = this;
 
-                setShared("QMM012_B_TO_I_SALARY_ITEM_ID", self.salaryItemId);
+                setShared("QMM012_B_TO_I_PARAMS", {salaryItemId: self.salaryItemId(), categoryName: self.statementItem().categoryName()});
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
@@ -427,6 +428,9 @@ module nts.uk.pr.view.qmm012.b {
             socialInsuaEditableAtr: KnockoutObservable<number>;
             intergrateCd: KnockoutObservable<string>;
             
+            // Custom deprecatedAtr from number to string
+            deprecatedAtrCustom: KnockoutObservable<boolean>;
+            
             constructor(data: IStatementItem) {
                 let self = this;
                 
@@ -441,13 +445,30 @@ module nts.uk.pr.view.qmm012.b {
                     self.intergrateCd = ko.observable(data.intergrateCd);
                 } else {
                     self.categoryAtr = ko.observable(null);
+                    self.categoryName =  ko.observable(null);
                     self.itemNameCd = ko.observable(null);
                     self.defaultAtr = 0;
                     self.valueAtr = ko.observable(null);
-                    self.deprecatedAtr = ko.observable(null);
+                    self.deprecatedAtr = ko.observable(0);
                     self.socialInsuaEditableAtr = ko.observable(null);
                     self.intergrateCd = ko.observable(null);
                 }
+                
+                self.deprecatedAtrCustom = ko.observable(self.deprecatedAtr() == 1);
+                
+                self.deprecatedAtrCustom.subscribe(x => {
+                    if (x) {
+                        self.deprecatedAtr(1);
+                    } else {
+                        self.deprecatedAtr(0);
+                    }
+                });
+                
+                self.categoryAtr.subscribe(x => {
+                    if (x != null) {
+                        self.categoryName(model.getCategoryAtrText(x));
+                    }
+                });
             }
         }
         

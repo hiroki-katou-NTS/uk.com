@@ -24,6 +24,13 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         constructor() {
             let self = this,
                 dfd = $.Deferred();
+            
+            let params = getShared("QMM012_B_TO_I_PARAMS");
+            
+            if(params) {
+                self.salaryItemId(params.salaryItemId);
+                self.bindAtr(params.categoryName);
+            }
 
             self.currentCode.subscribe((item) => {
                 if (item != '') {
@@ -158,6 +165,10 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
             });;
         }
         close() {
+            let self = this;
+            
+            setShared("QMM012_I_IS_SETTING", (self.lstBreakdownItemSet().length > 0));
+            
             nts.uk.ui.windows.close();
         }
 
