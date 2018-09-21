@@ -67,7 +67,7 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 		List<String> listEmploymentCd =  new ArrayList<>();
 		List<String> listClassCd =  new ArrayList<>();
 		List<String> listJobId =  new ArrayList<>();
-		List<String> listWorkplaceCd =  new ArrayList<>();
+		List<String> listWorkplaceId =  new ArrayList<>();
 		List<GeneralDate> listDate =  new ArrayList<>();
 		
 		List<ScheduleItem> listScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);
@@ -93,8 +93,8 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 					listClassCd.add(y.getAfter());
 					break;
 				case 65:
-					listWorkplaceCd.add(y.getBefore());
-					listWorkplaceCd.add(y.getAfter());
+					listWorkplaceId.add(y.getBefore());
+					listWorkplaceId.add(y.getAfter());
 					break;
 				case 66:
 					listJobId.add(y.getBefore());
@@ -111,25 +111,25 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 		List<String> listWorkTypeCode = listWorkTypeCd.stream().filter(x-> x != null).collect(Collectors.toList());
 		List<String> listWorkTimeCode = listWorkTimeCd.stream().filter(x-> x != null).collect(Collectors.toList());
 		List<String> listJobIdd = listJobId.stream().filter(x-> x != null).collect(Collectors.toList());
-		List<String> listWorkplace = listWorkplaceCd.stream().filter(x-> x != null).collect(Collectors.toList());
-		List<String> listClass = listClassCd.stream().filter(x-> x != null).collect(Collectors.toList());
-		List<String> listEmploym = listEmploymentCd.stream().filter(x-> x != null).collect(Collectors.toList());
+		List<String> listWorkplaceIdd = listWorkplaceId.stream().filter(x-> x != null).collect(Collectors.toList());
+		List<String> listClassCode = listClassCd.stream().filter(x-> x != null).collect(Collectors.toList());
+		List<String> listEmploymCode = listEmploymentCd.stream().filter(x-> x != null).collect(Collectors.toList());
 		
 		// get Code/Id-Name
 		Map<String, String> listWorkTypeCodeName = listWorkTypeCode.size() > 0
 				? workTypeRepository.getCodeNameWorkType(companyId, listWorkTypeCode) : new HashMap<>();
 		Map<String, String> listWorkTimeCodeName = listWorkTimeCode.size() > 0
 				? workTimeSettingRepository.getCodeNameByListWorkTimeCd(companyId, listWorkTimeCode) : new HashMap<>();
-		Map<Pair<String, GeneralDate>, String> listWorkplaceIdDateName = (listWorkplace.size() > 0
+		Map<Pair<String, GeneralDate>, Pair<String,String>> listWorkplaceIdDateName = (listWorkplaceIdd.size() > 0
 				&& listDate.size() > 0)
-						? syWorkplaceAdapter.getWorkplaceMapCodeBaseDateName(companyId, listWorkplace, listDate)
+						? syWorkplaceAdapter.getWorkplaceMapCodeBaseDateName(companyId, listWorkplaceIdd, listDate)
 						: new HashMap<>();
-		Map<Pair<String, GeneralDate>, String> listJobTitleIdDateName = (listJobIdd.size() > 0 && listDate.size() > 0)
+		Map<Pair<String, GeneralDate>, Pair<String,String>> listJobTitleIdDateName = (listJobIdd.size() > 0 && listDate.size() > 0)
 				? syJobTitleAdapter.getJobTitleMapIdBaseDateName(companyId, listJobIdd, listDate) : new HashMap<>();
-		Map<String, String> listClassification = listClass.size() > 0
-				? syClassificationAdapter.getClassificationMapCodeName(companyId, listClass) : new HashMap<>();
-		Map<String, String> listEmp = listEmploym.size() > 0
-				? scEmploymentAdapter.getEmploymentMapCodeName(companyId, listEmploym) : new HashMap<>();
+		Map<String, String> listClassification = listClassCode.size() > 0
+				? syClassificationAdapter.getClassificationMapCodeName(companyId, listClassCode) : new HashMap<>();
+		Map<String, String> listEmp = listEmploymCode.size() > 0
+				? scEmploymentAdapter.getEmploymentMapCodeName(companyId, listEmploymCode) : new HashMap<>();
 
 		List<ScheduleCorrectionTarget> targets = parameter.getTargets();
 		
@@ -143,14 +143,14 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 				
 				switch (correctedItem.getItemNo().intValue()) {
 				case 1:
-					String workTypeNameBefore = listWorkTypeCodeName.get(correctedItem.getBefore());
-					String workTypeNameAfter = listWorkTypeCodeName.get(correctedItem.getAfter());
-					itemInfo = correctedItem.toItemInfo(workTypeNameBefore, workTypeNameAfter);
+					String workTypeCodeNameBefore = correctedItem.getBefore() != null ? correctedItem.getBefore() + " " + listWorkTypeCodeName.get(correctedItem.getBefore()) : null;
+					String workTypeCodeNameAfter = correctedItem.getAfter() != null ? correctedItem.getAfter() + " " + listWorkTypeCodeName.get(correctedItem.getAfter()) : null;
+					itemInfo = correctedItem.toItemInfo(workTypeCodeNameBefore, workTypeCodeNameAfter);
 					break;
 				case 2:
-					String workTimeNameBefore = listWorkTimeCodeName.get(correctedItem.getBefore());
-					String workTimeNameAfter = listWorkTimeCodeName.get(correctedItem.getAfter());
-					itemInfo = correctedItem.toItemInfo(workTimeNameBefore, workTimeNameAfter);
+					String workTimeCodeNameBefore = correctedItem.getBefore() != null ? correctedItem.getBefore() + " " + listWorkTimeCodeName.get(correctedItem.getBefore()) : null;
+					String workTimeCodeNameAfter = correctedItem.getAfter() != null ? correctedItem.getAfter() + " " + listWorkTimeCodeName.get(correctedItem.getAfter()) : null;
+					itemInfo = correctedItem.toItemInfo(workTimeCodeNameBefore, workTimeCodeNameAfter);
 					break;
 				case 27:
 				case 30:
@@ -175,24 +175,28 @@ public class BasicScheduleCorrectionProcessor extends DataCorrectionLogProcessor
 					itemInfo = correctedItem.toItemInfo(nameBounceAtrBef, nameBounceAtrAft);
 					break;
 				case 63:
-					String employmentNameBef = listEmp.get(correctedItem.getBefore());
-					String employmentNameAft = listEmp.get(correctedItem.getAfter());
-					itemInfo = correctedItem.toItemInfo(employmentNameBef, employmentNameAft);
+					String employmentCodeNameBef = correctedItem.getBefore() != null ? correctedItem.getBefore() + " " + listEmp.get(correctedItem.getBefore()) : null;
+					String employmentCodeNameAft = correctedItem.getAfter() != null ? correctedItem.getAfter() + " " + listEmp.get(correctedItem.getAfter()) : null;
+					itemInfo = correctedItem.toItemInfo(employmentCodeNameBef, employmentCodeNameAft);
 					break;
 				case 64:
-					String classificationNameBef = listClassification.get(correctedItem.getBefore());
-					String classificationNameAft = listClassification.get(correctedItem.getAfter());
-					itemInfo = correctedItem.toItemInfo(classificationNameBef, classificationNameAft);
+					String classificationCodeNameBef = correctedItem.getBefore() != null ? correctedItem.getBefore() + " " + listClassification.get(correctedItem.getBefore()) : null;
+					String classificationCodeNameAft = correctedItem.getAfter() != null ? correctedItem.getAfter() + " " + listClassification.get(correctedItem.getAfter()) : null;
+					itemInfo = correctedItem.toItemInfo(classificationCodeNameBef, classificationCodeNameAft);
 					break;
 				case 65:
-					String workplaceNameBef = listWorkplaceIdDateName.get(Pair.of(correctedItem.getBefore(), date));
-					String workplaceNameAft = listWorkplaceIdDateName.get(Pair.of(correctedItem.getAfter(), date));
+					Pair<String, String> pairWpkCodeNameBef = listWorkplaceIdDateName.get(Pair.of(correctedItem.getBefore(), date));
+					Pair<String, String> pairWpkCodeNameAft = listWorkplaceIdDateName.get(Pair.of(correctedItem.getAfter(), date));
+					String workplaceNameBef = correctedItem.getBefore() != null ? pairWpkCodeNameBef.getLeft() + " " + pairWpkCodeNameBef.getRight() : null;
+					String workplaceNameAft = correctedItem.getAfter() != null ? pairWpkCodeNameAft.getLeft() + " " + pairWpkCodeNameAft.getRight() : null;
 					itemInfo = correctedItem.toItemInfo(workplaceNameBef, workplaceNameAft);
 					break;
 				case 66:
-					String jobIdNameBef = listJobTitleIdDateName.get(Pair.of(correctedItem.getBefore(), date));
-					String jobIdNameAft = listJobTitleIdDateName.get(Pair.of(correctedItem.getAfter(), date));
-					itemInfo = correctedItem.toItemInfo(jobIdNameBef, jobIdNameAft);
+					Pair<String, String> pairJobCodeNameBef = listJobTitleIdDateName.get(Pair.of(correctedItem.getBefore(), date));
+					Pair<String, String> pairJobCodeNameAft = listJobTitleIdDateName.get(Pair.of(correctedItem.getAfter(), date));
+					String jobIdCodeNameBef = correctedItem.getBefore() != null ? pairJobCodeNameBef.getLeft() + " " + pairJobCodeNameBef.getRight() : null;
+					String jobIdCodeNameAft = correctedItem.getAfter() != null ? pairJobCodeNameAft.getLeft() + " " + pairJobCodeNameAft.getRight() : null;
+					itemInfo = correctedItem.toItemInfo(jobIdCodeNameBef, jobIdCodeNameAft);
 					break;
 
 				default:
