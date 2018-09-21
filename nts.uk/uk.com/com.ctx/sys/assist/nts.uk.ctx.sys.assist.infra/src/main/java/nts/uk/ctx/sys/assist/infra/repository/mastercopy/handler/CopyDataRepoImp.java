@@ -36,21 +36,23 @@ public class CopyDataRepoImp implements CopyDataRepository {
         KeyInformation keyInformation = targetTableInfo.getKey();
         List<String> keys = new ArrayList<>();
         keys.add(keyInformation.getKEY1().v());
-        if (targetTableInfo.getCopyAttribute().value == COPY_MORE_COMPANY_ID.value) {
-            if (keyInformation.getKEY2().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY2().get().v()))
-                keys.add(keyInformation.getKEY2().get().v().trim());
-            if (keyInformation.getKEY3().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY3().get().v()))
-                keys.add(keyInformation.getKEY3().get().v().trim());
-            if (keyInformation.getKEY4().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY4().get().v()))
-                keys.add(keyInformation.getKEY4().get().v().trim());
-            if (keyInformation.getKEY5().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY5().get().v()))
-                keys.add(keyInformation.getKEY5().get().v().trim());
-        }
+//        if (targetTableInfo.getCopyAttribute().value == COPY_MORE_COMPANY_ID.value) {
+        if (keyInformation.getKEY2().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY2().get().v()))
+            keys.add(keyInformation.getKEY2().get().v().trim());
+        if (keyInformation.getKEY3().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY3().get().v()))
+            keys.add(keyInformation.getKEY3().get().v().trim());
+        if (keyInformation.getKEY4().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY4().get().v()))
+            keys.add(keyInformation.getKEY4().get().v().trim());
+        if (keyInformation.getKEY5().isPresent() && StringUtils.isNotBlank(keyInformation.getKEY5().get().v()))
+            keys.add(keyInformation.getKEY5().get().v().trim());
+//        }
 
         switch (targetTableInfo.getCopyAttribute()) {
             case COPY_WITH_COMPANY_ID:
+                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), companyId, true);
+                break;
             case COPY_MORE_COMPANY_ID:
-                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), companyId);
+                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), companyId, false);
                 break;
             case COPY_OTHER:
                 //using adapter
