@@ -260,6 +260,13 @@ module nts.uk.ui.koExtentions {
                                 data = $element.data(DATA);
                             }
 
+                            // not match any filter value
+                            if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
+                                $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
+                                //reload data
+                                data = $element.data(DATA);
+                            }
+
                             // set value on select
                             accessor.value(data[VALUE]);
 
@@ -302,6 +309,7 @@ module nts.uk.ui.koExtentions {
                             })
                             .show()
                             .find('input')
+                            .prop('readonly', !data[EDITABLE])
                             .css({
                                 'width': '0px',
                                 'height': !!data[EDITABLE] ? '30px' : '0px',

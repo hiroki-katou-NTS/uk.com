@@ -18,8 +18,15 @@ module nts.uk.at.view.kal003.c.viewmodel {
             { code: 0, name: nts.uk.resource.getText("KDW007_108") },
             { code: 1, name: nts.uk.resource.getText("KDW007_107") }
         ]);
-
-        enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
+        enumSingleValueCompareTypes: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: "等しくない（≠）" },
+            { code: 1, name: "等しい（＝）" },
+            { code: 2, name: "以下（≦）" },
+            { code: 3, name: "以上（≧）" },
+            { code: 4, name: "より小さい（＜）" },
+            { code: 5, name: "より大きい（＞）" }
+        ]);
+        enumlistCompareTypes : KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "等しくない（≠）" },
             { code: 1, name: "等しい（＝）" },
             { code: 2, name: "以下（≦）" },
@@ -55,32 +62,32 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 countableAddAtdItems: _.values(param.data.countableAddAtdItems || []),
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
-            self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
-//            caic = ko.mapping.fromJS(param.data);
-//            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
+            //self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);
+            caic = ko.mapping.fromJS(param.data);
+            self.currentAtdItemCondition = new ErAlAtdItemCondition(param.data);
             
-            caic.conditionAtr.subscribe(v => {
+            self.currentAtdItemCondition.conditionAtr.subscribe(v => {
                 $(".value-input").ntsError("clear");
-                caic.uncountableAtdItem(null);
-                caic.countableAddAtdItems([]);
-                caic.countableSubAtdItems([]);
-                caic.conditionType(0);
-                caic.compareOperator(0);
-                caic.singleAtdItem(0);
-                caic.compareStartValue(0);
-                caic.compareEndValue(0);
+                self.currentAtdItemCondition.uncountableAtdItem(null);
+                self.currentAtdItemCondition.countableAddAtdItems([]);
+                self.currentAtdItemCondition.countableSubAtdItems([]);
+                self.currentAtdItemCondition.conditionType(0);
+                self.currentAtdItemCondition.compareOperator(0);
+                self.currentAtdItemCondition.singleAtdItem(0);
+                self.currentAtdItemCondition.compareStartValue(0);
+                self.currentAtdItemCondition.compareEndValue(0);
 
                 self.fillTextDisplayTarget();
                 self.fillTextDisplayComparison();
             });
-            caic.compareOperator.subscribe((value) => {
+            self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 if (value > 5) {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
                         { code: 1, name: "勤怠項目", enable: false }
                     ]);
 
-                    caic.conditionType(0);
+                    self.currentAtdItemCondition.conditionType(0);
                 } else {
                     self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
@@ -104,7 +111,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
             }    
 //            caic.compareOperator.valueHasMutated();
 
-            caic.conditionType.subscribe((value) => {
+            self.currentAtdItemCondition.conditionType.subscribe((value) => {
                 if (value === 0) {
                     $('#display-compare-item').ntsError('clear');
                     $(".value-input").trigger("validate");
@@ -125,7 +132,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
             self.fillTextDisplayComparison();
 
             // validate
-            caic.compareStartValue.subscribe(v => {
+            self.currentAtdItemCondition.compareStartValue.subscribe(v => {
                 let s = ko.toJS(caic.compareStartValue),
                     e = ko.toJS(caic.compareEndValue),
                     t = ko.toJS(caic.compareOperator);
@@ -178,7 +185,8 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 }, 25);
             });
 
-            caic.compareEndValue.subscribe(v => caic.compareStartValue.valueHasMutated());
+            self.currentAtdItemCondition.compareEndValue.subscribe(v => 
+                self.currentAtdItemCondition.compareStartValue.valueHasMutated());
         }
 
         fillTextDisplayTarget() {
@@ -366,7 +374,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
         returnData() {
             let self = this;
             $(".need-check").filter(":enabled").trigger("validate");
-            if (self.validateRange()) {
+            if (self.validateRange() && !nts.uk.ui.errors.hasError()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
                 param.countableAddAtdItems = _.values(param.countableAddAtdItems);
                 param.countableSubAtdItems = _.values(param.countableSubAtdItems);

@@ -42,7 +42,7 @@ public class DataTypeStateDto {
 	}
 
 	public static DataTypeStateDto createNumericItemDto(int numericItemMinus, int numericItemAmount, int integerPart,
-			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+			Integer decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
 		return NumericItemDto.createFromJavaType(numericItemMinus, numericItemAmount, integerPart, decimalPart,
 				numericItemMin, numericItemMax);
 	}
@@ -92,10 +92,12 @@ public class DataTypeStateDto {
 					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
 		case NUMERIC:
 			NumericItem numItem = (NumericItem) dataTypeState;
+			Integer decimalPart = numItem.getDecimalPart() == null? null: numItem.getDecimalPart().v();
+			
 			BigDecimal numericItemMin = numItem.getNumericItemMin() != null ? numItem.getNumericItemMin().v() : null;
 			BigDecimal numericItemMax = numItem.getNumericItemMax() != null ? numItem.getNumericItemMax().v() : null;
 			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
-					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
+					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), decimalPart,
 					numericItemMin, numericItemMax);
 		case DATE:
 			DateItem dItem = (DateItem) dataTypeState;

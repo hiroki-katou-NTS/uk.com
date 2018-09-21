@@ -68,7 +68,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             if (groupCompanyAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
-                })
+                });
 
             } else {
                 let dfd = $.Deferred();
@@ -89,7 +89,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         } else {
                             self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                         }   
-                        
                         self.listItems.valueHasMutated();
                     }
                     block.clear();
@@ -107,7 +106,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem1>) => {
                 self.listItems.removeAll();
                 if (itemList && itemList.length > 0) {
-                    itemList.forEach(x => self.listItems.push(x));
+                    self.listItems(itemList);
+                     //itemList.forEach(x => self.listItems.push(x));
                 } else {//0件の場� エラーメヂ�ージの表示(#Msg_455)
                     alertError({ messageId: "Msg_455" });
                     self.registerDataSelectioItem();
@@ -228,31 +228,38 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let lastIndex = listItems.length - 1;
 
             let command = ko.toJS(currentItem);
-
-			confirm({ messageId: "Msg_551" }).ifYes(() => {
-				block.grayout();     
-				service.removeDataSelectionItem(command).done(function() {
-                
-					nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-						self.getAllSelectionItems().done(() => {
-							if (self.listItems().length > 0) {
-								if (oldIndex == lastIndex) {
-									oldIndex--;
-								}
-								let newItem = self.listItems()[oldIndex];
-								currentItem.selectionItemId(newItem.selectionItemId);
-							}
-							//                        self.listItems.valueHasMutated();
-							else {
-								self.registerDataSelectioItem();
-							}
-						});
-					});
-					self.listItems.valueHasMutated();
-				}).fail(error => {
-						alertError({ messageId: "Msg_521" });
-				}).always(()=> block.clear());
-			});
+            block.grayout();
+            service.checkUseSelectionItem(currentItem.selectionItemId()).done(function(result: boolean){
+                if(result){
+                    alertError({ messageId: "Msg_1431" });
+                }else{
+                    confirm({ messageId: "Msg_551" }).ifYes(() => {
+                        block.grayout();     
+                        service.removeDataSelectionItem(command).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                self.getAllSelectionItems().done(() => {
+                                    if (self.listItems().length > 0) {
+                                        if (oldIndex == lastIndex) {
+                                            oldIndex--;
+                                        }
+                                        let newItem = self.listItems()[oldIndex];
+                                        currentItem.selectionItemId(newItem.selectionItemId);
+                                    }
+                                    //                        self.listItems.valueHasMutated();
+                                    else {
+                                        self.registerDataSelectioItem();
+                                    }
+                                });
+                            });
+                            self.listItems.valueHasMutated();
+                        }).always(function(){
+                            block.clear()
+                        });
+                    });
+                }
+            }).always(function(){
+                block.clear()
+            });
         }
 
         // 選択肢の登録ボタン
