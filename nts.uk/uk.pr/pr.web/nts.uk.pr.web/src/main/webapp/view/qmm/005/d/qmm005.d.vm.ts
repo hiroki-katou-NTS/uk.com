@@ -277,8 +277,8 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D4_30
             self.timeCloseDate = ko.observableArray([
-                new model.ItemModel(model.TimeCloseDateClassification.SAME_DATE, 'SAME_DATE'),
-                new model.ItemModel(model.TimeCloseDateClassification.APART_FROM_DATE, 'APART_FROM_DATE')
+                new model.ItemModel(model.TimeCloseDateClassification.SAME_DATE, '社員抽出基準日と同じ'),
+                new model.ItemModel(model.TimeCloseDateClassification.APART_FROM_DATE, '社員抽出基準日とは別')
             ]);
             self.timeCloseDateSelectedCode = ko.observable(0);
             self.timeCloseDateSelectedCode.subscribe(function () {

@@ -42,8 +42,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 let action: number = param.action;
                 let processInformationUpdate = param.processInfomationUpdate;
                 if (action == 0) {
-                    let procescateno = processInformationUpdate.processCateNo;
-                    self.itemBinding()[procescateno - 1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
+                    self.itemBinding.removeAll();
+                    self.startPage();
                 }
                 if (action == 1) {
                     self.itemBinding.removeAll();

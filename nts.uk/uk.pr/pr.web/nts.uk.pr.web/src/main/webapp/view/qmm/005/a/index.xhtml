@@ -40,21 +40,21 @@
                         <col width="50px"/>
                         <col width="250px"/>
                         <col width="90px"/>
-                        <col width="330px"/>
+                        <col width="370px"/>
                     </colgroup>
                     <thead>
                     <tr>
                         <th class="ui-widget-header" rowspan="2"></th>
                         <!--A2_3 処理区分-->
-                        <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_6')}</th>
-                        <!--A2_4 基準日の詳細設定-->
                         <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_7')}</th>
+                        <!--A2_4 基準日の詳細設定-->
+                        <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_8')}</th>
                         <!--A2_5 給与-->
-                        <th class="ui-widget-header">#{i18n.getText('QMM005_8')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('QMM005_9')}</th>
                     </tr>
                     <tr>
                         <!--A2_6 次回給与支払日|社員抽出基準日-->
-                        <th class="ui-widget-header">#{i18n.getText('QMM005_9')}</th>
+                        <th class="ui-widget-header">#{i18n.getText('QMM005_10')}</th>
                     </tr>
                     </thead>
                     <tbody data-bind="foreach: itemBinding">
@@ -72,8 +72,9 @@
                                     <label
                                             data-bind="text: processInfomation.processDivisionName"></label>
                                 </div>
+                                <!--A2_9 編集-->
                                 <button id="button_" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
-                            </div> <!--A2_9 編集-->
+                            </div>
                             <com:ko-if bind="processInfomation.processDivisionName == ''">
                             <button
                                     data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
@@ -90,9 +91,10 @@
                                 name: 'Sample List', width:80,
                                 options: years,
                                 optionsValue: 'code',
-                                 visibleItemsCount: 5,
+                                 visibleItemsCount: 8,
                                  enable: processInfomation.processDivisionName != '',
                                 value:yaersSelected,
+                                dropDownAttachedToBody:true,
                                 columns:
                                 [ { prop: 'name', length: 10 },
                             ]}"></div>
@@ -102,12 +104,13 @@
                             <!--A2_14 次回給与支払日-->
                             <div
                                     data-bind="ntsComboBox: {
-                            name: 'Sample List', width:200,
+                            name: 'Sample List', width:250,
                             options: monthsSubcriceYear,
                             optionsValue: 'code',
-                            visibleItemsCount: 5,
+                            visibleItemsCount: 8,
                             value: monthsSelectd,
                             optionsText: 'name',
+                            dropDownAttachedToBody:true,
                             enable: processInfomation.processDivisionName != '',
                             columns: [
 

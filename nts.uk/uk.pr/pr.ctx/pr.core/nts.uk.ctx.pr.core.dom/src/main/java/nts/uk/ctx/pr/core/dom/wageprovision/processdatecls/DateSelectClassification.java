@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
 
-public enum DateSelectClassification {	
-	DAY_0(0,"Enum_DateSelectClassification_DAY_0"),
+public enum DateSelectClassification {
 	DAY_1(1,"Enum_DateSelectClassification_DAY_1"),
 	DAY_2(2,"Enum_DateSelectClassification_DAY_2"),
 	DAY_3(3,"Enum_DateSelectClassification_DAY_3"),
