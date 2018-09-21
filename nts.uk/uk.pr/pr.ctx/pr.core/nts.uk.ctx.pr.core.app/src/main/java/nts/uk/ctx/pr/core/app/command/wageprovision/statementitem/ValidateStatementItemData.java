@@ -17,24 +17,35 @@ public class ValidateStatementItemData {
 	private StatementItemRepository statementItemRepository;
 	@Inject
 	private StatementItemNameRepository statementItemNameRepository;
+
 	/**
 	 * アルゴリズム「登録時チェック」を実施
+	 * 
 	 * @param command
 	 */
-	public void validate(StatementItemDataCommand command){
+	public void validate(StatementItemDataCommand command) {
 		String cid = AppContexts.user().companyId();
-		val listStatementItem = statementItemRepository.getByCategory(cid, command.getCategoryAtr());
+		val statementItem = command.getStatementItem();
+		val statementItemName = command.getStatementItemName();
 
-		if (listStatementItem.stream().anyMatch(i -> i.getItemNameCd().v().equals(command.getItemNameCd()))) {
+		if (statementItem == null) {
+			return;
+		}
+		val listStatementItem = statementItemRepository.getByCategory(cid, statementItem.getCategoryAtr());
+		if (listStatementItem.stream().anyMatch(i -> i.getItemNameCd().v().equals(statementItem.getItemNameCd()))) {
 			throw new BusinessException("Msg_3");
 		}
 
+		if (statementItemName == null) {
+			return;
+		}
 		val listSalaryItemId = listStatementItem.stream().map(i -> {
 			return i.getSalaryItemId();
 		}).collect(Collectors.toList());
 
-		val listStatementItemName = statementItemNameRepository.getStatementItemNameByListSalaryItemId(cid, listSalaryItemId);
-		if (listStatementItemName.stream().anyMatch(i -> i.getName().v().equals(command.getName()))) {
+		val listStatementItemName = statementItemNameRepository.getStatementItemNameByListSalaryItemId(cid,
+				listSalaryItemId);
+		if (listStatementItemName.stream().anyMatch(i -> i.getName().v().equals(statementItemName.getName()))) {
 			throw new BusinessException("Msg_358");
 		}
 	}
