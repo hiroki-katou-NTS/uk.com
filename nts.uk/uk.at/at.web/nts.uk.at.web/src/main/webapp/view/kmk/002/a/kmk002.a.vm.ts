@@ -1748,7 +1748,7 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
                 param.performanceAtr = self.performanceAtr();
-                param.formulaAtr = dto.formulaAtr;
+                param.formulaAtr = self.formulaAtr();
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = dto.itemSelection;
