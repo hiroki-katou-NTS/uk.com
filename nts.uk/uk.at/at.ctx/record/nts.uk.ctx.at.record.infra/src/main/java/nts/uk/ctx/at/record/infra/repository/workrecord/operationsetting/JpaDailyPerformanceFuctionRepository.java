@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPer
 public class JpaDailyPerformanceFuctionRepository extends JpaRepository
 		implements DailyPerformFuncRepo {
 
-	private static final String GET_ALL_DAI_PER_FUNC = "SELECT df FROM KrcmtDaiPerformanceFun df ORDER BY df.functionNo";
+	private static final String GET_ALL_DAI_PER_FUNC = "SELECT df FROM KrcmtDaiPerformanceFun df ORDER BY df.displayOrder";
 
 	@Override
 	public List<DailyPerformanceFunction> getAll() {
