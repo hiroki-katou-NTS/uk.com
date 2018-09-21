@@ -36,9 +36,9 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
 
     @Override
     public void update(EmpTiedProYear oldDomain, EmpTiedProYear newDomain) {
-        List<EmploymentCode> list1 = newDomain.getEmploymentCodes().stream().collect(Collectors.toList());
+        List<EmploymentCode> list = newDomain.getEmploymentCodes().stream().collect(Collectors.toList());
         newDomain.getEmploymentCodes().removeAll(oldDomain.getEmploymentCodes());
-        oldDomain.getEmploymentCodes().removeAll(list1);
+        oldDomain.getEmploymentCodes().removeAll(list);
         List<QpbmtEmpTiedProYearPk> pks = oldDomain.getEmploymentCodes().stream().map(x -> new QpbmtEmpTiedProYearPk(oldDomain.getCid(), oldDomain.getProcessCateNo(), x.v())).collect(Collectors.toList());
         this.commandProxy().removeAll(QpbmtEmpTiedProYear.class, pks);
         this.commandProxy().insertAll(QpbmtEmpTiedProYear.toEntity(newDomain));

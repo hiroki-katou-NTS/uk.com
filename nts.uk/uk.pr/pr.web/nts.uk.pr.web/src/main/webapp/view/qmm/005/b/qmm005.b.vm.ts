@@ -56,7 +56,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     windowSize.$dialog.resize();
                     return "+";
                 }
-
             });
             self.isNewMode = ko.observable(false);
             self.processingYear = ko.observable(2018);
@@ -171,7 +170,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     self.blankData();
                 }
             });
-
         }
 
         creatNewProcessYear() {
@@ -192,16 +190,16 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         for (index = 1; index < 13; index++) {
                             let objItem = {
                                 targetMonth: ko.observable(index),
-                                paymentDate: ko.observable(self.transDate(self.processingYear() + '/' + index + '/' + data.basicSetting.monthlyPaymentDate.datePayMent)),
-                                employeeExtractionReferenceDate: ko.observable(self.processingYear() + '/' + index + '/' + data.basicSetting.employeeExtractionReferenceDate.refeDate),
+                                paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYear(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
+                                employeeExtractionReferenceDate: ko.observable(self.preDateTime(self.processingYear(), index, data.basicSetting.employeeExtractionReferenceDate.refeDate)),
                                 socialInsuranceCollectionMonth: ko.observable(Number.parseInt(self.processingYear() + self.fullMonth(index))),
                                 specificationPrintDate: ko.observable(Number.parseInt(self.processingYear() + '' + index)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
-                                socialInsuranceStandardDate: ko.observable(self.processingYear() + '/' + index + '/' + data.advancedSetting.sociInsuStanDate.refeDate),
-                                employmentInsuranceStandardDate: ko.observable((self.processingYear() - 1) + '/' + index + '/' + data.advancedSetting.empInsurStanDate.refeDate),
-                                timeClosingDate: ko.observable(self.processingYear() + '/' + index + '/' + data.advancedSetting.closeDate.refeDate),
-                                incomeTaxReferenceDate: ko.observable(self.processingYear() + '/' + data.advancedSetting.incomTaxBaseYear.baseMonth + '/' + data.advancedSetting.incomTaxBaseYear.refeDate),
-                                accountingClosureDate: ko.observable(self.processingYear() + '/' + index + '/' + data.basicSetting.accountingClosureDate.disposalDay)
+                                socialInsuranceStandardDate: ko.observable(self.preDateTime(self.processingYear(), index, data.advancedSetting.sociInsuStanDate.refeDate)),
+                                employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYear() - 1), index, data.advancedSetting.empInsurStanDate.refeDate)),
+                                timeClosingDate: ko.observable(self.preDateTime(self.processingYear(), index, data.advancedSetting.closeDate.refeDate)),
+                                incomeTaxReferenceDate: ko.observable(self.preDateTime(self.processingYear(), data.advancedSetting.incomTaxBaseYear.baseMonth, data.advancedSetting.incomTaxBaseYear.refeDate)),
+                                accountingClosureDate: ko.observable(self.preDateTime(self.processingYear(), index, data.basicSetting.accountingClosureDate.disposalDay))
                             }
                             array.push(objItem);
                         }
@@ -237,6 +235,18 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             });
         }
 
+        preDateTime(year, month, date) {
+            if (month == 2 && date > 28) {
+                if (year % 4 == 0) {
+                    return year + '/02/29';
+                } else if (year % 4 != 0) {
+                    return year + '/02/28';
+                }
+            } else {
+                return year + '/' + month + '/' + date;
+            }
+        }
+
         eScreenReflect() {
             var self = this;
             var params = getShared("QMM005eParams");
@@ -252,7 +262,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                          ※10 勤怠締め日チェックが入っている場合のみ更新する
                          */
                         if (params.checkbox.dailyPaymentDateCheck && params.checkbox.timeClosingDateCheck) {
-                            settingPayment.paymentDate(self.processingYear() + '/' + index + '/' + basicSetting.monthlyPaymentDate.datePayMent);
+                            settingPayment.paymentDate(self.preDateTime(self.processingYear(), index, basicSetting.monthlyPaymentDate.datePayMent));
                         }
                         // B4_11    支払曜日
                         // ※1　支払日チェックが入っている場合のみ更新する
@@ -262,9 +272,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B4_12	社員抽出基準日
                         // ※2　対象社員抽出基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.empExtractionRefDateCheck) {
-                            settingPayment.employeeExtractionReferenceDate(self.processingYear() + '/' + basicSetting.employeeExtractionReferenceDate.refeMonth + '/' + basicSetting.employeeExtractionReferenceDate.refeDate);
+                            settingPayment.employeeExtractionReferenceDate(self.preDateTime(self.processingYear(), basicSetting.employeeExtractionReferenceDate.refeMonth, basicSetting.employeeExtractionReferenceDate.refeDate));
                         }
-
                         // B4_13	社会保険徴収月
                         // ※3　社会保険徴収月チェックが入っている場合のみ更新する
                         if (params.checkbox.socialInsuranceMonthCheck) {
@@ -283,28 +292,27 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B6_7		社会保険基準日
                         // ※6　社会保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.socialInsuranceDateCheck) {
-                            settingPayment.socialInsuranceStandardDate(advancedSetting.sociInsuStanDate.baseYear + '/' + advancedSetting.sociInsuStanDate.baseMonth + '/' + advancedSetting.sociInsuStanDate.baseYear);
+                            settingPayment.socialInsuranceStandardDate(self.preDateTime(advancedSetting.sociInsuStanDate.baseYear, advancedSetting.sociInsuStanDate.baseMonth, advancedSetting.sociInsuStanDate.refeDate));
                         }
                         // B6_8		雇用保険基準日
                         // ※7　雇用保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.empInsuranceStandardDateCheck) {
-                            settingPayment.employmentInsuranceStandardDate((self.processingYear() - 1) + '/' + advancedSetting.empInsurStanDate.baseMonth + advancedSetting.empInsurStanDate.refeDate);
+                            settingPayment.employmentInsuranceStandardDate(self.preDateTime((self.processingYear() - 1), advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
                         }
                         // B6_9		勤怠締め日
                         // ※10 勤怠締め日チェックが入っている場合のみ更新する
                         if (params.checkbox.timeClosingDateCheck) {
-                            settingPayment.timeClosingDate(self.processingYear() + '/' + advancedSetting.closeDate.baseMonth + '/' + advancedSetting.closeDate.refeDate);
+                            settingPayment.timeClosingDate(self.preDateTime(self.processingYear(), advancedSetting.closeDate.baseMonth, advancedSetting.closeDate.refeDate));
                         }
-
                         /*B6_10	所得税基準日
                          ※8　所得税基準日チェックが入っている場合のみ更新する*/
                         if (params.checkbox.incomeTaxReferenceCheck) {
-                            settingPayment.incomeTaxReferenceDate(self.processingYear() + '/' + advancedSetting.incomTaxBaseYear.baseMonth + '/' + advancedSetting.incomTaxBaseYear.refeDate);
+                            settingPayment.incomeTaxReferenceDate(self.preDateTime(self.processingYear(), advancedSetting.incomTaxBaseYear.baseMonth, advancedSetting.incomTaxBaseYear.refeDate));
                         }
                         /*B6_11	経理締め日
                          ※9　経理締め日チェックが入っている場合のみ更新する*/
                         if (params.checkbox.accountingClosureDateCheck) {
-                            settingPayment.accountingClosureDate(self.processingYear() + '/' + basicSetting.accountingClosureDate.processMonth + basicSetting.accountingClosureDate.disposalDay);
+                            settingPayment.accountingClosureDate(self.preDateTime(self.processingYear(), basicSetting.accountingClosureDate.processMonth, basicSetting.accountingClosureDate.disposalDay));
                         }
                     }
                 }
