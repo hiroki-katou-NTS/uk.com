@@ -82,7 +82,7 @@
 
 						</div>
 						<div data-bind="with:reNumAnnLeave().annualLeaveRemainNumber">
-							<div data-bind="visible:$parent.hdappSet().ckuperLimit!=0"
+							<div data-bind="visible:$parent.annualSet().maxManageSemiVacation!=0"
 								class="div_line" id="half-year-rest">
 								<!-- A5_1_1 -->
 								<div>
@@ -95,7 +95,7 @@
 									<label>#{i18n.getText('KDL020_17')}</label>
 								</div>
 							</div>
-							<div data-bind="visible:$parent.hdappSet().useYear!=0"
+							<div data-bind="visible:$parent.annualSet().timeManageType!=0"
 								class="div_line" id="time-year-rest">
 								<!-- A5_2_1 -->
 								<div>
