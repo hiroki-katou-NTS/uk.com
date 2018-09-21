@@ -22,6 +22,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.service.RoleTypeImport;
 import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.employee.service.System;
@@ -234,7 +235,11 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	// アルゴリズム「参照可能な社員かを判定する（職場）」を実行する
 	private Boolean canReference(GeneralDate baseDate, String employeeId, String system) {
 		String userId = AppContexts.user().userId();
+		String loginEmployeeId = AppContexts.user().employeeId();
 		EmployeeReferenceRangePub emReference = this.getEmployeeRefrenceRange(userId, system, baseDate);
+		if (emReference.equals(EmployeeReferenceRangePub.ONLY_MYSELF)) {
+			return employeeId.equals(loginEmployeeId) ? true : false;
+		}
 		List<String> lstWkp = this.getCanReferenceWorkplaceLst(employeeId, baseDate, emReference, null);
 		String wkpId = this.getWplBelongEmployee(employeeId, baseDate).getWorkplaceId();
 		return lstWkp.stream().anyMatch(item -> item.equals(wkpId));
@@ -397,7 +402,7 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	private Optional<EmployeeInforDto> getEmployeeBaseInfor(String cid, String employeeCode) {
 		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.getEmployeeByCidScd(cid, employeeCode);
 
-		if (!empInfo.isPresent()) {
+		if (!empInfo.isPresent() || !empInfo.get().getDeletedStatus().equals(EmployeeDeletionAttr.NOTDELETED)) {
 			return Optional.empty();
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
