@@ -19,9 +19,9 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         selectedHistoryId: string = "";
         selectedHealthInsurance: KnockoutObservable<number> = ko.observable(null);
 
-        // Health insurance item
+        // Contribution contribution item
         selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '',displayStartJM: '' });
-        bonusHealthInsuranceRate: KnockoutObservable<model.BonusHealthInsuranceRate> = ko.observable(null);
+        //bonusHealthInsuranceRate: KnockoutObservable<model.BonusHealthInsuranceRate> = ko.observable(null);
         contributionRate: KnockoutObservable<model.ContributionRate> = ko.observable(null);
         constructor() {
             let self = this;
@@ -32,8 +32,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         }
 
         initBlankData() {
-            let self = this;
-            self.bonusHealthInsuranceRate(new model.BonusHealthInsuranceRate(null));
+            let self = this;           
             self.contributionRate(new model.ContributionRate(null));
         }
 
@@ -174,12 +173,12 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
                         //Todo
-                        selectedHistoryPeriod.displayStartJM = nts.uk.time.formatYearMonth(selectedHistoryPeriod.displayStart);
+                        selectedHistoryPeriod.displayStartJM = nts.uk.time.yearmonthInJapanEmpire( selectedHistoryPeriod.displayStart).toString().split(' ').join('');
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         //アルゴリズム「選択処理」を実行する
                         self.showContributionRateByHistoryId(self.selectedHistoryId);
                     } else {
-                        self.selectedHistoryPeriod({ displayStart: '', displayEnd: '' });
+                        self.selectedHistoryPeriod({ displayStart: '', displayEnd: '', displayStartJM: '' });
                     }
                 }
             }
@@ -209,7 +208,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             healthInsuranceList.forEach(function(office) {
                 let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
                 if (office.contributionRateHistory) {
-                    let displayStart, displayEnd = "";
+                    let displayStart, displayEnd = "", displayStartJM  = "";
                     office.contributionRateHistory.history.forEach(function(history) {
                         displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
                         displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
@@ -229,7 +228,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         createNewHistory() {
             let self = this;
             let selectedOffice = self.selectedOffice;
-            setShared("QMM008_G_PARAMS", { selectedOffice: selectedOffice, history: selectedOffice.healthInsuranceFeeRateHistory.history });
+            setShared("QMM008_G_PARAMS", { selectedOffice: selectedOffice, history: selectedOffice.contributionRateHistory.history });
             modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
                 let params = getShared("QMM008_G_RES_PARAMS");
                 if (params) {
@@ -237,13 +236,13 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                     let historyId = nts.uk.util.randomId();
                     socialInsuranceOfficeList.forEach(office => {
                         if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
-                            let history = office.healthInsuranceFeeRateHistory.history;
+                            let history = office.contributionRateHistory.history;
                             if (history.length > 0) {
                                 let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
                                 history[history.length - 1].endMonth = beforeLastestMonth.format('YYYYMM');
                             }
                             history.push({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
-                            office.healthInsuranceFeeRateHistory.history = history;
+                            office.contributionRateHistory.history = history;
                             office = new model.SocialInsuranceOffice(office);
                         }
                     });
@@ -265,7 +264,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
-            setShared("QMM008_H_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.healthInsuranceFeeRateHistory.history });
+            setShared("QMM008_H_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.contributionRateHistory.history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#B1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
@@ -275,7 +274,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                     let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     socialInsuranceOfficeList.forEach(office => {
                         if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
-                            let history = office.healthInsuranceFeeRateHistory.history;
+                            let history = office.contributionRateHistory.history;
                             if (history.length > 0) {
                                 if (params.modifyMethod == model.MOFIDY_METHOD.UPDATE) {
                                     history.forEach((historyItem, index) => {
@@ -296,7 +295,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                                 }
 
                             }
-                            office.healthInsuranceFeeRateHistory.history = history;
+                            office.contributionRateHistory.history = history;
                             office = new model.SocialInsuranceOffice(office);
                         }
                     });

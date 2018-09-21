@@ -11,8 +11,6 @@ import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
-import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,33 +34,33 @@ public class ContributionService {
 				.findByCodeAndCid(cid, officeCode);
 		// アルゴリズム「月額拠出金計算処理」を実行する
 		monthlyContributionCalProcess(contributionRate, yearMonthItem);
-		if (!optContributionRateHistory.isPresent()) {
+		/*if (!optContributionRateHistory.isPresent()) {
 			contributionRateHistory = new ContributionRateHistory(cid, officeCode, Arrays.asList(yearMonthItem));
 			contributionRateHistoryRepository.add(contributionRateHistory);
 		}
-		contributionRateHistoryRepository.deleteByCidAndCode(cid, officeCode);
+		contributionRateHistoryRepository.deleteByCidAndCode(cid, officeCode);*/
 
-		contributionRateHistory = optContributionRateHistory.get();
-		if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
+		//contributionRateHistory = optContributionRateHistory.get();
+		if (!optContributionRateHistory.isPresent()) {
 			// add history if not exist
-			contributionRateHistory.add(yearMonthItem);
-			this.addHealthInsurance(contributionRate);
+			contributionRateHistory = new ContributionRateHistory(cid, officeCode, Arrays.asList(yearMonthItem));
+			this.addHistoryContribution(contributionRateHistory);
 		} else {
-			this.updateHealthInsurance(contributionRate);
+			this.updateHistoryContribution(contributionRateHistory);
 		}
 
-		if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
+		/*if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
 			contributionRateHistory.add(yearMonthItem);
 		}
-		contributionRateHistoryRepository.add(contributionRateHistory);
+		contributionRateHistoryRepository.add(contributionRateHistory);*/
 	}
 
-	public void addHealthInsurance(ContributionRate contributionRate) {
-		contributionRateRepository.add(contributionRate);		
+	public void addHistoryContribution(ContributionRateHistory contributionRateHistory) {
+		contributionRateHistoryRepository.add(contributionRateHistory);		
 	}
 	
-	public void updateHealthInsurance(ContributionRate contributionRate) {
-		contributionRateRepository.update(contributionRate);		
+	public void updateHistoryContribution(ContributionRateHistory contributionRateHistory) {
+		contributionRateHistoryRepository.update(contributionRateHistory);		
 	}
 
 	// 月額拠出金計算処理

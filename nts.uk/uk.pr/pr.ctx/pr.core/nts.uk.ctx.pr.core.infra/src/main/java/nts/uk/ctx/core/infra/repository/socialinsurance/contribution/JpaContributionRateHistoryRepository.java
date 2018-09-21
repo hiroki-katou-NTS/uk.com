@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionByGrade;
-import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistoryRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRateHistory;
@@ -93,6 +91,14 @@ public class JpaContributionRateHistoryRepository extends JpaRepository implemen
 					item.start().v(), item.end().v()));
 		});
 
+	}
+
+	@Override
+	public void update(ContributionRateHistory domain) {
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().update(this.toEntity(domain.getSocialInsuranceCode().v(), item.identifier(),
+					item.start().v(), item.end().v()));
+		});
 	}
 
 }

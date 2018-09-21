@@ -14,4 +14,6 @@ public interface ContributionRateHistoryRepository {
 	void deleteByCidAndCode(String cid, String officeCode);
 
 	void add(ContributionRateHistory domain);
+
+	void update(ContributionRateHistory domain);
 }
