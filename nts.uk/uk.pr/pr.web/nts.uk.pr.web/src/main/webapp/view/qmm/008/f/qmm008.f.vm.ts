@@ -1,4 +1,5 @@
-module nts.uk.com.view.qmm008.f {
+module nts.uk.pr.view.qmm008.f {
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
 
@@ -7,16 +8,60 @@ module nts.uk.com.view.qmm008.f {
             constructor() {
                 var self = this;
                 self.dataList = ko.observableArray([]);
+                let = getShared("QMM008_D_RES_PARAMS")
+                let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
                 nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
-                    for (var i = 0; i < response.cusDataDtos.length; i++) {
-                        self.dataList.push(response.cusDataDtos[i]);
-                    }
-                    self.header(response.premiumRate);
+                    for (var i = 0; i < response.cusWelfarePensions.length; i++) {
+                        self.dataList.push(response.cusWelfarePensions[i]);
+                    } 
+                    self.header(response.insuranceRate);
+                    console.log(response.insuranceRate);
                 });
 
                 $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
             }
+            
+            
+            /**
+            *  update
+            */
+           
+            private update(): void {
+                let self = this;
+                let command = {
+                    cusWelfarePensions: ko.toJS(self.dataList()),
+                    historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2'
+                };
+                nts.uk.pr.view.qmm008.f.service.update(command).done(function(response) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                    });
+                }
+               
+           }
+            
+            private countReview() :void {
+                let self = this;
+                let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2', date: 201802 };
+                nts.uk.pr.view.qmm008.f.service.count(command).done(function(response) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.dataList([]);
+                        for (var i = 0; i < response.cusWelfarePensions.length; i++) {
+                            self.dataList.push(response.cusWelfarePensions[i]);
+                        }
+                        self.header(response.insuranceRate);
+
+                    });
+                }
+            }
+            
+         
+        
         }
+        
+            
+        
+        
     }
     
     interface IRowData {
@@ -66,35 +111,36 @@ module nts.uk.com.view.qmm008.f {
     }
     
      interface IHeaderData {
-        fIndividualBurdenRatio: KnockoutObservable<string>,
-        mIndividualBurdenRatio: KnockoutObservable<string>,
-        fEmployeeContributionRatio: KnockoutObservable<string>,
-        mEmployeeContributionRatio: KnockoutObservable<string>,
-        fIndividualExemptionRate: KnockoutObservable<string>,
-        mIndividualExemptionRate: KnockoutObservable<string>,
-        fEmployeeExemptionRate: KnockoutObservable<string>,
-        mEmployeeExemptionRate: KnockoutObservable<string>
+        mindividualBurdenRatio: KnockoutObservable<string>,
+        findividualBurdenRatio: KnockoutObservable<string>,
+        memployeeContributionRatio: KnockoutObservable<string>,
+        femployeeContributionRatio: KnockoutObservable<string>,
+        mindividualExemptionRate: KnockoutObservable<string>,
+        findividualExemptionRate: KnockoutObservable<string>,
+        memployeeExemptionRate: KnockoutObservable<string>,
+        femployeeExemptionRate: KnockoutObservable<string>
+        
     }
     
     export class HeaderData {
-        fIndividualBurdenRatio: KnockoutObservable<string>  = ko.observable(null);
-        mIndividualBurdenRatio: KnockoutObservable<string>  = ko.observable(null);
-        fEmployeeContributionRatio: KnockoutObservable<string>  = ko.observable(null);
-        mEmployeeContributionRatio: KnockoutObservable<string>  = ko.observable(null);
-        fIndividualExemptionRate: KnockoutObservable<string>  = ko.observable(null);
-        mIndividualExemptionRate: KnockoutObservable<string>  = ko.observable(null);
-        fEmployeeExemptionRate: KnockoutObservable<string>  = ko.observable(null);
-        mEmployeeExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        findividualBurdenRatio: KnockoutObservable<string>  = ko.observable(null);
+        mindividualBurdenRatio: KnockoutObservable<string>  = ko.observable(null);
+        femployeeContributionRatio: KnockoutObservable<string>  = ko.observable(null);
+        memployeeContributionRatio: KnockoutObservable<string>  = ko.observable(null);
+        findividualExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        mindividualExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        femployeeExemptionRate: KnockoutObservable<string>  = ko.observable(null);
+        memployeeExemptionRate: KnockoutObservable<string>  = ko.observable(null);
         
         constructor(parameter?: IHeaderData) {
-             this.fIndividualBurdenRatio(parameter ? parameter.fIndividualBurdenRatio : '');
-             this.mIndividualBurdenRatio(parameter ? parameter.mIndividualBurdenRatio : '');
-             this.fEmployeeContributionRatio(parameter ? parameter.fEmployeeContributionRatio : '');
-             this.mEmployeeContributionRatio(parameter ? parameter.mEmployeeContributionRatio : '');
-             this.fIndividualExemptionRate(parameter ? parameter.fIndividualExemptionRate : '');
-             this.mIndividualExemptionRate(parameter ? parameter.mIndividualExemptionRate : '');
-             this.fEmployeeExemptionRate(parameter ? parameter.fEmployeeExemptionRate : '');
-             this.mEmployeeExemptionRate(parameter? parameter.mEmployeeExemptionRate : '');
+             this.findividualBurdenRatio(parameter ? parameter.findividualBurdenRatio : '');
+             this.mindividualBurdenRatio(parameter ? parameter.mindividualBurdenRatio : '');
+             this.femployeeContributionRatio(parameter ? parameter.femployeeContributionRatio : '');
+             this.memployeeContributionRatio(parameter ? parameter.memployeeContributionRatio : '');
+             this.findividualExemptionRate(parameter ? parameter.findividualExemptionRate : '');
+             this.mindividualExemptionRate(parameter ? parameter.mindividualExemptionRate : '');
+             this.femployeeExemptionRate(parameter ? parameter.femployeeExemptionRate : '');
+             this.memployeeExemptionRate(parameter? parameter.memployeeExemptionRate : '');
         }
         
     }

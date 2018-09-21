@@ -87,5 +87,15 @@ public class JpaEmployeesPensionMonthlyInsuranceFeeRepository extends JpaReposit
 	
 	public void deleteGradeWelfareByHistoryIds(List<String> historyIds) {
 		this.getEntityManager().createQuery(DELETE_GRADE_WELFARE_PENSION_INSURANCE_BY_HISTORY_ID, QpbmtGradeWelfarePensionInsurancePremium.class).setParameter("historyId", historyIds).executeUpdate();
+	}
+
+	@Override
+	public void updateWelfarePension(EmployeesPensionMonthlyInsuranceFee data) {
+		this.commandProxy().updateAll(QpbmtGradeWelfarePensionInsurancePremium.toEntity(data));
+	}
+
+	@Override
+	public void insertWelfarePension(EmployeesPensionMonthlyInsuranceFee data) {
+		this.commandProxy().insertAll(QpbmtGradeWelfarePensionInsurancePremium.toEntity(data));
 	} 
 }

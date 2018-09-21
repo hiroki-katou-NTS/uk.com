@@ -137,6 +137,14 @@ module nts.uk.pr.view.qmm008.d {
                 self.selectedNoD35(self.itemList()[0].code);
                 self.selectedNoD38(self.itemList()[0].code);
             }
+            
+            /**
+             *  close dialog
+             */
+            
+            private closeDialog() : void {
+                    nts.uk.ui.windows.close();
+            }
 
             /**
              * delete

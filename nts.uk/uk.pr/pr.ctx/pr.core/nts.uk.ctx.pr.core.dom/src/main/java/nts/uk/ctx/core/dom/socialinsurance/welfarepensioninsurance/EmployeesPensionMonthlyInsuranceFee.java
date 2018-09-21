@@ -110,9 +110,9 @@ public class EmployeesPensionMonthlyInsuranceFee extends AggregateRoot {
                 insuredMaleInsurancePremium      = RoundCalculatedValue.calculation(standardMonthlyFee, maleIndividualBurdenRatio, personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
                 insuredFemaleInsurancePremium    = RoundCalculatedValue.calculation(standardMonthlyFee, femaleIndividualBurdenRatio, personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             } else {
-                insuredMaleInsurancePremium      = RoundCalculatedValue.calculation(standardMonthlyFee, maleIndividualBurdenRatio.subtract(maleIndividualExemptionRate), personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                insuredMaleInsurancePremium      = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryIndividualInsuranceRate, personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
                 insuredMaleExemptionInsurance    = RoundCalculatedValue.calculation(standardMonthlyFee, maleIndividualExemptionRate, personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                insuredFemaleInsurancePremium    = RoundCalculatedValue.calculation(standardMonthlyFee, femaleIndividualBurdenRatio.subtract(femaleIndividualExemptionRate), personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                insuredFemaleInsurancePremium    = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryIndividualInsuranceRate, personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
                 insuredFemaleExemptionInsurance  = RoundCalculatedValue.calculation(standardMonthlyFee, femaleIndividualExemptionRate, personalFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             }
 
