@@ -120,19 +120,19 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 					.filter(x -> x.getWorkNo().v() == para.getFrameNo()).collect(Collectors.toList());
 			if(lstTimeSheetFrameNo.isEmpty()) {
 				timeSheet = new ScheduleTimeSheet(para.getFrameNo(), 
-						para.isStart() && para.getStartTime() != null  ? para.getStartTime() : 0,
-						para.isEnd() && para.getEndTime() != null ? para.getEndTime() : 0);
+						para.isStart() ? para.getStartTime() == null ? 0 : para.getStartTime() : 0,
+						para.isEnd() ? para.getEndTime() == null ? 0 : para.getEndTime() : 0);
 			} else {
 				ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
 				timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
-						para.isStart() && para.getStartTime() != null  ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
-						para.isEnd() && para.getEndTime() != null ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
+						para.isStart() ? para.getStartTime() == null ? 0 : para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
+						para.isEnd() ? para.getEndTime() == null ? 0 : para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
 				dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
 			}
 			
 		}
-		if(para.getStartTime() != null
-				&& para.getEndTime() != null) {
+		if(para.isStart()
+				|| para.isEnd()) {
 			dailyPerfor.getScheduleTimeSheets().add(timeSheet);
 		}
 		//workRepository.updateByKeyFlush(dailyPerfor);
@@ -364,25 +364,19 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		
 	}
 	@Override
-	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate) {
+	public WorkInfoOfDailyPerformance updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate, WorkInfoOfDailyPerformance dailyPerfor) {
 		//日別実績の勤務情報
-		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(employeeId, dateData);
-		if(!optDailyPerfor.isPresent()) {
-			return;
-		}
-		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			lstItem.add(1);
 			dailyPerfor.setScheduleInfo(new WorkInformation(dailyPerfor.getScheduleInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
-			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));
-			workRepository.updateByKeyFlush(dailyPerfor);
+			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));			
 		}
 		//日別実績の編集状態
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstItem);
+		return dailyPerfor;
 	}
 	@Override
 	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame,
