@@ -232,10 +232,10 @@
                                                 name: '#[KAL003_64]',
                                                 value: $parent.comparisonRange().minAmountOfMoneyValue, 
                                                 required: true,
-                                                option: new nts.uk.ui.option.CurrencyEditorOption({
+                                                option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
                                                 constraint: 'CheckedAmountValue'}" />
                                             </com:ko-if>
@@ -279,10 +279,10 @@
                                                 name: '#[KAL003_65]',
                                                 value: $parent.comparisonRange().maxAmountOfMoneyValue, 
                                                 constraint: 'CheckedAmountValue',
-                                                option: new nts.uk.ui.option.CurrencyEditorOption({
+                                                option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
                                                 required: $parent.enableComparisonMaxValue,
                                                 enable: $parent.enableComparisonMaxValue()}" />
@@ -1103,10 +1103,10 @@
 														name: '#[KAL003_64]',
 		                                                value: $vm.comparisonRange().minAmountOfMoneyValue,
 														constraint: 'CheckedAmountValue',
-														option: new nts.uk.ui.option.CurrencyEditorOption({
+														option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
 														required: true,
 														enable: true,
@@ -1143,10 +1143,10 @@
 		                                                name: '#[KAL003_64]',
 		                                                value: $vm.comparisonRange().minAmountOfMoneyValue, 
                                                 		required: true,
-                                                		option: new nts.uk.ui.option.CurrencyEditorOption({
+                                                		option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
                                                 		constraint: 'CheckedAmountValue'}"/>
 											</com:ko-if>
@@ -1179,10 +1179,10 @@
 		                                                name: '#[KAL003_64]',
 		                                                value: $vm.comparisonRange().minAmountOfMoneyValue, 
                                                 		required: true,
-                                                		option: new nts.uk.ui.option.CurrencyEditorOption({
+                                                		option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
                                                 		constraint: 'CheckedAmountValue'}" />
 											</com:ko-if>
@@ -1221,10 +1221,10 @@
 		                                                name: '#[KAL003_65]',
 		                                                value: $vm.comparisonRange().maxAmountOfMoneyValue, 
 		                                                constraint: 'CheckedAmountValue',
-		                                                option: new nts.uk.ui.option.CurrencyEditorOption({
+		                                                option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
 		                                                required: $vm.enableComparisonMaxValue(),
 		                                                enable: $vm.enableComparisonMaxValue()}" />
@@ -1259,10 +1259,10 @@
 													data-bind="ntsNumberEditor: { 
 				                                        name: '#[KAL003_65]',
 				                                        constraint: 'CheckedAmountValue', 
-				                                        option: new nts.uk.ui.option.CurrencyEditorOption({
+				                                        option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												}),
 				                                        value: $vm.comparisonRange().maxAmountOfMoneyValue, 
 		                                                required: $vm.enableComparisonMaxValue(),

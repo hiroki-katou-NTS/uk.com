@@ -1477,8 +1477,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             minTimesValue: KnockoutObservable<number> = ko.observable(0);
             maxTimesValue: KnockoutObservable<number> = ko.observable(0);
 
-            minAmountOfMoneyValue: KnockoutObservable<number> = ko.observable(0);
-            maxAmountOfMoneyValue: KnockoutObservable<number> = ko.observable(0);
+            minAmountOfMoneyValue: KnockoutObservable<number> = ko.observable(null);
+            maxAmountOfMoneyValue: KnockoutObservable<number> = ko.observable(null);
 
             minTimeWithinDayValue: KnockoutObservable<number> = ko.observable(0);
             maxTimeWithinDayValue: KnockoutObservable<number> = ko.observable(0);
