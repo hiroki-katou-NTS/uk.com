@@ -93,7 +93,7 @@ public interface AffJobTitleHistoryRepository {
 	 * @return
 	 * @author yennth
 	 */
-	Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate);
+	Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate, String cid);
 	
 	Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate);
 	
