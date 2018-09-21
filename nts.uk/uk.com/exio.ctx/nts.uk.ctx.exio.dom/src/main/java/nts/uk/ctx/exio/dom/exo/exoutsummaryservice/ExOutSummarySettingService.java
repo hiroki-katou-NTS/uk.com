@@ -65,7 +65,7 @@ public class ExOutSummarySettingService {
 				if (outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchNumStartVal().isPresent()
 							? outCndDetailItem.getSearchNumStartVal().get() : "");
-					cond.append(I18NText.getText("#CMF002_235"));
+					cond.append(I18NText.getText("CMF002_235"));
 					cond.append(outCndDetailItem.getSearchNumEndVal().isPresent()
 							? outCndDetailItem.getSearchNumEndVal().get() : "");
 				} else if(outCndDetailItem.getSearchNum().isPresent()){
@@ -78,7 +78,7 @@ public class ExOutSummarySettingService {
 				if (outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchCharStartVal().isPresent()
 							? outCndDetailItem.getSearchCharStartVal().get() : "");
-					cond.append(I18NText.getText("#CMF002_235"));
+					cond.append(I18NText.getText("CMF002_235"));
 					cond.append(outCndDetailItem.getSearchCharEndVal().isPresent()
 							? outCndDetailItem.getSearchCharEndVal().get() : "");
 				} else if(outCndDetailItem.getSearchChar().isPresent()) {
@@ -91,7 +91,7 @@ public class ExOutSummarySettingService {
 				if (outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchDateStart().isPresent()
 							? outCndDetailItem.getSearchDateStart().get() : "");
-					cond.append(I18NText.getText("#CMF002_235"));
+					cond.append(I18NText.getText("CMF002_235"));
 					cond.append(outCndDetailItem.getSearchDateEnd().isPresent()
 							? outCndDetailItem.getSearchDateEnd().get() : "");
 				} else if(outCndDetailItem.getSearchDate().isPresent()) {
@@ -104,7 +104,7 @@ public class ExOutSummarySettingService {
 				if (outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchTimeStartVal().isPresent()
 							? outCndDetailItem.getSearchTimeStartVal().get() : "");
-					cond.append(I18NText.getText("#CMF002_235"));
+					cond.append(I18NText.getText("CMF002_235"));
 					cond.append(outCndDetailItem.getSearchTimeEndVal().isPresent()
 							? outCndDetailItem.getSearchTimeEndVal().get() : "");
 				} else if(outCndDetailItem.getSearchTime().isPresent()) {
@@ -117,7 +117,7 @@ public class ExOutSummarySettingService {
 				if (outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
 					cond.append(outCndDetailItem.getSearchClockStartVal().isPresent()
 							? outCndDetailItem.getSearchClockStartVal().get() : "");
-					cond.append(I18NText.getText("#CMF002_235"));
+					cond.append(I18NText.getText("CMF002_235"));
 					cond.append(outCndDetailItem.getSearchClockEndVal().isPresent()
 							? outCndDetailItem.getSearchClockEndVal().get() : "");
 				} else if(outCndDetailItem.getSearchClock().isPresent()) {

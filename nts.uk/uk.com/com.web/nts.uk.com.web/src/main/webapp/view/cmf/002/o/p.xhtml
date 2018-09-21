@@ -46,14 +46,15 @@
 										comId: 'grd_Condition', 
 										items: listCondition, 
 										selected: selectedConditionCd, 
-										selectedKey: 'code', 
+										selectedKey: 'code',
+										enable : mode() != 2,
 										fields: ['code', 'name'], 
 										mode: 'igGrid'}" />
 								<!--P5_3 条件設定一覧-->
 								<table id="grd_Condition"
 									data-bind="ntsGridList: {
 										rows: 10,
-										name: '#[CMF002_345]', 
+										name: '#[CMF002_345]',
 				 						dataSource: listCondition,
 										primaryKey: 'code',
 				 						columns: [
@@ -85,6 +86,7 @@
 										<div id="P6_1" tabindex="3"
 											data-bind="ntsDateRangePicker: { 
 												required: true,
+												enable : mode() != 2,
 												value: periodDateValue,
 												name: '#[CMF002_224]' }" />	
 									</td>
@@ -112,7 +114,7 @@
 						<button tabindex="4" class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
 						<!--P20_2 次へ→-->
 						<button tabindex="5" class="proceed x-large" style="margin-left: 10px"
-							data-bind="click: todoScreenQ">#{i18n.getText('CMF002_226')}</button>
+							data-bind="click: todoScreenQ, disable : mode() == 2,">#{i18n.getText('CMF002_226')}</button>
 					</td>
 				</tr>
 			</table>

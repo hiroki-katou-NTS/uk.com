@@ -51,6 +51,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         endDate: KnockoutObservable<string> = ko.observable('');
         //Q5_1
         conditionSettingName: KnockoutObservable<string> = ko.observable('');
+        mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
         constructor() {
             var self = this;
             //起動する
@@ -102,8 +103,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.selectedConditionCd.subscribe(data => {
                 let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
                 self.selectedConditionName(conditionName);
-            })
-
+            });
 
         }
         /**
@@ -127,18 +127,24 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectStandardMode() {
             block.invisible();
             let self = this;
+
             service.getConditionSetting(new ParamToScreenP("","")).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
                     $('#ex_output_wizard').ntsWizard("next");
+
                     block.clear();
                 }
 
             }).fail(res => {
+                self.mode(MODE.NO);
+                console.log(self.mode()+" ịviodjoivjdsoiiof");
+                $('#ex_output_wizard').ntsWizard("next");
                 alertError(res);
-                 block.clear();
+                block.clear();
             });
+
            
         }
 
@@ -155,9 +161,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             error.clearAll();
             $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
-                alertError("Msg_662");
+                alertError({ messageId: "Msg_662" });
                 return;
             }
+
 
             let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
             let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
@@ -281,6 +288,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadScreenQ() {
             let self = this;
+
+            $("#component-items-list").focus();
             self.startDate(self.periodDateValue().startDate);
             self.endDate(self.periodDateValue().endDate);
             self.conditionSettingName(self.selectedConditionCd().toString() + ' ' + self.selectedConditionName().toString());
@@ -322,7 +331,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     self.referenceDate(data.baseDate);
                 }
             }
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
+                $('#component-items-list').focusComponent();
+            });
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
     }
@@ -509,6 +520,16 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             this.code = code;
             this.name = name;
         }
+    }
+    export interface IDisplayTableName {
+        catelogoryId: number;
+        code: number;
+        name: string;
+    }
+    export enum MODE {
+        NEW = 0,
+        UPDATE = 1,
+        NO = 2
     }
 
 
