@@ -6,7 +6,7 @@ module nts.uk.com.view.cmm011.a {
         import Workplace = base.IWorkplace;
         import CreationType = base.CreationWorkplaceType;
 
-        const HIERARCHY_ORIGIN: string = '000';
+        const LENGTH_HIERARCHY_ORIGIN = 3;
         export class ScreenModel {
 
             wkpConfigHistId: string;
@@ -229,17 +229,16 @@ module nts.uk.com.view.cmm011.a {
             public setNewHierarchyCd(treeWorkplace: TreeWorkplace, parentHierarchyCd: string, currentIndex: number) {
                 var self = this;
                 if (_.isEmpty(parentHierarchyCd)) parentHierarchyCd = "";
-                parentHierarchyCd += HIERARCHY_ORIGIN;
-                let tempNumber = + parentHierarchyCd;
-                tempNumber += currentIndex;
-                var result = tempNumber.toString();
-                //reverse 
-                result = result.split("").reverse().join("");
+                //create partLastHierarchyCd
+                var indexString: string = currentIndex.toString();
+                indexString = indexString.split("").reverse().join("");
                 var charZero = '0';
-                while (result.length < parentHierarchyCd.length) {
-                    result += charZero;
+                while (indexString.length < LENGTH_HIERARCHY_ORIGIN) {
+                    indexString += charZero;
                 }
-                let newHierarchyCd = result.split("").reverse().join("");
+                let lastPartHierarchyCd =  indexString.split("").reverse().join("");
+                //new hierarchy cd
+                let newHierarchyCd = parentHierarchyCd + lastPartHierarchyCd;
                 treeWorkplace.hierarchyCode = newHierarchyCd;
                 treeWorkplace.histId = self.wkpConfigHistId;
             }
