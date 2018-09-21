@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         processingYearAD: KnockoutObservable<string>;
         treatmentYearJapaneseCalendar: KnockoutObservable<string>;
         reflectionStartYear: KnockoutObservable<string>;
+        reflectionEndYear: KnockoutObservable<string>;
         dailyPaymentDate: KnockoutObservable<string>;
         empExtractionRefDate: KnockoutObservable<string>;
         socialInsuranceCollectionMonthSetting: KnockoutObservable<string>;
@@ -101,6 +102,8 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             self.treatmentYearJapaneseCalendar = ko.observable(' (' + nts.uk.time.yearInJapanEmpire(tranferModel.E1_5_0).toString().split(' ').join('') + ')');
             // E2_2
             self.reflectionStartYear = ko.observable(tranferModel.E2_2);
+            //E2_5
+            self.reflectionEndYear = ko.observable(format(getText("QMM005_110"), tranferModel.E2_2));
             // E2_8
             self.dailyPaymentDate = ko.observable(format(getText("QMM005_102"), tranferModel.E2_8_0));
             //E2_10

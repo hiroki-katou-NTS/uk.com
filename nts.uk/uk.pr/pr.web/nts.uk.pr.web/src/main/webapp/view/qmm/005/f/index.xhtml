@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 850,
-                height : 480
+                width : 845,
+                height : 520
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -23,9 +23,9 @@
     <ui:define name="content">
         <div id="contents-area" style="padding: 0">
             <!--F1_1	指示ラベル-->
-            <div style="padding: 12px" class="label">#{i18n.getText('QMM005_111')}</div>
+            <div style="padding: 24px" class="label">#{i18n.getText('QMM005_111')}</div>
             <!--F1_2	コード/名称検索-->
-            <div style="padding-left: 12px" id="f-swap-list" data-bind="ntsSwapList: {
+            <div style="padding-left: 24px" id="f-swap-list" data-bind="ntsSwapList: {
             enableRowNumbering: false,
             height: 320,
             primaryKey: 'code',
