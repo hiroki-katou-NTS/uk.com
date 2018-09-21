@@ -2236,7 +2236,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeName = workType.abbreviationName;
                     } else {
                         workTypeCode = null;
-                        workTypeName = getText('KSU001_103', obj.workTypeCode);
+                        workTypeName = obj.workTypeCode != null ? getText('KSU001_103', obj.workTypeCode) : null;
                     }
 
                     let workTime = _.find(listWorkTime, ['workTimeCode', obj.workTimeCode]);
@@ -2245,7 +2245,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTimeName = workTime.abName;
                     } else {
                         workTimeCode = null;
-                        workTimeName = getText('KSU001_103', obj.workTimeCode);;
+                        workTimeName = obj.workTimeCode != null ? getText('KSU001_103', obj.workTimeCode) : null;
                     }
 
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
