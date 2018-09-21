@@ -185,17 +185,23 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		});
 		// ドメインモデル「就業実績確認状態」の値をoutput「承認ルートインスタンス」に入れる
 		appRootConfirm.getListAppPhase().forEach(appPhaseConfirm -> {
-			ApprovalPhaseState approvalPhaseState = approvalRootState.getListApprovalPhaseState().stream()
-					.filter(x -> x.getPhaseOrder()==appPhaseConfirm.getPhaseOrder()).findAny().get();
-			approvalPhaseState.setApprovalAtr(appPhaseConfirm.getAppPhaseAtr());
-			appPhaseConfirm.getListAppFrame().forEach(appFrameConfirm -> {
-				ApprovalFrame approvalFrame = approvalPhaseState.getListApprovalFrame().stream()
-						.filter(y -> y.getFrameOrder()==appFrameConfirm.getFrameOrder()).findAny().get();
-				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-				approvalFrame.setApprovalDate(appFrameConfirm.getApprovalDate());
-				approvalFrame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
-				approvalFrame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
-			});
+			Optional<ApprovalPhaseState> opApprovalPhaseState = approvalRootState.getListApprovalPhaseState().stream()
+					.filter(x -> x.getPhaseOrder()==appPhaseConfirm.getPhaseOrder()).findAny();
+			if(opApprovalPhaseState.isPresent()){
+				ApprovalPhaseState approvalPhaseState = opApprovalPhaseState.get();
+				approvalPhaseState.setApprovalAtr(appPhaseConfirm.getAppPhaseAtr());
+				appPhaseConfirm.getListAppFrame().forEach(appFrameConfirm -> {
+					Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
+							.filter(y -> y.getFrameOrder()==appFrameConfirm.getFrameOrder()).findAny();
+					if(opApprovalFrame.isPresent()){
+						ApprovalFrame approvalFrame = opApprovalFrame.get();
+						approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
+						approvalFrame.setApprovalDate(appFrameConfirm.getApprovalDate());
+						approvalFrame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
+						approvalFrame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
+					}
+				});
+			}
 		});
 		return approvalRootState;
 	}

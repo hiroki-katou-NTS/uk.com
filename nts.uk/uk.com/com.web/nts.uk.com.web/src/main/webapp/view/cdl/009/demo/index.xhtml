@@ -18,80 +18,97 @@
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content">
-					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
-						<h1>Demo Main SCR to test -> CDL009</h1>
-						<h2>(所属社員選択ダイアログ)</h2>
-
-						<div style="margin-left: 10px; padding-top: 10px">
-							<p>
-								<b>Single/Multiple Selection (property of Employee List)</b>
-							</p>
-							<br></br>
-							<div class="cf"
-								data-bind="ntsSwitchButton: {
-														options: selectionOption,
-														optionsValue: 'code',
-														optionsText: 'name',
-														value: selectedOption,
-														enable: true }"></div>
-							<br></br>
-							<br></br>
-
-							<p>
-								<br></br>
-								<br></br> <b>Target Category:</b>
-							</p>
-							<br></br>
-							<div id="target-classification"
+					<h1>CDL009所属社員選択ダイアログ Demo Main SCR To Test</h1>
+					<hr />
+					<h2>Overview</h2>
+					<h4 style="margin-top: 30px; margin-bottom: 10px; font-size: 17px">Parameters:</h4>
+					
+					<table>
+						<col width="150"></col>
+						<col width="200"></col>
+						<tr>
+							<td>選択モード:</td>
+							<td><div class="cf"
+									data-bind="ntsSwitchButton: {
+												options: selectionOption,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedOption,
+												enable: true }"></div></td>
+						</tr>
+						<tr>
+							<td>対象区分:</td>
+							<td><div id="target-classification"
 								data-bind="ntsRadioBoxGroup: {
 											options: targetList,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedTarget,
-											enable: true}"></div>
-							<br></br>
-							<br></br>
-							<p>
-								<br></br> <b>Base Date:</b>
-							</p>
-							<div
-								data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+											enable: true}"></div></td>
+						</tr>
+						<tr>
+								<td>基準日:</td>
+								<td><div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+								</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<p>選択済項目:</p>
+								<p data-bind="text: selectedIds()"></p>
+							</td>
+							<td>
+								<input data-bind="ntsTextEditor: {value: inputWorkplaceIds, option: {width: '500'}}" />
+							</td>
+						</tr>
+					</table>
 
-							<div>
-								<br></br>
-								<p>
-									<b>Initial Selected Workplaces:</b>
-								</p>
-								<!-- <p data-bind="text: selectedIds()"></p> -->
-								<p>
-									<input
-										data-bind="ntsTextEditor: {value: inputWorkplaceIds, option: {width: '500'}}" />
-								</p>
-								<br></br>
-							</div>
-							<br></br>
-
-							<p>
-								<b>Click Button to Open Dialog</b>
-							</p>
-							<br></br>
-							<BUTTON data-bind="click: openDialog" style="margin-right: 10px">Open
-								Dialog</BUTTON>
-							<br></br>
-
-							<div>
-								<br></br>
-								<br></br>
-								<p>
-									<b>Selected Employee:</b>
-								</p>
-								<p data-bind="text: getSelectedEmp()"></p>
-								<br></br>
-							</div>
-						</div>
-						<hr></hr>
+					<div>
+						<p>
+							<b>Selected Employee:</b>
+						</p>
+						<p data-bind="text: getSelectedEmp()"></p>
+						<br></br>
 					</div>
-				</div>
+
+					<button style="margin-top: 10px;" data-bind="click: openDialog">Open
+						CDL009 dialog</button>
+						
+					<h2 style="margin-top: 50px;">Guide</h2>
+					<pre>
+						<![CDATA[
+// Open Dialog CDL009
+      private openDialog() {
+          let self = this;
+          // Set Param
+          setShared('CDL009Params', {
+              // isMultiSelect For Employee List Kcp005 (選択モード)
+              isMultiple: self.isMultiSelect(),
+              // For Workplace List Kcp004 (選択済項目)
+              selectedIds: self.selectedIds(),
+              // For Workplace List Kcp004 (基準日)
+              baseDate: self.baseDate(),
+              // Workplace or Department(対象区分)
+              target: self.target()
+          }, true);
+
+          nts.uk.ui.windows.sub.modal("/view/cdl/009/a/index.xhtml").onClosed(function() {
+              var isCancel = getShared('CDL009Cancel');
+              if (isCancel) {
+                  return;
+              }
+              var output = getShared('CDL009Output');
+              if (self.isMultiSelect()) {
+                  self.selectedEmps(output);
+              } else {
+                  self.selectedEmployeeId(output);
+              }
+              
+          });
+      }
+					]]>
+					</pre>
+				</div> 
 			</div>
 		</ui:define>
 	</ui:composition>

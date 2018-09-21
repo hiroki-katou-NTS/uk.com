@@ -68,4 +68,13 @@ public interface ClosureService {
 	
 	// 当月の期間を算する
 	public DatePeriod getClosurePeriod(Closure closure, YearMonth processingYm);
+	
+	/**
+	 * Gets the closure data by employees.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the closure data by employees
+	 */
+	List<Closure> getClosureDataByEmployees(List<String> employeeIds, GeneralDate baseDate);
 }
