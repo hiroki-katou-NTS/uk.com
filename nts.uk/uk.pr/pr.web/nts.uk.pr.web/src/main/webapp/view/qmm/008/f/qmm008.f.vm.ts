@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm008.f {
             constructor() {
                 var self = this;
                 self.dataList = ko.observableArray([]);
+                let = getShared("QMM008_D_RES_PARAMS")
                 let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
                 nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
                     for (var i = 0; i < response.cusWelfarePensions.length; i++) {

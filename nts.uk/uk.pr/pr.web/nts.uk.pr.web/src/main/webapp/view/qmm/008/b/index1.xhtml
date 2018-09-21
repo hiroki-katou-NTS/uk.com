@@ -8,10 +8,17 @@
 								data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
 							<button id="A1_2" tabindex="1"
 								data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
+<<<<<<< HEAD
 							<button id="A1_3" tabindex="1"
 								data-bind="click: registerBusinessEstablishment, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
 							<button id="A1_4" tabindex="1"
 								data-bind="click: standardRemunerationMonthlyAmount, enable: true">#{i18n.getText('QMM008_4')}</button>
+=======
+							<button id="A1_3" tabindex="1" 
+								data-bind="click: standardRemunerationMonthlyAmount, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
+							<button id="A1_4" tabindex="1"
+								data-bind="click: registerBusinessEstablishment, enable: true">#{i18n.getText('QMM008_4')}</button>
+>>>>>>> 6c70130fefb351106e694450f9ce28a58583b524
 							<button id="A1_5" tabindex="1"
 								data-bind="click: masterCorrectionLog, enable: false">#{i18n.getText('QMM008_5')}</button>
 						</div>
