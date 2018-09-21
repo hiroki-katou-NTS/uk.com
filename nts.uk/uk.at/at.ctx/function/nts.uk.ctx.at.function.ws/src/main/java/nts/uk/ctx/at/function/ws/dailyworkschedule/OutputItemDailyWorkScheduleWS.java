@@ -18,7 +18,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
-import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
@@ -101,8 +100,8 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
-	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy){
-		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
+	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
+		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}
 	
 	/**

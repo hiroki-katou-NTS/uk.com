@@ -36,8 +36,8 @@ public class WorkScheduleOutputConditionDto {
 	/** The lst output item daily work schedule. */
 	private List<DataInforReturnDto> lstOutputItemDailyWorkSchedule;
 	
-	/** The exist authority. */
-	private boolean existAuthority;
+	/** The employee charge. */
+	private boolean employeeCharge;
 	
 	private String msgErrClosingPeriod;
 
@@ -48,18 +48,18 @@ public class WorkScheduleOutputConditionDto {
 	 * @param endDate the end date
 	 * @param strReturn the str return
 	 * @param lstOutputItemDailyWorkSchedule the lst output item daily work schedule
-	 * @param existAuthority the exist authority
+	 * @param employeeCharge the employee charge
 	 * @param msgErrClosingPeriod the msg err closing period
 	 */
 	public WorkScheduleOutputConditionDto(GeneralDate startDate, GeneralDate endDate, String strReturn,
-			List<DataInforReturnDto> lstOutputItemDailyWorkSchedule, boolean existAuthority,
+			List<DataInforReturnDto> lstOutputItemDailyWorkSchedule, boolean employeeCharge,
 			String msgErrClosingPeriod) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.strReturn = strReturn;
 		this.lstOutputItemDailyWorkSchedule = lstOutputItemDailyWorkSchedule;
-		this.existAuthority = existAuthority;
+		this.employeeCharge = employeeCharge;
 		this.msgErrClosingPeriod = msgErrClosingPeriod;
 	}
 }

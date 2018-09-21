@@ -17,10 +17,9 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
-import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
-import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -37,10 +36,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class WorkScheduleOutputConditionFinder {
-	
-	/** The permission of employment form repository. */
-	@Inject
-	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 	
 	/** The closure employment repository. */
 	@Inject
@@ -66,17 +61,14 @@ public class WorkScheduleOutputConditionFinder {
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
+	@Inject
+	private RoleExportRepoAdapter roleExportRepoAdapter;
+	
 	/** The Constant STRING_EMPTY. */
 	private static final String STRING_EMPTY = "";
 	
-	/** The Constant FUNCTION_NO. */
-	private static final Integer FUNCTION_NO = 2;
-	
 	/** The Constant SHOW_CHARACTERISTIC. */
 	private static final String SHOW_CHARACTERISTIC = "SHOW_CHARACTERISTIC";
-	
-	/** The Constant OPEN_SCREEN_C. */
-	private static final String OPEN_SCREEN_C = "Open_ScrC";
 	
 	/**
 	 * Start scr.
@@ -87,21 +79,16 @@ public class WorkScheduleOutputConditionFinder {
 	public WorkScheduleOutputConditionDto startScr(boolean isExistWorkScheduleOutputCondition) {
 		
 		WorkScheduleOutputConditionDto dto = new WorkScheduleOutputConditionDto();
-		
 		String companyId = AppContexts.user().companyId();
-		String roleId = AppContexts.user().roles().forAttendance();
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
 		
-		// ドメインモデル「就業帳票の権限」を取得する(Acquire the domain model "authority of employment form")
-		Optional<PermissionOfEmploymentForm> optPermissionOfEmploymentForm = permissionOfEmploymentFormRepository.find(companyId, roleId, FUNCTION_NO);
-		if (optPermissionOfEmploymentForm.isPresent()) {
-			if (!optPermissionOfEmploymentForm.get().isAvailable()) {
-				optPermissionOfEmploymentForm = Optional.empty();
-			}
-			dto.setExistAuthority(true);
+		//「ログイン者が担当者か判断する」で就業担当者かチェックする
+		// 出力項目の設定ボタン(A7_6)の活性制御を行う
+		if (roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge()) {
+			dto.setEmployeeCharge(true);
 		} else {
-			dto.setExistAuthority(false);
+			dto.setEmployeeCharge(false);
 		}
 		
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
@@ -131,13 +118,6 @@ public class WorkScheduleOutputConditionFinder {
 				dto.setStrReturn(SHOW_CHARACTERISTIC);
 			} else {
 				dto.setStrReturn(STRING_EMPTY);
-			}
-		} else {
-			// 「就業帳票の権限」が取得できたか ( 「............」 đã được acquire chưa?)
-			if (optPermissionOfEmploymentForm.isPresent()) {
-				dto.setStrReturn(OPEN_SCREEN_C);
-			} else {
-				dto.setStrReturn("Msg_1348");
 			}
 		}
 		
