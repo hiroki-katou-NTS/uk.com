@@ -68,9 +68,7 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<AttItemNameImport> monthlyAttItem = atItemNameAdapter.getNameOfAttendanceItem(
-				monthlyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),
-				TypeOfItemImport.Monthly);
+		List<AttItemNameImport> monthlyAttItem = atItemNameAdapter.getNameOfMonthlyAttendanceItem(monthlyItem);
 		for (AttItemNameImport att : monthlyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {

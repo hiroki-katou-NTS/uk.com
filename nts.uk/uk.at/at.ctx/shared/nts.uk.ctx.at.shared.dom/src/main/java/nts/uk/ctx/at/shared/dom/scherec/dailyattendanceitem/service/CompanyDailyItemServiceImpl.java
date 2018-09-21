@@ -68,9 +68,7 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<AttItemNameImport> dailyAttItem = atItemNameAdapter.getNameOfAttendanceItem(
-				dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),
-				TypeOfItemImport.Daily);
+		List<AttItemNameImport> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItem);
 		for (AttItemNameImport att : dailyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {

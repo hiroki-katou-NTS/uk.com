@@ -14,7 +14,9 @@ public interface AttendanceItemNameService {
 	 * @return
 	 */
 	List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type);
-	
+
+	List<AttendanceItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttendanceItemName> attendanceItems);
+
 	List<AttendanceItemName> getNameOfAttendanceItem(List<AttendanceItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos);
 }
