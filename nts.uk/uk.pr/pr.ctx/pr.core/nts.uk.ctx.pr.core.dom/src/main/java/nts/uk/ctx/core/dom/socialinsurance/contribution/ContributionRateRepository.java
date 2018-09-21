@@ -16,4 +16,8 @@ public interface ContributionRateRepository {
 	Optional<ContributionRate> getContributionRateByHistoryId(String historyId);
 
 	void deleteByHistoryIds(List<String> historyIds);
+
+	void add(ContributionRate domain);
+
+	void update(ContributionRate domain);
 }
