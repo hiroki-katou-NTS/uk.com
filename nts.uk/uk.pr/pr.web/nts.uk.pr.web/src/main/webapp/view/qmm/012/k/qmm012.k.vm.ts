@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         listTaxExemptLimit: KnockoutObservableArray<TaxExemptLimit> = ko.observableArray([]);
@@ -9,6 +10,12 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
         currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
+            
+            let params = getShared("QMM012_B_TO_K_PARAMS");
+            
+            if(params) {
+                self.currentCode(params);
+            }
 
             self.currentCode.subscribe(taxFreeamountCode => {
                 let getTaxExemptLimit = _.find(self.listTaxExemptLimit(), function(x) { return x.taxFreeamountCode == taxFreeamountCode; });
@@ -29,9 +36,9 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
         setTaxExemption() {
             let self = this;
             if (self.selectedTaxExemptLimit()) {
-                setShared("QMM012_TaxExemptLimit", self.selectedTaxExemptLimit(null));
+                setShared("QMM012_K_DATA", {code: self.selectedTaxExemptLimit().taxFreeamountCode, name: self.selectedTaxExemptLimit().taxExemptionName});
             } else {
-                setShared("QMM012_TaxExemptLimit", self.selectedTaxExemptLimit());
+                setShared("QMM012_K_DATA", {code: "", name: ""});
             }
             nts.uk.ui.windows.close();
         }

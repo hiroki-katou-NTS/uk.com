@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
             var dialogSize = {
-                width: 900,
-                height: 600
+                width: 780,
+                height: 580
             };
         	</script>
 			<com:scriptfile set="IGNITE" />
@@ -37,7 +37,7 @@
 						</td>						
 						<td>
 							<!--H1_4-->
-							<span class="label" data-bind="text: itemAtr"></span>
+							<span class="label" data-bind="text: categoryAtr"></span>
 						</td>
 					</tr>
 					<tr>						
@@ -47,9 +47,9 @@
 						</td>						
 						<td>
 							<!--H1_6-->
-							<span class="label" style="margin-right: 6px;" data-bind="text: itemNameCode"></span>
+							<span class="label" style="margin-right: 6px;" data-bind="text: itemNameCd"></span>
 							<!--H1_7-->
-							<span class="label" data-bind="text: itemName"></span>
+							<span class="label" data-bind="text: name"></span>
 						</td>
 					</tr>
 				</table>
@@ -87,7 +87,8 @@
 											 required: $parent.isEnableYearPeriod(),
 											 dateFormat: 'YYYY', 
 											 valueFormat: 'YYYY'}" />
-							<span class="label span-middle">&#160;&#160;～&#160;&#160;</span>
+							<!--H2_6-->
+							<span class="label span-middle">#{i18n.getText('QMM012_125')}</span>
 							<!--H2_7-->
 							<div tabindex="3"
 								data-bind="ntsDatePicker: {
