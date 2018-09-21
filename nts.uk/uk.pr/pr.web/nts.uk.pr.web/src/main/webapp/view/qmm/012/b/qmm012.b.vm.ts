@@ -71,7 +71,9 @@ module nts.uk.pr.view.qmm012.b {
                 }
                 
                 service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
+                    data.sort(self.compare);
                     self.statementItemDataList(data);
+                    
                     if(data.length > 0) {
                         self.statementItemDataSelected(new StatementItemData(data[0], self));
                         $("#B3_3").focus();
@@ -89,6 +91,24 @@ module nts.uk.pr.view.qmm012.b {
                 });
                 
                 return deferred.promise();
+            }
+            
+            compare(a: IStatementItemData, b: IStatementItemData): number {
+            
+                let comparison = 0;
+                if (a.categoryAtr > b.categoryAtr) {
+                    comparison = 1;
+                } else if (a.categoryAtr < b.categoryAtr) {
+                    comparison = -1;
+                } else if (a.categoryAtr == b.categoryAtr) {
+                    if(a.itemNameCd > b.itemNameCd) {
+                        comparison = 1;
+                    } else {
+                        comparison = -1;
+                    }
+                }
+                
+                return comparison;
             }
             
             public create(): void {
@@ -395,7 +415,7 @@ module nts.uk.pr.view.qmm012.b {
         class StatementItem {
             categoryAtr: KnockoutObservable<number>;
             categoryName: KnockoutObservable<string>;
-            itemNameCd: KnockoutObservable<number>;
+            itemNameCd: KnockoutObservable<string>;
             defaultAtr: number;
             valueAtr: KnockoutObservable<number>;
             deprecatedAtr: KnockoutObservable<number>;
@@ -844,7 +864,7 @@ module nts.uk.pr.view.qmm012.b {
         
         interface IStatementItem {
             categoryAtr: number;
-            itemNameCd: number;
+            itemNameCd: string;
             defaultAtr: number;
             valueAtr: number;
             deprecatedAtr: number;
