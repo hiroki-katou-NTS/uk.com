@@ -22,15 +22,15 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
             let self = this;
             self.startYearMonth();
             let params = getShared('QMM011_F_PARAMS_INPUT');
+            let to = getText('QMM011_9');
             if (params) {
                 self.insurrance(params.insurrance);
                 self.startYearMonth(params.startYearMonth);
-                self.endYearMonth(params.endYearMonth);
+                self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
                 self.startLastYearMonth(params.startLastYearMonth);
                 self.canDelete(params.canDelete);
                 self.hisId(params.hisId);
             }
-            
         }
         
         update() {
@@ -42,8 +42,8 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
             let param: any = {
                     hisId: self.hisId(),
                     methodEditing: self.methodEditing(),
-                    startMonthYear: self.startYearMonth(),
-                    endMonthYear: self.endYearMonth()
+                    startMonthYear: $("#F1_9")[0].disabled ? 0 : self.startYearMonth(),
+                    endMonthYear: self.convertStringToYearMonth(self.endYearMonth())
             }
             block.invisible();
             if (self.insurrance() == INSURRANCE.EMPLOYMENT_INSURRANCE_RATE) {
@@ -108,6 +108,11 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $("#F1_9").trigger("validate");
+            if($("#F1_9")[0].disabled){
+                $("#F1_9").ntsError('clear');
+                nts.uk.ui.errors.removeByElement($("#F1_9"));
+                return false;
+            }
             if ((self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || 
                     Number(self.startLastYearMonth()) > Number(self.startYearMonth())) && (this.methodEditing() == EDIT_METHOD.UPDATE)){
                 $('#F1_9').ntsError('set', { messageId: "Msg_107" });
@@ -117,9 +122,26 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
         }
         
         cancel(){
+            nts.uk.ui.errors.clearAll();
             close();
         }
-        
+
+        convertMonthYearToString(yearMonth: any) {
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            return year + "/" + month;
+        }
+
+        convertStringToYearMonth(yearMonth: any){
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.substring(3);
+            yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
+            return yearMonth;
+        }
        // 「初期データ取得処理
     }
     
@@ -139,5 +161,7 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
         EMPLOYMENT_INSURRANCE_RATE = 1,
         ACCIDENT_INSURRANCE_RATE = 0
     }
+
+
     
 }

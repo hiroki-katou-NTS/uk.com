@@ -23,16 +23,16 @@
 					<span id="F1_1" class="label">#{i18n.getText('QMM011_51')}</span>
 				</div>
 				<!-- F1_2 名称 -->
-				<div id="F1_2" data-bind="ntsFormLabel: {}" style="margin-bottom: 10px; width: 100%">
+				<div id="F1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px;">
 					<span class="label">#{i18n.getText('QMM011_44')}</span>
 					<!-- F1_3 保険名称 -->
-					<span id="F1_3" class="label" data-bind="text: name"></span>
+					<span id="F1_3" class="label" data-bind="text: name" style="margin-left: 89px"></span>
 				</div>
 				<!-- F1_4 編集方法の選択 -->
-				<div id="F1_4" data-bind="ntsFormLabel: { required: true}" style="margin-bottom: 10px">
+				<div id="F1_4" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
 					<span class="label">#{i18n.getText('QMM011_52')}</span>
 					<!-- F1_5 履歴編集方法 -->
-						<div id="F1_6" class="cell" tabindex = "1"
+						<div id="F1_6" style="margin-left: 20px" class="cell" tabindex = "1"
 										data-bind="ntsRadioButton: {
 										checked: methodEditing, 
 										option: itemList()[0], 
@@ -42,7 +42,7 @@
 										group: 'periodOption'}">
 						</div>
 						<br/>
-						<div id="F1_7"  class="cell" style="margin-left: 100px"
+						<div id="F1_7"  class="cell" style="margin-left: 121px"
 							data-bind="ntsRadioButton: {
 										checked: methodEditing, 
 										option: itemList()[1], 

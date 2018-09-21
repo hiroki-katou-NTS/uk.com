@@ -1,3 +1,6 @@
+#C3_1{
+   margin-top: 18px;
+}
 #C3_1 td{
     height: 20px
 }
@@ -6,4 +9,7 @@
 }
 #C3_6{
     align-self: left;
+}
+#C1_1{
+    margin-left: 25px;
 }

@@ -242,7 +242,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             if (self.listEmpInsHis().length > 0) {
                 return (this.isNewMode() == MODE.NEW || (self.listEmpInsHis()[FIRST].hisId == HIS_ID_TEMP));
             }
-            return this.isNewMode() == MODE.NEW
+            return this.isNewMode() == MODE.NEW;
         }
         
         enableUpdate(){

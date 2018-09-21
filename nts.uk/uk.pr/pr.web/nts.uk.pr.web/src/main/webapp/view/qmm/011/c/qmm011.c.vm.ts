@@ -28,7 +28,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         empContrRatio:              KnockoutObservable<string> = ko.observable('');
         busiOwFracClass:            KnockoutObservable<string> = ko.observable('');
         isNewMode:                  KnockoutObservable<number> = ko.observable(2);
-        isNewMode:                  KnockoutObservable<boolean> = ko.observable(2);
 
         listHisTemp:Array<IOccAccIsHis> =[];
         listAccInsurPreRateTemp :Array<IAccInsurPreRate>=[];

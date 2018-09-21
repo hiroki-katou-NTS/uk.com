@@ -24,11 +24,11 @@
             <div class = "left flex">
                 <div id="C1_1"
                      data-bind="ntsPanel:{width: '220px', height: '415px',direction: 'none', visible: true}">
-                    <div id="action" style="padding-bottom: 35px">
+                    <div id="action">
                         <!-- C1_2 履歴追加 -->
                         <button style="float: left" id ="C1_2" tabindex="1"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
                         <!-- C1_3 履歴編集 -->
-                        <button style="float: right"  id ="C1_3" tabindex="2"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
+                        <button style="margin-left: 31px"  id ="C1_3" tabindex="2"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
                     </div>
                     <div>
                         <!--C1_4 労災保険料率一覧 -->
@@ -59,7 +59,7 @@
                    <!--C2_3 開始年月和暦 -->
                    <span id="C2_3" class="label" data-bind="text: monthlyCalendar"></span>
                    <!--C2_4 ～  -->
-                   <label id= "C2_4">#{i18n.getText('QMM011_9')}</label>
+                   <label id= "C2_4" data-bind="visible: !enableRegis()">#{i18n.getText('QMM011_9')}</label>
                    <!--C2_5 終了年月  -->
                    <span  id="C2_5" class="label" data-bind="text: endYearMonth"></span>
                </div>
