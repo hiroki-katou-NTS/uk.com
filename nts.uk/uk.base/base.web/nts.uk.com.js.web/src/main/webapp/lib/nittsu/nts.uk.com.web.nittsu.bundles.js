@@ -27904,7 +27904,7 @@ var nts;
                                         if (_.isNil(sum[_currentPage])) {
                                             sum[_currentPage] = 0;
                                         }
-                                        sum[_currentPage] += (!_.isNil(d[k]) ? parseFloat(d[k]) : 0);
+                                        sum[_currentPage] += (!_.isNil(d[k]) && d[k] !== "" ? parseFloat(d[k]) : 0);
                                         break;
                                 }
                             });
