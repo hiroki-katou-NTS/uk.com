@@ -4,7 +4,7 @@
 	  xmlns:ui="http://java.sun.com/jsf/facelets"
 	  xmlns:com="http://xmlns.jcp.org/jsf/component"
 	  xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
+<body style="overflow: hidden;">
 <ui:composition template="../../../../master/sidebar.xhtml">
 	<ui:define name="sidebar-head">
 		<com:scriptfile set="IGNITE" />
@@ -13,14 +13,11 @@
 		<com:scriptfile path="qmm011.a.start.js" />
  		<com:stylefile path="qmm011.a.style.css" />
 
-
         <com:scriptfile path="../share/model.js" />
-<!--    <com:scriptfile path="../b/qmm011.b.start.js" /> -->
         <com:scriptfile path="../b/qmm011.b.service.js" />
         <com:scriptfile path="../b/qmm011.b.vm.js" />
         <com:stylefile path="../b/qmm011.b.style.css" />
 
-<!--         <com:scriptfile path="../c/qmm011.c.start.js" /> -->
         <com:scriptfile path="../c/qmm011.c.service.js" />
         <com:scriptfile path="../c/qmm011.c.vm.js" />
         <com:stylefile path="../c/qmm011.c.style.css" />
@@ -29,8 +26,6 @@
         </com:ValidatorScript>
 
 	</ui:define>
-
-
 	<ui:define name="sidebar">
 		<ul class="navigator">
 			<!-- 残数管理データ登録_振休管理 -->
@@ -40,13 +35,13 @@
 
 		</ul>
 	</ui:define>
-	<ui:define name="sidebar-content">
+	<ui:define name="sidebar-content" >
 		<!-- 残数管理データ登録_振休管理 -->
-		<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB">
+		<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB" class="flex" >
 			<ui:include src="../b/index.xhtml" />
 		</div>
 
-		<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelC">
+		<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelC" class="flex" >
 			<ui:include src="../c/index.xhtml" />
 		</div>
 	</ui:define>
