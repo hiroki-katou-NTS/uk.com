@@ -104,12 +104,7 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 	public List<RecordRemainCreateInfor> lstRecordRemainData(String cid, String sid, List<GeneralDate> dateData) {
 		List<RecordRemainCreateInfor> lstOutputData = new ArrayList<>();
 		//ドメインモデル「日別実績の勤怠時間」を取得する
-		List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData = new ArrayList<>();
-		try {
-			lstAttendanceTimeData =	attendanceRespo.find(sid, dateData);
-		} catch (Exception e) {
-			
-		}
+		List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData = attendanceRespo.find(sid, dateData);
 		//ドメインモデル「日別実績の勤務情報」を取得する
 		List<WorkInfoOfDailyPerformance> lstWorkInfor = workRespo.findByListDate(sid, dateData);
 		if(lstAttendanceTimeData.isEmpty()
