@@ -63,14 +63,14 @@
 				</div>
 				<hr style="margin-bottom: 20px;"></hr>
 				<div class="pull-left"
-					data-bind="ntsPanel:{width: '330px', height: '400px', direction: 'right', showIcon: true, visible: true}"
+					data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
 					id="D2_1" style="margin-left: 10px;">
 					<div id="D2_2" style="width: 150px" tabindex="7"
 						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'single-list', 
 						items: items, selected: currentCode, selectedKey: 'code', fields: ['code'], mode: 'igGrid'}" />
 					<table id="single-list" tabindex="8"
 						data-bind="ntsGridList: {								
-							height: 350,
+							rows: 20,
 							name: '#[QMM008_109]',
 							options: items,
 							optionsValue: 'code',
@@ -82,7 +82,7 @@
 				<div class="pull-left">
 					<div id="D3_1" tabindex="9"
 						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
-						style="width: 500px;">
+						style="width: 400px;">
 						<div class="tab-content-1" data-bind="with: $vm.detail">
 							<div class="flex valign-center">
 								<div id="D4_1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM008_114')}</div>

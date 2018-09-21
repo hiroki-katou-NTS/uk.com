@@ -58,7 +58,7 @@
 						<!-- C1_1 厚生年金保険料率一覧 -->
 						<div class="fixed-flex-layout-left">
 							<div style="margin-left: 30px; margin-bottom: 30px;"
-								data-bind="ntsPanel:{width: '290px', height: '550px', direction: 'right', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '290px', height: '700px', direction: 'right', showIcon: true, visible: true}">
 								<!-- C1_2 厚生年金保険料率一覧 -->
 								<div style="width: 290px" tabindex="1"
 									data-bind="ntsSearchBox: {
@@ -80,7 +80,7 @@
 									style="background-color: white; margin-top: 15px;"
 									data-bind="ntsTreeDragAndDrop:{
 									width: 290,
-									rows: 15,
+									rows: 20,
 									dataSource: welfareInsuranceRateTreeList,
 									value: selectedWelfareInsurance,
 									primaryKey: 'code',
@@ -101,7 +101,7 @@
 									data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_12')}</div>
 								<div style="width: 65px;" class="inline-element"
 									data-bind="text: displayStart" id="C2_2"></div>
-								<div style="width: 85px;" class="inline-element" id="C2_3">平成20年12</div>
+								<div style="width: 110px;" class="inline-element" id="C2_3" data-bind = "text:displayJapanYearMonth"></div>
 								<div class="inline-element" id="C2_4">#{i18n.getText('QMM008_11')}</div>
 								<div style="width: 65px;" class="inline-element"
 									data-bind="text: displayEnd" id="C2_5"></div>
@@ -139,7 +139,7 @@
 									enable: $vm.isSelectedHistory }"></div>
 								</div>
 								<button style="display: inline-block"
-									data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left', enable: $vm.isSelectedHistory}">?</button>
+									data-bind="ntsHelpButton: {image: '../resource/QMM008_01.png', position: 'bottom left', enable: $vm.isSelectedHistory}">?</button>
 							</div>
 							<hr></hr>
 							<div id="C2_16">#{i18n.getText('QMM008_56')}</div>
@@ -186,7 +186,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div>
@@ -203,7 +203,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
@@ -221,7 +221,7 @@
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
 
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
@@ -238,7 +238,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 										</tr>
 										<tr>
@@ -258,7 +258,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div>
@@ -275,7 +275,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
@@ -292,7 +292,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
@@ -309,7 +309,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 										</tr>
 									</tbody>
@@ -364,7 +364,7 @@
  													required: true, 
  													enable: false}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div>
@@ -380,7 +380,7 @@
  													required: true, 
  													enable: false}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
@@ -397,7 +397,7 @@
  													enable: false}" />
 												</div>
 
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
@@ -413,7 +413,7 @@
  													required: true, 
  													enable: false}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 										</tr>
 										<tr>
@@ -433,7 +433,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div>
@@ -450,7 +450,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
@@ -467,7 +467,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().maleContributionRate">
@@ -484,7 +484,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 										</tr>
 										<tr>
@@ -505,7 +505,7 @@
  													required: true, 
  													enable: false}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div>
@@ -521,7 +521,7 @@
  													required: true, 
  													enable: false}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
@@ -538,7 +538,7 @@
  													enable: false}" />
 												</div>
 
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
@@ -554,7 +554,7 @@
  													required: true, 
  													enable: false}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 										</tr>
 										<tr>
@@ -574,7 +574,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div>
@@ -591,7 +591,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
@@ -608,7 +608,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 											<td>
 												<div data-bind = "with: $vm.bonusEmployeePensionInsuranceRate().femaleContributionRate">
@@ -625,7 +625,7 @@
  													required: true, 
  													enable: $vm.isUpdateMode() ? $vm.isSelectedHistory() : true}" />
 												</div>
-												<div>/1000</div>
+												<div>#{i18n.getText('QMM008_28')}</div>
 											</td>
 										</tr>
 									</tbody>
@@ -739,7 +739,7 @@
 							<div style="margin-top: 10px;">#{i18n.getText('QMM008_183')}</div>
 							<hr></hr>
 							<div style="margin-bottom: 30px;">
-								<div data-bind="ntsFormLabel: {}">給与</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_20')}</div>
 								<div style="display: inline-block"
 									data-bind="with: salaryEmployeesPensionInsuranceRate">
 									<!-- C2_34 賞与事業主端数区分 -->
@@ -761,7 +761,7 @@
 													]}"></div>
 								</div>
 								<div style="display: inline-block; margin-left: 25px;"
-									data-bind="ntsFormLabel: {}">賞与</div>
+									data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_21')}</div>
 								<div style="display: inline-block"
 									data-bind="with: $vm.bonusEmployeePensionInsuranceRate">
 									<!-- C2_37賞与事業主負担分計算方法 -->

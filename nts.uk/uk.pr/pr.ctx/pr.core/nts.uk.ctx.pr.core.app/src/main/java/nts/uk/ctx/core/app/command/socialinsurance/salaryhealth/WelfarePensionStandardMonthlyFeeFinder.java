@@ -20,6 +20,8 @@ import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPens
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.MonthlyScopeOfWelfarePensionCompensation;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.MonthlyScopeOfWelfarePensionCompensationRepository;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassification;
+import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionInsuranceClassificationRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 
@@ -35,8 +37,11 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 
 	@Inject
 	private EmployeesPensionMonthlyInsuranceFeeRepository employeesPensionMonthlyInsuranceFeeRepository;
+	
+	@Inject
+	private WelfarePensionInsuranceClassificationRepository welfarePensionInsuranceClassificationRepository;
 
-	public ResponseWelfarePension findAllWelfarePensionAndRate(StartCommandHealth startCommand) {
+	public ResponseWelfarePension findAllWelfarePensionAndRate(StartCommandHealth startCommand, Boolean check) {
 
 		List<WelfarePensionStandardGradePerMonthDto> welfarePensionStandardGradePerMonthDtos = new ArrayList<>();
 		List<WelfarePensionGradePerRewardMonthlyRangeDto> welfarePensionGradePerRewardMonthlyRangeDtos = new ArrayList<>();
@@ -67,7 +72,11 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		// ドメインモデル「厚生年金月額保険料額」を取得する
 		Optional<EmployeesPensionMonthlyInsuranceFee> employeesPensionMonthlyInsuranceFee = employeesPensionMonthlyInsuranceFeeRepository
 				.getEmployeesPensionMonthlyInsuranceFeeByHistoryId(startCommand.getHistoryId());
+		Optional<WelfarePensionInsuranceClassification> welfarePensionInsuranceCls = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(startCommand.getHistoryId());
 		if(employeesPensionMonthlyInsuranceFee.isPresent()) {
+			if(check && welfarePensionInsuranceCls.isPresent()) {
+				employeesPensionMonthlyInsuranceFee.get().algorithmMonthlyWelfarePensionInsuranceFeeCalculation(welfarePensionStandardMonthlyFee, welfarePensionInsuranceCls.get());
+			}
 			salaryEmployeesPensionInsuranceRateDto = new SalaryEmployeesPensionInsuranceRateDto(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualBurdenRatio().v().toString(), 
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualBurdenRatio().v().toString(), 
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeContributionRatio().v().toString(), 

@@ -11,6 +11,8 @@ import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistory;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateHistoryRepository;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFeeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,11 +41,28 @@ public class ContributionService {
 			contributionRateHistoryRepository.add(contributionRateHistory);
 		}
 		contributionRateHistoryRepository.deleteByCidAndCode(cid, officeCode);
+
 		contributionRateHistory = optContributionRateHistory.get();
+		if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
+			// add history if not exist
+			contributionRateHistory.add(yearMonthItem);
+			this.addHealthInsurance(contributionRate);
+		} else {
+			this.updateHealthInsurance(contributionRate);
+		}
+
 		if (!contributionRateHistory.getHistory().contains(yearMonthItem)) {
 			contributionRateHistory.add(yearMonthItem);
 		}
 		contributionRateHistoryRepository.add(contributionRateHistory);
+	}
+
+	public void addHealthInsurance(ContributionRate contributionRate) {
+		contributionRateRepository.add(contributionRate);		
+	}
+	
+	public void updateHealthInsurance(ContributionRate contributionRate) {
+		contributionRateRepository.update(contributionRate);		
 	}
 
 	// 月額拠出金計算処理

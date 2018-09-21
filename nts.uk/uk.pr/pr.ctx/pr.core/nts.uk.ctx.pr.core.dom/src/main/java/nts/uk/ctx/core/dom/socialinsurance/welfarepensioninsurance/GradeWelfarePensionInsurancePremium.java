@@ -1,5 +1,7 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -35,5 +37,14 @@ public class GradeWelfarePensionInsurancePremium extends DomainObject {
         this.welfarePensionGrade = welfarePensionGrade;
         this.insuredBurden       = insuredBurden;
         this.employeeBurden      = employeeBurden;
+    }
+    
+    public GradeWelfarePensionInsurancePremium(int welfarePensionGrade, BigDecimal insuredFemaleInsurancePremium, BigDecimal insuredMaleInsurancePremium,
+    		BigDecimal insuredFemaleExemptionInsurance, BigDecimal insuredMaleExemptionInsurance, BigDecimal employeeFemaleInsurancePremium, BigDecimal employeeMaleInsurancePremium,
+    		BigDecimal employeeFemaleExemptionInsurance, BigDecimal employeeMaleExemptionInsurance
+    		) {
+        this.welfarePensionGrade = welfarePensionGrade;
+        this.insuredBurden       =  new ContributionFee(insuredFemaleInsurancePremium, insuredMaleInsurancePremium, insuredFemaleExemptionInsurance, insuredMaleExemptionInsurance);
+        this.employeeBurden      = new ContributionFee(employeeFemaleInsurancePremium, employeeMaleInsurancePremium, employeeFemaleExemptionInsurance, employeeMaleExemptionInsurance);
     }
 }

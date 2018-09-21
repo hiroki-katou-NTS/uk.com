@@ -20,7 +20,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         selectedHealthInsurance: KnockoutObservable<number> = ko.observable(null);
 
         // Health insurance item
-        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '' });
+        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
         bonusHealthInsuranceRate: KnockoutObservable<model.BonusHealthInsuranceRate> = ko.observable(null);
         healthInsuranceMonthlyFee: KnockoutObservable<model.HealthInsuranceMonthlyFee> = ko.observable(null);
         constructor() {
@@ -40,7 +40,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         register() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            $('.nts-input').trigger("validate");
+            $('.tab-b .nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -134,6 +134,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         watchDataChanged() {
             let self = this;
             self.selectedHealthInsurance.subscribe(function(selectedValue: any) {
+                nts.uk.ui.errors.clearAll();
                 if (selectedValue) {
                     self.showByHistory();
                     // if select history
@@ -176,13 +177,14 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                         selectedHistoryPeriod = _.find(self.selectedOffice.healthInsuranceFeeRateHistory.history, { historyId: selectedHistoryId });
                     }
                     if (selectedHistoryPeriod) {
-                        selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
+                        selectedHistoryPeriod.displayJapanYearMonth = "(" + self.convertYearMonthToDisplayJpanYearMonth(selectedHistoryPeriod.startMonth) + ")";
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
+                        selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         self.showEmployeeHealthInsuranceByHistoryId(self.selectedHistoryId);
                     } else {
                         // display none if not found
-                        self.selectedHistoryPeriod({ displayStart: '', displayEnd: '' });
+                        self.selectedHistoryPeriod({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
                     }
                 }
             }
@@ -226,7 +228,11 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
-            return String(yearMonth).substring(0, 4) + "/" + String(yearMonth).substring(4, 6);
+            return nts.uk.time.formatYearMonth(yearMonth);
+        }
+        
+        convertYearMonthToDisplayJpanYearMonth (yearMonth) {
+            return nts.uk.time.yearmonthInJapanEmpire(yearMonth).toString().split(' ').join('');    
         }
 
         createNewHistory() {
@@ -242,7 +248,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     // update previous history
                     if (history.length > 0) {
                         let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
-                        history[history.length - 1].endMonth = beforeLastestMonth.format('YYYYMM');
+                        history[0].endMonth = beforeLastestMonth.format('YYYYMM');
                     }
                     // add new history
                     history.unshift({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });

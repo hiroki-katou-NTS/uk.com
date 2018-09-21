@@ -21,7 +21,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         selectedHistoryId: string = "";
 
         // Welfare Item
-        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '' });
+        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
         welfareInsuranceRateHistory: KnockoutObservable<model.WelfarePensionInsuranceRateHistory> = ko.observable(null);
         employeeMonthlyInsuFee: KnockoutObservable<model.EmployeePensionMonthlyInsuFee> = ko.observable(null);
         welfareInsuranceClassification: KnockoutObservable<model.WelfarePensionInsuranceClassification> = ko.observable(null);
@@ -93,6 +93,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         watchDataChanged() {
             let self = this;
             self.selectedWelfareInsurance.subscribe(function(selectedValue: any) {
+                nts.uk.ui.errors.clearAll();
                 if (selectedValue) {
                     self.showByHistory();
                     // if select history
@@ -125,13 +126,14 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     }
                     // 201809 -> 2018/09
                     if (selectedHistoryPeriod) {
+                        selectedHistoryPeriod.displayJapanYearMonth =  "(" + self.convertYearMonthToDisplayJpanYearMonth(selectedHistoryPeriod.startMonth)  + ")";
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                     }
                     self.showEmployeePensionByHistoryId(self.selectedHistoryId);
                 } else {
-                    self.selectedHistoryPeriod({ displayStart: '', displayEnd: '' });
+                    self.selectedHistoryPeriod({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
                 }
             }
         }
@@ -187,13 +189,17 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
-            return String(yearMonth).substring(0, 4) + "/" + String(yearMonth).substring(4, 6);
+            return nts.uk.time.formatYearMonth(Number(yearMonth));
+        }
+        
+        convertYearMonthToDisplayJpanYearMonth (yearMonth) {
+            return nts.uk.time.yearmonthInJapanEmpire(Number(yearMonth)).toString().split(' ').join('');    
         }
 
         register() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            $('.nts-input').trigger("validate");
+            $('.tab-c .nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }

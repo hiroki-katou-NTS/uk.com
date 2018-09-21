@@ -25,9 +25,9 @@
 		<ui:define name="content">
 			<div id="contents-area" style="margin-left: 65px;">
 				<div style="margin-bottom: 15px;">
-					<button class="proceed" id = "F1_1" >#{i18n.getText('QMM008_1')}</button>
+					<button class="proceed" id = "F1_1" data-bind="click: update" >#{i18n.getText('QMM008_1')}</button>
 					<button id ="F1_2">#{i18n.getText('QMM008_2')}</button>
-					<button id ="F1_3">#{i18n.getText('QMM008_141')}</button>
+					<button id ="F1_3" data-bind="click: countReview">#{i18n.getText('QMM008_141')}</button>
 					<button id ="F1_4" >#{i18n.getText('QMM008_108')}</button>
 				</div>
 				<hr></hr>
@@ -83,43 +83,43 @@
 							<th class="ui-widget-header" style ="text-align: center;" id = "F3_30">#{i18n.getText('QMM008_181')}</th>
 						</tr>
 						<tr>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_16" data-bind="text: header().fIndividualBurdenRatio" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_17" data-bind="text: header().mIndividualBurdenRatio" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_19" data-bind="text: header().fEmployeeContributionRatio" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_21" data-bind="text: header().mEmployeeContributionRatio" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_32" data-bind="text: header().fIndividualExemptionRate" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_33" data-bind="text: header().mIndividualExemptionRate" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_35" data-bind="text: header().fEmployeeExemptionRate" ></th>
-							<th class="ui-widget-header" style ="text-align: center;" id ="F3_36" data-bind="text: header().mEmployeeExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_16" data-bind="text: header().mindividualBurdenRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_17" data-bind="text: header().findividualBurdenRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_19" data-bind="text: header().memployeeContributionRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_21" data-bind="text: header().femployeeContributionRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_32" data-bind="text: header().mindividualExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_33" data-bind="text: header().findividualExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_35" data-bind="text: header().memployeeExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id ="F3_36" data-bind="text: header().femployeeExemptionRate" ></th>
 						</tr>
 						
 					</thead>
 					<tbody data-bind="foreach: dataList">
 						<tr>
 							<td><span class="limited-label"
-								data-bind="text: $data.col1"></span></td>
+								data-bind="text: $data.welfarePensionGrade"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col2"></span></td>
+								data-bind="text: $data.standardMonthlyFee"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col3"></span></td>
+								data-bind="text: $data.rewardMonthlyLowerLimit"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col4"></span></td>
+								data-bind="text: $data.rewardMonthlyUpperLimit"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col5"></span></td>
+								data-bind="text: $data.inMaleInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col6"></span></td>
+								data-bind="text: $data.emMaleInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col7"></span></td>
+								data-bind="text: $data.inMaleExemptionInsurance"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col8"></span></td>
+								data-bind="text: $data.emMaleExemptionInsurance"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col9"></span></td>
+								data-bind="text: $data.inFemaleInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col10"></span></td>
+								data-bind="text: $data.emFemaleInsurancePremium"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col11"></span></td>
+								data-bind="text: $data.inFemaleExemptionInsurance"></span></td>
 							<td><span class="limited-label"
-								data-bind="text: $data.col12"></span></td>
+								data-bind="text: $data.emFemaleExemptionInsurance"></span></td>
 						</tr>
 					</tbody>
 				</table>
