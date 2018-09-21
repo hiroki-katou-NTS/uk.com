@@ -36,3 +36,6 @@
 .txt{
 	line-height: 30px;
 }
+.nowrap{
+	white-space: nowrap !important;
+}
