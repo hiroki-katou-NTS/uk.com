@@ -1150,7 +1150,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         mode: self.displayFormat(),
                         spr: sprStampSourceInfo,
                         dailyOlds: self.lstDomainOld,
-                        dailyEdits: self.lstDomainEdit
+                        dailyEdits: self.lstDomainEdit,
+                        flagCalculation: updateAll
                     }
                     if (self.displayFormat() == 0) {
                         if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
@@ -1165,11 +1166,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.removeErrorRefer();
                     let dfd = $.Deferred();
                     service.calculation(dataParent).done((data) => {
-                        self.valueUpdateMonth = null;
-                        self.initScreenSPR = 1;
-                        self.clickFromExtract = false;
-                        self.showTextStyle = false;
-                        dataChange = {};
                         if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                             if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                                 $("#next-month").ntsError("clear");
