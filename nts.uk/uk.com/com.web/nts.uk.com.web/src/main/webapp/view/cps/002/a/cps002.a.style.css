@@ -62,12 +62,15 @@
 	text-overflow: ellipsis;
 }
 
-#step1_content_top_right  hr+.form-group>span {
+#step1_content_top_right  hr~.form-group>span {
 	width: 170px;
 	display: inline-block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
-#step1_content_top_right  hr+.form-group>span+span {
+#step1_content_top_right  hr~.form-group>span+span {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
