@@ -43,7 +43,7 @@ public class UpdateAgreementYearSettingCommandHandler extends CommandHandlerWith
 //		agreementYearSetting.validate();
 		
 		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
-
-		return this.agreementYearSetDomainService.update(agreementYearSetting, workingConditionItem);
+		Integer yearMonthValueOld = command.getYearMonthValueOld(); 
+		return this.agreementYearSetDomainService.update(agreementYearSetting, workingConditionItem, yearMonthValueOld);
 	}
 }
