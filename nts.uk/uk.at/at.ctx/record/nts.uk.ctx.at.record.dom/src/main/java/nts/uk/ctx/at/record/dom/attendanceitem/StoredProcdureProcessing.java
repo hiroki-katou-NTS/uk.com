@@ -204,15 +204,13 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				processOptionalItem(() -> timePre > 0, optionalItem, countOn, countOff, 18, 28);
 				
 				/** 任意項目19: 事前残業1~10 > 0 かつ　乖離時間が発生していない事が条件 */
-				processOptionalItem(() -> timePre > 0 && time <= 0, optionalItem, countOn, countOff, 19);
+				processOptionalItem(() -> timePre > 0 && overTime.stream().allMatch(t -> t <= 0), optionalItem, countOn, countOff, 19);
 				
 				/** 任意項目21: 事前残業1~10 > 0 かつ　乖離時間が発生している事が条件 */
-				processOptionalItem(() -> timePre > 0 && overTime.stream().anyMatch(t -> t > 0),
-						optionalItem, countOn, countOff, 21);
+				processOptionalItem(() -> timePre > 0 && overTime.stream().anyMatch(t -> t > 0), optionalItem, countOn, countOff, 21);
 				
 				/** 任意項目23: 残業あり かつ 事前残業なし　が条件 */
-				processOptionalItem(() -> checkOnPair(overTime, preOver, (ot, pot) -> ot > 0 && pot <= 0),
-						optionalItem, countOn, countOff, 23);
+				processOptionalItem(() -> checkOnPair(overTime, preOver, (ot, pot) -> ot > 0 && pot <= 0), optionalItem, countOn, countOff, 23);
 				
 				/** 任意項目27: 残業あり かつ 事前残業なし　が条件 */
 				processOptionalItem(() -> time > 0, optionalItem, countOn, countOff, 27);
