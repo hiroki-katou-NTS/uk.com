@@ -5,17 +5,29 @@ module nts.uk.pr.view.qmm008.f {
 
             dataList: KnockoutObservableArray<RowData>;
             header : KnockoutObservable<HeaderData> = ko.observable(new HeaderData ());
+            officeCode: KnockoutObservable<string> = ko.observable(null);
+            socialInsuranceName : KnockoutObservable<string> = ko.observable(null);
+            startMonth: KnockoutObservable<string> = ko.observable(null);
+            endMonth : KnockoutObservable<string> = ko.observable(null);
+            displayStart: KnockoutObservable<string> = ko.observable(null);
+            displayEnd : KnockoutObservable<string> = ko.observable(null);
+            historyId : KnockoutObservable<string> = ko.observable(null);
             constructor() {
                 var self = this;
                 self.dataList = ko.observableArray([]);
-                let = getShared("QMM008_D_RES_PARAMS")
-                let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
+                let dataGetShare = getShared("QMM008_F_PARAMS");
+                self.officeCode(dataGetShare.selectedOffice.socialInsuranceCode);
+                self.socialInsuranceName(dataGetShare.selectedOffice.socialInsuranceName);
+                self.displayStart(dataGetShare.selectedHistory.displayStart);
+                self.displayEnd(dataGetShare.selectedHistory.displayEnd);
+                self.historyId(dataGetShare.selectedHistory.historyId);
+                self.startMonth(dataGetShare.selectedHistory.startMonth);
+                let command = { historyId: self.historyId(),date : self.startMonth() };
                 nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
                     for (var i = 0; i < response.cusWelfarePensions.length; i++) {
                         self.dataList.push(response.cusWelfarePensions[i]);
                     } 
                     self.header(response.insuranceRate);
-                    console.log(response.insuranceRate);
                 });
 
                 $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
@@ -39,6 +51,15 @@ module nts.uk.pr.view.qmm008.f {
                 }
                
            }
+            
+            /**
+             *  close dialog
+             */
+
+            private closeDialog(): void {
+                nts.uk.ui.windows.close();
+            }
+
             
             private countReview() :void {
                 let self = this;
