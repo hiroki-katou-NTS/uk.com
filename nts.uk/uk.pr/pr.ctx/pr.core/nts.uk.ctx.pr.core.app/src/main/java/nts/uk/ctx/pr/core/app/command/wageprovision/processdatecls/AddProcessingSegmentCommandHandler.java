@@ -43,14 +43,16 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 	@Inject
 	private SetDaySupportFinder setDaySupportFinder;
 
+	private static final int NUMBER_OF_MONTH_IN_TWO_YEAR=24;
+
+
+
 	
 
 	@Override
 	protected void handle(CommandHandlerContext<ProcessingSegmentCommand> commandHandlerContext) {
 		String cid = AppContexts.user().companyId();
 		ProcessingSegmentCommand addCommand = commandHandlerContext.getCommand();
-
-		
 
 		this.processInformationRepository
 				.add(new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
@@ -92,22 +94,18 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
 		int montOption = addCommand.getValPayDateSet().getAdvancedSetting().getDetailPrintingMon().getPrintingMonth();
 
-		YearMonth processDate = new YearMonth((currentYear - 1) * 100 + 12);
-		YearMonth printDate = new YearMonth((currentYear - 1) * 100 + 12);
+		YearMonth lastMonthOfLastYaer=new YearMonth((currentYear-1)*100+12);
 
-		if (montOption == PreviousMonthClassification.THIS_MONTH.value) {
-			for (int i = 1; i < 25; i++) {
-
-				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(i).v(),
-						printDate.addMonths(i).v()));
-			}
-		}
+		int a = 0;
 		if (montOption == PreviousMonthClassification.LAST_MONTH.value) {
-			for (int i = 1; i < 25; i++) {
-				this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, processDate.addMonths(i).v(),
-						printDate.addMonths(i-1).v()));
-			}
-		}	
+			a = 1;
+		}
+		for (int i = 1; i <= NUMBER_OF_MONTH_IN_TWO_YEAR; i++) {
+
+			this.specPrintYmSetRepository.add(new SpecPrintYmSet(cid, processCateNo, lastMonthOfLastYaer.addMonths(i).v(),
+					lastMonthOfLastYaer.addMonths(i - a).v()));
+		}
+
 	}
 
 	public void addSetDaySupport(ProcessingSegmentCommand addCommand) {
@@ -146,7 +144,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
 		YearMonth startMonth = new YearMonth((currentYear - 1) * 100 + 12);
 
-		for (int i = 1; i < 25; i++) {
+		for (int i = 1; i <= NUMBER_OF_MONTH_IN_TWO_YEAR; i++) {
 			YearMonth yearMonth=startMonth.addMonths(i);
 
 			//No2.6 補足資料

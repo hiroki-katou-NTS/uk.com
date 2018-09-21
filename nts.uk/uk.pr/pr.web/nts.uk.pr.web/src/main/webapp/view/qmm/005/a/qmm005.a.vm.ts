@@ -44,6 +44,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 if (action == 0) {
                     self.itemBinding.removeAll();
                     self.startPage();
+                    if(processInformationUpdate.deprecatCate==0){
+                        self.resetEmployee(processInformationUpdate.processCateNo);
+                    }
                 }
                 if (action == 1) {
                     self.itemBinding.removeAll();
