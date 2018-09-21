@@ -1,14 +1,16 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.processdatecls;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYear;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYearRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmploymentCode;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtEmpTiedProYear;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtEmpTiedProYearPk;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTiedProYearRepository {
@@ -33,9 +35,13 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
     }
 
     @Override
-    public void update(EmpTiedProYear domain) {
-        this.commandProxy().updateAll(QpbmtEmpTiedProYear.toEntity(domain));
+    public void update(EmpTiedProYear oldDomain, EmpTiedProYear newDomain) {
+        List<EmploymentCode> list1 = newDomain.getEmploymentCodes().stream().collect(Collectors.toList());
+        newDomain.getEmploymentCodes().removeAll(oldDomain.getEmploymentCodes());
+        oldDomain.getEmploymentCodes().removeAll(list1);
+        List<QpbmtEmpTiedProYearPk> pks = oldDomain.getEmploymentCodes().stream().map(x -> new QpbmtEmpTiedProYearPk(oldDomain.getCid(), oldDomain.getProcessCateNo(), x.v())).collect(Collectors.toList());
+        this.commandProxy().removeAll(QpbmtEmpTiedProYear.class, pks);
+        this.commandProxy().insertAll(QpbmtEmpTiedProYear.toEntity(newDomain));
     }
-
 
 }
