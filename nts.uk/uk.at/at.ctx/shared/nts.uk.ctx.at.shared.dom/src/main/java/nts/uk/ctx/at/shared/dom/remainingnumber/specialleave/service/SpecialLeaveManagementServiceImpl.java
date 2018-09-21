@@ -237,9 +237,10 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		double beforeUseDaysRemain = offsetDays.getBeforeUseDays();
 		double afterUseDaysRemain = offsetDays.getAfterUseDays();
 		List<SpecialLeaveGrantRemainingData> specialLeaverDataTmp = new ArrayList<>(specialLeaverData);
-		List<InterimSpecialHolidayMng> tmpInterimSpeData = new ArrayList<>(interimSpeHolidayData);
-		for (InterimSpecialHolidayMng speHolidayData : tmpInterimSpeData) {
-			List<InterimRemain> lstInterimMngTmp = lstInterimMng.stream().filter(x -> x.getRemainManaID() == speHolidayData.getSpecialHolidayId())
+		List<InterimSpecialHolidayMng> tmpInterimSpeData = new ArrayList<>(interimSpeHolidayData);		
+		//INPUT．特別休暇暫定データ一覧をループする
+		for (InterimSpecialHolidayMng speHolidayData : tmpInterimSpeData) {			
+			List<InterimRemain> lstInterimMngTmp = lstInterimMng.stream().filter(x -> x.getRemainManaID().equals(speHolidayData.getSpecialHolidayId()))
 					.collect(Collectors.toList());
 			if(lstInterimMngTmp.isEmpty()) {
 				continue;
@@ -262,19 +263,12 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				lstUseDays.add(useDaysOPeriod);
 				
 			}
-			//特別休暇暫定データ．特休使用をDBから取得した付与日の古い特別休暇付与残数データから引く	
-			//特休使用を付与日が相殺できる古い管理データから引く。残数が０になったら、次の管理データから引く。
-			if(specialLeaverDataTmp.isEmpty() && beforeUseDaysRemain != 0) {
-				SpecialLeaveRemainingNumber remainNumber = new SpecialLeaveRemainingNumber(new DayNumberOfRemain(-beforeUseDaysRemain), Optional.empty());
-				SpecialLeaveNumberInfo numberInfo = new SpecialLeaveNumberInfo(new SpecialLeaveGrantNumber(new DayNumberOfGrant(0.0),Optional.empty()),
-						new SpecialLeaveUsedNumber(),
-						remainNumber);
-				SpecialLeaveGrantRemainingData grantRemainData = new SpecialLeaveGrantRemainingData("",
-						cid, sid, new SpecialVacationCD(specialCode), baseDate, GeneralDate.max(), LeaveExpirationStatus.AVAILABLE,
-						GrantRemainRegisterType.MANUAL, numberInfo);
-				specialLeaverData.add(grantRemainData);
-				interimSpeHolidayData.add(speHolidayData);
+			//特別休暇付与残数データの有無チェックをする
+			if(specialLeaverDataTmp.isEmpty() && beforeUseDaysRemain != 0) {				
+				//「特別休暇の残数」．付与前明細．残数 -= 特別休暇暫定データ．特休使用
+				inPeriodData.getRemainDays().getGrantDetailBefore().setRemainDays(-beforeUseDaysRemain);
 			}
+			
 			for (SpecialLeaveGrantRemainingData grantData : specialLeaverDataTmp) {
 				Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(grantData.getSpecialId());
 				if(!grantDataById.isPresent()) {
@@ -284,9 +278,6 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				double useDays = speHolidayData.getUseDays().isPresent() ? speHolidayData.getUseDays().get().v() : (double)0;
 						
 				double remainDays = remainDaysInfor.v() - useDays;
-				/*if(remainDays < 0) {
-					break;
-				}*/
 				if(!specialLeaverData.isEmpty()) {
 					specialLeaverData.remove(grantData);
 					interimSpeHolidayData.remove(speHolidayData);
@@ -373,7 +364,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				for(InterimSpecialHolidayMng specialData : specialHolidayData) {
 					lstOutput.add(specialData);
 					List<InterimRemain> mngData = y.getRecAbsData().stream()
-							.filter(a -> a.getRemainManaID() == specialData.getSpecialHolidayId())
+							.filter(a -> a.getRemainManaID().equals(specialData.getSpecialHolidayId()))
 							.collect(Collectors.toList());
 					if(!mngData.isEmpty()) {
 						lstInterimMng.add(mngData.get(0));
@@ -607,8 +598,6 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	public InPeriodOfSpecialLeave sumRemainData(InPeriodOfSpecialLeave inPeriodData) {
 		//付与前明細．残数と付与数=0（初期化）
 		SpecialHolidayRemainInfor grantDetailBefore = inPeriodData.getRemainDays().getGrantDetailBefore();
-		grantDetailBefore.setGrantDays(0);
-		grantDetailBefore.setRemainDays(0);
 		//付与後明細．残数と付与数=0（初期化）
 		Optional<SpecialHolidayRemainInfor> optGrantDetailAfter = inPeriodData.getRemainDays().getGrantDetailAfter();
 		SpecialHolidayRemainInfor grantDetailAfter = new SpecialHolidayRemainInfor();
