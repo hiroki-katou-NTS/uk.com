@@ -129,10 +129,10 @@
 											enable: currentAtdItemCondition.compareOperator() > 5,
 											required: currentAtdItemCondition.conditionType() == 0,
 											constraint: 'CheckedTimesValue',
-											option: new nts.uk.ui.option.CurrencyEditorOption({
+											option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												})
 										}" />
 						</com:ko-if>
@@ -151,10 +151,10 @@
 										enable: currentAtdItemCondition.compareOperator() > 5,
 										required: currentAtdItemCondition.conditionType() == 0,
 										constraint: 'CheckedAmountValue',
-										option: new nts.uk.ui.option.CurrencyEditorOption({
+										option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: ''
+                											placeholder: ''
             												})
 									}" />
 						</com:ko-if>

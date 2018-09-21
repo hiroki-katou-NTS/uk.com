@@ -206,15 +206,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
             let self = this,
                 data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
             if(data.category() == model.CATEGORY.DAILY){
-                $(".nameAlarmDaily").trigger("validate");
-                $(".nameAlarm").trigger("validate");
+                $(".nameAlarmDailyM").trigger("validate");
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
                 $(".fixedcheckID").ntsError("clear");
-                $(".nameAlarmDaily").ntsError("clear");
-                $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
-                
-                if ($(".nameAlarmDaily").ntsError("hasError")) {
+                $("#check-condition-table .nts-editor.nts-input").trigger("validate");
+                if ($(".nameAlarmDailyM").ntsError("hasError")) {
                     return; 
                 } 
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
@@ -232,7 +229,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }else if(data.category() == model.CATEGORY.MONTHLY){
                 //fixed-table2
                 $(".nameAlarm").trigger("validate");
-                $(".nameWKRecordIDDaily").ntsError("clear");
                 $(".fixedcheckID").ntsError("clear");
                 $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
                 $("#A3_2").trigger("validate");
@@ -244,13 +240,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     return;
                 }
             }else if(data.category() == model.CATEGORY.MULTIPLE_MONTHS){ 
-                $(".nameAlarm").trigger("validate");
-                $(".nameWKRecordIDDaily").ntsError("clear");
+                $(".nameWKRecordID").trigger("validate");
                 $(".fixedcheckID").ntsError("clear");
-                $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
+                $("#check-condition-table_category9 .nts-editor.nts-input").ntsError("clear");
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
-                if ($(".nameAlarm").ntsError("hasError")) {
+                if ($(".nameWKRecordID").ntsError("hasError")) {
                     return; 
                 } 
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
