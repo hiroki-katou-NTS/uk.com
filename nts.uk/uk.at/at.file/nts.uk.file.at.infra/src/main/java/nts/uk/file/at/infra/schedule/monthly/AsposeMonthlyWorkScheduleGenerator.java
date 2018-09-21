@@ -1428,7 +1428,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						}
 						
 						if (prevYearMonthCell.getValue() != null && yearMonthStr.equals(prevYearMonthCell.getValue())) {
-							Range yearMonthRange = cells.createRange(currentRow, 0, dataRowCount, 1);
+							Range yearMonthRange = cells.createRange(currentRow, 0, dataRowCount, 2);
 							yearMonthRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 						}
 						else {
@@ -1440,7 +1440,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						
 						// A5_4
 						String closureDate = detailedDailyPerformanceReportData.getClosureDate();
-						Cell closureCell = cells.get(currentRow, 1);
+						Cell closureCell = cells.get(currentRow, 2);
 						closureCell.putValue(closureDate);
 						
 						// Divide list into smaller lists (max 16 items)
@@ -1957,6 +1957,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
 				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
 					colorWhite = !colorWhite;
+					
+					// Loop until getting the correct row, then remove page break
+					for (int pageBreakIndex = 0; ; pageBreakIndex++) {
+						int ridx = sheet.getHorizontalPageBreaks().get(pageBreakIndex).getRow();
+						if (ridx == currentRow) {
+							sheet.getHorizontalPageBreaks().removeAt(pageBreakIndex);
+							break;
+						}
+					}
 				}
 				
 				Range dateRangeTemp;
@@ -1976,7 +1985,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 				
 				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
-					Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 1);
+					Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 2);
 					employeeRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 				}
 				else {
@@ -1984,7 +1993,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 				
 				// B5_3
-				Cell closureDateCell = cells.get(currentRow, 1);
+				Cell closureDateCell = cells.get(currentRow, 2);
 				String closureDate = employee.getClosureDate();
 				closureDateCell.putValue(closureDate);
 				
@@ -2018,7 +2027,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
-			            		cell.putValue(value, true);
+			            		cell.putValue(value, true);	
 			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else {
