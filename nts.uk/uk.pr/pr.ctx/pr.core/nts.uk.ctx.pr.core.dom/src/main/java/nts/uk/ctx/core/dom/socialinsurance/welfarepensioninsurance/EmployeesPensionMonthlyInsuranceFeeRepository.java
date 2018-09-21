@@ -12,4 +12,6 @@ public interface EmployeesPensionMonthlyInsuranceFeeRepository {
     void add (EmployeesPensionMonthlyInsuranceFee domain);
     void update (EmployeesPensionMonthlyInsuranceFee domain);
     void remove (EmployeesPensionMonthlyInsuranceFee domain);
+    void updateWelfarePension(EmployeesPensionMonthlyInsuranceFee data);
+    void insertWelfarePension(EmployeesPensionMonthlyInsuranceFee data);
 }

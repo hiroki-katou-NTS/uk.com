@@ -52,7 +52,7 @@ public class JpaMonthlyScopeOfWelfarePensionCompensationRepository extends JpaRe
                 .setParameter("targetStartYm", startYearMonth)
                 .getSingle();
 
-        if (entityOptional.isPresent())
+        if (!entityOptional.isPresent())
             return Optional.empty();
 
         val entity = entityOptional.get();
