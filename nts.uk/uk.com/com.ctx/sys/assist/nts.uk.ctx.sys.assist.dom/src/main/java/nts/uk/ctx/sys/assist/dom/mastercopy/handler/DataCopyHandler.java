@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -21,6 +23,15 @@ import java.util.UUID;
 @Setter
 @Getter
 public class DataCopyHandler {
+
+    private static final int INS_DATE_COLL = 1;
+    private static final int INS_CCD_COLL = 2;
+    private static final int INS_SCD_COLL = 3;
+    private static final int INS_PG_COLL = 4;
+    private static final int UDP_DATE_COLL = 5;
+    private static final int UDP_CCD_COLL = 6;
+    private static final int UDP_SCD_COLL = 7;
+    private static final int UDP_PG_COLL = 8;
 
     /**
      * Logger
@@ -56,10 +67,6 @@ public class DataCopyHandler {
      */
     private String deleteQuery;
     /**
-     * key query
-     */
-    private String keysQuery;
-    /**
      *
      */
     private boolean isOnlyCid;
@@ -68,13 +75,6 @@ public class DataCopyHandler {
      */
     @SuppressWarnings("unchecked")
     public void doCopy() {
-//        Query selectKeysQuery = this.entityManager.createNativeQuery(this.keysQuery);
-//        List<Object> pKeys = selectKeysQuery.getResultList();
-//        for (Object k : pKeys) {
-//            String key = k.toString();
-//            this.selectQuery += "," + key;
-//        }
-//        this.selectQuery += " FROM " + tableName + " WHERE CID = ?";
         // Get all company zero data
         Query sq = this.entityManager.createNativeQuery(this.selectQuery)
                 .setParameter(1, AppContexts.user().zeroCompanyIdInContract());
@@ -142,6 +142,16 @@ public class DataCopyHandler {
                             if (rowData[0].equals(rowData[k])) {
                                 rowData[k] = companyId;
                             }
+                            if (k == INS_DATE_COLL || k == UDP_DATE_COLL) {
+                                rowData[k] = Timestamp.valueOf(GeneralDateTime.now().localDateTime());
+                            } else if (k == INS_CCD_COLL || k == UDP_CCD_COLL) {
+                                rowData[k] = AppContexts.user().companyCode();
+                            } else if (k == INS_SCD_COLL || k == UDP_SCD_COLL) {
+                                rowData[k] = AppContexts.user().employeeCode();
+                            } else if (k == INS_PG_COLL || k == UDP_PG_COLL) {
+                                rowData[k] = "CMM001";
+                            }
+
                             if (!isOnlyCid) {
                                 for (int n = rowData.length - keyCheck; n < rowData.length; n++) {
                                     if (rowData[n].equals(rowData[k])) {
@@ -161,7 +171,7 @@ public class DataCopyHandler {
     }
 
     public static final class DataCopyHandlerBuilder {
-        protected EntityManager entityManager;
+        EntityManager entityManager;
         protected CopyMethod copyMethod;
         protected String companyId;
         private List<String> keys = new ArrayList<>();
@@ -170,7 +180,6 @@ public class DataCopyHandler {
         private boolean condTable= false;
         private String selectQuery;
         private String deleteQuery;
-        private String keysQuery;
         private boolean isOnlyCid;
 
         private DataCopyHandlerBuilder() {
@@ -208,7 +217,7 @@ public class DataCopyHandler {
         }
 
         public DataCopyHandlerBuilder withOnlyCid(boolean isOnlyCid) {
-            this.isOnlyCid = true;
+            this.isOnlyCid = isOnlyCid;
             return this;
         }
 
@@ -223,12 +232,8 @@ public class DataCopyHandler {
                     tail +=", "+joinerTail.toString();
                 }
 
-//                this.selectQuery = "SELECT " + joiner.toString() + " , * FROM " + tableName + " WHERE CID = ?";
                 this.selectQuery = "SELECT " + keys.get(0) + " , *" + tail + " FROM " + tableName + " WHERE CID = ?";
                 this.deleteQuery = "DELETE FROM " + tableName + " WHERE CID  = ?";
-                this.keysQuery = "select c.COLUMN_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS pk, INFORMATION_SCHEMA.KEY_COLUMN_USAGE c" +
-                        " where pk.TABLE_NAME = '" + tableName + "' and CONSTRAINT_TYPE = 'PRIMARY KEY' and c.TABLE_NAME = pk.TABLE_NAME" +
-                        " and c.CONSTRAINT_NAME = pk.CONSTRAINT_NAME";
             }
             return this;
         }
