@@ -63,18 +63,30 @@ public class MonthlyAttendanceItemFinder {
 	 * @return the list
 	 */
 	public List<AttdItemDto> findByAnyItem(AttdItemLinkRequest request) {
-		// Check empty selectable list
-		if (CollectionUtil.isEmpty(request.getAnyItemNos())) {
-			return Collections.emptyList();
+		// get list attendance item by atr
+		List<AttdItemDto> attdItems = this.findByAtr(this.convertToAttdItemType(request.getFormulaAtr()));
+
+		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
+			// get attendance item linking
+			List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
+					.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
+
+			// get list attendance item filtered by attdItemLinks
+			List<AttdItemDto> filtered = this.findAll().stream()
+					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+
+			// merge two list attendance items
+			filtered.forEach(item -> {
+				if (attdItems.stream().anyMatch(i -> i.getAttendanceItemId() == item.getAttendanceItemId())) {
+					return;
+				}
+				attdItems.add(item);
+			});
 		}
 
-		// get attendance item linking
-		List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
-				.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
-
-		// get list attendance item filtered by attdItemLinks
-		List<AttdItemDto> attdItems = this.findAll().stream()
-				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(attdItems)) {
+			return attdItems;
+		}
 
 		// convert to map
 		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
@@ -104,11 +116,8 @@ public class MonthlyAttendanceItemFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		List<AttdItemDto> attendanceItemDtos = this.monthlyRepo
-				.findByAtr(companyId, MonthlyAttendanceItemAtr.valueOf(atr)).stream().map(dom -> this.toDto(dom))
-				.collect(Collectors.toList());
-
-		return attendanceItemDtos;
+		return this.monthlyRepo.findByAtr(companyId, MonthlyAttendanceItemAtr.valueOf(atr)).stream()
+				.map(dom -> this.toDto(dom)).collect(Collectors.toList());
 	}
 
 	public List<AttdItemDto> findMonthlyAttendanceItemBy(int checkItem) {
@@ -170,6 +179,26 @@ public class MonthlyAttendanceItemFinder {
 
 	}
 
+	/**
+	 * Convert to attd item type.
+	 *
+	 * @param formulaAtr the formula atr
+	 * @return the int
+	 */
+	private int convertToAttdItemType(int formulaAtr) {
+		OptionalItemAtr vl = OptionalItemAtr.valueOf(formulaAtr);
+		switch (vl) {
+		case AMOUNT:
+			return MonthlyAttendanceItemAtr.AMOUNT.value;
+		case TIME:
+			return MonthlyAttendanceItemAtr.TIME.value;
+		case NUMBER:
+			return MonthlyAttendanceItemAtr.NUMBER.value;
+		default:
+			throw new RuntimeException("value not found");
+		}
+	}
+	
 	private int convertToOptionalItemAtr(int attr){
 		MonthlyAttendanceItemAtr monthlyAttendanceAtr = MonthlyAttendanceItemAtr.valueOf(attr);
     	switch (monthlyAttendanceAtr) {

@@ -139,7 +139,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				1, 
 				appAbsence.getAppID(), 
 				appAbsence.getApplication().getPrePostAtr(), command.getVersion());
-		//check update
+		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
 				opAppAbsence.get().getApplication().getAppDate(),
 				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
@@ -176,6 +176,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		creat.setPrePostAtr(command.getPrePostAtr());
 		creat.setHolidayAppType(command.getHolidayAppType());
 		creat.setWorkTypeCode(command.getWorkTypeCode());
+		creat.setSpecHd(command.getSpecHd());
 		return creat;
 	}
 

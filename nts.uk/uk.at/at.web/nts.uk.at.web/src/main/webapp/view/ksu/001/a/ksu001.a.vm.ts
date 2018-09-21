@@ -301,8 +301,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewO.initScreen().done(() => {
                 self.getDataScheduleDisplayControl(); 
                 self.getDataComPattern();
-                self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
-                self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
+                self.dtPrev(moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD'));
+                self.dtAft(moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD'));
                 self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
                 // get state of list workTypeCode
                 // get data for screen A
@@ -391,8 +391,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
-                periodStartDate: moment.utc(__viewContext.viewModel.viewO.startDateScreenA, 'YYYY/MM/DD').toISOString(), // 対象期間開始日
-                periodEndDate: moment.utc(__viewContext.viewModel.viewO.endDateScreenA, 'YYYY/MM/DD').toISOString(), // 対象期間終了日
+                periodStartDate: self.dtPrev, // 対象期間開始日
+                periodEndDate: self.dtAft, // 対象期間終了日
                 inService: true, // 在職区分
                 leaveOfAbsence: false, // 休職区分
                 closed: false, // 休業区分
@@ -1641,6 +1641,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //            } else {
             // TO-DO
             // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
+            
             // get data from WorkScheduleState
             self.getDataWorkScheduleState().done(() => {
                 let data = [],
@@ -1705,15 +1706,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (item.scheduleEditState == 1) {
                         //手修正(本人) = bg-daily-alter-self
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-self", innerIdx));
+                        } else{
+                            cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     } else if (item.scheduleEditState == 2) {
                         //手修正(他人) = bg-daily-alter-other
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-other", innerIdx));
+                        } else {
+                            cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     } else if (item.scheduleEditState == 3) {
                         //申請反映 = bg-daily-reflect-application
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-reflect-application", innerIdx));    
+                        } else {
+                            cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     }
                 });
                 
@@ -2223,7 +2236,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeName = workType.abbreviationName;
                     } else {
                         workTypeCode = null;
-                        workTypeName = null;
+                        workTypeName = obj.workTypeCode != null ? getText('KSU001_103', obj.workTypeCode) : null;
                     }
 
                     let workTime = _.find(listWorkTime, ['workTimeCode', obj.workTimeCode]);
@@ -2232,7 +2245,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTimeName = workTime.abName;
                     } else {
                         workTimeCode = null;
-                        workTimeName = null;
+                        workTimeName = obj.workTimeCode != null ? getText('KSU001_103', obj.workTimeCode) : null;
                     }
 
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({

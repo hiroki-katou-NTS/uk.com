@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の縦計
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class VerticalTotalOfMonthly {
@@ -173,7 +173,7 @@ public class VerticalTotalOfMonthly {
 			this.workTime.aggregate(workType, attendanceTimeOfDaily);
 			
 			// 勤務時刻集計
-			this.workClock.aggregate(pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
+			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily, predTimeSetForCalc);
 			
 			procYmd = procYmd.addDays(1);
 		}

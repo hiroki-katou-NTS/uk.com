@@ -184,10 +184,10 @@ public class DataDialogWithTypeProcessor {
 			if (param.getItemId() != null && param.getItemId() == 28 && !param.getSelectCode().equals("")) {
 				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, param.getEmployeeId(),
 						new DateRange(null, param.getDate()));
-				return this.getDutyType(companyId, param.getValueOld(), aff == null ? "" : aff.getEmploymentCode())
+				return this.getDutyType(companyId, param.getSelectCode(), aff == null ? "" : aff.getEmploymentCode())
 						.getCodeNames();
 			} else {
-				this.getDutyTypeAll(companyId);
+				return this.getDutyTypeAll(companyId).getCodeNames();
 			}
 		case 2:
 			// KDL001
