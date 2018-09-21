@@ -263,14 +263,10 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     self.convertToTreeGridList();
                     self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + historyId);
                     // clone data 
-                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_BEGINNING) {
-                        self.initBlankData();
+                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
+                        self.showEmployeeHealthInsuranceByHistoryId(history[1].historyId);
                     } else {
-                        if (history.length > 1){
-                            self.showEmployeeHealthInsuranceByHistoryId(history[1].historyId);    
-                        } else {
-                            self.initBlankData();    
-                        }
+                        self.initBlankData();    
                     }
                     self.isUpdateMode(false);
                 }

@@ -42,13 +42,13 @@
 						<!-- A2_1 -> A1_5 -->
 						<div class="flex">
 							<button id="A1_1" class="proceed" tabindex="1"
-								data-bind="click: register, enable: isSelectedHistory &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
+								data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
 							<button id="A1_2" tabindex="1"
 								data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
 							<button id="A1_3" tabindex="1"
-								data-bind="click: registerBusinessEstablishment, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
+								data-bind="click:standardRemunerationMonthlyAmount,  enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
 							<button id="A1_4" tabindex="1"
-								data-bind="click: standardRemunerationMonthlyAmount, enable: true">#{i18n.getText('QMM008_4')}</button>
+								data-bind="click: registerBusinessEstablishment, enable: true">#{i18n.getText('QMM008_4')}</button>
 							<button id="A1_5" tabindex="1"
 								data-bind="click: masterCorrectionLog, enable: false">#{i18n.getText('QMM008_5')}</button>
 						</div>
