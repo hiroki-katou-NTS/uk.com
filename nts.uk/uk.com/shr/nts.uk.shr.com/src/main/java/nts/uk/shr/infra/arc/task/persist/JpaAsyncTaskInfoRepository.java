@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import lombok.val;
@@ -75,9 +76,8 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 		val entity = new CisdtAsyncTaskAbort();
 		entity.taskId = id;
 		entity.errorType = domain.isBusinessException() ? 1 : 0;
-		entity.messageId = (domain.getMessageId() != null) ? domain.getMessageId().substring(0, 20) : null;
-		entity.errorMessage = (domain.getMessage() != null) ? domain.getMessage().substring(0, 200) : null;
-
+		entity.messageId = (domain.getMessageId() != null) ? StringUtils.substring(domain.getMessageId(), 0, 20) : null;
+		entity.errorMessage = (domain.getMessage() != null) ? StringUtils.substring(domain.getMessage(), 0, 200) : null;
 		return entity;
 	}
 
