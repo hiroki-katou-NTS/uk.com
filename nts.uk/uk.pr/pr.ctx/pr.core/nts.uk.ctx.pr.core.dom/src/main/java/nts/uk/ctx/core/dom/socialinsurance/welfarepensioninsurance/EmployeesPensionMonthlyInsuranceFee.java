@@ -123,8 +123,8 @@ public class EmployeesPensionMonthlyInsuranceFee extends AggregateRoot {
             }
             //「厚生年金基金加入区分」で「無」を選択している場合,「全体の保険料から被保険者分を差し引く」が選択されている場合
             else if (FundClassification.NOT_JOIN.equals(welfarePensionInsuranceCls.getFundClassification()) && EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod)) {
-                employeeMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryIndividualInsuranceRate.add(maleSalaryEmployerInsuranceRate).subtract(insuredMaleInsurancePremium), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryIndividualInsuranceRate.add(femaleSalaryEmployerInsuranceRate).subtract(insuredFemaleInsurancePremium), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employeeMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryIndividualInsuranceRate.add(maleSalaryEmployerInsuranceRate).subtract(maleIndividualBurdenRatio), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employeeFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryIndividualInsuranceRate.add(femaleSalaryEmployerInsuranceRate).subtract(femaleIndividualBurdenRatio), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             }
             //「厚生年金基金加入区分」で「有」を選択している場合,「事業主負担率を用いて計算する」が選択されている場合
             else if (FundClassification.JOIN.equals(welfarePensionInsuranceCls.getFundClassification()) && EmployeeShareAmountMethod.EMPLOYEE_CONTRIBUTION_RATIO.equals(employeeShareAmountMethod)) {
