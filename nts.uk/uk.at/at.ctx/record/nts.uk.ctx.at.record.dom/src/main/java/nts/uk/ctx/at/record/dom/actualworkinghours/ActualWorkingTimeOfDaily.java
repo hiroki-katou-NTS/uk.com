@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
@@ -67,6 +68,7 @@ public class ActualWorkingTimeOfDaily {
 	// private SubHolOccurrenceInfo subHolOccurrenceInfo;
 
 	// 乖離時間
+	@Setter
 	private DivergenceTimeOfDaily divTime;
 
 	/**
@@ -176,14 +178,6 @@ public class ActualWorkingTimeOfDaily {
 		
 		/* 割増時間の計算 */
 		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
-		/* 乖離時間の計算 */
-		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
-													   forCalcDivergenceDto,
-													   divergenceTimeList,
-													   recordClass.getIntegrationOfDaily().getCalAttr(),
-													   recordClass.getFixRestTimeSetting(),
-													   calcResultOotsuka
-													   );
 		
 		/*返値*/
 		return new ActualWorkingTimeOfDaily(
@@ -191,7 +185,7 @@ public class ActualWorkingTimeOfDaily {
 				constraintTime,
 				timeDifferenceWorkingHours,
 				calcResultOotsuka,
-				divergenceTimeOfDaily,
+				new DivergenceTimeOfDaily(new ArrayList<>()),
 				premiumTime
 				);
 		
