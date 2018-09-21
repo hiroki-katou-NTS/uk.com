@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetperson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,12 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	
 	private static final String SELECT_BY_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
 			+ " WHERE c.employeeId = :employeeId"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	//hoatt - RQ139
+	private static final String GET_SID_BY_ROLE_DATE = "SELECT c.employeeId FROM SacmtRoleSetGrantedPerson c"
+			+ " WHERE c.companyId = :companyID"
+			+ " AND c.employeeId IN :lstSid"
+			+ " AND c.roleSetCd IN :roleSetCDLst"
 			+ " AND c.startDate <= :date AND c.endDate >= :date";
 	
 	@Override
@@ -93,6 +100,30 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 		return this.queryProxy().query(SELECT_BY_DATE ,SacmtRoleSetGrantedPerson.class)
 		.setParameter("employeeId", employeeId)
 		.setParameter("date", baseDate).getSingle( c  -> c.toDomain());
+	}
+
+	/**
+	 * @author hoatt
+	 * phuc vu RQ139
+	 * get list employeeId by:
+	 * @param companyID 会社ID←ログイン会社ID
+	 * @param lstSid 社員ID←取得した社員ID（list）（１）
+	 * @param roleSetCDLst ロールセットコード←取得したロールセット．コード(list)
+	 * @param baseDate 期間From <= 基準日 <= 期間To
+	 * @return ロールセット個人別付与．社員ID（list）・・・（２）
+	 */
+	@Override
+	public List<String> getSidByRoleSidDate(String companyID, List<String> lstSid, List<String> roleSetCDLst,
+			GeneralDate date) {
+		if(lstSid.isEmpty() || roleSetCDLst.isEmpty()){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(GET_SID_BY_ROLE_DATE ,String.class)
+				.setParameter("companyID", companyID)
+				.setParameter("lstSid", lstSid)
+				.setParameter("roleSetCDLst", roleSetCDLst)
+				.setParameter("date", date)
+				.getList();
 	}
 
 }
