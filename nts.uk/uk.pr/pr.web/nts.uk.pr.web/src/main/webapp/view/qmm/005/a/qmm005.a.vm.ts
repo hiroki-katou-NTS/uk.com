@@ -151,8 +151,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             var dfd = $.Deferred();
             service.findDisplayRegister().done(data => {
                 self.itemTable = new ItemTable(data);
-                var sizetalbe = self.itemTable.processInfomations.length;
-                for (let i: number = sizetalbe; i < MAX_NUMBER_SETTING; i++) {
+                if(data){
+                    self.itemTable =new ItemTable(data);
+                }
+                for (let i: number = self.itemTable.processInfomations.length; i < MAX_NUMBER_SETTING; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
                             processCateNo: i + 1,
                             processDivisionName: '',
@@ -266,18 +268,20 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     }
 
     export class ItemTable {
-        processInfomations: Array<model.ProcessInfomation>;
-        setDaySupports: Array<model.SetDaySupport>;
-        currentProcessDates: Array<model.CurrentProcessDate>;
-        empCdNameImports: Array<model.EmpCdNameImport>;
-        empTiedProYear: Array<model.EmpTiedProYear>;
+        processInfomations: Array<model.ProcessInfomation> = [];
+        setDaySupports: Array<model.SetDaySupport> = [];
+        currentProcessDates: Array<model.CurrentProcessDate> = [];
+        empCdNameImports: Array<model.EmpCdNameImport> = [];
+        empTiedProYear: Array<model.EmpTiedProYear> = [];
 
         constructor(param: IitemTable) {
-            this.processInfomations = param.informationDto;
-            this.currentProcessDates = param.currProcessDateDto;
-            this.setDaySupports = param.setDaySupportDto;
-            this.empCdNameImports = param.empCdNameImports;
-            this.empTiedProYear = param.empTiedProYearDto;
+            if (param) {
+                this.processInfomations = param.informationDto;
+                this.currentProcessDates = param.currProcessDateDto;
+                this.setDaySupports = param.setDaySupportDto;
+                this.empCdNameImports = param.empCdNameImports;
+                this.empTiedProYear = param.empTiedProYearDto;
+            }
         }
     }
 
