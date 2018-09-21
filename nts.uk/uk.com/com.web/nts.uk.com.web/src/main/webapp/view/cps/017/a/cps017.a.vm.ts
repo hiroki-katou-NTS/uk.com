@@ -251,14 +251,27 @@
                     }
 
                 } else {
-                    alertError({ messageId: "Msg_455" });
-                    self.createNewData();
-                    self.enableSelectionName(false);
-                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    if (param != null && param != undefined) {
+                        alertError({ messageId: "Msg_455" }).then(() => {
+                            self.close();
+                        });
+                    }else{
+                        alertError({ messageId: "Msg_455" }).then(() => {
+                            uk.request.jumpToTopPage();
+                        });
+                    }
                 }
                 dfd.resolve();
             }).fail(error => {
-                alertError({ messageId: "Msg_455" });
+                if (param != null && param != undefined) {
+                    alertError({ messageId: "Msg_455" }).then(() => {
+                        self.close();
+                    });
+                }else{
+                    alertError({ messageId: "Msg_455" }).then(() => {
+                        uk.request.jumpToTopPage();
+                    });
+                }
             });
  
             return dfd.promise();
