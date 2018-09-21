@@ -48,6 +48,10 @@ module nts.uk.com.view.cmf002.n.viewmodel {
                     }
                 })
             }
+            if(self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE){
+                $('#N3_1').focus();
+            }
+            $('#N2_1_2').focus();
             dfd.resolve();
             return dfd.promise();
         }
@@ -116,7 +120,17 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         }
     enableFixedValue() {
         var self = this;
-        return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE);
+        if(self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE){
+            $('#N2_1_2').ntsError('clear');
+            $('#N2_2_2').ntsError('clear');
+            $('#N2_3_2').ntsError('clear');
+            $('#N2_4_2').ntsError('clear');
+        return true;    
+        }
+        if(self.atWorkDataOutputItem().fixedValue() != model.NOT_USE_ATR.USE){
+            $('#N3_2').ntsError('clear');
+            return false;
+        }
     }
     }
 }

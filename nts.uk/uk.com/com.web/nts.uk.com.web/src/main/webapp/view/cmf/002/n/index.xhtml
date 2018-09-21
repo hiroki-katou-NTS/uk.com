@@ -8,7 +8,7 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
-				var dialogSize = {width : 472, height : 460};</script>
+				var dialogSize = {width : 565, height : 460};</script>
 			<com:ValidatorScript>
 			    nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
 			</com:ValidatorScript>
@@ -45,7 +45,7 @@
 									data-bind="ntsTextEditor: { 
 																 value: atWorkOutput,
 																 constraint: 'DataTypeFixedValue',
-																 option : {width : '100px'},
+																 option : {width : '260px'},
 															     enable: $vm.enableAtWorkOutput(), 
 															     name: '#[CMF002_211]',
 															     required: false,
@@ -61,12 +61,12 @@
 							</div>
 							<div class="div-table-col-standard">
 								<!-- N2_2_2休職時 -->
-								<input style="width: 80px;"
+								<input id="N2_2_2" style="width: 80px;"
 									data-bind="ntsTextEditor: { 
 																 value: absenceOutput,
 															     enable: $vm.enableAbsenceOutput(),
 															     constraint: 'DataTypeFixedValue',
-																 option : {width : '100px'}, 
+																 option : {width : '260px'}, 
 															     name: '#[CMF002_212]',
 															     required: false,
 															     optionsText: 'name'}, 
@@ -81,12 +81,12 @@
 							</div>
 							<div class="div-table-col-standard">
 								<!-- N2_3_2退職時-->
-								<input style="width: 80px;"
+								<input id="N2_3_2" style="width: 80px;"
 									data-bind="ntsTextEditor: {
 																 value: retirementOutput, 
 															     enable: $vm.retirementOutput(),
 															     constraint: 'DataTypeFixedValue',
-																 option : {width : '100px'}, 
+																 option : {width : '260px'}, 
 															     name: '#[CMF002_213]',
 															     required: false,
 															     optionsText: 'name'}" />
@@ -100,12 +100,12 @@
 							</div>
 							<div class="div-table-col-standard">
 								<!--N2_4_2休業時 -->
-								<input style="width: 80px;"
+								<input id="N2_4_2" style="width: 80px;"
 									data-bind="ntsTextEditor: { 
 																 value: closedOutput,
 															     enable: $vm.enableCloseOutput(),
 															     constraint: 'DataTypeFixedValue',
-																 option : {width : '100px'}, 
+																 option : {width : '260px'}, 
 															     name: '#[CMF002_214]',
 															     required: false,
 															     optionsText: 'name'}, 
@@ -124,9 +124,9 @@
 							</div>
 							<!-- N3_1固定値 -->
 							<!-- N3_1_1使用する -->
-							<div id="N3_1" class="div-table-col-standard"
+							<div class="div-table-col-standard"
 								style="width: 100px;">
-								<div
+								<div id="N3_1"
 									data-bind="ntsRadioBoxGroup: {
 									options: $vm.items,
 									optionsValue: 'code',
@@ -136,13 +136,14 @@
 							</div>
 							<!-- N3_2固定値の値 -->
 							<div class="div-table-col-standard">
-								<input style="width: 50px;"
+								<input id="N3_2" style="width: 50px;"
 									data-bind="ntsTextEditor: { 
 																 value: valueOfFixedValue,
 															     enable: true,
-															     option : {width : '50px'}, 
+															     option : {width : '260px'}, 
 															     name: '#[CMF002_160]',
-															     required: false,
+															     required: true,
+															     constraint: 'DataTypeFixedValue',
 															     enable: $vm.enableFixedValue(),
 															     optionsText: 'name'} 
 																 " />

@@ -13,7 +13,7 @@ public enum ItemType {
 	// 時間型
 	TIME(3, "Enum_ItemType_TIME"),
 	// 時刻型
-	INS_TIME(4, "Enum_ItemType_INSTANT_TIME"),
+	INS_TIME(4, "Enum_ItemType_INS_TIME"),
 	// 在職区分[
 	AT_WORK_CLS(7, "Enum_ItemType_IN_SERVICE");
 
