@@ -2555,10 +2555,13 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
+                    
+                    if (!_.has(x, '$show')) {
+                        x.$show = ko.observable(true);
+                    }
 
                     if ((!_.has(x, "items") || !x.items)) {
                         if (x.layoutItemType != IT_CLA_TYPE.SPER) {
-                            x.$show = ko.observable(true);
                             x.items = [];
 
                             if (_.has(x, "listItemDf")) {
