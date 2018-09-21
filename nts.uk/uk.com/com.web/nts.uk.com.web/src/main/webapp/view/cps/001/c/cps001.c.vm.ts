@@ -20,6 +20,8 @@ module cps001.c.vm {
 
         enaBtnRes: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDel: KnockoutObservable<boolean> = ko.observable(true);
+        
+        listEmpRestored: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor() {
             let self = this,
@@ -38,8 +40,8 @@ module cps001.c.vm {
                     service.getDetail(x).done((data: IEmployee) => {
                         if (data) {
                             emp.id(iem.id);
-                            emp.code(iem.code);
-                            emp.name(iem.name);
+                            emp.code(data.code);
+                            emp.name(data.name);
 
                             emp.reason(data.reason || '');
                             emp.dateDelete(data.dateDelete || undefined);
@@ -133,6 +135,8 @@ module cps001.c.vm {
                     } else if (itemListLength - 1 > indexItemDelete) {
                         self.start(listItem[indexItemDelete + 1].id);
                     }
+                    
+                    self.listEmpRestored.push(emp.id);
 
                     unblock();
 
@@ -197,6 +201,8 @@ module cps001.c.vm {
         }
 
         closeUp() {
+             let self = this;
+            setShared('CPS001C_RESTORE', self.listEmpRestored());
             close();
         }
 

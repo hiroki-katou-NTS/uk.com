@@ -13,4 +13,8 @@ public class ItemBasicInfo {
 	private String itemCode;
 	
 	private String itemName;
+	
+	private String itemId;
+	
+	private int requiredAtr;
 }

@@ -171,7 +171,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -700,9 +700,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		WorkScheduleSettingTotalOutput totalOutputSetting = condition.getTotalOutputSetting();
 		TotalWorkplaceHierachy outputSetting = totalOutputSetting.getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if ((lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) && !totalOutputSetting.isDetails()
+		if ((lowestEmployeeLevel < highestOutputLevel && !totalOutputSetting.isDetails()
 				&& !totalOutputSetting.isGrossTotal() && !totalOutputSetting.isPersonalTotal() && !totalOutputSetting.isTotalNumberDay()
-				&& !totalOutputSetting.isWorkplaceTotal()) {
+				&& !totalOutputSetting.isWorkplaceTotal()) || lstMonthlyRecordValueExport.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
@@ -1111,7 +1111,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Sum of all workplace total and workplace hierarchy total
 			workplaceData.lstChildWorkplaceReportData.forEach((k,child) -> {
-				child.getGrossTotal().forEach(item -> {
+				child.getWorkplaceTotal().getTotalWorkplaceValue().forEach(item -> {
 					if (item.value() == null) return;
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
@@ -1468,7 +1468,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 										cell.setValue(getTimeAttr("0"));
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
-				            	else if (valueTypeEnum.isDouble()) {
+				            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 				            		cell.putValue(value, true);
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
@@ -1575,7 +1575,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            		}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
-			            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+			            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 			            		cell.putValue(value, true);
 			            	}
 			            	setFontStyle(style);
@@ -1647,7 +1647,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
@@ -1773,7 +1773,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
-				            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+				            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 				            		cell.putValue(value, true);
 				            	}
 				            	setFontStyle(style);
@@ -2015,7 +2015,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 									cell.setValue(getTimeAttr("0"));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
-			            	else if (valueTypeEnum.isDouble()) {
+			            	else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
 			            		cell.putValue(value, true);
 			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
@@ -2225,7 +2225,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
@@ -2288,7 +2288,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if (valueTypeEnum.isDoubleCountable() && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);

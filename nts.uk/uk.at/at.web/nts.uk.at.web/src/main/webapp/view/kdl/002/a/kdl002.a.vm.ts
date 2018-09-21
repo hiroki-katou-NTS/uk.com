@@ -1,6 +1,7 @@
 module kdl002.a.viewmodel {
     export class ScreenModel {
         isShowNoSelectRow:boolean;
+        isAcceptSelectNone:boolean;
         isMulti: boolean;
         items: KnockoutObservableArray<model.WorkTypeInfor>;
         columns: KnockoutObservableArray<any>;
@@ -11,6 +12,7 @@ module kdl002.a.viewmodel {
         constructor() {
             var self = this;
             self.isShowNoSelectRow = false;
+            self.isAcceptSelectNone = false;
             self.isMulti = true;
             self.items = ko.observableArray([]);
             //header
@@ -28,6 +30,7 @@ module kdl002.a.viewmodel {
             var self = this;
             
             self.isShowNoSelectRow = nts.uk.ui.windows.getShared('KDL002_isShowNoSelectRow');
+            self.isAcceptSelectNone = nts.uk.ui.windows.getShared('KDL002_isAcceptSelectNone');
             self.isMulti = nts.uk.ui.windows.getShared('KDL002_Multiple');
             //all possible items
             self.posibleItems = nts.uk.ui.windows.getShared('KDL002_AllItemObj');
@@ -94,10 +97,10 @@ module kdl002.a.viewmodel {
                         lstObj.push({"code": objectNew.workTypeCode, "name":objectNew.name});
                     }
                 }
-                if (lstObj.length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
-                    return;
-                }
+               if (!self.isAcceptSelectNone && lstObj.length == 0) {
+                   nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
+                   return;
+               }
                 let lstItem2 = _.orderBy(lstObj,['code'],['asc']);
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2);
             }else{

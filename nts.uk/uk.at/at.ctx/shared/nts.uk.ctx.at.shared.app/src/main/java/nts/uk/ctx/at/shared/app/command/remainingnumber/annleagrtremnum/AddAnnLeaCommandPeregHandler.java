@@ -38,7 +38,7 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		
 		String cid = AppContexts.user().companyId();
 		String annLeavId = IdentifierUtil.randomUniqueId();
-		boolean check = validate(command.getGrantDate(), command.getDeadline(), command.getGrantDays(), command.getUsedDays(),
+		boolean check = AnnualLeaveGrantRemainingData.validate(command.getGrantDate(), command.getDeadline(), command.getGrantDays(), command.getUsedDays(),
 				command.getRemainingDays(), command.grantDateItemName , command.deadlineDateItemName);
 		if (check) {
 			AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid,
@@ -57,35 +57,5 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 			annLeaRepo.add(data);
 		}
 		return new PeregAddCommandResult(annLeavId);
-	}
-	
-	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
-			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
-		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
-			return false;
-
-		if (grantDays != null || usedDays != null || remainDays != null) {
-			if (deadlineDate == null || grantDate == null) {
-				if (grantDate == null) {
-					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
-				}
-				if (deadlineDate == null) {
-					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
-				}
-			}
-		}
-		if (grantDate == null && deadlineDate != null) {
-			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
-		}
-		if (deadlineDate == null && grantDate != null) {
-			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
-		}
-		if (grantDate != null && deadlineDate != null) {
-			// 付与日＞使用期限の場合はエラー #Msg_1023
-			if (grantDate.compareTo(deadlineDate) > 0) {
-				throw new BusinessException("Msg_1023");
-			}
-		}
-		return true;
 	}
 }
