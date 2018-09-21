@@ -40,6 +40,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	
 	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
 			+ "WHERE e.pk.companyId =:companyId "
+			+ "AND e.pk.specialHolidayCode =:specialHolidayCode "
 			+ "AND e.pk.grantDateCd =:grantDateCd ";
 	
 	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
@@ -160,6 +161,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
 				.setParameter("companyId", grantDateTbl.getCompanyId())
 				.setParameter("grantDateCd", grantDateTbl.getGrantDateCode().v())
+				.setParameter("specialHolidayCode", grantDateTbl.getSpecialHolidayCode().v())
 				.executeUpdate();
 		
 		List<KshstElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
@@ -171,6 +173,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
 				.setParameter("companyId", companyId)
 				.setParameter("grantDateCd", grantDateCode)
+				.setParameter("specialHolidayCode", specialHolidayCode)
 				.executeUpdate();
 		
 		KshstGrantDateTblPK gPk = new KshstGrantDateTblPK(companyId, specialHolidayCode, grantDateCode);
