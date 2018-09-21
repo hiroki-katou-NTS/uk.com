@@ -67,7 +67,7 @@ public class ChacDataFmSet extends DataFormatSetting {
 		this.cdEditting = EnumAdaptor.valueOf(cdEditting, NotUseAtr.class);
 		this.cdEdittingMethod = EnumAdaptor.valueOf(cdEdittingMethod, FixedLengthEditingMethod.class);
 		this.cdEditDigit = Optional.ofNullable(cdEditDigit != null ? new DataFormatCharacterDigit(cdEditDigit) : null);
-		this.convertCode = Optional.of(new ConvertCode(convertCode));
+		this.convertCode = Optional.ofNullable(convertCode != null ? new ConvertCode(convertCode) : null);
 		this.spaceEditting = EnumAdaptor.valueOf(spaceEditting, EditSpace.class);
 		this.effectDigitLength = EnumAdaptor.valueOf(effectDigitLength, NotUseAtr.class);
 		this.startDigit = Optional.ofNullable(startDigit != null ? new DataFormatCharacterDigit(startDigit) : null);
