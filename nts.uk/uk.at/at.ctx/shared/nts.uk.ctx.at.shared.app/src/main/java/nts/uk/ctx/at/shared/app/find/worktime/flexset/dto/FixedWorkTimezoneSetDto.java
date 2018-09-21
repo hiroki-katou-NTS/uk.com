@@ -55,11 +55,12 @@ public class FixedWorkTimezoneSetDto implements FixedWorkTimezoneSetSetMemento {
 		if (CollectionUtil.isEmpty(lstOTTimezone)) {
 			this.lstOTTimezone = new ArrayList<>();
 		} else {
-			this.lstOTTimezone = lstOTTimezone.stream().map(domain -> {
-				OverTimeOfTimeZoneSetDto dto = new OverTimeOfTimeZoneSetDto();
-				domain.saveToMemento(dto);
-				return dto;
-			}).collect(Collectors.toList());
+			this.lstOTTimezone = lstOTTimezone.stream()
+					.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart())).map(domain -> {
+						OverTimeOfTimeZoneSetDto dto = new OverTimeOfTimeZoneSetDto();
+						domain.saveToMemento(dto);
+						return dto;
+					}).collect(Collectors.toList());
 		}
 	}
 
