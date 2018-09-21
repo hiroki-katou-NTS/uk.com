@@ -1,14 +1,11 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.statementitem;
 
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
@@ -54,7 +51,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 		val command = context.getCommand();
 		validateStatementItemData.validate(command);
 		String cid = AppContexts.user().companyId();
-		String salaryItemId = IdentifierUtil.randomUniqueId();
+		String salaryItemId = command.getSalaryItemId();
 
 		// ドメインモデル「明細書項目」を新規追加する
 		val statementItem = command.getStatementItem();
@@ -63,11 +60,11 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 		}
 
 		statementItemRepository
-				.add(new StatementItem(cid, command.getCategoryAtr(), statementItem.getItemNameCd(), salaryItemId,
+				.add(new StatementItem(cid, statementItem.getCategoryAtr(), statementItem.getItemNameCd(), salaryItemId,
 						statementItem.getDefaultAtr(), statementItem.getValueAtr(), statementItem.getDeprecatedAtr(),
 						statementItem.getSocialInsuaEditableAtr(), statementItem.getIntergrateCd()));
 
-		switch (EnumAdaptor.valueOf(command.getCategoryAtr(), CategoryAtr.class)) {
+		switch (EnumAdaptor.valueOf(statementItem.getCategoryAtr(), CategoryAtr.class)) {
 		case PAYMENT_ITEM:
 			// ドメインモデル「支給項目設定」を新規追加する
 
