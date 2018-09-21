@@ -94,7 +94,7 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
         
         List<KnlmtNursingLeaveSet> result = em.createQuery(query).getResultList();
         if (result.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         List<NursingLeaveSetting> listSetting = new ArrayList<>();
         
