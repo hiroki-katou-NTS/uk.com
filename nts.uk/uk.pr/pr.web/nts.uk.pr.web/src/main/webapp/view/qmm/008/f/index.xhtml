@@ -7,9 +7,9 @@
 
     <body>
 		
-        <ui:composition template="../../../../master/base.xhtml">
+        <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
-            	<script>var dialogSize = { width: 1900, height: 200 };</script>
+            	<script>var dialogSize = { width: 1000, height: 600 };</script>
 				<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 					nts.arc.time.YearMonth
@@ -23,22 +23,22 @@
             </ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" style="margin-left: 65px;">
+			<div id="contents-area" style="margin-left: 15px;">
 				<div style="margin-bottom: 15px;">
 					<button class="proceed" id = "F1_1" data-bind="click: update" >#{i18n.getText('QMM008_1')}</button>
 					<button id ="F1_2">#{i18n.getText('QMM008_2')}</button>
 					<button id ="F1_3" data-bind="click: countReview">#{i18n.getText('QMM008_141')}</button>
-					<button id ="F1_4" >#{i18n.getText('QMM008_108')}</button>
+					<button id ="F1_4" data-bind = "click: closeDialog" >#{i18n.getText('QMM008_108')}</button>
 				</div>
 				<hr></hr>
 				<div>
 					<div id ="F2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
-					<span style="margin-bottom: 15px;" id = "F2_2">Demo</span>
-					<span style="margin-bottom: 15px;" id = "F2_3">Demo</span>
+					<span style="margin-bottom: 15px;" id = "F2_2" data-bind="text: officeCode"></span>
+					<span style="margin-bottom: 15px;" id = "F2_3" data-bind="text: socialInsuranceName">Demo</span>
 					<div id ="F2_4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_12')}</div>
-					<span style="margin-bottom: 15px;" id = "F2_5">Demo</span>
-					<span style="margin-bottom: 15px;" id = "F2_6">Demo</span>
-					<span style="margin-bottom: 15px;" id = "F2_7">Demo</span>
+					<span style="margin-bottom: 15px;" id = "F2_5" data-bind="text: displayStart"></span>
+					<span style="margin-bottom: 15px;" id = "F2_6">~</span>
+					<span style="margin-bottom: 15px;" id = "F2_7" data-bind="text: displayEnd"></span>
 				</div>
 
 				<table id="fixed-table">
