@@ -42,10 +42,10 @@ public class AwDataFormatSet extends DataFormatSetting
 			String valueOfFixedValue, String atWorkOutput, String retirementOutput) {
 		super(itemType, fixedValue, valueOfFixedValue, NotUseAtr.NOT_USE.value, null);
 		this.cid = cid;
-		this.closedOutput = Optional.of(new DataTypeFixedValue(closedOutput));
-		this.absenceOutput = Optional.of(new DataTypeFixedValue(absenceOutput));
-		this.atWorkOutput = Optional.of(new DataTypeFixedValue(atWorkOutput));
-		this.retirementOutput = Optional.of(new DataTypeFixedValue(retirementOutput));
+		this.closedOutput = (closedOutput == null) ? Optional.ofNullable(null) : Optional.of(new DataTypeFixedValue(closedOutput));
+		this.absenceOutput = (absenceOutput == null) ? Optional.ofNullable(null) : Optional.of(new DataTypeFixedValue(absenceOutput));
+		this.atWorkOutput = (atWorkOutput == null) ? Optional.ofNullable(null) : Optional.of(new DataTypeFixedValue(atWorkOutput));
+		this.retirementOutput = (retirementOutput == null) ? Optional.ofNullable(null) : Optional.of(new DataTypeFixedValue(retirementOutput));
 	}
 
 	public AwDataFormatSet(ItemType itemType, String cid, Optional<DataTypeFixedValue> closedOutput,
