@@ -12,7 +12,10 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.AddStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.RemoveStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.StatementItemDataCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.StatementItemNameCommand2;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.UpdateStatementItemDataCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.UpdateStatementItemNameCommandHandler;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemAndStatementItemNameDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDto;
@@ -40,6 +43,9 @@ public class StatementItemWebService extends WebService {
 
 	@Inject
 	private RemoveStatementItemDataCommandHandler removeStatementItemDataCommandHandler;
+	
+	@Inject
+	private UpdateStatementItemNameCommandHandler updateStatementItemNameCommandHandler;
 
 	@POST
 	@Path("getStatementItemData/{categoryAtr}/{itemNameCd}/{salaryItemId}")
@@ -59,6 +65,12 @@ public class StatementItemWebService extends WebService {
 	@Path("getAllStatementItem")
 	public List<StatementItemDto> getAllStatementItem() {
 		return this.statementItemFinder.findAllStatementItem();
+	}
+	
+	@POST
+	@Path("getStatementItemAndStatementItemName/{categoryAtr}")
+	public List<StatementItemAndStatementItemNameDto> findStatementItemNameByListSalaryItemId(@PathParam("categoryAtr") int categoryAtr) {
+		return this.statementItemFinder.findStatementItemNameByListSalaryItemId(categoryAtr);
 	}
 
 	@POST
@@ -94,6 +106,12 @@ public class StatementItemWebService extends WebService {
 	@Path("removeStatementItemData")
 	public void removeStatementItemData(StatementItemDataCommand command) {
 		this.removeStatementItemDataCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updateStatementItemName")
+	public void UpdateStatementItemName(List<StatementItemAndStatementItemNameDto> command) {
+		this.updateStatementItemNameCommandHandler.handle(command);
 	}
 
 }

@@ -32,7 +32,8 @@ public class ValidateStatementItemData {
 			return;
 		}
 		val listStatementItem = statementItemRepository.getByCategory(cid, statementItem.getCategoryAtr());
-		if (listStatementItem.stream().anyMatch(i -> i.getItemNameCd().v().equals(statementItem.getItemNameCd()))) {
+		if (command.isCheckCreate() && listStatementItem.stream()
+				.anyMatch(i -> i.getItemNameCd().v().equals(statementItem.getItemNameCd()))) {
 			throw new BusinessException("Msg_3");
 		}
 
@@ -42,6 +43,9 @@ public class ValidateStatementItemData {
 		val listSalaryItemId = listStatementItem.stream().map(i -> {
 			return i.getSalaryItemId();
 		}).collect(Collectors.toList());
+		if (!command.isCheckCreate()) {
+			listSalaryItemId.removeIf(c -> c.equals(command.getSalaryItemId()));
+		}
 		if (listSalaryItemId.size() == 0) {
 			return;
 		}

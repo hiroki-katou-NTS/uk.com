@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
             var dialogSize = {
-                width: 780,
+                width: 820,
                 height: 580
             };
         	</script>
@@ -77,27 +77,29 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td>
-							<!--H2_5-->
-							<div tabindex="2"
-								data-bind="ntsDatePicker: {
-											 name:  '#[QMM012_96]',
-											 value: yearPeriodStart,
-											 enable: $parent.isEnableYearPeriod(),
-											 required: $parent.isEnableYearPeriod(),
-											 dateFormat: 'YYYY', 
-											 valueFormat: 'YYYY'}" />
-							<!--H2_6-->
-							<span class="label span-middle">#{i18n.getText('QMM012_125')}</span>
-							<!--H2_7-->
-							<div tabindex="3"
-								data-bind="ntsDatePicker: {
-											 name:  '#[QMM012_97]',
-											 value: yearPeriodEnd,
-											 enable: $parent.isEnableYearPeriod(),
-											 required: $parent.isEnableYearPeriod(),
-											 dateFormat: 'YYYY', 
-											 valueFormat: 'YYYY'}" />
+						<td class="ntsControl">
+							<div id="validityPeriod">
+								<!--H2_5-->
+								<div tabindex="2" id="H2_5"
+									data-bind="ntsDatePicker: {
+												 name:  '#[QMM012_96]',
+												 value: yearPeriodStart,
+												 enable: $parent.isEnableYearPeriod(),
+												 required: $parent.isEnableYearPeriod(),
+												 dateFormat: 'YYYY', 
+												 valueFormat: 'YYYY'}" />
+								<!--H2_6-->
+								<span class="label span-middle">#{i18n.getText('QMM012_125')}</span>
+								<!--H2_7-->
+								<div tabindex="3" id="H2_7"
+									data-bind="ntsDatePicker: {
+												 name:  '#[QMM012_97]',
+												 value: yearPeriodEnd,
+												 enable: $parent.isEnableYearPeriod(),
+												 required: $parent.isEnableYearPeriod(),
+												 dateFormat: 'YYYY', 
+												 valueFormat: 'YYYY'}" />
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -127,35 +129,33 @@
 					<tr>
 						<td></td>
 						<td>
-							<!--H3_6-->
-							<div tabindex="5" class="month-checkbox" data-bind="ntsCheckBox: {checked: january, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_102')}</div>
-							<!--H3_7-->
-							<div tabindex="6" class="month-checkbox" data-bind="ntsCheckBox: {checked: february, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_103')}</div>
-							<!--H3_8-->
-							<div tabindex="7" class="month-checkbox" data-bind="ntsCheckBox: {checked: march, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_104')}</div>
-							<!--H3_9-->
-							<div tabindex="8" class="month-checkbox" data-bind="ntsCheckBox: {checked: april, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_105')}</div>
-							<!--H3_10-->
-							<div tabindex="9" class="month-checkbox" data-bind="ntsCheckBox: {checked: may, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_106')}</div>
-							<!--H3_11-->
-							<div tabindex="10" class="month-checkbox" data-bind="ntsCheckBox: {checked: june, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_107')}</div>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<!--H3_12-->
-							<div tabindex="11" class="month-checkbox" data-bind="ntsCheckBox: {checked: july, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_108')}</div>
-							<!--H3_13-->
-							<div tabindex="12" class="month-checkbox" data-bind="ntsCheckBox: {checked: august, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_109')}</div>
-							<!--H3_14-->
-							<div tabindex="13" class="month-checkbox" data-bind="ntsCheckBox: {checked:september, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_110')}</div>
-							<!--H3_15-->
-							<div tabindex="14" class="month-checkbox" data-bind="ntsCheckBox: {checked: october, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_111')}</div>
-							<!--H3_16-->
-							<div tabindex="15" class="month-checkbox" data-bind="ntsCheckBox: {checked: november, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_112')}</div>
-							<!--H3_17-->
-							<div tabindex="16" class="month-checkbox" data-bind="ntsCheckBox: {checked: december, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_113')}</div>
+						<div class="ntsControl">
+							<div id="cycleSetting">
+								<!--H3_6-->
+								<div tabindex="5" class="month-checkbox" data-bind="ntsCheckBox: {checked: january, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_102')}</div>
+								<!--H3_7-->
+								<div tabindex="6" class="month-checkbox" data-bind="ntsCheckBox: {checked: february, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_103')}</div>
+								<!--H3_8-->
+								<div tabindex="7" class="month-checkbox" data-bind="ntsCheckBox: {checked: march, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_104')}</div>
+								<!--H3_9-->
+								<div tabindex="8" class="month-checkbox" data-bind="ntsCheckBox: {checked: april, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_105')}</div>
+								<!--H3_10-->
+								<div tabindex="9" class="month-checkbox" data-bind="ntsCheckBox: {checked: may, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_106')}</div>
+								<!--H3_11-->
+								<div tabindex="10" class="month-checkbox" data-bind="ntsCheckBox: {checked: june, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_107')}</div>
+								<!--H3_12-->
+								<div tabindex="11" class="month-checkbox" data-bind="ntsCheckBox: {checked: july, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_108')}</div>
+								<!--H3_13-->
+								<div tabindex="12" class="month-checkbox" data-bind="ntsCheckBox: {checked: august, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_109')}</div>
+								<!--H3_14-->
+								<div tabindex="13" class="month-checkbox" data-bind="ntsCheckBox: {checked:september, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_110')}</div>
+								<!--H3_15-->
+								<div tabindex="14" class="month-checkbox" data-bind="ntsCheckBox: {checked: october, enable:$parent.isEnableCycleSetting(), style: 'button'}">#{i18n.getText('QMM012_111')}</div>
+								<!--H3_16-->
+								<div tabindex="15" class="month-checkbox" data-bind="ntsCheckBox: {checked: november, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_112')}</div>
+								<!--H3_17-->
+								<div tabindex="16" class="month-checkbox" data-bind="ntsCheckBox: {checked: december, enable:$parent.isEnableCycleSetting(), style:'button'}">#{i18n.getText('QMM012_113')}</div>
+							</div></div>
 						</td>
 					</tr>
 				</table>
