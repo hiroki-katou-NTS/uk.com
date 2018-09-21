@@ -135,6 +135,8 @@ module nts.uk.pr.view.qmm012.b {
                 let listMessage: Array<string> = [];
                 let itemRangeSet = self.statementItemDataSelected().itemRangeSet();
                 
+                nts.uk.ui.errors.clearAll();
+                
                 if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
                     if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorUpperRangeValueAmount() == null)) {
                         $('#C2_12').ntsError('set', { messageId: "MsgQ_14" });
@@ -204,12 +206,12 @@ module nts.uk.pr.view.qmm012.b {
                     }).fail(err => {
                         block.clear();
                         
-                        if(err == "Msg_3") {
+                        if(err.messageId == "Msg_3") {
                             $('#B3_2').ntsError('set', { messageId: "Msg_3" });
                             $("#B3_2").focus();
                         }
                         
-                        if(err == "Msg_358") {
+                        if(err.messageId == "Msg_358") {
                             $('#B3_3').ntsError('set', { messageId: "Msg_358" });
                             $("#B3_3").focus();
                         }

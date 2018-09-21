@@ -101,7 +101,7 @@
 										data-bind="ntsTextEditor :{
 											name: '#[QMM012_32]',
 											value: itemNameCd,
-											constraint: 'ItemNameCd',
+											constraint: 'ItemNameCode',
 											option: {width: '40px'},
 											required: true,
 											enable: $parent.checkCreate,
@@ -253,6 +253,7 @@
 																	name: '#[QMM012_81]',
 																	value: limitAmount,
 																	constraint: 'LimitAmount',
+																	required: true,
 																	option: {
 													                    grouplength: 3,
 													                    decimallength: 3,
