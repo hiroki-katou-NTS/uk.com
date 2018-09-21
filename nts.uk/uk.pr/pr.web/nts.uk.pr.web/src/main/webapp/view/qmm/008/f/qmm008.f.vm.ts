@@ -1,4 +1,4 @@
-module nts.uk.com.view.qmm008.f {
+module nts.uk.pr.view.qmm008.f {
     export module viewmodel {
         export class ScreenModel {
 
@@ -7,10 +7,11 @@ module nts.uk.com.view.qmm008.f {
             constructor() {
                 var self = this;
                 self.dataList = ko.observableArray([]);
+                let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
                 nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
                     for (var i = 0; i < response.cusDataDtos.length; i++) {
                         self.dataList.push(response.cusDataDtos[i]);
-                    }
+                    } 
                     self.header(response.premiumRate);
                 });
 

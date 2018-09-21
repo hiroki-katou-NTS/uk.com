@@ -32,10 +32,10 @@
 				</div>
 				<hr></hr>
 				<div>
-					<div id ="F2_1" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_142')}</div>
+					<div id ="F2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
 					<span style="margin-bottom: 15px;" id = "F2_2">Demo</span>
 					<span style="margin-bottom: 15px;" id = "F2_3">Demo</span>
-					<div id ="F2_4" data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('QMM008_12')}</div>
+					<div id ="F2_4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_12')}</div>
 					<span style="margin-bottom: 15px;" id = "F2_5">Demo</span>
 					<span style="margin-bottom: 15px;" id = "F2_6">Demo</span>
 					<span style="margin-bottom: 15px;" id = "F2_7">Demo</span>
@@ -83,14 +83,14 @@
 							<th class="ui-widget-header" style ="text-align: center;" id = "F3_30">#{i18n.getText('QMM008_181')}</th>
 						</tr>
 						<tr>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_16" >4 1</th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_17" >4 2</th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_19">4 3</th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_21">4 4</th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_32" >4 5</th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_33" >4 6</th>
-							<th class="ui-widget-header" style ="text-align: center;" id = "F3_35">4 7</th>
-							<th class="ui-widget-header" style ="text-align: center;" id ="F3_36">4 8</th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_16" data-bind="text: header().fIndividualBurdenRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_17" data-bind="text: header().mIndividualBurdenRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_19" data-bind="text: header().fEmployeeContributionRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_21" data-bind="text: header().mEmployeeContributionRatio" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_32" data-bind="text: header().fIndividualExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_33" data-bind="text: header().mIndividualExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id = "F3_35" data-bind="text: header().fEmployeeExemptionRate" ></th>
+							<th class="ui-widget-header" style ="text-align: center;" id ="F3_36" data-bind="text: header().mEmployeeExemptionRate" ></th>
 						</tr>
 						
 					</thead>

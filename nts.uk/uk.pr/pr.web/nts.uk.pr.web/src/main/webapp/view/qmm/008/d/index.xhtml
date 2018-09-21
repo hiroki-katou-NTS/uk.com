@@ -7,12 +7,12 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 300,
-					height : 200
+					width : 1100,
+					height : 700
 				};
 			</script>
 			<com:ValidatorScript>
@@ -59,13 +59,13 @@
 					<button class="proceed" data-bind="click: update" id="D1_2" tabindex="2">#{i18n.getText('QMM008_1')}</button>
 					<button id="D1_3" tabindex="3">#{i18n.getText('QMM008_2')}</button>
 					<button class="danger" id="D1_4" tabindex="4" data-bind="click: deleteOffice">#{i18n.getText('QMM008_107')}</button>
-					<button id="D1_5" tabindex="5">#{i18n.getText('QMM008_108')}</button>
+					<button id="D1_5" tabindex="5" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
 				</div>
 				<hr style="margin-bottom: 20px;"></hr>
 				<div class="pull-left"
-					data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}"
-					id="D2_1">
-					<div id="D2_2" style="width: 300px" tabindex="7"
+					data-bind="ntsPanel:{width: '330px', height: '400px', direction: 'right', showIcon: true, visible: true}"
+					id="D2_1" style="margin-left: 10px;">
+					<div id="D2_2" style="width: 150px" tabindex="7"
 						data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'single-list', 
 						items: items, selected: currentCode, selectedKey: 'code', fields: ['code'], mode: 'igGrid'}" />
 					<table id="single-list" tabindex="8"
@@ -82,7 +82,7 @@
 				<div class="pull-left">
 					<div id="D3_1" tabindex="9"
 						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
-						style="width: 600px;">
+						style="width: 500px;">
 						<div class="tab-content-1" data-bind="with: $vm.detail">
 							<div class="flex valign-center">
 								<div id="D4_1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM008_114')}</div>
