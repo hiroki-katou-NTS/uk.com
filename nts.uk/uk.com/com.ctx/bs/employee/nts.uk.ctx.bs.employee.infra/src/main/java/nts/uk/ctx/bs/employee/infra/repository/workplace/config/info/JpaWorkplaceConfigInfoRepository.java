@@ -597,4 +597,16 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		return em.createQuery(cq).setParameter("prHierarchyCodeParameter", prHierarchyCode)
 				.getResultList();
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository#updateWorkplaceConfigInfo(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void updateWorkplaceConfigInfo(String companyId, String historyId, String wkpId, String hierarchyCd) {
+		BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK(companyId, historyId, wkpId);
+		BsymtWkpConfigInfo entity = new BsymtWkpConfigInfo();
+		entity.setBsymtWkpConfigInfoPK(pk);
+		entity.setHierarchyCd(hierarchyCd);
+		this.commandProxy().update(entity);
+	}
 }

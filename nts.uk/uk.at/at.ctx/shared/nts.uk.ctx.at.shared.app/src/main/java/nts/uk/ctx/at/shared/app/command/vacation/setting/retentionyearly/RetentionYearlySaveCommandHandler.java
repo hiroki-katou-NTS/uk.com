@@ -56,16 +56,16 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
         int isManaged = this.isManagedRepo.findByCompanyId(companyId).getYearManageType().value;
         
         // Check is managed, keep old values when is not managed
-        if (yearlyRetentionOpt.isPresent() && isManaged == ManageDistinct.NO.value) {
-            RetentionYearlySetting retentionYearlySettingDB = yearlyRetentionOpt.get();
-            RetentionYearlyDto yearlyRetentionDto = command.getRetentionYearly();
-            yearlyRetentionDto.setLeaveAsWorkDays(retentionYearlySettingDB.getLeaveAsWorkDays());
-            yearlyRetentionDto.getUpperLimitSettingDto().setMaxDaysCumulation(
-                    retentionYearlySettingDB.getUpperLimitSetting().getMaxDaysCumulation().v());
-            yearlyRetentionDto.getUpperLimitSettingDto().setRetentionYearsAmount(
-                    retentionYearlySettingDB.getUpperLimitSetting().getRetentionYearsAmount().v());
-            yearlyRetentionDto.setManagementCategory(retentionYearlySettingDB.getManagementCategory().value);
-        }
+//        if (yearlyRetentionOpt.isPresent() && isManaged == ManageDistinct.NO.value) {
+//            RetentionYearlySetting retentionYearlySettingDB = yearlyRetentionOpt.get();
+//            RetentionYearlyDto yearlyRetentionDto = command.getRetentionYearly();
+//            yearlyRetentionDto.setLeaveAsWorkDays(retentionYearlySettingDB.getLeaveAsWorkDays());
+//            yearlyRetentionDto.getUpperLimitSettingDto().setMaxDaysCumulation(
+//                    retentionYearlySettingDB.getUpperLimitSetting().getMaxDaysCumulation().v());
+//            yearlyRetentionDto.getUpperLimitSettingDto().setRetentionYearsAmount(
+//                    retentionYearlySettingDB.getUpperLimitSetting().getRetentionYearsAmount().v());
+//            yearlyRetentionDto.setManagementCategory(retentionYearlySettingDB.getManagementCategory().value);
+//        }
         
         // To Domain
         RetentionYearlySetting retentionYearlySetting = command.toDomain(companyId);

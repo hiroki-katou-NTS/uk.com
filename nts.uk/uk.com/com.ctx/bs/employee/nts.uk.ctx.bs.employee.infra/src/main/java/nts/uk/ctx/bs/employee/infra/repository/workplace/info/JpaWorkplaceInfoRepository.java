@@ -255,6 +255,17 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
+	
+//	@Override
+//	public List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate) {
+//
+//		List<BsymtWorkplaceInfo> resultList = this.queryProxy()
+//				.query(FIND_WKP_DETAIL_HIERARCHY_ORDER, BsymtWorkplaceInfo.class).setParameter("cid", companyId)
+//				.setParameter("baseDate", baseDate).getList();
+//
+//		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+//				.collect(Collectors.toList());
+//	}
 
 	/*
 	 * (non-Javadoc)
