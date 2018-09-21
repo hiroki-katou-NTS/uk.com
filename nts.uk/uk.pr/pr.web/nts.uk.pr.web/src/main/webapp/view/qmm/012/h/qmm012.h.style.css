@@ -4,15 +4,17 @@
 }
 
 .table > tbody > tr > td:nth-child(1) {
-	width: 200px;
+	width: 150px;
 }
 
 .span-middle {
 	margin-top: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
 .month-checkbox {
 	margin-right: 10px;
 	margin-bottom: 5px;
-	width: 70px
+	width: 63px
 }
