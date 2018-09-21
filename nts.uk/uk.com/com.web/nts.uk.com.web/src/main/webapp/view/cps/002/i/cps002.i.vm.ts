@@ -36,7 +36,6 @@ module cps002.i.vm {
             let self = this,
                 dImageId = getShared("CPS002A"),
                 dataShare = getShared("imageId");
-debugger;
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
                 $(".ntsCheckBox-label input:checkbox").prop('checked', false);
