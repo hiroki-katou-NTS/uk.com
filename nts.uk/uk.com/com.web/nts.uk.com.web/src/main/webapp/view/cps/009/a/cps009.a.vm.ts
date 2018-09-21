@@ -363,8 +363,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingCode: self.currentCategory().settingCode()
                 };
             self.ctgIdUpdate(false);
-            block.invisible();
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+           
+            confirm({ messageId: "Msg_18" }).ifYes(() => { 
                 service.deleteInitVal(objDelete).done(function(data) {
                     dialog.info({ messageId: "Msg_16" }).then(function() {
                         $('#ctgName').focus();
@@ -385,12 +385,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             self.start(undefined);
 
                         }
-                        block.clear();
                     });
-                });
+                })
             }).ifNo(() => {
                 $('#ctgName').focus();
-                block.clear();
                 return;
             });
         }
@@ -951,7 +949,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
 
-                    self.selectionName = ko.observable((objSel == undefined ? text("CPS001_107") : objSel.optionText) || text("CPS001_107"));
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? text("CPS001_107") : objSel.optionText));
 
                     break;
 

@@ -71,7 +71,13 @@
 						bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
 						<div id="compareOperator-cbb"
 							data-bind="ntsComboBox: {
-							options: enumCompareOperator,
+							options: function(){
+                                 if(currentAtdItemCondition.conditionType() == 0){
+                                     return enumlistCompareTypes;
+                                 } else {
+                                     return enumSingleValueCompareTypes;
+                                 }
+                            }(),
 							optionsValue: 'code',
 							value: currentAtdItemCondition.compareOperator,
 							optionsText: 'name',
@@ -137,7 +143,12 @@
 						 				value: currentAtdItemCondition.compareStartValue, 
 						 				required: true, 
 						 				constraint: 'CheckedAmountValue',
-										option: {decimallength: 0}}" />
+						 				option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: '', 
+                											width : '95'
+            												})}" />
 							<input id="endValue" class="value-input needcheck"
 								data-bind="ntsNumberEditor: {
 				 						name: '#[KAL003_44]', 
@@ -145,7 +156,12 @@
 										enable: currentAtdItemCondition.compareOperator() > 5,
 										required: currentAtdItemCondition.conditionType() == 0,
 										constraint: 'CheckedAmountValue',
-										option: {decimallength: 0}
+										option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: '', 
+                											width : '95'
+            												})
 										
 									}" />
 						</com:ko-if>

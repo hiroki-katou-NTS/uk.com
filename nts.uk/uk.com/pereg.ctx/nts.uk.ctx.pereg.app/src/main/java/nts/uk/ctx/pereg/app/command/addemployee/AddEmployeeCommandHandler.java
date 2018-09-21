@@ -666,20 +666,27 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			}
 			if(dayNumberOfGrantLst.contains(c.itemCode())) {
 				if(c.valueAfter() != null) {
-					numberOverdays =new BigDecimal(c.valueAfter());
+					dayNumberOfGrant = new BigDecimal(c.valueAfter());
 				}
 			}
-			if(deadLineLst.contains(c.itemCode())) {
+			if(dayNumberOfUseLst.contains(c.itemCode())) {
 				if(c.valueAfter() != null) {
-					numberOverdays =new BigDecimal(c.valueAfter());
+					dayNumberOfUse = new BigDecimal(c.valueAfter());
 				}
 				
 			}
-			if(deadLineLst.contains(c.itemCode())) {
+			if(numberOverdaysLst.contains(c.itemCode())) {
 				if(c.valueAfter() != null) {
-					numberOverdays =new BigDecimal(c.valueAfter());
+					numberOverdays = new BigDecimal(c.valueAfter());
 				}
 			}
+			
+			if(dayNumberOfRemainLst.contains(c.itemCode())) {
+				if(c.valueAfter() != null) {
+					dayNumberOfRemain = new BigDecimal(c.valueAfter());
+				}
+			}
+			
 		}
 		 return SpecialLeaveGrantRemainingData.validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays, dayNumberOfRemain);
 	}

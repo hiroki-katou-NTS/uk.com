@@ -76,11 +76,13 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.START_DATE <= 'endDate'";
 	
 	private final String FIND_BY_APPROVER_PERIOD = BASIC_SELECT + 
+			" WHERE appRoot.ROOT_ID IN (SELECT ROOT_ID FROM (" +
+			BASIC_SELECT +
 			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
 			" AND appRoot.END_DATE >= 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'";
+			" AND appRoot.START_DATE <= 'endDate') result)";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {

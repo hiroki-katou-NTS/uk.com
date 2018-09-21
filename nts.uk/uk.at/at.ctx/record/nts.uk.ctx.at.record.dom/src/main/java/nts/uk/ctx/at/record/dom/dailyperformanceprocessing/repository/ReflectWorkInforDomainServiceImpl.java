@@ -1218,8 +1218,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		Optional<MasterList> newMasterLists = Optional.empty();
 		if (periodInMasterList != null) {
 			masterLists = periodInMasterList.getMasterLists();
-			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day))
-					.findFirst();
+			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
 		}
 
 		RecSpecificDateSettingImport specificDateSettingImport = new RecSpecificDateSettingImport();
@@ -1674,27 +1673,35 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 									// 出勤
 									RoundingSet atendanceRoundingSet = stampSet.getRoundingSets().stream()
-											.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().isPresent() ?
-													stampSet.getRoundingSets().stream()
-													.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst().get() : null;
+											.filter(item -> item.getSection() == Superiority.ATTENDANCE).findFirst()
+											.isPresent()
+													? stampSet.getRoundingSets().stream()
+															.filter(item -> item.getSection() == Superiority.ATTENDANCE)
+															.findFirst().get()
+													: null;
 
-									int attendanceTimeAfterRouding = atendanceRoundingSet != null ? this.roudingTime(timezone.getStart().v(),
-											atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
-											new Integer(atendanceRoundingSet.getRoundingSet()
-													.getRoundingTimeUnit().description).intValue()) : timezone.getStart().v();
+									int attendanceTimeAfterRouding = atendanceRoundingSet != null
+											? this.roudingTime(timezone.getStart().v(),
+													atendanceRoundingSet.getRoundingSet().getFontRearSection().value,
+													new Integer(atendanceRoundingSet.getRoundingSet()
+															.getRoundingTimeUnit().description).intValue())
+											: timezone.getStart().v();
 
 									actualStamp.setAfterRoundingTime(new TimeWithDayAttr(attendanceTimeAfterRouding));
-									
+
 									// 退勤
 									RoundingSet leavingRoundingSet = stampSet.getRoundingSets().stream()
-											.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().isPresent() ?
-													stampSet.getRoundingSets().stream()
-													.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst().get() : null;
-													
-									int leaveTimeAfterRounding = leavingRoundingSet != null ? this.roudingTime(timezone.getEnd().v(),
-											leavingRoundingSet.getRoundingSet().getFontRearSection().value,
-											new Integer(leavingRoundingSet.getRoundingSet()
-													.getRoundingTimeUnit().description).intValue()) : timezone.getEnd().v();
+											.filter(item -> item.getSection() == Superiority.OFFICE_WORK).findFirst()
+											.isPresent() ? stampSet.getRoundingSets().stream()
+													.filter(item -> item.getSection() == Superiority.OFFICE_WORK)
+													.findFirst().get() : null;
+
+									int leaveTimeAfterRounding = leavingRoundingSet != null
+											? this.roudingTime(timezone.getEnd().v(),
+													leavingRoundingSet.getRoundingSet().getFontRearSection().value,
+													new Integer(leavingRoundingSet.getRoundingSet()
+															.getRoundingTimeUnit().description).intValue())
+											: timezone.getEnd().v();
 
 									leaveActualStamp.setAfterRoundingTime(new TimeWithDayAttr(leaveTimeAfterRounding));
 
@@ -1786,8 +1793,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new TimeActualStamp());
 				}
 
-				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().get();
-				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().get();
+				TimeActualStamp attendanceStamp = leavingStamp.getAttendanceStamp().orElse(null);
+				TimeActualStamp leaveStamp = leavingStamp.getLeaveStamp().orElse(null);
 
 				// 出勤反映 = true
 				// 出勤に自動打刻セットする
@@ -1902,7 +1909,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			// 加給設定を取得する
 			bonusPaySetting = this.reflectBonusSetting(companyId, employeeId, day,
-					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v(), workPlaceIdList);
+					workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null
+							? workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v() : null,
+					workPlaceIdList);
 
 			return bonusPaySetting;
 		} else {
@@ -1984,11 +1993,47 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 
-		// ドメインモデル「就業時間帯加給設定」を取得
-		Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
-				.getWTBPSetting(companyId, new WorkingTimesheetCode(workTimeCode));
+		if (workTimeCode != null) {
 
-		if (!workingTimesheetBonusPaySetting.isPresent()) {
+			// ドメインモデル「就業時間帯加給設定」を取得
+			Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
+					.getWTBPSetting(companyId, new WorkingTimesheetCode(workTimeCode));
+
+			if (!workingTimesheetBonusPaySetting.isPresent()) {
+				// ドメインモデル「個人加給設定」を取得
+				Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository
+						.getPersonalBonusPaySetting(employeeId);
+				if (!personalBonusPaySetting.isPresent()) {
+					// 職場の加給設定を取得する
+					Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
+					for (String wPId : workPlaceIDs) {
+						workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(companyId,
+								new WorkplaceId(wPId));
+						if (workplaceBonusPaySetting.isPresent()) {
+							break;
+						}
+					}
+
+					if (!workplaceBonusPaySetting.isPresent()) {
+						Optional<CompanyBonusPaySetting> companyBonusPaySetting = this.cPBonusPaySettingRepository
+								.getSetting(companyId);
+						if (companyBonusPaySetting.isPresent()) {
+							bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+									companyBonusPaySetting.get().getBonusPaySettingCode());
+						}
+					} else {
+						bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+								workplaceBonusPaySetting.get().getBonusPaySettingCode());
+					}
+				} else {
+					bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+							personalBonusPaySetting.get().getBonusPaySettingCode());
+				}
+			} else {
+				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
+						workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
+			}
+		} else {
 			// ドメインモデル「個人加給設定」を取得
 			Optional<PersonalBonusPaySetting> personalBonusPaySetting = this.pSBonusPaySettingRepository
 					.getPersonalBonusPaySetting(employeeId);
@@ -2018,9 +2063,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
 						personalBonusPaySetting.get().getBonusPaySettingCode());
 			}
-		} else {
-			bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId,
-					workingTimesheetBonusPaySetting.get().getBonusPaySettingCode());
 		}
 
 		return bonusPaySetting;
