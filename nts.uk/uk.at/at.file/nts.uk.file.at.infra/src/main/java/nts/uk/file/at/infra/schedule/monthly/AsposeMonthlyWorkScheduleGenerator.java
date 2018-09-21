@@ -376,7 +376,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		lstAttendanceId.stream().forEach(x -> {
 			AttItemNameImport attendanceItem = lstAttendanceDto.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
 			OutputItemSetting setting = new OutputItemSetting();
-			setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
+			//setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
+			setting.setItemCode(attendanceItem.getAttendanceItemId());
 			setting.setItemName(attendanceItem.getAttendanceItemName());
 			headerData.lstOutputItemSettingCode.add(setting);
 		});
@@ -1098,7 +1099,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							personalTotal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 							totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
-							totalGrossVal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
+							totalGrossVal.setValue(String.valueOf(Double.parseDouble(totalGrossVal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						}
 					});
@@ -1113,7 +1114,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Sum of all workplace total and workplace hierarchy total
 			workplaceData.lstChildWorkplaceReportData.forEach((k,child) -> {
-				child.getWorkplaceTotal().getTotalWorkplaceValue().forEach(item -> {
+				child.getGrossTotal().forEach(item -> {
 					if (item.value() == null) return;
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
