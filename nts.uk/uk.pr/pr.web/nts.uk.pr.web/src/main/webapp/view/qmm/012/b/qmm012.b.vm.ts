@@ -393,7 +393,7 @@ module nts.uk.pr.view.qmm012.b {
             public setBreakdownItem(): void {
                 let self = this;
 
-                setShared("QMM012_B_TO_I_SALARY_ITEM_ID", self.salaryItemId);
+                setShared("QMM012_B_TO_I_PARAMS", {salaryItemId: self.salaryItemId(), categoryName: self.statementItem().categoryName()});
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
