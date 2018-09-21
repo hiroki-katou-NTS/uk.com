@@ -316,10 +316,14 @@ public class DailyModifyResCommandFacade {
 				}
 			}
 			// 暫定データを登録する - Register provisional data
-			List<DailyModifyResult> resultNews = dailyEdits.stream()
-					.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
-							.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
-					.collect(Collectors.toList());
+			List<DailyModifyResult> resultNews = AttendanceItemUtil.toItemValues(dailyEdits).entrySet()
+																.stream().map(dto -> DailyModifyResult.builder()
+																		.								items(dto.getValue())
+																										.employeeId(dto.getKey().getEmployeeId())
+																										.workingDate(dto.getKey().getDate())
+																										.completed())
+																.collect(Collectors.toList());
+			
 			registerTempData(dataParent.getMode(), resultOlds, resultNews);
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);

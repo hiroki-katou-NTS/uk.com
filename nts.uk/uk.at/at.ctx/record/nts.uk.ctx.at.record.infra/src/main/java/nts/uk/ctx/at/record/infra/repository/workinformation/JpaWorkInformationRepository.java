@@ -230,16 +230,29 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			data.backStraightAttribute = domain.getBackStraightAtr().value;
 			data.goStraightAttribute = domain.getGoStraightAtr().value;
 			data.dayOfWeek = domain.getDayOfWeek().value;
-			if(data.scheduleTimes != null && !data.scheduleTimes.isEmpty()){
+			if(domain.getScheduleTimeSheets().isEmpty()){
 				this.commandProxy().removeAll(data.scheduleTimes);
-				this.getEntityManager().flush();
+//				this.getEntityManager().flush();
+			} else {
+				if(data.scheduleTimes == null || data.scheduleTimes.isEmpty()){
+					data.scheduleTimes = domain.getScheduleTimeSheets().stream().map(c -> 
+														new KrcdtWorkScheduleTime(
+																new KrcdtWorkScheduleTimePK(
+																		domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
+																		c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
+																.collect(Collectors.toList());
+				} else {
+					data.scheduleTimes.stream().forEach(st -> {
+						domain.getScheduleTimeSheets().stream()
+								.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo)
+								.findFirst().ifPresent(dst -> {
+									st.attendance = dst.getAttendance().valueAsMinutes();
+									st.leaveWork = dst.getLeaveWork().valueAsMinutes();
+								});
+					});
+				}
 			}
-			data.scheduleTimes = domain.getScheduleTimeSheets().stream().map(c -> 
-								new KrcdtWorkScheduleTime(
-										new KrcdtWorkScheduleTimePK(
-												domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
-												c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
-										.collect(Collectors.toList());
+			
 			this.commandProxy().update(data);
 			this.commandProxy().updateAll(data.scheduleTimes);
 		}

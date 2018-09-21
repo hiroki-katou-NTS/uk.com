@@ -123,7 +123,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			});
 			
 			//勤務情報の更新
-			workInformationRepository.updateByKeyFlush(d.getWorkInformation());
+			workInformationRepository.updateByKey(d.getWorkInformation());
 		});
 	}
 	

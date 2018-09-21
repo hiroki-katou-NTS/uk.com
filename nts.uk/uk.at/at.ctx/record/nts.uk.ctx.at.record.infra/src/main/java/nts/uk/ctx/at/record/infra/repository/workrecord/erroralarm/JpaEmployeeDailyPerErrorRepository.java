@@ -140,9 +140,8 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		if (errors.isEmpty()) {
 			return;
 		}
-		this.commandProxy()
-				.insertAll(errors.stream().map(e -> KrcdtSyainDpErList.toEntity(e)).collect(Collectors.toList()));
-		// this.getEntityManager().flush();
+		this.commandProxy().insertAll(errors.stream().map(e -> KrcdtSyainDpErList.toEntity(e)).collect(Collectors.toList()));
+		 this.getEntityManager().flush();
 	}
 
 	@Override
