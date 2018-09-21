@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementitem;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -17,7 +18,9 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementItemName f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId =:salaryItemId ";
-    private static final String SELECT_BY_LIST_SALARYID = SELECT_ALL_QUERY_STRING + " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId IN :salaryItemIds ";
+	private static final String SELECT_BY_LIST_SALARYID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.statementItemNamePk.cid =:cid AND  f.statementItemNamePk.salaryItemId IN :salaryItemIds ";
+
 	@Override
 	public List<StatementItemName> getAllStatementItemName() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStatementItemName.class)
@@ -29,13 +32,11 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementItemName.class).setParameter("cid", cid)
 				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
 	}
-    
-    @Override
+
+	@Override
 	public List<StatementItemName> getStatementItemNameByListSalaryItemId(String cid, List<String> salaryItemIds) {
-    	return this.queryProxy().query(SELECT_BY_LIST_SALARYID, QpbmtStatementItemName.class)
-    	        .setParameter("cid", cid)
-    	        .setParameter("salaryItemIds", salaryItemIds)
-    	        .getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_BY_LIST_SALARYID, QpbmtStatementItemName.class).setParameter("cid", cid)
+				.setParameter("salaryItemIds", salaryItemIds).getList(item -> item.toDomain());
 	}
 
 	@Override
@@ -49,11 +50,16 @@ public class JpaStatementItemNameRepository extends JpaRepository implements Sta
 	}
 
 	@Override
+	public void updateListStatementItemName(List<StatementItemName> domain) {
+		this.commandProxy().updateAll(
+				domain.stream().map(item -> QpbmtStatementItemName.toEntity(item)).collect(Collectors.toList()));
+	}
+
+	@Override
 	public void remove(String cid, String salaryItemId) {
 		if (this.getStatementItemNameById(cid, salaryItemId).isPresent()) {
 			this.commandProxy().remove(QpbmtStatementItemName.class, new QpbmtStatementItemNamePk(cid, salaryItemId));
 		}
 	}
 
-	
 }
