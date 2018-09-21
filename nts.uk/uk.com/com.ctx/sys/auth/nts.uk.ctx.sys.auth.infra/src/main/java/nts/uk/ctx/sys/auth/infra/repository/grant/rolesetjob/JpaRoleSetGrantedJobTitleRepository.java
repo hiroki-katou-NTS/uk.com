@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.infra.repository.grant.rolesetjob;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,6 +110,9 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 
 	@Override
 	public List<String> findJobTitleByRoleCDLst(String companyID, List<String> roleCDLst){
+		if(roleCDLst.isEmpty()){
+			return new ArrayList<>();
+		}
 		return this.queryProxy().query(FIND_BY_CID_JOBTITLES ,SacmtRoleSetGrantedJobTitleDetail.class )
 				.setParameter("companyId", companyID)
 				.setParameter("roleCDLst", roleCDLst)
