@@ -225,6 +225,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         characteristics: Characteristics = {};
         loadFirst: boolean = true;
+        
+        clickCounter: CLickCount = new CLickCount();
 
         constructor(dataShare: any) {
             var self = this;
@@ -1724,6 +1726,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (!self.hasEmployee) return;
             self.showTextStyle = false;
             self.clickFromExtract = true;
+            self.clickCounter = new CLickCount();
             if (self.isVisibleMIGrid()) {
                 //reload MiGrid
                 $('#miGrid').igGrid("destroy");
@@ -2711,11 +2714,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 {
                     name: 'Link2',
                     click: function(rowId, key, event) {
-                        let value = $("#dpGrid").mGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
-                        let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
-                        dialog.showDialog(self);
-                        nts.uk.ui.block.clear();
-                        //  }
+                        if (!self.clickCounter.clickLinkGrid) {
+                            self.clickCounter.clickLinkGrid = true;
+                            let value = $("#dpGrid").mGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
+                            let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
+                            dialog.showDialog(self);
+                            nts.uk.ui.block.clear();
+                        }
                     },
                     controlType: 'LinkLabel'
                 },
@@ -3857,6 +3862,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         updateCodeName(rowId: any, itemId: any, name: any, code: any, valueOld: any) {
             let dfd = $.Deferred();
+            __viewContext.vm.clickCounter.clickLinkGrid = false;
             if (code == valueOld) {
                 dfd.resolve();
             } else {
@@ -4320,4 +4326,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         moveMouse: number;
     }
+    
+    class CLickCount{
+        clickLinkGrid: boolean;
+        clickErrorRefer: boolean;
+        constructor() {
+            this.clickLinkGrid = false;
+            this.clickErrorRefer = false;
+        } 
+    } 
 }
