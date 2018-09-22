@@ -258,14 +258,14 @@ public class PeregCommandFacade {
 
 		// Getall items by category id
 		Map<String, List<ItemBasicInfo>> itemByCtgId = perInfoItemDefRepositoty
-				.getItemCDByListCategoryIdWithoutAbolition(container.getInputs().stream()
+				.getItemCDByListCategoryIdWithAbolition(container.getInputs().stream()
 						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
 						AppContexts.user().contractCode());
 		
 		// Filter required item
 		Map<String, List<ItemBasicInfo>> requiredItemByCtgId = itemByCtgId.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
-						.filter(info -> info.getRequiredAtr() == 1).collect(Collectors.toList())));
+						.filter(info -> info.getRequiredAtr() == 1 && info.getAbolitionAtr() == 0).collect(Collectors.toList())));
 		
 		// Check is enough item to regist
 		// Item missing
@@ -466,8 +466,8 @@ public class PeregCommandFacade {
 							boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
 							if(historyLst.size() == 1) {
 								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-									item.setContentAfter(isContinuousHistory ? valueEndate: item.contentAfter());
+									item.setValueAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
+									item.setContentAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
 								}
 								
 							}else {									
@@ -517,14 +517,6 @@ public class PeregCommandFacade {
 
 									}
 								}
-							}
-						
-							
-						}else {
-							if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
-								info = InfoOperateAttr.ADD;
-							}else {
-								info = InfoOperateAttr.UPDATE;
 							}
 						}
 						break;

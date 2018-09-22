@@ -143,11 +143,11 @@
 						 				value: currentAtdItemCondition.compareStartValue, 
 						 				required: true, 
 						 				constraint: 'CheckedAmountValue',
-										option: new nts.uk.ui.option.CurrencyEditorOption({
+						 				option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: '',
-                											width: '95'
+                											placeholder: '', 
+                											width : '95'
             												})}" />
 							<input id="endValue" class="value-input needcheck"
 								data-bind="ntsNumberEditor: {
@@ -156,11 +156,11 @@
 										enable: currentAtdItemCondition.compareOperator() > 5,
 										required: currentAtdItemCondition.conditionType() == 0,
 										constraint: 'CheckedAmountValue',
-										option: new nts.uk.ui.option.CurrencyEditorOption({
+										option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											currencyformat: '',
-                											width: '95'
+                											placeholder: '', 
+                											width : '95'
             												})
 										
 									}" />

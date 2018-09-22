@@ -106,6 +106,7 @@ module cps001.a.vm {
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             employee.employeeId.subscribe(id => {
+                self.layout.listItemCls.removeAll();
                 self.block();
             });
 
@@ -118,16 +119,17 @@ module cps001.a.vm {
             });
 
             setInterval(() => {
-                let aut = _(self.layout.listItemCls())
-                    .map((m: any) => m.items || undefined)
-                    .filter(x => !!x)
-                    .flatten() // flat set item
-                    .flatten() // flat list item
-                    .map((m: any) => !ko.toJS(m.readonly))
-                    .filter(x => !!x)
-                    .value();
+                let id = ko.toJS(self.employee.employeeId),
+                    aut = _(self.layout.listItemCls())
+                         .map((m: any) => m.items || undefined)
+                         .filter(x => !!x)
+                         .flatten() // flat set item
+                         .flatten() // flat list item
+                         .map((m: any) => !ko.toJS(m.readonly))
+                         .filter(x => !!x)
+                         .value();
 
-                self.saveAble(!!aut.length && !hasError());
+                self.saveAble(!!aut.length && !hasError() && !!id);
             }, 0);
 
             // check quyen có thể delete employee ở đăng ký thông tin cá nhân
@@ -282,9 +284,14 @@ module cps001.a.vm {
                     categoryId: evt.id,
                     categoryCode: evt.ccode,
                     standardDate: undefined,
-                    personId: ko.toJS(__viewContext.viewModel.employee.personId),
-                    employeeId: ko.toJS(__viewContext.viewModel.employee.employeeId)
+                    personId: ko.toJS(self.employee.personId),
+                    employeeId: ko.toJS(self.employee.employeeId)
                 };
+
+                if (!query.employeeId) {
+                    self.layout.listItemCls.removeAll();
+                    return;
+                }
 
                 if (evt.ctype) {
                     switch (evt.ctype) {
@@ -415,6 +422,11 @@ module cps001.a.vm {
                             browsingEmpId: ko.toJS(__viewContext.viewModel.employee.employeeId),
                             standardDate: ddate
                         };
+
+                    if (!query.browsingEmpId) {
+                        self.listItemCls.removeAll();
+                        return;
+                    }
 
                     service.getCurrentLayout(query).done((data: any) => {
                         if (data) {

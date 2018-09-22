@@ -27,6 +27,7 @@ module nts.uk.at.view.kdw001.c {
             enable: KnockoutObservable<boolean>;
             required: KnockoutObservable<boolean>;
             dateValue: KnockoutObservable<any>;
+            inputPeriod: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             // startDate for validate
@@ -92,8 +93,11 @@ module nts.uk.at.view.kdw001.c {
 
                 let today = new Date;
                 self.dateValue = ko.observable({});
-                self.dateValue().startDate = "2017/11/08";
-                self.dateValue().endDate = today;
+                self.dateValue().startDate = ko.observable("");
+                self.dateValue().endDate = ko.observable("");
+                self.inputPeriod = ko.observable({});
+                self.inputPeriod().startDate = ko.observable("");
+                self.inputPeriod().endDate = ko.observable("");
                 self.startDateValidate = ko.observable("");
 
 
@@ -102,11 +106,14 @@ module nts.uk.at.view.kdw001.c {
                 let closureID = '1';
                 service.findPeriodById(Number(closureID)).done((data) => {
                     self.startDateValidate = data.startDate;
-                    self.periodStartDate = data.startDate.toString();
-                    self.dateValue().startDate = data.startDate.toString();
-                    self.dateValue().endDate = data.endDate.toString();
+                    self.periodStartDate = data.startDate;
+                    self.dateValue().startDate = data.startDate;
+                    self.dateValue().endDate = data.endDate;
+                    self.inputPeriod().startDate(data.startDate);
+                    self.inputPeriod().endDate(data.endDate);
                     self.dateValue.valueHasMutated();
-//                    self.reloadCcg001();
+                    self.inputPeriod.valueHasMutated();
+                    self.reloadCcg001();
 //                    $('#ccgcomponent').focus();
 //                    $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
                 }).always(() => {
@@ -188,11 +195,14 @@ module nts.uk.at.view.kdw001.c {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
+                //self.dateValue().startDate = self.inputPeriod().startDate;
+                //self.dateValue().endDate = self.inputPeriod().endDate;
                 //                if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()){
                 //                    nts.uk.ui.dialog.alertError("Base Date or Closure or Period must be shown!" );
                 //                    return;
                 //                }
                 self.ccg001ComponentOption = {
+
                     /** Common properties */
                     systemType: 2, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
@@ -206,6 +216,9 @@ module nts.uk.at.view.kdw001.c {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(), // 基準日
+                    //periodStartDate: self.dateValue().startDate,
+                    //periodEndDate: self.dateValue().endDate,
+                    dateRangePickerValue: self.dateValue,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
@@ -265,8 +278,8 @@ module nts.uk.at.view.kdw001.c {
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
                                 return;
                             }
-                            let startDateS = self.dateValue().startDate.split("/");
-                            let endDateS = self.dateValue().endDate.split("/");
+                            let startDateS = self.dateValue().startDate.toString().split("/");
+                            let endDateS = self.dateValue().endDate.toString().split("/");
                             let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
                             let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
                             let startDate_unixtime = parseInt(startDate.getTime() / 1000);
@@ -313,7 +326,7 @@ module nts.uk.at.view.kdw001.c {
 
                             } else {
                                 let monthNow = data.month; // thieu thang hien tai cua  domain 締め
-                                let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                                let monthStartDate = Number(self.dateValue().startDate.toString().split("/")[1]);
                                 if (monthStartDate < monthNow) {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;

@@ -398,7 +398,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
 					 //アルゴリズム「ログイン社員の承認対象者の取得」を実行する	
 					//Imported（就業）「基準社員の承認対象者」を取得する request list 133
-					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getStartDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
 					
 					if(approvalRootOfEmloyee==null){
 						throw new BusinessException("Msg_916");
@@ -419,7 +419,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 					
 					EmployeeInformationQueryDtoImport params = new EmployeeInformationQueryDtoImport(employeeIds,
-							GeneralDate.today(), true, false, false, true, false, false);
+							screenDto.getSelectedActualTime().getEndDate(), true, false, false, true, false, false);
 					List<MonthlyPerformanceEmployeeDto> lstEmployee = employeeInformationAdapter.getEmployeeInfo(params)
 							.stream()
 							.map(item -> new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),
@@ -722,7 +722,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else if (param.getInitMenuMode() == 2) {
 				// *8 request list 133
 				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(
-						screenDto.getSelectedActualTime().getStartDate(),
+						screenDto.getSelectedActualTime().getEndDate(),
 						screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId,
 						Integer.valueOf(2));
 			}
