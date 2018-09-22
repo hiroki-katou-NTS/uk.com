@@ -205,6 +205,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         workTypeNotFound: any = [];
 
         isVisibleMIGrid: KnockoutObservable<boolean> = ko.observable(false);
+        isStartScreen: KnockoutObservable<boolean> = ko.observable(true);
         listAttendanceItemId: KnockoutObservableArray<any> = ko.observableArray([]);
         monthYear: KnockoutObservable<string> = ko.observable(null);
 
@@ -1383,6 +1384,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
 
             service.getNameMonthlyAttItem(arrItemId).done(data => {
+                if (!self.isStartScreen()) {
+                    // neu dang khoi dong man hinh thi k dc destroy
+                    $('#miGrid').igGrid("destroy");
+                    self.isStartScreen(false);
+                }
                 self.loadMIGrid(data);
                 dfd.resolve();
             }).fail(() => {
@@ -1723,13 +1729,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnExtraction_Click() {
             let self = this;
-            if (!self.hasEmployee) return;
+            if (!self.hasEmployee || nts.uk.ui.errors.hasError()) return;
             self.showTextStyle = false;
             self.clickFromExtract = true;
             self.clickCounter = new CLickCount();
             if (self.isVisibleMIGrid()) {
-                //reload MiGrid
-                $('#miGrid').igGrid("destroy");
+                //set = false de co the jump den ham subscribe
                 self.isVisibleMIGrid(false);
             }
             self.reloadScreen();
