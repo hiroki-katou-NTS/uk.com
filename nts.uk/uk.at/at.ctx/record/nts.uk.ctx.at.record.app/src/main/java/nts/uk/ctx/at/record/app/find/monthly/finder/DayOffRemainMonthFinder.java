@@ -30,7 +30,10 @@ public class DayOffRemainMonthFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public MonthlyDayoffRemainDataDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return null;
+		return find(Arrays.asList(employeeId), yearMonth).stream().map(c -> (MonthlyDayoffRemainDataDto) c)
+				.filter(c -> c.getClosureID() == closureId.value && c.getClosureDate().getLastDayOfMonth().equals(closureDate.getLastDayOfMonth())
+					&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay().v())
+				.findFirst().orElse(null);
 	}
 	
 	@Override

@@ -1125,7 +1125,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					List<Object[]> listItem = e.getValue();
 					return listItem.stream()
 							.map(x -> new ItemBasicInfo(String.valueOf(x[0]), String.valueOf(x[2]),
-									String.valueOf(x[3]), Integer.parseInt(String.valueOf(x[4])), Integer.parseInt(String.valueOf(x[5])))
+									String.valueOf(x[3]), Integer.parseInt(String.valueOf(x[4])), Integer.parseInt(String.valueOf(x[5]))))
 							.collect(Collectors.toList());
 				}));
 
