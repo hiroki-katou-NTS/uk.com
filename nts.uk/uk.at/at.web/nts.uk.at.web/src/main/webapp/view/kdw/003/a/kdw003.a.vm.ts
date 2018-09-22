@@ -641,6 +641,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dislayNumberHeaderText();
             console.log("thoi gian load 0: " + (performance.now() - startTime));
             //set SPR
+            if (data.showErrorDialog) {
+                self.showErrorDialog();
+            }
+            //alert("time load ALL: "+ (performance.now() - startTime));
+        }
+
+        loadRemainNumberTable() {
+            let self = this;
+            service.getRemainNum(self.selectedEmployee()).done((data: any) => {
+                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
+                self.referenceVacation(
+                    new ReferenceVacation(
+                        data.annualLeave == null ? false : data.annualLeave.manageYearOff,
+                        data.reserveLeave == null ? false : data.reserveLeave.manageRemainNumber,
+                        data.substitutionLeave == null ? false : data.substitutionLeave.manageAtr,
+                        data.compensatoryLeave == null ? false : data.compensatoryLeave.manageCompenLeave,
+                        data.com60HVacation == null ? false : data.com60HVacation.manageAtr,
+                        self.showButton()));
+            });
+        }
+
+        setSprFromItem(data: any){
+            let self = this;
             if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
                 if (data.showQuestionSPR == SPRCheck.SHOW_CONFIRM) {
                     let sprStamp = { employeeId: "", date: "", change31: false, change34: false };
@@ -705,27 +728,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 //update
             }
-            if (data.showErrorDialog) {
-                self.showErrorDialog();
-            }
-            //alert("time load ALL: "+ (performance.now() - startTime));
         }
-
-        loadRemainNumberTable() {
-            let self = this;
-            service.getRemainNum(self.selectedEmployee()).done((data: any) => {
-                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
-                self.referenceVacation(
-                    new ReferenceVacation(
-                        data.annualLeave == null ? false : data.annualLeave.manageYearOff,
-                        data.reserveLeave == null ? false : data.reserveLeave.manageRemainNumber,
-                        data.substitutionLeave == null ? false : data.substitutionLeave.manageAtr,
-                        data.compensatoryLeave == null ? false : data.compensatoryLeave.manageCompenLeave,
-                        data.com60HVacation == null ? false : data.com60HVacation.manageAtr,
-                        self.showButton()));
-            });
-        }
-
+        
         updateCellSpr(rowId: any, item: any, value: any) {
             let self = this;
             let dfd = $.Deferred();
