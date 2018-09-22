@@ -2925,7 +2925,8 @@ module nts.custombinding {
                                                     $.when.apply($, dfds).then(function() {
                                                         let args = _.flatten(arguments),
                                                             items = _(args)
-                                                                .filter(x => !!x)
+                                                                .filter(x => !!x && x.itemTypeState.itemType == ITEM_TYPE.SINGLE)
+                                                                .uniqBy((x: IItemDefinition) => x.id)
                                                                 .map((x: IItemDefinition) => {
                                                                     if (ids.indexOf(x.id) > -1) {
                                                                         x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;
