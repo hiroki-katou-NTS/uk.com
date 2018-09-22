@@ -10,7 +10,6 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
     export class ScreenModel {
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
         isOnStartUp: boolean = true;
-        // History Tree Grid C1_1 -> C1_12 
         socialInsuranceOfficeList: KnockoutObservableArray<model.SocialInsuranceOffice> = ko.observableArray([]);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
         contributionRateTreeList: KnockoutObservableArray<model.TreeGridNode> = ko.observableArray([]);
@@ -21,14 +20,11 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
 
         // Contribution contribution item
         selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '',displayStartJM: '' });
-        //bonusHealthInsuranceRate: KnockoutObservable<model.BonusHealthInsuranceRate> = ko.observable(null);
         contributionRate: KnockoutObservable<model.ContributionRate> = ko.observable(null);
         constructor() {
             let self = this;
-
             self.watchDataChanged();
             self.initBlankData();
-
         }
 
         initBlankData() {
@@ -47,14 +43,9 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             // Register data
             let command = {
                 officeCode: self.selectedOffice.socialInsuranceCode,
-                //bonusHealthInsuranceRate: ko.toJS(self.bonusHealthInsuranceRate),
                 contributionRate: ko.toJS(self.contributionRate),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
-            // Update individualExcemtionRate and employeeExemtionRate to null if not join fund
-            // Update 個人免除率, 事業主免除率
-
-
 
             // Update historyId for case clone previous data           
             command.contributionRate.historyId = command.yearMonthHistoryItem.historyId;
@@ -115,7 +106,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                     self.convertToTreeGridList();
                     if (self.isOnStartUp) {
                         self.isOnStartUp = false;
-                        let firstOffice = data[0].contributionRateHistory
+                        let firstOffice = data[0].contributionRateHistory;
                         if (firstOffice.history.length > 0) self.selectedHealthInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
                         else self.selectedHealthInsurance(firstOffice.socialInsuranceCode);
                     } else self.changeBySelectedValue();
@@ -133,6 +124,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         watchDataChanged() {
             let self = this;
             self.selectedHealthInsurance.subscribe(function(selectedValue: any) {
+                nts.uk.ui.errors.clearAll();
                 if (selectedValue) {
                     self.showByHistory();
                     if (selectedValue.length >= 36) {
@@ -157,6 +149,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
 
         changeBySelectedValue() {
             let self = this;
+            //nts.uk.ui.errors.clearAll();
             if (self.selectedHealthInsurance()) {
                 let selectedInsuranceCode = self.selectedHealthInsurance().split('___')[0],
                     selectedHistoryId = self.selectedHealthInsurance().split('___')[1],
@@ -193,6 +186,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                 } else {
                     self.isUpdateMode(true);
                 }
+                if (!self.isUpdateMode()) $('#I2_7').focus();
                 block.clear();
             }).fail(function(err) {
                 block.clear();
@@ -228,35 +222,38 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         createNewHistory() {
             let self = this;
             let selectedOffice = self.selectedOffice;
+            let history = selectedOffice.contributionRateHistory.history;
             setShared("QMM008_G_PARAMS", { selectedOffice: selectedOffice, history: selectedOffice.contributionRateHistory.history });
             modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
                 let params = getShared("QMM008_G_RES_PARAMS");
                 if (params) {
-                    let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
+                   let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     let historyId = nts.uk.util.randomId();
+                    // update previous history
+                    if (history.length > 0) {
+                        let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
+                        history[0].endMonth = beforeLastestMonth.format('YYYYMM');
+                    }
+                    // add new history
+                    history.unshift({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
                     socialInsuranceOfficeList.forEach(office => {
                         if (office.socialInsuranceCode == selectedOffice.socialInsuranceCode) {
-                            let history = office.contributionRateHistory.history;
-                            if (history.length > 0) {
-                                let beforeLastestMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
-                                history[history.length - 1].endMonth = beforeLastestMonth.format('YYYYMM');
-                            }
-                            history.push({ historyId: historyId, startMonth: params.startMonth, endMonth: '999912' });
                             office.contributionRateHistory.history = history;
                             office = new model.SocialInsuranceOffice(office);
                         }
                     });
+                    // update office and tree grid
                     self.socialInsuranceOfficeList(socialInsuranceOfficeList);
                     self.convertToTreeGridList();
                     self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + historyId);
-                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_BEGINNING) {
-
+                    if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
+                        self.showContributionRateByHistoryId(history[1].historyId);
                     } else {
-
+                        self.initBlankData();    
                     }
                     self.isUpdateMode(false);
                 }
-                $("#B2_7").focus();
+                $("#I2_7").focus();
             });
         }
 
@@ -264,9 +261,10 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
+            let history = selectedOffice.contributionRateHistory.history;
             setShared("QMM008_H_PARAMS", { screen: "I",selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.contributionRateHistory.history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
-                $("#B1_5").focus();
+                $("#I1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
                 if (params) {
                     // update office and tree grid

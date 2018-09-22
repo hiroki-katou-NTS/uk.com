@@ -102,7 +102,8 @@ public class ContributionService {
 					new YearMonthPeriod(lastestHistory.start(), new YearMonth(new Integer(999912))));
 		}
 		contributionRateHistoryRepository.remove(contributionRateHis);
-
+		contributionRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+		contributionRateRepository.deleteContributionByGradeByHistoryId(Arrays.asList(yearMonth.identifier()));
 	}
 
 	// 月額拠出金計算処理
