@@ -278,8 +278,8 @@ module nts.uk.at.view.kdw001.c {
                                 nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
                                 return;
                             }
-                            let startDateS = self.dateValue().startDate().split("/");
-                            let endDateS = self.dateValue().endDate().split("/");
+                            let startDateS = self.dateValue().startDate.toString().split("/");
+                            let endDateS = self.dateValue().endDate.toString().split("/");
                             let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
                             let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
                             let startDate_unixtime = parseInt(startDate.getTime() / 1000);
@@ -326,7 +326,7 @@ module nts.uk.at.view.kdw001.c {
 
                             } else {
                                 let monthNow = data.month; // thieu thang hien tai cua  domain 締め
-                                let monthStartDate = Number(self.dateValue().startDate().split("/")[1]);
+                                let monthStartDate = Number(self.dateValue().startDate.toString().split("/")[1]);
                                 if (monthStartDate < monthNow) {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
@@ -342,8 +342,8 @@ module nts.uk.at.view.kdw001.c {
                                 __viewContext["viewmodel"].params.setParamsScreenC({
                                     closureID: self.closureId(),
                                     lstEmployeeID: listEmpSelectedId,
-                                    periodStartDate: self.dateValue().startDate(),
-                                    periodEndDate: self.dateValue().endDate()
+                                    periodStartDate: self.dateValue().startDate,
+                                    periodEndDate: self.dateValue().endDate
                                 });
                                 $("#wizard").ntsWizard("next").done(function() {
                                     $('#checkBox1').focus();
