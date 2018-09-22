@@ -87,5 +87,7 @@ public class DPText {
 			606, 607, 608, 609, 610, 611, 612, 613, 614, 615);
 	
 	public static final List<Integer> ITEM_REQUIRED = Arrays.asList(623, 624, 625, 626);
+	
+	public static final List<Integer> ITEM_COMBOBOX_CALC = Arrays.asList(628, 630, 631, 632);
 
 }
