@@ -77,7 +77,10 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 						command.getRefDate(),
 						workplaceIdList);
 		
-		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()));
+		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()),
+				command.getMailPrincipal(),
+				command.getMailAdministrator()
+				);
 		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
 										/*command.getCreationPeriod() == null ? null : */new CreationPeriod(command.getCreationPeriod()),

@@ -89,6 +89,8 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.appRouteUpdateAtrMon = update.appRouteUpdateAtrMon;
 		old.alarmAtr = update.alarmAtr;
 		old.alarmCode = update.alarmCode;
+		old.mailPrincipal = update.mailPrincipal;
+		old.mailAdministrator = update.mailAdministrator;
 		return old;
 	}
 }

@@ -9,4 +9,12 @@ public class ExecutionLogErrorDetail {
 	
 	/** 対象社員ID */
 	private String targerEmployee;
+
+	public ExecutionLogErrorDetail(String errorMessage, String targerEmployee) {
+		super();
+		this.errorMessage = errorMessage;
+		this.targerEmployee = targerEmployee;
+	}
+	
+	
 }

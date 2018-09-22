@@ -54,6 +54,7 @@ public class ProcessExecution extends AggregateRoot {
 			   !execSetting.getDailyPerf().isDailyPerfCls() && //B8_1
 			   !execSetting.isReflectResultCls() && //B9_1
 			   !execSetting.isMonthlyAggCls()  && //B10_1
+			   !execSetting.getAlarmExtraction().isAlarmAtr() && //alarm 
 			   execSetting.getAppRouteUpdateDaily().getAppRouteUpdateAtr() == NotUseAtr.NOT_USE && //B12_1
 			   execSetting.getAppRouteUpdateMonthly() == NotUseAtr.NOT_USE) { //B12_3 
 				
