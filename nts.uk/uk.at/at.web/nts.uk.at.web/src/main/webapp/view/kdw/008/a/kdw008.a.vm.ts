@@ -255,10 +255,10 @@ module nts.uk.at.view.kdw008.a {
                         }
                         self.isRemove(true);
                         nts.uk.ui.errors.clearAll();
-                        self.initSelectedSheetNoHasMutated();
+//                        self.initSelectedSheetNoHasMutated();
                         // self.getDetail(self.currentDailyFormatCode(), 1);
                     } else {
-                        self.initSelectedSheetNoHasMutated();
+//                        self.initSelectedSheetNoHasMutated();
                         self.isRemove(true);
                         nts.uk.ui.errors.clearAll();
                         //                            self.getDetail(self.currentDailyFormatCode(), 1);
@@ -412,6 +412,7 @@ module nts.uk.at.view.kdw008.a {
                         new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                                self.reloadData(self.currentDailyFormatCode());
+                               self.initSelectedSheetNoHasMutated();
                             });
                         }).always(function() {
                             nts.uk.ui.block.clear();
@@ -554,6 +555,7 @@ module nts.uk.at.view.kdw008.a {
                             new service.Service().removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                     self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);    
+                                    self.initSelectedSheetNoHasMutated();
                                 });
                             }).fail(function(error) {
                             });
@@ -767,7 +769,7 @@ module nts.uk.at.view.kdw008.a {
                         self.currentDailyFormatCode(dailyPerformanceFormatCode);
                         //                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         //                        self.selectedCode(dailyPerformanceFormatCode);
-                        self.selectedSheetNo(1);
+//                        self.selectedSheetNo(1);
                         self.getDetail(dailyPerformanceFormatCode);
                         if (isRemove && isRemove == true) {
                             self.selectedCode(self.getNewSelectRemove(oldSelectIndex));

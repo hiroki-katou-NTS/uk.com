@@ -208,11 +208,11 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 let dfd = $.Deferred();
 
-                let dfdGetBusinessType = self.getBusinessType();
                 let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
-                $.when(dfdGetBusinessType, dfdGetListMonthlyAttdItem).done(function(dfdGetBusinessTypeData, dfdGetListMonthlyAttdItemData) {
+                $.when(dfdGetListMonthlyAttdItem).done(function(dfdGetListMonthlyAttdItemData) {
                     // self.selectedSheetNo(1);
                     // self.selectedSheetNo.valueHasMutated();
+                    self.getBusinessType();
                     dfd.resolve();
                 });
                 dfd.resolve();
@@ -525,7 +525,7 @@ module nts.uk.at.view.kdw008.b {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             nts.uk.ui.block.clear();
 //                            self.getMonthRight(self.currentBusinessTypeCode(), 1);
-                            self.initSelectedSheetNoHasMutated();
+//                            self.initSelectedSheetNoHasMutated();
                         });
                         $("#currentName").focus();
                     }).always(function() {
