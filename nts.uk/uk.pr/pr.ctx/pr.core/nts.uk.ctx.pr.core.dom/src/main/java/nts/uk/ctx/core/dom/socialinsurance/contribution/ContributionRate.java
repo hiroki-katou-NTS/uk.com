@@ -7,6 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.InsuranceRate;
 import nts.uk.ctx.core.dom.socialinsurance.RoundCalculatedValue;
+import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.InsurancePremiumFractionClassification;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.WelfarePensionStandardMonthlyFee;
 
@@ -64,19 +65,29 @@ public class ContributionRate extends AggregateRoot {
 	public void algorithmWelfarePensionInsurancePremiumCal(
 			Optional<WelfarePensionStandardMonthlyFee> otpWelfarePensionStandardMonthlyFee,
 			ContributionRate contributionRate) {
+
+		this.contributionByGrade.clear();
 		if (otpWelfarePensionStandardMonthlyFee.isPresent()) {
 			val welfarePensionStandardMonthlyFee = otpWelfarePensionStandardMonthlyFee.get().getStandardMonthlyPrice();
 
 			welfarePensionStandardMonthlyFee.forEach(x -> {
 				// 子ども・子育て拠出金 = 取得した「厚生年金標準報酬月額表.等級毎標準報酬月額.標準月額」
+
+				val welfarePensionGrade = x.getWelfarePensionGrade();
 				val childCareContribution = x.getStandardMonthlyFee()
 						* contributionRate.getChildContributionRatio().v().doubleValue() / 1000;
 				BigDecimal childContribution = new BigDecimal(childCareContribution);
 				childContribution = RoundCalculatedValue.calculation(x.getStandardMonthlyFee(),
 						contributionRate.getChildContributionRatio().v(),
 						InsurancePremiumFractionClassification.ROUND_4_UP_5, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+				this.contributionByGrade.add(new ContributionByGrade(welfarePensionGrade, childContribution));
 			});
 		}
+
+	}
+
+	public void updateContributionByGrade(List<ContributionByGrade> contributionByGrade) {
+		this.contributionByGrade = contributionByGrade;
 	}
 
 }

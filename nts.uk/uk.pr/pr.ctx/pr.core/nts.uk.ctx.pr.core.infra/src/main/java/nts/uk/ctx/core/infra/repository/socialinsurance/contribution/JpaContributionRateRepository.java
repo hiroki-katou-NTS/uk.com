@@ -13,14 +13,15 @@ import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGrade;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRate;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
 
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {
 
 	private static final String GET_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "SELECT a from QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId =:historyId";
-	private static final String DELETE = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionHistPk.cid = :cid AND a.contributionHistPk.socialInsuranceOfficeCd = :officeCode";
+	private static final String DELETE = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionHistPk.cid = :cid AND a.contributionByGradePk.socialInsuranceOfficeCd = :officeCode";
+	private static final String DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID = "DELETE FROM QpbmtContributionByGrade a WHERE a.contributionByGradePk.historyId IN :historyId";
+
 	private ContributionRate toDomain(QpbmtContributionRate contributionRate,
 			List<QpbmtContributionByGrade> contributionByGrade) {
 		return new ContributionRate(contributionRate.historyId, contributionRate.childCareContributionRatio,
@@ -56,8 +57,24 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 	@Override
 	public void update(ContributionRate domain) {
 		this.commandProxy().update(QpbmtContributionRate.toEntity(domain));
-		this.deleteByHistoryIds(Arrays.asList(domain.getHistoryId()));
+		this.deleteContributionByGradeByHistoryId(Arrays.asList(domain.getHistoryId()));
 		this.commandProxy().insertAll(QpbmtContributionByGrade.toEntity(domain));
+	}
+
+	@Override
+	public void addContributionByGrade(ContributionRate domain) {
+		this.commandProxy().insertAll(QpbmtContributionByGrade.toEntity(domain));
+	}
+
+	@Override
+	public void updateContributionByGrade(ContributionRate domain) {
+
+	}
+
+	@Override
+	public void deleteContributionByGradeByHistoryId(List<String> historyIds) {
+		this.getEntityManager().createQuery(DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class)
+				.setParameter("historyId", historyIds).executeUpdate();
 	}
 
 }

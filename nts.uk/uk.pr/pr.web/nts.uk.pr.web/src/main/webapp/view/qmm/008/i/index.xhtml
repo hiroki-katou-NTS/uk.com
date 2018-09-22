@@ -42,9 +42,9 @@
 						<!-- A2_1 -> A1_5 -->
 						<div class="flex">
 							<button id="A1_1" class="proceed" tabindex="1"
-								data-bind="click: register, enable: isSelectedHistory &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
+								data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
 							<button id="A1_2" tabindex="1"
-								data-bind="click: printPDF, enable: true">#{i18n.getText('QMM008_2')}</button>
+								data-bind="click: printPDF,  enable: isSelectedHistory()">#{i18n.getText('QMM008_2')}</button>
 							<button id="A1_3" tabindex="1"
 								data-bind="click: registerBusinessEstablishment, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
 							<button id="A1_4" tabindex="1"
@@ -90,7 +90,7 @@
 									maxDeepLeaf: 1,
 									maxChildInNode: 12,
 									multiple: false,
-									enable: true}">
+									enable: $vm.isSelectedHistory}">
 								</div>
 							</div>
 						</div>
@@ -119,9 +119,9 @@
 									options: autoCalculationClsItem,
 									optionsValue: 'value',
 									optionsText: 'name',
-									value: autoCalculationCls,
+									value: automaticCalculationCls,
 									required: true,
-									enable: true }"></div>
+									enable: $vm.isSelectedHistory }"></div>
 								</div>
 								<!-- I2_10 自動計算区分説明-->
 							<button style="display: inline-block"
@@ -150,7 +150,7 @@
  													value: childContributionRatio, 
  													constraint: 'InsuranceRate', 
  													required: true, 
- 													enable: true}" />
+ 													enable: $vm.isSelectedHistory}" />
  													<span  class="label" style="display: inline-block;">#{i18n.getText('QMM008_28')}</span >
 								</div>
 								<!-- I2_16 /1000 -->

@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
     import service = nts.uk.pr.view.qmm008.h.service;
     export class ScreenModel {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable('');
-        socialInsuranceName: KnockoutObservable<string> = ko.observable('');        
+        socialInsuranceName: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 let selectedOffice = params.selectedOffice;
                 self.selectedHistory = params.selectedHistory;
                 self.startMonth(self.selectedHistory.startMonth);
-                self.screen = params.screen; 
+                self.screen = params.screen;
                 let history = params.history;
                 if (history && history.length > 0) {
                     history.forEach((historyItem, index) => {
@@ -56,61 +56,81 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 self.deleteHistory();
             }
         }
-        
-        updateHistory (){
-            let self = this;    
+
+        updateHistory() {
+            let self = this;
             let newHistory = self.selectedHistory;
             newHistory.startMonth = self.startMonth();
-            let command = {officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: newHistory};
+            let command = { officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: newHistory };
             if (self.screen == "B") {
-                service.editHealthInsuranceHistory (command).done(function(){
-                    dialog.info({ messageId: "Msg_15" }).then(function(){
-                        setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
+                service.editHealthInsuranceHistory(command).done(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     })
-                }).fail(function(err){
+                }).fail(function(err) {
                     dialog.alertError(err.message);
                 });
-            } else if (self.screen == "C"){
-                service.editWelfareInsuranceHistory(command).done(function(){ 
+            } else if (self.screen == "C") {
+                service.editWelfareInsuranceHistory(command).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(function(err){
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
+            }
+
+            else if (self.screen == "I") {
+                service.editContributionHistory(command).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    });
+                }).fail(function(err) {
                     dialog.alertError(err.message);
                 });
             }
         }
-        
-        deleteHistory (){
-            let self = this;    
-            let command = {officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: self.selectedHistory};
+
+        deleteHistory() {
+            let self = this;
+            let command = { officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: self.selectedHistory };
             if (self.screen == "B") {
-                service.deleteHealthInsuranceHistory (command).done(function(){
+                service.deleteHealthInsuranceHistory(command).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     });
-                }).fail(function(err){
+                }).fail(function(err) {
                     dialog.alertError(err.message);
                 });
-            } else if (self.screen == "C"){
-                service.deleteWelfareInsuranceHistory (command).done(function(){
-                    dialog.info({ messageId: "Msg_15" }).then(function(){
-                        setShared('QMM008_H_RES_PARAMS', {modifyMethod: self.modifyMethod() });
+            } else if (self.screen == "C") {
+                service.deleteWelfareInsuranceHistory(command).done(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     })
-                }).fail(function(err){
+                }).fail(function(err) {
+                    dialog.alertError(err.message);
+                });
+            } else if (self.screen == "I") {
+                service.deleteContributionHistory(command).done(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                        nts.uk.ui.windows.close();
+                    })
+                }).fail(function(err) {
                     dialog.alertError(err.message);
                 });
             }
         }
-        
+
         cancel() {
             nts.uk.ui.windows.close();
-        } 
+        }
     }
-        
+
 }
 

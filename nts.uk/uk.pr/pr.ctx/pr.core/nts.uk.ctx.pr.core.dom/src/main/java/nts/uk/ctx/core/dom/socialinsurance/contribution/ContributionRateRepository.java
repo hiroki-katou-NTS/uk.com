@@ -3,8 +3,6 @@ package nts.uk.ctx.core.dom.socialinsurance.contribution;
 import java.util.List;
 import java.util.Optional;
 
-
-
 public interface ContributionRateRepository {
 	/**
 	 * Get 拠出金率
@@ -20,4 +18,10 @@ public interface ContributionRateRepository {
 	void add(ContributionRate domain);
 
 	void update(ContributionRate domain);
+
+	void addContributionByGrade(ContributionRate domain);
+
+	void updateContributionByGrade(ContributionRate domain);
+
+	void deleteContributionByGradeByHistoryId(List<String> historyIds);
 }

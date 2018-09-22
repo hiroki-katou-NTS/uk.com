@@ -263,7 +263,7 @@ module nts.uk.pr.view.qmm008.share.model {
     //拠出金率
     export interface IContributionRate {
         childContributionRatio: number;
-        autoCalculationCls: number;
+        automaticCalculationCls: number;
         historyId: string;
         contributionByGrade: Array<IContributionByGrade>;
     }
@@ -271,7 +271,7 @@ module nts.uk.pr.view.qmm008.share.model {
      //拠出金率
     export class ContributionRate {
         childContributionRatio: KnockoutObservable<number> = ko.observable(null);
-        autoCalculationCls: KnockoutObservable<number> = ko.observable(null);
+        automaticCalculationCls: KnockoutObservable<number> = ko.observable(null);
         historyId: KnockoutObservable<string> = ko.observable(null);
         contributionByGrade: KnockoutObservableArray<ContributionByGrade> = ko.observableArray(null);
 
@@ -282,7 +282,7 @@ module nts.uk.pr.view.qmm008.share.model {
         ]);
         
         constructor(params: IContributionRate) {
-            this.autoCalculationCls(params ? params.autoCalculationCls : 1);
+            this.automaticCalculationCls(params ? params.automaticCalculationCls : 1);
             this.historyId(params ? params.historyId : null);
             this.childContributionRatio(params ? params.childContributionRatio : null);
             this.contributionByGrade(params ? params.contributionByGrade.map(function(item) {

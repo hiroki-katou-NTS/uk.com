@@ -16,4 +16,6 @@ public interface ContributionRateHistoryRepository {
 	void add(ContributionRateHistory domain);
 
 	void update(ContributionRateHistory domain);
+	
+	void remove (ContributionRateHistory domain);
 }

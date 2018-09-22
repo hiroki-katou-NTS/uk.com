@@ -101,4 +101,14 @@ public class JpaContributionRateHistoryRepository extends JpaRepository implemen
 		});
 	}
 
+	@Override
+	public void remove(ContributionRateHistory domain) {
+		this.deleteByCidAndCode(AppContexts.user().companyId(), domain.getSocialInsuranceCode().v());
+		domain.getHistory().forEach(item -> {
+			this.commandProxy().insert(this.toEntity(domain.getSocialInsuranceCode().v(), item.identifier(),
+					item.start().v(), item.end().v()));
+		});
+
+	}
+
 }
