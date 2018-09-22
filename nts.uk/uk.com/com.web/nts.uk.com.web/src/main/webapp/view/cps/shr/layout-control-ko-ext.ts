@@ -2555,8 +2555,8 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
-                    
-                    if (!_.has(x, '$show')) {
+
+                    if (!_.has(x, '$show') || !ko.isObservable(x.$show)) {
                         x.$show = ko.observable(true);
                     }
 
