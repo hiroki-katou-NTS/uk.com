@@ -319,8 +319,8 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			statement.setInt(2, rootType.value);
 			statement.setDate(3, Date.valueOf(period.end().localDate()));
 			statement.setDate(4, Date.valueOf(period.start().localDate()));
-			for (int i = 1; i <= employeeIDLst.size(); i++) {
-				statement.setString(i + 4, employeeIDLst.get(i));
+			for (int i = 0; i < employeeIDLst.size(); i++) {
+				statement.setString(i + 5, employeeIDLst.get(i));
 			}
 			return toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootInstance(rs)));
 			
