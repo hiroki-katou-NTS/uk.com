@@ -387,6 +387,23 @@ public class MonthlyCalculation {
 			this.statutoryWorkingTime = new AttendanceTimeMonth(statMinutes);
 			this.settingsByFlex.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(statMinutes));
 			this.settingsByFlex.setPrescribedWorkingTimeMonth(new AttendanceTimeMonth(predMinutes));
+			
+			// 翌月の勤務を確認する
+			if (this.isRetireMonth) break;
+			Optional<WorkingConditionItem> nextWorkingConditionItem = repositories.getWorkingConditionItem()
+					.getBySidAndStandardDate(employeeId, procPeriod.end().addDays(1));
+			if (!nextWorkingConditionItem.isPresent()) break;
+			
+			// 翌月もフレックス勤務の時、翌月繰越可能時間を算出する
+			if (nextWorkingConditionItem.get().getLaborSystem() != WorkingSystem.FLEX_TIME_WORK) break;
+			YearMonth nextYearMonth = yearMonth.addMonths(1);
+			val nextFlexMonAndWeekStatTime = repositories.getMonthlyStatutoryWorkingHours().getFlexMonAndWeekStatutoryTime(
+					companyId, this.employmentCd, employeeId, procPeriod.end().addDays(1), nextYearMonth);
+			int nextStatMinutes = nextFlexMonAndWeekStatTime.getStatutorySetting().v();
+			int nextPredMinutes = nextFlexMonAndWeekStatTime.getSpecifiedSetting().v();
+			int canNextCarryforwardMinute = nextStatMinutes - nextPredMinutes;
+			if (canNextCarryforwardMinute < 0) canNextCarryforwardMinute = 0;
+			this.settingsByFlex.setCanNextCarryforwardTimeMonth(new AttendanceTimeMonth(canNextCarryforwardMinute));
 			break;
 		default:
 			this.statutoryWorkingTime = new AttendanceTimeMonth(0);
@@ -1048,6 +1065,24 @@ public class MonthlyCalculation {
 			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
+		}
+		
+		// フレックス法定内時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
+			val flexLegalMinutes = this.flexTime.getFlexTime().getLegalFlexTime().v();
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+		}
+		
+		// フレックス法定外時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+			val flexIllegalMinutes = this.flexTime.getFlexTime().getIllegalFlexTime().v();
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 		}
 		
 		// フレックス超過時間　（フレックス時間のプラス分）

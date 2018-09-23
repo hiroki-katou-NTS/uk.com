@@ -1102,6 +1102,21 @@ public class AggregateMonthlyRecordServiceProc {
 					new AttendanceDaysMonthToTal(aggrResult.getCarryForwardDays()),
 					new RemainDataDaysMonth(aggrResult.getUnDigestedDays()));
 			this.aggregateResult.getAbsenceLeaveRemainList().add(absLeaRemNum);
+			
+			// 振休エラー処理
+			if (aggrResult.getPError() != null){
+				if (aggrResult.getPError().size() > 0){
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							ErrorType.REMAIN_LEFT,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							null));
+				}
+			}
 		}
 	}
 	
@@ -1163,6 +1178,21 @@ public class AggregateMonthlyRecordServiceProc {
 							new RemainDataDaysMonth(aggrResult.getUnDigestedDays()),
 							Optional.of(new RemainDataTimesMonth(aggrResult.getUnDigestedTimes()))));
 			this.aggregateResult.getMonthlyDayoffRemainList().add(monDayRemNum);
+			
+			// 代休エラー処理
+			if (aggrResult.getLstError() != null){
+				if (aggrResult.getLstError().size() > 0){
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							ErrorType.REMAINING_ALTERNATION_NUMBER,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							null));
+				}
+			}
 		}
 	}
 	
@@ -1183,6 +1213,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		// 「特別休暇」を取得する
+		boolean isError = false;
 		val specialHolidays = this.specialHolidayRepo.findByCompanyId(this.companyId);
 		for (val specialHoliday : specialHolidays){
 			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
@@ -1209,6 +1240,24 @@ public class AggregateMonthlyRecordServiceProc {
 					inPeriod,
 					remainNoMinus);
 			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
+			
+			// 特別休暇エラーがあるか
+			if (inPeriod.getLstError() != null){
+				if (inPeriod.getLstError().size() > 0) isError = true;
+			}
+		}
+		
+		if (isError){
+			// 特別休暇エラー処理
+			this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+					ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
+					this.yearMonth,
+					this.employeeId,
+					this.closureId,
+					this.closureDate,
+					null,
+					null,
+					null));
 		}
 	}
 	
