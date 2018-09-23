@@ -111,6 +111,7 @@ public class LeaveEarlyTimeOfDaily {
 																							 			 leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()));
 			
 				forRecordTimeSheet.setDeductionTimeSheet(leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+				forRecordTimeSheet.setRecordedTimeSheet(leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 			}
 			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(leaveEarlyTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
 																									  leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd(),
@@ -119,6 +120,7 @@ public class LeaveEarlyTimeOfDaily {
 																									leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd()));
 		
 			forDeductTimeSheet.setDeductionTimeSheet(leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+			forDeductTimeSheet.setRecordedTimeSheet(leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
 		}
 		
 		LeaveEarlyTimeSheet leaveEarlyTimeSheet = new LeaveEarlyTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v(), Optional.empty());

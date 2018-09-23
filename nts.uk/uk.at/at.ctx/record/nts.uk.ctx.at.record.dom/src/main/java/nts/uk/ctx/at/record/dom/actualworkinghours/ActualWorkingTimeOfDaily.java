@@ -178,6 +178,15 @@ public class ActualWorkingTimeOfDaily {
 		
 		/* 割増時間の計算 */
 		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
+		/* 乖離時間の計算 */
+//		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
+//													   forCalcDivergenceDto,
+//													   divergenceTimeList,
+//													   recordClass.getIntegrationOfDaily().getCalAttr(),
+//													   recordClass.getFixRestTimeSetting(),
+//													   calcResultOotsuka
+//													   );
+		DivergenceTimeOfDaily divergenceTimeOfDaily = new DivergenceTimeOfDaily(Collections.emptyList());
 		
 		/*返値*/
 		return new ActualWorkingTimeOfDaily(
