@@ -204,12 +204,21 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		if (!affComHist.isPresent()) {
 			affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
 		}
+		
+		// xử lý lấy ra ngày nghỉ hưu và ngày vào công ty 
+		//nếu trên màn hình trường dateperiod của một số category lịch sử không được bỏ vào layout 
 		GeneralDate inputCompanyDate = null;
+		GeneralDate retiredCompanyDate = null;
 		if(affComHist.isPresent()) {
 			Optional<ItemValue>  jobIntryDate = affComHist.get().getItems().stream().filter( c ->  c.itemCode().equals("IS00020") && c.value() != null).findFirst();
+			Optional<ItemValue>  retiredDate = affComHist.get().getItems().stream().filter( c ->  c.itemCode().equals("IS00021") && c.value() != null).findFirst();
 			if(jobIntryDate.isPresent()) {
 				inputCompanyDate = jobIntryDate.get().value();
 			}
+			if(retiredDate.isPresent()) {
+				retiredCompanyDate = retiredDate.get().value();
+			}
+					
 		}
 
 		if(CS00070Opt.isPresent()) {
@@ -218,23 +227,78 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		
 		if (CS00020Opt.isPresent()) {
 			ItemsByCategory CS00020 = CS00020Opt.get();
-			List<ItemValue> itemsOfCS00070 = CS00020.getItems().stream().filter(i -> i.definitionId().contains("CS00070")).collect(Collectors.toList());
-			
-			Optional<ItemValue> CS00070_IS00781 = CS00020.getItems().stream().filter(i -> i.itemCode().equals("IS00119")).findFirst();
-			if(CS00070_IS00781.isPresent()) {
+			List<ItemValue> itemsOfCS00070 = CS00020.getItems().stream().filter(i -> i.definitionId() != null && i.definitionId().contains("CS00070")).collect(Collectors.toList());
+			Optional<ItemValue> IS00119 = CS00020.getItems().stream().filter(i -> i.itemCode().equals("IS00119")).findFirst();
+			// lấy item domain khi trên layout không có dateperiod
 			Optional<PersonInfoItemDefinition> itempStartD_CS70 = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00070", "IS00781", companyId, AppContexts.user().contractCode());
-			CS00070_IS00781.get().setItemId(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getPerInfoItemDefId() : "");
-			CS00070_IS00781.get().setItemCode(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getItemCode().v() : "");
-			CS00070_IS00781.get().setItemName(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getItemName().v() : "");
-			itemsOfCS00070.add(CS00070_IS00781.get());}
+			Optional<PersonInfoItemDefinition> itemStartDate_CS20 = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00020", "IS00119", companyId, AppContexts.user().contractCode());
+			// trường hợp layout có dateperiod
+			// xử lý cho startDate
+			ItemValue item = new ItemValue();
+			if(IS00119.isPresent()) {
+				item.setItemId(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getPerInfoItemDefId() : "");
+				item.setItemCode(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getItemCode().v() : "");
+				item.setItemName(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getItemName().v() : "");
+				item.setDataType(IS00119.get().type());
+				item.setLogType(IS00119.get().logType());
+				item.setValueAfter(IS00119.get().valueAfter());
+				itemsOfCS00070.add(item);
+			}else {
+			// trường hợp layout không có dateperiod
+					// thêm startDate cho CS00070
+					item.setItemId(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getPerInfoItemDefId() : "");
+					item.setItemCode(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getItemCode().v() : "");
+					item.setItemName(itempStartD_CS70.isPresent() ? itempStartD_CS70.get().getItemName().v() : "");
+					if(inputCompanyDate != null) {
+						item.setValueAfter(inputCompanyDate.toString());
+					}
+					itemsOfCS00070.add(item);
+					// thêm startDate cho CS00020
+					item = new ItemValue();
+					item.setItemId(itemStartDate_CS20.isPresent()? itemStartDate_CS20.get().getPerInfoItemDefId(): "");
+					item.setItemCode(itemStartDate_CS20.isPresent()? itemStartDate_CS20.get().getItemCode().v():"");
+					item.setItemName(itemStartDate_CS20.get().getItemName().v());
+					if(inputCompanyDate != null) {
+						item.setValueAfter(inputCompanyDate.toString());
+					}
+					CS00020.getItems().add(item);
+			} 
 			
-			Optional<ItemValue> CS00070_IS00782 = CS00020.getItems().stream().filter(i -> i.itemCode().equals("IS00120")).findFirst();
-			if(CS00070_IS00782.isPresent()) {
+			// xử lý tương tự cho endDate, nếu ở trên layout không có dateperiod
+			Optional<ItemValue> IS00120 = CS00020.getItems().stream().filter(i -> i.itemCode().equals("IS00120")).findFirst();
+			Optional<PersonInfoItemDefinition> itemEndDate_CS20 = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00020", "IS00120", companyId, AppContexts.user().contractCode());
 			Optional<PersonInfoItemDefinition> itempEndD_CS70 = perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00070", "IS00782", companyId, AppContexts.user().contractCode());
-			CS00070_IS00782.get().setItemId(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getPerInfoItemDefId() : "");
-			CS00070_IS00782.get().setItemCode(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getItemCode().v() : "");
-			CS00070_IS00782.get().setItemName(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getItemName().v() : "");
-			itemsOfCS00070.add(CS00070_IS00782.get());}
+			
+			if(IS00120.isPresent()) {
+				item = new ItemValue();
+				item.setItemId(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getPerInfoItemDefId() : "");
+				item.setItemCode(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getItemCode().v() : "");
+				item.setItemName(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getItemName().v() : "");
+				item.setDataType(IS00120.get().type());
+				item.setLogType(IS00120.get().logType());
+				item.setValueAfter(IS00120.get().valueAfter());
+				itemsOfCS00070.add(item);
+			}else {
+				// thêm endDate cho CS00070
+				item = new ItemValue();
+				item.setItemId(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getPerInfoItemDefId() : "");
+				item.setItemCode(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getItemCode().v() : "");
+				item.setItemName(itempEndD_CS70.isPresent() ? itempEndD_CS70.get().getItemName().v() : "");
+				if(retiredCompanyDate != null) {
+					item.setValueAfter(retiredCompanyDate.toString());
+				}
+				itemsOfCS00070.add(item);
+				
+				// thêm endDate cho CS00020
+				item = new ItemValue();
+				item.setItemId(itemEndDate_CS20.isPresent() ? itemEndDate_CS20.get().getPerInfoItemDefId() : "");
+				item.setItemCode(itemEndDate_CS20.isPresent() ? itemEndDate_CS20.get().getItemCode().v() : "");
+				item.setItemName(itemEndDate_CS20.isPresent() ? itemEndDate_CS20.get().getItemName().v() : "");
+				if(retiredCompanyDate != null) {
+					item.setValueAfter(retiredCompanyDate.toString());
+				}
+				CS00020.getItems().add(item);
+			}
 			
 			if(!itemsOfCS00070.isEmpty()) {
 			Optional<PersonInfoCategory> ctgCS00070Opt = cateRepo.getPerInfoCategoryByCtgCD("CS00070" , companyId);
@@ -684,23 +748,23 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				}
 				if(dayNumberOfGrantLst.contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						dayNumberOfGrant = new BigDecimal(c.valueAfter());
+						dayNumberOfGrant = c.valueAfter().isEmpty()? null:  new BigDecimal(c.valueAfter());
 					}
 				}
 				if(dayNumberOfUseLst.contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						dayNumberOfUse = new BigDecimal(c.valueAfter());
+						dayNumberOfUse = c.valueAfter().isEmpty()? null:  new BigDecimal(c.valueAfter());
 					}
 				}
 				if(numberOverdaysLst.contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						numberOverdays = new BigDecimal(c.valueAfter());
+						numberOverdays = c.valueAfter().isEmpty()? null: new BigDecimal(c.valueAfter());
 					}
 				}
 				
 				if(dayNumberOfRemainLst.contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						dayNumberOfRemain = new BigDecimal(c.valueAfter());
+						dayNumberOfRemain = c.valueAfter().isEmpty()? null: new BigDecimal(c.valueAfter());
 					}
 				}
 				
@@ -724,19 +788,19 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				
 				if(grantDaysList .contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						grantDays = new BigDecimal(c.valueAfter());
+						grantDays = c.valueAfter().isEmpty()? null: new BigDecimal(c.valueAfter());
 					}
 				}
 				
 				if(usedDaysList  .contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						usedDays = new BigDecimal(c.valueAfter());
+						usedDays = c.valueAfter().isEmpty()? null: new BigDecimal(c.valueAfter());
 					}
 				}
 				
 				if(remainDaysList  .contains(c.itemCode())) {
 					if(c.valueAfter() != null) {
-						remainDays = new BigDecimal(c.valueAfter());
+						remainDays = c.valueAfter().isEmpty()? null: new BigDecimal(c.valueAfter());
 					}
 				}
 			}
