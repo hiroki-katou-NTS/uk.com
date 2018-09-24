@@ -26,6 +26,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displayLateOrEarlyRetreat: KnockoutObservable<boolean>;
         /* A17 */
         displayYearlyHoliDay: KnockoutObservable<boolean>;
+        displayHaftDayOff: KnockoutObservable<boolean>;
+        displayHoursOfHoliday: KnockoutObservable<boolean>;
         /* A18 */
         displayYearRemainNo: KnockoutObservable<boolean>;
         // A19
@@ -65,6 +67,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.displayNightWorkHours = ko.observable(false);
             self.displayLateOrEarlyRetreat = ko.observable(false);
             self.displayYearlyHoliDay = ko.observable(false);
+            self.displayHaftDayOff = ko.observable(false);
+            self.displayHoursOfHoliday = ko.observable(false);
             self.displayYearRemainNo = ko.observable(false);
             self.displayPlannedYearHoliday = ko.observable(false);
             self.displayRemainAlternationNo = ko.observable(false); 
@@ -149,6 +153,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 }else if(item.displayItemType == widgetDisplayItem.YEARLY_HD){
                     /* A17 */
                     self.displayYearlyHoliDay(item.notUseAtr == 1 ? true: false);
+                }else if(item.displayItemType == widgetDisplayItem.HAFT_DAY_OFF){
+                    /* A17 */
+                    self.displayHaftDayOff(item.notUseAtr == 1 ? true: false);
+                }else if(item.displayItemType == widgetDisplayItem.HOURS_OF_HOLIDAY_UPPER_LIMIT){
+                    /* A17 */
+                    self.displayHoursOfHoliday(item.notUseAtr == 1 ? true: false);
                 }else if(item.displayItemType == widgetDisplayItem.RESERVED_YEARS_REMAIN_NO){
                     self.displayYearRemainNo(item.notUseAtr == 1 ? true: false);
                 }else if(item.displayItemType == widgetDisplayItem.PLANNED_YEAR_HOLIDAY){
@@ -282,11 +292,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 appListAtr: 0,
                 appType: -1,
                 unapprovalStatus: true,
-                approvalStatus: true,
-                denialStatus: true,
-                agentApprovalStatus: true,
-                remandStatus: true,
-                cancelStatus: true,
+                approvalStatus: false,
+                denialStatus: false,
+                agentApprovalStatus: false,
+                remandStatus: false,
+                cancelStatus: false,
                 appDisplayAtr: 0,
                 listEmployeeId: [],
                 empRefineCondition: ""
@@ -419,6 +429,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         workingDays: number;
         calculationMethod: number;
         useSimultaneousGrant: number;
+        showGrantDate: boolean;
     }
     export interface RemainingNumberDto{
         name: string;
@@ -477,6 +488,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         workingDays: number;
         calculationMethod: number;
         useSimultaneousGrant: number;
+        showGrantDate: boolean;
         constructor(dto: YearlyHolidayDto){
             this.nextTime = dto.nextTime == null ? '': dto.nextTime.substr(-8);
             this.grantedDaysNo = dto.grantedDaysNo;
@@ -491,6 +503,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             }
             this.calculationMethod = dto.calculationMethod;
             this.useSimultaneousGrant = dto.useSimultaneousGrant;
+            this.showGrantDate = dto.showGrantDate;
         }
     }
     export class RemainingNumber{
