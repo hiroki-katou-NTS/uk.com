@@ -125,7 +125,11 @@ module nts.uk.pr.view.qmm012.b {
                         self.statementItemDataSelected().statementItem().categoryAtr(categoryAtr);
                     }
                     
-                    $("#B3_2").focus();
+                    if(self.statementItemDataSelected().checkCreate()) {
+                        $("#B3_2").focus();
+                    } else {
+                        $("#B3_3").focus();
+                    }
                 });
             }
             
