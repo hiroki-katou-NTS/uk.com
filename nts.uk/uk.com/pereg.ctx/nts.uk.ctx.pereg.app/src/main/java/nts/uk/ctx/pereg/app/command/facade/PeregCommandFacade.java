@@ -466,8 +466,8 @@ public class PeregCommandFacade {
 							boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
 							if(historyLst.size() == 1) {
 								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-									item.setContentAfter(isContinuousHistory ? valueEndate: item.contentAfter());
+									item.setValueAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
+									item.setContentAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
 								}
 								
 							}else {									

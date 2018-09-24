@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
@@ -284,9 +285,17 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	
 	@Override
 	public List<AffJobTitleHistory> getByEmployeeListPeriod(List<String> employeeIds, DatePeriod period) {
-		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = this.queryProxy()
-				.query(GET_BY_EMPIDS_PERIOD, BsymtAffJobTitleHist.class).setParameter("lstSid", employeeIds)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+		
+		List<BsymtAffJobTitleHist> entities = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
+			List<BsymtAffJobTitleHist> subEntities = this.queryProxy()
+					.query(GET_BY_EMPIDS_PERIOD, BsymtAffJobTitleHist.class).setParameter("lstSid", subIds)
+					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+			
+			entities.addAll(subEntities);
+		});
+		
+		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = entities.stream()
 				.collect(Collectors.groupingBy(x -> x.sid));
 
 		String companyId = AppContexts.user().companyId();
