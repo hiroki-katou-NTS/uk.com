@@ -22,3 +22,7 @@
 .nts-fixed-header-wrapper, .nts-fixed-body-wrapper {
 	width: auto !important;
 }
+.td-widget {
+    color: #000;
+    background-color: #CFF1A5;
+}

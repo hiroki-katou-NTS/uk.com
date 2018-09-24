@@ -12,4 +12,5 @@ public class SalaryHealthDto {
 	List<CusHealthInsuDto> cusDataDtos;
 	SalaryHealthInsurancePremiumRateDto premiumRate;
 	
+	
 }

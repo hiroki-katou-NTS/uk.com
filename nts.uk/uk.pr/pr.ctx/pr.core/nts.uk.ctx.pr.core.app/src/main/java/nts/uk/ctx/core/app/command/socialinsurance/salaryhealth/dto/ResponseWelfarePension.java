@@ -11,5 +11,6 @@ public class ResponseWelfarePension {
 	
 	private SalaryEmployeesPensionInsuranceRateDto insuranceRate;
 	private List<CusWelfarePensionDto> cusWelfarePensions;
+	Boolean display;
 	
 }

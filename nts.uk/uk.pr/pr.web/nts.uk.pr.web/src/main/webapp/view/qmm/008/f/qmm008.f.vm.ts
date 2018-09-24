@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm008.f {
             displayStart: KnockoutObservable<string> = ko.observable(null);
             displayEnd : KnockoutObservable<string> = ko.observable(null);
             historyId : KnockoutObservable<string> = ko.observable(null);
+            display : KnockoutObservable<Boolean> = ko.observable(true);
             constructor() {
                 var self = this;
                 self.dataList = ko.observableArray([]);
@@ -28,6 +29,7 @@ module nts.uk.pr.view.qmm008.f {
                         self.dataList.push(response.cusWelfarePensions[i]);
                     } 
                     self.header(response.insuranceRate);
+                    console.log(response.display);
                 });
 
                 $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
