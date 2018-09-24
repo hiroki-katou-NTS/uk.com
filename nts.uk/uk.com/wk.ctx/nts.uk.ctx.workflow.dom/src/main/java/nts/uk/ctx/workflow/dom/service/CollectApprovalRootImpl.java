@@ -337,12 +337,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		
 		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
-			/*StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
+			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
 			if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
 					(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
 					(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
 				continue;
-			}*/
+			}
 			WorkplaceImport wkpIdOfEmp = wkApproverAdapter.findBySid(emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp.getWkpId())) {
 				// truyền tạm approvalAtr = 1
