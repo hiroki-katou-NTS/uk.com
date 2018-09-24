@@ -28,7 +28,7 @@ module cmm045.a.viewmodel {
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,2,3,4,5,6]);// check box
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1]);// check box
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
