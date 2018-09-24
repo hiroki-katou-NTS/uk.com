@@ -102,7 +102,8 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 						fromBreakdown.getTransferOverTime(),
 						fromBreakdown.getHolidayWorkTime(),
 						fromBreakdown.getTransferTime(),
-						fromBreakdown.getFlexExcessTime(),
+						fromBreakdown.getFlexLegalTime(),
+						fromBreakdown.getFlexIllegalTime(),
 						fromBreakdown.getWithinPrescribedPremiumTime(),
 						fromBreakdown.getWeeklyPremiumTime(),
 						fromBreakdown.getMonthlyPremiumTime()));

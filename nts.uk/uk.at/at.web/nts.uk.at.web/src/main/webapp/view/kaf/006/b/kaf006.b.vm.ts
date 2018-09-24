@@ -124,6 +124,7 @@ module nts.uk.at.view.kaf006.b{
         //ver21
         relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
         hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
+        dataMax: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -146,6 +147,9 @@ module nts.uk.at.view.kaf006.b{
                     if(data.maxDayObj != null){
                         self.maxDay(data.maxDayObj.maxDay);
                         self.dayOfRela(data.maxDayObj.dayOfRela);  
+                        self.dataMax(true);  
+                    }else{
+                        self.dataMax(false);    
                     }
                     let line2 = getText('KAF006_46',[maxDay]);
                     
@@ -313,6 +317,9 @@ module nts.uk.at.view.kaf006.b{
                 if(data.maxDayObj != null){
                     self.maxDay(data.maxDayObj.maxDay);
                     self.dayOfRela(data.maxDayObj.dayOfRela);  
+                    self.dataMax(true);  
+                }else{
+                    self.dataMax(false);    
                 }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
