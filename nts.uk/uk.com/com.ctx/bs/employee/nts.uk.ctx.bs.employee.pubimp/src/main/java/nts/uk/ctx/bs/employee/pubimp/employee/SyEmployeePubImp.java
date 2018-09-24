@@ -738,13 +738,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	}
 
 	@Override
-	public EmpInfoRegistered getEmpInfo(String cid, String pid) {
+	public Optional<EmpInfoRegistered> getEmpInfo(String cid, String pid) {
 
 		boolean check = false;
 
 		Optional<EmployeeDataMngInfo> empData = empDataMngRepo.findByCidPid(cid, pid);
 		if (!empData.isPresent())
-			return null;
+			return Optional.empty();
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
@@ -752,23 +752,24 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<AffCompanyHistByEmployee> affComHist = affComHistRepo
 				.getAffEmployeeHistory(Arrays.asList(empData.get().getEmployeeId()));
 		if (affComHist.isEmpty())
-			return null;
+			return Optional.empty();
 		
 		List<AffCompanyHistItem> lstAffComHisItem = affComHist.get(0).items();
 		
 		for (int i = 0; i < lstAffComHisItem.size(); i++) {
-			if (lstAffComHisItem.get(i).afterOrEqualsStandardDate(systemDate) && lstAffComHisItem.get(i).beforeOrEqualsStandardDate(systemDate)) {
+			if (!lstAffComHisItem.get(i).afterOrEqualsStandardDate(systemDate) && !lstAffComHisItem.get(i).beforeOrEqualsStandardDate(systemDate)) {
 				check = true;
+				break;
 			}
 		}
 		
 		if(!check)
-			return null;
+			return Optional.empty();
 		
 		Optional<Person> personOpt = this.personRepository.getByPersonId(empData.get().getPersonId());
 		
 		if(!personOpt.isPresent())
-			return null;
+			return Optional.empty();
 		
 		EmpInfoRegistered result = new EmpInfoRegistered(
 				cid,
@@ -777,6 +778,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				personOpt.get().getPersonNameGroup().getBusinessName()!= null ? personOpt.get().getPersonNameGroup().getBusinessName().v() : null,
 				pid);
 		
-		return result;
+		return Optional.of(result);
 	}
 }
