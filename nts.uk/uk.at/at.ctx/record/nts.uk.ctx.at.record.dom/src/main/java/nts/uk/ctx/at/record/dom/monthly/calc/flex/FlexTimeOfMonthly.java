@@ -1228,9 +1228,7 @@ public class FlexTimeOfMonthly {
 				if (flexShortageLimitOpt.isPresent()){
 					limitTime = flexShortageLimitOpt.get().getLimitTime().v();
 				}
-				int possibleTime = settingsByFlex.getStatutoryWorkingTimeMonth().v() -
-						settingsByFlex.getPrescribedWorkingTimeMonth().v();		// 翌月繰越可能時間
-				if (possibleTime < 0) possibleTime = 0;
+				int possibleTime = settingsByFlex.getCanNextCarryforwardTimeMonth().v();	// 翌月繰越可能時間
 				if (limitTime > possibleTime) limitTime = possibleTime;
 			}
 			
