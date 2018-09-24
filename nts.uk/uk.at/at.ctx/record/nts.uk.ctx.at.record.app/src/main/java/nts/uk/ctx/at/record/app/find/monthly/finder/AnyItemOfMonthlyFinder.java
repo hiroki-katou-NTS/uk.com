@@ -42,7 +42,7 @@ public class AnyItemOfMonthlyFinder extends MonthlyFinderFacade {
 	public AnyItemOfMonthlyDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		List<AnyItemOfMonthly> domains = this.repo.findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
-		List<Integer> itemIds = domains.stream().map(i -> i.getAnyItemId()).collect(Collectors.toList());
+		List<Integer> itemIds = domains.stream().map(i -> i.getAnyItemId()).distinct().collect(Collectors.toList());
 		if(!itemIds.isEmpty()){
 			Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 					.findByListNos(AppContexts.user().companyId(), itemIds).stream()

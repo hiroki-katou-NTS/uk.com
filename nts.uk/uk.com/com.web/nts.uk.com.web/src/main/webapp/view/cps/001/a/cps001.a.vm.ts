@@ -106,6 +106,7 @@ module cps001.a.vm {
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             employee.employeeId.subscribe(id => {
+                self.layout.listItemCls.removeAll();
                 self.block();
             });
 
@@ -118,16 +119,17 @@ module cps001.a.vm {
             });
 
             setInterval(() => {
-                let aut = _(self.layout.listItemCls())
-                    .map((m: any) => m.items || undefined)
-                    .filter(x => !!x)
-                    .flatten() // flat set item
-                    .flatten() // flat list item
-                    .map((m: any) => !ko.toJS(m.readonly))
-                    .filter(x => !!x)
-                    .value();
+                let id = ko.toJS(self.employee.employeeId),
+                    aut = _(self.layout.listItemCls())
+                         .map((m: any) => m.items || undefined)
+                         .filter(x => !!x)
+                         .flatten() // flat set item
+                         .flatten() // flat list item
+                         .map((m: any) => !ko.toJS(m.readonly))
+                         .filter(x => !!x)
+                         .value();
 
-                self.saveAble(!!aut.length && !hasError());
+                self.saveAble(!!aut.length && !hasError() && !!id);
             }, 0);
 
             // check quyen có thể delete employee ở đăng ký thông tin cá nhân
@@ -146,7 +148,7 @@ module cps001.a.vm {
             self.checkLicenseStart();
         }
 
-        reload() {
+        reload(ids?: Array<string>) {
             let self = this,
                 employee = self.employee,
                 employees = ko.toJS(employee.employees),
@@ -154,10 +156,17 @@ module cps001.a.vm {
                 nids = _.map(employees, m => m.employeeId),
                 vids = _.clone(nids);
 
-            if (!_.isEqual(oids.sort(), nids.sort())) {
-                employee.employeeIds(vids);
+            if (ids) {
+                employee.employeeIds(_.concat(vids, ids));
+
+                // select last id
+                employee.employeeId(_.last(ids));
             } else {
-                employee.employeeIds.valueHasMutated();
+                if (!_.isEqual(oids.sort(), nids.sort())) {
+                    employee.employeeIds(vids);
+                } else {
+                    employee.employeeIds.valueHasMutated();
+                }
             }
             self.checkLicense();
         }
@@ -205,7 +214,11 @@ module cps001.a.vm {
             let self = this;
 
             modal('../c/index.xhtml').onClosed(() => {
-                self.reload();
+                let ids: Array<string> = getShared('CPS001C_RESTORE');
+                if (_.size(ids)) {
+                    // add list restore id
+                    self.reload(ids);
+                }
             });
         }
 
@@ -216,7 +229,7 @@ module cps001.a.vm {
 
             // refresh data from layout
             self.layout.outData.refresh();
-            
+
             let inputs = self.layout.outData(),
                 command: IPeregCommand = {
                     personId: emp.personId(),
@@ -271,9 +284,14 @@ module cps001.a.vm {
                     categoryId: evt.id,
                     categoryCode: evt.ccode,
                     standardDate: undefined,
-                    personId: ko.toJS(__viewContext.viewModel.employee.personId),
-                    employeeId: ko.toJS(__viewContext.viewModel.employee.employeeId)
+                    personId: ko.toJS(self.employee.personId),
+                    employeeId: ko.toJS(self.employee.employeeId)
                 };
+
+                if (!query.employeeId) {
+                    self.layout.listItemCls.removeAll();
+                    return;
+                }
 
                 if (evt.ctype) {
                     switch (evt.ctype) {
@@ -404,6 +422,11 @@ module cps001.a.vm {
                             browsingEmpId: ko.toJS(__viewContext.viewModel.employee.employeeId),
                             standardDate: ddate
                         };
+
+                    if (!query.browsingEmpId) {
+                        self.listItemCls.removeAll();
+                        return;
+                    }
 
                     service.getCurrentLayout(query).done((data: any) => {
                         if (data) {

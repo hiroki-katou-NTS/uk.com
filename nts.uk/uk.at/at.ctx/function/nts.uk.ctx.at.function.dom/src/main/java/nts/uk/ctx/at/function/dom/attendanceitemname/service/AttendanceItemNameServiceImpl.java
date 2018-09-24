@@ -417,11 +417,15 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService{
 				attendanceDto.setTypeOfAttendanceItem(
 						frameTotalTimes.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
 			//15
-			}else if (specialHoliday15.containsKey(item.getAttendanceItemId()) && specialHoliday
-					.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
-				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-						specialHoliday.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
-						.getSpecialHolidayName().v()));
+			}else if (specialHoliday15.containsKey(item.getAttendanceItemId())) {
+				if (specialHoliday.containsKey(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())) {
+					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+							specialHoliday.get(specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v())
+									.getSpecialHolidayName().v()));
+				} else {
+					attendanceDto.setAttendanceItemName(MessageFormat.format("特別休暇{0}",
+							specialHoliday15.get(item.getAttendanceItemId()).getFrameNo().v()));
+				}
 				attendanceDto.setFrameCategory(
 						specialHoliday15.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(

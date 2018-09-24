@@ -348,6 +348,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				basicScheduleRepo.insert(bSchedule); 
 			}
 			
+			// clear list
+			startClock.clear();
+			endClock.clear();
+			breakStartTime.clear();
+			breakEndTime.clear();
+			childCareStartTime.clear();
+			childCareEndTime.clear();
+			
 			basicScheduleListAfter.add(bSchedule);
 			
 			// 修正ログ情報を作成する (Tạo thông tin log chỉnh sửa)

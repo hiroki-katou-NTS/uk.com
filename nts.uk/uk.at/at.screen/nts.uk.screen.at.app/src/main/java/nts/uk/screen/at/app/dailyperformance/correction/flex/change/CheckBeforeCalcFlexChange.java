@@ -195,11 +195,12 @@ public class CheckBeforeCalcFlexChange {
 
 			timeSum = (monthFlex != null && monthFlex.getStatutorySetting() != null)
 					? monthFlex.getStatutorySetting().v() - calcSumTime(listAttTime) : 0 - calcSumTime(listAttTime);
-			if (timeSum <= 0) {
-				timeSum = 0;
-			}
 		}
 
+		if (timeSum <= 0) {
+			timeSum = 0;
+		}
+		
 		// ドメインモデル「フレックス不足の繰越上限管理」を取得する
 		Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
 		if(valueLimit == null) valueLimit = 0;

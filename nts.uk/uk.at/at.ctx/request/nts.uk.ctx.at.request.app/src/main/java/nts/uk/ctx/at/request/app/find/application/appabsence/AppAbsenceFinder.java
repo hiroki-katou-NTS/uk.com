@@ -802,6 +802,7 @@ public class AppAbsenceFinder {
 			result.setMaxNumberDayType(specHd.getMaxNumberDay().value);
 			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
+		result.setHolidayAppType(holidayType);
 		return result;
 	}
 

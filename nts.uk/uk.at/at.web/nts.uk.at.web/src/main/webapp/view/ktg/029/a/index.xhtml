@@ -282,7 +282,7 @@
 				</table>
 				<table class="widget-table" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 					<!-- A17_12 -->
-					<tr>
+					<tr data-bind="visible: yearlyHoliday.calculationMethod != 3">
 						<td data-bind="" class="tab">#{i18n.getText('KTG029_56')}</td>
 						<td></td>
 					</tr>

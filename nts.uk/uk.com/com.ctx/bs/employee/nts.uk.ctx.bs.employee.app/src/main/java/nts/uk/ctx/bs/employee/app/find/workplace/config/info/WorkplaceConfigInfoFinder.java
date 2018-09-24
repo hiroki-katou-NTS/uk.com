@@ -23,6 +23,8 @@ import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObj
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.role.WorkplaceIDImport;
+import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
+import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
@@ -54,6 +56,9 @@ public class WorkplaceConfigInfoFinder {
 	/** The wkp config repository. */
 	@Inject
 	private WorkplaceConfigRepository wkpConfigRepository;
+	
+	@Inject
+	private WorkplaceRepository wkpRepository;
 
 	/** The Constant HIERARCHY_LENGTH. */
 	private static final Integer HIERARCHY_LENGTH = 3;
@@ -128,6 +133,7 @@ public class WorkplaceConfigInfoFinder {
 		if (!opWkpConfigInfo.isPresent()) {
 			throw new BusinessException("Msg_373");
 		}
+		
 		return this.initTree(strD, opWkpConfigInfo.get().getLstWkpHierarchy());
 	}
 
@@ -144,8 +150,23 @@ public class WorkplaceConfigInfoFinder {
 			List<WorkplaceHierarchy> lstHierarchy) {
 		String companyId = AppContexts.user().companyId();
 
+		//ドメインモデル「職場」をすべて取得する(get domain 「職場」)
+		List<Workplace> wkps = this.wkpRepository.findWorkplacesByDate(companyId, startDWkpConfigHist);
+		
+		List<String> wkpIds = lstHierarchy.stream().map(item -> {
+			return item.getWorkplaceId();
+		}).collect(Collectors.toList());
+		
+		List<String> wkpHistIds = new ArrayList<String>(); 
+		
+		wkps.stream().map(item -> {
+			return item.getWorkplaceHistory().stream().map(hist -> {
+				return wkpHistIds.add(hist.identifier());
+			}).collect(Collectors.toList());
+		}).collect(Collectors.toList());
+		
 		// filter workplace infor latest
-		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findAll(companyId, startDWkpConfigHist);
+		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findByWkpIdsAndHistIds(companyId, wkpIds, wkpHistIds);
 		return this.createTree(lstHierarchy, lstWkpInfo);
 	}
 

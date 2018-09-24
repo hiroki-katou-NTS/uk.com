@@ -37,7 +37,7 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 		String selectionItemId = command.getSelectionItemId();
 
 		// check
-		checkSelectionItemId(selectionItemId);
+		//checkSelectionItemId(selectionItemId);
 
 		// remove selections
 		selectionRepo.removeInSelectionItemId(selectionItemId);
@@ -52,9 +52,7 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 		this.perInfoSelectionItemRepo.remove(selectionItemId);
 	}
 	
-	private void checkSelectionItemId(String id) {
-		if (itemDefinitionFinder.checkExistedSelectionItemId(id)) {
-			throw new BusinessException("Msg_521");
-		}
+	public boolean checkSelectionItemId(String id) {
+		 return itemDefinitionFinder.checkExistedSelectionItemId(id);
 	}
 }

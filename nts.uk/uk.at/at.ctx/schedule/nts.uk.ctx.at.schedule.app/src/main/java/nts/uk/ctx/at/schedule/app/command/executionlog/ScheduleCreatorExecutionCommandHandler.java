@@ -734,12 +734,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// scheduleExecutionLog.getPeriod().end());
 		
 		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(employeeIds, scheduleExecutionLog.getPeriod());
-		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
-
-		ListHashMap<String, DateRegistedEmpSche> registrationListDateScheduleMapByEmployeeId = new ListHashMap<>();
-		registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
-			registrationListDateScheduleMapByEmployeeId.addElement(x.getEmployeeId(), x);
-		});
 		
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -748,6 +742,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 
 		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
+			
+			RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 			
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
@@ -814,7 +810,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			}
 
 			// 暫定データを作成する (Tạo data tạm)
-			registrationListDateScheduleMapByEmployeeId.get(scheduleCreator.getEmployeeId()).forEach(x -> {
+			registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
 				// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
 				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
 			});

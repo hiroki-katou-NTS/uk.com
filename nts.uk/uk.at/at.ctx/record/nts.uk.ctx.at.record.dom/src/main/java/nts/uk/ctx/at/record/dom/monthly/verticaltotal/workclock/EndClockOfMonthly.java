@@ -7,11 +7,11 @@ import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 月別実績の終業時刻
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class EndClockOfMonthly {
@@ -54,10 +54,12 @@ public class EndClockOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param workType 勤務種類
 	 * @param timeLeavingOfDaily 日別実績の出退勤
 	 * @param predTimeSetForCalc 計算用所定時間設定
 	 */
 	public void aggregate(
+			WorkType workType,
 			TimeLeavingOfDailyPerformance timeLeavingOfDaily,
 			PredetermineTimeSetForCalc predTimeSetForCalc){
 		
@@ -76,7 +78,7 @@ public class EndClockOfMonthly {
 			
 			// 時間帯　確認
 			val workNo = timeLeavingWork.getWorkNo();
-			val timezoneUseOpt = predTimeSetForCalc.getTimeSheets(AttendanceHolidayAttr.FULL_TIME, workNo.v());
+			val timezoneUseOpt = predTimeSetForCalc.getTimeSheets(workType.getAttendanceHolidayAttr(), workNo.v());
 			if (!timezoneUseOpt.isPresent()) continue;
 			val timezoneUse = timezoneUseOpt.get();
 			if (timezoneUse.getUseAtr() == UseSetting.NOT_USE) continue;
