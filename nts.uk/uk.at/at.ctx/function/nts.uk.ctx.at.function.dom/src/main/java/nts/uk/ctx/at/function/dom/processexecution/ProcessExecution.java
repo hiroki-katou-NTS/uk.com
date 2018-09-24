@@ -49,16 +49,25 @@ public class ProcessExecution extends AggregateRoot {
 		//B16_2がTRUEの場合
 		if(processExecType == ProcessExecType.NORMAL_EXECUTION) {
 			//実行設定(B7_1,B8_1,B9_1,B10_1,B11_1)のチェックボックスのうち1つ以上TUREになっていなければならない
-			//TODO:B11_1 chua lam
 			if(!execSetting.getPerSchedule().isPerSchedule() && //B7_1
 			   !execSetting.getDailyPerf().isDailyPerfCls() && //B8_1
 			   !execSetting.isReflectResultCls() && //B9_1
 			   !execSetting.isMonthlyAggCls()  && //B10_1
-			   !execSetting.getAlarmExtraction().isAlarmAtr() && //alarm 
+			   !execSetting.getAlarmExtraction().isAlarmAtr() && //B11_1 
 			   execSetting.getAppRouteUpdateDaily().getAppRouteUpdateAtr() == NotUseAtr.NOT_USE && //B12_1
 			   execSetting.getAppRouteUpdateMonthly() == NotUseAtr.NOT_USE) { //B12_3 
 				
 				throw new BusinessException("Msg_1230");
+			}
+			
+			if(execSetting.getAlarmExtraction().isAlarmAtr()) {
+				if(execSetting.getAlarmExtraction().getMailPrincipal().isPresent() && execSetting.getAlarmExtraction().getMailAdministrator().isPresent()) {
+					if(!execSetting.getAlarmExtraction().getMailPrincipal().get().booleanValue() &&  //B11_5
+							!execSetting.getAlarmExtraction().getMailAdministrator().get().booleanValue() ) {//B11_6
+						throw new BusinessException("Msg_1429");
+					}	
+				}
+				
 			}
 		}else {//B16_3がTRUEの場合
 			//実行設定(B14_2,B14_3,B14_4)のチェックボックスのうち1つ以上TUREになっていなければならない。
