@@ -152,7 +152,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			Optional<GrantDateTbl> optGranDateTbl = grantTblRepos.findByCodeAndIsSpecified(param.getCid(),
 					speHoliday.getSpecialHolidayCode().v());
 			if(optGranDateTbl.isPresent()) {
-				elapseYear = optGranDateTbl.get().getElapseYear();
+				elapseYear = grantTblRepos.findElapseByGrantDateCd(param.getCid(), speHoliday.getSpecialHolidayCode().v(), optGranDateTbl.get().getGrantDateCode().v());
 			}
 		}
 		if(elapseYear.isEmpty()) {

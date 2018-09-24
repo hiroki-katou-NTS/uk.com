@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -93,5 +94,8 @@ public class SaveProcessExecutionCommand {
 	
 	private String alarmCode;
 	
+	private Boolean mailPrincipal;
+	
+	private Boolean mailAdministrator;
 
 }
