@@ -29,9 +29,10 @@ public interface RoleExportRepo {
 	 * Find work place id by role id.
 	 *
 	 * @param systemType the system type
+	 * @param baseDate the base date
 	 * @return the workplace id export
 	 */
-	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType);
+	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate);
 	
  	/**
 	 * Find by id.
