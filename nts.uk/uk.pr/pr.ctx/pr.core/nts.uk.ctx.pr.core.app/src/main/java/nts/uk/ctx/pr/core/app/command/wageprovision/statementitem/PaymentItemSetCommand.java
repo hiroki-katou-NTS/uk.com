@@ -68,7 +68,7 @@ public class PaymentItemSetCommand {
 	/**
 	 * 限度金額
 	 */
-	private Integer limitAmount;
+	private Long limitAmount;
 
 	/**
 	 * 限度金額区分

@@ -157,7 +157,7 @@ module nts.uk.pr.view.qmm012.b {
                     }
                     
                     if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerRangeValueAmount() == null)) {
-                        $('#C2_22').ntsError('set', { messageId: "MsgQ_16" });
+                        $('#C2_22').ntsError('set', { messageId: "MsgQ_17" });
                     }
                     
                     if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
