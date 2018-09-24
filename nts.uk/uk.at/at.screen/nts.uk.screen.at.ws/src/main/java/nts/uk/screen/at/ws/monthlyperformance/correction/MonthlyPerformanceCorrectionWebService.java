@@ -65,7 +65,7 @@ public class MonthlyPerformanceCorrectionWebService {
 	}
 	@POST
 	@Path("updateScreen")
-	public MonthlyPerformanceCorrectionDto updateScreen(ReloadMonthlyPerformanceParam param) throws InterruptedException {
+	public MonthlyPerformanceCorrectionDto updateScreen(MonthlyPerformanceParam param) throws InterruptedException {
 		return monthlyPerformanceReload.reloadScreen(param);
 	}
 	@POST
