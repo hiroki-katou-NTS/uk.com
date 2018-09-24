@@ -9,8 +9,10 @@ module nts.uk.at.view.kmf004.j.viewmodel {
         selectedCode: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
-            let self = this;
-            self.currentCodeList(nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS"));
+            let self = this,
+            dataScreenA = nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS");
+            self.currentCodeList(dataScreenA.currentCodeList);
+            self.selectedCode(dataScreenA.selectedCode)
             $("#data-items").focus();
         }
 
@@ -18,7 +20,7 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             let self = this;
             let dfd = $.Deferred(),
                 param = {
-                    selectedNos: _.map(self.currentCodeList(), item => { return item.substring(1) })
+                    currentCode: self.selectedCode()
                 };
 
             service.findForScreenJ(param).done(function(data) {
