@@ -118,7 +118,7 @@ module nts.uk.at.view.kal003.c1.viewmodel {
 
             self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 if (value > 5) {
-                    self.([
+                    self.enumConditionType([
                         { code: 0, name: "固定値", enable: true },
                         { code: 1, name: "勤怠項目", enable: false }
                     ]);

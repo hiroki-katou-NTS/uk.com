@@ -22,4 +22,24 @@ public class ValueExtractAlarmDto {
 	private String alarmItem;
 	private String alarmValueMessage;
 	private String comment;
+	public ValueExtractAlarmDto(String guid, String workplaceID, String hierarchyCd, String workplaceName,
+			String employeeID, String employeeCode, String employeeName, String alarmValueDate, Integer category,
+			String categoryName, String alarmItem, String alarmValueMessage, String comment) {
+		super();
+		this.guid = guid;
+		this.workplaceID = workplaceID;
+		this.hierarchyCd = hierarchyCd;
+		this.workplaceName = workplaceName;
+		this.employeeID = employeeID;
+		this.employeeCode = employeeCode;
+		this.employeeName = employeeName;
+		this.alarmValueDate = alarmValueDate;
+		this.category = category;
+		this.categoryName = categoryName;
+		this.alarmItem = alarmItem;
+		this.alarmValueMessage = alarmValueMessage;
+		this.comment = comment;
+	}
+	
+	
 }

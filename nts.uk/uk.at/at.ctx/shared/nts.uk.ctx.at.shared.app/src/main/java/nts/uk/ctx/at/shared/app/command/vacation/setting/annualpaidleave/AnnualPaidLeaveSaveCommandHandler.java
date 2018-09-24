@@ -121,10 +121,17 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             	RetentionYearlyFindDto findDto = finder.findById();
             	RetentionYearlyDto saveDto = new RetentionYearlyDto();
             	UpperLimitSettingDto upperLimitDto = new UpperLimitSettingDto();
-            	upperLimitDto.setMaxDaysCumulation(findDto.getUpperLimitSetting().getMaxDaysCumulation());
-            	upperLimitDto.setRetentionYearsAmount(findDto.getUpperLimitSetting().getRetentionYearsAmount());
+            	if (findDto == null) {
+            		upperLimitDto.setMaxDaysCumulation(0);
+                	upperLimitDto.setRetentionYearsAmount(99);
+                	saveDto.setLeaveAsWorkDays(false);
+            	}
+            	else {
+	            	upperLimitDto.setMaxDaysCumulation(findDto.getUpperLimitSetting().getMaxDaysCumulation());
+	            	upperLimitDto.setRetentionYearsAmount(findDto.getUpperLimitSetting().getRetentionYearsAmount());
+	            	saveDto.setLeaveAsWorkDays(findDto.getLeaveAsWorkDays());
+            	}
             	saveDto.setUpperLimitSettingDto(upperLimitDto);
-            	saveDto.setLeaveAsWorkDays(findDto.getLeaveAsWorkDays());
             	saveDto.setManagementCategory(0);
             	RetentionYearlySaveCommand saveCommand = new RetentionYearlySaveCommand();
             	saveCommand.setRetentionYearly(saveDto);

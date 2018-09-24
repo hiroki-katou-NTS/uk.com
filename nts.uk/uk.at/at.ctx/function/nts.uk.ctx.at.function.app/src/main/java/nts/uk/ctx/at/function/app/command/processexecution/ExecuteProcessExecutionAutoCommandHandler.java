@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -29,6 +31,7 @@ import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.createextractionprocess.CreateExtraProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.ExecAlarmListProcessingService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.OutputExecAlarmListPro;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
@@ -471,14 +474,14 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
 			return true;
-//		} else if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
-//			// 各処理の終了状態　＝　[アラーム抽出、未実施]
-//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.FORCE_END);
-//			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
-//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-//			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
-//			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-//			return true;
+		} else if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
+			// 各処理の終了状態　＝　[アラーム抽出、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.FORCE_END);
+			// 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+			// 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+			return true;
 		}
 		
 		//承認ルート更新（日次）
@@ -1738,7 +1741,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				.getCreationTarget().value == TargetClassification.ALL.value) {
 			return null;
 		} else {
-
+			Set<String> listSetReEmployeeList = new HashSet<>();
 			// ドメインモデル「就業締め日」を取得する
 			List<Closure> closureList = this.closureRepo.findAllActive(companyId, UseClassification.UseClass_Use);
 			DatePeriod closurePeriod = this.findClosureMinMaxPeriod(companyId, closureList);
@@ -1756,7 +1759,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				wkpImportList.forEach(emp -> {
 					for (String empId : employeeIdList) {
 						if (empId.equals(emp.getEmployeeId())) {
-							reEmployeeList.add(emp.getEmployeeId());
+							listSetReEmployeeList.add(emp.getEmployeeId());
 							break;
 						}
 					}
@@ -1782,7 +1785,7 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 							// 「全締めの期間.開始日年月日」以降に「社員の勤務種別の履歴.履歴.期間.開始日」が存在する
 							if (history.start().beforeOrEquals(closurePeriod.start())) {
 								// 取得したImported（勤務実績）「所属職場履歴」.社員IDを異動者とする
-								reEmployeeList.add(optional.get().getEmployeeId());
+								listSetReEmployeeList.add(optional.get().getEmployeeId());
 								break;
 							}
 						}
@@ -1815,6 +1818,9 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				}
 
 			}
+			//社員ID（異動者、勤務種別変更者、休職者・休業者）（List）から重複している社員IDを1つになるよう削除する
+			List<String> temp = new ArrayList<String>(listSetReEmployeeList);
+			reEmployeeList.addAll(temp);
 			return closurePeriod;
 		}
 		
@@ -2437,9 +2443,18 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		//List<パターンコード>　
 		List<String> listPatternCode = new ArrayList<>(); 
 		listPatternCode.add(processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v());
-		
+		boolean sendMailPerson = false;
+		if(processExecution.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()) {
+			if(processExecution.getExecSetting().getAlarmExtraction().getMailPrincipal().get().booleanValue())
+				sendMailPerson =true;
+		}
+		boolean sendMailAdmin = false;
+		if(processExecution.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()) {
+			if(processExecution.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue())
+				sendMailAdmin =true;
+		}
 		//アラームリスト自動実行処理を実行する
-		boolean checkExecAlarm = this.execAlarmListProcessingService.execAlarmListProcessing(extraProcessStatusID,companyId, workplaceIdList, listPatternCode, GeneralDateTime.now());;
+		OutputExecAlarmListPro outputExecAlarmListPro = this.execAlarmListProcessingService.execAlarmListProcessing(extraProcessStatusID,companyId, workplaceIdList, listPatternCode, GeneralDateTime.now(),sendMailPerson,sendMailAdmin);
 		
 		//ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 		Optional<ProcessExecutionLog> processExecutionLog = procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd, execId);

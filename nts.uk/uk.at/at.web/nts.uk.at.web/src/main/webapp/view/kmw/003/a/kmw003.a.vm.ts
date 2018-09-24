@@ -89,7 +89,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
         //Parameter setting
         monthlyParam: KnockoutObservable<any> = ko.observable(null);
-        reloadParam: KnockoutObservable<any> = ko.observable(null);
+//        reloadParam: KnockoutObservable<any> = ko.observable(null);
         //Date YYYYMM picker
         yearMonth: KnockoutObservable<number>;
         //Combobox display actual time
@@ -132,14 +132,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 closureId: null
             });
 
-            self.reloadParam({
-                processDate: self.yearMonth(),
-                initScreenMode: self.initMode(),
-                //抽出対象社員一覧
-                lstEmployees: [],
-                closureId: self.closureId(),
-                lstAtdItemUnique: []
-            });
+//            self.reloadParam({
+//                processDate: self.yearMonth(),
+//                initScreenMode: self.initMode(),
+//                //抽出対象社員一覧
+//                lstEmployees: [],
+//                closureId: self.closureId(),
+//                lstAtdItemUnique: []
+//            });
 
             self.actualTimeSelectedCode.subscribe(value => {
                 self.actualTimeSelectedDat(self.actualTimeDats()[value]);
@@ -307,7 +307,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     if (!value) return;
                     self.closureId(value);
                     self.updateDate(self.yearMonth());
-                    console.log(self.monthlyParam());
                 });
                 self.initCcg001();
                 self.loadCcg001();
@@ -335,6 +334,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.errors.clearAllGridErrors();
+            self.monthlyParam().lstLockStatus = [];
+            if (self.monthlyParam().actualTime) {
+                self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
+                self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
+            }
             service.startScreen(self.monthlyParam()).done((data) => {
                 if (data.selectedClosure) {
                     let closureInfoArray = []
@@ -345,17 +349,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }
                 self.employIdLogin = __viewContext.user.employeeId;
                 self.dataAll(data);
-                if (self.initMode() == ScreenMode.UNLOCK) {
-                    self.dataAll().lstData = _.map(self.dataAll().lstData, function(a) {
-                        return _.assign(a, { state: "" });
-                    });
-                    self.dataAll().lstCellState = _.map(self.dataAll().lstCellState, function(a) {
-                        if (a.columnKey == "dailyconfirm")
-                            return a;
-                        else
-                            return _.assign(a, { state: [] });
-                    });
-                }
+                self.monthlyParam(data.param);
                 self.dataBackup = _.cloneDeep(data);
                 self.itemValueAll(data.itemValues);
                 self.receiveData(data);
@@ -368,8 +362,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.lstAttendanceItem(data.param.lstAtdItemUnique);
                 // closure ID
                 self.closureId(data.closureId);
-                self.reloadParam().closureId = data.closureId;
-                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
+//                self.reloadParam().closureId = data.closureId;
+//                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
                 //Closure name
                 self.closureName(data.closureName);
                 // closureDateDto
@@ -439,6 +433,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.errors.clearAllGridErrors();
+            self.monthlyParam().lstLockStatus = [];
+            if (self.monthlyParam().actualTime) {
+                self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
+                self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
+            }
             service.startScreen(self.monthlyParam()).done((data) => {
                 if (data.selectedClosure) {
                     let closureInfoArray = []
@@ -450,6 +449,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 }
                 self.employIdLogin = __viewContext.user.employeeId;
                 self.dataAll(data);
+                self.monthlyParam(data.param);
                 self.dataBackup = _.cloneDeep(data);
                 self.itemValueAll(data.itemValues);
                 self.receiveData(data);
@@ -462,8 +462,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.lstAttendanceItem(data.param.lstAtdItemUnique);
                 // closure ID
                 self.closureId(data.closureId);
-                self.reloadParam().closureId = data.closureId;
-                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
+//                self.reloadParam().closureId = data.closureId;
+//                self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
                 //Closure name
                 self.closureName(data.closureName);
                 // closureDateDto
@@ -504,8 +504,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             return dfd.promise();
         }
 
-        loadRowScreen(loadAll?: boolean) {
-            let self = this,
+        loadRowScreen() {
+            let self = this, param = _.cloneDeep(self.monthlyParam()),
                 dataChange: any = $("#dpGrid").mGrid("updatedCells"),
                 empIds = _.map(_.uniqBy(dataChange, (e: any) => { return e.rowId; }), (value: any) => {
                     return value.rowId;
@@ -513,11 +513,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 employees = _.filter(self.lstEmployee(), (e: any) => {
                     return _.includes(empIds, e.id);
                 });
-            self.reloadParam().lstEmployees = employees;
-            self.reloadParam().processDate = self.yearMonth();
-            self.reloadParam().closureId = self.closureId();
+            param.lstEmployees = employees;
+            param.lstLockStatus = [];
+            param.actualTime.startDate = moment.utc(param.actualTime.startDate, "YYYY/MM/DD").toISOString();
+            param.actualTime.endDate = moment.utc(param.actualTime.endDate, "YYYY/MM/DD").toISOString();
+//            self.reloadParam().processDate = self.yearMonth();
+//            self.reloadParam().closureId = self.closureId();
             let dfd = $.Deferred();
-            service.updateScreen(self.reloadParam()).done((data) => {
+            service.updateScreen(param).done((data) => {
                 let dpDataNew = _.map(self.dpData, (value: any) => {
                     let val = _.find(data.lstData, (item: any) => {
                         return item.id == value.id;
@@ -703,9 +706,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             //            self.monthlyParam().initMenuMode = self.initMode();
-            self.monthlyParam().closureId = self.closureId();
+//            self.monthlyParam().closureId = self.closureId();
             self.monthlyParam().yearMonth = date;
-            self.monthlyParam().lstEmployees = self.lstEmployee();
+//            self.monthlyParam().lstEmployees = self.lstEmployee();
 
             if ($("#dpGrid").data('mGrid')) {
                 $("#dpGrid").mGrid("destroy");
@@ -816,7 +819,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.closureId(dataList.closureId);
                     self.lstEmployee(_.orderBy(self.lstEmployee(), ['code'], ['asc']));
                     //Reload screen                    
-                    self.reloadParam().lstEmployees = self.lstEmployee();
+//                    self.reloadParam().lstEmployees = self.lstEmployee();
                     let yearMonthNew: any = +moment.utc(dataList.periodEnd, 'YYYYMMDD').format('YYYYMM'),
                         yearMonthOld = self.yearMonth();
                     self.yearMonth(yearMonthNew);
@@ -836,6 +839,17 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         loadGrid() {
             let self = this;
             self.setHeaderColor();
+            if (self.initMode() == ScreenMode.UNLOCK) {
+                self.dpData = _.map(self.dpData, function(a) {
+                    return _.assign(a, { state: "" });
+                });
+                self.dataAll().lstCellState = _.map(self.dataAll().lstCellState, function(a) {
+                    if (a.columnKey == "dailyconfirm")
+                        return a;
+                    else
+                        return _.assign(a, { state: [] });
+                });
+            }
             let dataSource = self.formatDate(self.dpData);
 
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
@@ -1432,6 +1446,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             // self.dataAll().lstCellState= self.cellState;
             $("#dpGrid").mGrid("destroy");
             $("#dpGrid").off();
+            self.monthlyParam().lstLockStatus = [];
+            if (self.monthlyParam().actualTime) {
+                self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
+                self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
+            }
             service.startScreen(self.monthlyParam()).done((data) => {
                 self.dataAll(data);
                 self.reloadGridLock();

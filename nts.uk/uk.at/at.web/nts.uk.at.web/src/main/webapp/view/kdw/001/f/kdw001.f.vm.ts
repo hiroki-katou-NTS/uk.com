@@ -349,8 +349,9 @@ module nts.uk.at.view.kdw001.f {
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
+                //fix bug 100501
                 this.closureName = data.closureName == null ? " " : data.closureName;
-                this.processingMonthName = data.processingMonth%100 + "月度" + "   " + data.closureName || data.processingMonth%100 + "月度" + "   " + "" ;
+                this.processingMonthName = data.processingMonth%100 + "月度" + "   " + this.closureName || data.processingMonth%100 + "月度" + "   " + "" ;
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";

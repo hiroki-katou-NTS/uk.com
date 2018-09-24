@@ -122,7 +122,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ "e.bsymtEmployeeDataMngInfoPk.sId = :sid AND e.delStatus = :delStatus ";
 	
 	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = :0 ");
+			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
 	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -499,7 +499,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	 */
 	@Override
 	public List<EmployeeDataMngInfo> findBySidNotDel(List<String> sId) {
-		return this.queryProxy().query("SELECT_EMP_NOT_DEL", BsymtEmployeeDataMngInfo.class)
+		return this.queryProxy().query(SELECT_EMP_NOT_DEL, BsymtEmployeeDataMngInfo.class)
 								.setParameter("sId", sId).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
