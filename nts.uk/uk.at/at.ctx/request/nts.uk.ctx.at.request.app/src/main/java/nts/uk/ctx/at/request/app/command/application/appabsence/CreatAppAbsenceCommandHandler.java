@@ -284,7 +284,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・会社ID＝ログイン会社ID
 //		・社員ID＝申請者社員ID
 //		・集計開始日＝申請開始日
-//		・集計終了日＝申請開始日＋２年
+//		・集計終了日＝申請開始日＋1年
 //		・モード＝その他モード
 //		・基準日＝申請開始日
 //		・登録期間の開始日＝申請開始日
@@ -306,7 +306,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				command.getWorkTimeCode() == null ? Optional.empty() : Optional.of(command.getWorkTimeCode()), 
 				Optional.empty(), Optional.empty(), Optional.empty()));
 		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, command.getEmployeeID(), 
-				new DatePeriod(startDate, startDate.addYears(2)), false, startDate, new DatePeriod(startDate, endDate),
+				new DatePeriod(startDate, startDate.addYears(1)), false, startDate, new DatePeriod(startDate, endDate),
 				true, new ArrayList<>(), new ArrayList<>(), appData, chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual,
 				chkSpecial, chkPublicHoliday, chkSuperBreak);
 		EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
