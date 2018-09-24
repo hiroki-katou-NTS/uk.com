@@ -18,6 +18,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -222,12 +223,19 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 		if (historyIds.isEmpty()) {
 			return Collections.emptyList();
 		}
+		
+		List<AffClassHistItem> results = new ArrayList<>();
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
 
-		List<BsymtAffClassHistItem> entities = this.queryProxy()
-				.query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
-				.setParameter("historyIds", historyIds).getList();
+			List<AffClassHistItem> entities = this.queryProxy()
+					.query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
+					.setParameter("historyIds", subIds)
+					.getList(ent -> toDomain(ent));
+			
+			results.addAll(entities);
+		});
 
-		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+		return results;
 	}
 
 }

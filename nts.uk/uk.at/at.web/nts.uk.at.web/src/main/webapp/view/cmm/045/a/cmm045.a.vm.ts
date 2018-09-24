@@ -28,7 +28,7 @@ module cmm045.a.viewmodel {
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,2,3,4,5,6]);// check box
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1]);// check box
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
@@ -572,7 +572,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
             let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
@@ -783,7 +783,7 @@ module cmm045.a.viewmodel {
             //reason application
             let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
@@ -932,7 +932,7 @@ module cmm045.a.viewmodel {
         formatWorkChange(app: vmbase.ApplicationDto_New, wkChange: vmbase.AppWorkChangeFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let go1 = wkChange.goWorkAtr1 == 0 ? wkChange.workTimeStart1 : '' + getText('CMM045_252') + wkChange.workTimeStart1;
             let back1 = wkChange.backHomeAtr1 == 0 ? wkChange.workTimeEnd1 : getText('CMM045_252') + wkChange.workTimeEnd1;
             let time1 = go1 == '' ? '' : go1 + getText('CMM045_100') + back1;
@@ -959,7 +959,7 @@ module cmm045.a.viewmodel {
         formatAbsence(app: vmbase.ApplicationDto_New, absence: vmbase.AppAbsenceFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
             if(absence.allDayHalfDayLeaveAtr == 0 && absence.holidayAppType != 3){//休暇申請.終日半日休暇区分　＝　終日休暇 且休暇申請.休暇種類　≠ 特別休暇 ver39
