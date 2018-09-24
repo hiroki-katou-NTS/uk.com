@@ -58,7 +58,7 @@ public class FlexShortageDto {
 
 	public FlexShortageDto createError(List<ErrorFlexMonthDto> errorFlexs) {
 		redConditionMessage = redConditionMessage == null ? "" : redConditionMessage;
-		if (!errorFlexs.isEmpty()) {
+		if (errorFlexs.isEmpty()) {
 			this.error = false;
 			return this;
 		} else {
