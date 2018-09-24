@@ -1,4 +1,5 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.processdatecls;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,34 +30,30 @@ public class RegisterProcessing {
     @Inject
     EmpTiedProYearRepository empTiedProYearRepository;
 
-    private static final int NUMBER_OF_MONTH_IN_TWO_YEAR=24;
+    private static final int NUMBER_OF_MONTH_IN_TWO_YEAR = 24;
 
 
-    public void registerProcessInformation(ProcessInformation processInformation){
+    public void registerProcessInformation(ProcessInformation processInformation) {
         this.processInformationRepository.add(processInformation);
     }
 
-    public void registerValPayDateSet(ValPayDateSet valPayDateSet){
+    public void registerValPayDateSet(ValPayDateSet valPayDateSet) {
         this.valPayDateSetRepository.add(valPayDateSet);
     }
 
-    public void registerSpecPrintYmSet(ValPayDateSet valPayDateSet){
+    public void registerSpecPrintYmSet(ValPayDateSet valPayDateSet) {
         String cid = AppContexts.user().companyId();
         int processCateNo = valPayDateSet.getProcessCateNo();
         int currentYear = GeneralDate.today().year();
         int montOption = valPayDateSet.getAdvancedSetting().getItemPrintingMonth().getPrintingMonth().value;
-
-
-        List<SpecPrintYmSet> specPrintYmSets=new ArrayList<>();
-
-        YearMonth lastMonthOfLastYaer=new YearMonth((currentYear-1)*100+12);
+        List<SpecPrintYmSet> specPrintYmSets = new ArrayList<>();
+        YearMonth lastMonthOfLastYaer = new YearMonth((currentYear - 1) * 100 + 12);
 
         int a = 0;
         if (montOption == PreviousMonthClassification.LAST_MONTH.value) {
             a = 1;
         }
         for (int i = 1; i <= NUMBER_OF_MONTH_IN_TWO_YEAR; i++) {
-
             specPrintYmSets.add(new SpecPrintYmSet(cid, processCateNo, lastMonthOfLastYaer.addMonths(i).v(),
                     lastMonthOfLastYaer.addMonths(i - a).v()));
         }
@@ -64,100 +61,86 @@ public class RegisterProcessing {
     }
 
 
-
-    public void registerSetDaySupport(ValPayDateSet valPayDateSet){
+    public void registerSetDaySupport(ValPayDateSet valPayDateSet) {
         String cid = AppContexts.user().companyId();
         int currentYear = GeneralDate.today().year();
-
         int processCateNo = valPayDateSet.getProcessCateNo();
         // basic
         int payMentDate = valPayDateSet.getBasicSetting().getMonthlyPaymentDate().getDatePayMent().value;
-
         int refeDate = valPayDateSet.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeDate().value;
-
         int refeMonth = valPayDateSet.getBasicSetting().getEmployeeExtractionReferenceDate().getRefeMonth().value;
-
         int disposalDay = valPayDateSet.getBasicSetting().getAccountingClosureDate().getDisposalDay().value;
-
         int processMonth = valPayDateSet.getBasicSetting().getAccountingClosureDate().getProcessMonth().value;
 
         // advanc
-        int monthCollected =valPayDateSet.getAdvancedSetting().getSocialInsuColleMon().getMonthCollected().value;
-
-
+        int monthCollected = valPayDateSet.getAdvancedSetting().getSocialInsuColleMon().getMonthCollected().value;
         int baseYear = valPayDateSet.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseYear().value;
         int baseMonth = valPayDateSet.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseMonth().value;
         int baseDate = valPayDateSet.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value;
-
         int referDateEmploymentInsuranceStanDate = valPayDateSet.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value;
         int baseMonthEmploymentInsuranceStanDate = valPayDateSet.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value;
-
-        int timeCloseDate =  valPayDateSet.getAdvancedSetting().getCloseDate().getTimeCloseDate();
+        int timeCloseDate = valPayDateSet.getAdvancedSetting().getCloseDate().getTimeCloseDate();
         int refeDateClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null);
         int baseMonthClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null);
         int baseYearClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null);
-
         int inComRefeMonth = valPayDateSet.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseMonth().value;
         int inComRefeYear = valPayDateSet.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseYear().value;
         int inComRefeDate = valPayDateSet.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value;
-
 
         //No2.9
         BigDecimal numberWorkDay = valPayDateSet.getBasicSetting().getWorkDay().v();
 
         YearMonth startMonth = new YearMonth((currentYear - 1) * 100 + 12);
-        List<SetDaySupport> setDaySupports=new ArrayList<>();
+        List<SetDaySupport> setDaySupports = new ArrayList<>();
         for (int i = 1; i <= NUMBER_OF_MONTH_IN_TWO_YEAR; i++) {
-            YearMonth currentYearMonth=startMonth.addMonths(i);
+            YearMonth currentYearMonth = startMonth.addMonths(i);
 
             //No2.6 補足資料
-            GeneralDate empInsurdStanDate=initDateTime(currentYearMonth.year(), currentYearMonth.month(),referDateEmploymentInsuranceStanDate);
+            GeneralDate empInsurdStanDate = initDateTime(currentYearMonth.year(), currentYearMonth.month(), referDateEmploymentInsuranceStanDate);
             if (baseMonthEmploymentInsuranceStanDate > i) {
                 empInsurdStanDate = initDateTime(empInsurdStanDate.year(), baseMonthEmploymentInsuranceStanDate,
                         empInsurdStanDate.day()).addYears(-1);
             }
 
             //No2.3 補足資料
-            GeneralDate closureDateAccounting=initDateTime(currentYearMonth.year(), currentYearMonth.month(),disposalDay);
+            GeneralDate closureDateAccounting = initDateTime(currentYearMonth.year(), currentYearMonth.month(), disposalDay);
             if (processMonth == PreviousMonthClassification.LAST_MONTH.value) {
-                closureDateAccounting=convertDate(closureDateAccounting).addMonths(-1);
+                closureDateAccounting = convertDate(closureDateAccounting).addMonths(-1);
             }
 
             //No2.1 補足資料
-            GeneralDate paymentDate=convertDate(initDateTime(currentYearMonth.year(), currentYearMonth.month(),payMentDate));
+            GeneralDate paymentDate = convertDate(initDateTime(currentYearMonth.year(), currentYearMonth.month(), payMentDate));
 
             //No2.2 補足資料
-            GeneralDate empExtraRefeDate=initDateTime(currentYearMonth.year(),currentYearMonth.month(),refeDate);
+            GeneralDate empExtraRefeDate = initDateTime(currentYearMonth.year(), currentYearMonth.month(), refeDate);
             if (refeMonth == PreviousMonthClassification.LAST_MONTH.value) {
-                empExtraRefeDate=convertDate(empExtraRefeDate).addMonths(-1);
+                empExtraRefeDate = convertDate(empExtraRefeDate).addMonths(-1);
             }
 
             //No2.5 補足資料
-            GeneralDate socialInsurdStanDate = initDateTime(currentYearMonth.year(), currentYearMonth.month(), baseDate );
+            GeneralDate socialInsurdStanDate = initDateTime(currentYearMonth.year(), currentYearMonth.month(), baseDate);
             if (baseMonth == InsuranceStanMonthClassification.LAST_MONTH.value)
-                socialInsurdStanDate=socialInsurdStanDate.addMonths(-1);
+                socialInsurdStanDate = socialInsurdStanDate.addMonths(-1);
             else if (baseMonth == InsuranceStanMonthClassification.MONTH.value)
-                socialInsurdStanDate=socialInsurdStanDate.addMonths(0);
+                socialInsurdStanDate = socialInsurdStanDate.addMonths(0);
             else
-                socialInsurdStanDate=initDateTime(currentYearMonth.year() + baseYear - 1,baseMonth - 1,baseDate);
-
+                socialInsurdStanDate = initDateTime(currentYearMonth.year() + baseYear - 1, baseMonth - 1, baseDate);
 
             //No2.4 補足資料
             YearMonth socialInsurdCollecMonth = currentYearMonth;
-            socialInsurdCollecMonth=socialInsurdCollecMonth.addMonths(monthCollected - 2);
+            socialInsurdCollecMonth = socialInsurdCollecMonth.addMonths(monthCollected - 2);
 
             //No2.7 補足資料
             GeneralDate closeDateTime = empExtraRefeDate;
             if (timeCloseDate == 1) {
-                closeDateTime=closeDateTime.addYears(baseYearClose - 1);
-                closeDateTime=closeDateTime.addMonths(baseMonthClose - 2);
-                closeDateTime=initDateTime(closeDateTime.year(),closeDateTime.month(),refeDateClose);
+                closeDateTime = closeDateTime.addYears(baseYearClose - 1);
+                closeDateTime = closeDateTime.addMonths(baseMonthClose - 2);
+                closeDateTime = initDateTime(closeDateTime.year(), closeDateTime.month(), refeDateClose);
             }
 
             //No2.8 補足資料
-            GeneralDate incomeTaxDate=initDateTime(currentYearMonth.year(),inComRefeMonth,inComRefeDate);
-            incomeTaxDate=incomeTaxDate.addYears(inComRefeYear - 1);
-
+            GeneralDate incomeTaxDate = initDateTime(currentYearMonth.year(), inComRefeMonth, inComRefeDate);
+            incomeTaxDate = incomeTaxDate.addYears(inComRefeYear - 1);
 
             setDaySupports.add(new SetDaySupport(cid, processCateNo, currentYearMonth.v(),
                             closeDateTime,
@@ -176,7 +159,6 @@ public class RegisterProcessing {
     }
 
 
-
     public void addCurrProcessDate(ValPayDateSet valPayDateSet) {
         String cid = AppContexts.user().companyId();
         GeneralDate currentDay = GeneralDate.today();
@@ -189,11 +171,7 @@ public class RegisterProcessing {
         String cid = AppContexts.user().companyId();
         int processCateNo = valPayDateSet.getProcessCateNo();
         this.empTiedProYearRepository.add(new EmpTiedProYear(cid, processCateNo, new ArrayList<EmploymentCode>()));
-
     }
-
-
-
 
 
     public GeneralDate convertDate(GeneralDate convertDate) {
@@ -206,13 +184,12 @@ public class RegisterProcessing {
     }
 
 
-
-    public GeneralDate initDateTime(int year,int month,int day){
-        if(month==2 && day >28 && year %4 !=0)
-            return GeneralDate.ymd(year,2,28);
-        if(month==2 && day >29 && year %4 ==0)
-            return GeneralDate.ymd(year,2,29);
+    public GeneralDate initDateTime(int year, int month, int day) {
+        if (month == 2 && day > 28 && year % 4 != 0)
+            return GeneralDate.ymd(year, 2, 28);
+        if (month == 2 && day > 29 && year % 4 == 0)
+            return GeneralDate.ymd(year, 2, 29);
         else
-            return GeneralDate.ymd(year,month,(day == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : day);
+            return GeneralDate.ymd(year, month, (day == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : day);
     }
 }

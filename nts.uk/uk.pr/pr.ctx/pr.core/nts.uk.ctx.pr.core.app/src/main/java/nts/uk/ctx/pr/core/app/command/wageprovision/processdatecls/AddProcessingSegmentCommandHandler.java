@@ -16,10 +16,8 @@ import javax.transaction.Transactional;
 @Transactional
 public class AddProcessingSegmentCommandHandler extends CommandHandler<ProcessingSegmentCommand> {
 
-
     @Inject
     private RegisterProcessing registrationProcessing;
-
 
     @Override
     protected void handle(CommandHandlerContext<ProcessingSegmentCommand> commandHandlerContext) {
@@ -29,8 +27,6 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
         ProcessInformation processInformation = new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
                 addCommand.getProcessInformation().getDeprecatCate(),
                 addCommand.getProcessInformation().getProcessDivisionName());
-
-
 
         ValPayDateSet valPayDateSet = new ValPayDateSet(cid, addCommand.getValPayDateSet().getProcessCateNo(),
                 addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),
@@ -60,9 +56,5 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
         registrationProcessing.registerSpecPrintYmSet(valPayDateSet);
         registrationProcessing.registerSetDaySupport(valPayDateSet);
         registrationProcessing.addCurrProcessDate(valPayDateSet);
-
-
     }
-
-
 }
