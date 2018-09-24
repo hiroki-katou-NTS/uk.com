@@ -65,6 +65,11 @@ public class CharacterDfsDto {
 	 * コード変換コード
 	 */
 	private String cdConvertCd;
+	
+	/**
+	 * コード変換名称
+	 */
+	private String cdConvertName;
 
 	/**
 	 * コード編集桁
@@ -86,12 +91,13 @@ public class CharacterDfsDto {
 	 */
 	private int endDigit;
 
-	public static CharacterDfsDto fromDomain(CharacterDataFmSetting domain) {
+	public static CharacterDfsDto fromDomain(CharacterDataFmSetting domain, String cdConvertName) {
 		return new CharacterDfsDto(domain.getConditionSettingCode().v(), domain.getOutputItemCode().v(),
 				domain.getCid(), domain.getNullValueReplace().value, domain.getCdEditting().value,
 				domain.getCdEdittingMethod().value, domain.getSpaceEditting().value, domain.getFixedValue().value,
 				domain.getEffectDigitLength().value, domain.getValueOfNullValueReplace().map(i -> i.v()).orElse(null),
 				domain.getConvertCode().map(i -> i.v()).orElse(null),
+				cdConvertName,
 				domain.getCdEditDigit().map(i -> i.v()).orElse(null),
 				domain.getValueOfFixedValue().map(i -> i.v()).orElse(null),
 				domain.getStartDigit().map(i -> i.v()).orElse(null), domain.getEndDigit().map(i -> i.v()).orElse(null));
