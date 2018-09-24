@@ -1190,39 +1190,58 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     endDate: self.dtAft()
                 };
 
-            service.getDataBasicSchedule(obj).done(function(data) {
-                //set dataSource for mode shortName
+            service.getDataBasicSchedule(obj).done(function(datas) {
+                let arrTmp: any = [];
                 self.dataSource([]);
-                _.each(data.listDataShortName, (itemData: BasicSchedule) => {
-                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
-                    if (itemDataSource) {
-                        itemDataSource.workTimeCode = itemData.workTimeCode;
-                        itemDataSource.workTypeCode = itemData.workTypeCode;
-                        itemDataSource.confirmedAtr = itemData.confirmedAtr;
-                        itemDataSource.isIntendedData = true
-                    } else {
-                        self.dataSource.push(new BasicSchedule({
-                            date: itemData.date,
-                            employeeId: itemData.employeeId,
-                            workTimeCode: itemData.workTimeCode,
-                            workTypeCode: itemData.workTypeCode,
-                            confirmedAtr: itemData.confirmedAtr,
-                            isIntendedData: true
+                _.each(datas, data =>{
+                    arrTmp.push(new BasicSchedule({
+                            date: data.date,
+                            employeeId: data.employeeId,
+                            workTimeCode: data.workTimeCode,
+                            workTypeCode: data.workTypeCode,
+                            confirmedAtr: data.confirmedAtr,
+                            isIntendedData: true, // = true la du lieu du dinh
+                            scheduleCnt: data.scheduleCnt,
+                            scheduleStartClock: data.scheduleStartClock,
+                            scheduleEndClock: data.scheduleEndClock,
+                            bounceAtr: data.bounceAtr
                         }));
-                    }
                 });
-
-                //set dataSource for mode timeZone
-                _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
-                    let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
-                    if (itemDataTimeZone) {
-                        itemDataSource.scheduleStartClock = itemDataTimeZone.scheduleStartClock;
-                        itemDataSource.scheduleEndClock = itemDataTimeZone.scheduleEndClock;
-                    } else {
-                        itemDataSource.scheduleStartClock = null;
-                        itemDataSource.scheduleEndClock = null;
-                    }
-                });
+                
+                self.dataSource(arrTmp);
+                
+//                //set dataSource for mode shortName
+//                self.dataSource([]);
+//                _.each(data.listDataShortName, (itemData: BasicSchedule) => {
+//                    let itemDataSource: BasicSchedule = _.find(self.dataSource(), { 'employeeId': itemData.employeeId, 'date': itemData.date });
+//                    if (itemDataSource) {
+//                        itemDataSource.workTimeCode = itemData.workTimeCode;
+//                        itemDataSource.workTypeCode = itemData.workTypeCode;
+//                        itemDataSource.confirmedAtr = itemData.confirmedAtr;
+//                        itemDataSource.isIntendedData = true
+//                    } else {
+//                        self.dataSource.push(new BasicSchedule({
+//                            date: itemData.date,
+//                            employeeId: itemData.employeeId,
+//                            workTimeCode: itemData.workTimeCode,
+//                            workTypeCode: itemData.workTypeCode,
+//                            confirmedAtr: itemData.confirmedAtr,
+//                            isIntendedData: true
+//                        }));
+//                    }
+//                });
+//
+//                //set dataSource for mode timeZone
+//                _.each(self.dataSource(), (itemDataSource: BasicSchedule) => {
+//                    let itemDataTimeZone: any = _.find(data.listDataTimeZone, { 'employeeId': itemDataSource.employeeId, 'date': itemDataSource.date });
+//                    if (itemDataTimeZone) {
+//                        itemDataSource.scheduleStartClock = itemDataTimeZone.scheduleStartClock;
+//                        itemDataSource.scheduleEndClock = itemDataTimeZone.scheduleEndClock;
+//                    } else {
+//                        itemDataSource.scheduleStartClock = null;
+//                        itemDataSource.scheduleEndClock = null;
+//                    }
+//                });
 
                 dfd.resolve();
             }).fail(function() {
@@ -1292,6 +1311,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         /**
          * Get data WorkScheduleState
+         * with itemId = 1~4 (set on server)
          */
         getDataWorkScheduleState(): JQueryPromise<any> {
             let self = this,
@@ -1483,24 +1503,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 arrCell = _.differenceBy(arrCell, arrNewCellIsLocked, ['rowIndex', 'columnKey']);
 
                 for (let i = 0; i < arrCell.length; i += 1) {
-                    let cell: any = arrCell[i], valueCell = cell.value;
-                    let workScheduleTimeZone: any =  (self.selectedModeDisplay() != 1 && valueCell.workTimeCode != null) ? [{
-                        scheduleCnt: 1,
-                        scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
-                            : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),
-                        scheduleEndClock: (typeof valueCell.endTime === 'number') ? valueCell.endTime
-                            : (valueCell.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.endTime).asMinutes : null),
-                        //set static bounceAtr =  1
-                        bounceAtr: 1
-                    }] : null;
-                        
-                    // slice string '_YYYYMMDD' to 'YYYYMMDD'
+                    let cell: any = arrCell[i], valueCell = cell.value, sid = self.listSid()[Number(cell.rowIndex)];
+                    
+                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
                     let date: string = moment.utc(cell.columnKey.slice(1, cell.columnKey.length), 'YYYYMMDD').toISOString(),
-                        confirmedAtr: number = 0;
-
+                        basicSchedule: any = _.find(self.dataSource(), {'employeeId': sid, 'date': moment(date).format('YYYY/MM/DD') }),
+                        bounceAtr: any = 1, //set static bounceAtr =  1
+                        confirmedAtr: any =  0,
+                        workScheduleTimeZone: any = (self.selectedModeDisplay() != 1 && valueCell.workTimeCode != null) ? [{
+                            scheduleCnt: 1,
+                            scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
+                                : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),
+                            scheduleEndClock: (typeof valueCell.endTime === 'number') ? valueCell.endTime
+                                : (valueCell.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.endTime).asMinutes : null),
+                            bounceAtr: bounceAtr
+                        }] : null;
+                        
                     arrObj.push({
                         date: date,
-                        employeeId: self.listSid()[Number(cell.rowIndex)],
+                        employeeId: sid,
                         workTimeCode: valueCell.workTimeCode,
                         workTypeCode: valueCell.workTypeCode,
                         confirmedAtr: confirmedAtr,
@@ -1515,21 +1536,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if(!valueNewCellIsLocked.workTypeCode) { 
                         $("#extable").exTable("unlockCell", sid, newCellIsLocked.columnKey);
                         continue;
-                    } 
-                    let workScheduleTimeZone: any = (valueNewCellIsLocked.workTimeCode != null && self.selectedModeDisplay() != 1) ? [{
-                        scheduleCnt: 1,
-                        scheduleStartClock: (typeof valueNewCellIsLocked.startTime === 'number') ? valueNewCellIsLocked.startTime
-                            : (valueNewCellIsLocked.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.startTime).asMinutes : null),
-                        scheduleEndClock: (typeof valueNewCellIsLocked.endTime === 'number') ? valueNewCellIsLocked.endTime
-                            : (valueNewCellIsLocked.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.endTime).asMinutes : null),
-                        //set static bounceAtr =  1
-                        bounceAtr: 1
-                    }] : null;
-                        
+                    }
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
                     let date: string = moment.utc(newCellIsLocked.columnKey.slice(1, newCellIsLocked.columnKey.length), 'YYYYMMDD').toISOString(),
-                        confirmedAtr: number = 1;
-
+                        basicSchedule: any = _.find(self.dataSource(), {'employeeId': sid, 'date': moment(date).format('YYYY/MM/DD') }),
+                        bounceAtr: any = 1, //set static bounceAtr =  1
+                        confirmedAtr: any =  1,
+                        workScheduleTimeZone: any = (valueNewCellIsLocked.workTimeCode != null && self.selectedModeDisplay() != 1) ? [{
+                            scheduleCnt: 1,
+                            scheduleStartClock: (typeof valueNewCellIsLocked.startTime === 'number') ? valueNewCellIsLocked.startTime
+                                : (valueNewCellIsLocked.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.startTime).asMinutes : null),
+                            scheduleEndClock: (typeof valueNewCellIsLocked.endTime === 'number') ? valueNewCellIsLocked.endTime
+                                : (valueNewCellIsLocked.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.endTime).asMinutes : null),
+                            bounceAtr: bounceAtr
+                        }] : null;
+                        
                     arrObj.push({
                         date: date,
                         employeeId: self.listSid()[Number(newCellIsLocked.rowIndex)],
@@ -1706,15 +1727,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (item.scheduleEditState == 1) {
                         //手修正(本人) = bg-daily-alter-self
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-self", innerIdx));
+                        } else{
+                            cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     } else if (item.scheduleEditState == 2) {
                         //手修正(他人) = bg-daily-alter-other
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-other", innerIdx));
+                        } else {
+                            cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     } else if (item.scheduleEditState == 3) {
                         //申請反映 = bg-daily-reflect-application
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-reflect-application", innerIdx));    
+                        } else {
+                            cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     }
                 });
                 
@@ -1894,7 +1927,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 baseDate: moment().toISOString()
             }
             service.getWorkPlaceById(data).done((wkp) => {
-                self.workPlaceNameDisplay(wkp.wkpDisplayName);
+                self.workPlaceNameDisplay(_.isNil(wkp) ? null : wkp.wkpDisplayName);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -2094,7 +2127,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         scheduleStartClock?: number,
         scheduleEndClock?: number,
         bounceAtr?: number,
-        symbolName?: string,
+        symbolName?: string
     }
 
     class BasicSchedule {
@@ -2224,7 +2257,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeName = workType.abbreviationName;
                     } else {
                         workTypeCode = null;
-                        workTypeName = null;
+                        workTypeName = obj.workTypeCode != null ? getText('KSU001_103', obj.workTypeCode) : null;
                     }
 
                     let workTime = _.find(listWorkTime, ['workTimeCode', obj.workTimeCode]);
@@ -2233,7 +2266,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTimeName = workTime.abName;
                     } else {
                         workTimeCode = null;
-                        workTimeName = null;
+                        workTimeName = obj.workTimeCode != null ? getText('KSU001_103', obj.workTimeCode) : null;
                     }
 
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({

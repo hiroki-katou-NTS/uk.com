@@ -456,13 +456,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openJDialog() {
             let self = this;
             
-            let selectedNo = [];
+            let currentCodeList = [];
             
             _.forEach(self.selectedTargetItems, function(code) {
-                selectedNo.push(code);
+                currentCodeList.push(code);
             });
             
-            nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", selectedNo);
+            nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", {
+                currentCodeList: currentCodeList,
+                selectedCode: self.currentCode()
+            });
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
                 let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");

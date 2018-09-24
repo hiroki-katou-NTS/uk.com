@@ -353,7 +353,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					throw new BusinessException("Msg_1430", approvalRouteDetails.getEmployeeID());
 				}
 				// 対象日の就業実績確認状態を取得する
-				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
 				// 中間データから承認ルートインスタンスに変換する
 				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 				// 指定した社員が承認できるかの判断(NoDBACCESS)
@@ -387,7 +387,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				if((approvalRouteDetails.getStartDate().isPresent()&&approvalRouteDetails.getStartDate().get().beforeOrEquals(loopDate)) ||
 						(approvalRouteDetails.getEndDate().isPresent()&&approvalRouteDetails.getEndDate().get().afterOrEquals(loopDate))){
 					// 対象日の就業実績確認状態を取得する
-					AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+					AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
 					// 中間データから承認ルートインスタンスに変換する
 					ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 					// 指定した社員が承認できるかの判断(NoDBACCESS)

@@ -75,7 +75,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
-                        setTimeout(function() { self.displayWorkTypeSelections_BA1_4(""); }, 200);
+                        //fix bug 100145
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
+                        self.comparisonRange().minAmountOfMoneyValue(null);
+                        self.comparisonRange().maxAmountOfMoneyValue(null);
+                        self.comparisonRange().minTimeValue(null);
+                        self.comparisonRange().maxTimeValue(null);
+                        self.comparisonRange().minTimesValue(null);
+                        self.comparisonRange().maxTimesValue(null);
+                        self.comparisonRange().maxTimeWithinDayValue(null);
+                        self.comparisonRange().minTimeWithinDayValue(null);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                             self.initialScreen().then(function() {
                                 self.settingEnableComparisonMaxValueField(false);

@@ -27,4 +27,20 @@ public class ExecutionLogImport {
 	
 	/** 対象社員ID */
 	private List<ExecutionLogErrorDetail> targerEmployee;
+
+	public ExecutionLogImport(String companyId, int existenceError, int executionContent,
+			GeneralDateTime finishDateTime, List<String> managerId, Integer isCancelled,
+			List<ExecutionLogErrorDetail> targerEmployee) {
+		super();
+		this.companyId = companyId;
+		this.existenceError = existenceError;
+		this.executionContent = executionContent;
+		this.finishDateTime = finishDateTime;
+		this.managerId = managerId;
+		this.isCancelled = isCancelled;
+		this.targerEmployee = targerEmployee;
+	}
+	
+	
 }
+

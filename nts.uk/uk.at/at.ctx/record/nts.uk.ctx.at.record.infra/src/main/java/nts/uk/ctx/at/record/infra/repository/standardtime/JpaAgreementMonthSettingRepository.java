@@ -116,15 +116,13 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		Optional<KmkmtAgreementMonthSet> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
 				.setParameter("employeeId", agreementMonthSetting.getEmployeeId())
 				.setParameter("yearmonthValue", yearMonthValueOld).getSingle();
+		Optional<KmkmtAgreementMonthSet> entity2 = this.queryProxy().query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", agreementMonthSetting.getEmployeeId())
+				.setParameter("yearmonthValue", agreementMonthSetting.getYearMonthValue().v()).getSingle();
 		
 		if (entity.isPresent()) {
 			KmkmtAgreementMonthSet data = entity.get();
-			data.kmkmtAgreementMonthSetPK.yearmonthValue = new BigDecimal(yearMonthValueOld);
-			data.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().valueAsMinutes());
-			data.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().valueAsMinutes());
-			
 			this.delete(data.kmkmtAgreementMonthSetPK.employeeId, new BigDecimal(yearMonthValueOld));
-			
 			this.add(agreementMonthSetting);
 		}
 
