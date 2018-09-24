@@ -159,8 +159,6 @@ public class MultipleMonthAggregateProcessService {
 				if (CollectionUtil.isEmpty(result)) continue;
 				switch (checkItem) {
 				case TIME:
-				case TIMES:
-				case AMOUNT:
 					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
 
 						checkAddAlarm = true;
@@ -185,9 +183,31 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+				case TIMES:
+				case AMOUNT:
+					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
+
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue());
+						String endValueTime = "";
+						if (compare <= 5) {
+							alarmDescription = TextResource.localize("KAL010_254", periodYearMonth, nameErrorAlarm,
+									compareOperatorText.getCompareLeft(), startValueTime);
+						} else {
+							endValueTime = String.valueOf(endValue.intValue());
+							if (compare > 5 && compare <= 7) {
+								alarmDescription = TextResource.localize("KAL010_255", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							} else {
+								alarmDescription = TextResource.localize("KAL010_256", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm, nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							}
+						}
+					}
+					break;
 				case AVERAGE_TIME:
-				case AVERAGE_TIMES:
-				case AVERAGE_AMOUNT:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
@@ -211,9 +231,30 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+				case AVERAGE_TIMES:
+				case AVERAGE_AMOUNT:
+					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue());
+						String endValueTime = "";
+						if (compare <= 5) {
+							alarmDescription = TextResource.localize("KAL010_264", periodYearMonth, nameErrorAlarm,
+									compareOperatorText.getCompareLeft(), startValueTime);
+						} else {
+							endValueTime = String.valueOf(endValue.intValue());
+							if (compare > 5 && compare <= 7) {
+								alarmDescription = TextResource.localize("KAL010_265", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							} else {
+								alarmDescription = TextResource.localize("KAL010_266", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm, nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							}
+						}
+					}
+					break;
 				case CONTINUOUS_TIME:
-				case CONTINUOUS_TIMES:
-				case CONTINUOUS_AMOUNT:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
@@ -223,13 +264,35 @@ public class MultipleMonthAggregateProcessService {
 								String.valueOf(extra.getContinuousMonths()));
 					}
 					break;
-				// 9-10-11
+				case CONTINUOUS_TIMES:
+				case CONTINUOUS_AMOUNT:
+					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue());
+						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameErrorAlarm,
+								compareOperatorText.getCompareLeft(), startValueTime,
+								String.valueOf(extra.getContinuousMonths()));
+					}
+					break;
+				
+				case NUMBER_TIME:
+					ArrayList<Integer> listMonthNumberTime = checkActualResultMulMonth.checkMulMonthCheckCondCosp(period,companyId,employee.getId(),result,extra) ;
+					if (!CollectionUtil.isEmpty(listMonthNumberTime)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
+								+ String.valueOf(startValue.intValue() % 60);
+						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
+								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
+								listMonthNumberTime.toString(), String.valueOf(extra.getTimes()));
+
+					}
+					break;
+					//10,11
 				default:
 					ArrayList<Integer> listMonthNumber = checkActualResultMulMonth.checkMulMonthCheckCondCosp(period,companyId,employee.getId(),result,extra) ;
 					if (!CollectionUtil.isEmpty(listMonthNumber)) {
 						checkAddAlarm = true;
-						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
-								+ String.valueOf(startValue.intValue() % 60);
+						String startValueTime = String.valueOf(startValue.intValue());
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
 								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
 								listMonthNumber.toString(), String.valueOf(extra.getTimes()));
