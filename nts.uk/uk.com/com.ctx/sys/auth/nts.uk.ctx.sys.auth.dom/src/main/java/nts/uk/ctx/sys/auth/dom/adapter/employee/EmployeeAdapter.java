@@ -11,5 +11,5 @@ public interface EmployeeAdapter {
 	
 	List<EmployeeImport> findByEmployeeId(String employeeId);
 	
-	EmployeeImport getEmpInfo(String cid, String pid);
+	Optional<EmployeeImport> getEmpInfo(String cid, String pid);
 }

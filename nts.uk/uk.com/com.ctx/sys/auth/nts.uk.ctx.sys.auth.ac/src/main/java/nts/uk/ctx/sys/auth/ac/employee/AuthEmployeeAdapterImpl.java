@@ -47,10 +47,12 @@ public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
 	}
 
 	@Override
-	public EmployeeImport getEmpInfo(String cid, String pid) {
-		EmpInfoRegistered data = employeePub.getEmpInfo(cid, pid);
-		EmployeeImport dataImport = new EmployeeImport(data.getCid(), data.getPid(), data.getSid(), data.getEmployeeCode(), data.getPersonName());
-		return dataImport;
+	public Optional<EmployeeImport> getEmpInfo(String cid, String pid) {
+		Optional<EmpInfoRegistered> data = employeePub.getEmpInfo(cid, pid);
+		if(!data.isPresent())
+			return Optional.empty();
+		EmployeeImport dataImport = new EmployeeImport(data.get().getCid(), data.get().getPid(), data.get().getSid(), data.get().getEmployeeCode(), data.get().getPersonName());
+		return Optional.of(dataImport);
 	}
 
 }
