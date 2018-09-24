@@ -277,11 +277,15 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//規定のテーブルとする＝TRUE
 		else {
 			optGranDateTbl = grantTableRepos.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
-			if(optGranDateTbl.isPresent()) {
-				elapseYear = optGranDateTbl.get().getElapseYear();
+			
+			if(optGranDateTbl.isPresent()) {				
+				elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, basicInfor.getSpecialLeaveCode().v(), optGranDateTbl.get().getGrantDateCode().v());
 			}
 		}
 		//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
+		if(elapseYear.isEmpty()) {
+			return new GrantDaysInforByDates(outputDate, lstOutput);
+		}
 		for (ElapseYear yearData : elapseYear) {//TODO xem lai
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
