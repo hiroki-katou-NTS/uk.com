@@ -101,8 +101,14 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             };
             // set data selectedConditionName  P7_1
             self.selectedConditionCd.subscribe(data => {
-                let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
-                self.selectedConditionName(conditionName);
+                if(!data){
+                    self.selectedConditionCd('');
+                    self.selectedConditionName('');
+                }
+                else{
+                    let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
+                    self.selectedConditionName(conditionName);
+                }
             });
 
         }
@@ -127,19 +133,18 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectStandardMode() {
             block.invisible();
             let self = this;
-
             service.getConditionSetting(new ParamToScreenP("","")).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
                     $('#ex_output_wizard').ntsWizard("next");
+                    $("#grd_Condition_container").focus();
 
                     block.clear();
                 }
 
             }).fail(res => {
                 self.mode(MODE.NO);
-                console.log(self.mode()+" ịviodjoivjdsoiiof");
                 $('#ex_output_wizard').ntsWizard("next");
                 alertError(res);
                 block.clear();
@@ -158,12 +163,17 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         todoScreenQ() {
             let self = this;
-            error.clearAll();
-            $(".nts-input").trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
+            let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
+
+            if (isNextGetData) {
                 alertError({ messageId: "Msg_662" });
                 return;
             }
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            error.clearAll();
+
 
 
             let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
@@ -217,7 +227,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             // 外部出力実行社員選択チェック
             self.dataEmployeeId = self.findListId(self.selectedCode());
             if (self.dataEmployeeId.length == 0) {
-                alertError('Msg_657');
+                alertError({ messageId: 'Msg_657'});
             }
             else {
                 self.next();
@@ -276,6 +286,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadListCondition(dataCndSetCd: Array<StdOutputCondSetDto>) {
             let self = this;
+
+
             let listItemModel: Array<model.ItemModel> = [];
             _.forEach(dataCndSetCd, function(item) {
                 listItemModel.push(new DisplayTableName(item.categoryId, item.conditionSetCd, item.conditionSetName));

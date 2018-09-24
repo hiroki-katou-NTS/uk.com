@@ -67,6 +67,11 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             self.modeScreen(params.screenMode);
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
+                service.getCdConvertName(params.formatSetting.cdConvertCd).done(result => {
+                    if (result) {
+                        self.characterDataFormatSetting().cdConvertName(result);
+                    }
+                });
                 self.characterDataFormatSetting(new model.CharacterDataFormatSetting(params.formatSetting));
             } else {
                 service.getCharacterDataFormatSetting().done(result => {
@@ -83,6 +88,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             error.clearAll();
             let self = this;
             let command = ko.toJS(self.characterDataFormatSetting);
+            command.cdConvertCd = ("").equals(command.cdConvertCd) ? null : command.cdConvertCd;
             if (self.characterDataFormatSetting().cdEditting() != model.NOT_USE_ATR.USE) {
                 $('#J3_2_1').ntsError('clear');
                 command.cdEditDigit = null;
@@ -203,10 +209,11 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         }
         open002_V2() {
             var self = this;
+            setShared('CMF002_V2_PARAMS', { formatSetting: self.cdConvertCd() });
             nts.uk.ui.windows.sub.modal("/view/cmf/002/v2/index.xhtml").onClosed(() => {
                 let params = getShared('CMF002_J_PARAMS');
                 self.cdConvertCd(params.outputCodeConvert.convertCode);
-                self.cdConvertName(params.outputCodeConvert.convertName);
+                self.cdConvertName(params.outputCodeConvert.convertCode == "" ? "" : params.outputCodeConvert.convertName);
             });
         }
 

@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
             self.listOutputCodeConvert = ko.observableArray([firstItem]);
             let parameter = getShared('CMF002_V2_PARAMS');
             if (parameter) {
-                self.selectedOutputCodeConvert = ko.observable(parameter.outputCodeConvert.dispConvertCode);
+                self.selectedOutputCodeConvert = ko.observable(parameter.formatSetting);
             }
             $('#V2_2_container').focus();
         }
