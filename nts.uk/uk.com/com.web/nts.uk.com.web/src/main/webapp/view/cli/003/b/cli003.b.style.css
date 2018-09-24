@@ -132,7 +132,10 @@ div#list-box_b1 {
 .ui-iggrid-expandcolumn{
 	height: 26px !important;	
 }
-/*
+.ui-iggrid-headertext{
+	font-weight: normal;
+}
+
 .ui-iggrid-childarea{
 	overflow :visible !important;
 }
@@ -140,6 +143,10 @@ div#list-box_b1 {
 	overflow :visible;
 }
 
- .ui-iggrid-scrolldiv.ui-widget-content.igscroll-touchscrollable{
-	overflow :visible !important;
-} */
+ .default-overflow{
+	overflow :auto hidden !important;
+}
+
+.overflow-show{
+	overflow :visible;
+}

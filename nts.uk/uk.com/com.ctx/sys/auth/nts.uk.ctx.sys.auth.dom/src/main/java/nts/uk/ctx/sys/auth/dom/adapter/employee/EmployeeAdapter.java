@@ -10,4 +10,6 @@ public interface EmployeeAdapter {
 	Optional<EmployeeImport> findByEmpId(String empId);
 	
 	List<EmployeeImport> findByEmployeeId(String employeeId);
+	
+	EmployeeImport getEmpInfo(String cid, String pid);
 }

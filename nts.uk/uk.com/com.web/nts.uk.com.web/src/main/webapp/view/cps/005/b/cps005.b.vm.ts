@@ -464,7 +464,7 @@ module nts.uk.com.view.cps005.b {
                     __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode.valueHasMutated();
                     return;
                 }
-                self.stringItem(new StringItemModel(null));
+                self.stringItem(new StringItemModel(null));   
                 self.numericItem(new NumericItemModel(null));
                 self.dateItem(new DateItemModel(null));
                 self.timeItem(new TimeItemModel(null));
@@ -474,7 +474,7 @@ module nts.uk.com.view.cps005.b {
 
                 if (value === 6) {
                     self.selectionItem().selectionItemRefType(2);
-                    if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {
+                    if (ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()).length > 0) {  
                         block.invisible();
                         service.getAllSelByHistory(ko.toJS(__viewContext['screenModelB'].currentItemData().selectionItemLst()[0].selectionItemId),
                             __viewContext['screenModelB'].currentCtg.currentCtg.personEmployeeType).done(function(data: Array<any>) {
@@ -494,7 +494,7 @@ module nts.uk.com.view.cps005.b {
                     }
 
                     self.selectionItem().selectionItemId.subscribe(function(value) {
-                        if (!value) {
+                        if (!value || _.size(value) == 0) {
                             return;
                         }
                         block.invisible();

@@ -48,6 +48,9 @@ import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
 import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GetGrantHdTblSetPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GrantHdTblSetExport;
+import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetExport;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -96,6 +99,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	
 	@Inject
 	private GetRsvLeaNumCriteriaDate getRsvLeaNumCriteriaDate;
+	
+	@Inject
+	private GetGrantHdTblSetPub getGrantHdTblSetPub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -271,6 +277,15 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		}else {
 			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
 		}
+	}
+
+	@Override
+	public int getGrantHdTblSet(String companyId, String employeeId) {
+		Optional<GrantHdTblSetExport> GrantHdTblSetImport = this.getGrantHdTblSetPub.algorithm(companyId, employeeId);
+		if(GrantHdTblSetImport.isPresent()) {
+			return GrantHdTblSetImport.get().getCalculationMethod() == CalculationMethod.WORKING_DAY ? 0 : 1;
+		}
+		return 3;
 	}
 
 	
