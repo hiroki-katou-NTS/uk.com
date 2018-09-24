@@ -44,8 +44,8 @@ module nts.uk.at.view.kmk008.k {
                 return nts.uk.request.ajax("at", this.paths.addAgreementYearSetting, AddUpdateYearSettingModel);
             };
 
-            updateAgreementYearSetting(AddUpdateYearSettingModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateAgreementYearSetting, AddUpdateYearSettingModel);
+            updateAgreementYearSetting(specialHoliday: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateAgreementYearSetting, specialHoliday);
             };
 
             removeAgreementYearSetting(DeleteYearSettingModel: any): JQueryPromise<any> {

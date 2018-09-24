@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -218,9 +219,14 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		
 		String companyId = AppContexts.user().companyId();
 		
-		List<BsymtAffiWorkplaceHist> workPlaceEntities = this.queryProxy()
-				.query(SELECT_BY_EMPIDS_PERIOD, BsymtAffiWorkplaceHist.class).setParameter("employeeIds", employeeIds)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+		List<BsymtAffiWorkplaceHist> workPlaceEntities = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
+			List<BsymtAffiWorkplaceHist> subEntities = this.queryProxy()
+					.query(SELECT_BY_EMPIDS_PERIOD, BsymtAffiWorkplaceHist.class).setParameter("employeeIds", subIds)
+					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+			workPlaceEntities.addAll(subEntities);
+		});
+		
 		
 		Map<String, List<BsymtAffiWorkplaceHist>> workPlaceByEmployeeId = workPlaceEntities.stream()
 				.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getEmployeeId));
