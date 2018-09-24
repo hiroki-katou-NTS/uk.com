@@ -42,7 +42,7 @@ module nts.custom.component {
                             id: TABS.LAYOUT, 
                             title: text('CPS001_23'), 
                             content: '.layouttab', 
-                            enable: ko.observable(true), 
+                            enable: ko.observable(true),
                             visible: hasLayout
                         },
                         {

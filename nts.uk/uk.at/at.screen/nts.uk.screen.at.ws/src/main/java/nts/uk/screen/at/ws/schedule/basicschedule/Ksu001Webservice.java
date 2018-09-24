@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.DataInitScreenDto;
@@ -77,14 +78,25 @@ public class Ksu001Webservice extends WebService {
 				this.bScheduleScreenProces.getDataWorkScheTimezone(params));
 		return result;
 	}
-
+	
+	@POST
+	@Path("getBasicScheduleWithJDBC")
+	public List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(BasicScheduleScreenParams params) {
+		return this.bScheduleScreenProces.getBasicScheduleWithJDBC(params);
+	}
+	
 	@POST
 	@Path("getDataWorkScheduleState")
 	public List<WorkScheduleStateScreenDto> getDataWorkScheduleState(BasicScheduleScreenParams params) {
 		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
 	}
 	 
-
+	@POST
+	@Path("checkStatusForScheduledWork")
+	public List<WorkScheduleStateScreenDto> checkStatusForScheduledWork(BasicScheduleScreenParams params) {
+		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
+	}
+	
 	@POST
 	@Path("getDataSpecDateAndHoliday")
 	public SpecificDateAndPublicHolidayScreenDto getDataSpecDateAndHoliday(WorkplaceIdAndDateScreenParams params) {

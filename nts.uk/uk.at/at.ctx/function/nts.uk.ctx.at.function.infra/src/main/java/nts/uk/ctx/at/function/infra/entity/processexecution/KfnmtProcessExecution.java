@@ -88,7 +88,9 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 
 		AlarmExtraction alarmExtraction =new AlarmExtraction(
 				this.execSetting.alarmAtr ==1?true:false,
-				this.execSetting.alarmCode == null?null:(new AlarmPatternCode(this.execSetting.alarmCode))
+				this.execSetting.alarmCode == null?null:(new AlarmPatternCode(this.execSetting.alarmCode)),
+				this.execSetting.mailPrincipal == null?null:(this.execSetting.mailPrincipal ==1 ?true:false),
+				this.execSetting.mailAdministrator == null?null:(this.execSetting.mailPrincipal ==1 ?true:false)
 				);
 		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
@@ -159,7 +161,11 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecSetting().getAppRouteUpdateMonthly().value,
 				domain.getExecSetting().getAlarmExtraction().isAlarmAtr()?1:0,
 				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?
-						domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v():null
+						domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v():null,
+				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:
+						domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get()?1:0,
+				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:
+						domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get()?1:0
 				);
 		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
 	}
