@@ -32,6 +32,9 @@ public class KrcdtRemarksMonthlyRecordPK implements Serializable{
 	@Column(name = "REMARKS_NO")
 	public int remarksNo;
 
+	/** 年月 */
+	@Column(name = "REMARKS_YM")
+	public int yearMonth;
 	
 	/** 締め日 */
 	@Column(name = "CLOSURE_DAY")

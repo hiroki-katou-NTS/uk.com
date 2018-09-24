@@ -256,12 +256,18 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 						switch (init.getSaveDataType()) {
 						case STRING:
 							c.setStringValue(init.getStringValue().v());
+							c.setDateValue(null);
+							c.setIntValue(null);
 							break;
 						case NUMBERIC:
 							c.setIntValue(init.getIntValue() == null? null: init.getIntValue().v());
+							c.setDateValue(null);
+							c.setStringValue(null);
 							break;
 						case DATE:
 							c.setDateValue(init.getDateValue());
+							c.setIntValue(null);
+							c.setStringValue(null);
 							break;
 						}
 					}

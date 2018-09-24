@@ -228,10 +228,15 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 2">
                                                 <!-- 金額 -->
-                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 80px! important" data-bind="ntsNumberEditor: {
+                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 95px! important" data-bind="ntsNumberEditor: {
                                                 name: '#[KAL003_64]',
                                                 value: $parent.comparisonRange().minAmountOfMoneyValue, 
                                                 required: true,
+                                                option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
                                                 constraint: 'CheckedAmountValue'}" />
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 3">
@@ -270,10 +275,15 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 2">
                                                 <!-- 金額 -->
-                                                <input id="endValue" class="value-input needcheck" tabindex="7" style = "width : 80px! important" data-bind="ntsNumberEditor: {
+                                                <input id="endValue" class="value-input needcheck" tabindex="7" style = "width : 95px! important" data-bind="ntsNumberEditor: {
                                                 name: '#[KAL003_65]',
                                                 value: $parent.comparisonRange().maxAmountOfMoneyValue, 
                                                 constraint: 'CheckedAmountValue',
+                                                option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
                                                 required: $parent.enableComparisonMaxValue,
                                                 enable: $parent.enableComparisonMaxValue()}" />
 
@@ -1087,13 +1097,21 @@
 											</com:ko-if> 
 											<com:ko-if bind="[tcWM.AMOUNT,tcWM.CONTINUOUS_AMOUNT].indexOf(typeCheckItem()) > -1"> 
 												<!-- 金額 -->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 95px ! important"
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
-		                                                name: '#[KAL003_64]',
-		                                                value: $vm.comparisonRange().minAmountOfMoneyValue, 
-                                                		required: true,
-                                                		constraint: 'CheckedAmountValue'}" />
+														name: '#[KAL003_64]',
+		                                                value: $vm.comparisonRange().minAmountOfMoneyValue,
+														constraint: 'CheckedAmountValue',
+														option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
+														required: true,
+														enable: true,
+														readonly: false,
+														immediate: false}" />
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_TIME].indexOf(typeCheckItem()) > -1"> 
 												<!-- 連続時間帯-->
@@ -1119,12 +1137,17 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_AMOUNT].indexOf(typeCheckItem()) > -1"> 
 												<!-- 平均金額-->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 95px ! important"
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_64]',
 		                                                value: $vm.comparisonRange().minAmountOfMoneyValue, 
                                                 		required: true,
+                                                		option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
                                                 		constraint: 'CheckedAmountValue'}"/>
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.NUMBER_TIME].indexOf(typeCheckItem()) > -1"> 
@@ -1150,12 +1173,17 @@
                                                 		constraint: 'CheckedTimesValue'}" />
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.NUMBER_AMOUNT].indexOf(typeCheckItem()) > -1"> 
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 95px ! important"
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_64]',
 		                                                value: $vm.comparisonRange().minAmountOfMoneyValue, 
                                                 		required: true,
+                                                		option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
                                                 		constraint: 'CheckedAmountValue'}" />
 											</com:ko-if>
 										</td>
@@ -1187,12 +1215,17 @@
 											</com:ko-if> 
 											<com:ko-if bind="[tcWM.AMOUNT].indexOf(typeCheckItem()) > -1">
 												<!-- 金額 -->
-												<input id="endValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 95px ! important"
 												tabindex = "5"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_65]',
 		                                                value: $vm.comparisonRange().maxAmountOfMoneyValue, 
 		                                                constraint: 'CheckedAmountValue',
+		                                                option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
 		                                                required: $vm.enableComparisonMaxValue(),
 		                                                enable: $vm.enableComparisonMaxValue()}" />
 											</com:ko-if>
@@ -1221,11 +1254,16 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_AMOUNT].indexOf(typeCheckItem()) > -1">
 												<!--平均金額-->
-												<input id="endValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 95px ! important"
 												tabindex = "5"
 													data-bind="ntsNumberEditor: { 
 				                                        name: '#[KAL003_65]',
 				                                        constraint: 'CheckedAmountValue', 
+				                                        option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												}),
 				                                        value: $vm.comparisonRange().maxAmountOfMoneyValue, 
 		                                                required: $vm.enableComparisonMaxValue(),
 		                                                enable:$vm.enableComparisonMaxValue() }" />

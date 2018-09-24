@@ -104,6 +104,10 @@
 	width: 110px;
 }
 
+#vacationRemaining-content table td {
+	padding: 2px 2px
+}
+
 .nts-legendbutton-panel {
 	z-index: 2 !IMPORTANT;
 }

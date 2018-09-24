@@ -147,13 +147,13 @@
 										<hr />
 										<com:ko-if bind="lastRegEmployee">
 											<div class="form-group" data-bind="with:lastRegEmployee">
-												<span data-bind="text: text('CPS002_20') + text('CPS002_21')"></span>
+												<span class="limited-label" data-bind="text: text('CPS002_20') + text('CPS002_21')"></span>
 												<span class="limited-label" data-bind="text: ko.toJS(employeeCd) + ' ' + ko.toJS(employeeName)"></span>
 											</div>
 										</com:ko-if>
 										<com:ko-if bind="lastRegEmployeeOfCompany">
 											<div class="form-group" data-bind="with:lastRegEmployeeOfCompany">
-												<span data-bind="text: text('CPS002_22') + text('CPS002_21')"></span>
+												<span class="limited-label" data-bind="text: text('CPS002_22') + text('CPS002_21')"></span>
 												<span class="limited-label" data-bind="text: ko.toJS(employeeCd) + ' ' + ko.toJS(employeeName)"></span>
 											</div>
 										</com:ko-if>

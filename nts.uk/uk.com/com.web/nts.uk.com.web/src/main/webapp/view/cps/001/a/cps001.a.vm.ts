@@ -146,7 +146,7 @@ module cps001.a.vm {
             self.checkLicenseStart();
         }
 
-        reload() {
+        reload(ids?: Array<string>) {
             let self = this,
                 employee = self.employee,
                 employees = ko.toJS(employee.employees),
@@ -154,10 +154,17 @@ module cps001.a.vm {
                 nids = _.map(employees, m => m.employeeId),
                 vids = _.clone(nids);
 
-            if (!_.isEqual(oids.sort(), nids.sort())) {
-                employee.employeeIds(vids);
+            if (ids) {
+                employee.employeeIds(_.concat(vids, ids));
+
+                // select last id
+                employee.employeeId(_.last(ids));
             } else {
-                employee.employeeIds.valueHasMutated();
+                if (!_.isEqual(oids.sort(), nids.sort())) {
+                    employee.employeeIds(vids);
+                } else {
+                    employee.employeeIds.valueHasMutated();
+                }
             }
             self.checkLicense();
         }
@@ -205,7 +212,11 @@ module cps001.a.vm {
             let self = this;
 
             modal('../c/index.xhtml').onClosed(() => {
-                self.reload();
+                let ids: Array<string> = getShared('CPS001C_RESTORE');
+                if (_.size(ids)) {
+                    // add list restore id
+                    self.reload(ids);
+                }
             });
         }
 
@@ -216,7 +227,7 @@ module cps001.a.vm {
 
             // refresh data from layout
             self.layout.outData.refresh();
-            
+
             let inputs = self.layout.outData(),
                 command: IPeregCommand = {
                     personId: emp.personId(),

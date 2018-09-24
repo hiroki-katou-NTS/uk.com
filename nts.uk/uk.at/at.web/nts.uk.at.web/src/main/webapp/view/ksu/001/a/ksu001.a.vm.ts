@@ -1706,15 +1706,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (item.scheduleEditState == 1) {
                         //手修正(本人) = bg-daily-alter-self
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-self", innerIdx));
+                        } else{
+                            cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     } else if (item.scheduleEditState == 2) {
                         //手修正(他人) = bg-daily-alter-other
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-alter-other", innerIdx));
+                        } else {
+                            cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     } else if (item.scheduleEditState == 3) {
                         //申請反映 = bg-daily-reflect-application
                         let cell = _.find(detailContentDeco, { 'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx });
-                        if (!_.isNil(cell)) cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        if (_.isNil(cell)){
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor(columnKey, item.employeeId, "bg-daily-reflect-application", innerIdx));    
+                        } else {
+                            cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
+                        } 
                     }
                 });
                 
@@ -2224,7 +2236,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeName = workType.abbreviationName;
                     } else {
                         workTypeCode = null;
-                        workTypeName = null;
+                        workTypeName = obj.workTypeCode != null ? getText('KSU001_103', obj.workTypeCode) : null;
                     }
 
                     let workTime = _.find(listWorkTime, ['workTimeCode', obj.workTimeCode]);
@@ -2233,7 +2245,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTimeName = workTime.abName;
                     } else {
                         workTimeCode = null;
-                        workTimeName = null;
+                        workTimeName = obj.workTimeCode != null ? getText('KSU001_103', obj.workTimeCode) : null;
                     }
 
                     this['_' + arrDay[i].yearMonthDay] = new ksu001.common.viewmodel.ExCell({
