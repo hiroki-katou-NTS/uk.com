@@ -17,7 +17,6 @@ module nts.uk.at.view.kdw004.a {
             document.getElementsByClassName("ntsDateRangeButton")[1].tabIndex = -1;
         }).fail((messageId) => {
             nts.uk.ui.dialog.alert({ messageId: messageId }).then(() => {
-                nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
             });
         });
     });
