@@ -101,11 +101,11 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 				dateTime.toDate(), true, false, false, true, false, false);
 		List<EmployeeInformationImport> employeeInformation = employeeInformationAdapter.getEmployeeInfo(params);
 
-		List<String> listEmployeeCode = employeeInformation.stream().map(c -> c.getEmployeeCode())
+		List<String> listEmploymentCode = employeeInformation.stream().map(c -> c.getEmployment().getEmploymentCode())
 				.collect(Collectors.toList());
 		// ドメインモデル「雇用に紐づく就業締め」を取得する
 		List<ClosureEmployment> listClosureEmp = new ArrayList<>();
-		for (String empCode : listEmployeeCode) {
+		for (String empCode : listEmploymentCode) {
 			Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyId,
 					empCode);
 			if (closureEmployment.isPresent())
@@ -114,7 +114,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		// if (listClosureEmp.isEmpty())
 		// return new OutputExecAlarmListPro(false,errorMessage);
 
-		RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listEmployeeCode, dateTime.toDate(),
+		RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listEmploymentCode, dateTime.toDate(),
 				dateTime.toDate());
 		List<RegulationInfoEmployeeAdapterDto> lstRegulationInfoEmployee = this.regulationInfoEmployeeAdapter
 				.find(employeeInfo);
@@ -146,17 +146,17 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 					if (checkConditionTime.getCategory() == AlarmCategory.SCHEDULE_4WEEK.value
 							|| checkConditionTime.getCategory() == AlarmCategory.DAILY.value) {
 						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate(), "yyyy/MM/dd");
-						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getStartDate(), "yyyy/MM/dd");
+						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getEndDate(), "yyyy/MM/dd");
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
 								endDate);
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.MONTHLY.value
 							|| checkConditionTime.getCategory() == AlarmCategory.MULTIPLE_MONTH.value) {
-						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate() + "/01",
+						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6) + "/01",
 								"yyyy/MM/dd");
 						GeneralDate endDate = GeneralDate
-								.fromString(checkConditionTime.getStartDate() + "/01", "yyyy/MM/dd").addMonths(1)
+								.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6) + "/01", "yyyy/MM/dd").addMonths(1)
 								.addDays(-1);
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
@@ -186,10 +186,10 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									endDate);
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else {
-							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate() + "/01",
+							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01",
 									"yyyy/MM/dd");
 							GeneralDate endDate = GeneralDate
-									.fromString(checkConditionTime.getStartDate() + "/01", "yyyy/MM/dd").addMonths(1)
+									.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01", "yyyy/MM/dd").addMonths(1)
 									.addDays(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
