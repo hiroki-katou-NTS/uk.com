@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -103,18 +104,25 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
+		
 		return new BreakTimeOfDailyPerformance(emp,
 					attr == BreakType.REFER_SCHEDULE.value ? BreakType.REFER_SCHEDULE : BreakType.REFER_WORK_TIME,
-					ConvertHelper.mapTo(timeZone,
-							(d) -> new BreakTimeSheet(new BreakFrameNo(d.getNo()),
-									createWorkStamp(d.getStart()),
-									createWorkStamp(d.getEnd()),
-									// TODO: calculate break time
-									new AttendanceTime(d.getBreakTime()))),
+					timeZone.stream().filter(c -> judgNotNull(c)).map(c -> toTimeSheet(c)).collect(Collectors.toList()),
 					date);
+	}
+	
+	private boolean judgNotNull(TimeSheetDto d){
+		return d != null && ((d.getEnd() != null && d.getEnd().getTimesOfDay() != null) || (d.getStart() != null && d.getStart().getTimesOfDay() != null));
+	}
+	
+	private BreakTimeSheet toTimeSheet(TimeSheetDto d){
+		return new BreakTimeSheet(new BreakFrameNo(d.getNo()),
+				createWorkStamp(d.getStart()),
+				createWorkStamp(d.getEnd()),
+				new AttendanceTime(d.getBreakTime()));
 	}
 
 	private TimeWithDayAttr createWorkStamp(TimeStampDto d) {
-		return new TimeWithDayAttr(d == null || d.getTimesOfDay() == null ? 0 : d.getTimesOfDay());
+		return d == null || d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay());
 	}
 }

@@ -138,7 +138,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				return entity;
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		if (krcdtDaiBreakTimes == null || krcdtDaiBreakTimes.isEmpty()) {
@@ -186,7 +186,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

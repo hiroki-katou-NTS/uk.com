@@ -134,6 +134,9 @@ public class WithinStatutoryTimeOfDaily {
 										:new AttendanceTime(0);
 		}
 		//就業時間の計算
+		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = recordReget.getWorkTimezoneCommonSet().isPresent() && recordReget.getWorkTimezoneCommonSet().get().getLateEarlySet().getCommonSet().isDelFromEmTime()
+							?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
+							:recordReget.getWorkTimezoneCommonSet();
 			workTime = calcWithinStatutoryTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 					  									  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
@@ -150,13 +153,13 @@ public class WithinStatutoryTimeOfDaily {
 														  recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 														  recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
 														  recordReget.getDailyUnit(),
-														  recordReget.getWorkTimezoneCommonSet(),conditionItem,
+														  leaveLatesetForWorkTime,conditionItem,
 														  predetermineTimeSetByPersonInfo,
 														  Optional.empty());
 			
 
 		//実働時間の計算
-			Optional<WorkTimezoneCommonSet> leaveLateset = recordReget.getWorkTimezoneCommonSet().isPresent()
+			Optional<WorkTimezoneCommonSet> leaveLatesetForActual = recordReget.getWorkTimezoneCommonSet().isPresent()
 								?Optional.of(recordReget.getWorkTimezoneCommonSet().get().reverceTimeZoneLateEarlySet())
 								:Optional.empty();
 			actualTime =  calcActualWorkTime(recordReget.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get(),vacationClass,workType,
@@ -184,7 +187,7 @@ public class WithinStatutoryTimeOfDaily {
 					  							recordReget.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					  							recordReget.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime(),
 					  							recordReget.getDailyUnit(),
-					  							leaveLateset,
+					  							leaveLatesetForActual,
 					  							conditionItem,
 					  							predetermineTimeSetByPersonInfo,
 					  							Optional.of(new DeductLeaveEarly(0, 1)));

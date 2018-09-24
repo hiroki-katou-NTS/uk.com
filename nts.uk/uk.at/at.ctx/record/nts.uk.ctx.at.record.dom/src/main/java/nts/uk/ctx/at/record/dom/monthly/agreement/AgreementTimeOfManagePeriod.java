@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * 管理期間の36協定時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeOfManagePeriod extends AggregateRoot {

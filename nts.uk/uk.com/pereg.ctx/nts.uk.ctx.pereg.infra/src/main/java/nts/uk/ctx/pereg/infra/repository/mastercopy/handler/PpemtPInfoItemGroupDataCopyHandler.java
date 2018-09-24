@@ -142,7 +142,8 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 			} else {
 
 				entityComZero.forEach(e -> {
-					if (!this.checkContainGroupName(entityCurrentCom, e)) {
+					PpemtPInfoItemGroup desData = this.checkContainGroupName(entityCurrentCom, e);
+					if (desData == null) {
 						PpemtPInfoItemGroup entity = e;
 						// get group item ID
 						String ItemId = UUID.randomUUID().toString();
@@ -166,6 +167,36 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 							PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
 							this.entityManager.persist(itemEntity);
 						});
+					} else {
+						PpemtPInfoItemGroup zeroData = e;
+						PpemtPInfoItemGroup desDataItem = desData;
+						// get get data layout item cls of company Zero
+						List<PpemtPInfoItemGroupDf> itemZeroList = this.entityManager
+								.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
+								.setParameter("groupItemId", zeroData.ppemtPinfoItemGroupPk.groupItemId)
+								.getResultList();
+
+						// get get data layout item cls of destinatio company
+						List<PpemtPInfoItemGroupDf> itemDesList = this.entityManager
+								.createQuery(GET_ITEM_GROUP, PpemtPInfoItemGroupDf.class)
+								.setParameter("groupItemId", desDataItem.ppemtPinfoItemGroupPk.groupItemId)
+								.getResultList();
+
+						List<String> defineIdDesList = itemDesList.stream()
+								.map(item -> item.ppemtPInfoItemGroupDfPk.itemDefId.trim())
+								.collect(Collectors.toList());
+						
+						itemZeroList.forEach(item -> {
+							if (!defineIdDesList.contains(item.ppemtPInfoItemGroupDfPk.itemDefId.trim())) {
+								PpemtPInfoItemGroupDfPk itemPk = new PpemtPInfoItemGroupDfPk(
+										desDataItem.ppemtPinfoItemGroupPk.groupItemId,
+										item.ppemtPInfoItemGroupDfPk.itemDefId);
+								PpemtPInfoItemGroupDf itemEntity = new PpemtPInfoItemGroupDf(itemPk, companyId);
+								this.entityManager.persist(itemEntity);
+							}
+
+						});
+
 					}
 				});
 
@@ -180,9 +211,14 @@ public class PpemtPInfoItemGroupDataCopyHandler extends DataCopyHandler {
 
 	}
 
-	private Boolean checkContainGroupName(List<PpemtPInfoItemGroup> groupList, PpemtPInfoItemGroup item) {
+	private PpemtPInfoItemGroup checkContainGroupName(List<PpemtPInfoItemGroup> groupList, PpemtPInfoItemGroup item) {
 		List<String> groupNameList = groupList.stream().map(e -> e.groupName.trim()).collect(Collectors.toList());
-		return groupNameList.contains(item.groupName.trim());
+		for (PpemtPInfoItemGroup info : groupList) {
+			if (info.groupName.trim().equals(item.groupName.trim()))
+				return info;
+		}
+
+		return null;
 	}
 
 }

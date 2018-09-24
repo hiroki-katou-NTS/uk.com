@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.shared.dom.toppagealarmpub;
+package nts.uk.ctx.sys.shared.pub.toppagealarmpub;
 
 /**
  * interface ExecutionLogPub

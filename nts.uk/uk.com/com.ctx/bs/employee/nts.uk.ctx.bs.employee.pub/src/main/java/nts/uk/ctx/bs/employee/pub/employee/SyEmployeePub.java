@@ -158,4 +158,17 @@ public interface SyEmployeePub {
 	 */
 	EmployeeBasicInfoExport findBySIdAndCompanyId(String sId, String comanpyId);
 	
+	/**
+	 * 職位ID（List）と基準日から該当する社員一覧を取得する
+	 * RequestList515, RequestList466 trỏ đến RequestList515
+	 */
+	List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate);
+	
+	/**
+	 * RequestList101
+	 * @param cid
+	 * @param pid
+	 */
+	EmpInfoRegistered getEmpInfo(String cid, String pid);
+	
 }

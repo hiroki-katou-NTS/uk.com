@@ -177,23 +177,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
 
             self.showHeaderNumber.subscribe((val) => {
-                let headerText
                 _.each(self.optionalHeader, header => {
                     if (header.headerText != "提出済みの申請" && header.headerText != "申請") {
                         if (header.group == undefined && header.group == null) {
                             if (self.showHeaderNumber()) {
-                                headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+                                let headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                                 $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             } else {
-                                headerText = header.headerText.split(" ")[0];
+                                let headerText = header.headerText.split(" ")[0];
                                 $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             }
                         } else {
                             if (self.showHeaderNumber()) {
-                                headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
+                                let headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                                 $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             } else {
-                                headerText = header.headerText.split(" ")[0];
+                                let headerText = header.headerText.split(" ")[0];
                                 $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             }
                         }
@@ -217,40 +216,40 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
         }
 
-        displayNumberZero(dataSource: Array<any>): Array<any> {
-            let self = this;
-            let dataTemp = [];
-            if (!self.displayWhenZero()) {
-                _.each(dataSource, data => {
-                    var dtt: any = {};
-                    _.each(data, (val, indx) => {
-                        if (String(val) == "0" || String(val) == "0:00") {
-                            dtt[indx] = "";
-                        } else {
-                            dtt[indx] = val;
-                        }
-                    });
-                    dataTemp.push(dtt);
-                });
-            } else {
-                let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
-                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
-                let group: any = _.groupBy(dataChange, "rowId");
-                _.each(dataSourceOld, data => {
-                    var dtt: any = {};
-                    if (group[data.id]) {
-                        dtt = data;
-                        _.each(group[data.id], val => {
-                            dtt[val.columnKey] = val.value;
-                        });
-                        dataTemp.push(dtt);
-                    } else {
-                        dataTemp.push(data);
-                    }
-                });
-            }
-            return dataTemp;
-        }
+//        displayNumberZero(dataSource: Array<any>): Array<any> {
+//            let self = this;
+//            let dataTemp = [];
+//            if (!self.displayWhenZero()) {
+//                _.each(dataSource, data => {
+//                    var dtt: any = {};
+//                    _.each(data, (val, indx) => {
+//                        if (String(val) == "0" || String(val) == "0:00") {
+//                            dtt[indx] = "";
+//                        } else {
+//                            dtt[indx] = val;
+//                        }
+//                    });
+//                    dataTemp.push(dtt);
+//                });
+//            } else {
+//                let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
+//                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+//                let group: any = _.groupBy(dataChange, "rowId");
+//                _.each(dataSourceOld, data => {
+//                    var dtt: any = {};
+//                    if (group[data.id]) {
+//                        dtt = data;
+//                        _.each(group[data.id], val => {
+//                            dtt[val.columnKey] = val.value;
+//                        });
+//                        dataTemp.push(dtt);
+//                    } else {
+//                        dataTemp.push(data);
+//                    }
+//                });
+//            }
+//            return dataTemp;
+//        }
 
         createSumColumn(data: any) {
             var self = this;
@@ -298,7 +297,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.initScreen().done((processDate, selectedClosure) => {
-                $("#dpGrid").mGrid("hideZero", true)
                 //date process
                 self.yearMonth(processDate);
                 if (selectedClosure) {
@@ -352,7 +350,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         return _.assign(a, { state: "" });
                     });
                     self.dataAll().lstCellState = _.map(self.dataAll().lstCellState, function(a) {
-                        return _.assign(a, { state: [] });
+                        if (a.columnKey == "dailyconfirm")
+                            return a;
+                        else
+                            return _.assign(a, { state: [] });
                     });
                 }
                 self.dataBackup = _.cloneDeep(data);
@@ -835,11 +836,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         loadGrid() {
             let self = this;
             self.setHeaderColor();
-            let dataSource = self.displayNumberZero(self.formatDate(self.dpData));
-
-            // self.actualTimeSelectedCode.subscribe(code => {
-            //   dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
-            // });
+            let dataSource = self.formatDate(self.dpData);
 
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
@@ -866,6 +863,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 ntsFeatures: self.getNtsFeatures(),
                 ntsControls: self.getNtsControls()
             }).create();
+            self.showHeaderNumber.valueHasMutated();
+            self.displayNumberZero1();
         };
         /**********************************
         * Grid Data Setting 
@@ -1221,14 +1220,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.receiveData(self.dataAll());
                 self.extractionData();
                 self.loadGrid();
-                self.displayNumberZero();
                 nts.uk.ui.block.clear();
             }, 500);
         }
         loadHeader(mode) {
             let self = this;
             let tempList = [];
-            self.dislayNumberHeaderText();
+//            self.dislayNumberHeaderText();
             self.displayProfileIcon();
             _.forEach(self.optionalHeader, (header) => {
                 if (header.constraint == null || header.constraint == undefined) {
@@ -1331,24 +1329,25 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
         }
 
-        dislayNumberHeaderText() {
-            let self = this;
-            if (self.showHeaderNumber()) {
-                self.optionalHeader.map((header) => {
-                    if (header.headerText) {
-                        header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                    }
-                    return header;
-                });
-            } else {
-                self.optionalHeader.map((header) => {
-                    if (header.headerText) {
-                        header.headerText = header.headerText.split(" ")[0];
-                    }
-                    return header;
-                });
-            }
-        }
+//        dislayNumberHeaderText() {
+//            let self = this;
+//            if (self.showHeaderNumber()) {
+//                self.optionalHeader.map((header) => {
+//                    if (header.headerText) {
+//                        header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
+//                    }
+//                    return header;
+//                });
+//            } else {
+//                self.optionalHeader.map((header) => {
+//                    if (header.headerText) {
+//                        header.headerText = header.headerText.split(" ")[0];
+//                    }
+//                    return header;
+//                });
+//            }
+//        }
+        
         helps(event, data) {
             var self = this;
             $('#tooltip').css({
@@ -1399,7 +1398,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     return _.assign(a, { state: "" });
                 });
                 self.dataAll().lstCellState = _.map(self.dataAll().lstCellState, function(a) {
-                    return _.assign(a, { state: [] });
+                    if (a.columnKey == "dailyconfirm")
+                        return a;
+                    else
+                        return _.assign(a, { state: [] });
                 });
 
                 //保持しているパラメータ「ロック状態一覧」のすべてのロック状態をアンロックに変更する

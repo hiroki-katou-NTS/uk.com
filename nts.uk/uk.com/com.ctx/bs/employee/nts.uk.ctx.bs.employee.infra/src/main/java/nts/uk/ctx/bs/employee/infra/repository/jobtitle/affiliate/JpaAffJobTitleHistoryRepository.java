@@ -50,6 +50,9 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 			+ " where h.sid IN :lstSid and h.strDate <= :endDate and h.endDate >= :startDate"
 			+ " ORDER BY h.sid, h.strDate";
 	
+	private static final String GET_BY_DATE = "select h from BsymtAffJobTitleHist h"
+			+ " where h.strDate <= :date and h.endDate >= :date "
+			+ " AND h.cid = :cid ";
 	/**
 	 * Convert from domain to entity
 	 * @param employeeId
@@ -331,6 +334,19 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 					rec.getString("NOTE")
 					);
 		});
+	}
+
+	// request list 515
+	@Override
+	public Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate, String cid) {
+		List<BsymtAffJobTitleHist> listEntity =  this.queryProxy().query(GET_BY_DATE, BsymtAffJobTitleHist.class)
+								.setParameter("date", baseDate)
+								.setParameter("cid", cid)
+								.getList();
+		if (!listEntity.isEmpty()) {
+			return Optional.of(toAffJobTitleHist(listEntity));
+		}
+		return Optional.empty();
 	}
 
 

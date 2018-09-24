@@ -101,7 +101,7 @@ public class FlexInfoDisplayChange {
 
 		// TODO フレックス不足の相殺が実施できるかチェックする
 		CheckShortage checkShortage = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
-		boolean checkFlex = checkShortage.isCheckShortage();
+		boolean checkFlex = checkShortage.isCheckShortage() && employeeId.equals(AppContexts.user().employeeId());
 		//checkShortage.createRetiredFlag(checkShortage.isRetiredFlag());
 		
 		return dataMonth.createCanFlex(checkFlex).createShowFlex(showFlex()).createCalcFlex(calcFlex);

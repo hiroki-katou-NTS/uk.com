@@ -33,7 +33,6 @@ module ccg013.a.viewmodel {
             // WebMenu
             self.listWebMenu = ko.observableArray([]);
             self.webMenuColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
                 { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50, formatter: _.escape }
             ]);

@@ -282,11 +282,12 @@ module nts.custom.component {
                             gov = ko.toJS(params.gridlist.value),
                             gidx = _.indexOf(got, gov),
                             categoryType = ko.toJS(params.combobox.object.categoryType);
-
+                        __viewContext.viewModel.layout.outData.refresh();
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
                             if (categoryType == IT_CAT_TYPE.MULTI) {
                                 if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
                                     confirm({ messageId: "Msg_18" }).ifYes(() => {
+
                                         let outData = __viewContext.viewModel.layout.outData(),
                                             query = {
                                                 recordId: ko.toJS(params.gridlist.value),
@@ -367,6 +368,12 @@ module nts.custom.component {
                 let sid = ko.toJS(params.employeeId),
                     otab = params.otab;
 
+                if (!sid) {
+                    __viewContext.viewModel.unblock();
+                    params.gridlist.options.removeAll();
+                    return;
+                }
+
                 __viewContext.viewModel.block();
 
                 if (t == TABS.LAYOUT) {
@@ -439,8 +446,8 @@ module nts.custom.component {
                     let cat: any = _.find(ko.toJS(params.combobox.options), (t: any) => t.id == v);
                     if (cat) {
                         let obj = params.combobox.object;
-                        
-                        obj.categoryId(cat.id );
+
+                        obj.categoryId(cat.id);
                         obj.categoryCode(cat.categoryCode);
                         obj.categoryType(cat.categoryType);
                         obj.categoryName(cat.categoryName);
@@ -657,10 +664,15 @@ module nts.custom.component {
             });
 
             params.employeeId.subscribe(id => {
-                fetch.get_layout(id).done((data: Array<any>) => {
-                    params.hasLayout(!!data.length);
-                    params.tab.valueHasMutated();
-                });
+                if (id) {
+                    fetch.get_layout(id).done((data: Array<any>) => {
+                        params.hasLayout(!!data.length);
+                        params.tab.valueHasMutated();
+                    });
+                } else {
+                    __viewContext.viewModel.unblock();
+                    params.gridlist.options.removeAll();
+                }
             });
 
             return params;

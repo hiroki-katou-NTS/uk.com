@@ -352,8 +352,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         				
         				
         	}
+        	
         	AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
         	if(ableRangeTime.greaterThan(0))
+        		//
         		return reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
         									   								    .filter(tc -> tc.getPayOrder().isPresent())
         									   								    .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()

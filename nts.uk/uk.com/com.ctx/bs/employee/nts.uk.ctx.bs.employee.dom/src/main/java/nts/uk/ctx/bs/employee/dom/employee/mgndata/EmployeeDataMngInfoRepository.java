@@ -128,5 +128,7 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return the optional
 	 */
 	Optional<EmployeeDataMngInfo> findByCidEmployeeCodeAndDeletedStatus(String cid, String pid, EmployeeDeletionAttr deletedStatus);
-
+	// request list 515
+	List<EmployeeDataMngInfo> findBySidNotDel(List<String> sid);
+	
 }

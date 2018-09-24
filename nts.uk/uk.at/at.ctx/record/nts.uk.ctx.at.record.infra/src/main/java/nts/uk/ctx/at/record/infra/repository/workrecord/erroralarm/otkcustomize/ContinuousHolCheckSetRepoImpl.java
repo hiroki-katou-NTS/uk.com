@@ -64,10 +64,10 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			val result = new NtsResultSet(statement.executeQuery()).getList(rec -> {
 				Map<String, Object> val = new HashMap<>();
 				val.put("NONTARGET", rec.getString("NONTARGET"));
-				val.put("TARGET", rec.getInt("TARGET"));
-				val.put("MESSAGE_DISPLAY", rec.getInt("MESSAGE_DISPLAY"));
+				val.put("TARGET", rec.getString("TARGET"));
+				val.put("MESSAGE_DISPLAY", rec.getString("MESSAGE_DISPLAY"));
 				val.put("CONTINUOUS_DAYS", rec.getInt("CONTINUOUS_DAYS"));
-				val.put("CID", rec.getGeneralDate("CID"));
+				val.put("CID", rec.getString("CID"));
 				return val;
 			});
 			
@@ -81,8 +81,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 					 new ContinuousVacationDays(Integer.parseInt(result.get(0).get("CONTINUOUS_DAYS").toString())))); 
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return Optional.empty();
+			throw new RuntimeException(e);
 		}
 	}
 
