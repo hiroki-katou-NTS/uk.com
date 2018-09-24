@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw008.b {
     export module viewmodel {
         export class ScreenModel {
             hasdata: boolean;
-
+            checkInitSheetNo: boolean;
             // list businessType
             businessTypeList: KnockoutObservableArray<BusinessTypeModel>;
             columnsBusinessType: KnockoutObservableArray<NtsGridListColumn>;
@@ -54,6 +54,7 @@ module nts.uk.at.view.kdw008.b {
                 }
 
                 self.hasdata = true;
+                self.checkInitSheetNo = false;
                 self.enableSheetNo = ko.observable(false);
 
                 self.currentBusinessTypeName = ko.observable(null);
@@ -158,11 +159,22 @@ module nts.uk.at.view.kdw008.b {
 
             initSelectedSheetNoHasMutated() {
                 let self = this;
+                if(self.checkInitSheetNo){
+                    self.selectedSheetNo.valueHasMutated();
+                    return;    
+                }
+                self.checkInitSheetNo = false;
                 if (self.selectedSheetNo() == 1) {
                     self.selectedSheetNo.valueHasMutated();
                 } else {
                     self.selectedSheetNo(1);
                 }
+            }
+            
+            initSelectedCodeHasMutated() {
+                let self = this;
+                self.checkInitSheetNo = true;
+                self.selectedCode.valueHasMutated();
             }
 
             startPage(): JQueryPromise<any> {
@@ -362,7 +374,7 @@ module nts.uk.at.view.kdw008.b {
                         block.invisible();
                         service.deleteBusiFormatBySheet(deleteBySheet).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                                self.selectedCode.valueHasMutated();
+                                self.initSelectedCodeHasMutated();
                             });
                         }).fail(function(error) {
                             $('#currentCode').ntsError('set', error);
@@ -376,7 +388,7 @@ module nts.uk.at.view.kdw008.b {
                         block.invisible();
                         service.updateMonthly(this.getMonthlyRightCmdDel()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                                self.selectedCode.valueHasMutated();
+                                self.initSelectedCodeHasMutated();
                             });
                             $("#currentName").focus();
                         }).fail(function(error) {
@@ -447,7 +459,7 @@ module nts.uk.at.view.kdw008.b {
                 block.invisible();
                 service.updateMonthly(this.getMonthlyRightCmdUpdate()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        self.selectedCode.valueHasMutated();
+                        self.initSelectedCodeHasMutated();
                     });
                     $("#currentName").focus();
                 }).fail(function(error) {
@@ -479,13 +491,13 @@ module nts.uk.at.view.kdw008.b {
                     dailyAdd.order = indexOfItem;
                     return new BusinessTypeFormatDetailDto(dailyAdd);
                 });
-                var addOrUpdateBusinessFormatDaily = new AddBusinessFormatDaily(self.selectedCode(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto);
+                let addOrUpdateBusinessFormatDaily = new AddBusinessFormatDaily(self.selectedCode(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto);
 
-                var addOrUpdateBusFormat = new AddOrUpdateBusFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
+                let addOrUpdateBusFormat = new AddOrUpdateBusFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
 
                 service.addDailyDetail(addOrUpdateBusFormat).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        self.selectedCode.valueHasMutated();
+                        self.initSelectedCodeHasMutated();
                     });
                     nts.uk.ui.block.clear();
                 }).fail(function(error) {
