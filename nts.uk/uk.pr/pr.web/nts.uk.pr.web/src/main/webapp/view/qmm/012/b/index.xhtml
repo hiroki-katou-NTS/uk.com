@@ -28,7 +28,7 @@
 				<!-- 新規 -->
 				<button id="B1_1" tabindex="1" class="newBtn" data-bind="click : create, enable: true">#{i18n.getText('QMM012_20')}</button>
 				<!-- 登録 -->
-				<button id="B1_2" tabindex="2" class="registerBtn proceed" data-bind="click: register, enable: true">#{i18n.getText('QMM012_21')}</button>
+				<button id="B1_2" tabindex="2" class="registerBtn proceed" data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null)">#{i18n.getText('QMM012_21')}</button>
 				<!-- コピー -->
 				<button id="B1_3" tabindex="3" class="copyBtn" data-bind="click: copy, enable: false">#{i18n.getText('QMM012_22')}</button>
 				<!-- 削除 -->
@@ -307,7 +307,7 @@
 																					optionsValue: 'code',
 																					optionsText: 'name',
 																					value: socialInsuranceCategory,
-																					enable: !(($parent.statementItem().defaultAtr == 1) &amp;&amp; ($parent.statementItem().socialInsuaEditableAtr == 0)) }"></div>
+																					enable: !(($parent.statementItem().defaultAtr == 1) &amp;&amp; ($parent.statementItem().socialInsuaEditableAtr() == 0)) }"></div>
 									</div>
 									<div class="valign-center control-group">
 										<!-- 労働保険区分 -->
@@ -430,7 +430,7 @@
 										<!-- エラー範囲 -->
 										<div id="C2_10" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_56')}</div>
 										<!-- エラー範囲上限チェック -->
-										<div id="C2_11" tabindex="31" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
+										<div id="C2_11" tabindex="34" data-bind="ntsCheckBox: { checked: errorUpperLimitSettingAtrCus }"></div>
 										<!-- エラー範囲上限入力 -->
 										<input id="C2_12" class="check-validate" tabindex="35" data-bind="ntsNumberEditor: {
 														name: '#[QMM012_57]',

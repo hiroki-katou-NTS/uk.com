@@ -120,9 +120,13 @@ module nts.uk.pr.view.qmm012.share.model {
             case CategoryAtr.PAYMENT_ITEM:
                 return getText('QMM012_3');
             case CategoryAtr.DEDUCTION_ITEM:
-                return getText('QMM012_4')
+                return getText('QMM012_4');
             case CategoryAtr.ATTEND_ITEM:
-                return getText('QMM012_5')
+                return getText('QMM012_5');
+            case CategoryAtr.ATTEND_ITEM:
+                return getText('QMM012_6');
+            case CategoryAtr.ATTEND_ITEM:
+                return getText('QMM012_7');
             default:
                 return "";
         }

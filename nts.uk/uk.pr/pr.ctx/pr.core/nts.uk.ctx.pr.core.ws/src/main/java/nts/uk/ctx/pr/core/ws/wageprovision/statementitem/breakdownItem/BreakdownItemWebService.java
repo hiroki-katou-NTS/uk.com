@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.ws.breakdownItem;
+package nts.uk.ctx.pr.core.ws.wageprovision.statementitem.breakdownItem;
 
 import java.util.List;
 

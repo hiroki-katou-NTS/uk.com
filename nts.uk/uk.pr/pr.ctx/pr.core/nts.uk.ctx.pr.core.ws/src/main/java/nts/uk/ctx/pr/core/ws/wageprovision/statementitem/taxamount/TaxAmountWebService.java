@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.ws.taxamount;
+package nts.uk.ctx.pr.core.ws.wageprovision.statementitem.taxamount;
 
 import java.util.List;
 
