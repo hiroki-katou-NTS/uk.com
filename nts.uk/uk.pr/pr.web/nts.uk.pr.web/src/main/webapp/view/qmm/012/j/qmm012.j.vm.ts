@@ -21,7 +21,7 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
 
         constructor() {
             let self = this;
-            $("#fixed-table").ntsFixedTable({ height: 505, width: 780 });
+            $("#fixed-table").ntsFixedTable({ height: 503, width: 780 });
             let categoryAtrScreenB = getShared('QMM012_B');
             if (categoryAtrScreenB != null) {
                 self.categoryAtr(categoryAtrScreenB);
@@ -136,7 +136,7 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
         englishName: KnockoutObservable<string> = ko.observable('')
         constructor(params: IDataScreen) {
             let self = this;
-            self.salaryItemId(params ? params.salaryItemId : '')
+            self.salaryItemId(params ? params.salaryItemId : '');
             self.itemNameCd(params ? params.itemNameCd : '');
             self.name(params ? params.name : '');
             self.shortName(params ? params.shortName : '');
