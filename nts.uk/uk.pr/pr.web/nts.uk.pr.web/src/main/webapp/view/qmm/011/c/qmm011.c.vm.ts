@@ -35,6 +35,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             let self = this;
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) =>{
+                nts.uk.ui.errors.clearAll();
                 if (self.listOccAccIsHis()[0].hisId == HIS_ID_TEMP) {
                     self.isNewMode(MODE.NEW);
                 }
@@ -208,11 +209,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         openEscreen(){
             let self = this;
-            let dataToPassScreenE : number = 0;
+            let dataToPassScreenE;
             if(self.listOccAccIsHis().length>0){
                 dataToPassScreenE = self.listOccAccIsHis()[0].startYearMonth;
             }
-            self.startYearMonth(dataToPassScreenE);
             setShared('QMM011_E_PARAMS_INPUT', {
                 startYearMonth:  dataToPassScreenE
             });

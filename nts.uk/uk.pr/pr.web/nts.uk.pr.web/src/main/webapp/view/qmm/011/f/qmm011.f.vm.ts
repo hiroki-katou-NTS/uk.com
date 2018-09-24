@@ -122,7 +122,6 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
         }
         
         cancel(){
-            nts.uk.ui.errors.clearAll();
             close();
         }
 

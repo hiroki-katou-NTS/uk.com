@@ -27,6 +27,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             let self = this;
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) => {
+                nts.uk.ui.errors.clearAll();
                 let self = this;
                 if (data == HIS_ID_TEMP) {
                     self.isNewMode(MODE.NEW);
