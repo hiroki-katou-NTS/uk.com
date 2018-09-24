@@ -11,7 +11,7 @@ public enum InsuPremiumFractionClassification {
     // 1:切り上げ
     ROUND_UP(1),
 
-    // 2:切り捨て
+    // 2:四捨五入
     ROUND_4_UP_5(2),
 
     // 3:五捨六入

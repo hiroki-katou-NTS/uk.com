@@ -26,7 +26,7 @@ public class JpaOccAccIsHisRepository extends JpaRepository implements OccAccIsH
     public Optional<OccAccIsHis> getAllOccAccIsHisByCid(String cid) {
         List<QpbmtOccAccIsHis> qpbmtOccAccIsHisList = this.queryProxy().query(SELECT_BY_CID, QpbmtOccAccIsHis.class).setParameter("cid", cid).
                 getList();
-        return Optional.ofNullable(new OccAccIsHis(cid,toDomain(qpbmtOccAccIsHisList)));
+        return Optional.of(new OccAccIsHis(cid,toDomain(qpbmtOccAccIsHisList)));
     }
 
     @Override

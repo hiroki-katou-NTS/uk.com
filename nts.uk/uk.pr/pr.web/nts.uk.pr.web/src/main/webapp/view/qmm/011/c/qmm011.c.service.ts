@@ -20,9 +20,8 @@ module nts.uk.pr.view.qmm011.c {
             let _path = nts.uk.text.format(path.getOccAccIsPrRate, param);
             return nts.uk.request.ajax("pr", _path);
         }
-        export function getOccAccInsurBus(param :any): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.getOccAccInsurBus, param);
-            return nts.uk.request.ajax("pr", _path);
+        export function getOccAccInsurBus(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getOccAccInsurBus);
         }
         export function getAccInsurPreRate(param :any): JQueryPromise<any> {
             let _path = nts.uk.text.format(path.getAccInsurPreRate, param);
