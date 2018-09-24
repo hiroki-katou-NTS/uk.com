@@ -363,10 +363,10 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
 				//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
 				AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
-				GeneralDate ymd = null ;//GeneralDate.ymd(x.getYmd().year(), period.start().month(), period.start().day());
+				GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.getStartDate().getMonth(), period.getStartDate().getDay());
 				x.setYmd(ymd);
 				//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
-				GeneralDate ymdDealine = null ;// GeneralDate.ymd(x.getYmd().year(), period.end().month(), period.end().day());
+				GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.getEndDate().getMonth(), period.getEndDate().getDay());
 				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
 				lstOutput.add(output);
 			});
