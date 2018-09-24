@@ -68,14 +68,14 @@
 }
 
 .table1 tbody {
-	height: 480px;
+	height: 495px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
 /* for IE browser */
 *::-ms-backdrop, .table1 tbody {
-	height: 296px;
+	height: 330px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
