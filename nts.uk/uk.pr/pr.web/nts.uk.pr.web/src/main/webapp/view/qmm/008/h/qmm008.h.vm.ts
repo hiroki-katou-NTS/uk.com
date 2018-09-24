@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 let selectedOffice = params.selectedOffice;
                 self.selectedHistory = params.selectedHistory;
                 self.startMonth(self.selectedHistory.startMonth);
-                self.displayEndMonth(getText('QMM008_208').replace('{0}', self.selectedHistory.displayEnd));
+                self.displayEndMonth(getText('QMM008_208', [self.selectedHistory.displayEnd]));
                 self.screen = params.screen;
                 let history = params.history;
                 if (history && history.length > 0) {
