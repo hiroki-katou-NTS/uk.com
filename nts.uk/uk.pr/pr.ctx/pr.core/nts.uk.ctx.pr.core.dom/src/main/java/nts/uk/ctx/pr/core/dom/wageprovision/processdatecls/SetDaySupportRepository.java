@@ -17,5 +17,7 @@ public interface SetDaySupportRepository {
 
     void update(SetDaySupport domain);
 
+    void addAll(List<SetDaySupport> domains);
+
 
 }

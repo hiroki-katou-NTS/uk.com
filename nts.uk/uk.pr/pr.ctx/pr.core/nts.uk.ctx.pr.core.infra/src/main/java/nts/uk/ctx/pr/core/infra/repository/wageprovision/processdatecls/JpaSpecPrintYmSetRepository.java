@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSpecPri
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPrintYmSetRepository {
@@ -41,6 +42,12 @@ public class JpaSpecPrintYmSetRepository extends JpaRepository implements SpecPr
     @Override
     public void add(SpecPrintYmSet domain) {
         this.commandProxy().insert(QpbmtSpecPrintYmSet.toEntity(domain));
+    }
+
+    @Override
+    public void addAll(List<SpecPrintYmSet> domains) {
+        List<QpbmtSpecPrintYmSet> entities=domains.stream().map(item->QpbmtSpecPrintYmSet.toEntity(item)).collect(Collectors.toList());
+        this.commandProxy().insertAll(entities);
     }
 
     @Override

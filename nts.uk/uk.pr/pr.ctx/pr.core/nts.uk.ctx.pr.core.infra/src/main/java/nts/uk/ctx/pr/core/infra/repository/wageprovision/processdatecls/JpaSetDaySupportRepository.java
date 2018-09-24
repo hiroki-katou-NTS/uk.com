@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtSetDayS
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaSetDaySupportRepository extends JpaRepository implements SetDaySupportRepository {
@@ -48,5 +49,9 @@ public class JpaSetDaySupportRepository extends JpaRepository implements SetDayS
         this.commandProxy().update(QpbmtSetDaySupport.toEntity(domain));
     }
 
-
+    @Override
+    public void addAll(List<SetDaySupport> domains) {
+        List<QpbmtSetDaySupport> entities = domains.stream().map(QpbmtSetDaySupport::toEntity).collect(Collectors.toList());
+        this.commandProxy().insertAll(entities);
+    }
 }

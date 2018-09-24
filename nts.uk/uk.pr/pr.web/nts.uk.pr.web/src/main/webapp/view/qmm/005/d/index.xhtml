@@ -43,9 +43,9 @@
 					<colgroup>
 						<col width="200px"/>
 						<col width="100px"/>
-						<col width="150px"/>
-						<col width="100px"/>
-						<col width="100px"/>
+						<col width="110px"/>
+						<col width="30px"/>
+						<col width="110px"/>
 						<col width="100px"/>
 						
 					</colgroup>
@@ -137,11 +137,10 @@
 						</td>
 						<!-- D5_2 -->
 						<td>
-							<input data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'DecimalPrimitiveValue'}" />
+							<span style="width: 45px"><input data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'DecimalPrimitiveValue' }" style="width: 45px"/></span>
+							<span class="label">#{i18n.getText('QMM005_40')}</span>
 						</td>
-						<td>
-							<div class="label">#{i18n.getText('QMM005_40')}</div>	
-						</td>
+
 						
 						</tr>
 						<tr>
@@ -149,7 +148,7 @@
 								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
 							</td>
 							<td>
-								<div class="label">#{i18n.getText('QMM005_56')}</div>	
+								<span class="label" style="padding-left: 30px">#{i18n.getText('QMM005_56')}</span>
 							</td>
 							<!-- D3_17 -->
 							<td>
@@ -261,14 +260,25 @@
 								<div class="label">#{i18n.getText('QMM005_65')}</div>
 							</td>
 						</tr>
-						
-						<tr>
-							<td></td>
-							<!-- D4_12 -->
-							<td>
-								<div class="label">#{i18n.getText('QMM005_66')}</div>
-							</td>
-						</tr>
+					</tbody>
+				</table>
+
+
+
+				<!-- D4_12 -->
+				<div class="label" style="padding-left: 200px;margin-top: 15px;margin-bottom: 20px;" >#{i18n.getText('QMM005_66')}</div>
+
+				<table>
+					<colgroup>
+						<col width="200px"/>
+						<col width="80px"/>
+						<col width="120px"/>
+						<col width="120px"/>
+						<col width="120px"/>
+						<col width="120px"/>
+					</colgroup>
+					<tbody>
+
 						<tr>
 							<!-- D4_13 -->
 							<td>
@@ -318,19 +328,28 @@
 											]}"></div>
 							</td>
 						</tr>
-						
-						<tr>
-							<!-- D4_21  -->
-							<td>
-								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_45')}</div>
-							</td>
-							<!-- D4_22 -->
-							<td>
-								<div class="label">#{i18n.getText('QMM005_68')}</div>
-							</td>
-							<!--  D4_23 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+					</tbody>
+				</table>
+
+				<table>
+				<colgroup>
+					<col width="200px"/>
+					<col width="120px"/>
+					<col width="120px"/>
+					<col width="120px"/>
+					<col width="120px"/>
+					<col width="120px"/>
+				</colgroup>
+				<tbody>
+
+				<tr>
+					<!-- D4_21  -->
+					<td><div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_45')}</div></td>
+					<!-- D4_22 -->
+					<td><span class="label">#{i18n.getText('QMM005_72')}</span></td>
+					<td><!--  D4_23 -->
+
+						<div data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: employmentInsuranceStandardMonth,
 											optionsValue: 'code',
@@ -338,13 +357,12 @@
 											value: employmentInsuranceStandardMonthSelectedCode,
 											optionsText: 'name',
 											columns: [
-												
+
 												{ prop: 'name', length: 5 },
-											]}"></div>
-							</td>
-							<!--  D4_24 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+											]}"></div></td>
+					<td><!--  D4_24 -->
+
+						<div data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: employmentInsuranceStandardDate,
 											optionsValue: 'code',
@@ -352,50 +370,53 @@
 											value: employmentInsuranceStandardDateSelectedCode,
 											optionsText: 'name',
 											columns: [
-												
+
 												{ prop: 'name', length: 5 },
-											]}"></div>
-							</td>
-						
-						</tr>
+											]}"></div></td>
+
+
+
+				</tr>
+				</tbody>
+				</table>
+
 						
 						<!-- D4_27 -->
-						<tr>
-							<td></td>
-							<td><div class="label">#{i18n.getText('QMM005_74')}</div></td>
-						</tr>
+
+
+							<div class="label" style="padding-left: 200px">#{i18n.getText('QMM005_74')}</div>
+
 						
 						<!-- D4_28 -->
-						<tr>
-							<td></td>
-							<td><div class="label">#{i18n.getText('QMM005_75')}</div></td>
-						</tr>
+
+
+							<div class="label" style="padding-left: 200px">#{i18n.getText('QMM005_75')}</div>
+
 						
-						<tr>
+						<div class="flex valign-center" style="padding-top: 20px;">
 							<!-- D4_29 -->
-							<td>
+
 								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_112')}</div>
-							</td>
+
 							<!-- D4_30 -->
-							<td>
+
 								<div data-bind="ntsRadioBoxGroup: {
 									options: timeCloseDate,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: timeCloseDateSelectedCode,
-									}"></div>
-							</td>
+									}" style="width: 200px;margin-left: 80px;"></div>
+
+						</div>
+
 						
-						</tr>
 						
-						
-						<tr>
-							<td></td>
+						<div class="flex valign-center" style="margin-top: 5px">
 							<!-- D4_33 -->
-							<td><div class="label">#{i18n.getText('QMM005_68')}</div></td>
+							<div class="label" style="width: 70px;margin-left: 245px;">#{i18n.getText('QMM005_68')}</div>
 							<!--  D4_34 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+
+								<div  data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options:  timeBaseYear,
 											optionsValue: 'code',
@@ -407,10 +428,10 @@
 												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-							</td>
+
 							<!--  D4_36 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+
+								<div class="item-padding" data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: timeClosingStandardMonth,
 											optionsValue: 'code',
@@ -422,10 +443,10 @@
 												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-							</td>
+
 							<!--  D4_38 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+
+								<div class="item-padding" data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: timeReferenceStandardDay,
 											optionsValue: 'code',
@@ -437,18 +458,18 @@
 												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-							</td>
-						</tr>
-						<tr>
+
+						</div>
+						<div class="flex valign-center" style="margin-top: 15px">
 							<!-- D4_40 -->
-							<td>
-								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>
-							</td>
+
+							<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>
+
 							<!-- D4_41 -->
-							<td><div class="label">#{i18n.getText('QMM005_68')}</div></td>
+							<span class="label" style="padding-left: 90px;">#{i18n.getText('QMM005_68')}</span>
 							<!--  D4_42 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+
+								<div  data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: yearSelectClassification,
 											optionsValue: 'code',
@@ -460,10 +481,10 @@
 												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-							</td>
+
 							<!--  D4_44 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+
+								<div class="item-padding" data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: incomeTaxBaseMonth,
 											optionsValue: 'code',
@@ -475,10 +496,10 @@
 												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-							</td>
+
 							<!--  D4_46 -->
-							<td>
-								<div data-bind="ntsComboBox: {
+
+								<div class="item-padding" data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: incomeTaxBaseDate,
 											optionsValue: 'code',
@@ -490,13 +511,12 @@
 												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-							</td>
-						</tr>
+
+						</div>
+
 						
 					
-					</tbody>
-				
-				</table>
+
 				
 												
 					

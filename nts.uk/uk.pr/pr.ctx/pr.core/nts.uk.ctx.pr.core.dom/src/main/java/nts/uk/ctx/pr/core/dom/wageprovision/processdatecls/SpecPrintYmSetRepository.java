@@ -15,5 +15,9 @@ public interface SpecPrintYmSetRepository {
 
     void add(SpecPrintYmSet domain);
 
+    void addAll(List<SpecPrintYmSet> domains);
+
     void update(SpecPrintYmSet domain);
+
+
 }
