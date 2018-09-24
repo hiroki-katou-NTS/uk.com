@@ -190,13 +190,23 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 					.executeUpdate();
 	}
 
+	private GrantDateTbl createGrantDateTbl(KshstGrantDateTbl etity) {
+		List<ElapseYear> ElapseYear = this.findElapseByGrantDateCd(etity.pk.companyId,etity.pk.specialHolidayCode,etity.pk.grantDateCd);
+		return GrantDateTbl.createFromJavaType( etity.pk.companyId,
+												etity.pk.specialHolidayCode,
+												etity.pk.grantDateCd, 
+												etity.grantName,
+												etity.isSpecified == 1 ? true : false, 
+												etity.isSpecified == 1 ? true : false,
+												etity.numberOfDays == null ? 0 : (int) etity.numberOfDays, 
+												ElapseYear);
+	}
+
 	@Override
 	public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode) {
-		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, Object[].class)
+		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, KshstGrantDateTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
-				.getSingle(c -> {
-					return createGdDomainFromEntity(c);
-				});
+				.getSingle(c -> createGrantDateTbl(c));
 	}
 }

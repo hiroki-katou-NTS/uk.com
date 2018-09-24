@@ -205,7 +205,7 @@ module nts.custom.component {
             <div class="right-area">
                 <div class='header-info'>
                     <div class="avatar-group">
-                        <div class="active-panel" data-bind="click: action.avatar">
+                        <div class="active-panel" data-bind="click: function() { if(!employee.id()) { return; } action.avatar(); }">
                             <img data-bind="attr: { src: person.avatar }" class="avatar" tabindex="13" />
                         </div>
                     </div>
@@ -247,6 +247,7 @@ module nts.custom.component {
                             <div class="column">
                                 <button class="btn btn-location" type="button" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             click: action.location,
                                             text: text('CPS001_20'),
                                             style: { 
@@ -255,6 +256,7 @@ module nts.custom.component {
                                         tabindex="14"></button>
                                 <button class="btn btn-details" type="button" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             click: action.ebook,
                                             text: text('CPS001_19'),   
                                             style: { 
@@ -265,6 +267,7 @@ module nts.custom.component {
                             <div class="column">
                                 <button class="btn btn-print" type="button" tabindex="16" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             text: text('CPS001_17'),
                                             style: { 
                                                 visibility: auth.allowPrintRef() ? 'visible' : 'hidden' 
@@ -445,6 +448,7 @@ module nts.custom.component {
                             person.id('');
                             person.age('');
                             person.gender('');
+                            person.avatar(DEF_AVATAR);
 
 
                             employee.code('');
@@ -462,6 +466,7 @@ module nts.custom.component {
                     person.id('');
                     person.age('');
                     person.gender('');
+                    person.avatar(DEF_AVATAR);
 
 
                     employee.code('');

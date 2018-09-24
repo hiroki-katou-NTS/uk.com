@@ -121,13 +121,13 @@ module cps001.a.vm {
             setInterval(() => {
                 let id = ko.toJS(self.employee.employeeId),
                     aut = _(self.layout.listItemCls())
-                         .map((m: any) => m.items || undefined)
-                         .filter(x => !!x)
-                         .flatten() // flat set item
-                         .flatten() // flat list item
-                         .map((m: any) => !ko.toJS(m.readonly))
-                         .filter(x => !!x)
-                         .value();
+                        .map((m: any) => m.items || undefined)
+                        .filter(x => !!x)
+                        .flatten() // flat set item
+                        .flatten() // flat list item
+                        .map((m: any) => !ko.toJS(m.readonly))
+                        .filter(x => !!x)
+                        .value();
 
                 self.saveAble(!!aut.length && !hasError() && !!id);
             }, 0);
@@ -259,7 +259,7 @@ module cps001.a.vm {
                         let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
                         $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
-                        alert(mes.message);
+                        alert(mes);
                     }
 
                 });
@@ -420,9 +420,9 @@ module cps001.a.vm {
                         query: ILayoutQuery = {
                             layoutId: id,
                             browsingEmpId: ko.toJS(__viewContext.viewModel.employee.employeeId),
-                            standardDate: ddate
+                            standardDate: !_.isNaN(ddate.getTime()) ? ddate : moment.utc().toDate()
                         };
-
+                    
                     if (!query.browsingEmpId) {
                         self.listItemCls.removeAll();
                         return;
