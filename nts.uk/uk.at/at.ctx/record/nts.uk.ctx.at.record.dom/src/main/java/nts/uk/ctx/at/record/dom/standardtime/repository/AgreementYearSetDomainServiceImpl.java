@@ -75,7 +75,7 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 	}
 
 	@Override
-	public List<String> update(AgreementYearSetting agreementYearSetting, Optional<WorkingConditionItem> workingConditionItem) {
+	public List<String> update(AgreementYearSetting agreementYearSetting, Optional<WorkingConditionItem> workingConditionItem, Integer yearMonthValueOld) {
 		List<String> errors = new ArrayList<>();
 		
 		LoginUserContext login = AppContexts.user();
@@ -112,7 +112,7 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 		}
 
 		if (errors.isEmpty()) {
-			this.agreementYearSettingRepository.update(agreementYearSetting);
+			this.agreementYearSettingRepository.updateById(agreementYearSetting, yearMonthValueOld);
 		}
 		return errors;
 	}

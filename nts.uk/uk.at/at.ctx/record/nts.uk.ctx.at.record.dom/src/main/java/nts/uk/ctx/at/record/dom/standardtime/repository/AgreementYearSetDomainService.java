@@ -11,7 +11,7 @@ public interface AgreementYearSetDomainService {
 
 	List<String> add(AgreementYearSetting agreementYearSetting, Optional<WorkingConditionItem> workingConditionItem);
 	
-	List<String> update(AgreementYearSetting agreementYearSetting, Optional<WorkingConditionItem> workingConditionItem);
+	List<String> update(AgreementYearSetting agreementYearSetting, Optional<WorkingConditionItem> workingConditionItem, Integer yearMonthValueOld);
 	
 	void delete(String employeeId, int yearValue);
 	
