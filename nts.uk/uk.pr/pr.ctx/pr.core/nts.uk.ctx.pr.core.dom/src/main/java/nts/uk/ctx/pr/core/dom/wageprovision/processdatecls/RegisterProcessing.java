@@ -13,22 +13,22 @@ import java.util.List;
 @Stateless
 public class RegisterProcessing {
     @Inject
-    ValPayDateSetRepository valPayDateSetRepository;
+    private ValPayDateSetRepository valPayDateSetRepository;
 
     @Inject
-    ProcessInformationRepository processInformationRepository;
+    private ProcessInformationRepository processInformationRepository;
 
     @Inject
-    SpecPrintYmSetRepository specPrintYmSetRepository;
+    private SpecPrintYmSetRepository specPrintYmSetRepository;
 
     @Inject
-    SetDaySupportRepository setDaySupportRepository;
+    private SetDaySupportRepository setDaySupportRepository;
 
     @Inject
-    CurrProcessDateRepository currProcessDateRepository;
+    private CurrProcessDateRepository currProcessDateRepository;
 
     @Inject
-    EmpTiedProYearRepository empTiedProYearRepository;
+    private EmpTiedProYearRepository empTiedProYearRepository;
 
     private static final int NUMBER_OF_MONTH_IN_TWO_YEAR = 24;
 

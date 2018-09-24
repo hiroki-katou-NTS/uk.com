@@ -62,9 +62,11 @@ public class UpdateProcessingCommandHandler extends CommandHandler<ProcessingSeg
 				addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getBaseYear(),
 				addCommand.getValPayDateSet().getAdvancedSetting().getSociInsuStanDate().getRefeDate(),
 				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate(),
-				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseMonth(),
-				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseYear(),
-				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getRefeDate()));
+				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate()==1 ? addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseMonth():null,
+				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate()==1 ? addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getBaseYear():null,
+				addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getTimeCloseDate()==1 ? addCommand.getValPayDateSet().getAdvancedSetting().getCloseDate().getRefeDate():null
+			)
+		);
 
 		
 		

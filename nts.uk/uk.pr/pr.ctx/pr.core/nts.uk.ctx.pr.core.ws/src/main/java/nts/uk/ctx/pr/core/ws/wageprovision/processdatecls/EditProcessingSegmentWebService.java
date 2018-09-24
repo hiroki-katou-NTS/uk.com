@@ -19,7 +19,7 @@ import javax.ws.rs.*;
 @Produces("application/json")
 public class EditProcessingSegmentWebService extends WebService {
     @Inject
-    ValPayDateSetFinder finder;
+    private ValPayDateSetFinder finder;
 
     @Inject
     private UpdateProcessingCommandHandler updateProcessingCommandHandler;
