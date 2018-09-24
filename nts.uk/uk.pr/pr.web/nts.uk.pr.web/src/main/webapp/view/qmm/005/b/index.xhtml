@@ -23,15 +23,15 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--B1_1	新規-->
-            <button class=""
+            <button tabindex="1" id="B1_1" class=""
                     data-bind="click: creatNewProcessYear, enable: !isNewMode()">#{i18n.getText('QMM005_22')}</button>
 
             <!--B1_2	登録-->
-            <button class="proceed "
+            <button tabindex="2" id="B1_2" class="proceed "
                     data-bind="click: registration">#{i18n.getText('QMM005_1')}</button>
 
             <!--B1_3	閉じる-->
-            <button style="margin-left: 165px;"
+            <button tabindex="3" id="B1_3" style="margin-left: 165px;"
                     data-bind="click: cancel">#{i18n.getText('QMM005_23')}</button>
         </div>
         <!--B2_4	処理年-->
@@ -42,9 +42,9 @@
                     <td style="border: 0px; vertical-align: top">
                         <div id="clf-component">
                             <!--B2_1	処理年パネル-->
-                            <div data-bind="ntsPanel:{}">
+                            <div id="B2_1" class="bg-header" data-bind="ntsPanel:{}">
                                 <!--B2_2	処理年一覧-->
-                                <table id="single-list" data-bind="ntsGridList: {
+                                <table id="B2_2" data-bind="ntsGridList: {
                                         height: 350,
                                         dataSource: processingYearList,
                                         primaryKey: 'code',
@@ -63,22 +63,19 @@
                     <td style="border: 0px; vertical-align: top">
                         <div>
                             <!--B3_1	処理区分-->
-                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
+                            <div class="form_label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
                             <!--B3_2	処理区分名称-->
                             <span class="label" data-bind="text: processingDivisionName"></span>
                         </div>
                         <div class="margin-top-12">
                             <!--B3_3	処理年-->
-                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
+                            <div class="form_label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
                             <!--B3_4	処理年-->
                             <div data-bind="ntsDatePicker: {value: processingYear, dateFormat: 'YYYY', enable: isNewMode()}"></div>
-                            <!--B3_5	処理年和暦-->
-                            <span><label data-bind="text: processingYearJapanLabel"></label></span>
                             <!--B3_6	反映-->
-                            <button class="small"
-                                    data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
+                            <button class="small" style="margin-left: 20px" data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
                             <!--B3_7	システム基準日情報反映-->
-                            <button class="small" style="margin-left: 50px;" data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
+                            <button class="small" style="margin-left: 20px;" data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
                         </div>
                         <table id="expand-example">
                             <tbody>
@@ -87,17 +84,17 @@
                                 <!--B5_1	展開-->
                                 <!--B6_1	縮小-->
                                 <th>
-                                    <button style="float: right;" class="toggle-expand small" data-bind="click: toggle"><span
+                                    <button tabindex="9" id="B5_1" style="float: right;" class="toggle-expand small" data-bind="click: toggle"><span
                                             data-bind="text: btnText"></span></button>
                                 </th>
                             </tr>
-                            <tr class="bg-green">
+                            <tr class="bg-header">
                                 <th rowspan="2"></th>
                                 <!--B4_2	給与設定-->
                                 <th colspan="5">#{i18n.getText('QMM005_28')}</th>
                                 <th colspan="5" style="border-right: none;" data-bind="css: { hidden: !show() }"></th>
                             </tr>
-                            <tr class="bg-green">
+                            <tr class="bg-header">
                                 <!--B4_3	支払年月日-->
                                 <th>#{i18n.getText('QMM005_29')}</th>
                                 <!--B4_4	社員抽出基準日-->
@@ -121,7 +118,7 @@
                             </tr>
                             <com:ko-foreach bind="settingPaymentList">
                                 <tr>
-                                    <td class="bg-green">
+                                    <td class="bg-header">
                                         <!--B4_8	対象月-->
                                         <div class="label" data-bind="text: targetMonth"></div>
                                     </td>
@@ -132,47 +129,47 @@
                                     </td>
                                     <td>
                                         <!--B4_12	社員抽出基準日-->
-                                        <div data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                        <div tabindex="5" data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td>
                                         <div style="width: 150px">
                                             <!--B4_13	社会保険徴収月-->
-                                            <span data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth'}"></span>
+                                            <span tabindex="6" data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth'}"></span>
                                             <!--B4_14	分を徴収-->
                                             <span class="label" data-bind="if: socialInsuranceCollectionMonth">#{i18n.getText('QMM005_37')}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <!--B4_15	明細書印字年月-->
-                                        <div data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth'}"></div>
+                                        <div tabindex="7" data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth'}"></div>
                                     </td>
                                     <td>
                                         <div style="width: 85px;">
                                             <!--B4_16	要勤務日数-->
-                                            <input data-bind="ntsNumberEditor: {value: numberOfWorkingDays}"
+                                            <input tabindex="8" data-bind="ntsNumberEditor: {value: numberOfWorkingDays}"
                                                    class="number-editor"/>
                                             <!--B4_17	日-->
                                             <span data-bind="if:numberOfWorkingDays">#{i18n.getText('QMM005_40')}</span></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_7	社会保険基準日-->
-                                        <div data-bind="ntsDatePicker: {value: socialInsuranceStandardDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                        <div tabindex="11" data-bind="ntsDatePicker: {value: socialInsuranceStandardDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_8	雇用保険基準日-->
-                                        <div data-bind="ntsDatePicker: {value: employmentInsuranceStandardDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                        <div tabindex="12" data-bind="ntsDatePicker: {value: employmentInsuranceStandardDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_9	勤怠締め日-->
-                                        <div data-bind="ntsDatePicker: {value: timeClosingDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                        <div tabindex="13" data-bind="ntsDatePicker: {value: timeClosingDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_10	所得税基準日-->
-                                        <div data-bind="ntsDatePicker: {value: incomeTaxReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                        <div tabindex="14" data-bind="ntsDatePicker: {value: incomeTaxReferenceDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_11	経理締め日-->
-                                        <div data-bind="ntsDatePicker: {value: accountingClosureDate, dateFormat: 'YYYY/MM/DD'}"></div>
+                                        <div tabindex="15" data-bind="ntsDatePicker: {value: accountingClosureDate, dateFormat: 'YYYY/MM/DD'}"></div>
                                     </td>
                                 </tr>
                             </com:ko-foreach>

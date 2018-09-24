@@ -39,3 +39,15 @@ th{
 .number-editor {
     width: 35px;
 }
+
+.bg-header {
+	background-color: #cff1a5 !important;
+}
+
+#clf-component div.caret-background:after{
+	color: #cff1a5 !important;
+}
+
+.form_label {
+	width: 85px;
+}

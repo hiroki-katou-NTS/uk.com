@@ -10,7 +10,7 @@
         <script>
             var dialogSize = {
                 width : 500,
-                height : 635
+                height : 655
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -28,13 +28,13 @@
                 <div class="label" style="margin-bottom: 15px;">#{i18n.getText('QMM005_6')}</div>
                 <div class="flex valign-center" style="margin-bottom: 15px">
                     <!--    E1_2	処理区分	-->
-                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
+                    <div style="width: 135px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
                     <!--    E1_3    処理区分	 processingDivision-->
                     <div class="label" data-bind="text: processingClassification"></div>
                 </div>
                 <div class="flex valign-center" style="margin-bottom: 15px">
                     <!--    E1_4    処理年 -->
-                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
+                    <div style="width: 110px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
                     <!--    E1_5	処理年西暦   -->
                     <span class="label" data-bind="text: processingYearAD">1.5</span>
                     <!--    E1_6	処理年和暦  (heisei) -->
@@ -57,7 +57,7 @@
                                 <span class="label padding-left-6 padding-top-12"
                                       data-bind="text: reflectionStartYear"></span>
                                 <!--    E2_3	反映開始月-->
-                                <span class="padding-left-6 margin-top-6" id="combo-box" data-bind="ntsComboBox: {
+                                <span tabindex="1" class="padding-left-6 margin-top-6" id="combo-box" data-bind="ntsComboBox: {
                                 name: 'Sample List',
                                 options: reflectionStartMonthList,
                                 optionsValue: 'code',
@@ -80,7 +80,7 @@
                         </td>
                         <td>
                             <!--    E2_7	毎月の支払日-->
-                            <div data-bind="ntsCheckBox: {checked: dailyPaymentDateCheck}">#{i18n.getText('QMM005_49')}</div>
+                            <div tabindex="2" data-bind="ntsCheckBox: {checked: dailyPaymentDateCheck}">#{i18n.getText('QMM005_49')}</div>
                         </td>
                         <td>
                             <!--    E2_8		支払日設定-->
@@ -91,7 +91,7 @@
                         <td></td>
                         <td>
                             <!--    E2_9		社員抽出基準日-->
-                            <div data-bind="ntsCheckBox: { checked: empExtractionRefDateCheck }">#{i18n.getText('QMM005_30')}</div>
+                            <div tabindex="3" data-bind="ntsCheckBox: { checked: empExtractionRefDateCheck }">#{i18n.getText('QMM005_30')}</div>
                         </td>
                         <td>
                             <!--    E2_10		社員抽出基準日設定-->
@@ -102,7 +102,7 @@
                         <td></td>
                         <td>
                             <!--    E2_11		給与社会保険徴収月-->
-                            <div data-bind="ntsCheckBox: { checked:  socialInsuranceMonthCheck }">#{i18n.getText('QMM005_64')}</div>
+                            <div tabindex="4" data-bind="ntsCheckBox: { checked:  socialInsuranceMonthCheck }">#{i18n.getText('QMM005_64')}</div>
                         </td>
                         <td>
                             <!--    E2_12		社会保険徴収月設定-->
@@ -113,7 +113,7 @@
                         <td></td>
                         <td>
                             <!--    E2_13		明細書印字年月-->
-                            <div data-bind="ntsCheckBox: { checked: specPrintDateCheck }">#{i18n.getText('QMM005_32')}</div>
+                            <div tabindex="5" data-bind="ntsCheckBox: { checked: specPrintDateCheck }">#{i18n.getText('QMM005_32')}</div>
                         </td>
                         <td>
                             <!--    E2_14		明細書印字年月設定-->
@@ -135,14 +135,14 @@
                         <td></td>
                         <td colspan="2">
                             <!--    E2_15		以下の設定は原則チェックありの状態としてください。-->
-                            <div class="label">#{i18n.getText('QMM005_86')}</div>
+                            <div style="padding: 10px 0px;" class="label">#{i18n.getText('QMM005_86')}</div>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
                             <!--    E2_16		社会保険基準日-->
-                            <div data-bind="ntsCheckBox: { checked: socialInsuranceDateCheck }">#{i18n.getText('QMM005_44')}</div>
+                            <div tabindex="6" data-bind="ntsCheckBox: { checked: socialInsuranceDateCheck }">#{i18n.getText('QMM005_44')}</div>
                         </td>
                         <td>
                             <!--    E2_17		社会保険基準日設定-->
@@ -154,7 +154,7 @@
                         <td></td>
                         <td>
                             <!--    E2_18		雇用保険基準日-->
-                            <div data-bind="ntsCheckBox: { checked: empInsuranceStandardDateCheck }">#{i18n.getText('QMM005_45')}</div>
+                            <div tabindex="7" data-bind="ntsCheckBox: { checked: empInsuranceStandardDateCheck }">#{i18n.getText('QMM005_45')}</div>
                         </td>
                         <td>
                             <!--    E2_19		雇用保険基準日設定-->
@@ -165,7 +165,7 @@
                         <td></td>
                         <td>
                             <!--    E2_20		勤怠締め日-->
-                            <div data-bind="ntsCheckBox: { checked: timeClosingCheck }">#{i18n.getText('QMM005_112')}</div>
+                            <div tabindex="8" data-bind="ntsCheckBox: { checked: timeClosingCheck }">#{i18n.getText('QMM005_112')}</div>
 
                         </td>
                         <td>
@@ -177,7 +177,7 @@
                         <td></td>
                         <td>
                             <!--    E2_22		所得税基準日-->
-                            <div data-bind="ntsCheckBox: { checked: incomeTaxReferenceCheck  }">#{i18n.getText('QMM005_46')}</div>
+                            <div tabindex="8" data-bind="ntsCheckBox: { checked: incomeTaxReferenceCheck  }">#{i18n.getText('QMM005_46')}</div>
                         </td>
                         <td>
                             <!--    E2_23		所得税基準日設定-->
@@ -188,7 +188,7 @@
                         <td></td>
                         <td>
                             <!--    E2_24		経理締め日-->
-                            <div data-bind="ntsCheckBox: { checked: accountingClosureDateCheck }">#{i18n.getText('QMM005_47')}</div>
+                            <div tabindex="9" data-bind="ntsCheckBox: { checked: accountingClosureDateCheck }">#{i18n.getText('QMM005_47')}</div>
                         </td>
                         <td>
                             <!--    E2_25		経理締め日設定-->
@@ -200,12 +200,10 @@
             <hr/>
             <div id="button-wraper" class="margin-top-12">
                 <!--    E3_1	反映-->
-                <button type="button" class="proceed x-large"
-                        data-bind="click: reflect"
-                        tabindex="1">#{i18n.getText('QMM005_89')}</button>
+                <button tabindex="10" type="button" class="proceed x-large"
+                        data-bind="click: reflect">#{i18n.getText('QMM005_89')}</button>
                 <!--    E3_2	キャンセル-->
-                <button type="button" data-bind="click: cancel"
-                        tabindex="2">#{i18n.getText('QMM005_61')}</button>
+                <button tabindex="11" type="button" data-bind="click: cancel">#{i18n.getText('QMM005_61')}</button>
             </div>
         </div>
     </ui:define>
