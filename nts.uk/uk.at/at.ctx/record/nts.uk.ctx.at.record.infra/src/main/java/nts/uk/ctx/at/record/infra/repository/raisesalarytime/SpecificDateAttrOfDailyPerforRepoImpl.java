@@ -163,7 +163,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 //		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)

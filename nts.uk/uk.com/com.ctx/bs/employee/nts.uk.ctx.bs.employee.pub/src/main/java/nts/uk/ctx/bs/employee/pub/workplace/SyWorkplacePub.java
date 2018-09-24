@@ -222,6 +222,6 @@ public interface SyWorkplacePub {
 	 * @param baseDates the base dates
 	 * @return the workplace map code base date name
 	 */
-	Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+	Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates);
 }

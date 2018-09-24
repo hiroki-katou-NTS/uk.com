@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -85,7 +84,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 		if (erAl.getErrorAlarmCondition() == null || erAl.getErrorDisplayItem() == null) {
 			return new ArrayList<>();
 		}
-		Stopwatches.start("ERAL");
+		
 		List<DailyRecordDto> data = null;
 		if(record != null){
 			DailyRecordDto recordDto = DailyRecordDto.from(record);
@@ -98,7 +97,7 @@ public class DetermineErrorAlarmWorkRecordService implements ErAlCheckService {
 													erAl.getCode(),
 													Arrays.asList(erAl.getErrorDisplayItem()));
 										}).collect(Collectors.toList());
-		Stopwatches.stop("ERAL");
+		
 		return result;
 	}
 

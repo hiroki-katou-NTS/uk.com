@@ -56,7 +56,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 //		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
@@ -81,7 +81,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -141,7 +141,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.persistence.exceptions.IntegrityException;
+
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 
@@ -20,5 +22,8 @@ public interface AgreementMonthSettingRepository {
 	void delete(String employeeId, BigDecimal yearMonthValue);
 	
 	boolean checkExistData(String employeeId, BigDecimal yearMonthValue);
+	
+	// fix bug 100605
+	void updateById(AgreementMonthSetting agreementMonthSetting, Integer yearMonthValueOld);
 	
 }

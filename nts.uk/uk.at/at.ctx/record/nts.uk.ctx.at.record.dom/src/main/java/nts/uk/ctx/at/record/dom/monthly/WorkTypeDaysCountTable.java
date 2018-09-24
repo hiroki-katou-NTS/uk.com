@@ -163,7 +163,7 @@ public class WorkTypeDaysCountTable {
 	 * @param addDays 加算する日数
 	 */
 	private void confirmCountByWorkTypeUnit(
-			WorkTypeClassification workTypeClass, WorkTypeSet workTypeSet, double addDays){
+			WorkTypeClassification workTypeClass, Optional<WorkTypeSet> workTypeSet, double addDays){
 		
 		// 勤務種類設定を確認する
 		boolean publicHoliday = false;
@@ -172,13 +172,13 @@ public class WorkTypeDaysCountTable {
 		int sumAbsenceNo = -1;
 		int sumSpHolidayNo = -1;
 		CloseAtr closeAtr = null;
-		if (workTypeSet != null) {
-			publicHoliday = (workTypeSet.getDigestPublicHd() == WorkTypeSetCheck.CHECK); 
-			notCountForHolidayDays = (workTypeSet.getCountHodiday() != WorkTypeSetCheck.CHECK);
+		if (workTypeSet != null && workTypeSet.isPresent()) {
+			publicHoliday = (workTypeSet.get().getDigestPublicHd() == WorkTypeSetCheck.CHECK); 
+			notCountForHolidayDays = (workTypeSet.get().getCountHodiday() != WorkTypeSetCheck.CHECK);
 			//generateCompensatoryLeave = (workTypeSet.getGenSubHodiday() == WorkTypeSetCheck.CHECK);
-			sumAbsenceNo = workTypeSet.getSumAbsenseNo();
-			sumSpHolidayNo = workTypeSet.getSumSpHodidayNo();
-			closeAtr = workTypeSet.getCloseAtr();
+			sumAbsenceNo = workTypeSet.get().getSumAbsenseNo();
+			sumSpHolidayNo = workTypeSet.get().getSumSpHodidayNo();
+			closeAtr = workTypeSet.get().getCloseAtr();
 		}
 		
 		switch (workTypeClass){
