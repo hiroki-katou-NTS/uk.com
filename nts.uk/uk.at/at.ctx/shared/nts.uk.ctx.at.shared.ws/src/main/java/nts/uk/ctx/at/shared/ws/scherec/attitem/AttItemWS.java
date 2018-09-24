@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemFinder;
 import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemParam;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 
 @Path("at/shared/scherec/attitem")
 @Produces("application/json")
@@ -20,13 +20,13 @@ public class AttItemWS {
 
 	@POST
 	@Path("getDailyAttItem")
-	public List<AttItemNameImport> getDailyAttItemByIdAndAtr(AttItemParam param) {
+	public List<AttItemName> getDailyAttItemByIdAndAtr(AttItemParam param) {
 		return this.finder.getDailyAttItemByIdAndAtr(param);
 	}
 
 	@POST
 	@Path("getMonthlyAttItem")
-	public List<AttItemNameImport> getMonthlyAttItemByIdAndAtr(AttItemParam param) {
+	public List<AttItemName> getMonthlyAttItemByIdAndAtr(AttItemParam param) {
 		return this.finder.getMonthlyAttItemByIdAndAtr(param);
 	}
 }
