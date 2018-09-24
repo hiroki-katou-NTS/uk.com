@@ -80,9 +80,9 @@ public class RegisterProcessing {
         int referDateEmploymentInsuranceStanDate = valPayDateSet.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value;
         int baseMonthEmploymentInsuranceStanDate = valPayDateSet.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value;
         int timeCloseDate = valPayDateSet.getAdvancedSetting().getCloseDate().getTimeCloseDate();
-        int refeDateClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null);
-        int baseMonthClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null);
-        int baseYearClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null);
+        Integer refeDateClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null);
+        Integer baseMonthClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null);
+        Integer baseYearClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null);
         int inComRefeMonth = valPayDateSet.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseMonth().value;
         int inComRefeYear = valPayDateSet.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseYear().value;
         int inComRefeDate = valPayDateSet.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value;

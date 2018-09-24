@@ -142,14 +142,14 @@ public class QpbmtValPayDateSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLOSE_DATE_BASE_MONTH")
-	public int closeDateBaseMonth;
+	public Integer closeDateBaseMonth;
 
 	/**
 	 * 基準年
 	 */
 	@Basic(optional = true)
 	@Column(name = "CLOSE_DATE_BASE_YEAR")
-	public int closeDateBaseYear;
+	public Integer closeDateBaseYear;
 
 	/**
 	 * 基準日
