@@ -9,15 +9,16 @@ module nts.uk.pr.view.qmm012.a.viewmodel {
 
         categoryAtr: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
         selectedCategoryAtr: KnockoutObservable<number> = ko.observable(null);
-        item: KnockoutObservable<String> = ko.observable('');
+        item: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
             self.categoryAtr(model.getCategoryAtr());
             self.selectedCategoryAtr.subscribe(category => {
-                self.item(model.getCategoryAtrText(category));           
+                self.item(model.getCategoryAtrText2(parseInt(category)));           
             });
             self.selectedCategoryAtr(0);
+            $("#A2_2").focus();
         }
         saveData() {
             let self = this;

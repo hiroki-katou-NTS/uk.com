@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
             var dialogSize = {
-                width: 450,
-                height: 600
+                width: 370,
+                height: 540
             };
         </script>
 			<com:scriptfile set="IGNITE" />
@@ -20,24 +20,22 @@
 			<com:stylefile path="qmm012.k.style.css" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
-				<!-- K1_1-->
-				<div class="label">#{i18n.getText('QMM012_98')}</div>
-			</div>
 			<div id="contents-area">
+				<!-- K1_1-->
+				<div class="label" style="margin-left: 10px;">#{i18n.getText('QMM012_122')}</div>
 				<!-- K2_1 -->
 				<div style="padding: 10px;">
 					<table id="K2_1"
 						data-bind="ntsGridList: {
 								height: 650,
-								width: 320,
-								name:'#{i18n.getText('QMM012_99')}',
+								width: 335,
+								name:'#{i18n.getText('QMM012_123')}',
 								dataSource: listTaxExemptLimit,
 								primaryKey: 'taxFreeamountCode',
 									columns: [
-					                { headerText: '#{i18n.getText('QMM012_20')}', key: 'taxFreeamountCode', width: 35, formatter: _.escape },
-					                { headerText: '#{i18n.getText('QMM012_21')}', key: 'taxExemptionName', width: 180, formatter: _.escape },
-					                { headerText: '#{i18n.getText('QMM012_100')}', key: 'taxExemption', width: 90, formatter: _.escape }
+					                { headerText: '#{i18n.getText('QMM012_32')}', key: 'taxFreeamountCode', width: 45, formatter: _.escape },
+					                { headerText: '#{i18n.getText('QMM012_33')}', key: 'taxExemptionName', width: 180, formatter: _.escape },
+					                { headerText: '#{i18n.getText('QMM012_124')}', key: 'taxExemption', width: 110, formatter: _.escape }
 					            ],
 					            rows: 15,
 								multiple: false,
@@ -47,13 +45,12 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-
-				<button class="x-large proceed" tabindex="1"
-					data-bind="click: setTaxExemption">#{i18n.getText('QMM012_8')}</button>
-
-				<button class="large" tabindex="2" data-bind="click: cancelSetting">#{i18n.getText('QMM012_9')}</button>
+				<!-- K3_1-->
+				<button id="K3_1" class="x-large proceed" tabindex="1" 
+					data-bind="click: setTaxExemption">#{i18n.getText('QMM012_18')}</button>
+				<!-- K3_2-->
+				<button id="K3_2" class="large" tabindex="2" data-bind="click: cancelSetting">#{i18n.getText('QMM012_19')}</button>
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>
