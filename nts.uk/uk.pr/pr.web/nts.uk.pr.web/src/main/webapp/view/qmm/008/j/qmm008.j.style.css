@@ -6,7 +6,7 @@
 }
 
 #J2_4 {
-	margin-left: 265px;
+	margin-left: 125px;
 }
 
 #J2_8 {
@@ -17,4 +17,8 @@
 #J2_9 {
 	
 	margin-left: 445px;
+}
+.td-widget {
+    color: #000;
+    background-color: #CFF1A5;
 }

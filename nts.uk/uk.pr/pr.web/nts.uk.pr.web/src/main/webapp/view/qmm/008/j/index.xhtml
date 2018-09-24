@@ -12,7 +12,7 @@
 			<script>
 				var dialogSize = {
 					width : 900,
-					height : 500
+					height : 800
 				};
 			</script>
 			<com:ValidatorScript>
@@ -78,15 +78,15 @@
 							</thead>
 							<tbody data-bind="foreach: dataList">
 								<tr>
-									<td><span class="limited-label"
+									<td class = "td-widget"><span class="limited-label"
 										data-bind="text: $data.welfarePensionGrade"></span></td>
-									<td><span class="limited-label"
+									<td class = "td-widget"><span class="limited-label"
 										data-bind="text: $data.standardMonthlyFee"></span></td>
-									<td><span class="limited-label"
+									<td class = "td-widget"><span class="limited-label"
 										data-bind="text: $data.rewardMonthlyLowerLimit"></span></td>
-									<td><span class="limited-label"
+									<td class = "td-widget"><span class="limited-label"
 										data-bind="text: $data.rewardMonthlyUpperLimit"></span></td>
-									<td><span class="limited-label"
+									<td class = "focusTest"><span class="limited-label"
 										data-bind="text: $data.childCareContribution"></span></td>
 
 								</tr>

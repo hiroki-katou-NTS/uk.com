@@ -48,6 +48,7 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 	@Inject
 	private ContributionRateRepository contributionRateRepository;
 
+
 	public ResponseWelfarePension findAllWelfarePensionAndRate(StartCommandHealth startCommand, Boolean check) {
 
 		List<WelfarePensionStandardGradePerMonthDto> welfarePensionStandardGradePerMonthDtos = new ArrayList<>();
@@ -102,8 +103,13 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 					x.getInsuredBurden().getFemaleExemptionInsurance().isPresent() ? x.getInsuredBurden().getFemaleExemptionInsurance().get().v().toString() : null, 
 					x.getEmployeeBurden().getFemaleExemptionInsurance().isPresent() ? x.getEmployeeBurden().getFemaleExemptionInsurance().get().v().toString() : null)).collect(Collectors.toList());
 		}
+		Optional<WelfarePensionInsuranceClassification> insuranceClassification = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(startCommand.getHistoryId());
+		Boolean display = false;
+		if(insuranceClassification.isPresent() && insuranceClassification.get().getFundClassification().value == 1) {
+			display = true;
+		} 
 		List<CusWelfarePensionDto> response = mapping(welfarePensionStandardGradePerMonthDtos, welfarePensionGradePerRewardMonthlyRangeDtos, gradeWelfarePensionInsurancePremiumDtos);
-		return new ResponseWelfarePension(salaryEmployeesPensionInsuranceRateDto, response);
+		return new ResponseWelfarePension(salaryEmployeesPensionInsuranceRateDto, response,display);
 	}
 	
 	public List<CusWelfarePensionDto> mapping(List<WelfarePensionStandardGradePerMonthDto> standardGradePerMonthDtos,
