@@ -298,7 +298,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			}
 			
 			// Rename sheet
-			sheet.setName(WorkScheOutputConstants.SHEET_FILE_NAME);
+			sheet.setName(WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY);
 			
 			// Move to first position
 			sheet.moveTo(0);

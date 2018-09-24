@@ -41,7 +41,7 @@ public class WorkScheOutputConstants {
 	
 	// File/Sheet name
 	public static final String SHEET_FILE_NAME = "日別勤務表";
-	public static final String SHEET_FILE_NAME_MONTHLY = "月別勤務集計表";
+	public static final String SHEET_FILE_NAME_MONTHLY = "sheet1";
 	
 	// Calculation text
 	public static final String TOTAL_EMPLOYEE = "個人計";
