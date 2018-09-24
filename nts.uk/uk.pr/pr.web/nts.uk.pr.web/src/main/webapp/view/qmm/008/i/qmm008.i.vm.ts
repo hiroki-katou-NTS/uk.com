@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         registerBusinessEstablishment() {
             let self = this;
             modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
-                if(getShared("QMM008_I_RES_PARAMS")) self.showAllOfficeAndHistory();
+                if(getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
             });
         }
 
@@ -74,8 +74,8 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
-            setShared("QMM008_I_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
-            modal("/view/qmm/008/e/index.xhtml").onClosed(() => {
+            setShared("QMM008_J_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.contributionRateHistory.history });
+            modal("/view/qmm/008/j/index.xhtml").onClosed(() => {
                 if(getShared("QMM008_E_RES_PARAMS")) self.showAllOfficeAndHistory();
             });
         }
