@@ -26,11 +26,11 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
                 }
                 self.socialInsuranceCode(selectedOffice.socialInsuranceCode);
                 self.socialInsuranceName(selectedOffice.socialInsuranceName);
-                let lastestHistoryResoure = getText('QMM008_200');0
+                let lastestHistoryResoure = getText('QMM008_200');
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY,  lastestHistoryResoure.replace('{0}', displayLastestHistory)));
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
             }
-            block.clear();
+            block.clear(); 
         }
         addNewHistory (){ 
             let self = this;
