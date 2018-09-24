@@ -1019,7 +1019,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.initScreenSPR = 1;
                                 self.clickFromExtract = false;
                                 self.showTextStyle = false;
-                                self.loadRowScreen(false);
+                                self.loadRowScreen(false, self.flagCalculation);
                                 errorAll = true;
                             }
 
@@ -1212,7 +1212,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                             if (data.resultError.errorMap[2] != undefined) {
                                 self.listCheckHolidays(data.resultError.errorMap[2]);
-                                self.loadRowScreen(false);
+                                self.loadRowScreen(false, true);
                             }
     
                             if (data.resultError.errorMap[3] != undefined) {
