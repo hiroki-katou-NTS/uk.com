@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm012.j {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
-            __viewContext.bind(screenModel);
+        __viewContext.bind(screenModel);
+//        $("#header").hide();
     });
 }

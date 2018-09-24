@@ -40,7 +40,7 @@ module nts.uk.pr.view.qmm012.b {
                 
                 self.gridColumns = [
                                         { headerText: '', key: 'salaryItemId', width: 0, formatter: _.escape, hidden: true },
-                                        { headerText: getText('QMM012_27'), key: 'categoryAtr', width: 80 , formatter: _.escape },
+                                        { headerText: getText('QMM012_27'), key: 'categoryAtr', width: 80 , formatter: getCategoryAtrText },
                                         { headerText: getText('QMM012_32'), key: 'itemNameCd', width: 60, formatter: _.escape },
                                         { headerText: getText('QMM012_33'), key: 'name', width: 200, formatter: _.escape },
                                         { headerText: getText('QMM012_34'), key: 'deprecatedAtr', width: 50, formatter: v => {
@@ -125,7 +125,11 @@ module nts.uk.pr.view.qmm012.b {
                         self.statementItemDataSelected().statementItem().categoryAtr(categoryAtr);
                     }
                     
-                    $("#B3_2").focus();
+                    if(self.statementItemDataSelected().checkCreate()) {
+                        $("#B3_2").focus();
+                    } else {
+                        $("#B3_3").focus();
+                    }
                 });
             }
             
@@ -997,6 +1001,23 @@ module nts.uk.pr.view.qmm012.b {
         interface IBreakdownItemSet {
             breakdownItemCode: number;
             breakdownItemName: string;
+        }
+        
+        function getCategoryAtrText(itemAtr, row) {
+            switch (itemAtr) {
+                case "0":
+                    return getText('QMM012_3');
+                case "1":
+                    return getText('QMM012_4');
+                case "2":
+                    return getText('QMM012_5');
+                case "3":
+                    return getText('QMM012_6');
+                case "4":
+                    return getText('QMM012_7');
+                default:
+                    return "";
+            }
         }
         
     }  
