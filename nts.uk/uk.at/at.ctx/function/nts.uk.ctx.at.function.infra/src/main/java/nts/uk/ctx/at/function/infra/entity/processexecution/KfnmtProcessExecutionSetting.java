@@ -107,6 +107,13 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "ALARM_CODE")
 	public String alarmCode;
 	
+	/* メールを送信する(本人)*/
+	@Column(name = "MAIL_PRINCIPAL")
+	public Integer mailPrincipal;
+	
+	/* メールを送信する(管理者) */
+	@Column(name = "MAIL_ADMINISTRATOR")
+	public Integer mailAdministrator;
 	
 	
 	@OneToOne
@@ -126,7 +133,7 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
 			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int recreateTypeChangePerson,
 			int recreateTransfers, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
-			String alarmCode) {
+			String alarmCode, Integer mailPrincipal, Integer mailAdministrator) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -150,7 +157,12 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.appRouteUpdateAtrMon = appRouteUpdateAtrMon;
 		this.alarmAtr = alarmAtr;
 		this.alarmCode = alarmCode;
+		this.mailPrincipal = mailPrincipal;
+		this.mailAdministrator = mailAdministrator;
+		
 	}
+
+	
 
 	
 }

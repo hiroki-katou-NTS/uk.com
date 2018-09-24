@@ -109,7 +109,7 @@
 	                        <tr class="row">
 	                        	<td colspan="2">
 	                        		<div style="border-top : 1px solid black; padding : 10px; margin-top:10px">
-		                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;height: 715px">
+		                        		<div style="border : 1px solid black; padding : 10px; border-radius:10px;height: 760px">
 			                            	<div class="ntsControl" style="width: 100%; margin-bottom : 5px">
 												<label class="ntsRadioBox">
 													<input type="radio" name="checkUpDateCreate" data-bind="checkedValue: 0,checked : processExecType" />
@@ -171,7 +171,7 @@
 			                         				<div tabindex="21" data-bind="ntsCheckBox: { checked: dailyPerfClsNormal , enable : processExecType() == 0}" >#{i18n.getText('KBT002_35')}</div>
 				                         			<div class="execSetting">
 						                         		<div id="b858988">
-							                         		<div tabindex="22" id = "combobox-daily-per-id" class="middle"
+							                         		<div style="margin-left: 5px;'" tabindex="22" id = "combobox-daily-per-id" class="middle"
 										                                    data-bind="ntsComboBox: {
 										                                    width: '420px',
 										                                    name: '#[KBT002_36]',
@@ -201,13 +201,13 @@
 				                         				<!--B10_1 月別集計 -->
 				                         				<div tabindex="27" data-bind="ntsCheckBox: { checked: monthlyAggCls ,enable : processExecType() == 0}" >#{i18n.getText('KBT002_39')}</div>
 			                         				</div>
-			                         				<!-- <div class="execSetting">
-				                         				B11_1 月別集計
-				                         				<div tabindex="27" data-bind="ntsCheckBox: { checked: alarmAtr ,enable : processExecType() == 0}" >#{i18n.getText('KBT002_40')}</div>
+			                         				<div class="execSetting">
+				                         				<!-- B11_1 月別集計 -->
+				                         				<div tabindex="28" data-bind="ntsCheckBox: { checked: alarmAtr ,enable : processExecType() == 0}" >#{i18n.getText('KBT002_40')}</div>
 				                         				<div class="execSetting">
-					                         				B11_2 月別集計
+					                         				<!-- B11_2 月別集計 -->
 					                         				<div id="b858988">
-						                         				<div tabindex="14" style="width: 253px" class="middle"
+						                         				<div tabindex="29" style="width: 253px;margin-left: 5px;'" class="middle"
 										                                    data-bind="ntsComboBox: {
 										                                    name: '#[KBT002_21]',
 										                                    options: $parent.listGetAlarmByUser,
@@ -222,8 +222,16 @@
 										                                    ]}">
 					                         					</div>
 				                         					</div>
+				                         					<!-- B11_5 メール送信（管理者）-->
+					                         				<div id="b858988">
+						                         				<div tabindex="30" data-bind="ntsCheckBox: { checked: mailAdministrator ,enable : processExecType() == 0  &amp;&amp; alarmAtr() }" >#{i18n.getText('KBT002_191')}</div>
+				                         					</div>
+				                         					<!-- B11_6 メール送信（本人） -->
+					                         				<div id="b858988">
+						                         				<div tabindex="30" data-bind="ntsCheckBox: { checked: mailPrincipal ,enable : processExecType() == 0 &amp;&amp; alarmAtr()}" >#{i18n.getText('KBT002_192')}</div>
+				                         					</div>
 			                         					</div>
-			                         				</div>  -->
+			                         				</div>
 			                         				<div  class="execSetting" style="display:flex">
 					                         			<div style="width: 250px;margin-right: 80px;">
 					                         				<!-- B12-1 -->

@@ -17,11 +17,20 @@ public class AlarmExtraction extends DomainObject {
 	private boolean alarmAtr;
 	/**コード*/
 	private Optional<AlarmPatternCode> alarmCode;
-	public AlarmExtraction(boolean alarmAtr, AlarmPatternCode alarmCode) {
+	/**メールを送信する(本人)*/
+	private Optional<Boolean> mailPrincipal;
+	/**メールを送信する(管理者)*/
+	private Optional<Boolean> mailAdministrator;
+
+	public AlarmExtraction(boolean alarmAtr, AlarmPatternCode alarmCode,Boolean mailPrincipal,
+			Boolean mailAdministrator) {
 		super();
 		this.alarmAtr = alarmAtr;
 		this.alarmCode = Optional.ofNullable(alarmCode);
+		this.mailPrincipal = Optional.ofNullable(mailPrincipal);
+		this.mailAdministrator = Optional.ofNullable(mailAdministrator);
 	}
+	
 	
 	
 }

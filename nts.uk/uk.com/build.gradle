@@ -1057,6 +1057,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws')
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pub')
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp')
 
 		runtime project (':com.ctx:bs:company:nts.uk.ctx.bs.company.ac')
 		runtime project (':com.ctx:bs:company:nts.uk.ctx.bs.company.app')

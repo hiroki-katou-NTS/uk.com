@@ -93,6 +93,10 @@ public class ProcessExecutionDto {
 	
 	private String alarmCode;
 	
+	private Boolean mailPrincipal;
+	
+	private Boolean mailAdministrator;
+	
 	public ProcessExecutionDto() {
 		super();
 	}
@@ -126,7 +130,9 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false,
 				domain.getProcessExecType().value,
 				domain.getExecSetting().getAlarmExtraction().isAlarmAtr(),
-				!domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v()
+				!domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
+				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get().booleanValue(),
+				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue()
 				);
 	}
 }
