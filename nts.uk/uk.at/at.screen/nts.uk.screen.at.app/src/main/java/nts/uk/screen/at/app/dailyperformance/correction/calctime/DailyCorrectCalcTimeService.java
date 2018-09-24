@@ -70,7 +70,8 @@ public class DailyCorrectCalcTimeService {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
+//		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
+		AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
 
 		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
 		List<ItemValue> items = result.getCorrectedItemsWithStrict();

@@ -459,9 +459,9 @@ public class FacadeUtils {
 		List<String> listItemResult = new ArrayList<>();
 		listCategoryCode.forEach(category -> {
 			try {
-				Method method = FacadeUtils.class.getMethod(FUNCTION_NAME + category);
+				Method method = FacadeUtils.class.getMethod(FUNCTION_NAME + category, List.class);
 				@SuppressWarnings("unchecked")
-				List<ItemValue> value = (List<ItemValue>) method.invoke(new FacadeUtils());
+				List<ItemValue> value = (List<ItemValue>) method.invoke(new FacadeUtils(), new ArrayList<ItemBasicInfo>());
 				listItemResult.addAll(value.stream().map(i->i.itemCode()).collect(Collectors.toList()));
 			} catch (Exception e){
 				System.out.println(e.getMessage());

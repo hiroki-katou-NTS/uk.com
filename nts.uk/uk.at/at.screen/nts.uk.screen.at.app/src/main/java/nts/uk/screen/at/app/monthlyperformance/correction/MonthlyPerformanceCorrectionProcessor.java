@@ -27,13 +27,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
-import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.FormatPerformanceDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessDto;
 import nts.uk.ctx.at.record.app.find.workrecord.operationsetting.IdentityProcessFinder;
-import nts.uk.ctx.at.record.dom.adapter.query.employee.EmployeeSearchInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
@@ -175,7 +173,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	public MonthlyPerformanceCorrectionDto initScreen(MonthlyPerformanceParam param) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		String rollId = AppContexts.user().roles().forAttendance();
+//		String rollId = AppContexts.user().roles().forAttendance();
 		AppContexts.user().roles();
 		MonthlyPerformanceCorrectionDto screenDto = new MonthlyPerformanceCorrectionDto();
 		screenDto.setParam(param);
@@ -199,8 +197,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 		}
 		// 本人確認処理の利用設定
 		screenDto.setIdentityProcess(identityProcess);
-
-		
 		
 		// 2. アルゴリズム「ログイン社員の月別実績の権限を取得する」を実行する
 		// TODO 勤務実績の権限 Authority of the work record
@@ -213,45 +209,43 @@ public class MonthlyPerformanceCorrectionProcessor {
 		
 		Integer closureId = null;
 		Integer yearMonth = null;
+		
+		// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
+		// 基準日：システム日付
+		if(param.getClosureId() == null){
+			closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
+			param.setClosureId(closureId);
+		} else {
+			closureId = param.getClosureId();
+		}
+		screenDto.setClosureId(closureId);
+		
+		// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
+		Optional<PresentClosingPeriodExport> presentClosingPeriodExport = shClosurePub.find(companyId, closureId);
+
+		// アルゴリズム「締め情報の表示」を実行する move 締め情報の表示 in authority 2.
+		//set A3_2
+		yearMonth = 0;
+		if (param.getYearMonth() == 0) {
+			if (presentClosingPeriodExport.isPresent()) {
+				yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
+				param.setYearMonth(yearMonth);
+				// 処理年月
+				screenDto.setProcessDate(yearMonth);
+			}
+		} else {
+			yearMonth = param.getYearMonth();
+			screenDto.setProcessDate(yearMonth);
+		}
+		// 5. アルゴリズム「締め情報の表示」を実行する  move  実績期間の表示 in authority 3.
+		this.displayClosure(screenDto, companyId, closureId, yearMonth);
 
 		// 6. どのメニューから起動したのかをチェックする (Check xem khởi động từ menu nào)
 		// 「月別実績の修正」からの場合         
 		//todo request list 133 is not available, fixed add param.getInitMenuMode() == 2
 		if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
-			
-			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
-			// 基準日：システム日付
-			if(param.getClosureId() == null){
-				closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
-			} else {
-				closureId = param.getClosureId();
-			}
-			screenDto.setClosureId(closureId);
-			
-			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
-			Optional<PresentClosingPeriodExport> presentClosingPeriodExport = shClosurePub.find(companyId, closureId);
-
-			// アルゴリズム「締め情報の表示」を実行する move 締め情報の表示 in authority 2.
-			//set A3_2
-			yearMonth = 0;
-			if (param.getYearMonth() == 0) {
-				if (presentClosingPeriodExport.isPresent()) {
-					yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
-					// 処理年月
-					screenDto.setProcessDate(yearMonth);
-				}
-			} else {
-				yearMonth = param.getYearMonth();
-				screenDto.setProcessDate(yearMonth);
-			}
-			// 5. アルゴリズム「締め情報の表示」を実行する  move  実績期間の表示 in authority 3.
-			this.displayClosure(screenDto, companyId, closureId, yearMonth);
-			
-			
-			
 			// 7. アルゴリズム「通常モードで起動する」を実行する
 			// アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
-
 			if (param.getLstEmployees() != null && !param.getLstEmployees().isEmpty()) {
 				screenDto.setLstEmployee(param.getLstEmployees());
 			} else {
@@ -264,18 +258,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 							item.getEmployeeName(), item.getWorkplaceName(), item.getWorkplaceId(), "", false);
 				}).collect(Collectors.toList());
 				screenDto.setLstEmployee(lstEmployeeDto);
+				param.setLstEmployees(lstEmployeeDto);
 			}
 			screenDto.setLoginUser(employeeId);
-			// screenDto.setLstEmployee(extractEmployeeList(param.getLstEmployees(),
-			// employeeId, new DateRange(
-			// screenDto.getSelectedActualTime().getEndDate(),
-			// screenDto.getSelectedActualTime().getEndDate())));
-			// List<MonthlyPerformanceEmployeeDto> lstEmployeeData =
-			// extractEmployeeData(param.getInitScreenMode(),
-			// employeeId, screenDto.getLstEmployee());
-			// // TODO List<String> employeeIds = lstEmployeeData.stream().map(e
-			// ->
-			// // e.getId()).collect(Collectors.toList());
+
 			List<String> employeeIds = screenDto.getLstEmployee().stream().map(e -> e.getId())
 					.collect(Collectors.toList());
 			// アルゴリズム「表示フォーマットの取得」を実行する(Thực hiện 「Lấy format hiển thị」)
@@ -294,52 +280,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			// アルゴリズム「月別実績を表示する」を実行する Hiển thị monthly result
 			displayMonthlyResult(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(), companyId);
-
-			//アルゴリズム「締め情報の表示」を実行する       move 実績期間の表示
-//			this.displayClosureInfo( screenDto,  companyId,  closureId,
-//					yearMonth);
-		}
-		// 「月別実績の承認」からの場合
-		else {
-			
-			// 3. アルゴリズム「ログイン社員の締めを取得する」を実行する   move  ログイン社員の締めを取得する  in authority 1.1
-			// 基準日：システム日付
-			if(param.getClosureId() == null){
-				closureId = this.getClosureId(companyId, employeeId, GeneralDate.today());
-			} else {
-				closureId = param.getClosureId();
-			}
-			screenDto.setClosureId(closureId);
-			
-			// 4.アルゴリズム「処理年月の取得」を実行する   move   処理年月の取得   in authority 1.
-			Optional<PresentClosingPeriodExport> presentClosingPeriodExport = shClosurePub.find(companyId, closureId);
-
-			// アルゴリズム「締め情報の表示」を実行する move 締め情報の表示 in authority 2.
-			//set A3_2
-			 yearMonth = 0;
-			if (param.getYearMonth() == 0) {
-				if (presentClosingPeriodExport.isPresent()) {
-					yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
-					// 処理年月
-					screenDto.setProcessDate(yearMonth);
-				}
-			} else {
-				yearMonth = param.getYearMonth();
-				screenDto.setProcessDate(yearMonth);
-			}
-			
-			// 5. アルゴリズム「締め情報の表示」を実行する  move  実績期間の表示 in authority 3.
-			//set A4_5
-			this.displayClosure(screenDto, companyId, closureId, yearMonth);
-			
+		
+		} else { // 「月別実績の承認」からの場合
 			//アルゴリズム「締め情報の表示」を実行する       move 実績期間の表示
 			this.displayClosureInfo( screenDto,  companyId,  closureId,
 					yearMonth);
 			
 			//アルゴリズム「承認モードで起動する」を実行する
 			this.startUpInApprovalMode(optApprovalProcessingUseSetting, formatPerformance,screenDto,yearMonth, companyId);
-			
-			// TODO 対象外
 		}
 		
 		// set data of lstControlDisplayItem
@@ -353,6 +301,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		screenDto.setActualTimeState(
 				monthlyCheck.checkActualTime(closureId, yearMonth, screenDto.getSelectedActualTime()).value);
 
+		param.setActualTime(screenDto.getSelectedActualTime());
 		// author
 		screenDto.setAuthorityDto(getAuthority(screenDto));
 		

@@ -25,13 +25,15 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -84,6 +86,9 @@ public class DailyCalculationCommandFacade {
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 
+	@Inject
+	private CommonCompanySettingForCalc commonCompanySettingForCalc;
+	
 	public static final int MINUTES_OF_DAY = 24 * 60;
 
 	private static final String FORMAT_HH_MM = "%d:%02d";
@@ -106,7 +111,10 @@ public class DailyCalculationCommandFacade {
 		FlexShortageRCDto flexShortage = null;
 		if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 			// tinh toan daily result
-			editedDomains = calcService.calculate(editedDomains);
+			ManagePerCompanySet manageComanySet = commonCompanySettingForCalc.getCompanySetting();
+			editedDomains = calcService.calculatePassCompanySetting(editedDomains, Optional.ofNullable(manageComanySet),
+					dataParent.isFlagCalculation() ? ExecutionType.RERUN : ExecutionType.NORMAL_EXECUTION);
+//			editedDomains = calcService.calculate(editedDomains);
 
 			List<IntegrationOfMonthly> monthlyResults = new ArrayList<>();
 			// check format display = individual
@@ -291,7 +299,7 @@ public class DailyCalculationCommandFacade {
 	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
 		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
+				.findAll(AppContexts.user().companyId()).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		dtoOlds = finder.find(query.stream()
 				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),

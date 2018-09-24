@@ -11,8 +11,8 @@ public class DailyAttendanceItemNameAdapterDto {
 
 	private int attendanceItemDisplayNumber;
 
-	private int typeOfAttendanceItem;
+	private Integer typeOfAttendanceItem;
 	
-	private int frameCategory;
+	private Integer frameCategory;
 
 }

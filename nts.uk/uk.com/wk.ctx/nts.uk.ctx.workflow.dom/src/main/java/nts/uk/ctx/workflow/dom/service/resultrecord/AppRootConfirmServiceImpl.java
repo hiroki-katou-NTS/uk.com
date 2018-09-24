@@ -219,6 +219,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 					.filter(frameConfirm -> frameConfirm.getFrameOrder()==frame.getFrameOrder()).findAny();
 			if(opAppFrameConfirm.isPresent()){
 				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
+				frame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 				frame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
 				frame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
 				frame.setApprovalDate(appFrameConfirm.getApprovalDate());
