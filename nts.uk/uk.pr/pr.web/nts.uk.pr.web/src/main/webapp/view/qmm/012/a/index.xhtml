@@ -10,7 +10,7 @@
         <script type='text/javascript'>
             var dialogSize = {
                 width: 600,
-                height: 600
+                height: 450
             };
         </script>
         <com:scriptfile set="IGNITE" />
@@ -23,14 +23,14 @@
     
         <div id="functions-area">
             <!--A1_1-->
-            <div class="label">#{i18n.getText('QMM012_1')}</div>
+            <div class="label">#{i18n.getText('QMM012_12')}</div>
         </div>
         
         <div id="contents-area">
             <div class="fixed-flex-layout">
-                <div class="fixed-flex-layout-left padding-item">
+                <div class="fixed-flex-layout-left padding-item" style="width: 190px;;">
                     <!--A2_1-->
-                    <div class="label" style="font: bold ; font-size: 15px;">#{i18n.getText('QMM012_2')}</div>
+                    <div class="label" style="margin-bottom: 15px; font-size: 21px;">#{i18n.getText('QMM012_13')}</div>
                     <!--A2_2-->
                     <div tabindex="1" id="A2_2" style="margin-left: 70px; padding: 10px"
                          data-bind="ntsSwitchButton: {
@@ -44,9 +44,9 @@
                 <div class="fixed-flex-layout-right padding-item">
                     <div style="width: 360px">
                         <div style="margin: 10px"
-                             data-bind="ntsPanel: {direction: 'right',width: '250px', height: '350px', showIcon: false}">
+                             data-bind="ntsPanel: {direction: 'right',width: '250px', height: '200px', showIcon: false}">
                             <!--A3_2-->
-                            <div class="label">#{i18n.getText('QMM012_4')}</div>
+                            <div class="label">#{i18n.getText('QMM012_14')}</div>
                             <hr/>
                             <div class="label" data-bind="text: item"></div>
                         </div>
@@ -57,9 +57,9 @@
         
         <div id="functions-area-bottom">
             <!--A4_1-->
-            <button class="x-large proceed" tabindex="2" data-bind="click: saveData">#{i18n.getText('QMM012_8')}</button>
+            <button class="x-large proceed" tabindex="2" data-bind="click: saveData">#{i18n.getText('QMM012_18')}</button>
             <!--A4_2-->
-            <button class="large" tabindex="3" data-bind="click: cancelSetting">#{i18n.getText('QMM012_9')}</button>
+            <button class="large" tabindex="3" data-bind="click: cancelSetting">#{i18n.getText('QMM012_19')}</button>
         </div>
 
     </ui:define>

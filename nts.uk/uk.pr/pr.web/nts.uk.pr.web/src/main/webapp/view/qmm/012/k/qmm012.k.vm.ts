@@ -10,13 +10,8 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
         currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
-            
             let params = getShared("QMM012_B_TO_K_PARAMS");
-            
-            if(params) {
-                self.currentCode(params);
-            }
-
+            $("#K3_1").focus();
             self.currentCode.subscribe(taxFreeamountCode => {
                 let getTaxExemptLimit = _.find(self.listTaxExemptLimit(), function(x) { return x.taxFreeamountCode == taxFreeamountCode; });
                 self.selectedTaxExemptLimit(getTaxExemptLimit);
@@ -25,7 +20,11 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["taxFreeamountCode"]);
                     self.listTaxExemptLimit(dataSort);
-                    self.currentCode(self.listTaxExemptLimit()[0].taxFreeamountCode);
+                    if(params) {
+                        self.currentCode(params);
+                    }else{
+                       self.currentCode(self.listTaxExemptLimit()[0].taxFreeamountCode); 
+                    }
                 }
             }).fail(function(error) {
                 alertError(error);

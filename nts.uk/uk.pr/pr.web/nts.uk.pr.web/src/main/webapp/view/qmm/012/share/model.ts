@@ -127,6 +127,19 @@ module nts.uk.pr.view.qmm012.share.model {
                 return "";
         }
     }
+    
+    export function getCategoryAtrText2(itemAtr: number): string {
+        switch (itemAtr) {
+            case CategoryAtr.PAYMENT_ITEM:
+                return getText('QMM012_15');
+            case CategoryAtr.DEDUCTION_ITEM:
+                return getText('QMM012_16')
+            case CategoryAtr.ATTEND_ITEM:
+                return getText('QMM012_17')
+            default:
+                return "";
+        }
+    }
 
     export class ItemModel {
         code: string;

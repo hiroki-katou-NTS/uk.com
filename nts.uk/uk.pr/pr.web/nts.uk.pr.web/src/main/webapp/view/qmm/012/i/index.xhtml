@@ -47,12 +47,12 @@
 							<!-- I2_2 -->
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_27')}</div>
 							<!-- I2_3 -->
-							<div class="label" style="margin-left: 20px; width: 100px;">#{i18n.getText('#QMM012_84')}</div>
+							<div class="label" style="margin-left: 20px; width: 100px;" data-bind="text: bindAtr"></div>
 						</div>
 						<div style="width: 100%; margin-top: 5px;">
 							<!-- I2_4 -->
 							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_29')}</div>
-							<!-- I2_4_5_6 -->
+							<!-- I2_5_6 -->
 							<div style="float: left;" tabindex="5"
 								data-bind="ntsSearchBox: {
 							searchMode: 'highlight', 
@@ -66,7 +66,7 @@
 							mode: 'igGrid'}" />
 						</div>
 						<!-- I2_7 -->
-						<table id="I2_7" style="margin-left: 10px;"
+						<table id="I2_7"
 							data-bind="ntsGridList: {
 								name: '#[QMM012_118]',
 							    multiple: false,
