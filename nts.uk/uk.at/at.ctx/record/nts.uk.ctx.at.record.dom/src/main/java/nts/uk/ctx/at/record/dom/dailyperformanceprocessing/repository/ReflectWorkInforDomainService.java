@@ -70,7 +70,7 @@ public interface ReflectWorkInforDomainService {
 	 * @param day
 	 * @return
 	 */
-	WorkTypeOfDailyPerformance reflectWorkType(String employeeId, GeneralDate day, String empCalAndSumExecLogID);
+	WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID);
 
 	/**
 	 * 計算区分を日別実績に反映する

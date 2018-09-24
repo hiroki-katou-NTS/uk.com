@@ -189,12 +189,13 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				// 承認者IDリストをクリアする（初期化）(clear thong tin cua list ID nguoi xac nhan)
 				
 				if(approver.getApprovalAtr().equals(ApprovalAtr.PERSON)){
-					/*StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approver.getEmployeeId(), baseDate).getStatusOfEmployment();
+					System.out.println("fix build 04/09/2018");
+					StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approver.getEmployeeId(), baseDate).getStatusOfEmployment();
 					if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
 							(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
 							(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
 						return;
-					}*/
+					}
 					if(employeeAdapter.isEmployeeDelete(approver.getEmployeeId())){
 						return;
 					}
@@ -496,7 +497,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -520,7 +521,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -544,7 +545,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							standardDate, 
 							employeeID, 
 							approvalRootState);
-					approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+					// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -565,7 +566,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							standardDate, 
 							employeeID, 
 							approvalRootState);
-					approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+					// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -588,7 +589,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -610,7 +611,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}

@@ -273,12 +273,18 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 
 	@Override
 	public void deleteInterimRecMng(List<String> listRecMngId) {
-		this.commandProxy().removeAll(KrcmtInterimRecMng.class, listRecMngId);
+		if(!listRecMngId.isEmpty()) {
+			String sql = "delete  from KrcmtInterimRecMng a where a.recruitmentMngId IN :listRecMngId";
+			this.getEntityManager().createQuery(sql).setParameter("listRecMngId", listRecMngId).executeUpdate();
+		}
 	}
 
 	@Override
 	public void deleteInterimAbsMng(List<String> listAbsMngId) {
-		this.commandProxy().removeAll(KrcmtInterimAbsMng.class, listAbsMngId);
+		if(!listAbsMngId.isEmpty()) {
+			String sql = "delete  from KrcmtInterimAbsMng a where a.absenceMngId IN :listAbsMngId";
+			this.getEntityManager().createQuery(sql).setParameter("listAbsMngId", listAbsMngId).executeUpdate();
+		}
 	}
 
 	@Override

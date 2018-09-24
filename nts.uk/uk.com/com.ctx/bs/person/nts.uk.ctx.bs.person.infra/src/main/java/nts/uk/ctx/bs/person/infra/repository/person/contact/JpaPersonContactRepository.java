@@ -62,16 +62,16 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 				: null;
 		if (domain.getEmergencyContact1().isPresent()) {
 			EmergencyContact emergencyContact1 = domain.getEmergencyContact1().get();
-			entity.memo1 = emergencyContact1.getMemo().v();
-			entity.contactName1 = emergencyContact1.getContactName().v();
-			entity.phoneNo1 = emergencyContact1.getPhoneNumber().v();
+			entity.memo1 = emergencyContact1.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName1 = emergencyContact1.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo1 = emergencyContact1.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 
 		if (domain.getEmergencyContact2().isPresent()) {
 			EmergencyContact emergencyContact2 = domain.getEmergencyContact2().get();
-			entity.memo2 = emergencyContact2.getMemo().v();
-			entity.contactName2 = emergencyContact2.getContactName().v();
-			entity.phoneNo2 = emergencyContact2.getPhoneNumber().v();
+			entity.memo2 = emergencyContact2.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName2 = emergencyContact2.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo2 = emergencyContact2.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 		return entity;
 	}
@@ -87,18 +87,27 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 		entity.mailAdress = domain.getMailAdress().isPresent() ? domain.getMailAdress().get().v() : null;
 		entity.mobileMailAdress = domain.getMobileMailAdress().isPresent() ? domain.getMobileMailAdress().get().v()
 				: null;
+		
+		entity.memo1 = null;
+		entity.contactName1 = null;
+		entity.phoneNo1 = null;
+
+		entity.memo2 = null;
+		entity.contactName2 = null;
+		entity.phoneNo2 = null;
+		
 		if (domain.getEmergencyContact1().isPresent()) {
 			EmergencyContact emergencyContact1 = domain.getEmergencyContact1().get();
-			entity.memo1 = emergencyContact1.getMemo().v();
-			entity.contactName1 = emergencyContact1.getContactName().v();
-			entity.phoneNo1 = emergencyContact1.getPhoneNumber().v();
+			entity.memo1 = emergencyContact1.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName1 = emergencyContact1.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo1 = emergencyContact1.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 
 		if (domain.getEmergencyContact2().isPresent()) {
 			EmergencyContact emergencyContact2 = domain.getEmergencyContact2().get();
-			entity.memo2 = emergencyContact2.getMemo().v();
-			entity.contactName2 = emergencyContact2.getContactName().v();
-			entity.phoneNo2 = emergencyContact2.getPhoneNumber().v();
+			entity.memo2 = emergencyContact2.getMemo().map(i->i.v()).orElse(null);
+			entity.contactName2 = emergencyContact2.getContactName().map(i->i.v()).orElse(null);
+			entity.phoneNo2 = emergencyContact2.getPhoneNumber().map(i->i.v()).orElse(null);
 		}
 
 	}

@@ -42,7 +42,6 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataReposit
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.primitive.SelectionItemClassification;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -95,15 +94,7 @@ public class PerInfoItemDefFinder {
 				ukResouce);
 		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, ukResouce);
 		
-		SelectionItemClassification itemClassification;
-		if (personEmployeeType == PersonEmployeeType.PERSON.value) {
-			itemClassification = SelectionItemClassification.PersonalInformation;
-		} else {
-			itemClassification = SelectionItemClassification.EmployeeInformation;
-		}
-
-		List<PerInfoSelectionItemDto> selectionItemLst = this.selectionItemFinder
-				.getAllSelectionItem(itemClassification.value);
+		List<PerInfoSelectionItemDto> selectionItemLst = this.selectionItemFinder.getAllSelectionItem();
 		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
 				selectionItemLst, perInfoItemDefs);
 	};

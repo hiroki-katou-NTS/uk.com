@@ -26,23 +26,23 @@
 			<com:stylefile path="cli003.e.style.css" />
 			
 			<com:ValidatorScript>
-			nts.uk.shr.com.time.AttendanceClock
+			nts.uk.shr.com.time.TimeClockWithSeconds
 			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CLI003_2')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/cli/003/a/index.xhtml' }">#{i18n.getText('CLI003_2')}</a>
 
 				<com:ko-if bind="(activeStep() == '4')">
 					<button tabindex="1" id="F1_1" data-bind="click: exportCsvF, hasFocus:true">#{i18n.getText('CLI003_8')}</button>
 				</com:ko-if>
 
 			</div>
-			<div id="contents-area">
-				<div id="ccgcomponent" tabindex="2"></div>
-				<div id="ex_accept_wizard" 
+			<div id="contents-area"  data-bind="visible: true">
+			 	<div id="ccgcomponent" tabindex="2"></div>
+				<div id="ex_accept_wizard" style="width: 100%"
 					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
 					class="cf">
 					<div class="header">

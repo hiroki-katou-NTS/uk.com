@@ -61,6 +61,8 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		builderString.append("DELETE ");
 		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
 		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.attendanceItemId IN :attendanceItemIds ");
+		builderString.append("AND a.kfnmtAuthorityMonthlyItemPK.companyId  = :companyId ");
+		builderString.append("AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode  = :dailyPerformanceFormatCode  ");
 		REMOVE_EXIST_DATA = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -102,9 +104,12 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	}
 
 	@Override
-	public void deleteExistData(List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
-				.executeUpdate();
+	public void deleteExistData(String companyId, String dailyPerformanceFormatCode,List<Integer> attendanceItemIds) {
+		this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+			.setParameter("attendanceItemIds", attendanceItemIds)
+			.setParameter("companyId", companyId)
+			.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+			.executeUpdate();
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 
 
 @NoArgsConstructor
@@ -11,6 +12,9 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeS
 public class ApproveRootStatusForEmpDto {
 	@Setter
 	private ApproverEmployeeState approverEmployeeState;
+	
+	@Setter
+	private ReleasedProprietyDivision approvalStatus;
 	
 	@Setter
 	private boolean checkApproval;

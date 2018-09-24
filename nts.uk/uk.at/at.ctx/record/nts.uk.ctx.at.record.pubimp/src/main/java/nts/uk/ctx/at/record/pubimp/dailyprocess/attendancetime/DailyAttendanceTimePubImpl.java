@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubLateLeaveExport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -33,13 +35,45 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	@Inject
 	private ProvisionalCalculationService provisionalCalculationService;
 	/**
-	 * RequestList No23
+	 * RequestList No.23
 	 */
 	@Override
 	public DailyAttendanceTimePubExport calcDailyAttendance(DailyAttendanceTimePubImport imp) {
+		val result = calcDailyAttendanceTime(imp);
+		
+		if(!result.isEmpty()) {
+			return isPresentValueForAttendanceTime(result.get(0));
+		}
+		else {
+			return notPresentValueForAttendanceTime();
+		}
+	}
+	
+	/**
+	 * RequestList No.13
+	 */
+	@Override
+	public DailyAttendanceTimePubLateLeaveExport calcDailyLateLeave(DailyAttendanceTimePubImport imp) {
+		val result = calcDailyAttendanceTime(imp);
+		
+		if(!result.isEmpty()) {
+			return isPresentValueForLateLeave(result.get(0));
+		}
+		else {
+			return new DailyAttendanceTimePubLateLeaveExport(new AttendanceTime(0), new AttendanceTime(0));
+		}
+	}
+
+
+	/**
+	 * 実績計算
+	 * @param imp　import
+	 * @return 計算結果
+	 */
+	private List<IntegrationOfDaily> calcDailyAttendanceTime(DailyAttendanceTimePubImport imp) {
 
 		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getWorkEndTime() == null || imp.getWorkStartTime() == null || imp.getWorkTypeCode() == null)
-			return notPresentValue();
+			return Collections.emptyList();
 		
 		//時間帯の作成
 		TimeZone timeZone = new TimeZone(new TimeWithDayAttr(imp.getWorkStartTime().valueAsMinutes()),
@@ -58,21 +92,14 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		}
 		
 		
-		val calculateResult = provisionalCalculationService.calculation(Arrays.asList(new PrevisionalForImp(imp.getEmployeeid(), 
-				  																							imp.getYmd(),
+		return provisionalCalculationService.calculation(Arrays.asList(new PrevisionalForImp(imp.getEmployeeid(), 
+																											imp.getYmd(),
 				  																							timeZoneMap, 
 				  																							imp.getWorkTypeCode(), 
 				  																							imp.getWorkTimeCode(), 
 				  																							breakTimeSheets, 
 				  																							Collections.emptyList(), 
 				  																							Collections.emptyList())));
-		if(!calculateResult.isEmpty()) {
-			return isPresentValue(calculateResult.get(0));
-		}
-		else {
-			return notPresentValue();
-		}
-
 	}
 	
 	/**
@@ -80,7 +107,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	 * @param integrationOfDaily 1日の実績(WORK)
 	 * @return RequestList No23 Output class
 	 */
-	private DailyAttendanceTimePubExport isPresentValue(IntegrationOfDaily integrationOfDaily) {
+	private DailyAttendanceTimePubExport isPresentValueForAttendanceTime(IntegrationOfDaily integrationOfDaily) {
 		val overTimeFrames = new HashMap<OverTimeFrameNo,TimeWithCalculation>();
 		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
 		val bonusPays = new HashMap<Integer,AttendanceTime>();
@@ -159,7 +186,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	 * 日別計算で値が作成できなかった時のクラス作成
 	 * @return　RequestList No23 Output class(all zero)
 	 */
-	private DailyAttendanceTimePubExport notPresentValue() {
+	private DailyAttendanceTimePubExport notPresentValueForAttendanceTime() {
 		val overTimeFrames = new HashMap<OverTimeFrameNo,TimeWithCalculation>();
 		val holidayWorkFrames = new HashMap<HolidayWorkFrameNo,TimeWithCalculation>();
 		val bonusPays = new HashMap<Integer,AttendanceTime>();
@@ -182,5 +209,27 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 												TimeWithCalculation.sameTime(new AttendanceTime(0))
 											);
 	}
+	
 
+	/**
+	 * 遅刻時間、早退時間計算
+	 * @param integrationOfDaily　日別実績(WORK)
+	 * @return output class ( No.13)
+	 */
+	private DailyAttendanceTimePubLateLeaveExport isPresentValueForLateLeave(IntegrationOfDaily integrationOfDaily) {
+		int lateTime = 0;
+		int leaveEarlyTime = 0;
+		if(integrationOfDaily != null
+		&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
+		&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
+		&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+			//遅刻時間
+			lateTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily()
+						.stream().map(tc -> tc.getLateTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(ts -> ts));
+			//早退時間
+			leaveEarlyTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily()
+								.stream().map(tc -> tc.getLeaveEarlyTime().getCalcTime().valueAsMinutes()).collect(Collectors.summingInt(ts -> ts));
+		}
+		return new DailyAttendanceTimePubLateLeaveExport(new AttendanceTime(lateTime), new AttendanceTime(leaveEarlyTime));
+	}
 }

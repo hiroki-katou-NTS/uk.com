@@ -4,13 +4,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * 月別実績と勤怠項目の相互変換
@@ -29,6 +36,9 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	IntegrationOfMonthly toDomain();
 	
 	MonthlyRecordToAttendanceItemConverter setData(IntegrationOfMonthly domain);
+
+	MonthlyRecordToAttendanceItemConverter withBase(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate);
 	
 	MonthlyRecordToAttendanceItemConverter withAffiliation(AffiliationInfoOfMonthly domain);
 
@@ -39,6 +49,14 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	MonthlyRecordToAttendanceItemConverter withAnnLeave(AnnLeaRemNumEachMonth domain);
 
 	MonthlyRecordToAttendanceItemConverter withRsvLeave(RsvLeaRemNumEachMonth domain);
+
+	MonthlyRecordToAttendanceItemConverter withDayOff(MonthlyDayoffRemainData domains);
+
+	MonthlyRecordToAttendanceItemConverter withSpecialLeave(List<SpecialHolidayRemainData> domain);
+
+	MonthlyRecordToAttendanceItemConverter withAbsenceLeave(AbsenceLeaveRemainData domain);
+
+	MonthlyRecordToAttendanceItemConverter withRemarks(List<RemarksMonthlyRecord> domain);
 
 	MonthlyRecordToAttendanceItemConverter completed();
 	
@@ -51,4 +69,12 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	Optional<AnnLeaRemNumEachMonth> toAnnLeave();
 	
 	Optional<RsvLeaRemNumEachMonth> toRsvLeave();
+	
+	Optional<MonthlyDayoffRemainData> toDayOff();
+	
+	List<SpecialHolidayRemainData> toSpecialHoliday();
+	
+	Optional<AbsenceLeaveRemainData> toAbsenceLeave();
+	
+	List<RemarksMonthlyRecord> toRemarks();
 }

@@ -10,6 +10,9 @@ module nts.uk.ui {
     
     /** Event to notify ViewModel built to bind. */
     export var viewModelBuilt = $.Callbacks();
+    
+    /** Event to notify ViewModel applied bindings. */
+    export var viewModelApplied = $.Callbacks();
 
     
     // Kiban ViewModel
@@ -63,6 +66,8 @@ module nts.uk.ui {
             viewModelBuilt.fire(_viewModel);
             
             ko.applyBindings(_viewModel);
+            
+            viewModelApplied.fire(_viewModel);
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.specialholiday;
 
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +39,9 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			entity.mngAtr = domain.getMngAtr().value;
 			entity.useDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0;
 			entity.useTimes = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
-			entity.pk.specialHolidayId = domain.getSpecialHolidayId();
-			entity.pk.specialHolidayCode = domain.getSpecialHolidayCode();
+			key.specialHolidayId = domain.getSpecialHolidayId();
+			key.specialHolidayCode = domain.getSpecialHolidayCode();
+			entity.pk = key;
 			this.getEntityManager().persist(entity);
 		} else {	
 			entity.mngAtr = domain.getMngAtr().value;

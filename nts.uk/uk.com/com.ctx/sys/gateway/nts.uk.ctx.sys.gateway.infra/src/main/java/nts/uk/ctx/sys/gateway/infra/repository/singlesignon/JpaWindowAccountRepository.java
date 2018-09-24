@@ -41,6 +41,9 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 	private static final String GET_BY_LIST_USERIDS = "SELECT w FROM SgwmtWindowAcc w "
 			+ " where w.sgwmtWindowAccPK.userId IN :lstUserId";
 
+	/** The Constant USED. */
+	private static final int USED = 1;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -158,6 +161,48 @@ public class JpaWindowAccountRepository extends JpaRepository implements Windows
 							.collect(Collectors.toList())));
 		}
 
+	}
+
+	/**
+	 * Findby user name and host name and is used.
+	 *
+	 * @param userName the user name
+	 * @param hostName the host name
+	 * @return the optional
+	 */
+	@Override
+	public Optional<WindowsAccount> findbyUserNameAndHostNameAndIsUsed(String userName, String hostName) {
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder bd = em.getCriteriaBuilder();
+		CriteriaQuery<SgwmtWindowAcc> cq = bd.createQuery(SgwmtWindowAcc.class);
+		
+		// Root
+		Root<SgwmtWindowAcc> root = cq.from(SgwmtWindowAcc.class);
+		cq.select(root);
+		
+		// Predicate where clause
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.userName), userName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.hostName), hostName));
+		predicateList.add(bd.equal(root.get(SgwmtWindowAcc_.useAtr), USED));
+		
+		// Set Where clause to SQL Query
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		
+		// Create Query
+		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
+		
+		if (result.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(this.toWindowsAccountDomain(
+					result.stream().findFirst().get().getSgwmtWindowAccPK().getUserId(),
+					result.stream().map(item -> this.toAccInfoDomain(item))
+					.collect(Collectors.toList())));
+		}
+		
 	}
 
 	/*

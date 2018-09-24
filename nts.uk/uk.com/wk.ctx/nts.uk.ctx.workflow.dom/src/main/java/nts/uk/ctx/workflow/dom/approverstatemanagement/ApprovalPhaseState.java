@@ -8,6 +8,7 @@ import org.apache.logging.log4j.util.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
@@ -19,6 +20,8 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Getter
 @Builder
 public class ApprovalPhaseState extends DomainObject {

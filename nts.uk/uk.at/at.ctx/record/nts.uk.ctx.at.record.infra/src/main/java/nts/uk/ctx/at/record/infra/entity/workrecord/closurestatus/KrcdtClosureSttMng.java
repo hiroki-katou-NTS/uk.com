@@ -57,6 +57,10 @@ public class KrcdtClosureSttMng extends UkJpaEntity {
 		return new ClosureStatusManagement(new YearMonth(this.pk.yearMonth), this.pk.employeeId, this.pk.closureId,
 				new ClosureDate(this.pk.closeDay, this.pk.isLastDay == 1), new DatePeriod(this.start, this.end));
 	}
+	
+	public static ClosureStatusManagement toDomain(KrcdtClosureSttMng entity) {
+		return entity.toDomain();
+	}
 
 	@Override
 	protected Object getKey() {

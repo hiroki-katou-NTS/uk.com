@@ -110,10 +110,20 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
 
+
+	private static final String COUNT_EMPL_BY_LSTCID_AND_BASE_DATE = String.join(" ",
+			"SELECT COUNT(dmi) FROM BsymtEmployeeDataMngInfo dmi", 
+			"INNER JOIN BsymtAffCompanyHist ach",
+			"ON dmi.bsymtEmployeeDataMngInfoPk.sId = ach.bsymtAffCompanyHistPk.sId",
+			"WHERE dmi.companyId IN :lstCompID AND dmi.delStatus = 0 AND ach.destinationData = 0",
+			"AND (:baseDate BETWEEN ach.startDate AND ach.endDate)");
+
 	private static final String FIND_BY_CID_PID_AND_DELSTATUS = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND "
 			+ "e.bsymtEmployeeDataMngInfoPk.sId = :sid AND e.delStatus = :delStatus ";
 	
-
+	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
+			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
+	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -473,6 +483,25 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	
+
+	@Override
+	public int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate) {
+		return queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Long.class)
+				.setParameter("baseDate", baseDate)
+				.setParameter("lstCompID", lstCompID == null ? "" : lstCompID)
+				.getSingle().map(m -> m.intValue()).orElse(0);
+	}
+
+	/**
+	 * request list 515
+	 * @return
+	 * @author yennth
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> findBySidNotDel(List<String> sId) {
+		return this.queryProxy().query(SELECT_EMP_NOT_DEL, BsymtEmployeeDataMngInfo.class)
+								.setParameter("sId", sId).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
+	}
 
 	// laitv code end
 }

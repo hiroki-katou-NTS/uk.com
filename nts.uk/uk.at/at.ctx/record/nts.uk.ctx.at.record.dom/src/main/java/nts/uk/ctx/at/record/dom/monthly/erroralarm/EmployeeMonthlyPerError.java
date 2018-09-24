@@ -19,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @NoArgsConstructor
 public class EmployeeMonthlyPerError extends AggregateRoot{
 	
+	private int no;
+	
 	/**
 	 * エラー種類: 月別実績のエラー種類
 	 */
@@ -71,5 +73,18 @@ public class EmployeeMonthlyPerError extends AggregateRoot{
 		this.yearlyReserved = Optional.ofNullable(yearlyReserved);
 	}
 	
-	
+	public EmployeeMonthlyPerError(int no, ErrorType errorType, YearMonth yearMonth, String employeeID, ClosureId closureId,
+			ClosureDate closureDate, Flex flex, AnnualLeaveError annualHoliday,
+			ReserveLeaveError yearlyReserved) {
+		super();
+		this.errorType = errorType;
+		this.yearMonth = yearMonth;
+		this.employeeID = employeeID;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
+		this.flex = Optional.ofNullable(flex);
+		this.annualHoliday = Optional.ofNullable(annualHoliday);
+		this.yearlyReserved = Optional.ofNullable(yearlyReserved);
+		this.no = no;
+	}
 }

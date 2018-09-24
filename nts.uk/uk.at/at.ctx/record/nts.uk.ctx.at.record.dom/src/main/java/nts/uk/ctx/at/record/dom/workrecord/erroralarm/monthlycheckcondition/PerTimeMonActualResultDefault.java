@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,13 +12,17 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.adapter.monthly.MonthlyRecordValueImport;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -26,6 +34,10 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 	
 	@Inject
 	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+	
+	@Inject 
+	private AnyItemOfMonthlyRepository anyItemOfMonthlyRepo;
+	
 	
 	@Override
 	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
@@ -56,6 +68,64 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 		});
 		return check;
 	}
+	//HoiDD No.257
+	@Override
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID,
+			AttendanceItemCondition attendanceItemCondition, List<Integer> attendanceIds) {
+		Map<String, Integer> results = new HashMap<String,Integer>();
+		List<MonthlyRecordValueImport> monthlyRecords = new ArrayList<>();
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlys = new ArrayList<>();
+		List<AnyItemOfMonthly> anyItems = new ArrayList<>();
+		//締めをチェックする
+			attendanceTimeOfMonthlys = attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeID,
+					yearMonth);
+			anyItems = anyItemOfMonthlyRepo.findByMonthly(employeeID, yearMonth);
+
+		if (!CollectionUtil.isEmpty(attendanceTimeOfMonthlys)) {
+			for (AttendanceTimeOfMonthly attendanceTimeOfMonthly : attendanceTimeOfMonthlys) {
+				MonthlyRecordToAttendanceItemConverter monthly = attendanceItemConvertFactory.createMonthlyConverter();
+					monthly.withAttendanceTime(attendanceTimeOfMonthly);
+				if (!CollectionUtil.isEmpty(anyItems)){
+					monthly.withAnyItem(anyItems);
+					monthlyRecords.add(MonthlyRecordValueImport.of(yearMonth, attendanceTimeOfMonthly.getClosureId(),
+							attendanceTimeOfMonthly.getClosureDate(), monthly.convert(attendanceIds)));
+				}
+				
+			}
+		}
+		//存在しない場合
+		if(CollectionUtil.isEmpty(monthlyRecords)) {
+			return results;
+		}
+		//取得した件数分ループする
+		for (MonthlyRecordValueImport monthlyRecord : monthlyRecords) {
+			//勤怠項目をチェックする
+			boolean check = attendanceItemCondition.check(item->{
+				if (item.isEmpty()) {
+					return item;
+				}
+				return monthlyRecord.getItemValues().stream().map(iv -> getValueNew(iv))
+						.collect(Collectors.toList());
+			});
+			if (check == true) {
+				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
+			}
+		}
+		return results;
+	}
+	//HoiDD
+	private Integer getValueNew(ItemValue value) {
+		if(value.getValueType()==ValueType.DATE){
+			return 0;
+		}
+		if (value.value() == null) {
+			return 0;
+		}
+		else if (value.getValueType().isDouble()||value.getValueType().isInteger()) {
+			return value.getValueType().isDouble() ? ((Double) value.value()).intValue() : (Integer) value.value();
+		}
+		return 0;
+	}
 	
 	private Integer getValue(ItemValue value) {
 		if (value.value() == null) {
@@ -64,5 +134,4 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
 				: (Integer) value.value();
 	}
-
 }

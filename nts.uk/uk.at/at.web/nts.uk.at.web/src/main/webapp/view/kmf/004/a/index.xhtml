@@ -66,7 +66,7 @@
 								<div data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td width="70">
-								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' , required: true, enable: isDisable, name: '#[KMF004_5]'} " />
+								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' ,option: {  }, required: true, enable: isDisable, name: '#[KMF004_5]'} " />
 							</td>
 							<td>
 								 <input tabindex="6" id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
@@ -242,27 +242,10 @@
 									<td></td>
 								</tr>
 								<tr>
-									<td>
-										<div class="start-date">
-											<div tabindex="20" id="period-date-inp" data-bind="ntsDatePicker: { 
-												value: startDate, 
-												dateFormat: 'YYYY/MM/DD', 
-												constraint: 'StartDate', 
-												name: '#[KMF004_44]', 
-												enable: startDateEnable }"></div>
-										</div>
+									<td colspan="2">
+									<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: startDateEnable , enable: startDateEnable , value: dateRange }"/>
 									</td>
-									<td>
-										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
-										<div class="end-date">
-											<div tabindex="21" id="period-date-inp" data-bind="ntsDatePicker: { 
-												value: endDate, 
-												dateFormat: 'YYYY/MM/DD', 
-												constraint: 'EndDate', 
-												name: '#[KMF004_46]', 
-												enable: endDateEnable }"></div>
-										</div>
-									</td>
+									
 									<td></td>
 								</tr>
 							</table>

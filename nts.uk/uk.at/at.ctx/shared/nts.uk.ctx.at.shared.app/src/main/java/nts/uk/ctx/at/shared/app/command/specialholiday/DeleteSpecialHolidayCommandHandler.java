@@ -9,7 +9,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayChangedInfo;
+import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,7 +30,7 @@ public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHo
 		// call event
 		Optional<SpecialHoliday> oldDomain =  sphdRepo.findByCode(companyId, sHECD);
 		if(oldDomain.isPresent()){
-			SpecialHolidayChangedInfo sHC = SpecialHolidayChangedInfo.createFromDomain(false,oldDomain.get());
+			SpecialHolidayDomainEvent sHC = SpecialHolidayDomainEvent.createFromDomain(false,oldDomain.get());
 			sHC.toBePublished();
 		}
 		// Delete Special Holiday

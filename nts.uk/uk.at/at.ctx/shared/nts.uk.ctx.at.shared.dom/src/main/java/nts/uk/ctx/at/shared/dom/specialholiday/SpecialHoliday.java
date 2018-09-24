@@ -103,19 +103,5 @@ public class SpecialHoliday extends AggregateRoot {
 				new Memo(memo));
 	}
 	
-	public void publishEvent(boolean flag) {
-		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
-						this.specialHolidayCode,
-						this.specialHolidayName);
-		
-		event.toBePublished();
-	}
 	
-	public void publishEvent(boolean flag, int code, String name) {
-		SpecialHolidayDomainEvent event = new SpecialHolidayDomainEvent(flag,
-				new SpecialHolidayCode(code),
-				new SpecialHolidayName(name));
-		
-		event.toBePublished();
-	}
 }

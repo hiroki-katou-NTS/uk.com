@@ -138,9 +138,42 @@ div.form-label.broken {
 .maxDay{
 	margin-left: 10px;
 	padding: 5px;
-	border: 1px solid #999999;;
+	border: 1px solid #999999;
 	width: 100px;
 	display: inline-block;
 	margin-top: -20px;
 	border-radius: 3px;
+}
+.line_1{
+	display: inline-block;
+}
+.column1{
+	width: 145px;
+}
+#numberOfRemaining1{
+	margin-left: 190px;
+	margin-bottom: -45px;
+}
+#numberOfRemaining2{
+	margin-left: 90px;
+}
+#reamaning tr td {
+	border: 1px solid #999999;
+	padding: 5px;
+}
+.flRight{
+	text-align: right;
+}
+#totalEmp{
+	margin-left: 145px;
+}
+#applicant{
+	vertical-align: top;
+}
+.display1{
+	display: none;
+}
+.limit-fix{
+	margin-top: 1px;
+	margin-left: 150px;
 }

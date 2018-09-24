@@ -435,7 +435,11 @@ module nts.uk.com.view.cmm018.a {
             openDialogCDL008(){
                 let self = this;
                 block.grayout();
-                setShared('inputCDL008', {baseDate: moment(new Date()).toDate(), isMultiple: false,selectedCodes: self.workplaceId()});
+                setShared('inputCDL008', {baseDate: moment(new Date()).toDate(),
+                                isMultiple: false,
+                                selectedCodes: self.workplaceId(),
+                                selectedSystemType: 2,
+                                isrestrictionOfReferenceRange: true});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                     block.clear();
                     let data = getShared('outputCDL008');
@@ -1369,6 +1373,21 @@ module nts.uk.com.view.cmm018.a {
                 }
                 let history = self.findHistory(self.currentCode());
                 let listType = self.findAppTypeHistory(self.tabSelected());
+                //QA#100601
+                let checkEmpty = false;
+                _.each(root, function(rootItem){
+                    if(rootItem.color){
+                        checkEmpty = true;
+                    }
+                });
+                //登録対象の承認ルートをチェックする
+                if(!checkEmpty){//0件の場合
+                    //エラーメッセージ(Msg_37)を表示する (Hiển thị message lỗi (Msg_37))
+                    dialog.alertError({ messageId: "Msg_37"}).then(()=>{
+                        block.clear();    
+                    });
+                    return;
+                }
                 let data: vmbase.DataResigterDto = new vmbase.DataResigterDto(self.tabSelected(),
                                     checkAddHist,self.workplaceId(), self.selectedItem(),
                                     history.startDate, history.endDate,self.dataI(), listType == undefined ? [] : listType, root,self.selectedModeCode());
@@ -2240,6 +2259,21 @@ module nts.uk.com.view.cmm018.a {
                         startDate = history.person.startDate;
                         listType.push(new vmbase.ApplicationType(history.person.applicationType,'', history.person.employmentRootAtr));
                     }
+                }
+                //QA#100601
+                let checkEmpty = false;
+                _.each(root, function(rootItem){
+                    if(rootItem.color){
+                        checkEmpty = true;
+                    }
+                });
+                //登録対象の承認ルートをチェックする
+                if(!checkEmpty){//0件の場合
+                    //エラーメッセージ(Msg_37)を表示する (Hiển thị message lỗi (Msg_37))
+                    dialog.alertError({ messageId: "Msg_37"}).then(()=>{
+                        block.clear();    
+                    });
+                    return;
                 }
                 let data: vmbase.DataResigterDto = new vmbase.DataResigterDto(self.tabSelectedB(),
                                     checkAddHist, self.workplaceIdB(),

@@ -1,15 +1,18 @@
 module nts.uk.at.view.kmf004.a.viewmodel {
     export class ScreenModel {
-        sphdList: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        specialHolidayCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isDisable: KnockoutObservable<boolean>;
-        editMode: KnockoutObservable<boolean>;
-        specialHolidayName: KnockoutObservable<string>;
-        targetItemsName: KnockoutObservable<string>;
-        memo: KnockoutObservable<string>;
+        sphdList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        columns: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
+            { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
+        ]);
+        currentCode: KnockoutObservable<any> = ko.observable();
+        specialHolidayCode: KnockoutObservable<string> = ko.observable("");
+        isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isDisable: KnockoutObservable<boolean> = ko.observable(true);
+        editMode: KnockoutObservable<boolean> = ko.observable(false);
+        specialHolidayName: KnockoutObservable<string> = ko.observable("");
+        targetItemsName: KnockoutObservable<string> = ko.observable("");
+        memo: KnockoutObservable<string> = ko.observable("");
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         grantDateOptions: KnockoutObservableArray<any>;
@@ -19,9 +22,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         allowDisappear: KnockoutObservable<boolean>;
         years: KnockoutObservable<number>;
         days: KnockoutObservable<number>;
-        dialogDEnable: KnockoutObservable<boolean>;
-        yearEnable: KnockoutObservable<boolean>;
-        dayEnable: KnockoutObservable<boolean>;
+        dialogDEnable: KnockoutObservable<boolean> = ko.observable(false);
+        yearEnable: KnockoutObservable<boolean> = ko.observable(true);
+        dayEnable: KnockoutObservable<boolean> = ko.observable(true);
         timeMethods: KnockoutObservableArray<any>;
         selectedTimeMethod: KnockoutObservable<number>;
         limitedDays: KnockoutObservable<number>;
@@ -30,9 +33,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         expYearEnable: KnockoutObservable<boolean>;
         expMonth: KnockoutObservable<number>;
         expMonthEnable: KnockoutObservable<boolean>;
-        startDate: KnockoutObservable<number>;
         startDateEnable: KnockoutObservable<boolean>;
-        endDate: KnockoutObservable<number>;
         endDateEnable: KnockoutObservable<boolean>;
         genderSelected: KnockoutObservable<boolean>;
         empSelected: KnockoutObservable<boolean>;
@@ -42,7 +43,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         genderOptionEnable: KnockoutObservable<boolean>;
         selectedGender: any;
         empLst: KnockoutObservableArray<any> = ko.observableArray([]);
-        clsLst: KnockoutObservableArray<any>= ko.observableArray([]);
+        clsLst: KnockoutObservableArray<any> = ko.observableArray([]);
         empLstEnable: KnockoutObservable<boolean>;
         clsLstEnable: KnockoutObservable<boolean>;
         startAge: KnockoutObservable<number>;
@@ -52,53 +53,25 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageCriteriaCls: KnockoutObservableArray<Items>;
         selectedAgeCriteria: KnockoutObservable<string>;
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
-        ageBaseDate: KnockoutObservable<string>;
+        ageBaseDate: KnockoutObservable<string> = ko.observable("");
         ageBaseDateEnable: KnockoutObservable<boolean>;
         selectedTargetItems: any;
-        listSpecialHlFrame: KnockoutObservableArray<any>;
-        listAbsenceFrame: KnockoutObservableArray<any>;
-        targetItems: KnockoutObservableArray<any>; 
-        cdl002Name: KnockoutObservable<String>;
-        cdl003Name: KnockoutObservable<String>;
+        targetItems: KnockoutObservableArray<any> = ko.observableArray([]);
+        cdl002Name: KnockoutObservable<String> = ko.observableArray([]);
+        cdl003Name: KnockoutObservable<String> = ko.observableArray([]);
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
-        newModeEnable: KnockoutObservable<boolean>;
+        newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
         ageBaseDateReq: KnockoutObservable<boolean>;
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
+        dateRange: KnockoutObservableArray<any> = ko.observable({});
         
         constructor() {
             let self = this;
             
-            self.sphdList = ko.observableArray([]);
-            
-            self.listSpecialHlFrame = ko.observableArray([]);
-            self.listAbsenceFrame = ko.observableArray([]);
-            self.targetItems = ko.observableArray([]);
-            
-            self.cdl002Name = ko.observableArray([]);
-            self.cdl003Name = ko.observableArray([]);
-            self.newModeEnable = ko.observable(true);
-
-            self.specialHolidayCode = ko.observable("");
-            self.isEnable = ko.observable(true);
-            self.isDisable = ko.observable(true);
-            self.editMode = ko.observable(false);
-            self.specialHolidayName = ko.observable("");
-            self.targetItemsName = ko.observable("");
-            self.memo = ko.observable("");
-            self.dialogDEnable = ko.observable(false);
-            self.yearEnable = ko.observable(true);
-            self.dayEnable = ko.observable(true);
-                
-            self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
-                { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
-            ]);
-            
-            self.currentCode = ko.observable();
-            
             self.specialHolidayCode.subscribe(function(value) {
-                if(Number(value) >= 0 && self.selectedMethod() == 1) {
+                let isNewValue = _.find(self.sphdList(), ['specialHolidayCode', value]) ? false : true;
+                if(!isNewValue && self.selectedMethod() == 1) {
                     self.dialogDEnable(true);
                 } else {
                     self.dialogDEnable(false);
@@ -134,8 +107,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
                         self.expYears(data.grantPeriodicDto.expirationDate.years);
                         self.expMonth(data.grantPeriodicDto.expirationDate.months);
-                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.startDate);
-                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.endDate);
+                        self.dateRange({ startDate: data.grantPeriodicDto.availabilityPeriod.startDate, endDate: data.grantPeriodicDto.availabilityPeriod.endDate });
                         
                         self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
                         self.selectedGender(data.specialLeaveRestrictionDto.gender);
@@ -168,7 +140,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         let temp = [];
                         _.forEach(targetItems, function(code) {
                             let selectedItem = _.find(self.targetItems(), function(o) { return o.code == code; });
+                            if(selectedItem){
                             temp.push(selectedItem);
+                                }
                         });
                         
                         let text = "";
@@ -279,16 +253,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.expYearEnable = ko.observable(false);
             self.expMonth = ko.observable();
             self.expMonthEnable = ko.observable(false);
-            self.startDate = ko.observable();
             self.startDateEnable = ko.observable(false);
-            self.endDate = ko.observable();
             self.endDateEnable = ko.observable(false);
             
-            self.startDate.subscribe(function(value) {
-                if(value != null || value !== "") {
-                    $('.end-date .ntsControl.nts-datepicker-wrapper').removeClass('error');
-                }
-            });
             
             self.selectedTimeMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
@@ -302,8 +269,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.endDateEnable(false);
                         self.expYears('');
                         self.expMonth('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.dateRange({ startDate: "", endDate: "" });
                         break;
                     case 1:
                         self.limitedDaysEnable(false);
@@ -312,8 +278,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startDateEnable(false);
                         self.endDateEnable(false);
                         self.limitedDays('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.dateRange({ startDate: "", endDate: "" });
                         break;
                     case 2:
                         self.limitedDaysEnable(false);
@@ -324,8 +289,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays('');
                         self.expYears('');
                         self.expMonth('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.dateRange({ startDate: "", endDate: "" });
                         break;
                     case 3:
                         self.limitedDaysEnable(false);
@@ -425,20 +389,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getSphdData(), self.getSpecialHolidayFrame(), self.getAbsenceFrame()).done(function() {
-                       
-                if(self.listSpecialHlFrame().length > 0) {
-                    _.forEach(self.listSpecialHlFrame(), function(item) {
-                        self.targetItems.push(item);
-                    });
-                }
-                
-                if(self.listAbsenceFrame().length > 0) {
-                    _.forEach(self.listAbsenceFrame(), function(item) {
-                        self.targetItems.push(item);
-                    });
-                }
-                
+            $.when(self.getSphdData(), self.findAllItemFrame()).done(function() {
+              
                 if (self.sphdList().length > 0) {
                     self.currentCode(self.sphdList()[0].specialHolidayCode);
                     self.currentCode.valueHasMutated();
@@ -452,6 +404,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 dfd.reject(res);    
             });
 
+            return dfd.promise();
+        }
+        
+        findAllItemFrame(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.findAllItemFrame().done(function(data) {
+                self.targetItems(_.map(data, (item) => {
+                    return new ItemFrame(item);
+                }));
+                  dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
             return dfd.promise();
         }
         
@@ -485,48 +451,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
                 
             });
-        }
-        
-        /**
-         * Get data absence frame from database
-         */
-        getAbsenceFrame(): any {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getAllAbsenceFrame().done(function(data) {
-                if (data.length != 0) {
-                    self.listAbsenceFrame.removeAll();
-                    _.forEach(data, function(item) {
-                        if (item.deprecateAbsence == 0) {
-                            var absenceFrame = new ItemData("b" + item.absenceFrameNo, item.absenceFrameName, 2);
-                            self.listAbsenceFrame.push(ko.toJS(absenceFrame));
-                        }
-                    });
-                }
-                dfd.resolve();
-            }).fail((res) => { });
-            return dfd.promise();
-        }
-        
-        /**
-         * Get data special holiday frame form database
-         */
-        getSpecialHolidayFrame(): any {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getAllSpecialHolidayFrame().done(function(data) {
-                if (data.length != 0) {
-                    self.listSpecialHlFrame.removeAll();
-                    _.forEach(data, function(item) {
-                        if (item.deprecateSpecialHd == 0) {
-                            var specialHlFrame = new ItemData("a" + item.specialHdFrameNo, item.specialHdFrameName, 1);
-                            self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
-                        }
-                    });
-                }
-                dfd.resolve();
-            }).fail((res) => { });
-            return dfd.promise();
         }
         
         openJDialog() {
@@ -623,20 +547,24 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 grantTime: grantTime
             };
             
-            let start = "";
-            let end = "";
-            if(self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
-                start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
-            } else {
-                start = self.startDate() != "" ? self.startDate() : "1900/01/01";
+            let start = null,
+                end = null,
+                startDate = self.dateRange().startDate,
+                endDate = self.dateRange().endDate;
+            if (startDate) {
+                if (startDate.indexOf("T") > -1 && startDate.indexOf("-") > -1) {
+                    start = startDate != "" ? startDate.substring(0, startDate.indexOf('T')).replace("-", "/").replace("-", "/") : null;
+                } else {
+                    start = startDate != "" ? startDate : null;
+                }
             }
-            
-            if(self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
-                end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
-            } else {
-                end = self.endDate() != "" ? self.endDate() : "1900/01/01";
+            if (endDate) {
+                if (endDate.indexOf("T") > -1 && endDate.indexOf("-") > -1) {
+                    end = endDate != "" ? endDate.substring(0, endDate.indexOf('T')).replace("-", "/").replace("-", "/") : null;
+                } else {
+                    end = endDate != "" ? endDate : null;
+                }
             }
-            
             let availabilityPeriod : service.AvailabilityPeriod = {
                 startDate: start,
                 endDate: end
@@ -722,11 +650,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
+            $(".period-date-inp").trigger("validate");
             
             let dataItem = self.preData();
             
             if(self.yearReq() && self.dayReq()) {
-                if(dataItem.regularCommand.grantTime.fixGrantDate.interval == "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays == "") {
+                if(dataItem.regularCommand.grantTime.fixGrantDate.interval === "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays === "") {
                     $("#years").ntsError("set", "付与周期を入力してください", "FND_E_REQ_INPUT");
                     $("#days").ntsError("set", "付与日数を入力してください", "FND_E_REQ_INPUT");
                 }
@@ -739,21 +668,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if(self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
                 $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "FND_E_REQ_INPUT");
             }
-            
-            if(self.selectedTimeMethod() == 3) {
-                if(self.startDate() === "") {
-                    $("#start-date-inp").ntsError("set", "使用可能期間開始日入力してください", "FND_E_REQ_INPUT");
-                }
-                
-                if(self.endDate() === "") {
-                    $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
-                }
-                
-                if(self.startDate() > self.endDate()) {
-                    $("#period-date-inp").ntsError("set", "期間入力フォームの開始と終了が逆転しています", "FND_E_SPAN_REVERSED");
-                    $('.end-date .ntsControl.nts-datepicker-wrapper').addClass('error');
-                }
-            }
+           
             
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
@@ -814,7 +729,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         deleteSpecialHoliday() {
             let self = this;
             
-            nts.uk.ui.block.invisible();
             
             let count = 0;
             for (let i = 0; i <= self.sphdList().length; i++){
@@ -861,7 +775,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();      
                 });
-            }).ifNo(()=> { nts.uk.ui.block.clear(); });
+            })
         }
 
         initSpecialHoliday(): void {
@@ -900,9 +814,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.limitedDays('');
             self.expYears('');
             self.expMonth('');
-            self.startDate('');
-            self.endDate('');
-            
+            self.dateRange({ startDate: "", endDate: "" });
             self.genderSelected(false);
             self.empSelected(false);
             self.clsSelected(false);
@@ -913,10 +825,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);
-            self.ageBaseDate("");
+            self.ageBaseDate(101);
             self.ageBaseDateReq(false);
             self.ageBaseDateDefaultValue(true);
-            
             self.yearReq(true);
             self.dayReq(true);
             
@@ -961,6 +872,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         constructor(specialHolidayCode: number, specialHolidayName: string) {
             this.specialHolidayCode = specialHolidayCode;
             this.specialHolidayName = specialHolidayName;       
+        }
+    }
+    
+     class ItemFrame {
+        code: string;
+        name: string;
+        constructor(data) {
+            if (data) {
+                this.code = data.itemType+data.specialHdFrameNo;
+                this.name = data.specialHdFrameName;
+            }
         }
     }
     

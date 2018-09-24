@@ -1,14 +1,10 @@
 package nts.uk.file.com.infra.generate;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-
-import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
@@ -16,7 +12,6 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.Font;
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
@@ -53,8 +48,6 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 	private static final String REPORT_FILE_NAME = "申請者として承認ルートのEXCEL出力.xlsx";
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-
-	private static final int maxOfPhrase = 5;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeApproverDataSource dataSource) {
@@ -251,7 +244,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			}
 
 			Cell em_Code = cells.get(firstRow, COLUMN_INDEX[1]);
-			em_Code.setValue(output.getEmployeeInfor().getEId());
+			em_Code.setValue(output.getEmployeeInfor().getEmpCD());
 
 			// set employee name - CỘT 2
 			if (rowMergered > 1) {
@@ -281,7 +274,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 					Cell em_Code1 = cells.get(firstRow + i, COLUMN_INDEX[1]);
 					cells.merge(firstRow + i, 2, (totalMerger - rowMergered), 1, true);
 					Cell em_Name1 = cells.get(firstRow + i, COLUMN_INDEX[2]);
-					em_Code1.setValue(output.getEmployeeInfor().getEId());
+					em_Code1.setValue(output.getEmployeeInfor().getEmpCD());
 					em_Name1.setValue(output.getEmployeeInfor().getEName());
 				}
 			}
@@ -307,7 +300,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			}
 
 			Cell em_Code = cells.get(firstRow, COLUMN_INDEX[1]);
-			em_Code.setValue(output.getEmployeeInfor().getEId());
+			em_Code.setValue(output.getEmployeeInfor().getEmpCD());
 
 			// set employee name - CỘT 2
 			if (totalMerger > 1) {

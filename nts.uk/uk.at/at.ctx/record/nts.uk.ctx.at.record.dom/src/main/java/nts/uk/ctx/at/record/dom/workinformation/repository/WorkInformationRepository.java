@@ -23,6 +23,8 @@ public interface WorkInformationRepository {
 	
 	List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds);
 	
+	List<WorkInfoOfDailyPerformance> findByEmployeeId(String employeeId);
+	
 	void delete(String employeeId, GeneralDate ymd);
 	
 	void updateByKey(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
@@ -38,4 +40,11 @@ public interface WorkInformationRepository {
 	 * @return
 	 */
 	List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period);
+	/**
+	 * 
+	 * @param employeeId
+	 * @param dates list
+	 * @return
+	 */
+	List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates);
 }

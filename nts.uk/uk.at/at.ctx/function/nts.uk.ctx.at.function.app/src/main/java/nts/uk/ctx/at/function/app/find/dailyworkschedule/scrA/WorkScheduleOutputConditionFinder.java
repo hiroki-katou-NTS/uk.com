@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
@@ -195,8 +194,12 @@ public class WorkScheduleOutputConditionFinder {
 	// convert to DTO
 	private List<DataInforReturnDto> getOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule) {
 		return lstOutputItemDailyWorkSchedule.stream()
-						.map(domain -> new DataInforReturnDto(String.valueOf(domain.getItemCode().v()), 
-																							domain.getItemName().v()))
+						.map(domain -> {
+							DataInforReturnDto dto = new DataInforReturnDto();
+							dto.setCode(String.valueOf(domain.getItemCode().v()));
+							dto.setName(domain.getItemName().v());
+							return dto;
+						})
 						.collect(Collectors.toList());
 	}
 }

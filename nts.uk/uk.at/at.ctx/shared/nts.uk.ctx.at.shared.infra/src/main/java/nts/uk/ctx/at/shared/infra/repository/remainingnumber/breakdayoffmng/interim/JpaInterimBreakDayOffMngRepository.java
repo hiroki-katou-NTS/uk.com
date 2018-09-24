@@ -279,11 +279,17 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	
 	@Override
 	public void deleteInterimBreakMng(List<String> mngIds) {
-		this.commandProxy().removeAll(KrcmtInterimBreakMng.class, mngIds);
+		if(!mngIds.isEmpty()) {
+			String sql = "delete  from KrcmtInterimBreakMng a where a.breakMngId IN :mngIds";
+			this.getEntityManager().createQuery(sql).setParameter("mngIds", mngIds).executeUpdate();
+		}
 	}
 	
 	@Override
 	public void deleteInterimDayOffMng(List<String> mngIds) {
-		this.commandProxy().removeAll(KrcmtInterimDayOffMng.class, mngIds);
+		if(!mngIds.isEmpty()) {
+			String sql = "delete  from KrcmtInterimDayOffMng a where a.dayOffMngId IN :mngIds";
+			this.getEntityManager().createQuery(sql).setParameter("mngIds", mngIds).executeUpdate();
+		}
 	}
 }

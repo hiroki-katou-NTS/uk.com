@@ -17,7 +17,7 @@
 }
 
 #left-content-bottom {
-	width: 100%;
+	/* width: 100%; */
 	padding: 15px;
 	border-radius: 5px;
 }
@@ -25,7 +25,7 @@
 #right-content {
 	width: 900px;
 	float: left;
-	margin-left: 60px;
+	margin-left: 20px;
 	/* margin-top: 10px; */
 }
 
@@ -72,4 +72,11 @@
 	display: block;
 	width: 500px;
 	margin-left: 13px;
+}
+.container {
+    width: 1280px !important;
+}
+
+[dropdown-for="combobox-daily-per-id"] .nts-combo-column-0 {
+  width: 390px !important;
 }

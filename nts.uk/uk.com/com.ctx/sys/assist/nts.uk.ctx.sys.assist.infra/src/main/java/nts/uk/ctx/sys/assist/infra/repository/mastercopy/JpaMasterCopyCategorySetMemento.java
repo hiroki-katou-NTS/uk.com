@@ -6,6 +6,8 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryName;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryOrder;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategorySetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
@@ -53,8 +55,8 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 * setMasterCopyId(java.lang.String)
 	 */
 	@Override
-	public void setMasterCopyId(String masterCopyId) {
-		this.entity.setMasterCopyId(masterCopyId);
+	public void setCategoryNo(MasterCopyCategoryNo categoryNo) {
+		this.entity.setCategoryNo(categoryNo.v());
 
 	}
 
@@ -67,8 +69,7 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 */
 	@Override
 	public void setMasterCopyCategory(MasterCopyCategoryName masterCopyCategory) {
-		this.entity.setMasterCopyCategory(masterCopyCategory.toString());
-
+		this.entity.setCategoryName(masterCopyCategory.v());
 	}
 
 	/*
@@ -78,9 +79,8 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 * setOrder(java.lang.Integer)
 	 */
 	@Override
-	public void setOrder(Integer order) {
-		this.entity.setCategoryOrder(BigDecimal.valueOf(order));
-
+	public void setOrder(MasterCopyCategoryOrder order) {
+		this.entity.setCategoryOrder(new BigDecimal(order.v()));
 	}
 
 }

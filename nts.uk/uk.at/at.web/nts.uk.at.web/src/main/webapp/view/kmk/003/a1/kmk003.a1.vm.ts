@@ -145,8 +145,26 @@ module a1 {
             self.predseting.startDateClock.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
             self.predseting.rangeTimeDay.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
             self.timeZoneModelOne.end.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });                
-            self.timeZoneModelTwo.start.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
-            self.timeZoneModelTwo.useAtr.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
+            self.timeZoneModelTwo.start.subscribe((v: any) => { 
+                if (v == "") {
+                    self.timeZoneModelTwo.start(0);
+                }
+                self.mainSettingModel.updateStampValue(); 
+                self.mainSettingModel.updateInterlockDialogJ(); 
+            });
+            self.timeZoneModelTwo.end.subscribe((v: any) => { 
+                if (v == "") {
+                    self.timeZoneModelTwo.end(0);
+                }
+            });
+            self.timeZoneModelTwo.useAtr.subscribe((v) => { 
+                self.mainSettingModel.updateStampValue(); 
+                self.mainSettingModel.updateInterlockDialogJ();
+                if (!v) {
+                    $('#shiftTwoStart').ntsError('clear');
+                    $('#shiftTwoEnd').ntsError('clear');
+                } 
+            });
         }
 
         public collectData(oldData: any) {

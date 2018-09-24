@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.absencerecruitment.interim.KrcmtInterimRecMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -50,6 +49,24 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			+ " OR (c.subHDAtr = :subHDAtr AND c.disapearDate >= :sDate AND c.disapearDate <= :eDate)";
 	private String QUERY_BY_SID_DATE = QUERY_BYSID + " AND l.dayOff < :dayOff";
 
+//	private String QUERY_DEADLINE_COMPENSATORY_NORMAL = "SELECT COUNT(*) FROM KrcmtLeaveManaData m WHERE m.sID = :sID AND m.dayOff<= :dayOff AND m.subHDAtr = :subHDAtr";
+	private String QUERY_DEADLINE_COMPENSATORY = "SELECT COUNT(m.SID) FROM KRCMT_LEAVE_MANA_DATA m WHERE m.SID = ?sID "
+			+ "AND m.SUB_HD_ATR = ?subHDAtr"
+			+ " AND (((MONTH(m.DAYOFF_DATE) + ?deadlMonth) >= ?currentMonth AND  MONTH(m.DAYOFF_DATE) <= ?currentMonth AND YEAR(m.DAYOFF_DATE) = ?currentYear)"
+						+ " OR (12 - (MONTH(m.DAYOFF_DATE)) + ?currentMonth <= ?deadlMonth AND YEAR(m.DAYOFF_DATE) = (?currentYear - 1))) ";
+ 	@Override
+	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
+		return (Integer) this.getEntityManager()
+				.createNativeQuery(QUERY_DEADLINE_COMPENSATORY)
+				.setParameter("sID", sID)
+				.setParameter("currentMonth", currentDay.month())
+				.setParameter("currentYear", currentDay.year())
+				.setParameter("deadlMonth", deadlMonth)
+				.setParameter("subHDAtr", 0)
+				.getSingleResult();
+	}
+
+	
 
 	@Override
 	public List<LeaveManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
@@ -221,8 +238,8 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	}
 
 	public Optional<LeaveManagementData> getByLeaveId(String leaveManaId) {
-		String QUERY_BY_ID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.subOfHDID = :subOfHDID";
-		Optional<KrcmtLeaveManaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtLeaveManaData.class).setParameter("subOfHDID", leaveManaId).getSingle();
+		String QUERY_BY_ID = "SELECT s FROM KrcmtLeaveManaData s WHERE s.leaveID = :leaveID";
+		Optional<KrcmtLeaveManaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtLeaveManaData.class).setParameter("leaveID", leaveManaId).getSingle();
 		if (entity.isPresent()) {
 			return Optional.ofNullable(toDomain(entity.get()));
 		}

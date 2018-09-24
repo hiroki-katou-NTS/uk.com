@@ -45,9 +45,13 @@ module nts.uk.com.view.cmm050.a {
             popServerEnable: KnockoutObservable<boolean>;
             
             isEnableButtonTest: KnockoutObservable<boolean>;
-            
+
+            mailServerData: MailServerFindDto;
+
             constructor(){
                 let _self = this;
+
+                _self.mailServerData = null;
                 
                 _self.isEnableButtonTest = ko.observable(false);
                 
@@ -213,7 +217,13 @@ module nts.uk.com.view.cmm050.a {
                 
                 var dfd = $.Deferred<void>();
                 
-                //prepare data 
+                //prepare data
+                if(!_.isNumber(_self.imapPort())){
+                    _self.imapPort(_self.mailServerData.imapDto.imapPort)
+                }
+                if(!_.isNumber(_self.popPort())){
+                    _self.popPort(_self.mailServerData.popDto.popPort)
+                }
                 
                 var params = new model.MailServerDto(
                         _self.useAuth(),
@@ -229,7 +239,7 @@ module nts.uk.com.view.cmm050.a {
                 _self.saveMailServerSetting(params).done(function(){
                     
                     dfd.resolve();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                         _self.startPage().done(function(){});
                         $('#email_auth').focus();
                     });
@@ -276,7 +286,9 @@ module nts.uk.com.view.cmm050.a {
                 let _self = this;
                 
                 _self.loadMailServerSetting().done(function(data: MailServerFindDto){
-      
+
+                    _self.mailServerData = data;
+
                     //check visible
                     if (data.useAuth == UseServer.USE){
                         if (data.authMethod == AuthenticationMethod.POP_BEFORE_SMTP && data.popDto.popUseServer == PopUseServer.USE){

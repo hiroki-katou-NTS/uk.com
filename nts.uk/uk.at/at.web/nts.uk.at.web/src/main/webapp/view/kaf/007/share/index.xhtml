@@ -57,7 +57,7 @@
 		</div>
 		<!--A4 申請日付（ラベル）-->
 		<div class="valign-center control-group-kaf007">
-			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_47')}</div>
+			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF007_11')}</div>
 			<!--A4_1 申請日付-->
 			<div data-bind="if: $parent.screenModeNew()" class="mode-style">
 				<div
@@ -140,9 +140,9 @@
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart1, 
-															enable: $parent.editable, 
+															enable: $parent.editable() &amp;&amp; $parent.requiredCheckTime() , 
 															readonly: false,
-															required: $parent.requiredCheckTime}" />
+															required: $parent.requiredCheckTime }" />
 
 					</div>
 				</div>
@@ -157,9 +157,9 @@
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr', 
 															value: workChange().workTimeEnd1, 
-															enable: $parent.editable, 
+															enable: $parent.editable() &amp;&amp; $parent.requiredCheckTime() , 
 															readonly: false,
-															required: $parent.requiredCheckTime}" />
+															required: $parent.requiredCheckTime }" />
 						<label
 							data-bind="text: $parent.appChangeSetting().commentContent2
 					,css: { 'bold': $parent.appChangeSetting().commentFontWeight2  }

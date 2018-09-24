@@ -47,6 +47,10 @@ public class KrcstToppageAlarm extends UkJpaEntity implements Serializable {
 	@Setter
 	@Column(name = "ROGER_FLAG")
 	public int rogerFlag;
+	/** 中止フラグ */
+	@Setter
+	@Column(name = "IS_CANCELLED")
+	public int isCancelled;
 	@Override
 	protected Object getKey() {
 		return this.executionLogId;

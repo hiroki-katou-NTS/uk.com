@@ -20,7 +20,7 @@
 				<!-- <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kdw/006/a/index.xhtml' }">#{i18n.getText('KDW002_8')}</a> -->
 				<a tabindex="1" id="button1" class="goback"
 					data-bind="ntsLinkButton: { action: jumpToHome.bind($data, sideBar)}">#{i18n.getText('KDW002_21')}</a>
-				<button tabindex="2" class="proceed" data-bind="click: submitData,enable :isSave">#{i18n.getText('KDW002_2')}</button>
+				<button tabindex="2" data-prevent-click="true" class="proceed" data-bind="click: submitData,enable :isSave">#{i18n.getText('KDW002_2')}</button>
 
 			</div>
 			<div id="contents-area">
@@ -33,10 +33,10 @@
 						selectedKey: 'attendanceItemId', childField: 'childs', 
 						fields: ['attendanceItemName', 'attendanceItemId']}" /> -->
 					<div style="width: 300px" tabindex="3"
-						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'attendanceItemId',
+						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'displayNumber',
 						comId: 'gridList', 
 								items: attendanceItems, selected: aICurrentCode,
-								selectedKey: 'attendanceItemId', fields: ['attendanceItemName', 'attendanceItemId'], mode: 'igGrid'}" />
+								selectedKey: 'displayNumber', fields: ['attendanceItemName', 'displayNumber'], mode: 'igGrid'}" />
 					<label>#{i18n.getText('KDW002_23')}</label>
 					<table tabindex="4" id="gridList"
 						data-bind="ntsGridList:{
@@ -45,7 +45,7 @@
 							options: attendanceItems,
 							value: aICurrentCode,
 							columns: attendanceItemColumn,
-							optionsValue: 'attendanceItemId',
+							optionsValue: 'displayNumber',
 							multiple: false,
 							enable: true,										
 							showCheckBox: false,

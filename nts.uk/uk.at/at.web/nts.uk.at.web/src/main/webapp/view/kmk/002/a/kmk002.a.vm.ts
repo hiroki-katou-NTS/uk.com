@@ -90,7 +90,7 @@ module nts.uk.at.view.kmk002.a {
             atrDataSource: EnumConstantDto[];
 
             // function
-            getOptItemNoAbove: () => Array<string>;
+            getOptItemNoAbove: () => Array<number>;
 
             // flag
             hasChanged: boolean;
@@ -108,7 +108,7 @@ module nts.uk.at.view.kmk002.a {
             optionalItemDtoStash: OptionalItemDto;
 
             constructor() {
-                this.optionalItemNo = ko.observable('');
+                this.optionalItemNo = ko.observable(null);
                 this.optionalItemName = ko.observable('');
                 this.optionalItemAtr = ko.observable(null);
                 this.usageAtr = ko.observable(0);
@@ -248,14 +248,12 @@ module nts.uk.at.view.kmk002.a {
                     // or new value == value in stash
                     // then do nothing
                     if (self.hasChanged || value == self.performanceAtrStash) {
-                        Formula.performanceAtr = value; // param for screen C
                         return;
                     }
 
                     // if has formulas
                     if (self.isFormulaSet()) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_506' }).ifYes(() => {
-                            Formula.performanceAtr = value; // param for screen C
 
                             // remove all formulas
                             self.removeAllFormulas();
@@ -487,7 +485,7 @@ module nts.uk.at.view.kmk002.a {
                     OptionalItem.selectedFormulas([]);
                 }
 
-                let f = new Formula();
+                let f = new Formula(self.performanceAtr);
 
                 // bind function
                 f.reCheckAll = self.reCheckAll.bind(self);
@@ -832,7 +830,7 @@ module nts.uk.at.view.kmk002.a {
              */
             public clearAll(): void {
                 let self = this;
-                self.optionalItemNo('');
+                self.optionalItemNo(null);
                 self.optionalItemName('');
                 self.optionalItemAtr(0);
                 self.usageAtr(0);
@@ -849,7 +847,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 let mapped: Array<Formula> = list.map(item => {
-                    let formula = new Formula();
+                    let formula = new Formula(self.performanceAtr);
 
                     // bind function
                     formula.reCheckAll = self.reCheckAll.bind(self);
@@ -1107,7 +1105,7 @@ module nts.uk.at.view.kmk002.a {
          */
         class OptionalItemHeader {
             columns: any;
-            selectedCode: KnockoutObservable<string>;
+            selectedCode: KnockoutObservable<number>;
             optionalItemHeaders: KnockoutObservableArray<OptionalItemHeaderDto>;
             optionalItem: OptionalItem;
             hasSelected: KnockoutObservable<boolean>;
@@ -1118,7 +1116,7 @@ module nts.uk.at.view.kmk002.a {
                 self.optionalItem = new OptionalItem();
                 self.hasSelected = ko.observable(true);
 
-                self.selectedCode = ko.observable('');
+                self.selectedCode = ko.observable(null);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
                     { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100, formatter: _.escape },
@@ -1172,7 +1170,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // init selected code subscribe
                     self.selectedCode.subscribe(itemNo => {
-                        if (itemNo) {
+                        if (itemNo && itemNo != 0) {
                             self.hasSelected(true);
                             self.loadOptionalItemDetail(itemNo);
                             // clear error.
@@ -1244,6 +1242,12 @@ module nts.uk.at.view.kmk002.a {
                     return true;
                 }
 
+                const lastItem = _.last(self.optionalItem.calcFormulas());
+                if (lastItem && self.optionalItem.optionalItemAtr() != lastItem.formulaAtr()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1408' });
+                    return false;
+                }
+
                 // validate required formulaName & required setting formula
                 self.optionalItem.validateListFormula();
 
@@ -1296,11 +1300,9 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Load optional item detail.
              */
-            private loadOptionalItemDetail(itemNo: string): JQueryPromise<void> {
+            private loadOptionalItemDetail(itemNo: number): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
-                Formula.performanceAtr = self.optionalItem.performanceAtr(); // param for c screen
 
                 // wait for selected event done then block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
@@ -1332,11 +1334,12 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Get list optional item above of selected optional item.
              */
-            private getOptItemNoAbove(): Array<string> {
+            private getOptItemNoAbove(): Array<number> {
                 let self = this;
-                let selectedNo = parseInt(self.selectedCode());
+                let selectedNo = self.selectedCode();
                 return self.optionalItemHeaders()
-                    .filter(item => parseInt(item.itemNo) < selectedNo)
+                    .filter(item => item.performanceAtr == self.optionalItem.performanceAtr()
+                        && item.itemNo < selectedNo)
                     .map(item => item.itemNo);
             }
         }
@@ -1354,7 +1357,7 @@ module nts.uk.at.view.kmk002.a {
             settingResult: KnockoutObservable<string>;
 
             // param for c screen
-            static performanceAtr: number;
+            performanceAtr: KnockoutObservable<number>;
 
             // Calculation setting
             calcAtr: KnockoutObservable<number>;
@@ -1383,7 +1386,7 @@ module nts.uk.at.view.kmk002.a {
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
-            getOptItemNoAbove: () => Array<string>;
+            getOptItemNoAbove: () => Array<number>;
             getSelectableFormulas: (orderNo: number) => Array<FormulaDto>;
 
             // Enums datasource
@@ -1405,9 +1408,10 @@ module nts.uk.at.view.kmk002.a {
             timeMonthlyUnitStash: number;
             timeDailyUnitStash: number;
 
-            constructor() {
+            constructor(performanceAtr: KnockoutObservable<number>) {
                 this.formulaId = nts.uk.util.randomId();
-                this.optionalItemNo = '';
+                this.optionalItemNo = null;
+                this.performanceAtr = performanceAtr;
                 this.formulaName = ko.observable('');
                 this.formulaAtr = ko.observable(0);
                 this.symbolValue = '';
@@ -1743,8 +1747,8 @@ module nts.uk.at.view.kmk002.a {
                 let dto = self.toDto();
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
-                param.performanceAtr = Formula.performanceAtr;
-                param.formulaAtr = dto.formulaAtr;
+                param.performanceAtr = self.performanceAtr();
+                param.formulaAtr = self.formulaAtr();
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = dto.itemSelection;
@@ -2015,7 +2019,7 @@ module nts.uk.at.view.kmk002.a {
             formulaAtrName: string;
             formulaName: string;
             itemSelection: ItemSelectionDto;
-            selectableOptItemNos: Array<string>;
+            selectableOptItemNos: Array<number>;
         }
         export interface ParamToD {
             formulaId: string;

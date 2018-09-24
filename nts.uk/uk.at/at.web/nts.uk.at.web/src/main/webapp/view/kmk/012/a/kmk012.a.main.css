@@ -1,5 +1,5 @@
 #functions-area #button12{
-    margin-left: 561px;
+    margin-left: 182px;
 }
 
 @CHARSET "UTF-8";
@@ -45,4 +45,8 @@
 
 .nts-editor {
 	width: 180px !important;
+}
+
+#functions-area #btnDialogCalDailyPfm {
+	margin-left: 400px;
 }

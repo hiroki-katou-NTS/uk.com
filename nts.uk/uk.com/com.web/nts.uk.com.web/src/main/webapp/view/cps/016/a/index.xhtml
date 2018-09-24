@@ -58,7 +58,7 @@
 						<div style="float: left">
 							<div style="width: 395px" tabindex="7"
 								data-bind="ntsSearchBox: {       
-   									searchMode: 'filter',       
+   									searchMode: 'highlight',       
    									targetKey: 'selectionItemId',        
    									comId: 'single-list',       
    									items: listItems,        
@@ -74,10 +74,9 @@
 									height: 490,
 									options: listItems,
 									primaryKey: 'selectionItemId',
-									showNumbering:true,
 									columns: [
 						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 340 }
+						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 340, formatter: _.escape }
 						            ],
 									multiple: false,
 									value: perInfoSelectionItem().selectionItemId}">
@@ -153,12 +152,6 @@
 									required: true,
 									enable: $parents[0].checkCreate,
 									readonly: false}" />
-						</div>
-
-						<div class="row">
-							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_24')}</div>
-							<div
-								data-bind="ntsCheckBox: { checked: shareChecked , enable: $parents[0].checkCreate }">グループ会社で共有する</div>
 						</div>
 
 						<div class="row">

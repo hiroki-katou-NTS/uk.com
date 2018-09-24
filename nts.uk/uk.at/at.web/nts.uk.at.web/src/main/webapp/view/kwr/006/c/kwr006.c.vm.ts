@@ -1,12 +1,14 @@
 module nts.uk.at.view.kwr006.c {
 
     import service = nts.uk.at.view.kwr006.c.service;
+    import blockUI = nts.uk.ui.block;
+
     export module viewmodel {
         const DEFAULT_DATA_FIRST = 0;
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
             outputItemList: KnockoutObservableArray<ItemModel>;
-            currentCodeList: KnockoutObservable<any>;
+            selectedCodeC2_3: KnockoutObservable<any>;
             columns: KnockoutObservableArray<any>;
 
 
@@ -30,6 +32,10 @@ module nts.uk.at.view.kwr006.c {
             currentRemarkInputContent: KnockoutObservable<number>;
             isEnableRemarkInputContents: KnockoutComputed<boolean>;
 
+            // store map to convert id and code attendance item
+            mapIdCodeAtd: any;
+            mapCodeIdAtd: any;
+
             constructor() {
                 var self = this;
                 self.C3_2_value = ko.observable("");
@@ -40,11 +46,11 @@ module nts.uk.at.view.kwr006.c {
 
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.outputItemList = ko.observableArray([]);
-                self.currentCodeList = ko.observable();
+                self.selectedCodeC2_3 = ko.observable();
 
                 self.enableBtnDel = ko.observable(false);
                 self.enableCodeC3_2 = ko.observable(false);
-                self.currentCodeList.subscribe(function(value) {
+                self.selectedCodeC2_3.subscribe(function(value) {
                     let codeChoose = _.find(self.allMainDom(), function(o: any) {
                         return value == o.itemCode;
                     });
@@ -52,10 +58,8 @@ module nts.uk.at.view.kwr006.c {
                         nts.uk.ui.errors.clearAll();
                         self.C3_2_value(codeChoose.itemCode);
                         self.C3_3_value(codeChoose.itemName);
-                        let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
-                            return codeChoose.itemCode == o.itemCode;
-                        });
-                        self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule);
+                        let outputItemMonthlyWorkSchedule = _.find(self.allMainDom(), o => codeChoose.itemCode == o.itemCode);
+                        self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule.lstDisplayedAttendance);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
                         self.selectedCodeA8_2(outputItemMonthlyWorkSchedule.printSettingRemarksColumn);
@@ -67,7 +71,7 @@ module nts.uk.at.view.kwr006.c {
                 });
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KWR006_40"), prop: 'code', width: 70 },
-                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape}
+                    { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180, formatter: _.escape }
                 ]);
                 self.itemListConditionSet = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
@@ -82,36 +86,33 @@ module nts.uk.at.view.kwr006.c {
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
             }
 
             /*
              * set data to C7_2, C7_8 
             */
-            private getOutputItemMonthlyWorkSchedule(data?: any): void {
+            private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
 
-                const lstSwapLeft = self.outputItemPossibleLst().sort((a, b) => parseInt(a.code) - parseInt(b.code));
+                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
-                if (data) {
-                    lstSwapRight = data.lstDisplayedAttendance.map(item => {
-                        return { code: item.attendanceDisplay + "", name: item.attendanceName };
-                    }).sort((a, b) => parseInt(a.code) - parseInt(b.code));
+                if (lstDisplayedAttendance) {
+                    lstSwapRight = lstDisplayedAttendance.map(item => {
+                        return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
+                    });
                 }
 
-                // refresh data for C7_2
-                self.items(lstSwapLeft);
                 // refresh data for C7_8
                 self.currentCodeListSwap(lstSwapRight);
+                // refresh data for C7_2
+                self.items(lstSwapLeft);
             }
 
             public sortItems(): void {
                 let self = nts.uk.ui._viewModel.content;
-                self.items(_.sortBy(self.items(), item => parseInt(item.code)));
-            }
-
-            public sortCurrentCodeListSwap(): void {
-                let self = nts.uk.ui._viewModel.content;
-                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
+                self.items(_.sortBy(self.items(), item => item.code));
             }
 
             /*
@@ -120,27 +121,37 @@ module nts.uk.at.view.kwr006.c {
             openScreenD() {
                 var self = this;
                 nts.uk.ui.windows.setShared('KWR006_D', self.outputItemPossibleLst(), true);
-                if (!_.isEmpty(self.currentCodeList())) {
-                    self.storeCurrentCodeBeforeCopy(self.currentCodeList());
+                if (!_.isEmpty(self.selectedCodeC2_3())) {
+                    self.storeCurrentCodeBeforeCopy(self.selectedCodeC2_3());
                 }
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
                     const KWR006DOutput = nts.uk.ui.windows.getShared('KWR006_D');
                     if (!_.isNil(KWR006DOutput)) {
-                        self.currentCodeList('');
+                        self.selectedCodeC2_3('');
                         if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
-                            const chosen = self.outputItemPossibleLst().filter(item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
-                            self.items(self.outputItemPossibleLst());
-                            self.currentCodeListSwap(chosen);
-                            $('#C3_3').focus();
+                            _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
+                                value.code = self.mapIdCodeAtd[value.id];
+                            })
+                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
+                            if (!_.isEmpty(chosen)) {
+                                self.items(self.outputItemPossibleLst());
+                                self.currentCodeListSwap(chosen);
+                                $('#C3_3').focus();
+                            } else {
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1411" });
+                                $('#C3_3').focus();
+                            }
                         } else {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1411" });
                             $('#C3_2').focus();
                         }
 
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR006_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR006_D').nameCopy);
+                        self.saveData();
                     } else {
-                        self.currentCodeList(self.storeCurrentCodeBeforeCopy());
+                        self.selectedCodeC2_3(self.storeCurrentCodeBeforeCopy());
                     }
                 });
             }
@@ -150,7 +161,7 @@ module nts.uk.at.view.kwr006.c {
             */
             private newMode(): void {
                 let self = this;
-                self.currentCodeList('');
+                self.selectedCodeC2_3('');
                 self.C3_2_value('');
                 self.C3_3_value('');
                 nts.uk.ui.errors.clearAll();
@@ -173,37 +184,41 @@ module nts.uk.at.view.kwr006.c {
                     return;
                 }
 
+                blockUI.grayout();
                 let dfd = $.Deferred();
                 let command: any = {};
                 command.itemCode = self.C3_2_value();
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
-                _.forEach(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
+
+                _.map(self.currentCodeListSwap(), function(value, index) {
+                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code] });
                 });
 
                 if (self.selectedCodeA8_2() == 1) {
                     command.remarkInputNo = self.currentRemarkInputContent();
                 } else {
                     let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
-                        return self.currentCodeList() == o.itemCode;
+                        return self.selectedCodeC2_3() == o.itemCode;
                     });
                     command.remarkInputNo = _.isEmpty(outputItemMonthlyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemMonthlyWorkSchedule.remarkInputNo;
                     self.currentRemarkInputContent(command.remarkInputNo);
                 }
 
-                command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
+                command.newMode = (_.isUndefined(self.selectedCodeC2_3()) || _.isNull(self.selectedCodeC2_3()) || _.isEmpty(self.selectedCodeC2_3())) ? true : false;
                 service.save(command).done(function() {
                     self.getDataService().done(function() {
-                        self.currentCodeList(self.C3_2_value());
+                        self.selectedCodeC2_3(self.C3_2_value());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             $('#C3_3').focus();
                         });
+                        blockUI.clear();
                         dfd.resolve();
                     })
 
                 }).fail(function(err) {
+                    blockUI.clear();
                     nts.uk.ui.dialog.alertError(err);
                     dfd.reject();
                 })
@@ -217,26 +232,28 @@ module nts.uk.at.view.kwr006.c {
             private removeData(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.remove(self.currentCodeList()).done(function() {
+                    blockUI.grayout();
+                    service.remove(self.selectedCodeC2_3()).done(function() {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
-                            return self.currentCodeList() == value.code;
+                            return self.selectedCodeC2_3() == value.code;
                         })
 
                         // self.currentCodeList only have 1 element in list
                         if (self.outputItemList().length == 1) {
-                            self.currentCodeList(null);
+                            self.selectedCodeC2_3(null);
                         }
                         // when current code was selected is last element in list self.currentCodeList
                         else if (indexCurrentCode == (self.outputItemList().length - 1)) {
-                            self.currentCodeList(self.outputItemList()[indexCurrentCode - 1].code);
+                            self.selectedCodeC2_3(self.outputItemList()[indexCurrentCode - 1].code);
                         }
                         // when current code was selected in place middle in list self.currentCodeList
                         else {
-                            self.currentCodeList(self.outputItemList()[indexCurrentCode + 1].code);
+                            self.selectedCodeC2_3(self.outputItemList()[indexCurrentCode + 1].code);
                         }
                         self.getDataService().done(function() {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                                if (_.isEmpty(self.currentCodeList())) {
+                                if (_.isEmpty(self.selectedCodeC2_3())) {
                                     $('#C3_2').focus();
                                 } else {
                                     $('#C3_3').focus();
@@ -252,6 +269,8 @@ module nts.uk.at.view.kwr006.c {
                 Close C screen
             */
             public closeScreenC(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared('selectedCodeScreenC', self.selectedCodeC2_3(), true)
                 nts.uk.ui.windows.close();
             }
 
@@ -260,8 +279,8 @@ module nts.uk.at.view.kwr006.c {
                 let self = this;
 
                 $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function() {
-                    self.currentCodeList(nts.uk.ui.windows.getShared('selectedCode'));
-                    if (_.isNil(self.currentCodeList()))
+                    self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
+                    if (_.isNil(self.selectedCodeC2_3()))
                         self.newMode();
                     dfd.resolve();
                 })
@@ -279,18 +298,19 @@ module nts.uk.at.view.kwr006.c {
                     self.allMainDom(data.outputItemMonthlyWorkSchedule);
 
                     // variable temporary 
-                    let temp: any[] = [];
-                    _.forEach(data.monthlyAttendanceItem, function(value) {
-                        temp.push(value);
-                    })
-                    self.outputItemPossibleLst(temp);
+                    self.outputItemPossibleLst(data.monthlyAttendanceItem);
 
-                    let arrCodeName: ItemModel[] = [];
-                    _.forEach(data.outputItemMonthlyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode + "", name: value.itemName });
+                    let arrCodeName = _.map(data.outputItemMonthlyWorkSchedule, value => {
+                        return { code: value.itemCode, name: value.itemName };
                     });
                     self.outputItemList(arrCodeName);
-                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
+
+                    _.forEach(data.monthlyAttendanceItem, (value) => {
+                        self.mapCodeIdAtd[value.code] = value.id;
+                        self.mapIdCodeAtd[value.id] = value.code;
+                    })
+
+                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : _.sortBy(data.monthlyAttendanceItem, o => o.code));
                     dfd.resolve();
                 })
 
@@ -350,9 +370,11 @@ module nts.uk.at.view.kwr006.c {
         class ItemModel {
             code: string;
             name: string;
-            constructor(code: string, name: string) {
+            id: string;
+            constructor(code: string, name: string, id: string) {
                 this.code = code;
                 this.name = name;
+                this.id = id;
             }
         }
 

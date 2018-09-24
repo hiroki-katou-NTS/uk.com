@@ -11,10 +11,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
         id: KnockoutObservable<string> = ko.observable('');
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
+            { headerText: text('CPS006_6'), key: 'categoryName', width: 250, formatter: _.escape },
             {
                 headerText: text('CPS006_7'), key: 'isAbolition', width: 50,
-                template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+                formatter: makeIcon
             }
         ]);
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -55,8 +55,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     categoryType: x.categoryType,
                                     isAbolition: x.isAbolition
                                 })));
-
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
                     } else {
@@ -102,6 +102,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                     }
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                self.id(self.categoryList()[0].id);
                             }
                         });
 
@@ -123,9 +124,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.canAbolition, data.isExistedItemLst);
-                    if (data.itemLst.length > 0) {
-                        self.currentCategory().currentItemId(data.itemLst[0].id);
-                    }
+//                    if (data.itemLst.length > 0) {
+//                        self.currentCategory().currentItemId(data.itemLst[0].id);
+//                    }
                 }
             });
         }
@@ -330,6 +331,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         });
                     });
                 }
+                $('#ctgName').focus();
             });
         }
 
@@ -342,7 +344,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     isAbolition: cat.isAbolition
 
                 };
-
+            block.grayout();
             service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
                     let index = _.indexOf(_.map(self.categoryList(), function(obj) { return obj.id }), command.categoryId);
@@ -361,6 +363,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 } else {
                     dialog.alertError({ messageId: res.messageId });
                 }
+            }).always(() => {
+                $('#ctgName').focus();
+                block.clear();
             });
 
         }
@@ -413,6 +418,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.isAbolition = params.isAbolition;
         }
     }
+    
+    function makeIcon(value, row) {
+        if (value == '1')
+            return '<img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+        return '<span></span>';
+    }
 
     export interface ICategoryInfoDetail {
         id: string;
@@ -439,10 +450,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
         currentItemId: KnockoutObservable<string> = ko.observable('');
         itemColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
+            { headerText: text('CPS006_16'), key: 'itemName', width: 250},
             {
                 headerText: text('CPS006_17'), key: 'isAbolition', width: 50,
-                template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+                formatter: makeIcon
             }
         ]);
         constructor(params: ICategoryInfoDetail) {

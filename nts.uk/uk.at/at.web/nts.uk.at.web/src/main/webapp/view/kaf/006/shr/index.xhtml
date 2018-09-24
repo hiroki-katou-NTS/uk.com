@@ -1,16 +1,55 @@
 <div>
 	<div class="left-content-kaf006">
-		<table id="tbl">
-			<tr data-bind ="visible : !employeeFlag()">
-				<td><div data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div></td>
-				<td class="thut"><label
-					data-bind="text : employeeName"></label></td>
-			</tr>
-			<tr data-bind ="visible : employeeFlag()">
-				<td style = "vertical-align: top;"><div data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div></td>
-				<td class="thut">
-				<div id="list-box"
-				data-bind="ntsListBox: {
+ 			<!-- TH: 1 Employee -->
+ 			<div  data-bind ="if : !employeeFlag()">
+				<!-- A3_1: 申請者 -->
+				<div class = "line_1 column1" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div>
+				<!-- A3_2: 申請者名 -->
+				<div class = "line_1 thut" >
+					<label data-bind="text : employeeName"></label>
+				</div>
+				<div  id = "numberOfRemaining1"  class = "line_1" data-bind = "if: disAll">
+					<!-- A14_1 - A14_8 -->
+					<table id = "reamaning">
+						<tr style = "background-color: #97D155">
+							<td data-bind = "css: { display1: !yearDis()}">
+								<div>#{i18n.getText('KAF006_69')}</div>
+							</td>
+							<td data-bind = "css: { display1: !subHdDis()}">
+								<div>#{i18n.getText('KAF006_70')}</div>
+							</td>
+							<td data-bind = "css: { display1: !subVacaDis()}">
+								<div>#{i18n.getText('KAF006_71')}</div>
+							</td>
+							<td data-bind = "css: { display1: !stockDis()}">
+								<div>#{i18n.getText('KAF006_72')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class ="flRight" data-bind = "css: { display1: !yearDis()}">
+								<div data-bind = "text: yearRemain"></div>
+							</td>
+							<td class ="flRight" data-bind = "css: { display1: !subHdDis()}">
+								<div data-bind = "text: subHdRemain"></div>
+							</td>
+							<td class ="flRight" data-bind = "css: { display1: !subVacaDis()}">
+								<div data-bind = "text: subVacaRemain"></div>
+							</td>
+							<td class ="flRight" data-bind = "css: { display1: !stockDis()}">
+								<div data-bind = "text: stockRemain"></div>
+							</td>
+						</tr>
+					</table>
+				</div>
+		</div>
+		<!-- TH: List Employee -->
+		<div data-bind ="if : employeeFlag()">
+			<div>
+				<!-- A3_1: 申請者 -->
+				<div id ="applicant" class = "line_1 column1" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div>
+				<!-- A3_15: 申請者リスト -->
+				<div class = "line_1 thut">
+					<div id="list-box" data-bind="ntsListBox: {
 							options: employeeList,
 							optionsValue: 'id',
 							optionsText: 'name',
@@ -20,12 +59,28 @@
 							rows: 3,
 							columns: [ { key: 'name',length: 11} ]}">
 				</div>
-			</td>
-			</tr>
-			<tr data-bind ="visible : employeeFlag()">
-				<td><div></div></td>
-				<td class="thut"><label style ="margin-left: -9px;" data-bind="text : totalEmployee"></label></td>
-			</tr>
+				</div>
+				<div id = "numberOfRemaining2"  class = "line_1">
+					<!-- A14_1 - A14_8 -->
+					<table id = "reamaning">
+						<tr style = "background-color: #97D155">
+							<td>#{i18n.getText('KAF006_69')}</td>
+							<td>#{i18n.getText('KAF006_70')}</td>
+							<td>#{i18n.getText('KAF006_71')}</td>
+							<td>#{i18n.getText('KAF006_72')}</td>
+						</tr>
+						<tr>
+							<td class ="flRight" data-bind = "text: yearRemain"></td>
+							<td class ="flRight" data-bind = "text: subHdRemain"></td>
+							<td class ="flRight" data-bind = "text: subVacaRemain"></td>
+							<td class ="flRight" data-bind = "text: stockRemain"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id = "totalEmp"><label data-bind="text : totalEmployee"></label></div>
+		</div>
+		<table id="tbl">
 			<tr data-bind="if: displayPrePostFlg">
 				<td><div data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_9')}</div></td>
 				<td class="thut"><div data-bind="if: screenModeNew"
@@ -114,15 +169,17 @@
 				<td>
 					<!-- A4_1 -->
 					<div class="lblTitle-kaf006 cm-column2-kaf006 control-group-kaf006"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_15')}</div>
+						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF006_15')}</div>
 				</td>
 				<td class="thut">
 					<!-- A4_2 -->
-					<div data-bind="ntsSwitchButton: {
+					<div id = "hdType" data-bind="ntsSwitchButton: {
+								name: '#{i18n.getText('KAF006_15')}',
 								options: holidayTypes,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: holidayTypeCode,
+								required: true,
 								enable: screenModeNew }"></div>
 				</td>
 			</tr>
@@ -217,7 +274,7 @@
 				</div>
 			</div>
 			<!-- A10 - Relationship -->
-			<div class="valign-center-kaf006  control-group-kaf006" data-bind = "if: holidayTypeCode() == 3">
+			<div class="valign-center-kaf006  control-group-kaf006" data-bind = "if: hdTypeDis">
 				<div data-bind = "if: fix">
 					<div class="valign-center-kaf006 control-group-kaf006">
 						<!--A10_1 続柄・喪主-->
@@ -240,6 +297,7 @@
 						</div>
 					</div>
 					<div class="valign-center-kaf006 control-group-kaf006">
+					<div data-bind = "if: relaResonDis">
 						<!--A10_4 続柄入力-->
 						<div class="lblTitle-kaf006 cm-column-kaf006"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_43')}</div>
@@ -259,13 +317,27 @@
                          <div class = 'maxDay' data-bind = "if: maxDayDis">
                          	<div data-bind = "text: maxDayline1"></div>
                          	<div data-bind = "text: maxDayline2"></div>
-                         </div>           	
+                         </div> 
+                   	</div>
+                   	<div data-bind = "if: !relaResonDis()">
+                         <!-- A10_6 -->
+                         <div class = 'maxDay limit-fix' data-bind = "if: maxDayDis">
+                         	<div data-bind = "text: maxDayline1"></div>
+                         	<div data-bind = "text: maxDayline2"></div>
+                         </div> 
+                    </div>          	
 					</div>
+				</div>
+				<div data-bind = "if: !fix()">
+					<div class = 'maxDay limit-fix' data-bind = "if: maxDayDis">
+                       	<div data-bind = "text: maxDayline1"></div>
+                       	<div data-bind = "text: maxDayline2"></div>
+                 </div>
 				</div>
 			</div>
 			<!-- A7 - Reason -->
 			<div class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
-				data-bind="css: { disappear: !typicalReasonDisplayFlg() }">
+				data-bind="if: typicalReasonDisplayFlg">
 				<!--A7_1 申請定型理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>

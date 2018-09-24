@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -14,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-// domain name: 積立年休付与残数データ
+// domain name CS00038: 積立年休付与残数データ 
 public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 	
 	/**
@@ -56,6 +59,7 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
+		
 		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
 		domain.rsvLeaID = id;
 		domain.employeeId = employeeId;
@@ -113,5 +117,58 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 		
 		// 積立年休使用残を返す
 		return remainingDays;
+	}
+	
+	public static void validate(ReserveLeaveGrantRemainingData domain) {
+		if ((domain.getDetails().getGrantNumber() != null) || (domain.getDetails().getUsedNumber().getDays() != null)
+				|| (domain.getDetails().getRemainingNumber() != null)) {
+			if (domain.getGrantDate() == null || domain.getDeadline() == null) {
+				if (domain.getGrantDate() == null) {
+					throw new BusinessException("Msg_925", "付与日");
+				}
+				if (domain.getDeadline() == null) {
+					throw new BusinessException("Msg_925", "期限日");
+				}
+			}
+		}
+		// 付与日＞使用期限の場合はエラー #Msg_1023
+		if (domain.getGrantDate().compareTo(domain.getDeadline()) > 0) {
+			throw new BusinessException("Msg_1023");
+		}
+	}
+	
+	// hàm validate cho domain để khi add command hay ghi log cho domain thì sẽ xem xét xem có được add hay không
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays , String grantDateItemName, String  deadlineDateItemName) {
+		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
+		if(isNull == false) return false;
+		if (grantDays != null || usedDays != null || remainDays != null) {
+			if (deadlineDate == null || grantDate == null) {
+				if (grantDate == null) {
+					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
+				}
+				if (deadlineDate == null) {
+					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
+				}
+			}
+		}
+		if (grantDate == null && deadlineDate != null) {
+			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
+		}
+		if (deadlineDate == null && grantDate != null) {
+			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
+		}
+		if (grantDate != null && deadlineDate != null) {
+			// 付与日＞使用期限の場合はエラー #Msg_1023
+			if (grantDate.compareTo(deadlineDate) > 0) {
+				throw new BusinessException("Msg_1023");
+			}
+		}
+		return true;
+	}
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays ) {
+		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
+			return false;
+		return true;
 	}
 }

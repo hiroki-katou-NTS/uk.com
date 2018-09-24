@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,6 +24,7 @@ import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.algorithm.CanApprovalOnBaseDateService;
 import nts.uk.ctx.sys.auth.dom.algorithm.DetermineEmpCanReferService;
 import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
+import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
@@ -32,6 +34,8 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepositor
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
+import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
@@ -113,6 +117,9 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	@Inject
 	private EmpInfoAdapter empInfoAdapter;
 	
+	@Inject
+	private RoleRepository roleRepo;
+	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
 		// imported（権限管理）「社員」を取得する Request No1
@@ -132,11 +139,20 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 				return Optional.empty();
 			} else {
 				Optional<Role> role = empReferenceRangeService.getByUserIDAndReferenceDate(useExport.get().getUserID(), roleType, GeneralDate.today());
-				if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+				if (!role.isPresent()) {
+					if (sID.contains(employeeIDLogin)) {
+						result.add(employeeIDLogin);
+					}
+					return Optional.of(new NarrowEmpByReferenceRange(result));
+				}
+
+				EmployeeReferenceRange referenceRange = role.get().getEmployeeReferenceRange();
+				if (referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 					return Optional.of(new NarrowEmpByReferenceRange(sID));
-				} else if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.ONLY_MYSELF) {
-					if(sID.contains(employeeIDLogin))
-					result.add(employeeIDLogin);
+				} else if (referenceRange == EmployeeReferenceRange.ONLY_MYSELF) {
+					if (sID.contains(employeeIDLogin)) {
+						result.add(employeeIDLogin);
+					}
 					return Optional.of(new NarrowEmpByReferenceRange(result));
 				} else {
 					// ドメインモデル「職場管理者」をすべて取得する
@@ -148,7 +164,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 					Optional<AffWorkplaceHistImport> workPlace = workplaceAdapter.findWkpByBaseDateAndEmployeeId(GeneralDate.today(), employeeIDLogin);
 					String workPlaceID1 = workPlace.get().getWorkplaceId();
 					List<String> listWorkPlaceID3 = new ArrayList<>();
-					if (role.isPresent() && role.get().getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+					if (referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 						// 配下の職場をすべて取得する
 						// Lay RequestList No.154
 						listWorkPlaceID3 = workplaceAdapter.findListWorkplaceIdByCidAndWkpIdAndBaseDate(AppContexts.user().companyId(), workPlaceID1, GeneralDate.today());
@@ -304,6 +320,36 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			}
 		});
 		return result;
+	}
+	
+	private List<String> getRoleIDByCID(String companyID){
+		List<Role> listRole = roleRepo.findByTypeAndRoleAtr(companyID, RoleType.EMPLOYMENT.value, RoleAtr.INCHARGE.value);
+		List<String> listRoleID = listRole.stream().map(c ->c.getRoleId()).collect(Collectors.toList());
+		if(listRoleID.isEmpty()){
+			return new ArrayList<>();
+		}
+		return listRoleID;
+	}
+
+	@Override
+	public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
+		//OUTPUT 社員ID（List）を初期化する
+		List<String> listEmpID = new ArrayList<>();
+		// 就業担当者ロールID(List)を取得する
+		List<String> listRoleID = getRoleIDByCID(companyID);
+		//ドメインモデル「ロール個人別付与」を取得する
+		List<RoleIndividualGrant> listRoleIndi = roleIndividualGrantRepository.findRoleIndividual(companyID, RoleType.EMPLOYMENT.value, listRoleID, referenceDate);
+		List<String> listUserID = listRoleIndi.stream().map(c ->c.getUserId()).collect(Collectors.toList());
+		for (String userID : listUserID) {
+			Optional<User> user = userRepository.getByUserID(userID);
+			if(user.get().getAssociatedPersonID().isPresent()){
+				String personalID = user.get().getAssociatedPersonID().get();
+				EmployeeImport empImport = new EmployeeImport(companyID, personalID);
+				listEmpID.add(empImport.getEmployeeId());
+			}
+		}
+		
+		return listEmpID;
 	}
 	
 }

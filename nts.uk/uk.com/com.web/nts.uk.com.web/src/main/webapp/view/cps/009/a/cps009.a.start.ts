@@ -8,15 +8,17 @@ module nts.uk.com.view.cps009.a {
         __viewContext["viewModel"] = screenModel;
         __viewContext.bind(__viewContext["viewModel"]);
 
-        $(document).ready(function() {
-           // __viewContext["viewModel"].checkBrowse();
-        });
-
         if (window.top != window.self) {
             $("#header").css("display", "none");
             $(".goout").css("display", "none");
             $("#closeBtn").css("visibility", "visible");
         }
+        
+        $(document).on("keydown", 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
+            if (e.keyCode == 13) {
+                $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").focus();
+            }
+        });
 
         $(".ntsControl .nts-input").focusout(() => {
             $(".ntsControl .nts-input").css("padding-top", "5px !important");

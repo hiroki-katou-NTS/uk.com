@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
@@ -76,16 +76,21 @@ public class MonthlyAttendanceItemFinder {
 					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
 
 			// merge two list attendance items
-			attdItems.addAll(filtered);
+			filtered.forEach(item -> {
+				if (attdItems.stream().anyMatch(i -> i.getAttendanceItemId() == item.getAttendanceItemId())) {
+					return;
+				}
+				attdItems.add(item);
+			});
 		}
 
-		if (attdItems.isEmpty()) {
+		if (CollectionUtil.isEmpty(attdItems)) {
 			return attdItems;
 		}
 
 		// convert to map
 		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
-				.collect(Collectors.toMap(k -> k.getAttendanceItemId(), vl -> vl));
+				.collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
 
 		// get attd item name list
 		List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.attdItemNameAdapter
@@ -111,11 +116,8 @@ public class MonthlyAttendanceItemFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		List<AttdItemDto> attendanceItemDtos = this.monthlyRepo
-				.findByAtr(companyId, MonthlyAttendanceItemAtr.valueOf(atr)).stream().map(dom -> this.toDto(dom))
-				.collect(Collectors.toList());
-
-		return attendanceItemDtos;
+		return this.monthlyRepo.findByAtr(companyId, MonthlyAttendanceItemAtr.valueOf(atr)).stream()
+				.map(dom -> this.toDto(dom)).collect(Collectors.toList());
 	}
 
 	public List<AttdItemDto> findMonthlyAttendanceItemBy(int checkItem) {

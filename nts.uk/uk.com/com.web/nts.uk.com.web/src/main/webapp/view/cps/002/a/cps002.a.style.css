@@ -1,71 +1,89 @@
 @import url("base.css");
 
-/*A1_002*/
-#emp_reg_info_wizard>.steps {
-	height: 700px;
+.licenseCheck{
+	margin-left: 640px;
+    margin-right: 70px;
+    min-width: 179px;
+    display: inline-block;
 }
 
 #init_setting_btn {
-	margin-right: 200px;
-	float: right;
+	/* margin-right: 200px;
+	float: right; */
 }
 
-#emp_reg_info_wizard>.content {
+#emp_reg_info_wizard>.wizard,
+#emp_reg_info_wizard>.contents {
+	position: relative;
+	vertical-align: top;
+	display: inline-block;
+}
+
+#emp_reg_info_wizard {
+	min-width: 1230px;
+}
+
+#emp_reg_info_wizard>.wizard {
+    width: 260px;
+    height: calc(100vh - 200px);
+}
+    
+#emp_reg_info_wizard>.contents {
 	background: none;
+	padding-left: 25px;
+    width: 900px;
 }
 
-.nts-wizard {
-	min-width: 1200px;
-}
-
-.content.clearfix {
-	min-width: 890px;	
-}
-
-.nts-wizard .header .content {
-	margin: 4px 0 5px 0;
-	padding: 0.5em 1em 1em 3em;
-}
-
-.nts-wizard>.steps>ul>li.current>.nts-steps-middle>.nts-bridge>.nts-horizontal-line
-	{
-	width: calc(100% - 53px);
-}
-
-.nts-wizard>.steps>ul>li>.nts-steps-middle {
-	padding-left: 31px;
-}
 /* step1 */
 .step1_top_left_col1 {
 	width: 150px;
-	float: left;
+	display: inline-block;
 }
 
 .step1_top_left_col2 {
-	float: left;
+	display: inline-block;
 }
 
 #step1_content_top_left {
-	float: left;
 	width: 600px;
 }
 
 #step1_content_top_right {
-	float: right;
-	width: 370px;
 	background-color: #F2F2F2;
 	padding: 10px;
 	position: absolute;
+	top: 0;
+	right: 0;
+    max-width: 340px;
+}
+#step1_content_top_right .form-group>div {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#step1_content_top_right  hr~.form-group>span {
+	width: 170px;
 	display: inline-block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+#step1_content_top_right  hr~.form-group>span+span {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	width: 165px;
 }
 
 .nts-wizard.vertical>.steps {
 	width: 250px !important;
 }
 
-.nts-wizard.vertical>.content {
-	/* width: 1050px; */
-	height: 800px;
+#contents-area .nts-wizard>.content>.body {
+	padding: 0;
 }
 
 #top_right_hr {
@@ -79,8 +97,6 @@
 
 #top_hr {
 	margin-top: 15px;
-	width: 600px;
-	float: left;
 }
 
 #step1_content_bottom {
@@ -88,10 +104,6 @@
 }
 
 #step1_bot_des {
-	margin-left: 20px;
-}
-
-#init_select {
 	margin-left: 20px;
 }
 
@@ -137,17 +149,13 @@
 
 /* step 2 */
 #ccgcomponent {
-	margin-left: 250px;
+	margin-left: -30px;
 }
 
 #step2_content {
 	margin-left: 20px;
 	display: inline-flex;
 	width: 900px;
-}
-
-#step2_des {
-	margin-left: -10px;
 }
 
 .step2_col1 {
@@ -172,14 +180,6 @@
 	margin-top: 25px;
 }
 
-#search_box {
-	height: 500px;
-	position: relative;
-	border-radius: 5px;
-	padding: 0px 5px 10px 25px;
-	margin-top: 25px;
-}
-
 #value_item {
 	padding: 15px 0px 0px 30px;
 }
@@ -192,13 +192,9 @@
 	width: 453px;
 }
 
-.table_item, th, td {
+.table_item th, .table_item td {
 	border: 1px solid black;
-	padding: 5px;
-}
-
-.table_item th {
-	height: 40px;
+	padding: 6px;
 }
 
 .step3_col2 .table_item, th, td {
@@ -271,6 +267,68 @@
 	position: absolute !important;
 }
 
-.nts-wizard > .content > .body {
-	min-width: 820px;
+
+#emp_reg_info_wizard>.content {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}
+
+#emp_reg_info_wizard .form-group {
+	margin-bottom: 10px;
+}
+
+#emp_reg_info_wizard .form-group>* {
+	vertical-align: middle;
+}
+
+#step1_content_top .form-group .form-label {
+	min-width: 170px;
+}
+
+#step1_content_bottom #init_select {
+	margin-left: 20px;
+	display: inline-block;
+	width: 360px;
+}
+
+#step1_content_bottom .btn-group {
+	width: 130px;
+	display: inline-block;
+}
+
+#step1_content_bottom .btn-group button {
+	width: 100%;
+}
+
+#step1_content_bottom .btn-group button:first-child {
+	margin-bottom: 10px;
+}
+
+#step1_content_bottom>*:not(.next_btn),
+#step1_content_bottom #init_select .ntsRadioBox {
+	display: block;
+}
+
+#step1_content_bottom #init_select .ntsRadioBox {
+	line-height: 27px;
+	
+}
+
+#emp_reg_info_wizard .table_item th {
+	height: 27px;
+    font-weight: bold;
+}
+
+#emp_reg_info_wizard #search_box {
+	height: 500px;
+	position: relative;
+	border-radius: 5px;
+	padding: 10px 20px 0 20px;
+	margin-top: 25px;
+}
+
+#emp_reg_info_wizard #employeeAvatar,
+#emp_reg_info_wizard .table_item {
+	display: inline-block;
 }

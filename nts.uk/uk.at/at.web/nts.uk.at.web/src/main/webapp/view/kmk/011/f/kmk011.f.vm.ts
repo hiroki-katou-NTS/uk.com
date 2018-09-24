@@ -58,6 +58,7 @@ module nts.uk.at.view.kmk011.f {
                 
                 // prevent if have any error
                 if(_self.hasError()){
+                    blockUI.clear();
                     return;    
                 }
                 
@@ -74,7 +75,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                 nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
                             }).always(() => {
                                 blockUI.clear();    
                             });
@@ -86,7 +87,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});  
                             }).always(() => {
                                 blockUI.clear();    
                             });
@@ -103,7 +104,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
                             }).always(() => {
                                 blockUI.clear();    
                             });
@@ -115,7 +116,7 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
                             }).always(() => {
                                 blockUI.clear();    
                             });

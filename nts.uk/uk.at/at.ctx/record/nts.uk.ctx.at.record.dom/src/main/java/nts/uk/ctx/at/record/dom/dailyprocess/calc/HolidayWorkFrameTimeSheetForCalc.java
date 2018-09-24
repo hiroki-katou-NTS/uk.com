@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -80,12 +81,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
 																					,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet
-																					,Optional<WorkTimezoneCommonSet> commonSetting) {
+																					,Optional<WorkTimezoneCommonSet> commonSetting,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
 			val duplicateTimeSpan = holidayWorkTime.getTimezone().timeSpan().getDuplicatedWith(attendanceLeave.getTimespan()); 
 			if(duplicateTimeSpan.isPresent()) {
-				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,commonSetting));
+				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,commonSetting, specificDateAttrSheets));
 			}
 		}
 		return returnList;
@@ -107,11 +108,17 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
 																					  ,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet
-																					  ,Optional<WorkTimezoneCommonSet> commonSetting) {
+																					  ,Optional<WorkTimezoneCommonSet> commonSetting,Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrSheets) {
 
 		//時間帯跨いだ控除時間帯分割
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
+		dedTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.HolidayWork, DeductionAtr.Deduction, commonSetting);
+		});
 		List<TimeSheetOfDeductionItem> recordTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Appropriate);
+		recordTimeSheet.forEach(tc ->{
+			tc.changeReverceRounding(tc.getTimeSheet().getRounding(), ActualWorkTimeSheetAtr.HolidayWork, DeductionAtr.Appropriate, commonSetting);
+		});
 		//控除時間帯を保持させる(継承先に)
 		//控除の丸め
 		//休出枠No
@@ -121,7 +128,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 											 
 		/*特定日*/
-		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
+		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet, specificDateAttrSheets);
 		/*深夜*/
 		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet,commonSetting);
 		
@@ -154,7 +161,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 			holidayWorkTime = new AttendanceTime(0);
 		}
 		else {
-			holidayWorkTime = this.calcTotalTime();
+			holidayWorkTime = this.calcTotalTime(DeductionAtr.Deduction);
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
@@ -174,38 +181,14 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		//一旦、打刻から計算する場合　を入れとく
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		
-		AttendanceTime calcTime = holidayWorkTimeCalculationByAdjustTime(dedAtr);
+		AttendanceTime calcTime = this.calcTotalTime(dedAtr);
 		
 		if(!forceAtr.isCalculateEmbossing()) {
 			calcTime = new AttendanceTime(0);
 		}
 		return calcTime;
 	}
-	
-	/**
-	 * 調整時間を考慮した時間の計算
-	 * @param autoCalcSet 時間外の自動計算区分
-	 * @return 残業時間枠時間帯クラス
-	 */
-	public AttendanceTime holidayWorkTimeCalculationByAdjustTime(DeductionAtr dedAtr) {
-		//休憩時間
-		AttendanceTime calcBreakTime = calcDedTimeByAtr(dedAtr,ConditionAtr.BREAK);
-		//組合外出時間
-		AttendanceTime calcUnionGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.UnionGoOut);
-		//私用外出時間
-		AttendanceTime calcPrivateGoOutTime = calcDedTimeByAtr(dedAtr,ConditionAtr.PrivateGoOut);
-		//介護
-		AttendanceTime calcCareTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Care);
-		//育児時間
-		AttendanceTime calcChildTime = calcDedTimeByAtr(dedAtr,ConditionAtr.Child);
-		return new AttendanceTime(this.calcrange.lengthAsMinutes()
-								 -calcBreakTime.valueAsMinutes()
-								 -calcUnionGoOutTime.valueAsMinutes()
-								 -calcPrivateGoOutTime.valueAsMinutes()
-								 -calcCareTime.valueAsMinutes()
-								 -calcChildTime.valueAsMinutes());
-	}
-	
+
 	
 //	/**
 //	 *　指定条件の控除項目だけの控除時間

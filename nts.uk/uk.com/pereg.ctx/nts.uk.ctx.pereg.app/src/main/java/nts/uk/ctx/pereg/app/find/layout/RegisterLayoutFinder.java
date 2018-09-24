@@ -101,7 +101,7 @@ public class RegisterLayoutFinder {
 		List<SettingItemDto> dataServer = new ArrayList<>();
 		if (command.getCreateType() != 3) {
 			// get data from server
-			dataServer = this.getSetItems(command);
+			dataServer = this.getSetItems(command, false);
 		}
 		
 		// set to layout's item
@@ -169,9 +169,13 @@ public class RegisterLayoutFinder {
 	private LayoutPersonInfoValueDto createLayoutItemByDef(Optional<SettingItemDto> dataServerItemOpt,
 			PerInfoItemDefDto itemDef, LayoutPersonInfoClsDto classItem, GeneralDate hireDate,
 			PersonInfoCategory perInfoCategory) {
+		
 		// initial basic info from definition item
 		LayoutPersonInfoValueDto item = LayoutPersonInfoValueDto.createFromDefItem(perInfoCategory, itemDef);
-
+		
+		item.setCategoryName(perInfoCategory.getCategoryName().toString());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
+		
 		// get value
 		if (dataServerItemOpt.isPresent()) {
 			item.setValue(dataServerItemOpt.get().getSaveData().getValue());
@@ -220,7 +224,7 @@ public class RegisterLayoutFinder {
 	 *            : id of employee copy
 	 * @return SettingItemDto List
 	 */
-	public List<SettingItemDto> getSetItems(AddEmployeeCommand command) {
+	public List<SettingItemDto> getSetItems(AddEmployeeCommand command , boolean isRegisFrLayoutCPS002) {
 
 		// Copy Type
 		if (command.getCreateType() == 1) {
@@ -230,13 +234,13 @@ public class RegisterLayoutFinder {
 		} else {
 			// Init Value Type
 
-			return getInitItemsBySetId(command);
+			return getInitItemsBySetId(command , isRegisFrLayoutCPS002);
 
 		}
 	}
 	// sonnlb code end
 
-	public List<SettingItemDto> getInitItemsBySetId(AddEmployeeCommand command) {
+	public List<SettingItemDto> getInitItemsBySetId(AddEmployeeCommand command , boolean isRegisFrLayoutCPS002) {
 		List<PeregQuery> querys = new ArrayList<PeregQuery>();
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
@@ -249,7 +253,7 @@ public class RegisterLayoutFinder {
 
 			FindInitItemDto findInitCommand = new FindInitItemDto(command.getInitSettingId(), command.getHireDate(),
 					x.getCategoryCode(), command.getEmployeeName(), command.getEmployeeCode(), command.getHireDate());
-			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand));
+			result.addAll(this.initItemFinder.getAllInitItemByCtgCode(false, findInitCommand, isRegisFrLayoutCPS002));
 		});
 		return result;
 	}

@@ -1,15 +1,19 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * 実装：年間超過回数の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetExcessTimesYearImpl implements GetExcessTimesYear {
@@ -20,7 +24,9 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 	
 	/** 年間超過回数の取得 */
 	@Override
-	public int algorithm(String employeeId, Year year) {
+	public AgreementExcessInfo algorithm(String employeeId, Year year) {
+
+		List<YearMonth> yearMonths = new ArrayList<>();
 		
 		// 36協定時間を取得
 		val agreementTimeList =  this.agreementTimeOfMngPrdRepo.findByYearOrderByYearMonth(employeeId, year);
@@ -28,18 +34,14 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 		// 状態が「超過」判定の件数をカウント
 		int excessCount = 0;
 		for (val agreementTime : agreementTimeList){
-			switch (agreementTime.getAgreementTime().getStatus()){
-			case EXCESS_EXCEPTION_LIMIT_ALARM:
-			case EXCESS_EXCEPTION_LIMIT_ERROR:
-			case EXCESS_LIMIT_ERROR_SP:
+			if (agreementTime.getAgreementTime().getStatus().value > 0){
 				excessCount++;
-				break;
-			default:
+				yearMonths.add(agreementTime.getYearMonth());
 				break;
 			}
 		}
 		
-		// 件数を返す
-		return excessCount;
+		// 36協定釣果情報を返す
+		return AgreementExcessInfo.of(excessCount, yearMonths);
 	}
 }

@@ -5,7 +5,6 @@ package nts.uk.screen.at.ws.dailyperformance.correction;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -20,20 +19,29 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.screen.at.app.dailymodify.command.DailyCalculationCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCalculationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTimeParam;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CheckBeforeCalcFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferDto;
@@ -42,6 +50,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErro
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockParam;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.button.DPDisplayLockProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
@@ -98,10 +108,28 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private FindEmployeeBase findEmployeeBase;
 	
+	@Inject
+	private DailyCorrectCalcTimeService dailyCorrectCalcTimeService;
+	
+	@Inject
+	private DailyCalculationCommandFacade dailyCalculationService;
+	
+	@Inject
+	private DisplayRemainingHolidayNumber remainNumberService;
+
+	@Inject
+	private DPDisplayLockProcessor dpDisplayLockProcessor;
+	
+	@Inject
+	private DailyPerformanceAuthoritySetting dailyPerformanceAuthoritySetting;
+	
+	@Inject
+	private MonthlyPerfomanceAuthorityFinder monthlyPerfomanceAuthorityFinder;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.objectShare);
+		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare);
 	}
 	
 	@POST
@@ -142,8 +170,8 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("addAndUpdate")
-	public Map<Integer, List<DPItemValue>> addAndUpdate(DPItemParent dataParent) {
-          return dailyModifyResCommandFacade.insertItemValues(dataParent);
+	public DataResultAfterIU addAndUpdate(DPItemParent dataParent) {
+          return dailyModifyResCommandFacade.insertItemDomain(dataParent);
 	}
 	
 	@POST
@@ -196,13 +224,13 @@ public class DailyPerformanceCorrectionWebService {
 	@POST
 	@Path("getNameMonthlyAttItem")
 	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> monthlyAttendanceItemIds) {
-		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(monthlyAttendanceItemIds, 0);
+		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemName(monthlyAttendanceItemIds);
 	}
 	
 	@POST
 	@Path("getNamedailyAttItem")
 	public List<AttendanceItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
-		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 1);
+		return this.dailyPerformanceAuthoritySetting.getListAttendanceItemName(dailyAttendanceItemIds);
 	}
 	
 
@@ -212,5 +240,28 @@ public class DailyPerformanceCorrectionWebService {
 		return findEmployeeBase.findInAllEmployee(employeeId, GeneralDate.today(), AppContexts.user().companyId()).orElse(null);
 	}
 	
+	@POST
+	@Path("calcTime")
+	public DCCalcTime calcTime(DCCalcTimeParam dcTimeParam) {
+		return dailyCorrectCalcTimeService.calcTime(dcTimeParam.getDailyEdits(), dcTimeParam.getItemEdits());
+	}
+	
+	@POST
+	@Path("calculation")
+	public DailyPerformanceCalculationDto calculation(DPItemParent dataParent) {
+		return dailyCalculationService.calculateCorrectedResults(dataParent);
+	}
+	
+	@POST
+	@Path("getRemainNum/{employeeId}")
+	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId) {
+		return remainNumberService.getRemainingHolidayNumber(employeeId);
+	}
+
+	@POST
+	@Path("lock")
+	public DailyPerformanceCorrectionDto processLock(DPDisplayLockParam param) {
+		return dpDisplayLockProcessor.processDisplayLock(param);
+	}
 
 }

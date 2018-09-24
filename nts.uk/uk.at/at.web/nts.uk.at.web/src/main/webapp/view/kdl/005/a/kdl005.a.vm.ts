@@ -118,27 +118,29 @@ module nts.uk.at.view.kdl005.a {
             }
             
             bindTimeData(data: any) {
-                var self = this;
-                var leaveDate = "";
-                var dayOffDateTop = "";
-                var dayOffDateBot = "";
-                var duedateHoliday = "";
-                var occurrenceDays1 = "";
-                var occurrenceDays2Top = "";
-                var occurrenceDays2Bot = "";
+                let self = this;
+               
                 
                 self.dataItems.removeAll();
                 
                 if(data.lstHistory != null && data.lstHistory.length >= 1) {
                     _.each(data.lstHistory, function (item) {
-                        var isHalfDay = false;
+                        
+                        let leaveDate = "";
+                        let dayOffDateTop = "";
+                        let dayOffDateBot = "";
+                        let duedateHoliday = "";
+                        let occurrenceDays1 = "";
+                        let occurrenceDays2Top = "";
+                        let occurrenceDays2Bot = "";
+                        let isHalfDay = false;
                         
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
-                                var dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
+                                let dayoffDateStr = item.breakHis.breakDate.dayoffDate != null ? item.breakHis.breakDate.dayoffDate : "";
                                 
                                 if(dayoffDateStr !== "") {
-                                    if(item.breakHis.mngAtr == 0 || item.breakHis.mngAtr == 4) {
+                                    if(item.breakHis.mngAtr == 2 || item.breakHis.mngAtr == 3) {
                                         leaveDate = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr])]);
                                     } else {
                                         leaveDate = nts.uk.time.applyFormat("Short_YMDW", [dayoffDateStr]);
@@ -164,7 +166,7 @@ module nts.uk.at.view.kdl005.a {
                         }
                         
                         if(item.dayOffHis != null) {
-                            if(item.dayOffHis.createAtr == 0 || item.dayOffHis.createAtr == 4) {
+                            if(item.dayOffHis.createAtr == 2 || item.dayOffHis.createAtr == 3) {
                                 if(item.dayOffHis.dayOffDate.dayoffDate != null) {
                                     dayOffDateTop = nts.uk.resource.getText("KDL005_19", [item.dayOffHis.dayOffDate.dayoffDate]);
                                 } else {
@@ -189,10 +191,10 @@ module nts.uk.at.view.kdl005.a {
                             isHalfDay = true;
                         }
                         
-                        var temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
+                        let temp = new DataItems(leaveDate, dayOffDateTop, dayOffDateBot, duedateHoliday, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
-                        if(temp.leaveDate !== "" && temp.dayOffDateTop !== "" && temp.dayOffDateBot !== "" && temp.duedateHoliday !== "" 
-                                && temp.occurrenceDays1 !== "" && temp.occurrenceDays2Top !== "" && temp.occurrenceDays2Bot !== "") {
+                        if(temp.leaveDate !== "" || temp.dayOffDateTop !== "" || temp.dayOffDateBot !== "" || temp.duedateHoliday !== "" 
+                                || temp.occurrenceDays1 !== "" || temp.occurrenceDays2Top !== "" || temp.occurrenceDays2Bot !== "") {
                             self.dataItems.push(temp);
                         }
                     });                    

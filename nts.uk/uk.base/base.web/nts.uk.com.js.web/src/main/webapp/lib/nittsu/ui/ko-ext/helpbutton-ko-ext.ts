@@ -20,12 +20,13 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var image: string = ko.unwrap(data.image);
+            var popUpId: string = ko.unwrap(data.popUpId);
             var textId: string = ko.unwrap(data.textId);
             var textParams: string = ko.unwrap(data.textParams);
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var position: string = ko.unwrap(data.position);
             
-            var isImage = !util.isNullOrUndefined(image);
+            var isText = !util.isNullOrUndefined(textId) || !util.isNullOrUndefined(textParams);
 
             //Position
             var myPositions: Array<string> = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
@@ -83,6 +84,9 @@ module nts.uk.ui.koExtentions {
                         $content.attr('src', request.resolvePath(_image));
                     }
                 });
+            } else if (_.has(data, 'popUpId')) {
+                $content = $('#' + popUpId);
+                // add pop-up-container
             } else {
                 $content = $("<span>", {
                     style: { 'white-space': 'pre-line' }
@@ -103,7 +107,7 @@ module nts.uk.ui.koExtentions {
                 .append($caret)
                 .append($content)
                 .appendTo($container).hide();
-            if (!isImage) {
+            if (isText) {
                 let CHARACTER_DEFAULT_WIDTH = 7;
                 let DEFAULT_SPACE = 5;
                 let textLengths = _.map($content.text().split(/\r\n/g), function(o) { return nts.uk.text.countHalf(o); });

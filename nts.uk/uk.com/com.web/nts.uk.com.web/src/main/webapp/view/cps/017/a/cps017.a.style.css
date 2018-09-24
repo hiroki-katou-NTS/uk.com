@@ -2,6 +2,7 @@
 /* 	width: 1405px; */
 /* } */
 
+
 body {
 	overflow: hidden;
 /* 	width: 1405px; */
@@ -12,10 +13,9 @@ body {
 	margin-right: 30px;
 }
 
-#contents-area {
-	width: 1260px;
-	height: 800px;
-}
+/* #contents-area {
+	min-height: 800px;
+} */
 
 .pull-left {
 	float: left;
@@ -73,7 +73,7 @@ body {
 
 #itemRegisterLst {
 	margin-top: 20px;
-	width: 415px;
+	width: 405px;
 }
 
 .caret-background.caret-right:after {
@@ -82,14 +82,15 @@ body {
 
 /* ---------------------------------------- content-right -----------------------------------------------------------*/
 #content-right {
-	margin-left: 15px;
-	margin-top: 115px;
+/* 	margin-left: 15px;
+	margin-top: 115px; */
 	width: 425px !important;
 	height: 580px;
 }
 
 .form-input {
 	margin-bottom: 20px;
+	margin-top: 10px;
 }
 
 .input {
@@ -111,11 +112,11 @@ body {
 
 #exCode {
 	margin-top: 5px;
-	width: 70px !important;
+	width: 85px !important;
 }
 
 #memoSelection {
-	width: 300px;
 	height: 75px;
 	margin-top: 5px;
+	width: 300px;
 }

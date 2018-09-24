@@ -91,4 +91,6 @@ public interface LeaveManaDataRepository {
 	List<LeaveManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
 	
 	void deleteById(List<String> leaveId);
+	
+	Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate dayOff, int deadlMonth);
 }

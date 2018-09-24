@@ -27,6 +27,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<!-- D_001: label コード/名称-->
+				<div>
 				<div id="label_code"
 					data-bind="ntsFormLabel: {required: true, constraint: ['ValueSettingCode' , 'ValueSettingName']}"
 					class="form-label ">#{i18n.getText('CPS009_12')}</div>
@@ -44,11 +45,11 @@
 											required: true, enable: true,
 											constraint: 'ValueSettingName',
 											immediate: true}" />
+				</div>
 			</div>
 			<div id='functions-area-bottom'>
 				<!-- D_004: button 実行 -->
-				<button id="registration" data-bind="click: newInitValue"
-					class="proceed large" tabindex="3">#{i18n.getText('CPS009_29')}
+				<button id="registration" data-bind="click: newInitValue, dblclick: function(evt) { evt.preventDefault() }" class="proceed large" tabindex="3">#{i18n.getText('CPS009_29')}
 				</button>
 				<!-- D_005: button キャンセル -->
 				<button id="cancel" data-bind="click: cancelNewInitValue"

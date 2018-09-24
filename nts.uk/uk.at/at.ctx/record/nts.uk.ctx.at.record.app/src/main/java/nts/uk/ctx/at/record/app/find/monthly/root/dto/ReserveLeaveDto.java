@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.DayUsedNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RealReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
@@ -25,7 +26,7 @@ public class ReserveLeaveDto implements ItemConst {
 
 	/** 使用数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE, layout = LAYOUT_A)
-	private ReserveLeaveUsedNumberDto usedNumber;
+	private DayUsedNumberDto usedNumber;
 
 	/** 残数 */
 	@AttendanceItemLayout(jpPropertyName = REMAIN, layout = LAYOUT_B)
@@ -46,7 +47,7 @@ public class ReserveLeaveDto implements ItemConst {
 
 	public static ReserveLeaveDto from(ReserveLeave domain) {
 		return domain == null ? null : new ReserveLeaveDto(
-						ReserveLeaveUsedNumberDto.from(domain.getUsedNumber()),
+						DayUsedNumberDto.from(domain.getUsedNumber()),
 						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
 						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),
@@ -64,7 +65,7 @@ public class ReserveLeaveDto implements ItemConst {
 	
 	public static ReserveLeaveDto from(RealReserveLeave domain) {
 		return domain == null ? null : new ReserveLeaveDto(
-						ReserveLeaveUsedNumberDto.from(domain.getUsedNumber()),
+						DayUsedNumberDto.from(domain.getUsedNumber()),
 						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
 						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 						CommonLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrant().orElse(null)),

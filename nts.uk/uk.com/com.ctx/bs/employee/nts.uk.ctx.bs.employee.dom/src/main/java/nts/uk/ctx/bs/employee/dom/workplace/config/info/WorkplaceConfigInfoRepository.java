@@ -126,4 +126,14 @@ public interface WorkplaceConfigInfoRepository {
 	 */
 	Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId,
 			GeneralDate baseDate, String wkpId, boolean isSortAscHierarchyCd);
+	
+	/**
+	 * Update workplace config info.
+	 *
+	 * @param companyId the company id
+	 * @param historyId the history id
+	 * @param wkpId the wkp id
+	 * @param hierarchyCd the hierarchy cd
+	 */
+	void updateWorkplaceConfigInfo(String companyId, String historyId, String wkpId,String hierarchyCd);
 }

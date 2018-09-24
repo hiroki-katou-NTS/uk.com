@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.record.remainingnumber.annualholidaymanagement;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,9 @@ public class AnnualHolidayManagementImpl implements AnnualHolidayManagementAdapt
 	@Override
 	public List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String sId, GeneralDate baseDate) {
 		return this.annualPub.acquireNextHolidayGrantDate(cId, sId,Optional.of(baseDate)).stream()
-				.map(x -> new NextAnnualLeaveGrantImport(x.getGrantDate(), x.getGrantDays().v(), x.getTimes().v(),
+				.map(x -> new NextAnnualLeaveGrantImport(x.getGrantDate(),
+						x.getGrantDays().v(),
+						x.getTimes().v(),
 						getLimitedHDDays(x.getTimeAnnualLeaveMaxDays()),
 						getLimitedTimeHdTime(x.getTimeAnnualLeaveMaxTime()),
 						getLimitedHalfHdCnt(x.getHalfDayAnnualLeaveMaxTimes())))
@@ -50,7 +53,8 @@ public class AnnualHolidayManagementImpl implements AnnualHolidayManagementAdapt
 	public Optional<AttendRateAtNextHolidayImport> getDaysPerYear(String companyId, String employeeId) {
 		return this.annualPub.getDaysPerYear(companyId, employeeId)
 				.map(x -> new AttendRateAtNextHolidayImport(x.getNextHolidayGrantDate(),
-						x.getNextHolidayGrantDays().v(), x.getAttendanceRate().v(), x.getAttendanceRate().v(),
+						x.getNextHolidayGrantDays().v(),
+						x.getAttendanceRate().v(), x.getAttendanceRate().v(),
 						x.getPredeterminedDays().v(), x.getAnnualPerYearDays().v()));
 
 	}

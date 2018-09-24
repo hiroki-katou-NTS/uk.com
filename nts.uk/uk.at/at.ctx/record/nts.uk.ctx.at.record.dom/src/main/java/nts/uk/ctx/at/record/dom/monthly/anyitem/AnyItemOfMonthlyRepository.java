@@ -24,6 +24,18 @@ public interface AnyItemOfMonthlyRepository {
 	 */
 	Optional<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, int anyItemId);
+	
+	/**
+	 * 検索
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param anyItemId 任意項目ID一覧
+	 * @return 該当する月別実績の任意項目一覧
+	 */
+	List<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate, List<Integer> anyItemIds);
 
 	/**
 	 * 検索　（月度と締め）
@@ -80,6 +92,12 @@ public interface AnyItemOfMonthlyRepository {
 	 * @param anyItemOfMonthly 月別実績の任意項目
 	 */
 	void persistAndUpdate(AnyItemOfMonthly anyItemOfMonthly);
+	
+	/**
+	 * 登録および更新
+	 * @param anyItemOfMonthly 月別実績の任意項目
+	 */
+	void persistAndUpdate(List<AnyItemOfMonthly> anyItemOfMonthly);
 	
 	/**
 	 * 削除

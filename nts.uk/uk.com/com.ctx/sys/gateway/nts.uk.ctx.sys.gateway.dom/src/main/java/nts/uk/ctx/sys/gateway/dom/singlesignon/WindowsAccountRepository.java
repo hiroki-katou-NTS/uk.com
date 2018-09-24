@@ -44,6 +44,15 @@ public interface WindowsAccountRepository {
 	 * @return the optional
 	 */
 	Optional<WindowsAccount> findbyUserNameAndHostName(String userName, String hostName);
+
+	/**
+	 * Findby user name and host name and is used.
+	 *
+	 * @param userName the user name
+	 * @param hostName the host name
+	 * @return the optional
+	 */
+	Optional<WindowsAccount> findbyUserNameAndHostNameAndIsUsed(String userName, String hostName);
 	
 		
 	/**

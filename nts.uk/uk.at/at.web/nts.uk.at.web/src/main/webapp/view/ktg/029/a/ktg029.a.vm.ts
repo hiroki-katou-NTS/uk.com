@@ -1,6 +1,7 @@
 module nts.uk.at.view.ktg029.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
+    import info = nts.uk.ui.dialog.info;
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
         currentMonth: KnockoutObservable<period>;
@@ -420,6 +421,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         useSimultaneousGrant: number;
     }
     export interface RemainingNumberDto{
+        name: string;
         before: number;
         after: number;
         grantDate: string;
@@ -473,8 +475,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         afterGrantDateInfo: YearlyHolidayInfo;
         attendanceRate: number;
         workingDays: number;
-        calculationMethod: boolean;
-        useSimultaneousGrant: boolean;
+        calculationMethod: number;
+        useSimultaneousGrant: number;
         constructor(dto: YearlyHolidayDto){
             this.nextTime = dto.nextTime == null ? '': dto.nextTime.substr(-8);
             this.grantedDaysNo = dto.grantedDaysNo;
@@ -484,19 +486,24 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
             this.attendanceRate = dto.attendanceRate;
             this.workingDays = dto.workingDays;
-            this.calculationMethod = dto.calculationMethod == 1?true:false;
-            this.useSimultaneousGrant = dto.useSimultaneousGrant == 1?true:false;
+            if(dto.calculationMethod==3){
+                info({ messageId: "Msg_1315" });
+            }
+            this.calculationMethod = dto.calculationMethod;
+            this.useSimultaneousGrant = dto.useSimultaneousGrant;
         }
     }
     export class RemainingNumber{
+        name: string;
         before: number;
         after: number;
         grantDate: string;
         showAfter: boolean;   
         constructor(dto: RemainingNumberDto){
+            this.name = dto.name;
             this.before = dto.before;
             this.after = dto.after;
-            this.grantDate = moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD');
+            this.grantDate = dto.grantDate !=null ? moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD'): '';
             this.showAfter = dto.showAfter;
         }     
     }

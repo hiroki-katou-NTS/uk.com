@@ -4,27 +4,31 @@
 package nts.uk.screen.at.infra.dailyperformance.correction;
 
 import java.math.BigDecimal;
-import java.sql.Array;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.tuple.Pair;
+
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.infra.entity.dailymodification.KfnmtApplicationCall;
@@ -48,9 +52,10 @@ import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonth;
+import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonthPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFun;
@@ -62,6 +67,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdenti
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
+import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
@@ -76,6 +82,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmployment
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
+import nts.uk.ctx.at.shared.pub.workrule.closure.DCClosureExport;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -128,8 +135,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.Sched
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -255,10 +262,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			+ "AND wi.strD <= :endDate " + "AND wi.endD >= :startDate "
 			+ "AND wi.kshmtWorkingCondItem.laborSys = " +WorkingSystem.FLEX_TIME_WORK.value;
 	
-	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KrcstFlexShortageLimit f";
+	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KrcstFlexShortageLimit f WHERE f.companyId = :companyId";
 	
 	private final static String GET_EMP_ALL = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
-				+ " h.strDate <= :baseDate AND h.endDate >= :baseDate AND h.companyId = :companyId AND h.sid IN :sIds";
+				+ " h.strDate <= :endDate AND h.endDate >= :startDate AND h.companyId = :companyId AND h.sid IN :sIds";
+	
+	private final static String GET_MONTH_ERROR;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -303,7 +312,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("WHERE emp.kclmpClosureEmploymentPK.companyId = :companyId ");
 		builderString.append("AND emp.kclmpClosureEmploymentPK.employmentCD IN :emptcd ");
 		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
-		builderString.append("AND closure.kclmtClosurePK.closureId = emp.closureId");
+		builderString.append("AND closure.kclmtClosurePK.closureId = emp.closureId ");
+		builderString.append("AND closure.useClass = 1");
 		SEL_CLOSURE_IDS = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -567,6 +577,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" AND w.kshmtWorkingCondPK.sid = :sid");
 		builderString.append(" ORDER BY w.endD DESC");
 		FIND_WORK_CONDITION = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT m FROM KrcdtEmployeeMonthlyPerError m");
+		builderString.append(" WHERE m.krcdtEmployeeMonthlyPerErrorPK.employeeID = :employeeId");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.errorType = :errorType");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.yearMonth = :yearMonth");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.closureId = :closureId");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.closeDay = :closeDay");
+		builderString.append(" AND m.krcdtEmployeeMonthlyPerErrorPK.isLastDay = :isLastDay");
+		GET_MONTH_ERROR = builderString.toString();
 
 	}
 
@@ -576,12 +596,40 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		if (empCodes.isEmpty()) {
 			return new ArrayList<>();
 		}
+		
 		List<ClosureDto> closureDtos = new ArrayList<>();
 		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
-			closureDtos.addAll(this.queryProxy().query(SEL_CLOSURE_IDS, ClosureDto.class)
-					.setParameter("companyId", AppContexts.user().companyId()).setParameter("emptcd", subList)
-					.getList());
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"select * from KCLMT_CLOSURE c"
+						+ " inner join KCLMT_CLOSURE_EMPLOYMENT e"
+						+ " on c.CLOSURE_ID = e.CLOSURE_ID"
+						+ " where e.CID = ?"
+						+ " and EMPLOYMENT_CD in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				
+				statement.setString(1, AppContexts.user().companyId());
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(i + 2, subList.get(i));
+				}
+				
+				List<ClosureDto> results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					ClosureDto dto = new ClosureDto();
+					dto.setCompanyId(rec.getString("CID"));
+					dto.setClosureId(rec.getInt("CLOSURE_ID"));
+					dto.setUseAtr(rec.getInt("USE_ATR"));
+					dto.setClosureMonth(rec.getInt("CLOSURE_MONTH"));
+					dto.setSid("");
+					dto.setEmploymentCode(rec.getString("EMPLOYMENT_CD"));
+					return dto;
+				});
+				
+				closureDtos.addAll(results);
+				
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
 		});
+		
 		List<ClosureDto> result = new ArrayList<>();
 		empCodes.forEach((key, value) -> {
 			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode().equals(value))
@@ -594,54 +642,54 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				closureDto.setClosureMonth(optional.get().getClosureMonth());
 				closureDto.setCompanyId(optional.get().getCompanyId());
 				closureDto.setUseAtr(optional.get().getUseAtr());
+				closureDto.setDatePeriod(closureDto.getDatePeriod());
 				result.add(closureDto);
 			}
 		});
 		return result;
 	}
 
-	@Override
-	public YearHolidaySettingDto getYearHolidaySetting() {
-		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KalmtAnnualPaidLeave.class);
-		if (entity.isPresent()) {
-			return new YearHolidaySettingDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false,
-					entity.get().getPriorityType());
-		}
-		return null;
-	}
-
-	@Override
-	public SubstVacationDto getSubstVacationDto() {
-		Optional<KsvstComSubstVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KsvstComSubstVacation.class);
-		if (entity.isPresent()) {
-			return new SubstVacationDto(entity.get().getCid(), entity.get().getIsManage() == 1 ? true : false,
-					entity.get().getExpirationDateSet(), entity.get().getAllowPrepaidLeave() == 1 ? true : false);
-		}
-		return null;
-	}
-
-	@Override
-	public CompensLeaveComDto getCompensLeaveComDto() {
-		Optional<KclmtCompensLeaveCom> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KclmtCompensLeaveCom.class);
-		if (entity.isPresent()) {
-			return new CompensLeaveComDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false);
-		}
-		return null;
-	}
-
-	@Override
-	public Com60HVacationDto getCom60HVacationDto() {
-		Optional<KshstCom60hVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
-				KshstCom60hVacation.class);
-		if (entity.isPresent()) {
-			return new Com60HVacationDto(entity.get().getCid(), entity.get().getManageDistinct() == 1 ? true : false,
-					entity.get().getSixtyHourExtra(), entity.get().getTimeDigestTive());
-		}
-		return null;
-	}
+//	@Override
+//	public YearHolidaySettingDto getYearHolidaySetting() {
+//		Optional<KalmtAnnualPaidLeave> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KalmtAnnualPaidLeave.class);
+//		if (entity.isPresent()) {
+//			return new YearHolidaySettingDto();
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public SubstVacationDto getSubstVacationDto() {
+//		Optional<KsvstComSubstVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KsvstComSubstVacation.class);
+//		if (entity.isPresent()) {
+//			return new SubstVacationDto(entity.get().getCid(), entity.get().getIsManage() == 1 ? true : false,
+//					entity.get().getExpirationDateSet(), entity.get().getAllowPrepaidLeave() == 1 ? true : false);
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public CompensLeaveComDto getCompensLeaveComDto() {
+//		Optional<KclmtCompensLeaveCom> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KclmtCompensLeaveCom.class);
+//		if (entity.isPresent()) {
+//			return new CompensLeaveComDto(entity.get().getCid(), entity.get().getManageAtr() == 1 ? true : false);
+//		}
+//		return null;
+//	}
+//
+//	@Override
+//	public Com60HVacationDto getCom60HVacationDto() {
+//		Optional<KshstCom60hVacation> entity = this.queryProxy().find(AppContexts.user().companyId(),
+//				KshstCom60hVacation.class);
+//		if (entity.isPresent()) {
+//			return new Com60HVacationDto(entity.get().getCid(), entity.get().getManageDistinct() == 1 ? true : false,
+//					entity.get().getSixtyHourExtra(), entity.get().getTimeDigestTive());
+//		}
+//		return null;
+//	}
 
 	@Override
 	public List<String> getListJobTitle(DateRange dateRange) {
@@ -840,14 +888,18 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem) {
+		if(lstAttendanceItem.size() <= 0){
+			return Collections.emptyList();
+		}
+		
 		String companyId = AppContexts.user().companyId();
 		List<KrcmtDailyAttendanceItem> entities = this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
 				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem)
 				.getList();
 		return entities.stream().map(i -> {
 					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
-							i.displayNumber.intValue(), i.userCanSet.intValue() == 1 ? true : false,
-							i.nameLineFeedPosition.intValue(), i.dailyAttendanceAtr.intValue(),
+							i.displayNumber, i.userCanSet == 1 ? true : false,
+							i.nameLineFeedPosition, i.dailyAttendanceAtr,
 							i.typeOfMaster != null ? i.typeOfMaster.intValue() : null, i.primitiveValue == null ? null : i.primitiveValue.intValue());
 				}).collect(Collectors.toList());
 	}
@@ -1081,12 +1133,29 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.map(c -> new ActualLockDto(companyId, closureId, c.getDLockState(), c.getMLockState()));
 	}
 
+	@SneakyThrows
 	@Override
 	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
-		List<WorkFixedDto> workOp = this.queryProxy().query(SEL_FIND_WORK_FIXED, KrcstWorkFixed.class)
-				.setParameter("closureId", closureId).setParameter("cid", AppContexts.user().companyId())
-				.getList(w -> new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
-						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid()));
+		val statement = this.connection().prepareStatement(
+				"select * from KRCST_WORK_FIXED where CID = ? and CLOSURE_ID = ?");
+		statement.setString(1, AppContexts.user().companyId());
+		statement.setInt(2, closureId);
+		
+		List<WorkFixedDto> workOp = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+			KrcstWorkFixed w = new KrcstWorkFixed();
+			w.setKrcstWorkFixedPK(new KrcstWorkFixedPK(
+					rec.getString("WKPID"),
+					rec.getInt("CLOSURE_ID"),
+					rec.getString("CID")));
+			w.setConfirmPid(rec.getString("CONFIRM_PID"));
+			w.setConfirmCls(rec.getInt("CONFIRM_CLS"));
+			w.setFixedDate(rec.getDate("FIXED_DATE"));
+			w.setProcessYm(rec.getInt("PROCESS_YM"));
+			
+			return new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
+					w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid());
+		});
+		
 		return workOp;
 	}
 
@@ -1101,6 +1170,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		dto.setComment(edFunc.isPresent() ? edFunc.get().comment : "");
 		dto.setSettingUnit(
 				EnumAdaptor.valueOf(format.isPresent() ? format.get().settingUnitType : 1, SettingUnitType.class));
+		dto.setShowError(edFunc.isPresent() ? edFunc.get().checkErrRefDisp == 1 : false);
 		return dto;
 	}
 
@@ -1437,28 +1507,54 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Integer getLimitFexMonth() {
-		Optional<KrcstFlexShortageLimit> ent = this.queryProxy().query(GET_LIMIT_FLEX_MON, KrcstFlexShortageLimit.class).getSingle();
+	public Integer getLimitFexMonth(String companyId) {
+		Optional<KrcstFlexShortageLimit> ent = this.queryProxy().query(GET_LIMIT_FLEX_MON, KrcstFlexShortageLimit.class).setParameter("companyId", companyId).getSingle();
 		return ent.isPresent() ? ent.get().upperLimitTime : 0;
 	}
 
 	@Override
-	public Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId,
+	public List<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId,
 			Integer closureId, Integer closeDay, Integer isLastDay) {
-		 Optional<ErrorFlexMonthDto> errorFlex = this.queryProxy().find(
-				new KrcdtEmployeeMonthlyPerErrorPK(errorType, yearMonth, employeeId, closureId, closeDay, isLastDay),
-				KrcdtEmployeeMonthlyPerError.class).map(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
+		List<ErrorFlexMonthDto> errorFlex = this.queryProxy().query(GET_MONTH_ERROR, KrcdtEmployeeMonthlyPerError.class)
+				                                             .setParameter("errorType", errorType)
+				                                             .setParameter("yearMonth", yearMonth)
+				                                             .setParameter("employeeId", employeeId)
+				                                             .setParameter("closureId", closureId)
+				                                             .setParameter("closeDay", closeDay)
+				                                             .setParameter("isLastDay", isLastDay)
+															 .getList(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
 		return errorFlex;
 	}
 
 	@Override
-	public Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate) {
+	public Map<String, String> getAllEmployment(String companyId, List<String> employeeId, DateRange rangeDate) {
 		Map<String, String> empCodes = new HashMap<>();
 		CollectionUtil.split(employeeId, 1000, (subList) -> {
-			empCodes.putAll(this.queryProxy().query(GET_EMP_ALL, BsymtEmploymentHistItem.class)
-					.setParameter("companyId", companyId).setParameter("baseDate", baseDate)
-					.setParameter("sIds", subList).getList().stream()
-					.collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x)));
+			
+			try {
+				PreparedStatement statement = this.connection().prepareStatement(
+						"select h.SID, i.EMP_CD from BSYMT_EMPLOYMENT_HIST h" + 
+						" inner join BSYMT_EMPLOYMENT_HIS_ITEM i on h.HIST_ID = i.HIST_ID" + 
+						" where h.CID = ?" + 
+						" and h.START_DATE <= ? and h.END_DATE >= ?" + 
+						" and h.SID in (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
+				
+				statement.setString(1, companyId);
+				statement.setDate(2, Date.valueOf(rangeDate.getEndDate().toLocalDate()));
+				statement.setDate(3, Date.valueOf(rangeDate.getStartDate().toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					statement.setString(4 + i, subList.get(i));
+				}
+				
+				new NtsResultSet(statement.executeQuery()).getList(rec -> {
+					empCodes.put(rec.getString("SID"), rec.getString("EMP_CD"));
+					return null;
+				});
+			
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
+			
 		});
 		return empCodes;
 	}
@@ -1479,7 +1575,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1 AND s.PERFORMANCE_ATR = 1 AND s.OPTIONAL_ITEM_NO IN ("
+			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1  AND s.OPTIONAL_ITEM_NO IN ("
 					+ textIn + ")";
 			PreparedStatement pstatement = con.prepareStatement(query);
 			pstatement.setString(1, companyId);
@@ -1496,6 +1592,99 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			e.printStackTrace();
 		}
 		return dtos;
+	}
+
+	@Override
+	public void requestForFlush() {
+//		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange) {
+		Map<Pair<String, DatePeriod>, String> empCodes = new HashMap<>();
+		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+			empCodes.putAll(
+					this.queryProxy().query(GET_EMP_ALL, BsymtEmploymentHistItem.class)
+							.setParameter("companyId", companyId).setParameter("startDate", dateRange.getStartDate())
+							.setParameter("endDate", dateRange.getEndDate()).setParameter("sIds", subList).getList()
+							.stream().collect(
+									Collectors.toMap(
+											x -> Pair.of(
+													x.sid, new DatePeriod(x.bsymtEmploymentHist.strDate,
+															x.bsymtEmploymentHist.endDate)),
+											x -> x.empCode, (x, y) -> x)));
+		});
+
+		// get employment codes
+		if (empCodes.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<ClosureDto> closureDtos = new ArrayList<>();
+		CollectionUtil.split(empCodes.values().stream().collect(Collectors.toList()), 1000, (subList) -> {
+			closureDtos.addAll(this.queryProxy().query(SEL_CLOSURE_IDS, ClosureDto.class)
+					.setParameter("companyId", AppContexts.user().companyId()).setParameter("emptcd", subList)
+					.getList());
+		});
+		List<ClosureDto> result = new ArrayList<>();
+		empCodes.forEach((key, value) -> {
+			Optional<ClosureDto> optional = closureDtos.stream().filter(item -> item.getEmploymentCode().equals(value))
+					.findFirst();
+			if (optional.isPresent()) {
+				ClosureDto closureDto = new ClosureDto();
+				closureDto.setSid(key.getLeft());
+				DatePeriod dateTemp = key.getRight();
+				if(dateRange.getEndDate().afterOrEquals(dateTemp.end())){
+					closureDto.setDatePeriod(dateTemp.newSpan(dateRange.getStartDate(), dateTemp.end()));
+				}else{
+					closureDto.setDatePeriod(dateTemp.newSpan(dateTemp.start(), dateRange.getEndDate()));
+				}
+				
+				closureDto.setEmploymentCode(optional.get().getEmploymentCode());
+				closureDto.setClosureId(optional.get().getClosureId());
+				closureDto.setClosureMonth(optional.get().getClosureMonth());
+				closureDto.setCompanyId(optional.get().getCompanyId());
+				closureDto.setUseAtr(optional.get().getUseAtr());
+				result.add(closureDto);
+			}
+		});
+		return result;
+	}
+
+	@Override
+	public List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId) {
+		//KrcdtConfirmationMonth
+		//KRCDT_CONFIRMATION_MONTH
+		List<ConfirmationMonthDto> resultFind = new ArrayList<>();
+		String textParam = "";
+		int count = sidClosureId.size();
+		for (Entry<String, Integer> data : sidClosureId.entrySet()) {
+			textParam += "(" + "SID = '" + data.getKey() + "' AND CLOSURE_ID = " + data.getValue() + " )";
+			count--;
+			if (count > 0) {
+				textParam += " OR ";
+			}
+		}
+
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String query = "SELECT * FROM KRCDT_CONFIRMATION_MONTH as s WHERE s.CID = ? AND (" + textParam + " )";
+			PreparedStatement pstatement = con.prepareStatement(query);
+			pstatement.setString(1, companyId);
+			ResultSet rs = pstatement.executeQuery();
+			while (rs.next()) {
+				int closureId = rs.getInt("CLOSURE_ID");
+				int processYM = rs.getInt("PROCESS_YM");
+				String employeeId = rs.getString("SID");
+				int closureDay = rs.getInt("CLOSURE_DAY");
+				ConfirmationMonthDto month = new ConfirmationMonthDto(companyId, employeeId, closureId, closureDay,
+						processYM);
+				resultFind.add(month);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultFind;
 	}
 	
 }

@@ -129,6 +129,8 @@ public class WorkDaysOfMonthly {
 		domain.twoTimesWorkTimes = twoTimesWorkTimes;
 		domain.temporaryWorkTimes = temporaryWorkTimes;
 		domain.leave = leave;
+		domain.recruitmentDays = recruitmentDays;
+		domain.specialVacationDays = specialVacationDays;
 		return domain;
 	}
 	

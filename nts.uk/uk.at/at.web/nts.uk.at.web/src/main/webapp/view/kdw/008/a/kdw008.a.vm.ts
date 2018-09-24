@@ -185,7 +185,7 @@ module nts.uk.at.view.kdw008.a {
                     }
                     if (self.isDaily()) {
                         nts.uk.ui.errors.clearAll();
-                        self.getDetail(self.selectedCode(),self.selectedSheetNo());
+                        self.getDetail(self.selectedCode());
                     } else {
                         let empSelect = _.find(self.listMonPfmCorrectionFormat(), format => {
                             return format.monthlyPfmFormatCode == self.selectedCode();
@@ -255,10 +255,10 @@ module nts.uk.at.view.kdw008.a {
                         }
                         self.isRemove(true);
                         nts.uk.ui.errors.clearAll();
-                        self.getDetail(self.currentDailyFormatCode(), 1);
+                        self.initSelectedSheetNoHasMutated();
+                        // self.getDetail(self.currentDailyFormatCode(), 1);
                     } else {
-                        self.selectedSheetNo(1);
-                        self.selectedSheetNo.valueHasMutated();
+                        self.initSelectedSheetNoHasMutated();
                         self.isRemove(true);
                         nts.uk.ui.errors.clearAll();
                         //                            self.getDetail(self.currentDailyFormatCode(), 1);
@@ -266,9 +266,6 @@ module nts.uk.at.view.kdw008.a {
 
 
                     //                    self.selectedTab('tab-1');
-                });
-                self.selectedSheetNo.subscribe(sheetno => {
-
                 });
 
             }
@@ -278,6 +275,15 @@ module nts.uk.at.view.kdw008.a {
                 nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
             }
 
+            initSelectedSheetNoHasMutated() {
+                let self = this;
+                if (self.selectedSheetNo() == 1) {
+                    self.selectedSheetNo.valueHasMutated();
+                } else {
+                    self.selectedSheetNo(1);
+                }
+            }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -329,7 +335,7 @@ module nts.uk.at.view.kdw008.a {
                         self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
                         self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                        self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                        // self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
                     } else {
                         self.setNewMode();
                     }
@@ -434,8 +440,7 @@ module nts.uk.at.view.kdw008.a {
                         new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                                 self.getListMonPfmCorrectionFormat().done(function(data) {
-                                    self.selectedSheetNo(1)
-                                    self.selectedSheetNo.valueHasMutated();
+                                    self.initSelectedSheetNoHasMutated();
                                 });
                             });
                         }).always(function() {
@@ -450,16 +455,14 @@ module nts.uk.at.view.kdw008.a {
                 }
             }
 
-            getDetail(dailyPerformanceFormatCode: string, selectedSheetNo?: number) {
+            getDetail(dailyPerformanceFormatCode: string) {
                 let self = this,
                     dfd = $.Deferred();
                 if (self.isDaily()) {
-                    if (selectedSheetNo) {
-                        self.selectedSheetNo(selectedSheetNo);
-                    }
                     new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
 
                         if (data) {
+                            data.attendanceItemDtos = _.sortBy(data.attendanceItemDtos, ["attendanceItemDisplayNumber"]);
                             if (data.isDefaultInitial == 1) {
                                 self.isSetFormatToDefault(false);
                                 self.checked(true);

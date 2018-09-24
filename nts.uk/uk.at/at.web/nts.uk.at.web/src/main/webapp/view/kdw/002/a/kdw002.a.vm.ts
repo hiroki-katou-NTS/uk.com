@@ -17,17 +17,17 @@ module nts.uk.at.view.kdw002.a {
             timeInputEnable: KnockoutObservable<boolean>;
             //
             isDaily: boolean;
-            isSave : KnockoutObservable<boolean>;
-            sideBar :  KnockoutObservable<number>;
+            isSave: KnockoutObservable<boolean>;
+            sideBar: KnockoutObservable<number>;
             constructor(dataShare: any) {
                 var self = this;
                 //
                 self.isSave = ko.observable(true);
                 self.isDaily = dataShare.ShareObject;
-                self.sideBar =  ko.observable(1);
-                if(!self.isDaily){
+                self.sideBar = ko.observable(1);
+                if (!self.isDaily) {
                     self.sideBar(2);
-                }                
+                }
                 self.headerColorValue = ko.observable('');
                 self.linebreak = ko.observable(0);
                 self.unitRoundings = ko.observableArray([]);
@@ -38,12 +38,12 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
-                self.aICurrentCode.subscribe(attendanceItemId => {  
-                    if(attendanceItemId){
+                self.aICurrentCode.subscribe(displayNumber => {
+                    if (displayNumber) {
                         self.isSave(true);
-                        var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
+                        let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
                         self.txtItemName(attendanceItem.attendanceItemName);
-                        self.txtItemId(attendanceItemId);
+                        self.txtItemId(displayNumber);
                         // self.txtItemName(cAttendanceItem.attandanceItemName);
                         self.unitRoundings([
                             { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
@@ -63,10 +63,10 @@ module nts.uk.at.view.kdw002.a {
                                 self.timeInputEnable(false);
                             }
                         }
-    
+
                         self.linebreak(attendanceItem.nameLineFeedPosition);
                         if (self.isDaily) {
-                            service.getControlOfDailyItem(attendanceItemId).done(cAttendanceItem => {
+                            service.getControlOfDailyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
                                     self.txtItemId(cAttendanceItem.itemDailyID);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
@@ -77,7 +77,7 @@ module nts.uk.at.view.kdw002.a {
                                 }
                             });
                         } else {
-                            service.getControlOfMonthlyItem(attendanceItemId).done(cAttendanceItem => {
+                            service.getControlOfMonthlyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
                                     self.txtItemId(cAttendanceItem.itemMonthlyId);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
@@ -88,16 +88,24 @@ module nts.uk.at.view.kdw002.a {
                                 }
                             });
                         }
-                    }else{
-                        let item = $("#gridList").igGrid("option", "dataSource")[0].attendanceItemId;
-                        self.aICurrentCode(item);
-                        self.aICurrentCode.valueHasMutated();
-//                        self.isSave(false);
-//                        self.txtItemName("");
-//                        self.txtItemId(attendanceItemId);
-//                        self.headerColorValue(null);
-//                        self.timeInputCurrentCode(0);
+                    } else {
+
+                        $(document).on('click', '.search-btn', function(evt) {
+                            self.txtItemId(null);
+                            self.txtItemName(null);
+                            self.headerColorValue(null);
+                            self.aICurrentCode.valueHasMutated();
+                        });
+                        $(document).on('click', '.clear-btn', function(evt) {
+                            self.aICurrentCode(null);
+                        });
+                        //                        self.isSave(false);
+                        //                        self.txtItemName("");
+                        //                        self.txtItemId(attendanceItemId);
+                        //                        self.headerColorValue(null);
+                        //                        self.timeInputCurrentCode(0);
                     }
+
                 });
 
                 self.attendanceItemColumn = ko.observableArray([
@@ -110,118 +118,154 @@ module nts.uk.at.view.kdw002.a {
                 $(".clear-btn").hide();
                 var attendanceItems = [];
                 if (self.isDaily) {
+                    service.getDailyAttdItem().done(data => {
+                        _.each(data, item => {
+                            attendanceItems.push({
+                                attendanceItemId: item.attendanceItemId,
+                                attendanceItemName: item.attendanceItemName,
+                                dailyAttendanceAtr: item.typeOfAttendanceItem,
+                                nameLineFeedPosition: item.nameLineFeedPosition,
+                                displayNumber: item.attendanceItemDisplayNumber
+                            });
+                        })
+                        self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
+                        self.aICurrentCode(self.attendanceItems()[0].displayNumber);
+                        $("#colorID").focus();
+                    })
+                } else {
+                    service.getMonthlyAttdItem().done(data => {
+                        _.each(data, item => {
+                            attendanceItems.push({
+                                attendanceItemId: item.attendanceItemId,
+                                attendanceItemName: item.attendanceItemName,
+                                dailyAttendanceAtr: item.typeOfAttendanceItem,
+                                nameLineFeedPosition: item.nameLineFeedPosition,
+                                displayNumber: item.attendanceItemDisplayNumber
+                            });
+                        })
+                        self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
+                        self.aICurrentCode(self.attendanceItems()[0].displayNumber);
+                        $("#colorID").focus();
+                    })
+                }
+                /*
+                if (self.isDaily) {
                     service.getListDailyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
-                            let listAttdID = _.map(atItems,item =>{return item.attendanceItemId; });
+                            let listAttdID = _.map(atItems, item => { return item.attendanceItemId; });
                             service.getNameDaily(listAttdID).done(function(dataNew) {
-                                for(let i =0;i<atItems.length;i++){
-                                    for(let j = 0;j<=dataNew.length; j++){
-                                        if(atItems[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                for (let i = 0; i < atItems.length; i++) {
+                                    for (let j = 0; j <= dataNew.length; j++) {
+                                        if (atItems[i].attendanceItemId == dataNew[j].attendanceItemId) {
                                             atItems[i].attendanceName = dataNew[j].attendanceItemName;
                                             break;
-                                        }  
-                                    }    
+                                        }
+                                    }
                                 }
-                                
+
                                 atItems.forEach(attendanceItem => {
-                                    attendanceItems.push({ 
+                                    attendanceItems.push({
                                         attendanceItemId: attendanceItem.attendanceItemId,
                                         attendanceItemName: attendanceItem.attendanceName,
-                                        dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, 
+                                        dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr,
                                         nameLineFeedPosition: attendanceItem.nameLineFeedPosition,
-                                        displayNumber : attendanceItem.displayNumber });
+                                        displayNumber: attendanceItem.displayNumber
+                                    });
                                 });
                                 self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
-                                self.aICurrentCode(atItems[0].attendanceItemId);
+                                self.aICurrentCode(self.attendanceItems()[0].displayNumber);
                                 $("#colorID").focus();
                             });
-                            
+
                         }
                     });
                 } else {
                     service.getListMonthlyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
-                            let listAttdID = _.map(atItems,item =>{return item.attendanceItemId; });
+                            let listAttdID = _.map(atItems, item => { return item.attendanceItemId; });
                             service.getNameMonthly(listAttdID).done(function(dataNew) {
-                                for(let i =0;i<atItems.length;i++){
-                                    for(let j = 0;j<=dataNew.length; j++){
-                                        if(atItems[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                for (let i = 0; i < atItems.length; i++) {
+                                    for (let j = 0; j <= dataNew.length; j++) {
+                                        if (atItems[i].attendanceItemId == dataNew[j].attendanceItemId) {
                                             atItems[i].attendanceName = dataNew[j].attendanceItemName;
                                             break;
-                                        }  
-                                    }    
+                                        }
+                                    }
                                 }
-                                
+
                                 atItems.forEach(attendanceItem => {
-                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition,displayNumber :attendanceItem.attendanceItemDisplayNumber });
+                                    attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition, displayNumber: attendanceItem.attendanceItemDisplayNumber });
                                 });
                                 self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
-                                self.aICurrentCode(atItems[0].attendanceItemId);
+                                self.aICurrentCode(self.attendanceItems()[0].displayNumber);
                                 $("#colorID").focus();
                             });
                         }
                     });
-                }
+                }*/
 
             }
 
             navigateView(): void {
-                var self = this; 
+                var self = this;
                 var path = "/view/kdw/006/a/index.xhtml";
                 href(path);
             }
-            
+
             jumpToHome(sidebar): void {
                 let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
             }
 
             submitData(): void {
-                var self = this;
-                var AtItems = {};
-                AtItems.companyID = "";
-
+                let self = this,
+                    AtItems = {
+                        companyID: ""
+                    };
+                let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(self.aICurrentCode()) });
                 if (self.headerColorValue()) {
                     AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                 }
                 if (self.timeInputEnable()) {
                     AtItems.inputUnitOfTimeItem = self.timeInputCurrentCode();
                 }
+
                 if (self.isDaily) {
-                    AtItems.itemDailyID = self.aICurrentCode();
+                    AtItems.itemDailyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                     }
                     service.updateDaily(AtItems).done(x => {
                         infor(nts.uk.resource.getMessage("Msg_15", []));
-                         $("#colorID").focus();
+                        $("#colorID").focus();
                     });
                 } else {
-                    AtItems.itemMonthlyID = self.aICurrentCode();
+                    AtItems.itemMonthlyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfMonthlyPer = self.headerColorValue();
                     }
                     service.updateMonthly(AtItems).done(x => {
+
                         infor(nts.uk.resource.getMessage("Msg_15", []));
                         $("#colorID").focus();
                     });
                 }
             }
 
-//            interface IAttendanceItem {
-//                attendanceItemId: number;
-//                attendanceItemName: string;
-//            }
-//            class AttendanceItem {
-//                attendanceItemId: number;
-//                attendanceItemName: string;
-//    
-//                constructor(params: IAttendanceItem) {
-//                    var self = this;
-//                    self.attendanceItemId = params.attendanceItemId;
-//                    self.attendanceItemName = params.attendanceItemName;
-//                }
-//            }
+            //            interface IAttendanceItem {
+            //                attendanceItemId: number;
+            //                attendanceItemName: string;
+            //            }
+            //            class AttendanceItem {
+            //                attendanceItemId: number;
+            //                attendanceItemName: string;
+            //    
+            //                constructor(params: IAttendanceItem) {
+            //                    var self = this;
+            //                    self.attendanceItemId = params.attendanceItemId;
+            //                    self.attendanceItemName = params.attendanceItemName;
+            //                }
+            //            }
         }
     }
 }

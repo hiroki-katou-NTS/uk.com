@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -34,7 +35,8 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 			+ "AND c.code =:code AND c.topPagePartType =:topPagePartType ";
 
 	private static final String SELECT_BASE = "SELECT o, t FROM SptstOptionalWidget o "
-			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID ";
+			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+			+ "AND o.sptstOptionalWidgetPK.companyID = t.ccgmtTopPagePartPK.companyID ";
 	
 	private static final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
 	private static final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
@@ -43,8 +45,10 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 			
 	@Override
 	public List<OptionalWidget> findByCompanyId(String companyID) {
-		return this.queryProxy().query(SELECT_BY_COMPANY, Object[].class).setParameter("companyID", companyID)
-			    .getList(c -> joinObjectToDomain(c));
+		List<Object[]> Objects = this.queryProxy().query(SELECT_BY_COMPANY, Object[].class)
+				.setParameter("companyID", companyID)
+			    .getList();
+		return this.joinListObjectToDomain(Objects, companyID);
 	}
 
 	@Override
@@ -146,11 +150,11 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 
 	@Override
 	public boolean isExist(String companyId, String code, int type) {
-		Optional<CcgmtTopPagePart> optional = this.queryProxy().query(GET_SELECTED_WIDGET, CcgmtTopPagePart.class)
+		List<CcgmtTopPagePart> list = this.queryProxy().query(GET_SELECTED_WIDGET, CcgmtTopPagePart.class)
 				.setParameter("companyID", companyId)
 				.setParameter("code", code)
-				.setParameter("topPagePartType", type).getSingle();
-		return optional.isPresent();
+				.setParameter("topPagePartType", type).getList();
+		return list.size() > 0;
 	}
 	
 	private static final String SELECT_BY_TOP_PAGE_PART_CODE = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID AND t.code =:topPagePartCode AND t.topPagePartType =:topPagePartType";
@@ -190,5 +194,33 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 				.setParameter("topPagePartID", topPagePartId)
 				.getList(c ->c.toDomain());
 	}
+
+	private List<OptionalWidget> joinListObjectToDomain(List<Object[]> entitys, String companyID) {
+		List<OptionalWidget> result = new ArrayList<>();
+		List<SptstWidgetDisplay> displayItems = this.findItems(companyID);
+		for (Object[] entity : entitys) {
+			SptstOptionalWidget OptionalWidget = (SptstOptionalWidget) entity[0];
+			CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
+			List<WidgetDisplayItem> wDisplayItems = displayItems.stream()
+					.filter(c -> c.sptstWidgetDisplayPK.topPagePartID
+							.equals(OptionalWidget.sptstOptionalWidgetPK.topPagePartID))
+					.map(c -> c.toDomain()).collect(Collectors.toList());
+			result.add(new OptionalWidget(OptionalWidget.sptstOptionalWidgetPK.companyID,
+					OptionalWidget.sptstOptionalWidgetPK.topPagePartID, new TopPagePartCode(topPagePart.code),
+					new TopPagePartName(topPagePart.name), TopPagePartType.valueOf(topPagePart.topPagePartType),
+					Size.createFromJavaType(topPagePart.width, topPagePart.height), wDisplayItems));
+		}
+
+		return result;
+	}
 	
+	private static final String SELECT_LIST_DISPLAY_ITEMS_BY_COMPANY_ID = "SELECT i FROM SptstOptionalWidget o " 
+			+ "INNER JOIN SptstWidgetDisplay i ON o.sptstOptionalWidgetPK.topPagePartID = i.sptstWidgetDisplayPK.topPagePartID "
+			+ "WHERE o.sptstOptionalWidgetPK.companyID = :companyID ";
+	
+	private List<SptstWidgetDisplay> findItems(String companyID){
+		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS_BY_COMPANY_ID, SptstWidgetDisplay.class)
+				.setParameter("companyID", companyID)
+				.getList();
+	}
 }

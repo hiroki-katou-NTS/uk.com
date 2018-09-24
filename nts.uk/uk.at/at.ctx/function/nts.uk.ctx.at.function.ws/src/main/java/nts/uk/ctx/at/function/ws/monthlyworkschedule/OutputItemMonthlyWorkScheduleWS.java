@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyW
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.DisplayTimeItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyDataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyPerformanceDataReturnDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
@@ -122,7 +123,7 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 */
 	@Path("findCopy")
 	@POST
-	public List<MonthlyDataInforReturnDto> findCopy() {
+	public MonthlyPerformanceDataReturnDto findCopy() {
 		return this.outputItemMonthlyWorkScheduleFinder.getFormatMonthlyPerformance();
 	}
 
@@ -140,9 +141,8 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
 	public List<DisplayTimeItemDto> executeCopy(@PathParam("codeCopy") String codeCopy,
-			@PathParam("codeSourceSerivce") String codeSourceSerivce,
-			List<OutputItemMonthlyWorkScheduleCopyCommand> lstCommandCopy) {
-		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
+			@PathParam("codeSourceSerivce") String codeSourceSerivce) {
+		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}
 	
 	/**

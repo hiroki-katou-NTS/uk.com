@@ -22,6 +22,8 @@ public class I18NLoaderForJSFView {
 			return "not found";
 		}
 		
+		this.resources.refreshIfRequired();
+		
 		return this.resources.localize(itemId,params.toArray(new String[params.size()]))
 				.orElse(itemId);
 	}

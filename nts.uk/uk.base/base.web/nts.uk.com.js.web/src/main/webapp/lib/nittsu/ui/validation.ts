@@ -199,7 +199,7 @@ module nts.uk.ui.validation {
                 
                 if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
                     if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                        result.fail('This field is not valid with pattern!', '');
+                        result.fail(nts.uk.resource.getMessage('Msg_1424', [ this.name ]), 'Msg_1424');
                         return result;
                     }  
                 }
@@ -269,7 +269,7 @@ module nts.uk.ui.validation {
             let self = this;
             this.name = name;
             this.constraint = getConstraint("EmployeeCode"); 
-            this.charType = text.getCharTypeByType("AlphaNumeric");
+            this.charType = text.getCharTypeByType("EmployeeCode");
             this.options = options;
         }
         
@@ -286,7 +286,7 @@ module nts.uk.ui.validation {
                 return result;
             }
             
-            result = checkCharType.call(self, _.trim(inputText, ' '), self.charType);
+            result = checkCharType.call(self, inputText, self.charType);
             if (!result.isValid) return result;
             
             if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)
@@ -296,7 +296,7 @@ module nts.uk.ui.validation {
                 return result;
             }
             
-            result.success(text.toUpperCase(inputText));
+            result.success(inputText);
             return result;
         }
     }
@@ -432,7 +432,7 @@ module nts.uk.ui.validation {
             if (validateFail) {
                 result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);
             } else {  
-                let formated = value.toString() === "0" ? inputText : text.removeFromStart(inputText, "0"); 
+                let formated = value.toString() === "0" ? "0" : text.removeFromStart(inputText, "0"); 
                 if (formated.indexOf(".") >= 0) {
                     formated = text.removeFromEnd(formated, "0");    
                 }
@@ -498,11 +498,12 @@ module nts.uk.ui.validation {
                 inputText = time.convertJapaneseDateToGlobal(inputText);            
             }
             
-            let maxStr, minStr;
+            let maxStr, minStr, max, min;
             // Time duration
             if(this.mode === "time"){
-                var timeParse;
-                if(this.outputFormat.indexOf("s") >= 0){
+                var timeParse, isSecondBase = this.outputFormat.indexOf("s") >= 0,
+                    mesId = isSecondBase ? "FND_E_CLOCK_SECOND" : "FND_E_TIME";
+                if(isSecondBase){
                     timeParse = time.secondsBased.duration.parseString(inputText);    
                 } else {
                     timeParse = time.minutesBased.duration.parseString(inputText);
@@ -518,26 +519,34 @@ module nts.uk.ui.validation {
                 
                 if (!util.isNullOrUndefined(this.constraint.max)) {
                     maxStr = this.constraint.max;
-                    let max = time.parseTime(this.constraint.max);
+                    if(isSecondBase){
+                        max = time.secondsBased.duration.parseString(maxStr);    
+                    } else {
+                        max = time.minutesBased.duration.parseString(maxStr);
+                    }
                     if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                        let msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                        result.fail(msg, "FND_E_TIME");
+                        let msg = nts.uk.resource.getMessage(mesId, [this.name, this.constraint.min, this.constraint.max]);
+                        result.fail(msg, mesId);
                         return result;
                     }
                 }
                 
                 if (!util.isNullOrUndefined(this.constraint.min)) {
                     minStr = this.constraint.min;
-                    let min = time.parseTime(this.constraint.min);
+                    if(isSecondBase){
+                        min = time.secondsBased.duration.parseString(minStr);    
+                    } else {
+                        min = time.minutesBased.duration.parseString(minStr);
+                    }
                     if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                        let msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                        result.fail(msg, "FND_E_TIME");
+                        let msg = nts.uk.resource.getMessage(mesId, [this.name, this.constraint.min, this.constraint.max]);
+                        result.fail(msg, mesId);
                         return result;
                     }
                 }
                 
                 if (!result.isValid && this.constraint.valueType === "Time") {
-                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]), "FND_E_TIME");
+                    result.fail(nts.uk.resource.getMessage(mesId, [ this.name, minStr, maxStr ]), mesId);
                 }
                 return result;   
             }

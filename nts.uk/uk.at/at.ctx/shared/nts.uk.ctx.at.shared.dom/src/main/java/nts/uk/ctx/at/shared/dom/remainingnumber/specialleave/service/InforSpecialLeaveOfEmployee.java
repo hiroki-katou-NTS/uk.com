@@ -22,7 +22,7 @@ public class InforSpecialLeaveOfEmployee {
 	 */
 	private InforStatus status;
 	/**
-	 * 繰越上限日数：日数
+	 * 繰越上限日数 (OR 蓄積上限日数)：日数
 	 */
 	private Optional<Integer> upLimiDays;	
 	/**

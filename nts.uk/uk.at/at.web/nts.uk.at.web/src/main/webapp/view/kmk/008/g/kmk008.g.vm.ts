@@ -197,14 +197,22 @@ module nts.uk.at.view.kmk008.g {
 
                 self.selectedCode.subscribe(newValue => {
 
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    let data = self.selectedEmployee();
-                    let employee = _.find(data, function(o) {
-                        return o.employeeCode == self.selectedCode();
-                    });
-                    self.getDetail(employee.employeeId);
-                    self.selectedId(employee.employeeId);
-                    self.employeeName(employee.employeeName);
+                    if (!nts.uk.text.isNullOrEmpty(newValue)){
+                        let data = self.selectedEmployee();
+                        let employee = _.find(data, function(o) {
+                            return o.employeeCode == self.selectedCode();
+                        });
+                        self.getDetail(employee.employeeId);
+                        self.selectedId(employee.employeeId);
+                        self.employeeName(employee.employeeName);    
+                    }else{
+                        self.setNewMode()
+                        self.selectedId("");
+                        self.employeeName("");
+                        self.items([]);
+                        self.items2([]);
+                    }
+                    
 
                 });
 
@@ -282,7 +290,7 @@ module nts.uk.at.view.kmk008.g {
                 }
 
                 // Start component
-                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
+//                $('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption);
             }
 
             startPage(): JQueryPromise<any> {

@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.List;
+
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -37,12 +40,14 @@ public interface GoBackDirectlyRegisterService {
 	 * @param goBackDirectly
 	 * @return
 	 */
-	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly goBackDirectly);
+	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly goBackDirectly, Application_New application);
 
 	/**
 	 * Check Validity
 	 * 
 	 */
 	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,
-			GoBackDirectlyCommonSetting goBackCommonSet, int line);
+			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport scBasicScheduleImport);
+	
+	public void createThrowMsg(String msgConfirm, List<String> msgLst);
 }

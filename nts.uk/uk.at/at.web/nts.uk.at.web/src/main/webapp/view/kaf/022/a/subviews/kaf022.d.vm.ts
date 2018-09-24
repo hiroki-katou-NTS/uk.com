@@ -92,7 +92,7 @@ ko.components.register('kaf022-d', {
                     </td>
                     <td>
                         <input tabindex="2" id = "d9" data-bind="ntsTextEditor: {
-                                name: text('KAF022_183'),
+                                name: text('KAF022_179'),
                                 value: $dv.texteditorD9.value,
                                 constraint: 'Comment',
                                 required: false,
@@ -107,7 +107,7 @@ ko.components.register('kaf022-d', {
                         <div tabindex="4" id = "d11" data-bind="ntsCheckBox: { 
                                 checked: $dv.enableD11, 
                                 text: text('KAF022_185')
-                            }"></div>
+                            }"></div>   
                     </td>
                 </tr>
                 <tr>
@@ -120,7 +120,7 @@ ko.components.register('kaf022-d', {
                     </td>
                     <td>
                         <input tabindex="2" id="d12_1" data-bind="ntsTextEditor: {
-                                name: text('KAF022_183'),
+                                name: text('KAF022_180'),
                                 value: $dv.texteditorD12.value, 
                                 constraint: 'Comment',
                                 required: false,

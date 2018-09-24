@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -22,9 +23,9 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 	//遅刻再度補正
 	public LateLeaveEarlyTimeSheet collectionAgainOfLate(LateLeaveEarlyTimeSheet calcTime) {
 		//休憩取得範囲分の時間帯
-		TimeSpanForCalc calcTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().forwardByMinutes(calcTime.calcTotalTime().valueAsMinutes()+calcTime.calcDedTimeByAtr(DeductionAtr.Deduction).valueAsMinutes()));
+		TimeSpanForCalc calcTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().forwardByMinutes(calcTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()+calcTime.calcDedTimeByAtr(DeductionAtr.Deduction).valueAsMinutes()));
 		//丸め後の遅刻時間帯
-		TimeSpanForCalc lateTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().forwardByMinutes(calcTime.calcTotalTime().valueAsMinutes()));
+		TimeSpanForCalc lateTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().forwardByMinutes(calcTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()));
 				
 		List<TimeZoneRounding> deductionTimeSheetList = this.getDeductionTimeSheet().stream().map(t -> t.getTimeSheet()).sorted((time1,time2) -> time1.getStart().compareTo(time2.getStart())).collect(Collectors.toList());
 		//控除時間帯分ループ
@@ -38,8 +39,8 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 																	 lateTimeSheet);
 		
 		//控除時間帯を保持
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction);
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate);
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction,Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate,Optional.empty());
 
 		return result;
 	}
@@ -48,10 +49,10 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 	public LateLeaveEarlyTimeSheet collectionAgainOfEarly(LateLeaveEarlyTimeSheet calcTime) {
 		//休憩取得範囲分の時間帯
 //		TimeSpanForCalc calcTimeSheet = new TimeSpanForCalc(this.getTimeSheet().getStart(), this.getTimeSheet().getStart().backByMinutes(calcTime.calcTotalTime().valueAsMinutes()+calcTime.calcDedTimeByAtr(DeductionAtr.Deduction).valueAsMinutes()));
-		TimeSpanForCalc calcTimeSheet = new TimeSpanForCalc(new TimeWithDayAttr(this.getTimeSheet().getEnd().valueAsMinutes()-(calcTime.calcTotalTime().valueAsMinutes()+calcTime.calcDedTimeByAtr(DeductionAtr.Deduction).valueAsMinutes()))
+		TimeSpanForCalc calcTimeSheet = new TimeSpanForCalc(new TimeWithDayAttr(this.getTimeSheet().getEnd().valueAsMinutes()-(calcTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()+calcTime.calcDedTimeByAtr(DeductionAtr.Deduction).valueAsMinutes()))
 															,this.getTimeSheet().getEnd());
 		//丸め後の早退時間帯
-		TimeSpanForCalc EarlyTimeSheet = new TimeSpanForCalc(new TimeWithDayAttr(this.getTimeSheet().getEnd().valueAsMinutes()-calcTime.calcTotalTime().valueAsMinutes())
+		TimeSpanForCalc EarlyTimeSheet = new TimeSpanForCalc(new TimeWithDayAttr(this.getTimeSheet().getEnd().valueAsMinutes()-calcTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes())
 															 ,this.getTimeSheet().getEnd());
 				
 		List<TimeZoneRounding> deductionTimeSheetList = this.getDeductionTimeSheet().stream().map(t -> t.getTimeSheet()).sorted((time1,time2) -> time1.getStart().compareTo(time2.getStart())).collect(Collectors.toList());
@@ -67,8 +68,8 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 																	 EarlyTimeSheet);
 		
 		//控除時間帯を保持
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction);
-		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate);
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Deduction,Optional.empty());
+		result.addDuplicatedDeductionTimeSheet(this.getDeductionTimeSheet(),DeductionAtr.Appropriate,Optional.empty());
 
 		return result;
 	}

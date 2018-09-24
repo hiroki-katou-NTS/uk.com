@@ -20,7 +20,7 @@
             var self = this;
              
             self.currentWebMenu(nts.uk.ui.windows.getShared("CCG013E_COPY"));
-            self.currentWebMenuCode(self.currentWebMenu().webMenuCode);
+           nts.uk.text.padLeft( self.currentWebMenuCode(self.currentWebMenu().webMenuCode), '0', 3); 
         }
         
         /**

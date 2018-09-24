@@ -46,7 +46,7 @@ public class ExecuteMonthlyClosureCommandHandler extends AsyncCommandHandler<Mon
 		for (String empId : params.getListEmployeeId()) {
 			monthlyUpdateService.processEmployee(params.getMonthlyClosureUpdateLogId(), empId, params.getClosureId(),
 					new YearMonth(params.getCurrentMonth()),
-					new ClosureDate(params.getClosureDay(), params.isLastDayOfMonth()),
+					new ClosureDate(params.getClosureDay(), params.getIsLastDayOfMonth()),
 					new DatePeriod(params.getPeriodStart(), params.getPeriodEnd()));
 			dataSetter.updateData("processed", ++count);
 		}

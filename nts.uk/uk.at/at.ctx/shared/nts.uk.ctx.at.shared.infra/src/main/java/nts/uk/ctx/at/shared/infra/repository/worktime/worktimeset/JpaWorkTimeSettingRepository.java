@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,7 +18,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
@@ -33,6 +37,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet_;
  */
 @Stateless
 public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkTimeSettingRepository {
+	
+	private static final String SELECT_CODE_AND_NAME_BY_WORKTIME_CODE = "SELECT c.kshmtWorkTimeSetPK.worktimeCd, c.name FROM KshmtWorkTimeSet c"
+			+ " WHERE c.kshmtWorkTimeSetPK.cid = :companyId AND c.kshmtWorkTimeSetPK.worktimeCd IN :listWorkTimeCode";
 
 	/*
 	 * (non-Javadoc)
@@ -231,9 +238,33 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 * @param worktimeCode the worktime code
 	 * @return the optional
 	 */
+	@SneakyThrows
 	private Optional<KshmtWorkTimeSet> findByPk(String companyId, String worktimeCode) {
-		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(companyId, worktimeCode);
-		return this.queryProxy().find(pk, KshmtWorkTimeSet.class);
+		PreparedStatement statement = this.connection().prepareStatement(
+				"select * from KSHMT_WORK_TIME_SET"
+				+ " where CID = ? and WORKTIME_CD = ?");
+		statement.setString(1, companyId);
+		statement.setString(2, worktimeCode);
+		
+		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+			KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
+			pk.setCid(rec.getString("CID"));
+			pk.setWorktimeCd(rec.getString("WORKTIME_CD"));
+			
+			KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
+			entity.setKshmtWorkTimeSetPK(pk);
+			entity.setName(rec.getString("NAME"));
+			entity.setAbname(rec.getString("ABNAME"));
+			entity.setSymbol(rec.getString("SYMBOL"));
+			entity.setDailyWorkAtr(rec.getInt("DAILY_WORK_ATR"));
+			entity.setWorktimeSetMethod(rec.getInt("WORKTIME_SET_METHOD"));
+			entity.setAbolitionAtr(rec.getInt("ABOLITION_ATR"));
+			entity.setColor(rec.getString("COLOR"));
+			entity.setMemo(rec.getString("MEMO"));
+			entity.setNote(rec.getString("NOTE"));
+			
+			return entity;
+		});
 	}
 
 	/*
@@ -307,5 +338,12 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			// get first item of list have 1 element
 			return Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(lstKwtstWorkTimeSet.get(0))));
 		}
+	}
+
+	@Override
+	public Map<String, String> getCodeNameByListWorkTimeCd(String companyId, List<String> listWorkTimeCode) {
+		List<Object[]> listObject = this.queryProxy().query(SELECT_CODE_AND_NAME_BY_WORKTIME_CODE, Object[].class)
+				.setParameter("companyId", companyId).setParameter("listWorkTimeCode", listWorkTimeCode).getList();
+		return listObject.stream().collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1])));
 	}
 }

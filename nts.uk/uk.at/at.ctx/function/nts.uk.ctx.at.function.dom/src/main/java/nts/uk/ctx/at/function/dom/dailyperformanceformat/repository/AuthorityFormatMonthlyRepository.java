@@ -16,7 +16,7 @@ public interface AuthorityFormatMonthlyRepository {
 	
 	void updateColumnsWidth(String companyId, Map<Integer, Integer> lstHeaderMIGrid, List<String> formatCodes);
 
-	void deleteExistData(List<Integer> attendanceItemIds);
+	void deleteExistData(String companyId, String dailyPerformanceFormatCode,List<Integer> attendanceItemIds);
 	
 	void add(List<AuthorityFomatMonthly> authorityFomatMonthlies);
 	

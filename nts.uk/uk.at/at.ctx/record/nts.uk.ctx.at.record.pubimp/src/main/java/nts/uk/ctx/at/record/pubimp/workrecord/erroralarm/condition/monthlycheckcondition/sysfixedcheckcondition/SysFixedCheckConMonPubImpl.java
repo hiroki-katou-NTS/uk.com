@@ -5,12 +5,18 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.sysfixedcheckcondition.checkforagreement.CheckAgreementService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.sysfixedcheckcondition.monthlyunconfirmed.MonthlyUnconfirmedService;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.LeaveManagementService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 
@@ -19,6 +25,9 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 	
 	@Inject
 	private CheckAgreementService checkAgreementService;
+	
+	@Inject
+	private LeaveManagementService leaveManagementService;
 	
 	@Override
 	public Optional<ValueExtractAlarmWRPubExport> checkAgreement(String employeeID, int yearMonth,int closureId,ClosureDate closureDate) {
@@ -48,6 +57,25 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 				valueExtractAlarmWR.getAlarmValueMessage(),
 				valueExtractAlarmWR.getComment().orElse(null)
 				);
+	}
+	@Override
+	public Optional<ValueExtractAlarmWRPubExport> checkDeadlineCompensatoryLeaveCom(String employeeID, Closure closing,
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting) {
+		Boolean data = leaveManagementService.checkDeadlineCompensatoryLeaveCom(employeeID, closing, compensatoryLeaveComSetting);
+		if(data) {
+			int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+			YearMonth currentYearMonth = closing.getClosureMonth().getProcessingYm();
+			
+			return Optional.of(new ValueExtractAlarmWRPubExport(
+					null,
+					employeeID,
+					GeneralDate.ymd(currentYearMonth.year(), currentYearMonth.month(), 1),
+					TextResource.localize("KAL010_100"),
+					TextResource.localize("KAL010_278"),
+					TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)),	
+					null));
+		}
+		return Optional.empty();
 	}
 
 }

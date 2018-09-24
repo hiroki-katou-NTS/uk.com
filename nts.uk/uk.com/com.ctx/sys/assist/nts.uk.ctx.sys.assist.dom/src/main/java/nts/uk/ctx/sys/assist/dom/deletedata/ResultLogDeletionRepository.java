@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface ResultLogDeletionRepository
 {
 
+	int getMaxSeqId(String delId);
     List<ResultLogDeletion> getAllResultLogDeletion();
 
     Optional<ResultLogDeletion> getResultLogDeletionById(String delId);

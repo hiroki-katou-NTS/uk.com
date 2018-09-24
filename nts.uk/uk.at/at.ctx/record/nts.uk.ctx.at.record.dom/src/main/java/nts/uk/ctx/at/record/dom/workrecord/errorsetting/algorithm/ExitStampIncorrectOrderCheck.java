@@ -30,12 +30,12 @@ public class ExitStampIncorrectOrderCheck {
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public List<EmployeeDailyPerError> exitStampIncorrectOrderCheck(String companyId, String employeeId, GeneralDate processingDate,
-			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily,
+	public List<EmployeeDailyPerError> exitStampIncorrectOrderCheck(String companyId, String employeeId,
+			GeneralDate processingDate, AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
-		
+
 		List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
-		
+
 		if (attendanceLeavingGateOfDaily != null
 				&& !attendanceLeavingGateOfDaily.getAttendanceLeavingGates().isEmpty()) {
 
@@ -45,14 +45,15 @@ public class ExitStampIncorrectOrderCheck {
 			// ペアの逆転がないか確認する(入退門)
 			List<Integer> attendanceItemIds = this.checkPairReversed(attendanceLeavingGateOfDaily);
 			if (!attendanceItemIds.isEmpty()) {
-				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-						employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
-						attendanceItemIds);
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId,
+						processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 				employeeDailyPerErrorList.add(employeeDailyPerError);
 			} else {
 				if (attendanceLeavingGates.size() == 2) {
 					if (attendanceLeavingGates.get(0).getAttendance().isPresent()
-							&& attendanceLeavingGates.get(1).getAttendance().isPresent()) {
+							&& attendanceLeavingGates.get(0).getAttendance().get().getTimeWithDay() != null
+							&& attendanceLeavingGates.get(1).getAttendance().isPresent()
+							&& attendanceLeavingGates.get(1).getAttendance().get().getTimeWithDay() != null) {
 
 						attendanceLeavingGates.sort((e1, e2) -> e1.getAttendance().get().getTimeWithDay().v()
 								.compareTo(e2.getAttendance().get().getTimeWithDay().v()));
@@ -64,55 +65,55 @@ public class ExitStampIncorrectOrderCheck {
 							attendanceItemIds.add(77);
 							attendanceItemIds.add(79);
 							attendanceItemIds.add(81);
-//							this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-//									processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+							// this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyId,
+							// employeeId,
+							// processingDate, new
+							// ErrorAlarmWorkRecordCode("S004"),
+							// attendanceItemIds);
 							EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
 									employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
 									attendanceItemIds);
 							employeeDailyPerErrorList.add(employeeDailyPerError);
 						} else {
-							if (attendanceLeavingGates.get(0).getLeaving().isPresent()
-									&& attendanceLeavingGates.get(1).getLeaving().isPresent()) {
-								// 重複の判断処理
-								TimeWithDayAttr stampStartTimeFirstTime = attendanceLeavingGates.get(0).getAttendance()
-										.get().getTimeWithDay();
-								TimeWithDayAttr endStartTimeFirstTime = attendanceLeavingGates.get(0).getLeaving().get()
-										.getTimeWithDay();
-								TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
-										endStartTimeFirstTime);
+							// 重複の判断処理
+							TimeWithDayAttr stampStartTimeFirstTime = attendanceLeavingGates.get(0).getAttendance()
+									.get().getTimeWithDay();
+							TimeWithDayAttr endStartTimeFirstTime = attendanceLeavingGates.get(0).getLeaving().get()
+									.getTimeWithDay();
+							TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
+									endStartTimeFirstTime);
 
-								TimeWithDayAttr stampStartTimeSecondTime = attendanceLeavingGates.get(1).getAttendance()
-										.get().getTimeWithDay();
-								TimeWithDayAttr endStartTimeSecondTime = attendanceLeavingGates.get(1).getLeaving()
-										.get().getTimeWithDay();
-								TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
-										endStartTimeSecondTime);
+							TimeWithDayAttr stampStartTimeSecondTime = attendanceLeavingGates.get(1).getAttendance()
+									.get().getTimeWithDay();
+							TimeWithDayAttr endStartTimeSecondTime = attendanceLeavingGates.get(1).getLeaving().get()
+									.getTimeWithDay();
+							TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
+									endStartTimeSecondTime);
 
-								DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-										.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-								DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-										.checkStateAtr(duplicateStateAtr);
+							DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+									.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+							DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+									.checkStateAtr(duplicateStateAtr);
 
-								if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
-									attendanceItemIds = new ArrayList<>();
-									attendanceItemIds.add(75);
-									attendanceItemIds.add(77);
-									attendanceItemIds.add(79);
-									attendanceItemIds.add(81);
+							if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
+								attendanceItemIds = new ArrayList<>();
+								attendanceItemIds.add(75);
+								attendanceItemIds.add(77);
+								attendanceItemIds.add(79);
+								attendanceItemIds.add(81);
+								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+										employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+										attendanceItemIds);
+								employeeDailyPerErrorList.add(employeeDailyPerError);
+							} else {
+								// 入退門と出退勤の順序不正判断処理
+								attendanceItemIds = this.checkOder(attendanceLeavingGateOfDaily,
+										timeLeavingOfDailyPerformance);
+								if (!attendanceItemIds.isEmpty()) {
 									EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
 											employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
 											attendanceItemIds);
 									employeeDailyPerErrorList.add(employeeDailyPerError);
-								} else {
-									// 入退門と出退勤の順序不正判断処理
-									attendanceItemIds = this.checkOder(attendanceLeavingGateOfDaily,
-											timeLeavingOfDailyPerformance);
-									if (!attendanceItemIds.isEmpty()) {
-										EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
-												employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
-												attendanceItemIds);
-										employeeDailyPerErrorList.add(employeeDailyPerError);
-									}
 								}
 							}
 						}
@@ -137,7 +138,7 @@ public class ExitStampIncorrectOrderCheck {
 					if (attendanceLeavingGate.getWorkNo().v() == 1) {
 						attendanceItemIds.add(75);
 						attendanceItemIds.add(77);
-					} else if (attendanceLeavingGate.getWorkNo().v() == 1) {
+					} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
 						attendanceItemIds.add(79);
 						attendanceItemIds.add(81);
 					}
