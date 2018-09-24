@@ -257,10 +257,12 @@
 										<div id="cover_table">
 											<table class="table_item"
 												data-bind="if:itemSettingList().length>0" tabindex="3">
-												<tr>
-													<th width="180px" class="bg-calendar-ym-set">#{i18n.getText('CPS002_36')}</th>
-													<th width="250px" class="bg-calendar-ym-set">#{i18n.getText('CPS002_37')}</th>
-												</tr>
+												<thead>
+													<tr>
+														<th class="bg-calendar-ym-set">#{i18n.getText('CPS002_36')}</th>
+														<th class="bg-calendar-ym-set">#{i18n.getText('CPS002_37')}</th>
+													</tr>
+												</thead>
 												<tbody data-bind="foreach:itemSettingList">
 													<tr>
 														<td
