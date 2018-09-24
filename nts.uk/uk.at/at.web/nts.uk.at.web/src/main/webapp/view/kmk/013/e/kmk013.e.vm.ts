@@ -84,8 +84,6 @@ module nts.uk.at.view.kmk013.e {
             }
             initData(): void {
                 let self = this;
-                service.findByCompanyId().done(arr => {
-                });
                 service.getOTCalc().done(data => {
                     if (data.calculationMethod == 0) {
                         self.isVisibleE22(false);

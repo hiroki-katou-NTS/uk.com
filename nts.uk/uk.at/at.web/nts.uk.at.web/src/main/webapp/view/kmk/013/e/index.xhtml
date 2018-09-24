@@ -27,55 +27,52 @@
 					<tr>
 						<th>
 							<div class="panel panel-frame">
-							<div class="label">#{i18n.getText('KMK013_200')}</div>
-							<hr />
-							<table id="fixed-table" >
-								<colgroup>
-									<col width="165px" />
-									<col width="100px" />
-									<col width="145px" />
-									<col width="170px" />
-								</colgroup>
-								<tbody data-bind="foreach: listData">
-									<tr>
-										<td><span class="label" data-bind="text:attendanceItemName"></span></td>
-										<td><div tabindex="3" id="unit-combo-box"
-												data-bind="ntsComboBox: {
-										    name:'#{i18n.getText('KMK013_201')}',
-										    width: 100,
-											options: $parent.itemListUnit,
-											optionsValue: 'code',
-											value: unit,
-											optionsText: 'code',
-											editable: $parent.isEditable,
-											enable: $parent.isEnable,
-											columns: [
-												{ prop: 'name', length: 2 }
-											]}"></div>
-										</td>
-										<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
-<!-- 											<td><div class="label">分</div></td> -->
-										<td>
-											<div tabindex="3" id="rounding-combo-box"
+								<div class="label">#{i18n.getText('KMK013_200')}</div>
+								<hr />
+								<table id="fixed-table" >
+									<colgroup>
+										<col width="165px" />
+										<col width="100px" />
+										<col width="180px" />
+									</colgroup>
+									<tbody data-bind="foreach: listData">
+										<tr>
+											<td><span class="label" data-bind="text:attendanceItemName"></span></td>
+											<td><div tabindex="3" id="unit-combo-box"
 													data-bind="ntsComboBox: {
-											name:'#{i18n.getText('KMK013_203')}',
-											options: list_round,
-											optionsValue: 'code',
-											value: rounding,
-											optionsText: 'code',
-											editable: $parent.isEditable,
-											enable: $parent.isEnable,
-											columns: [
-												{ prop: 'name', length : 10 }
-											]}"></div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+											    name:'#{i18n.getText('KMK013_201')}',
+											    width: 100,
+												options: $parent.itemListUnit,
+												optionsValue: 'code',
+												value: unit,
+												optionsText: 'code',
+												editable: $parent.isEditable,
+												enable: $parent.isEnable,
+												columns: [
+													{ prop: 'name', length: 2 }
+												]}"></div>
+											</td>
+											<td>
+												<div tabindex="3" id="rounding-combo-box"
+														data-bind="ntsComboBox: {
+												name:'#{i18n.getText('KMK013_203')}',
+												options: list_round,
+												optionsValue: 'code',
+												value: rounding,
+												optionsText: 'code',
+												editable: $parent.isEditable,
+												enable: $parent.isEnable,
+												columns: [
+													{ prop: 'name', length : 10 }
+												]}"></div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</th>
 						<th class="right-box" data-bind="if: isVisibleE22()">
-							<div class="panel panel-frame" style="margin-left: 20px; width:575px;">
+							<div class="panel panel-frame">
 								<div class="round-box">
 									<div class="label">#{i18n.getText('KMK013_273')}</div>
 									<hr />
@@ -96,8 +93,6 @@
 													{ prop: 'name', length : 10 }
 														]}"></div>
 												</td>
-	 										<td><div class="right-box-component" style="margin-right: 10px">#{i18n.getText('KMK013_202')}</div></td>
-	<!-- 										<td><div class="right-box-component" style="margin-right: 10px">分</div></td> -->
 											<td>
 												<div tabindex="5" id="rounding-combo-box" class="right-box-component"
 													data-bind="ntsComboBox: {
