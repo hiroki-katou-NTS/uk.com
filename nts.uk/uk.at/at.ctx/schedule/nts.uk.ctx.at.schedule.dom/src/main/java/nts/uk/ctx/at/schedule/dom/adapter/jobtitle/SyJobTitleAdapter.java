@@ -22,5 +22,5 @@ public interface SyJobTitleAdapter {
 	 */
 	Optional<EmployeeJobHistImported> findBySid(String employeeId, GeneralDate baseDate);
 	
-	Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId, List<String> jobIds, List<GeneralDate> baseDates);
+	Map<Pair<String, GeneralDate>, Pair<String,String>> getJobTitleMapIdBaseDateName(String companyId, List<String> jobIds, List<GeneralDate> baseDates);
 }

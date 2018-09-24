@@ -114,6 +114,6 @@ public interface SyJobTitlePub {
 	 * @param baseDate the base date
 	 * @return the job title map
 	 */
-	Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId,List<String> jobIds, List<GeneralDate> baseDates);
+	Map<Pair<String, GeneralDate>, Pair<String, String>> getJobTitleMapIdBaseDateName(String companyId,List<String> jobIds, List<GeneralDate> baseDates);
 
 }

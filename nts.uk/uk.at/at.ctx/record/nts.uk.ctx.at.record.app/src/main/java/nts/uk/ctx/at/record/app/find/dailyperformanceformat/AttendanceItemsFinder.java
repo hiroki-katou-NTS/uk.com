@@ -20,6 +20,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.MonthlyAttendanceItemNameDto;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
@@ -208,6 +209,7 @@ public class AttendanceItemsFinder {
 					attdItemDto.setAttendanceItemId(x.getAttendanceItemId());
 					attdItemDto.setAttendanceItemName(x.getAttendanceItemName());
 					attdItemDto.setDisplayNumber(x.getAttendanceItemDisplayNumber());
+					attdItemDto.setAttendanceItemDisplayNumber(x.getAttendanceItemDisplayNumber());
 					return attdItemDto;
 				}).collect(Collectors.toList());
 
@@ -346,18 +348,30 @@ public class AttendanceItemsFinder {
 	 * @author anhnm
 	 */
 	public List<AttdItemDto> findByAnyItem(AttdItemLinkRequest request) {
-		// Check empty selectable list
-		if (CollectionUtil.isEmpty(request.getAnyItemNos())) {
-			return Collections.emptyList();
+		// get list attendance item by atr
+		List<AttdItemDto> attdItems = this.findListByAttendanceAtr(this.convertToAttdItemType(request.getFormulaAtr()));
+
+		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
+			// get attendance item linking
+			List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
+					.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
+
+			// get list attendance item filtered by attdItemLinks
+			List<AttdItemDto> filtered = this.findAll().stream()
+					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+
+			// merge two list attendance items
+			filtered.forEach(item -> {
+				if (attdItems.stream().anyMatch(i -> i.getAttendanceItemId() == item.getAttendanceItemId())) {
+					return;
+				}
+				attdItems.add(item);
+			});
 		}
 
-		// get attendance item linking
-		List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
-				.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
-
-		// get list attendance item filtered by attdItemLinks
-		List<AttdItemDto> attdItems = this.findAll().stream()
-				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+		if (attdItems.isEmpty()) {
+			return attdItems;
+		}
 
 		// convert to map
 		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
@@ -422,6 +436,26 @@ public class AttendanceItemsFinder {
 		}).collect(Collectors.toList());
 		
 		return attendanceItemDtos;
+	}
+	/**
+	 * Convert to attd item type.
+	 *
+	 * @param formulaAtr the formula atr
+	 * @return the int
+	 * 
+	 * @author anhnm
+	 */
+	private int convertToAttdItemType(int formulaAtr) {
+
+		if (formulaAtr == OptionalItemAtr.AMOUNT.value) {
+			return DailyAttendanceAtr.AmountOfMoney.value;
+		} else if (formulaAtr == OptionalItemAtr.NUMBER.value) {
+			return DailyAttendanceAtr.NumberOfTime.value;
+		} else if (formulaAtr == OptionalItemAtr.TIME.value) {
+			return DailyAttendanceAtr.Time.value;
+		} else {
+			throw new RuntimeException("value not found");
+		}
 	}
 
 }

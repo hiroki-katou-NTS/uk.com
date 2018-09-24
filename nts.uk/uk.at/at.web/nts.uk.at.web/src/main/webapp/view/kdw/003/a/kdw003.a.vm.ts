@@ -297,7 +297,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (window.screen.availHeight - 268) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 180) + 'px !IMPORTANT');
 
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime)
@@ -582,6 +582,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.itemValueAll(data.itemValues);
             self.comment(data.comment != null ? '■ ' + data.comment : null);
             self.formatCodes(data.lstControlDisplayItem.formatCode);
+            self.autBussCode(data.autBussCode);
             self.createSumColumn(data);
             // combo box
             self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
@@ -755,7 +756,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (monthResult != null) {
                 // set agreementInfo
                 self.agreementInfomation().mapDataAgreement(monthResult.agreementInfo);
-                self.autBussCode(data.autBussCode);
                 let listFormatDaily: any[] = monthResult.formatDaily;
                 self.listAttendanceItemId((monthResult.results != null && monthResult.results.length != 0) ? monthResult.results[0].items : []);
 
@@ -804,9 +804,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 self.showFlex(false);
                 self.lstErrorFlex = [];
-                self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
-                self.valueUpdateMonth = self.itemValueMonthParent;
-                self.valueUpdateMonth["hasFlex"] = false;
+                if (self.displayFormat() === 0) {
+                    self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                    self.valueUpdateMonth = self.itemValueMonthParent;
+                    self.valueUpdateMonth["hasFlex"] = false;
+                }
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }
@@ -1148,7 +1150,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         mode: self.displayFormat(),
                         spr: sprStampSourceInfo,
                         dailyOlds: self.lstDomainOld,
-                        dailyEdits: self.lstDomainEdit
+                        dailyEdits: self.lstDomainEdit,
+                        flagCalculation: updateAll
                     }
                     if (self.displayFormat() == 0) {
                         if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
@@ -1163,11 +1166,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.removeErrorRefer();
                     let dfd = $.Deferred();
                     service.calculation(dataParent).done((data) => {
-                        self.valueUpdateMonth = null;
-                        self.initScreenSPR = 1;
-                        self.clickFromExtract = false;
-                        self.showTextStyle = false;
-                        dataChange = {};
                         if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                             if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                                 $("#next-month").ntsError("clear");
@@ -1594,6 +1592,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     localStorage.setItem('kdw003_type', data.typeBussiness);
                     self.dataAll(data);
                     self.formatCodes(data.lstControlDisplayItem.formatCode);
+                    self.autBussCode(data.autBussCode);
                     self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                     self.itemValueAll(data.itemValues);
                     self.createSumColumn(data);

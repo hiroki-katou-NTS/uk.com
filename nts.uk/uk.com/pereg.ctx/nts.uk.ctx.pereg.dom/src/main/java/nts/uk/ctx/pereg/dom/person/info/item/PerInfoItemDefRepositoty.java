@@ -151,7 +151,7 @@ public interface PerInfoItemDefRepositoty {
 	Map<String, List<PersonInfoItemDefinition>> getByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd);
 	
-	Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+	Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd);
 
 }

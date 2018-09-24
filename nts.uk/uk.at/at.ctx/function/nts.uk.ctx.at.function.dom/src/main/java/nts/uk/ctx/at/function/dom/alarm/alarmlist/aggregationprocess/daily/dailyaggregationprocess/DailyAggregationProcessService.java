@@ -372,11 +372,11 @@ public class DailyAggregationProcessService {
 				String alarm = "";
 				if (singleCompare(itemCon.getCompareOperator())) {
 					if (itemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 						+ coupleOperator.getOperatorStart() 
 						+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr()) + ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 						+ coupleOperator.getOperatorStart()
 						+ this.formatHourDataByGroup(String.valueOf(itemCon.getSingleAtdItem()), itemCon.getConditionAtr())+ ")";
 					}
@@ -384,13 +384,14 @@ public class DailyAggregationProcessService {
 				} else {
 					if (betweenRange(itemCon.getCompareOperator())) {
 						alarm = "(式" + (i + 1) 
+								+" "
 								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
 								+ coupleOperator.getOperatorStart()
 								+ calculateAttendanceText(itemCon,listAttenDanceItem) 
 								+ coupleOperator.getOperatorEnd()
 								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareEndValue()), itemCon.getConditionAtr())+ ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 								+ coupleOperator.getOperatorStart() 
 								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
 								+ ", " 
