@@ -20,7 +20,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFor
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
@@ -60,9 +60,9 @@ public class DailyPerformanceAuthorityFinder {
 		Map<Integer, AttendanceItemDto> attendanceItemDailyMaps = attendanceItemDailyDtos.stream()
 				.collect(Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x -> x));
 		//会社の月次項目を取得する
-		Map<Integer, AttItemNameImport> attendanceMonthlyItemMaps = companyMonthlyItemService
+		Map<Integer, AttItemName> attendanceMonthlyItemMaps = companyMonthlyItemService
 				.getMonthlyItems(companyId, Optional.empty(), null, null).stream()
-				.collect(Collectors.toMap(AttItemNameImport::getAttendanceItemId, x -> x));
+				.collect(Collectors.toMap(AttItemName::getAttendanceItemId, x -> x));
 
 		// find daily detail
 		List<AuthorityFomatDaily> authorityFormatDailies = this.authorityFormatDailyRepository

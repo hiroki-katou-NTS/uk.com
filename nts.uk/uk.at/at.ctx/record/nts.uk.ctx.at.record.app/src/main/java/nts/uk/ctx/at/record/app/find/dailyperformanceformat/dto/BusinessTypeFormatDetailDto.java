@@ -9,10 +9,10 @@ public class BusinessTypeFormatDetailDto {
 	
 	private int attendanceItemId;
 	
-	private int dislayNumber;
+/*	private int dislayNumber;
 	
 	private String attendanceItemName;
-
+*/
 	private int order;
 
 	private BigDecimal columnWidth;

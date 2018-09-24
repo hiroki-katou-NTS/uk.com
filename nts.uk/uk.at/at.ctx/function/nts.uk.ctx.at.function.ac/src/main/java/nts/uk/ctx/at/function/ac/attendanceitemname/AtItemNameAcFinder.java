@@ -13,7 +13,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameS
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 
 @Stateless
@@ -23,15 +23,15 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 	private AttendanceItemNameService attendanceItemNameService;
 
 	@Override
-	public List<AttItemNameImport> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItemImport type) {
-		return this.convertAttItem(attendanceItemNameService.getNameOfAttendanceItem(attendanceItemIds,
-				EnumAdaptor.valueOf(type.value, TypeOfItem.class)));
+	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItemImport type) {
+		return attendanceItemNameService.getNameOfAttendanceItem(attendanceItemIds,
+				EnumAdaptor.valueOf(type.value, TypeOfItem.class));
 	}
 
 	@Override
-	public List<AttItemNameImport> getNameOfDailyAttendanceItem(List<DailyAttendanceItem> attendanceItems) {
-		List<AttendanceItemName> attItemName = attendanceItems.stream().map(x -> {
-			AttendanceItemName dto = new AttendanceItemName();
+	public List<AttItemName> getNameOfDailyAttendanceItem(List<DailyAttendanceItem> attendanceItems) {
+		List<AttItemName> attItemName = attendanceItems.stream().map(x -> {
+			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
 			dto.setAttendanceItemName(x.getAttendanceName().v());
 			dto.setAttendanceItemDisplayNumber(x.getDisplayNumber());
@@ -40,13 +40,13 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 			return dto;
 		}).collect(Collectors.toList());
 
-		return this.convertAttItem(attendanceItemNameService.getNameOfAttendanceItem(TypeOfItem.Daily, attItemName));
+		return attendanceItemNameService.getNameOfAttendanceItem(TypeOfItem.Daily, attItemName);
 	}
 
 	@Override
-	public List<AttItemNameImport> getNameOfMonthlyAttendanceItem(List<MonthlyAttendanceItem> attendanceItems) {
-		List<AttendanceItemName> attItemName = attendanceItems.stream().map(x -> {
-			AttendanceItemName dto = new AttendanceItemName();
+	public List<AttItemName> getNameOfMonthlyAttendanceItem(List<MonthlyAttendanceItem> attendanceItems) {
+		List<AttItemName> attItemName = attendanceItems.stream().map(x -> {
+			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
 			dto.setAttendanceItemName(x.getAttendanceName().v());
 			dto.setAttendanceItemDisplayNumber(x.getDisplayNumber());
@@ -55,12 +55,12 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 			return dto;
 		}).collect(Collectors.toList());
 
-		return this.convertAttItem(attendanceItemNameService.getNameOfAttendanceItem(TypeOfItem.Monthly, attItemName));
+		return attendanceItemNameService.getNameOfAttendanceItem(TypeOfItem.Monthly, attItemName);
 	}
 
-	List<AttItemNameImport> convertAttItem(List<AttendanceItemName> attItems) {
+	List<AttItemName> convertAttItem(List<AttendanceItemName> attItems) {
 		return attItems.stream().map(x -> {
-			AttItemNameImport dto = new AttItemNameImport();
+			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
 			dto.setAttendanceItemName(x.getAttendanceItemName());
 			dto.setAttendanceItemDisplayNumber(x.getAttendanceItemDisplayNumber());

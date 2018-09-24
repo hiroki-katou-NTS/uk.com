@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendancei
 import lombok.Data;
 
 @Data
-public class AttItemNameImport {
+public class AttItemName {
 
 	private int attendanceItemId;
 
@@ -13,15 +13,15 @@ public class AttItemNameImport {
 
 	private int userCanUpdateAtr;
 
-	private int typeOfAttendanceItem;
+	private Integer typeOfAttendanceItem;
 
 	private int nameLineFeedPosition;
 
-	private int frameCategory;
+	private Integer frameCategory;
 
 	private AttItemAuthority authority;
 
-	public AttItemNameImport() {
+	public AttItemName() {
 		super();
 	}
 }

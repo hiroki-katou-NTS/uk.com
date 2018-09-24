@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.DivergenceTimeAdapter;
@@ -23,9 +24,9 @@ import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
-import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
@@ -35,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -97,8 +99,8 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	private SpecialHolidayRepository specialHolidayRepository;
 
 	@Override
-	public List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
-		List<AttendanceItemName> attendanceItems = this.getAttendanceItemName(attendanceItemIds, type);
+	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
+		List<AttItemName> attendanceItems = this.getAttendanceItemName(attendanceItemIds, type);
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
 				.getFullDataByAttdIdAndType(attendanceItemIds, type);
@@ -106,7 +108,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	}
 
 	@Override
-	public List<AttendanceItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttendanceItemName> attendanceItems) {
+	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems) {
 		List<Integer> attendanceItemIds = attendanceItems.stream().map(x -> x.getAttendanceItemId())
 				.collect(Collectors.toList());
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
@@ -116,82 +118,30 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	}
 
 	@Override
-	public List<AttendanceItemName> getNameOfAttendanceItem(List<AttendanceItemName> attendanceItems,
+	public List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
-	
-		// // get list frame No 0
-		Map<Integer, AttendanceItemLinking> frameNoOverTimeMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 0)
+		Map<Integer, AttItemName> mapAttendanceItems = attendanceItems.stream()
+				.collect(Collectors.toMap(AttItemName::getAttendanceItemId, x -> x));
+		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream()
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// // get list frame No 1
-		Map<Integer, AttendanceItemLinking> frameNoOverTimeTransferMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 1)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 2
-		Map<Integer, AttendanceItemLinking> frameNoLeaveMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 2)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 3
-		Map<Integer, AttendanceItemLinking> frameNoLeaveTransferMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 3)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 4
-		Map<Integer, AttendanceItemLinking> frameNoPremiumMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 4)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 5
-		Map<Integer, AttendanceItemLinking> frameNoBonusPayMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 5)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 6
-		Map<Integer, AttendanceItemLinking> frameNoSpecialBonusPayMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 6)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 8
-		Map<Integer, AttendanceItemLinking> frameNoOptionalItemMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 8)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 7
-		Map<Integer, AttendanceItemLinking> frameNoDivergenceMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 7)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		// get list frame No 10
-		Map<Integer, AttendanceItemLinking> frameNoSpecificDateMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 10)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-
-		// get list frame No 11
-		Map<Integer, AttendanceItemLinking> frameNoOverTimeSettingMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 11)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-
-		// get list frame No 12
-		Map<Integer, AttendanceItemLinking> frameAbsence = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 12)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-
-		// get list frame No 13
-		Map<Integer, AttendanceItemLinking> frameSpecialHoliday = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 13)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-
-		// get list frame No 14
-		Map<Integer, AttendanceItemLinking> frameTotalTimes = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 14)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-
-		// get list frame No 15
-		Map<Integer, AttendanceItemLinking> specialHoliday15 = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 15)
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		for (AttendanceItemLinking link : attendanceItemAndFrameNos) {
+			int id = link.getAttendanceItemId();
+			if (mapAttendanceItems.containsKey(id)) {
+				mapAttendanceItems.get(id).setFrameCategory(link.getFrameCategory().value);
+				mapAttendanceItems.get(id).setTypeOfAttendanceItem(link.getTypeOfAttendanceItem().value);
+			} else {
+				mapAttendanceItems.get(id).setFrameCategory(null);
+				mapAttendanceItems.get(id).setTypeOfAttendanceItem(null);
+			}
+		}
 
 		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {
 			return f.getFrameNo().v();
 		}).collect(Collectors.toList());
 
-		if (frameNos.isEmpty()) {
+		if (attendanceItemAndFrameNos.isEmpty()) {
 			return attendanceItems;
 		}
 
@@ -269,78 +219,74 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			specialHoliday.put(x.getSpecialHolidayCode().v(), x);
 		});
 
-		int attId;
-		String attName;
-		AttendanceItemLinking itemLink;
-		for (AttendanceItemName item : attendanceItems) {
-			attId = item.getAttendanceItemId();
-			attName = item.getAttendanceItemName();
-			if (frameNoOverTimeMap.containsKey(attId)) {
-				itemLink = frameNoOverTimeMap.get(attId);
+		attendanceItems = mapAttendanceItems.values().stream().collect(Collectors.toList());
+		for (AttItemName item : attendanceItems) {
+			int attId = item.getAttendanceItemId();
+			String attName = item.getAttendanceItemName();
+			AttendanceItemLinking itemLink;
+			if (item.getFrameCategory() == null) {
+				continue;
+			}
+			FrameCategory frCtg = EnumAdaptor.valueOf(item.getFrameCategory(), FrameCategory.class);
+			switch (frCtg) {
+			case OverTime:
+				itemLink = mapItemLinking.get(attId);
 				if (overTimes.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							overTimes.get(itemLink.getFrameNo().v()).getOvertimeWorkFrName()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoOverTimeTransferMap.containsKey(attId)) {
-				itemLink = frameNoOverTimeTransferMap.get(attId);
+				break;
+			case OverTimeTranfer:
+				itemLink = mapItemLinking.get(attId);
 				if (overTimes.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							overTimes.get(itemLink.getFrameNo().v()).getTransferFrName()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoLeaveMap.containsKey(attId)) {
-				itemLink = frameNoLeaveMap.get(attId);
+				break;
+			case Rest:
+				itemLink = mapItemLinking.get(attId);
 				if (leave.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(
 							MessageFormat.format(attName, leave.get(itemLink.getFrameNo().v()).getWorkdayoffFrName()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoLeaveTransferMap.containsKey(attId)) {
-				itemLink = frameNoLeaveTransferMap.get(attId);
+				break;
+			case RestTranfer:
+				itemLink = mapItemLinking.get(attId);
 				if (leave.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(
 							MessageFormat.format(attName, leave.get(itemLink.getFrameNo().v()).getTransferFrName()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoDivergenceMap.containsKey(attId)) {
-				itemLink = frameNoDivergenceMap.get(attId);
-				if (divergenceTimes.containsKey(itemLink.getFrameNo().v())) {
-					item.setAttendanceItemName(MessageFormat.format(attName,
-							divergenceTimes.get(itemLink.getFrameNo().v()).getDivTimeName()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
-				}
-			} else if (frameNoPremiumMap.containsKey(attId)) {
-				itemLink = frameNoPremiumMap.get(attId);
+				break;
+			case ExtraItem:
+				itemLink = mapItemLinking.get(attId);
 				if (premiumItemnames.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							premiumItemnames.get(itemLink.getFrameNo().v()).getPremiumItemname()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoBonusPayMap.containsKey(attId)) {
-				itemLink = frameNoBonusPayMap.get(attId);
+				break;
+			case AddtionTimeItem:
+				itemLink = mapItemLinking.get(attId);
 				if (bonusPayTimeItems.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							bonusPayTimeItems.get(itemLink.getFrameNo().v()).getTimeItemName().v()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoSpecialBonusPayMap.containsKey(attId)) {
-				itemLink = frameNoSpecialBonusPayMap.get(attId);
+				break;
+			case SpecificAddtionTimeItem:
+				itemLink = mapItemLinking.get(attId);
 				if (specialBonusPayTimeItem.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specialBonusPayTimeItem.get(itemLink.getFrameNo().v()).getTimeItemName().v()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoOptionalItemMap.containsKey(attId)) {
-				itemLink = frameNoOptionalItemMap.get(attId);
+				break;
+			case DivergenceTimeItem:
+				itemLink = mapItemLinking.get(attId);
+				if (divergenceTimes.containsKey(itemLink.getFrameNo().v())) {
+					item.setAttendanceItemName(MessageFormat.format(attName,
+							divergenceTimes.get(itemLink.getFrameNo().v()).getDivTimeName()));
+				}
+				break;
+			case AnyItem:
+				itemLink = mapItemLinking.get(attId);
 				if (optionalItems.containsKey(itemLink.getFrameNo().v())) {
 					// get value
 					OptionalItemImport optItem = optionalItems.get(itemLink.getFrameNo().v());
@@ -348,22 +294,21 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 							: "（" + optItem.getOptionalItemUnit() + "）";
 					// set value
 					item.setAttendanceItemName(MessageFormat.format(attName, optItem.getOptionalItemName() + unit));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-			} else if (frameNoSpecificDateMap.containsKey(attId)) {
-				itemLink = frameNoSpecificDateMap.get(attId);
+				break;
+			case GoOut:
+				break;
+			case SpecificDate:
+				itemLink = mapItemLinking.get(attId);
 				if (specificDates.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specificDates.get(itemLink.getFrameNo().v()).getSpecificName()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-				// 11
-			} else if (frameNoOverTimeSettingMap.containsKey(attId)) {
+				break;
+			case ExcessTime:
 				String overTimeName = "";
 				String outsideOTBRDItemName = "";
-				itemLink = frameNoOverTimeSettingMap.get(attId);
+				itemLink = mapItemLinking.get(attId);
 				for (OvertimeDto ovt : overtimesSetting) {
 					if (ovt.getOvertimeNo() == itemLink.getFrameNo().v()) {
 						overTimeName = ovt.getName();
@@ -380,54 +325,40 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 						break;
 					}
 				}
-
 				item.setAttendanceItemName(MessageFormat.format(attName, overTimeName, outsideOTBRDItemName));
-				item.setFrameCategory(itemLink.getFrameCategory().value);
-				item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
-				// 12
-			} else if (frameAbsence.containsKey(attId)) {
-				itemLink = frameAbsence.get(attId);
+				break;
+			case Absence:
+				itemLink = mapItemLinking.get(attId);
 				if (absenceFrame.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							absenceFrame.get(itemLink.getFrameNo().v()).getAbsenceFrameName().v()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-				// 13
-			} else if (frameSpecialHoliday.containsKey(attId)) {
-				itemLink = frameSpecialHoliday.get(attId);
+				break;
+			case SpecialHolidayFrame:
+				itemLink = mapItemLinking.get(attId);
 				if (specialHolidayFrame.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specialHolidayFrame.get(itemLink.getFrameNo().v()).getSpecialHdFrameName().v()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-				// 14
-			} else if (frameTotalTimes.containsKey(attId)) {
-				itemLink = frameTotalTimes.get(attId);
+				break;
+			case TotalCount:
+				itemLink = mapItemLinking.get(attId);
 				if (totalTimes.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							totalTimes.get(itemLink.getFrameNo().v()).getTotalTimesName().v()));
-					item.setFrameCategory(itemLink.getFrameCategory().value);
-					item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
 				}
-				// 15
-			} else if (specialHoliday15.containsKey(attId)) {
-				itemLink = specialHoliday15.get(attId);
+				break;
+			case SpecialHoliday:
+				itemLink = mapItemLinking.get(attId);
 				if (specialHoliday.containsKey(itemLink.getFrameNo().v())) {
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specialHoliday.get(itemLink.getFrameNo().v()).getSpecialHolidayName().v()));
 				} else {
 					item.setAttendanceItemName(MessageFormat.format("特別休暇{0}", itemLink.getFrameNo().v()));
 				}
-				item.setFrameCategory(itemLink.getFrameCategory().value);
-				item.setTypeOfAttendanceItem(itemLink.getTypeOfAttendanceItem().value);
-			} else {
-				item.setFrameCategory(0);
-				item.setTypeOfAttendanceItem(0);
+				break;
 			}
 		}
-
 		return attendanceItems;
 	}
 
@@ -442,15 +373,15 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				outsideOTBRDItem.getProductNumber().value, outsideOTBRDItem.getAttendanceItemIds());
 	}
 
-	private List<AttendanceItemName> getAttendanceItemName(List<Integer> attendanceItemIds, TypeOfItem type) {
+	private List<AttItemName> getAttendanceItemName(List<Integer> attendanceItemIds, TypeOfItem type) {
 		String companyId = AppContexts.user().companyId();
-		List<AttendanceItemName> attendanceItemList = new ArrayList<>();
+		List<AttItemName> attendanceItemList = new ArrayList<>();
 
 		switch (type) {
 		case Daily:
 			attendanceItemList = this.dailyAttendanceItemAdapter.getDailyAttendanceItem(companyId, attendanceItemIds)
 					.stream().map(item -> {
-						AttendanceItemName dto = new AttendanceItemName();
+						AttItemName dto = new AttItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
@@ -462,7 +393,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		case Monthly:
 			attendanceItemList = this.monthlyAttendanceItemRepository
 					.findByAttendanceItemId(companyId, attendanceItemIds).stream().map(item -> {
-						AttendanceItemName dto = new AttendanceItemName();
+						AttItemName dto = new AttItemName();
 						dto.setAttendanceItemId(item.getAttendanceItemId());
 						dto.setAttendanceItemName(this.formatName(item.getAttendanceName().v()));
 						dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
