@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
@@ -25,7 +25,7 @@ public class AttItemFinder {
 	@Inject
 	private CompanyMonthlyItemService companyMonthlyItemService;
 
-	public List<AttItemNameImport> getDailyAttItemByIdAndAtr(AttItemParam param) {
+	public List<AttItemName> getDailyAttItemByIdAndAtr(AttItemParam param) {
 		Optional<String> authorityId = Optional.empty();
 		List<Integer> attendanceItemIds = Collections.emptyList();
 		List<DailyAttendanceAtr> itemAtrs = Collections.emptyList();
@@ -41,7 +41,7 @@ public class AttItemFinder {
 				attendanceItemIds, itemAtrs);
 	}
 
-	public List<AttItemNameImport> getMonthlyAttItemByIdAndAtr(AttItemParam param) {
+	public List<AttItemName> getMonthlyAttItemByIdAndAtr(AttItemParam param) {
 		Optional<String> authorityId = Optional.empty();
 		List<Integer> attendanceItemIds = Collections.emptyList();
 		List<MonthlyAttendanceItemAtr> itemAtrs = Collections.emptyList();

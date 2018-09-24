@@ -240,8 +240,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			
 			return krcdtDaiBreakTimes.get();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return getDefault(employee, date);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -290,8 +289,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			
 			return krcdtTimeLeaveWorks;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw new RuntimeException(e);
 		}
 	}
 

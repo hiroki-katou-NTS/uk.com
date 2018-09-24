@@ -58,7 +58,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * テスト実装：月別実績関連データの永続化入出力
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutTest {
@@ -317,6 +317,7 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM),
 				AgreementTimeBreakdown.of(
 						new AttendanceTimeMonth(500 + randomVal),
+						new AttendanceTimeMonth(0),
 						new AttendanceTimeMonth(0),
 						new AttendanceTimeMonth(0),
 						new AttendanceTimeMonth(0),

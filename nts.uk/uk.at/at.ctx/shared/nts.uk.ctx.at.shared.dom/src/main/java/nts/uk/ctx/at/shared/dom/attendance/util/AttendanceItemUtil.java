@@ -109,7 +109,11 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 
 	public static <T> T fromItemValues(T attendanceItems, Collection<ItemValue> itemValues, AttendanceItemType type) {
-
+		
+		if(CollectionUtil.isEmpty(itemValues)){
+			return attendanceItems;
+		}
+		
 		AttendanceItemRoot root = attendanceItems.getClass().getAnnotation(AttendanceItemRoot.class);
 
 		if (root == null) {
@@ -386,8 +390,10 @@ public class AttendanceItemUtil implements ItemConst {
 						callSetMethod(attendanceItems, valueAnno, itemValue);
 
 					} else {
+						if(field.getType().isPrimitive() && itemValue.value() == null){
+							return;
+						}
 						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
-
 					}
 				}
 				return;

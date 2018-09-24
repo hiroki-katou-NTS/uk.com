@@ -222,35 +222,43 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			TimeWithDayAttr startDate1 = timeZone.getStart();
 			TimeWithDayAttr endDate1 = timeZone.getEnd();
 			// 高須の応急処置
-			TimeWithDayAttr startDate2 = (timeLeavingWork.getAttendanceStamp() != null
+			TimeWithDayAttr startDate2 = null; 
+			TimeWithDayAttr endDate2 = null;
+			
+			if (timeLeavingWork.getAttendanceStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().isPresent()
 					&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null)
-							? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
-							: new TimeWithDayAttr(0);
-			TimeWithDayAttr endDate2 = (timeLeavingWork.getLeaveStamp() != null
+					&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
+				startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+			}
+			
+			if (timeLeavingWork.getLeaveStamp() != null
 					&& timeLeavingWork.getLeaveStamp().isPresent()
 					&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
 					&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null)
-							? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
-							: new TimeWithDayAttr(0);
+					&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+				endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+			}
+			
 			// TimeWithDayAttr startDate2 =
 			// timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
 			// TimeWithDayAttr endDate2 =
 			// timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
-			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endDate1, startDate1);
-			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(endDate2, startDate2);
-			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-					.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-			DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-					.checkStateAtr(duplicateStateAtr);
-			// 非重複
-			if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
-				isAddBreaktime = true;
-				break;
+			if (startDate2 != null && endDate2 != null) {
+				TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endDate1, startDate1);
+				TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(endDate2, startDate2);
+				DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+						.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+				DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+						.checkStateAtr(duplicateStateAtr);
+				// 非重複
+				if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
+					isAddBreaktime = true;
+					break;
+				}
 			}
+			
 		}
 		return isAddBreaktime;
 	}

@@ -117,10 +117,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid, GeneralDate startDate) {
 		//ドメインモデル「代休管理データ」
-		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySidDate(cid, sid, startDate);
-		
-		return lstDayOffConfirm.stream().filter(x -> x.getRemainDays().v() > 0 || x.getRemainTimes().v() > 0)
-				.collect(Collectors.toList());
+		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySid(cid, sid);
+		List<CompensatoryDayOffManaData> output = new ArrayList<>();
+		for (CompensatoryDayOffManaData x : lstDayOffConfirm) {
+			if((x.getRemainDays().v() <= 0 && x.getRemainTimes().v() <= 0)
+					|| (x.getDayOffDate().getDayoffDate().isPresent() && x.getDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+				continue;
+			}
+			output.add(x);
+		}
+		return output;
 	}
 
 	@Override
@@ -175,9 +181,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	public List<LeaveManagementData> lstConfirmBreakData(String sid, GeneralDate startDate) {
 		//ドメインモデル「休出管理データ」
 		String cid = AppContexts.user().companyId();
-		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySidDate(cid, sid, startDate);
-		return lstBreackConfirm.stream().filter(x -> x.getUnUsedDays().v() > 0 || x.getUnUsedTimes().v() > 0)
-				.collect(Collectors.toList());
+		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySid(cid, sid);
+		List<LeaveManagementData> lstOutput = new ArrayList<>();
+		for (LeaveManagementData x : lstBreackConfirm) {
+			if((x.getUnUsedDays().v() <= 0 && x.getUnUsedTimes().v() <= 0)
+					|| (x.getComDayOffDate().getDayoffDate().isPresent() && x.getComDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+				continue;
+			}
+			lstOutput.add(x);
+		}
+		return lstOutput;
 	}
 
 	@Override

@@ -44,7 +44,7 @@ module nts.uk.ui.koExtentions {
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
-            var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+            var enableRowNumbering = false;
             var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
             let beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;

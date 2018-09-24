@@ -27,8 +27,6 @@ module nts.uk.at.view.kal003.a.tab {
                     self.listExtraResultMonthly()[i].rowId(i + 1);
                 }
             });
-            
-            self.dataItems = ko.observableArray([]);
             //
             self.category = ko.observable(model.CATEGORY.MONTHLY);
             

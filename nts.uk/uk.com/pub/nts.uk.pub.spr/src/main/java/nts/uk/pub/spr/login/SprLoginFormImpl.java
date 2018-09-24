@@ -10,6 +10,10 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.sys.auth.pub.spr.UserSprExport;
@@ -18,6 +22,7 @@ import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
 import nts.uk.pub.spr.login.output.RoleTypeSpr;
 import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
+import nts.uk.shr.com.i18n.TextResource;
 /**
  * 
  * @author Doan Duy Hung
@@ -35,6 +40,12 @@ public class SprLoginFormImpl implements SprLoginFormService {
 	@Inject
 	private LoginParamCheck loginParamCheck;
 	
+	@Inject
+	private EmployeeInfoPub employeeInfoPub;
+	
+	@Inject
+	private SyEmployeePub syEmployeePub;
+	
 	@Override
 	public LoginUserContextSpr loginFromSpr(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
 			String endTime, String date, String selectType, String appID, String reason, String stampFlg){
@@ -49,7 +60,17 @@ public class SprLoginFormImpl implements SprLoginFormService {
 		// （基幹・社員Export）アルゴリズム「「会社ID」「社員コード」より社員基本情報を取得」を実行する　RequestList No.18
 		Optional<EmpSprExport> opEmployeeSpr = employeeSprPub.getEmployeeID(companyID, loginEmployeeCD.trim());
 		if(!opEmployeeSpr.isPresent()){
-			throw new BusinessException("Msg_301");
+			throw new BusinessException("Msg_301", "Com_User");
+		}
+		// アルゴリズム「指定の個人IDから在籍社員を取得」を実行する
+		List<EmpInfoExport> empInfoExportLst = employeeInfoPub.getEmpInfoByPid(opEmployeeSpr.get().getPersonID());
+		if(CollectionUtil.isEmpty(empInfoExportLst)){
+			throw new BusinessException("Msg_301", "Com_User");
+		}
+		// アルゴリズム「社員が削除されたかを取得」を実行する
+		boolean isEmpDelete = syEmployeePub.isEmployeeDelete(opEmployeeSpr.get().getEmployeeID());
+		if(isEmpDelete){
+			throw new BusinessException("Msg_301", "Com_User");
 		}
 		return this.generateSession(loginEmployeeCD.trim(), opEmployeeSpr.get().getEmployeeID(), opEmployeeSpr.get().getPersonID(), employeeID);
 	}

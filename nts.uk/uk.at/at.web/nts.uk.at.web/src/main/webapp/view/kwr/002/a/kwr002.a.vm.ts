@@ -337,7 +337,7 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
-                    if (res.message !== "") {
+                    if (res.message !== "" && res.businessException) {
                         nts.uk.ui.dialog.caution(res).then(() => {
                             nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
                         });
@@ -366,7 +366,7 @@ module nts.uk.com.view.kwr002.a {
                     nts.uk.ui.block.clear();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
-                    if (res.message !== "") {
+                    if (res.message !== "" && res.businessException) {
                         nts.uk.ui.dialog.caution(res).then(() => {
                             nts.uk.ui.dialog.error({ messageId: 'Msg_37' });
                         });

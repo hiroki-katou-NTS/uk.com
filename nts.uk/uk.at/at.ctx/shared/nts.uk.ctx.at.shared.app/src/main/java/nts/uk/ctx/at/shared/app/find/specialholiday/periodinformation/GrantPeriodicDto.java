@@ -28,7 +28,7 @@ public class GrantPeriodicDto {
 			return null;
 		}
 		
-		AvailabilityPeriodDto availabilityPeriodDto = new AvailabilityPeriodDto(grantPeriodic.getAvailabilityPeriod().start(), grantPeriodic.getAvailabilityPeriod().end());
+		AvailabilityPeriodDto availabilityPeriodDto = new AvailabilityPeriodDto(grantPeriodic.getAvailabilityPeriod().getStartDateValue(), grantPeriodic.getAvailabilityPeriod().getEndDateValue());
 		
 		SpecialVacationDeadlineDto expirationDate = SpecialVacationDeadlineDto.fromDomain(grantPeriodic.getExpirationDate() != null ? grantPeriodic.getExpirationDate() : null);
 		

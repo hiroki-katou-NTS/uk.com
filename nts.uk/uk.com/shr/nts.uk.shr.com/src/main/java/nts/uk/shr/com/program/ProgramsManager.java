@@ -1794,6 +1794,8 @@ public class ProgramsManager {
 			"/view/kal/003/b/index.xhtml");
 	public static final Program KAL003C = new Program(WebAppId.AT, ProgramIdConsts.KAL003C, "KAL003_3",
 			"/view/kal/003/c/index.xhtml");
+	public static final Program KAL003C2 = new Program(WebAppId.AT, ProgramIdConsts.KAL003C2, "KAL003_3",
+			"/view/kal/003/c1/index.xhtml");
 	public static final Program KAL003D = new Program(WebAppId.AT, ProgramIdConsts.KAL003D, "KAL003_4",
 			"/view/kal/003/d/index.xhtml");
 	/** KAL004 */

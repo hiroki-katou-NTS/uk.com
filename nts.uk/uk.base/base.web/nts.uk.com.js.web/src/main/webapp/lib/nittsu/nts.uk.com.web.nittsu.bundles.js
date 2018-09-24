@@ -15592,6 +15592,12 @@ var nts;
                                             //reload data
                                             data = $element.data(DATA);
                                         }
+                                        // not match any filter value
+                                        if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
+                                            $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
+                                            //reload data
+                                            data = $element.data(DATA);
+                                        }
                                         // set value on select
                                         accessor.value(data[VALUE]);
                                         // validate if required
@@ -15626,6 +15632,7 @@ var nts;
                                     })
                                         .show()
                                         .find('input')
+                                        .prop('readonly', !data[EDITABLE])
                                         .css({
                                         'width': '0px',
                                         'height': !!data[EDITABLE] ? '30px' : '0px',
@@ -19560,7 +19567,7 @@ var nts;
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
-                        var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+                        var enableRowNumbering = false;
                         var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
                         var beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;

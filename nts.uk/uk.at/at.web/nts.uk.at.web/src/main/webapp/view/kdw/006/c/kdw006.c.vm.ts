@@ -68,15 +68,19 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
             self.appType = ko.observable('');
             self.appTypeDto.subscribe((value) => {
+                let temp = nts.uk.ui.windows.getShared("kdw006HResult");
                 let result = "",valueSort = _.sortBy(value.appTypes()),listAppType = __viewContext.enums.ApplicationType;
+                if(temp){
+                    valueSort = value.appTypes();
+                }
                 _.forEach(valueSort, function(item) {
                     let itemModel = _.find(listAppType, function(obj) {
                         return obj.value == item;
                     });
-                    result += itemModel.name;
-                    result += ",";
+                    result += itemModel.name + ",";
                 })
-                self.appType(result);
+                let size = result.length - 1;
+                self.appType(result.slice(0, size));
             });
         }
 

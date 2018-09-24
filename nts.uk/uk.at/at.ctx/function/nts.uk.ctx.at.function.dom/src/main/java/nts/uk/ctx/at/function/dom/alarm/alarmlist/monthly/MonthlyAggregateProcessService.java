@@ -819,17 +819,17 @@ public class MonthlyAggregateProcessService {
 									}else {
 										endValueMoney = String.valueOf(endValue.intValue());
 										if(compare>5 && compare<=7) {
-											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
+											alarmDescription = TextResource.localize("KAL010_277",startValueMoney,
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
 													compareOperatorText.getCompareright()+
-													endValueMoney+".00"
+													endValueMoney
 													);	
 										}else {
 											alarmDescription = TextResource.localize("KAL010_277",
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
-													startValueMoney + ".00," + endValueMoney+".00",
+													startValueMoney + "," + endValueMoney,
 													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);

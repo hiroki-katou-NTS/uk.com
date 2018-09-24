@@ -109,8 +109,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Override
 	public void addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
 		storedProcedureProcess.dailyProcessing(daily, workTypes).stream().forEach(d -> {
-			//勤務情報の更新
-			workInformationRepository.updateByKey(d.getWorkInformation());
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				attendanceTimeRepository.update(at);
@@ -123,6 +121,9 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					anyItemValueOfDailyRepo.add(ai);
 				}
 			});
+			
+			//勤務情報の更新
+			workInformationRepository.updateByKeyFlush(d.getWorkInformation());
 		});
 	}
 	

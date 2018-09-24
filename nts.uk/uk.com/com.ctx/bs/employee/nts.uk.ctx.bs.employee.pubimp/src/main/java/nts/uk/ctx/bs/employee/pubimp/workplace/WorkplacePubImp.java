@@ -809,17 +809,17 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getWorkplaceMapCodeBaseDateName(java.lang.String, java.util.List, java.util.List)
 	 */
 	@Override
-	public Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+	public Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkIds, List<GeneralDate> baseDates) {
 		// Query infos
 		Map<GeneralDate, List<WorkplaceInfo>> mapWorkplaceInfos = this.workplaceInfoRepo
 				.findByWkpIds(companyId, wpkIds, baseDates);
 
-		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
+		Map<Pair<String, GeneralDate>, Pair<String,String>> mapResult = new HashMap<>();
 		mapWorkplaceInfos.entrySet().forEach(item -> {
 			item.getValue().forEach(workplaceInfo -> {
 				mapResult.put(Pair.of(workplaceInfo.getWorkplaceId(), item.getKey()),
-						workplaceInfo.getWorkplaceName().v());
+						Pair.of(workplaceInfo.getWorkplaceCode().v(),workplaceInfo.getWorkplaceName().v()));
 			});
 		});
 
