@@ -17,14 +17,13 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.pereg.app.command.common.FacadeUtils;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.LayoutCode;
 import nts.uk.ctx.pereg.dom.person.layout.LayoutName;
@@ -53,6 +52,9 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 
 	@Inject
 	PerInfoCtgFinder itemCtgFinder;
+	
+	@Inject 
+	private FacadeUtils facadeUtils;
 	
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
@@ -157,6 +159,7 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 
 		List<String> result = new ArrayList<>();
 
+		// Get all item requried
 		Map<String, List<PersonInfoItemDefinition>> itemByCtgId = perInfoItemDefRepositoty
 				.getByListCategoryIdWithoutAbolition(command.getItemsClassification().stream()
 						.map(ClassificationCommand::getPersonInfoCategoryID).distinct().collect(Collectors.toList()),
@@ -165,10 +168,14 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 		if (itemByCtgId.size() == 0) {
 			return null;
 		}
+		// Map to list item id 's on screen to easy use
 		List<String> listItemId = command.getItemsClassification().stream().map(ClassificationCommand::getListItemClsDf)
 				.flatMap(Collection::stream).collect(Collectors.toList()).stream()
 				.map(ClassificationItemDfCommand::getPersonInfoItemDefinitionID).collect(Collectors.toList());
-
+		
+		List<String> listDefault = facadeUtils
+				.getListDefaultItem(itemByCtgId.entrySet().stream().map(i -> i.getKey()).collect(Collectors.toList()));
+		
 		itemByCtgId.forEach((k, value) -> {
 			value.stream().forEach(item -> {
 				if (item.getItemTypeState().getItemType() != ItemType.SINGLE_ITEM
@@ -177,10 +184,8 @@ public class NewLayoutCommandHandler extends CommandHandlerWithResult<NewLayoutC
 						|| EMPLOYEE_CODE.equals(item.getItemCode().v())) {
 					return;
 				}
-				SingleItem type = (SingleItem) item.getItemTypeState();
-
-				if (listItemId.contains(item.getPerInfoItemDefId()) || (!item.getItemParentCode().v().isEmpty()
-						&& type.getDataTypeState().getDataTypeValue() == DataTypeValue.DATE)) {
+				
+				if (listItemId.contains(item.getPerInfoItemDefId()) || listDefault.contains(item.getItemCode().v())) {
 					return;
 				}
 				result.add(item.getItemName().v());

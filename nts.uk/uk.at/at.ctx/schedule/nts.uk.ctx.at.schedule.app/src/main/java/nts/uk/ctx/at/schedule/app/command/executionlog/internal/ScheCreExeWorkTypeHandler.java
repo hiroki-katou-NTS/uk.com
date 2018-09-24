@@ -15,12 +15,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.CreateScheduleMasterCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
@@ -80,14 +82,13 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param listWorkingConItem
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
-			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
-			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto,
-			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
+	public void createWorkSchedule(
+			ScheduleCreatorExecutionCommand command,
+			GeneralDate dateInPeriod,
+			WorkCondItemDto workingConditionItem,
+			CreateScheduleMasterCache masterCache,
+			List<BasicSchedule> listBasicSchedule,
+			DateRegistedEmpSche dateRegistedEmpSche) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		// command.setIsDeleteBeforInsert(true); FIX BUG #87113
@@ -110,22 +111,19 @@ public class ScheCreExeWorkTypeHandler {
 		}
 
 		// 勤務種類を取得する(lấy dữ liệu worktype)
-		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter, empGeneralInfo, mapEmploymentStatus,
-				listWorkingConItem, listWorkType);
+		Optional<WorktypeDto> optWorktype = this.getWorktype(commandWorktypeGetter, masterCache);
 
 		if (optWorktype.isPresent()) {
 			WorkTimeGetterCommand commandWorkTimeGetter = commandWorktypeGetter.toWorkTime();
 			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());
 			// 就業時間帯を取得する(lấy dữ liệu worktime)
-			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter,
-					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkTimeSetting);
+			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter, masterCache);
 
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
-						optionalWorkTime.isPresent() ? optionalWorkTime.get() : null, empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
-						mapDiffTimeWorkSetting, listShortWorkTimeDto, listBasicSchedule, dateRegistedEmpSche);
+						optionalWorkTime.isPresent() ? optionalWorkTime.get() : null, masterCache,
+						listBasicSchedule, dateRegistedEmpSche);
 		}
 	}
 
@@ -168,7 +166,9 @@ public class ScheCreExeWorkTypeHandler {
 			}
 
 			// return work type code by holiday time
-			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()
+					? optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get().v()
+					: null;
 		}
 
 	}
@@ -209,7 +209,9 @@ public class ScheCreExeWorkTypeHandler {
 			if (!optionalWorkingConditionItem.isPresent()) {
 				return command.getWorkTypeCode();
 			}
-			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()
+					? optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get().v()
+					: null;
 		} else {
 
 			int closeAtr = 0;
@@ -355,16 +357,14 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param listWorkType
 	 * @return
 	 */
-	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
-			List<WorkType> listWorkType) {
+	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command, CreateScheduleMasterCache masterCache) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
 
 		// get basic work setting.
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(commandBasicGetter, empGeneralInfo);
+				.getBasicWorkSetting(commandBasicGetter, masterCache.getEmpGeneralInfo());
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			// setup command employment status getter
@@ -379,8 +379,7 @@ public class ScheCreExeWorkTypeHandler {
 
 			// set work type code to command
 			commandWorkTypeEmploymentStatus.setWorkTypeCode(basicWorkSetting.getWorktypeCode().v());
-			return this.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus, mapEmploymentStatus,
-					listWorkingConItem, listWorkType);
+			return this.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus, masterCache);
 		}
 
 		return Optional.empty();
@@ -396,16 +395,17 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param listWorkingConItem
 	 * @return
 	 */
-	public Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
-			List<WorkType> listWorkType) {
+	public Optional<WorktypeDto> getWorkTypeByEmploymentStatus(
+			WorkTypeByEmpStatusGetterCommand command,
+			CreateScheduleMasterCache masterCache) {
+		
 		String workTypeCd = null;
 		// check 就業時間帯の参照先 == 個人曜日別
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			workTypeCd = this.convertWorktypeCodeByDayOfWeekPersonal(command, mapEmploymentStatus, listWorkingConItem);
+			workTypeCd = this.convertWorktypeCodeByDayOfWeekPersonal(command, masterCache.getMapEmploymentStatus(), masterCache.getListWorkingConItem());
 		} else {
 			// マスタ参照区分に従う、個人勤務日別
-			workTypeCd = this.convertWorktypeCodeByWorkingStatus(command, mapEmploymentStatus, listWorkingConItem);
+			workTypeCd = this.convertWorktypeCodeByWorkingStatus(command, masterCache.getMapEmploymentStatus(), masterCache.getListWorkingConItem());
 		}
 
 		// get work type by code
@@ -413,7 +413,7 @@ public class ScheCreExeWorkTypeHandler {
 		// EA No2021
 		// 勤務種類一覧から変換した勤務種類コードと一致する情報を取得する
 		final String workTypeCode = workTypeCd;
-		Optional<WorkType> optionalWorktype = listWorkType.stream()
+		Optional<WorkType> optionalWorktype = masterCache.getListWorkType().stream()
 				.filter(x -> (x.getCompanyId().equals(command.getBaseGetter().getCompanyId())
 						&& x.getWorkTypeCode().toString().equals(workTypeCode)))
 				.findFirst();

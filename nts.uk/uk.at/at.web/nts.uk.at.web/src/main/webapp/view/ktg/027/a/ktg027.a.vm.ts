@@ -50,9 +50,10 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-
+            service.getListClosure().done((closureResultModel) => {
+                self.closureResultModel(closureResultModel);
+            });
             service.getOvertimeHours(self.targetMonth()).done((data) => {
-                self.closureResultModel(data.listclosureID);
                 self.displayEr(false);
                 self.selectedClosureID(data.closureID);
                 var inforOvertime = [];

@@ -121,6 +121,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String FIND_BY_CID_PID_AND_DELSTATUS = "SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND "
 			+ "e.bsymtEmployeeDataMngInfoPk.sId = :sid AND e.delStatus = :delStatus ";
 	
+	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
+			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = :0 ");
+	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -487,6 +490,17 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("baseDate", baseDate)
 				.setParameter("lstCompID", lstCompID == null ? "" : lstCompID)
 				.getSingle().map(m -> m.intValue()).orElse(0);
+	}
+
+	/**
+	 * request list 515
+	 * @return
+	 * @author yennth
+	 */
+	@Override
+	public List<EmployeeDataMngInfo> findBySidNotDel(List<String> sId) {
+		return this.queryProxy().query("SELECT_EMP_NOT_DEL", BsymtEmployeeDataMngInfo.class)
+								.setParameter("sId", sId).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
 	// laitv code end

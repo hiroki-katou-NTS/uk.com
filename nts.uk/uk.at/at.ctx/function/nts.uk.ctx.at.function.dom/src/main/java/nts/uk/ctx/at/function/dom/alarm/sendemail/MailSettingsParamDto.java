@@ -10,9 +10,13 @@ import lombok.Data;
 
 @Data
 public class MailSettingsParamDto {
+	/** Subject email employee */
 	private String subject;
+	/** Content email employee */
 	private String text;
+	/** Subject email admin */
 	private String subjectAdmin;
+	/** Content email admin */
 	private String textAdmin;
 
 }

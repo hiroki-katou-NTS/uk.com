@@ -25,7 +25,8 @@ public class AffCompanyHistSharedImport {
 		if (this.lstAffComHistItem == null || this.lstAffComHistItem.isEmpty()){
 			return Optional.empty();
 		}
-		return Optional.of(lstAffComHistItem.get(0).getDatePeriod().start());
+		// Get last history
+		return Optional.of(lstAffComHistItem.get(lstAffComHistItem.size()-1).getDatePeriod().start());
 		
 	}
 }

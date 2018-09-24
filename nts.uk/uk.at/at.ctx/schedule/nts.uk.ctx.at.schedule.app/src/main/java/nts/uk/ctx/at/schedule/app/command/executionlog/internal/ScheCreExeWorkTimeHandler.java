@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.CreateScheduleMasterCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
@@ -122,20 +123,19 @@ public class ScheCreExeWorkTimeHandler {
 	 * @param listWorkingConItem
 	 * @return
 	 */
-	public Optional<String> getWorktime(WorkTimeGetterCommand command, EmployeeGeneralInfoImported empGeneralInfo,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
-			List<WorkTimeSetting> listWorkTimeSetting) {
+	public Optional<String> getWorktime(
+			WorkTimeGetterCommand command,
+			CreateScheduleMasterCache masterCache) {
 
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
-				.getBasicWorkSetting(command.toBasicWorkSetting(), empGeneralInfo);
+				.getBasicWorkSetting(command.toBasicWorkSetting(), masterCache.getEmpGeneralInfo());
 
 		if (optionalBasicWorkSetting.isPresent()) {
 			WorkTimeZoneGetterCommand commandGetter = command.toWorkTimeZone();
 			commandGetter.setWorkTypeCode(optionalBasicWorkSetting.get().getWorktypeCode().v());
 			commandGetter.setWorkingCode(optionalBasicWorkSetting.get().getWorkingCode() == null ? null
 					: optionalBasicWorkSetting.get().getWorkingCode().v());
-			return this.getWorkingTimeZoneCode(commandGetter, mapEmploymentStatus, listWorkingConItem,
-					listWorkTimeSetting);
+			return this.getWorkingTimeZoneCode(commandGetter, masterCache);
 		}
 		return Optional.empty();
 	}
@@ -381,7 +381,8 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	private String getWorkTypeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
-		return optionalSingleDaySchedule.get().getWorkTypeCode().v();
+		return optionalSingleDaySchedule.get().getWorkTypeCode().isPresent()
+				? optionalSingleDaySchedule.get().getWorkTypeCode().get().v() : null;
 	}
 
 	/**
@@ -524,7 +525,7 @@ public class ScheCreExeWorkTimeHandler {
 			} else {
 
 				// check default code by working code
-				if (command.getWorkingCode() == null) {
+				if (StringUtil.isNullOrEmpty(command.getWorkingCode(), true)) {
 					return null;
 				}
 
@@ -727,24 +728,23 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	public Optional<String> getWorkingTimeZoneCode(WorkTimeZoneGetterCommand command,
-			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
-			List<WorkTimeSetting> listWorkTimeSetting) {
+			CreateScheduleMasterCache masterCache) {
 
 		String worktimeCode = null;
 
 		// check reference working hours
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE.value) {
-			worktimeCode = this.convertWorkingHoursEmploymentStatus(command.toWorkTimeConvert(), mapEmploymentStatus);
+			worktimeCode = this.convertWorkingHoursEmploymentStatus(command.toWorkTimeConvert(), masterCache.getMapEmploymentStatus());
 		}
 
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_WORK_DAILY.value) {
-			worktimeCode = this.convertWorkingHoursPersonalWork(command.toWorkTimeConvert(), mapEmploymentStatus,
-					listWorkingConItem);
+			worktimeCode = this.convertWorkingHoursPersonalWork(command.toWorkTimeConvert(), masterCache.getMapEmploymentStatus(),
+					masterCache.getListWorkingConItem());
 		}
 
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			worktimeCode = this.convertWorkingHoursPersonalDayofWeek(command.toWorkTimeConvert(), mapEmploymentStatus,
-					listWorkingConItem);
+			worktimeCode = this.convertWorkingHoursPersonalDayofWeek(command.toWorkTimeConvert(), masterCache.getMapEmploymentStatus(),
+					masterCache.getListWorkingConItem());
 
 		}
 
@@ -756,7 +756,7 @@ public class ScheCreExeWorkTimeHandler {
 		if (StringUtil.isNullOrEmpty(worktimeCode, true)) {
 			return Optional.empty();
 		}
-		Optional<WorkTimeSetting> workTimeSetting = listWorkTimeSetting.stream()
+		Optional<WorkTimeSetting> workTimeSetting = masterCache.getListWorkTimeSetting().stream()
 				.filter(x -> (x.getCompanyId().equals(command.getBaseGetter().getCompanyId())
 						&& x.getWorktimeCode().toString().equals(workTimeCode)))
 				.findFirst();

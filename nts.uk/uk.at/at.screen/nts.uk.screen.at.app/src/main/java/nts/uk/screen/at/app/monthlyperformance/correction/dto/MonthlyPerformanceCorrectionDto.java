@@ -168,4 +168,13 @@ public class MonthlyPerformanceCorrectionDto {
 			this.lstCellState.add(new MPCellStateDto(rowId, columnKey, Arrays.asList(state)));
 		}
 	}
+	
+	public void setListStateCell(String columnKey, String rowId, List<String> listState){
+		Optional<MPCellStateDto> mp = findExistCellState(rowId, columnKey);
+		if(mp.isPresent()){
+			listState.stream().forEach(state -> mp.get().addState(state));
+		}else{
+			this.lstCellState.add(new MPCellStateDto(rowId, columnKey, listState));
+		}
+	}
 }

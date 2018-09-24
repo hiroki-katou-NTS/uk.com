@@ -19,6 +19,9 @@ public interface RoleSetGrantedPersonRepository {
 	
 	public Optional<RoleSetGrantedPerson> getByEmployeeId(String employeeId);
 	
+	// update EAP 2709
+	public Optional<RoleSetGrantedPerson> getByEmployeeDate(String employeeId, GeneralDate baseDate);
+	
 	public void insert(RoleSetGrantedPerson domain);
 	
 	public void update(RoleSetGrantedPerson domain);

@@ -26,8 +26,8 @@ module nts.uk.at.view.kmk008.k {
                 return nts.uk.request.ajax("at", this.paths.addAgreementMonthSetting, AddUpdateMonthSettingModel);
             };
 
-            updateAgreementMonthSetting(AddUpdateMonthSettingModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateAgreementMonthSetting, AddUpdateMonthSettingModel);
+            updateAgreementMonthSetting(specialHoliday: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.updateAgreementMonthSetting, specialHoliday);
             };
 
             removeAgreementMonthSetting(DeleteMonthSettingModel: any): JQueryPromise<any> {

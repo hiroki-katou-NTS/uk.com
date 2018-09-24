@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ac.widgetKtg;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +188,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		}
 		
 		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(), 
-																		c.getGrantDays().v(), 
+																		c.getGrantDays().v(),
 																		c.getTimes().v(), 
 																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0, 
 																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0, 
@@ -257,8 +258,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
-			GeneralDate grantDay = GeneralDate.today();
-			grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			GeneralDate grantDay = rsvDate.getReserveLeaveInfo().getYmd();
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
@@ -269,7 +269,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			}
 			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
 		}else {
-			return new KTGRsvLeaveInfoImport(0.0, 0.0, GeneralDate.today());
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
 		}
 	}
 

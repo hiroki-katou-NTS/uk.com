@@ -107,7 +107,9 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 				return monthlyRecord.getItemValues().stream().map(iv -> getValueNew(iv))
 						.collect(Collectors.toList());
 			});
-			results.put(employeeID+yearMonth.toString(),check==true ? 1:0);
+			if (check == true) {
+				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
+			}
 		}
 		return results;
 	}

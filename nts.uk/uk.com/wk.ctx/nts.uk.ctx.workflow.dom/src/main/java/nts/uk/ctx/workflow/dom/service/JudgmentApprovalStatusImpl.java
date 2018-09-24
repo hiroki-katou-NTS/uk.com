@@ -256,6 +256,12 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		if(currentPhase.getPhaseOrder()==1){
 			return true;
 		}
+		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.findFirst().get();
+		if(lowestPhase.getPhaseOrder()==currentPhase.getPhaseOrder()){
+			return true;
+		}
 		
 		// ループ中のフェーズの番号-１から、降順にループする
 		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()

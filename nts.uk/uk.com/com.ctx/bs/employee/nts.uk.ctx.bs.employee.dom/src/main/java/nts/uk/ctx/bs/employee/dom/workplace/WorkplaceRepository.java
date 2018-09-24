@@ -102,4 +102,13 @@ public interface WorkplaceRepository {
      * @return the list
      */
     List<Workplace> findWorkplaces(List<String> workplaceIds, DatePeriod datePeriod);
+    
+	/**
+	 * Find workplaces by date.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<Workplace> findWorkplacesByDate(String companyId, GeneralDate baseDate);
 }

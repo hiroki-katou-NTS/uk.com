@@ -92,7 +92,7 @@ public enum ValueType {
 	 * @return　Doubleである
 	 */
 	public boolean isDoubleCountable() {
-		return COUNT_WITH_DECIMAL.equals(this) || AMOUNT.equals(this);
+		return COUNT_WITH_DECIMAL.equals(this) || AMOUNT.equals(this) || DAYS.equals(this);
 	}
 	
 	public boolean isTime() {

@@ -688,6 +688,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //登録前エラーチェック
             service.checkBeforeRegister(overtime).done((data) => {                
                 if (data.errorCode == 0) {
+                    overtime.appOvertimeDetail = data.appOvertimeDetail;
                     if (data.confirm) {
                         //メッセージNO：829
                         dialog.confirm({ messageId: "Msg_829" }).ifYes(() => {

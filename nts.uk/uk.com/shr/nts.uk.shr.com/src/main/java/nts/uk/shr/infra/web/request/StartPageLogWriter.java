@@ -22,12 +22,12 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogStorageRepository;
-import nts.uk.shr.com.user.UserInfoAdapter;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
@@ -69,8 +69,11 @@ public class StartPageLogWriter implements Filter {
 						getValue(context, c -> c.userId()), 
 						getValue(context, c -> c.employeeId()),
 						getValue(context, c -> {
-							UserInfoAdapter userAdapter = CDI.current().select(UserInfoAdapter.class).get();
-							return userAdapter.getUserName(c.userId());
+							UserInfoAdaptorForLog userAdapter = CDI.current().select(UserInfoAdaptorForLog.class).get();
+							if(context.isEmployee()){
+								return userAdapter.findByEmployeeId(c.employeeId()).getUserName();
+							}
+							return userAdapter.findByUserId(c.userId()).getUserName();
 						})), 
 				new LoginInformation(
 						getValue(requseted, c -> c.getRequestIpAddress()),

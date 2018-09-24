@@ -196,6 +196,7 @@ public class ManageReGetClass {
 																																			  Collections.emptyList(), 
 																																			  Optional.empty(), 
 																																			  Optional.empty())), 
+																										Collections.emptyList(),
 																										Optional.empty())),
 																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
 																 null, 
@@ -251,6 +252,7 @@ public class ManageReGetClass {
 																																			  Collections.emptyList(), 
 																																			  Optional.empty(), 
 																																			  Optional.empty())), 
+																										Collections.emptyList(),
 																										Optional.empty())),
 																 Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())), 
 																 null, 
@@ -331,9 +333,9 @@ public class ManageReGetClass {
 	/**
 	 * 会社共通で使いまわしをする設定をこのクラスにも設定する
 	 */
-	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany) {
+	public void setCompanyCommonSetting(ManagePerCompanySet managePerCompany, ManagePerPersonDailySet managePerPerson) {
 		this.holidayAddtionSet = managePerCompany.getHolidayAdditionPerCompany();
-		this.dailyUnit = managePerCompany.dailyUnit;
+		this.dailyUnit = managePerPerson.getDailyUnit();
 	}
 
 }

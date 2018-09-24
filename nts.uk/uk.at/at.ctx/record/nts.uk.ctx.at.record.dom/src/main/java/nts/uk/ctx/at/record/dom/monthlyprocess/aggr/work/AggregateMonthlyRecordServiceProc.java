@@ -41,6 +41,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -742,12 +743,12 @@ public class AggregateMonthlyRecordServiceProc {
 			int flexMinutes = flexTime.getFlexTime().getFlexTime().getTime().v();
 			if (flexMinutes < 0){
 				this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-						ErrorType.FLEX,
+						ErrorType.FLEX_SUPP,
 						this.yearMonth,
 						this.employeeId,
 						this.closureId,
 						this.closureDate,
-						Flex.FLEX_EXCESS_CARRYOVER_TIME,	// 仮
+						null,
 						null,
 						null));
 			}
@@ -796,7 +797,11 @@ public class AggregateMonthlyRecordServiceProc {
 		// いずれかの手修正値を戻した時、戻した後の勤怠時間を返す
 		if (this.isRetouch){
 			val convertedOpt = convert.toAttendanceTime();
-			if (convertedOpt.isPresent()) attendanceTime = convertedOpt.get();
+			if (convertedOpt.isPresent()) {
+				val retouchedTime = convertedOpt.get();
+				retouchedTime.getMonthlyCalculation().copySettings(attendanceTime.getMonthlyCalculation());
+				return retouchedTime;
+			}
 		}
 		return attendanceTime;
 	}
@@ -840,7 +845,9 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 計算後データを確認
 		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-		val convert = monthlyConverter.withAnyItem(this.aggregateResult.getAnyItemList());
+		MonthlyRecordToAttendanceItemConverter convert =
+				monthlyConverter.withAttendanceTime(this.aggregateResult.getAttendanceTime().get());
+		convert = convert.withAnyItem(this.aggregateResult.getAnyItemList());
 		
 		// 月別実績の編集状態を取得
 		for (val editState : this.editStates){
@@ -1254,21 +1261,29 @@ public class AggregateMonthlyRecordServiceProc {
 	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod){
 		
 		// 月初の所属情報を取得
+		boolean isExistStartWorkInfo = false;
+		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())){
+			isExistStartWorkInfo = true;
+		}
 		val firstInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstInfoOfDailyOpt.isPresent()){
-			val errorInfo = new MonthlyAggregationErrorInfo(
-					"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			if (!isExistStartWorkInfo){
+				val errorInfo = new MonthlyAggregationErrorInfo(
+						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
+				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
 			return null;
 		}
 		val firstInfoOfDaily = firstInfoOfDailyOpt.get();
 		val firstWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstWorkTypeOfDailyOpt.isPresent()){
-			val errorInfo = new MonthlyAggregationErrorInfo(
-					"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
-			this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			if (!isExistStartWorkInfo){
+				val errorInfo = new MonthlyAggregationErrorInfo(
+						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
+				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
 			return null;
 		}
 		val firstWorkTypeOfDaily = firstWorkTypeOfDailyOpt.get();

@@ -56,8 +56,8 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateData(param) {
                 if (param) {
-                    let startTime = param.startTime || null,
-                        endTime = param.endTime || null;
+                    let startTime = param.startTime,
+                        endTime = param.endTime;
                     this.startTime(startTime);
                     this.endTime(endTime);
                     this.startTimeDisplay(startTime);
@@ -215,7 +215,7 @@ module nts.uk.at.view.kaf011.shr {
                             wkTypeCD: self.wkTypeCD(),
                             wkTimeCD: newWkTimeCD
                         };
-                    if (newWkTimeCD && vm.screenModeNew()) {
+                    if (newWkTimeCD && !vm.firstLoad()) {
                         block.invisible();
                         service.getSelectedWorkingHours(changeWkTypeParam).done((data: IChangeWorkType) => {
                             self.setDataFromWkDto(data);
@@ -230,7 +230,7 @@ module nts.uk.at.view.kaf011.shr {
                 });
                 self.wkTypeCD.subscribe((newWkType) => {
                     let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    if (!_.isEmpty(newWkType)) {
+                    if (!_.isEmpty(newWkType) && !vm.firstLoad()) {
                         let changeWkTypeParam = {
                             wkTypeCD: newWkType,
                             wkTimeCD: self.wkTimeCD()
@@ -277,7 +277,7 @@ module nts.uk.at.view.kaf011.shr {
                     vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
 
                 if (data) {
-                    if (vm.screenModeNew()) {
+                    if (!vm.firstLoad()) {
                         if (data.timezoneUseDtos) {
                             $("#recTime1Start").ntsError("clear");
                             $("#recTime1End").ntsError("clear");
@@ -453,7 +453,7 @@ module nts.uk.at.view.kaf011.shr {
                     let newAbsAppID = nts.uk.ui.windows.getShared('KAF_011_C_PARAMS');
                     if (newAbsAppID) {
                         if (newAbsAppID != 'Msg_198') {
-                            vm.startPage(newAbsAppID);
+                            vm.startPage(newAbsAppID, true);
                         } else {
                             nts.uk.request.jump('../../../cmm/045/a/index.xhtml');
                         }
@@ -482,7 +482,11 @@ module nts.uk.at.view.kaf011.shr {
                     //view all code of selected item 
                     var childData: IWorkTime = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
+                        let oldCD = self.wkTimeCD();
                         self.wkTimeCD(childData.selectedWorkTimeCode);
+                        if (oldCD == self.wkTimeCD()) {
+                            self.wkTimeCD.valueHasMutated();
+                        }
                         if (childData.first) {
                             $("#recTime1Start").ntsError("clear");
                             $("#recTime1End").ntsError("clear");

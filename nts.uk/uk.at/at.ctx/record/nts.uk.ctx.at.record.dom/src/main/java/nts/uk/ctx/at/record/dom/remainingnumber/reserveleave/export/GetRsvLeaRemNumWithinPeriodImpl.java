@@ -524,7 +524,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			
 			// 集計期間をチェック
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd();
+			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 			DatePeriod workPeriod = new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd);
 			
 			// 上限日数をチェック

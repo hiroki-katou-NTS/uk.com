@@ -55,8 +55,7 @@ public class GetYearHolidayInfo {
 		Optional<LimitedTimeHdTime> contractTime = Optional.empty();
 
 		// Set entry date
-		if (annLea.getEntryDate() != null && annLea.getRetireDate() != null
-				&& baseDate.afterOrEquals(annLea.getEntryDate()) && baseDate.beforeOrEquals(annLea.getRetireDate())) {
+		if (annLea.getEntryDate() != null && baseDate.afterOrEquals(annLea.getEntryDate())) {
 			entryDate = annLea.getEntryDate();
 
 		} else {
@@ -65,12 +64,24 @@ public class GetYearHolidayInfo {
 					baseDate);
 
 			entryDate = affComHist.getEntryDate().orElse(null);
+			
+			// ドメインモデル「所属会社履歴（社員別）」を取得し直し、入社年月日を取得する
+			if (entryDate == null){
+				AffCompanyHistSharedImport defaultValue = empEmployeeAdapter.GetAffComHisBySid(AppContexts.user().companyId(),annLea.getSid());
+				entryDate = defaultValue.getEntryDate().orElse(null);
+			}
+						
+		}
+		
+		if (entryDate == null){
+			return result;
 		}
 		
 		// Set contract time
-		if (annLea.getPeriodCond() != null && annLea.getContractTime() != null
-				&& baseDate.afterOrEquals(annLea.getPeriodCond().start()) && baseDate.beforeOrEquals(annLea.getPeriodCond().end())){
-			contractTime =Optional.ofNullable(new LimitedTimeHdTime(annLea.getContractTime()));
+		if (annLea.getPeriodCond() != null && annLea.getContractTime() != null && annLea.getPeriodCond().start() != null
+				&& annLea.getPeriodCond().end() != null && baseDate.afterOrEquals(annLea.getPeriodCond().start())
+				&& baseDate.beforeOrEquals(annLea.getPeriodCond().end())) {
+			contractTime = Optional.ofNullable(new LimitedTimeHdTime(annLea.getContractTime()));
 		} else {
 			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
 			Optional<WorkingConditionItem> workCond = workingConditionItemRepository

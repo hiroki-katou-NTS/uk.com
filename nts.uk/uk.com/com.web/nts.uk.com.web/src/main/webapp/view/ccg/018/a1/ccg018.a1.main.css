@@ -103,7 +103,7 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 .table1 thead tr th:nth-child(5), .table1 tbody tr td:nth-child(5) {
-	width: 180px
+	width: 190px
 }
 
 .ui-igcombo-wrapper {

@@ -102,8 +102,8 @@ module cps001.f.vm {
 
                 var fileSize = ((fileInfo.originalSize) / 1024).toFixed(2);
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
-                self.filename(fileInfo.originalName + Math.random());
-
+                //self.filename(fileInfo.originalName + Math.random());
+                $("#file-upload").ntsFileUpload("clear");
                 // save file to domain EmployeeFileManagement
                 var dfd = $.Deferred();
                 service.savedata({

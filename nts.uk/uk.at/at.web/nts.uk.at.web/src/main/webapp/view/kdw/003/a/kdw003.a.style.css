@@ -2,17 +2,19 @@
 	width: 1200px;
 }
 
-#dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining,
-	#btnExtraction {
+#btnComfirmAttendance {
 	vertical-align: text-bottom;
 }
 
 #btnVacationRemaining {
 	margin-left: 50px;
+	top: -12px;
 }
 
 #dislayFormatLbl {
 	margin-left: 20px;
+	top: -12px;
+    position: relative;
 }
 
 #right-content {
@@ -21,7 +23,7 @@
 }
 
 #cbListDate {
-	margin-top: 10px;
+	/* margin-top: 10px; */
 }
 
 #cbListDate {
@@ -43,10 +45,10 @@
 	margin-left: 200px;
 }
 
-.grid-container {
+#gid {
 	margin: 15px 0 0 0px;
-    margin-top: -36px;
-   /*  float: left; */
+    margin-top: -6px;
+    height: 700px;
 }
 
 .setting-container {
@@ -92,16 +94,18 @@
 	position: absolute;
 	z-index: 2;
 	background-color: white;
-	margin-left: -50px;
-	margin-top: 34px;
+    margin-left: 816px;
+    margin-top: 45px;
 	padding: 15px;
 	visibility: hidden;
-	top: -9999px;
-	left: -9999px;
 }
 
 #vacationRemaining-content button {
 	width: 110px;
+}
+
+#vacationRemaining-content table td {
+	padding: 2px 2px
 }
 
 .nts-legendbutton-panel {
@@ -153,15 +157,23 @@
 	padding: 0 2px;
 	/* width: 400px; */
 }
+
 #numberHoliday {
 	/* margin-left: 5px;
 	height: 80px;
-	margin-top: 4px; */
-	float: right;
-	margin-left: 120px;
-	}
+	 */
+	float: left;
+	margin-left: 60px;
+	margin-top: -20px;
+}
+	
+#fixed-table tr td {
+	border: none !important;
+	border-right: 1px solid #CCC !important;
+}
+
 #emp-component{
-	margin-top: -33px;
+	margin-top: -25px;
 	margin-left: -10px;
 }
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
@@ -208,6 +220,7 @@
     z-index: 999;
     position: fixed;
     overflow-x: inherit;
+    margin-top: -16px;
 }
 
 #flex-table .ui-widget-header{
@@ -230,7 +243,7 @@
 #text-flex {
 	left: 400px;
 	position: relative;
-	top: -58px;
+	top: -112px;
 	width: 216px;}
 	
 .italic-text{
@@ -248,10 +261,10 @@
 
 .image-icon{
 	background: url('../a/image/icon.png');
-	display: block;
-    float: left;
-    margin: 3px 9px;
-    padding: 10px 10px;
+/* 	display: block;
+    float: left; */
+    margin: 3px -3px;
+    padding: 9px 19px;
 }
 #short-time{
 	background-color: #CCC;
@@ -281,6 +294,7 @@
 
 #agree-time, #agree-excess {
 	height: inherit;
+	text-align: center;
 }
 
 .state-exception {
@@ -300,12 +314,25 @@
 	width: 100%; /*Optional*/
 	table-layout: fixed; /*Optional*/
 	border-spacing: 10px; /*Optional*/
-	margin-left: -10px;
+	margin: -10px;
 }
 
 .Column {
 	display: table-cell;
 }
+
+.mgrid-saturday{
+	color: #4F81BD;
+}
+
+.mgrid-sunday{
+	color: #e51010;
+}
+
+.ui-iggrid .ui-iggrid-tablebody td {
+    height: 29px;
+}
+
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;
 } */

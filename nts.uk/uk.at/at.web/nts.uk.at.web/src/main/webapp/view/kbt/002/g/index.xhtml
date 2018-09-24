@@ -52,7 +52,7 @@
 					            <com:ko-if bind="taskId !== 5">
 						            <td><div data-bind = "text: status" /></td>
 						            <td style="text-align: center;">
-						            <button class="setting small" data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: statusCd == 3" data-code="${taskId}" style="width: 70px;">#{i18n.getText('KBT002_146')}</button>
+						            <button tabindex="1" class="setting small" data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: statusCd == 3" data-code="${taskId}" style="width: 70px;">#{i18n.getText('KBT002_146')}</button>
 						            </td>
 					            </com:ko-if>
 					        </tr>
@@ -60,7 +60,7 @@
 					</table>
 				</div>
 				<div id="functions-area-bottom">
-					<button tabindex="-1" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
+					<button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('KBT002_134')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>

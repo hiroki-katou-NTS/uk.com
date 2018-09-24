@@ -5,12 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import org.apache.logging.log4j.util.Strings;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -48,7 +45,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.ContractCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.CheckUper;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.CheckUper;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
@@ -61,11 +58,13 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -123,6 +122,8 @@ public class SaveHolidayShipmentCommandHandler
 	private NewAfterRegister_New newAfterReg;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
+	@Inject
+	private UseDateDeadlineFromDatePeriod dateDeadline;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -385,14 +386,11 @@ public class SaveHolidayShipmentCommandHandler
 		Optional<WorkType> wkTypeOpt = wkTypeRepo.findByPK(companyID, wkTypeCD);
 		if (wkTypeOpt.isPresent()) {
 			WorkType wkType = wkTypeOpt.get();
-			if (wkType.getDailyWork().isHolidayWork()) {
+			if (wkType.getDailyWork().isHolidayType()) {
 				result = holidayRepo.findBy(companyID).get().getHolidayAtr();
-
 			}
-
 		}
 		return result;
-
 	}
 
 	private GeneralDate DemOfexpDate(GeneralDate refDate, String companyID, String sID) {
@@ -410,6 +408,9 @@ public class SaveHolidayShipmentCommandHandler
 
 			} else {
 				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
+				if (!comSubOpt.isPresent()) {
+					throw new BusinessException("振休管理設定の取得 == null");
+				}
 				ComSubstVacation comSub = comSubOpt.get();
 				expDate = getDateByExpirationTime(comSub.getSetting().getExpirationDate(), sID);
 
@@ -479,7 +480,6 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void errorCheckBeforeRegister(SaveHolidayShipmentCommand command, String companyID, String sID,
 			GeneralDate recDate, GeneralDate absDate, int comType, String appReason) {
-		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 		// アルゴリズム「振休振出申請設定の取得」を実行する
 		Optional<WithDrawalReqSet> withDrawReqSet = withDrawRepo.getWithDrawalReqSet();
@@ -503,26 +503,38 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void checkSetting(String companyID, WithDrawalReqSet seqSet, SaveHolidayShipmentCommand command,
 			String sID) {
-		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
+
 		boolean isCheck = !seqSet.getCheckUpLimitHalfDayHD().equals(CheckUper.DONT_CHECK);
-		if (isSaveAbs(command.getComType()) && isCheck) {
-			String wkTypeCD = absCmd.getWkTypeCD();
+		if (isSaveBothApp(command.getComType()) && isCheck) {
+			String wkTypeCD = command.getAbsCmd().getWkTypeCD();
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr absHolidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
-			GeneralDate appDate = absCmd.getAppDate();
+			GeneralDate appDate = command.getRecCmd().getAppDate();
 			// アルゴリズム「実績の取得」を実行する
 			AchievementOutput achievement = afinder.getAchievement(companyID, sID, appDate);
 			// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
 			HolidayAtr achievementHolidayType = getHolidayTypeByWkType(achievement.getWorkType().getWorkTypeCode(),
 					companyID);
-			if (absHolidayType == null || achievementHolidayType == null) {
-				return;
-			}
-			if (!absHolidayType.equals(achievementHolidayType)) {
-				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), absHolidayType.nameId);
+			boolean isError = compareHoliday(absHolidayType, achievementHolidayType);
+			
+			if (isError) {
+				String nameId = achievementHolidayType != null ? achievementHolidayType.nameId : "設定なし";
+				throw new BusinessException("Msg_702", "", appDate.toString("yyyy/MM/dd"), nameId);
 			}
 		}
 
+	}
+
+	private boolean compareHoliday(HolidayAtr absHolidayType, HolidayAtr achievementHolidayType) {
+		boolean isError = false;
+		if (absHolidayType == null && achievementHolidayType == null)
+			isError = true;
+		if (absHolidayType == null && achievementHolidayType != null)
+			isError = true;
+		if (!absHolidayType.equals(achievementHolidayType)) {
+			isError = true;
+		}
+		return isError;
 	}
 
 	private void checkDayConflict(SaveHolidayShipmentCommand command, int comType) {
@@ -591,7 +603,67 @@ public class SaveHolidayShipmentCommandHandler
 		if (isSaveBothApp(comType)) {
 			// アルゴリズム「振休先取可否チェック」を実行する
 			checkFirstShipment(reqSet.getLettleSuperLeave(), recDate, absDate);
+			// アルゴリズム「同時申請時有効期限チェック」を実行する
+			checkTimeApplication(sID, command);
 		}
+	}
+
+	private void checkTimeApplication(String sID, SaveHolidayShipmentCommand command) {
+		String companyID = AppContexts.user().companyId();
+		GeneralDate recDate = command.getRecCmd().getAppDate();
+		GeneralDate absDate = command.getAbsCmd().getAppDate();
+		// Imported（就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
+		Optional<EmploymentHistoryImported> empImpOpt = wpAdapter.getEmpHistBySid(companyID, sID, recDate);
+		empImpOpt.ifPresent(x -> {
+			String employmentCd = x.getEmploymentCode();
+			// アルゴリズム「振休使用期限日の算出」を実行する
+			GeneralDate expAbsDate = calExpAbsDate(companyID, employmentCd, recDate);
+			// 使用期限日と振休日を比較する
+			if (absDate.after(expAbsDate)) {
+				throw new BusinessException("Msg_1361", expAbsDate.toString("yyyy/MM/dd"));
+			}
+		});
+	}
+
+	private GeneralDate calExpAbsDate(String companyID, String employmentCd, GeneralDate recDate) {
+		// アルゴリズム「振休管理設定の取得」を実行する
+		SubstVacationSetting setting = null;
+		Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyID, employmentCd);
+		if (empSubOpt.isPresent()) {
+			setting = empSubOpt.get().getSetting();
+		} else {
+			Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyID);
+			if (comSubOpt.isPresent()) {
+				setting = comSubOpt.get().getSetting();
+			}
+		}
+		if (setting == null) {
+			throw new BusinessException("振休管理設定 == null");
+		}
+		// アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
+		return calExpDateFromAbsDate(recDate, setting.getExpirationDate(), employmentCd);
+	}
+
+	private GeneralDate calExpDateFromAbsDate(GeneralDate recDate, ExpirationTime expTime, String employmentCd) {
+		// 休暇使用期限をチェックする
+		GeneralDate resultDate;
+		switch (expTime) {
+
+		case END_OF_YEAR:
+			resultDate = GeneralDate.ymd(recDate.year(), 12, 31);
+			break;
+
+		case UNLIMITED:
+			resultDate = GeneralDate.max();
+			break;
+
+		default:
+			// 期限指定のある使用期限日を作成する
+			resultDate = this.dateDeadline.useDateDeadline(employmentCd, expTime, recDate);
+			break;
+
+		}
+		return resultDate;
 	}
 
 	private void checkFirstShipment(AllowAtr allowAtr, GeneralDate recDate, GeneralDate absDate) {

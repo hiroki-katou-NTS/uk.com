@@ -229,4 +229,19 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 						role.getName().v(), role.getAssignAtr().value));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#getCurrentLoginerRole()
+	 */
+	@Override
+	public RoleWhetherLoginPubExport getCurrentLoginerRole() {
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge();
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
+	}
+
 }

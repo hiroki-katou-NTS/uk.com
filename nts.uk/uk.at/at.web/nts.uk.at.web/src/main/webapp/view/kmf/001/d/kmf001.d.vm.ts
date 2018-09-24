@@ -60,9 +60,9 @@ module nts.uk.pr.view.kmf001.d {
                     alreadySettingList: self.alreadySettingList
                 };
                 
-                self.retentionYearsAmount = ko.observable(null);
-                self.maxDaysCumulation = ko.observable(null);
-                self.yearsAmountByEmp = ko.observable(0);
+                self.retentionYearsAmount = ko.observable(0);
+                self.maxDaysCumulation = ko.observable(0);
+                self.yearsAmountByEmp = ko.observable(99);
                 self.maxDaysCumulationByEmp = ko.observable(0);
                 
                 self.deleteEnable = ko.observable(true);
@@ -131,8 +131,8 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
                     if (data == null) {
-                        self.retentionYearsAmount(null);
-                        self.maxDaysCumulation(null);
+                        self.retentionYearsAmount(0);
+                        self.maxDaysCumulation(0);
                         self.leaveAsWorkDays(true);
                         self.selectedComManagement(1);
                     }

@@ -168,6 +168,7 @@ module cmm045.a.viewmodel {
 //                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
                     appCHeck = obj.appType;
+                    self.lstSidFilter(obj.listEmployeeId);
                 }
                 if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
@@ -178,7 +179,7 @@ module cmm045.a.viewmodel {
 
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
                 let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {
@@ -228,8 +229,10 @@ module cmm045.a.viewmodel {
                                 lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
                                     frame.timeItemTypeAtr, frame.applicationTime));
                             });
+                             let timeNo417 = overTime.timeNo417 == null ? null : 
+                            new vmbase.TimeNo417(overTime.timeNo417.totalOv, overTime.timeNo417.time36, overTime.timeNo417.numOfYear36Over, overTime.timeNo417.lstOverMonth);
                             self.lstAppOt.push(new vmbase.AppOverTimeInfoFull(overTime.appID, overTime.workClockFrom1, overTime.workClockTo1, overTime.workClockFrom2,
-                                overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
+                                overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime, timeNo417));
                         });
                         _.each(data.lstAppGroup, function(group) {
                             lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time,group.strTime1,group.endTime1,group.strTime2,group.endTime2, group.appPre, group.reasonAppPre, group.appPreHd));
@@ -256,8 +259,10 @@ module cmm045.a.viewmodel {
                                 lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
                                     frame.timeItemTypeAtr, frame.applicationTime));
                             });
+                            let timeNo417 = hdwork.timeNo417 == null ? null : 
+                            new vmbase.TimeNo417(hdwork.timeNo417.totalOv, hdwork.timeNo417.time36, hdwork.timeNo417.numOfYear36Over, hdwork.timeNo417.lstOverMonth);
                             self.lstAppHdWork.push(new vmbase.AppHolidayWorkFull(hdwork.appId, hdwork.workTypeName, hdwork.workTimeName, hdwork.startTime1, 
-                                hdwork.endTime1, hdwork.startTime2, hdwork.endTime2 ,lstFrame));
+                                hdwork.endTime1, hdwork.startTime2, hdwork.endTime2 ,lstFrame, timeNo417));
                         });
                         _.each(data.lstAppWorkChange, function(wkChange) {
                             self.lstAppWorkChange.push(new vmbase.AppWorkChangeFull(wkChange.appId, wkChange.workTypeName, wkChange.workTimeName,
@@ -267,7 +272,7 @@ module cmm045.a.viewmodel {
                         _.each(data.lstAppAbsence, function(absence) {
                             self.lstAppAbsence.push(new vmbase.AppAbsenceFull(absence.appID, absence.holidayAppType, absence.day, absence.workTimeName,
                                 absence.allDayHalfDayLeaveAtr, absence.startTime1, absence.endTime1, absence.startTime2,
-                                absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
+                                absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag, absence.workTypeName));
                         });
                         if(data.hdAppSet != null){
                             self.hdAppSet(new vmbase.HdAppSet(data.hdAppSet.obstacleName, data.hdAppSet.hdName, data.hdAppSet.yearHdName, data.hdAppSet.furikyuName,
@@ -570,14 +575,42 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
-            let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame) + reason;
+            let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
+            //No.417
+            let timeNo417 = self.displayTimeNo417(hdWork.timeNo417);
+            let appCt010 = appContent010 + timeNo417 + reason;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
-                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appContent010, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
+                masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), appCt010, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
                 self.mode() == 0 ? self.convertStatus(app.reflectPerState) : self.convertStatusAppv(app.reflectPerState), masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
             return a;
+        }
+        displayTimeNo417(timeNo417: vmbase.TimeNo417){
+            let self = this;
+            if(timeNo417 == null){
+                return '';
+            }
+            
+            if(timeNo417.time36 <= 0){//「時間外時間の詳細」．36時間　> 0 の場合　追加
+                return '';
+            }
+            if(timeNo417.numOfYear36Over == 0){//未超過の場合
+                return '<br/>' + getText('CMM045_282') + self.convertTime_Short_HM(timeNo417.totalOv) + '　、' + getText('CMM045_283') + getText('CMM045_284', [timeNo417.numOfYear36Over]);
+            }
+            //超過した場合
+            let a1 = getText('CMM045_282') + self.convertTime_Short_HM(timeNo417.totalOv) + '、' + getText('CMM045_283') + getText('CMM045_284', [timeNo417.numOfYear36Over]);
+            let lstMonth: Array<number> = [];
+            _.each(timeNo417.lstOverMonth, function(month){
+                lstMonth.push(month % 100);
+            });
+            lstMonth = _.sortBy(lstMonth);
+            let a2 = '';
+            _.each(lstMonth, function(mon){
+                a2 = a2 == '' ? getText('CMM045_285', [mon]) : a2 + '、' + getText('CMM045_285', [mon]);
+            });
+            return a2 == '' ? '<br/>' + a1 : '<br/>' + a1 + '(' + a2 + ')';
         }
         /**
          * 残業申請
@@ -594,8 +627,11 @@ module cmm045.a.viewmodel {
             let time1 = overTime.workClockFrom1  == '' ? '' : overTime.workClockFrom1 + getText('CMM045_100') + overTime.workClockTo1;
             let time2 = overTime.workClockFrom2  == '' ? '' : overTime.workClockFrom2 + getText('CMM045_100') + overTime.workClockTo2;
             let contentv4 = time1 + time2;
-            let contentv42 = getText('CMM045_269') + self.convertFrameTime(overTime.lstFrame) + reason;
-            let appContent005Bf: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
+            let contentv42 = getText('CMM045_269') + self.convertFrameTime(overTime.lstFrame);
+            //No.417
+            let timeNo417 = self.displayTimeNo417(overTime.timeNo417);
+            let appCt005 = contentv42 + timeNo417 + reason
+            let appContent005Bf: string = masterInfo.detailSet == 1 ? contentv4 + appCt005 : appCt005;
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
@@ -752,7 +788,9 @@ module cmm045.a.viewmodel {
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + reason + '</div>';
+            //No.417
+            let timeNo417 = self.displayTimeNo417(hdWork.timeNo417);
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ appContentPost + contentPre + contentResult + timeNo417 + reason + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
@@ -772,11 +810,9 @@ module cmm045.a.viewmodel {
             //find don xin truoc, thuc te
             let check: vmbase.AppPrePostGroup = self.findAppPre(lstAppGroup, app.applicationID);
             if (check !== undefined) {
-//                if (check.preAppID != '') {
-                    let prRes = self.findContentPreOt(check, masterInfo.detailSet);
-                    contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
-                    contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
-//                }
+                let prRes = self.findContentPreOt(check, masterInfo.detailSet);
+                contentPre = prRes.appPre == '' ? '' : '<br/>' + prRes.appPre;
+                contentResult = prRes.appRes == '' ? '' :'<br/>' + prRes.appRes;
             }
             let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
@@ -790,7 +826,9 @@ module cmm045.a.viewmodel {
             let appContentPost: string = masterInfo.detailSet == 1 ? contentv4 + contentv42 : contentv42;
             
             let prePost = app.prePostAtr == 0 ? '事前' : '事後';
-            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ getText('CMM045_272') + getText('CMM045_268') + '　' + appContentPost + contentPre + contentResult + reason + '</div>';
+            //No.417
+            let timeNo417 = self.displayTimeNo417(overTime.timeNo417);
+            let contentFull = '<div class = "appContent-' + app.applicationID + '">'+ getText('CMM045_272') + getText('CMM045_268') + '　' + appContentPost + contentPre + contentResult + timeNo417 + reason + '</div>';
             let prePostApp = masterInfo.checkAddNote == true ? prePost + getText('CMM045_101') : prePost;
             let a: vmbase.DataModeApp = new vmbase.DataModeApp(app.applicationID, app.applicationType, 'chi tiet', applicant,
                 masterInfo.dispName, prePostApp, self.appDateColor(self.convertDateMDW(app.startDate), '',''), contentFull, self.inputDateColor(self.convertDateTime(app.inputDate), ''),
@@ -924,10 +962,10 @@ module cmm045.a.viewmodel {
             let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
-            if(absence.allDayHalfDayLeaveAtr == 0 && absence.relationshipCode == ''){//終日休暇 (ALL_DAY_LEAVE) 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+            if(absence.allDayHalfDayLeaveAtr == 0 && absence.holidayAppType != 3){//休暇申請.終日半日休暇区分　＝　終日休暇 且休暇申請.休暇種類　≠ 特別休暇 ver39
                 appContent006 = self.convertAbsenceAllDay(absence);
             }
-            if(absence.relationshipCode != ''){//特別休暇申請.続柄コード　＝　入力ありの場合
+            if(absence.holidayAppType == 3){//休暇申請.休暇種類　＝ 特別休暇 ver39
                 appContent006 = self.convertAbsenceSpecial(absence);
             }
             if(absence.allDayHalfDayLeaveAtr == 1){//休暇申請.終日半日休暇区分　＝　半日休暇
@@ -942,17 +980,16 @@ module cmm045.a.viewmodel {
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
             return a;
         }
-        //※休暇申請.終日半日休暇区分　＝　終日休暇 且 特別休暇申請.続柄コード　＝　未入力（NULL)
+        //※休暇申請.終日半日休暇区分　＝　終日休暇 且休暇申請.休暇種類　≠ 特別休暇 ver39
         convertAbsenceAllDay(absence: vmbase.AppAbsenceFull): string{
             let self = this;
             return getText('CMM045_279') + getText('CMM045_248') + getText('CMM045_230', [self.convertNameHoliday(absence.holidayAppType)]);
         }
-        //※特別休暇申請.続柄コード　＝　入力ありの場合
+        //※休暇申請.休暇種類　＝ 特別休暇 ver39
         convertAbsenceSpecial(absence: vmbase.AppAbsenceFull): string{
             let self = this;
             let day = absence.mournerFlag == true ? getText('CMM045_277') + absence.day + getText('CMM045_278') : absence.day + getText('CMM045_278');
-            //hdAppSet.specialVaca
-            let result = getText('CMM045_279') + self.convertNameHoliday(absence.holidayAppType) + absence.relationshipName + day;
+            let result = getText('CMM045_279') + absence.workTypeName + absence.relationshipName + day;
             return result;
         }
         //※休暇申請.終日半日休暇区分　＝　半日休暇
@@ -1447,8 +1484,10 @@ module cmm045.a.viewmodel {
                         lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
                             frame.timeItemTypeAtr, frame.applicationTime));
                     });
+                    let timeNo417 = overTime.timeNo417 == null ? null : 
+                            new vmbase.TimeNo417(overTime.timeNo417.totalOv, overTime.timeNo417.time36, overTime.timeNo417.numOfYear36Over, overTime.timeNo417.lstOverMonth);
                     self.lstAppOt.push(new vmbase.AppOverTimeInfoFull(overTime.appID, overTime.workClockFrom1, overTime.workClockTo1, overTime.workClockFrom2,
-                        overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime));
+                        overTime.workClockTo2, overTime.total, lstFrame, overTime.overTimeShiftNight, overTime.flexExessTime, timeNo417));
                 });
                 _.each(data.lstAppGroup, function(group) {
                     lstAppGroup.push(new vmbase.AppPrePostGroup(group.preAppID, group.postAppID, group.time,group.strTime1,group.endTime1,group.strTime2,group.endTime2, group.appPre, group.reasonAppPre, group.appPreHd));
@@ -1468,8 +1507,10 @@ module cmm045.a.viewmodel {
                         lstFrame.push(new vmbase.OverTimeFrame(frame.attendanceType, frame.frameNo, frame.name,
                             frame.timeItemTypeAtr, frame.applicationTime));
                     });
+                    let timeNo417 = hdwork.timeNo417 == null ? null : 
+                            new vmbase.TimeNo417(hdwork.timeNo417.totalOv, hdwork.timeNo417.time36, hdwork.timeNo417.numOfYear36Over, hdwork.timeNo417.lstOverMonth);
                     self.lstAppHdWork.push(new vmbase.AppHolidayWorkFull(hdwork.appId, hdwork.workTypeName, hdwork.workTimeName, hdwork.startTime1, 
-                        hdwork.endTime1, hdwork.startTime2, hdwork.endTime2 ,lstFrame));
+                        hdwork.endTime1, hdwork.startTime2, hdwork.endTime2 ,lstFrame, timeNo417));
                 });
                 _.each(data.lstAppWorkChange, function(wkChange) {
                     self.lstAppWorkChange.push(new vmbase.AppWorkChangeFull(wkChange.appId, wkChange.workTypeName, wkChange.workTimeName,
@@ -1479,7 +1520,7 @@ module cmm045.a.viewmodel {
                 _.each(data.lstAppAbsence, function(absence) {
                     self.lstAppAbsence.push(new vmbase.AppAbsenceFull(absence.appID, absence.holidayAppType, absence.day, absence.workTimeName,
                         absence.allDayHalfDayLeaveAtr, absence.startTime1, absence.endTime1, absence.startTime2,
-                        absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag));
+                        absence.endTime2, absence.relationshipCode, absence.relationshipName, absence.mournerFlag, absence.workTypeName));
                 });
                 _.each(data.lstAppCompltLeaveSync, function(complt){
                     let appMain = new vmbase.AppCompltLeaveFull(complt.appMain.appID, complt.appMain.workTypeName, complt.appMain.startTime, complt.appMain.endTime);

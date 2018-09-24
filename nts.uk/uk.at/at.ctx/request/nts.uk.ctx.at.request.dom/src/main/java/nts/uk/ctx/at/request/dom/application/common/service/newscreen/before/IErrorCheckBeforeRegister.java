@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 
@@ -47,8 +50,29 @@ public interface IErrorCheckBeforeRegister {
 	 */
 	void OvercountCheck(String companyId, GeneralDate appDate, PrePostAtr prePostAtr);
 	
-	//３６協定時間上限チェック（月間）
-	void TimeUpperLimitMonthCheck();
+	/**
+	 * 03-03_３６上限チェック（月間） KAF005
+	 */
+	Optional<AppOvertimeDetail> registerOvertimeCheck36TimeLimit(String companyId, String employeeId,
+			GeneralDate appDate, List<OverTimeInput> overTimeInput);
+
+	/**
+	 * 05_３６上限チェック(詳細) KAF005
+	 */
+	Optional<AppOvertimeDetail> updateOvertimeCheck36TimeLimit(String companyId, String appId, String enteredPersonId,
+			String employeeId, GeneralDate appDate, List<OverTimeInput> overTimeInput);
+
+	/**
+	 * 03-03_３６上限チェック（月間） KAF010
+	 */
+	Optional<AppOvertimeDetail> registerHdWorkCheck36TimeLimit(String companyId, String employeeId, GeneralDate appDate,
+			List<HolidayWorkInput> holidayWorkInputs);
+
+	/**
+	 * ３６上限チェック(詳細) KAF010
+	 */
+	Optional<AppOvertimeDetail> updateHdWorkCheck36TimeLimit(String companyId, String appId, String enteredPersonId,
+			String employeeId, GeneralDate appDate, List<HolidayWorkInput> holidayWorkInputs);
 	
 	//３６協定時間上限チェック（年間）
 	void TimeUpperLimitYearCheck();

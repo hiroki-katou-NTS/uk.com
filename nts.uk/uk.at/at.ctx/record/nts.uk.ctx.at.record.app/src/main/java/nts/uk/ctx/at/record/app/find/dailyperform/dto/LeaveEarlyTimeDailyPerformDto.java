@@ -14,11 +14,11 @@ public class LeaveEarlyTimeDailyPerformDto implements ItemConst {
 
 	/** 早退時間: 計算付き時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME)
-	private CalcAttachTimeDto leaveEarlyTime;
+	private CalcAttachTimeDto time;
 
 	/** 早退控除時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION)
-	private CalcAttachTimeDto LeaveEarlyDeductionTime;
+	private CalcAttachTimeDto deductionTime;
 
 	/** 休暇使用時間/休憩使用時間: 日別実績の時間休暇使用時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = HOLIDAY + USAGE)
@@ -33,4 +33,11 @@ public class LeaveEarlyTimeDailyPerformDto implements ItemConst {
 	// @AttendanceItemLayout(layout = "E")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer no;
+	
+	@Override
+	public LeaveEarlyTimeDailyPerformDto clone() {
+		return new LeaveEarlyTimeDailyPerformDto(time == null ? null : time.clone(),
+						deductionTime == null ? null : deductionTime.clone(),
+						valicationUseTime == null ? null : valicationUseTime.clone(), intervalExemptionTime, no);
+	}
 }

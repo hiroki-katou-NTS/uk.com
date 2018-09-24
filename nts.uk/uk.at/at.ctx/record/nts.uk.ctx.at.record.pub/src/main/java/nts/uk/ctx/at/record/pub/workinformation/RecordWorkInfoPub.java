@@ -16,6 +16,8 @@ public interface RecordWorkInfoPub {
 	 * @return　RecordWorkInfoPubExport
 	 */
 	RecordWorkInfoPubExport getRecordWorkInfo(String employeeId, GeneralDate ymd);
+	
+	List<WorkInfoOfDailyPerExport> findByEmpId(String employeeId);
 
 	Optional<InfoCheckNotRegisterPubExport> getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
 	

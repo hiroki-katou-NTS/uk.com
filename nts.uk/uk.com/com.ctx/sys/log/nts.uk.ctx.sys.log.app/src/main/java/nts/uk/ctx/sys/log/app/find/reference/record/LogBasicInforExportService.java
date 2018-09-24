@@ -25,6 +25,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 
 	private static final String FILE_EXTENSION = ".csv";
 	private static final String PRIMAKY = "primarykey";
+    private static final String PARENTKEY = "parentkey";
 	private static final String PGID = "CLI003";
 	private List<String> listHeader = new ArrayList<>();
 
@@ -32,19 +33,11 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 		listHeader = new ArrayList<>();
 		List<LogOutputItemDto> lstOutputItemDto = params.getLstHeaderDto();
 		for (LogOutputItemDto logOutputItemDto : lstOutputItemDto) {
-			if(!PRIMAKY.equals(logOutputItemDto.getItemName())){
+            if(!PRIMAKY.equals(logOutputItemDto.getItemName()) && !PARENTKEY.equals(logOutputItemDto.getItemName())){
 				listHeader.add(logOutputItemDto.getItemName());
 			}
 		}
 	}
-//	private List<String> getTextSubHeader(LogParams params) {
-//		List<String> lstHeader = new ArrayList<>();
-//		List<LogOutputItemDto> lstOutputItemDto = params.getLstSupHeaderDto();
-//		for (LogOutputItemDto logOutputItemDto : lstOutputItemDto) {
-//			lstHeader.add(logOutputItemDto.getItemName());
-//		}
-//		return lstHeader;
-//	}
 	private List<String> getTextSubHeaderPersion(LogBasicInfoDto logBasicInfoDto) {
 		List<String> lstHeader = new ArrayList<>();
 		List<LogOutputItemDto> lstOutputItemDto = logBasicInfoDto.getLstLogOutputItemDto();

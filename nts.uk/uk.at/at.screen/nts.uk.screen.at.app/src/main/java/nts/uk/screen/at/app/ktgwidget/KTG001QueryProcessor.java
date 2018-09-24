@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class KTG001QueryProcessor {
@@ -70,8 +71,8 @@ public class KTG001QueryProcessor {
 		 */
 
 		// RootType(就業日別確認) = 1
-		boolean checkDateApproved = dailyPerformanceAdapter.checkDataApproveed(closureStartDate, closureEndDate.addMonths(1), employeeID, 1, cid);
-
+		DatePeriod period = new DatePeriod(closureStartDate, closureEndDate.addMonths(1));
+		boolean checkDateApproved = dailyPerformanceAdapter.isDataExist(employeeID, period, 1);
 		return checkDateApproved;
 	}
 }

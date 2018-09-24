@@ -104,4 +104,12 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	List<AbsRecDetailPara> lstInterimInfor(AbsRecMngInPeriodParamInput paramInput, List<AbsRecDetailPara> lstAbsRec);
+	
+	/**
+	 * [No.506]振休残数を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	double getAbsRecMngRemain(String employeeID, GeneralDate date);
 }

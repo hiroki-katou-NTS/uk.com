@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,6 +24,7 @@ import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.algorithm.CanApprovalOnBaseDateService;
 import nts.uk.ctx.sys.auth.dom.algorithm.DetermineEmpCanReferService;
 import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
+import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
@@ -32,6 +34,8 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepositor
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
+import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
@@ -112,6 +116,9 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	
 	@Inject
 	private EmpInfoAdapter empInfoAdapter;
+	
+	@Inject
+	private RoleRepository roleRepo;
 	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType) {
@@ -313,6 +320,36 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			}
 		});
 		return result;
+	}
+	
+	private List<String> getRoleIDByCID(String companyID){
+		List<Role> listRole = roleRepo.findByTypeAndRoleAtr(companyID, RoleType.EMPLOYMENT.value, RoleAtr.INCHARGE.value);
+		List<String> listRoleID = listRole.stream().map(c ->c.getRoleId()).collect(Collectors.toList());
+		if(listRoleID.isEmpty()){
+			return new ArrayList<>();
+		}
+		return listRoleID;
+	}
+
+	@Override
+	public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
+		//OUTPUT 社員ID（List）を初期化する
+		List<String> listEmpID = new ArrayList<>();
+		// 就業担当者ロールID(List)を取得する
+		List<String> listRoleID = getRoleIDByCID(companyID);
+		//ドメインモデル「ロール個人別付与」を取得する
+		List<RoleIndividualGrant> listRoleIndi = roleIndividualGrantRepository.findRoleIndividual(companyID, RoleType.EMPLOYMENT.value, listRoleID, referenceDate);
+		List<String> listUserID = listRoleIndi.stream().map(c ->c.getUserId()).collect(Collectors.toList());
+		for (String userID : listUserID) {
+			Optional<User> user = userRepository.getByUserID(userID);
+			if(user.get().getAssociatedPersonID().isPresent()){
+				String personalID = user.get().getAssociatedPersonID().get();
+				EmployeeImport empImport = new EmployeeImport(companyID, personalID);
+				listEmpID.add(empImport.getEmployeeId());
+			}
+		}
+		
+		return listEmpID;
 	}
 	
 }

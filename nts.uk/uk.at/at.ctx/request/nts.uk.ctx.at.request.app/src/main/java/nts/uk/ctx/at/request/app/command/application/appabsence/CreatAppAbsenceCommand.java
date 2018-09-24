@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForSpecLeaveDto;
@@ -11,10 +10,6 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SubTargetDigest
 
 @Data
 public class CreatAppAbsenceCommand {
-	/**
-	 * 会社ID
-	 */
-	private String companyID;
 	/**
 	 * 申請ID
 	 */

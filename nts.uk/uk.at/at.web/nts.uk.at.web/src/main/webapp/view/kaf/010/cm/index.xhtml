@@ -46,6 +46,53 @@
 			</div>
 		</div>		
 	</div>
+	<div data-bind="if: (!screenModeNew())&amp;&amp;indicationOvertimeFlg()" >
+		<div class="cf valign-center control-group"
+			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
+			style = "margin-left: -2px; background: #f8efd4;width: 778px;">
+			<!--A2_7 時間外労働ラベル--> 			
+			<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
+			<div class="pull-left">
+				<table id="kaf005_overtimeAgreement_table">
+					<colgroup>
+						<col width="109px" />
+						<col width="109px" />
+						<col width="109px" />
+						<col width="109px" />
+						<col width="109px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<!--A2_9 年月ラベル-->
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_24')}</th>
+							<!--A2_10  限度ラベル-->						
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_25')}</th>
+							<!--A2_11 実績ラベル--> 						
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_26')}</th>
+							<!--A2_12  申請ラベル-->	
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_27')}</th>
+							<!--A2_13  合計ラベル-->
+							<th class="kaf005_overtimeAgreement_header">#{i18n.getText('KAF005_28')}</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: overtimeWork">
+						<tr>
+							<!--A2_14 年月ラベル--> 						
+							<td data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_15  限度ラベル--> 						
+							<td data-bind="text: limitTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_16 実績ラベル--> 						
+							<td data-bind="text: actualTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_17  申請ラベル-->
+							<td data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+							<!--A2_18  合計ラベル-->
+							<td data-bind="text: totalTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>		
+	</div>
 	<!--LEFT CONTENTS -->
 	<div class="left-contents">
 		<div class="valign-center control-group" data-bind = "visible: !employeeFlag()">

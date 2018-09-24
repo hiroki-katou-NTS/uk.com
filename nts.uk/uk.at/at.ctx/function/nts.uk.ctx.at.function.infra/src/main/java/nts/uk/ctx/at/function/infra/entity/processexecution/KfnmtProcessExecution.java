@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
@@ -24,8 +26,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAlarmExtraction;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
@@ -85,12 +85,12 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 		ProcessExecutionScope execScope = new ProcessExecutionScope(
 				EnumAdaptor.valueOf(this.execScope.execScopeCls, ExecutionScopeClassification.class),
 				this.execScope.refDate, workplaceIdList);
-		IndividualAlarmExtraction indvAlarm = new IndividualAlarmExtraction(
-				this.execSetting.indvAlarmCls == 1 ? true : false, this.execSetting.indvMailPrin == 1 ? true : false,
-				this.execSetting.indvMailMng == 1 ? true : false);
-		WorkplaceAlarmExtraction wkpAlarm = new WorkplaceAlarmExtraction(
-				this.execSetting.wkpAlarmCls == 1 ? true : false, this.execSetting.wkpMailMng == 1 ? true : false);
 
+		AlarmExtraction alarmExtraction =new AlarmExtraction(
+				this.execSetting.alarmAtr ==1?true:false,
+				this.execSetting.alarmCode == null?null:(new AlarmPatternCode(this.execSetting.alarmCode))
+				);
+		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
 				new CreationPeriod(this.execSetting.creationPeriod), new TargetDate(this.execSetting.targetDate),
 				EnumAdaptor.valueOf(this.execSetting.targetMonth, TargetMonth.class));
@@ -108,7 +108,7 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class), new TargetGroupClassification(this.execSetting.recreateTypeChangePerson == 1 ? true : false,
 						this.execSetting.midJoinEmployee == 1 ? true : false, this.execSetting.recreateTransfers == 1 ? true : false));
 
-		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation,
+		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(alarmExtraction, perSchCreation,
 				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
 				this.execSetting.monthlyAggCls == 1 ? true : false,
 				new AppRouteUpdateDaily(
@@ -153,15 +153,13 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
 				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee() ? 1 : 0,
 				domain.getExecSetting().isReflectResultCls() ? 1 : 0, domain.getExecSetting().isMonthlyAggCls() ? 1 : 0,
-				domain.getExecSetting().getIndvAlarm().isIndvAlarmCls() ? 1 : 0,
-				domain.getExecSetting().getIndvAlarm().isIndvMailPrin() ? 1 : 0,
-				domain.getExecSetting().getIndvAlarm().isIndvMailMng() ? 1 : 0,
-				domain.getExecSetting().getWkpAlarm().isWkpAlarmCls() ? 1 : 0,
-				domain.getExecSetting().getWkpAlarm().isWkpMailMng() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0,
 				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value,
 				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
-				domain.getExecSetting().getAppRouteUpdateMonthly().value
+				domain.getExecSetting().getAppRouteUpdateMonthly().value,
+				domain.getExecSetting().getAlarmExtraction().isAlarmAtr()?1:0,
+				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?
+						domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v():null
 				);
 		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
 	}

@@ -37,10 +37,6 @@ public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializab
 	@EmbeddedId
 	public KrcdtEditStateOfMothlyPerPK krcdtEditStateOfMothlyPerPK;
 	
-	/** 末日とする */
-	@Column(name = "IS_LAST_DAY")
-	public Integer isLastDay;
-	
 	/** 編集状態 **/
 	@Column(name = "STATE_OF_EDIT")
 	public Integer stateOfEdit;
@@ -74,7 +70,7 @@ public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializab
 				EnumAdaptor.valueOf(this.krcdtEditStateOfMothlyPerPK.closureID, ClosureId.class),
 				new ClosureDate(
 						this.krcdtEditStateOfMothlyPerPK.closeDay,
-						(this.isLastDay == 1)),
+						(this.krcdtEditStateOfMothlyPerPK.isLastDay == 1)),
 				EnumAdaptor.valueOf(this.stateOfEdit, StateOfEditMonthly.class));
 	}
 }

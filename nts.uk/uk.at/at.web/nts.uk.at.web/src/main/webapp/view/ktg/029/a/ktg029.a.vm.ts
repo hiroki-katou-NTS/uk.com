@@ -499,7 +499,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.name = dto.name;
             this.before = dto.before;
             this.after = dto.after;
-            this.grantDate = moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD');
+            this.grantDate = dto.grantDate !=null ? moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD'): '';
             this.showAfter = dto.showAfter;
         }     
     }

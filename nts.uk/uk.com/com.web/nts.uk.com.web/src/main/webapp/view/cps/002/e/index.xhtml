@@ -31,10 +31,10 @@
 					<table class="tblInput">
 						<tr>
 							<td class="firstLine"><label>#{i18n.getText('CPS002_54')}</label>
-								<input id="employeeCode" data-bind="ntsTextEditor: { value: txtEmployeeCode , constraint:'EmployeeCode', name: '#{i18n.getText('CPS002_55')}' }, visible: !cardNoMode" />
+								<input id="employeeCode" tabindex ="1" data-bind="ntsTextEditor: { value: txtEmployeeCode , constraint:'EmployeeCode', name: '#{i18n.getText('CPS002_55')}' }, visible: !cardNoMode" />
 								<label data-bind="visible: !cardNoMode">#{i18n.getText('CPS002_56')}</label>
 								
-								<input id="cardNumber" data-bind="ntsTextEditor: { value: txtCardNo, constraint:'StampNumber', name: '#{i18n.getText('CPS002_55')}' }, visible: cardNoMode" />
+								<input id="cardNumber"  data-bind="ntsTextEditor: { value: txtCardNo, constraint:'StampNumber', name: '#{i18n.getText('CPS002_55')}' }, visible: cardNoMode" />
 								<label data-bind="visible: cardNoMode">#{i18n.getText('CPS002_62')}</label>
 							</td>
 						</tr>
@@ -44,7 +44,7 @@
 					</table>
 				</div>
 				<div>
-					<button class="btnGetEmlCode" data-bind="click: getCode, enable: $root.errors.isEmpty()" tabindex ="1">
+					<button class="btnGetEmlCode" data-bind="click: getCode, enable: $root.errors.isEmpty()" tabindex ="2">
 						<span data-bind="visible: !cardNoMode">#{i18n.getText('CPS002_58')}</span>
 						<span data-bind="visible: cardNoMode">#{i18n.getText('CPS002_63')}</span>
 					</button>
@@ -61,8 +61,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: returnEmCode, enable: $root.errors.isEmpty()" tabindex ="2">#{i18n.getText('CPS002_60')}</button>
-				<button data-bind="click: close" tabindex ="3">#{i18n.getText('CPS002_61')}</button>
+				<button class="proceed x-large" data-bind="click: returnEmCode, enable: $root.errors.isEmpty()" tabindex ="3">#{i18n.getText('CPS002_60')}</button>
+				<button data-bind="click: close" tabindex ="4">#{i18n.getText('CPS002_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

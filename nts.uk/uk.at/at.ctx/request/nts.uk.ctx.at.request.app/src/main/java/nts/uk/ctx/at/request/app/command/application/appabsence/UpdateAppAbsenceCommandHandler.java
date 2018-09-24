@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -57,6 +59,8 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	private AbsenceServiceProcess absenceServiceProcess;
 	@Inject
 	private AppForSpecLeaveRepository repoSpecLeave;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	@Inject
 	private DisplayReasonRepository displayRep;
 	@Inject
@@ -152,6 +156,17 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		}
 		//update application
 		repoApplication.updateWithVersion(appAbsence.getApplication());
+		// 暫定データの登録
+		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		GeneralDate cmdEndDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		List<GeneralDate> listDate = new ArrayList<>();
+		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
+			listDate.add(loopDate);
+		}
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				command.getCompanyID(), 
+				command.getEmployeeID(), 
+				listDate);
 		// 4-2.詳細画面登録後の処理
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appAbsence.getApplication());
 	}

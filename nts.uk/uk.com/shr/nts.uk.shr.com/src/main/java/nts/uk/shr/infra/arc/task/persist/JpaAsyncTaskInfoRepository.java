@@ -21,6 +21,7 @@ import nts.arc.task.AsyncTaskStatus;
 import nts.arc.task.data.AsyncTaskData;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringLength;
 import nts.gul.util.Nullable;
 
 @Stateless
@@ -74,8 +75,8 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 		val entity = new CisdtAsyncTaskAbort();
 		entity.taskId = id;
 		entity.errorType = domain.isBusinessException() ? 1 : 0;
-		entity.messageId = domain.getMessageId();
-		entity.errorMessage = domain.getMessage();
+		entity.messageId = (domain.getMessageId() != null) ? domain.getMessageId().substring(0, 20) : null;
+		entity.errorMessage = (domain.getMessage() != null) ? domain.getMessage().substring(0, 200) : null;
 
 		return entity;
 	}

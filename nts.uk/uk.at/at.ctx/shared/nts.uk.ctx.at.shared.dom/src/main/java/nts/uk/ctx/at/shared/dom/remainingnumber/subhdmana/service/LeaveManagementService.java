@@ -141,24 +141,20 @@ public class LeaveManagementService {
 	}
 	public Boolean checkDeadlineCompensatoryLeaveCom(String employeeID, Closure closing,
 			CompensatoryLeaveComSetting compensatoryLeaveComSetting){
-		Optional<ClosureDate> closingDate = closing.getClosureDateOfCurrentMonth();
-		
+		if(closing ==null){
+			return false;
+		}
+//		Optional<ClosureDate> closingDate = closing.getClosureDateOfCurrentMonth();
 		if (compensatoryLeaveComSetting.getCompensatoryAcquisitionUse() != null) {
 			int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
- 			if (closingDate.isPresent()) {
-				GeneralDate today = GeneralDate.today();
-				int closingDay = closingDate.get().getClosureDay().v();
-				if(closingDay==0){
-					closingDay = 31;
-				}
- 				if (closingDay == today.day()) {
-					GeneralDate closureDateCurrentMonth = GeneralDate.ymd(today.year(), today.month(), closingDay);
- 					Integer numberHolidaysNotUse = leaveManaDataRepository.getDeadlineCompensatoryLeaveCom(employeeID,
-							closureDateCurrentMonth, deadlCheckMonth);
-					if (numberHolidaysNotUse >= 1) {
-						return true;
-					}
-				}
+			// if (closingDate.isPresent()) {
+			GeneralDate today = GeneralDate.today();
+			Integer numberHolidaysNotUse = leaveManaDataRepository.getDeadlineCompensatoryLeaveCom(employeeID, today,
+					deadlCheckMonth);
+			if (numberHolidaysNotUse >= 1) {
+				return true;
+				// }
+
 			}
 		}
 		return false;

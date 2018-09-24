@@ -282,11 +282,12 @@ module nts.custom.component {
                             gov = ko.toJS(params.gridlist.value),
                             gidx = _.indexOf(got, gov),
                             categoryType = ko.toJS(params.combobox.object.categoryType);
-
+                        __viewContext.viewModel.layout.outData.refresh();
                         fetch.category.perm(rid, cid).done((perm: ICatAuth) => {
                             if (categoryType == IT_CAT_TYPE.MULTI) {
                                 if (perm && !!(is_self ? perm.selfAllowDelMulti : perm.otherAllowDelMulti)) {
                                     confirm({ messageId: "Msg_18" }).ifYes(() => {
+                                       
                                         let outData = __viewContext.viewModel.layout.outData(),
                                             query = {
                                                 recordId: ko.toJS(params.gridlist.value),

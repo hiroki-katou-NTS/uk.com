@@ -8,5 +8,7 @@ public interface ScTimeAdapter {
 	 * @param param
 	 * @return
 	 */
-	ScTimeImport calculation(ScTimeParam param);
+	ScTimeImport calculation(Object companySetting, ScTimeParam param);
+	
+	Object getCompanySettingForCalculation();
 }

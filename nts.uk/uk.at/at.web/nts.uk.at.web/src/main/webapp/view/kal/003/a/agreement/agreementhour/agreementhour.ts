@@ -10,7 +10,7 @@ module nts.uk.at.view.kal003.a.tab {
         listAgreementHour: KnockoutObservableArray<model.AgreeCondOt> = ko.observableArray([]);
         currentRowSelected: KnockoutObservable<any> = ko.observable(null);
         category: KnockoutObservable<number>;
-
+        checkUseAtr: KnockoutObservable<boolean> = ko.observable(false);
         constructor(category: number, listAgreementHour?: Array<model.AgreeCondOt>) {
             let self = this;
             self.category = ko.observable(category);

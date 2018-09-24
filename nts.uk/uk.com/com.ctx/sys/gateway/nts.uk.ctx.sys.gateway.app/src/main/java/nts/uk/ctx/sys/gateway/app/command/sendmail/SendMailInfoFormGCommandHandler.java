@@ -96,7 +96,7 @@ public class SendMailInfoFormGCommandHandler
 			EmployeeInfoDtoImport employee) {
 		// get URL from CCG033
 		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 3, 24, employee.getEmployeeId(),
-				command.getContractCode(), loginId, employee.getEmployeeCode(), new ArrayList<>());
+				command.getContractCode(), loginId, employee.getEmployeeCode(), 1, new ArrayList<>());
 		// sendMail
 		MailContents contents = new MailContents("", I18NText.getText("CCG007_21") + " \n" + url);
 

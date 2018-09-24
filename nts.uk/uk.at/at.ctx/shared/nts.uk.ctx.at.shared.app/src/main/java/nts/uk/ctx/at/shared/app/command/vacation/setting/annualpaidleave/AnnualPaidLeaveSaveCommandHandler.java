@@ -10,6 +10,12 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.RetentionYearlySaveCommand;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.RetentionYearlySaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.dto.RetentionYearlyDto;
+import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.dto.UpperLimitSettingDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.RetentionYearlyFinder;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.retentionyearly.dto.RetentionYearlyFindDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -43,6 +49,14 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
     /** The annual repo. */
     @Inject
     private AnnualPaidLeaveSettingRepository annualRepo;
+    
+    /** The finder. */
+	@Inject
+	private RetentionYearlyFinder finder;
+	
+	/** The save. */
+	@Inject
+	private RetentionYearlySaveCommandHandler save;
 
     /*
      * (non-Javadoc)
@@ -103,8 +117,21 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                      manageAnnualSettingEvent.toBePublished(); 
                  }
             }
+            else {
+            	RetentionYearlyFindDto findDto = finder.findById();
+            	RetentionYearlyDto saveDto = new RetentionYearlyDto();
+            	UpperLimitSettingDto upperLimitDto = new UpperLimitSettingDto();
+            	upperLimitDto.setMaxDaysCumulation(findDto.getUpperLimitSetting().getMaxDaysCumulation());
+            	upperLimitDto.setRetentionYearsAmount(findDto.getUpperLimitSetting().getRetentionYearsAmount());
+            	saveDto.setUpperLimitSettingDto(upperLimitDto);
+            	saveDto.setLeaveAsWorkDays(findDto.getLeaveAsWorkDays());
+            	saveDto.setManagementCategory(0);
+            	RetentionYearlySaveCommand saveCommand = new RetentionYearlySaveCommand();
+            	saveCommand.setRetentionYearly(saveDto);
+            	save.handle(saveCommand);
+            }
         }
-        if(manage){
+        if(manage){ 
         	 //get timeManageType from DB
             int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
             //check timeManageType change

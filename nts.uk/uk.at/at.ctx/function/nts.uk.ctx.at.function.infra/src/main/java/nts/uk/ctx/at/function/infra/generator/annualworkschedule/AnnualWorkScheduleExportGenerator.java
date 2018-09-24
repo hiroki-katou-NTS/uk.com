@@ -237,6 +237,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.setCellStyle(range.cell("month12th", rowOffset, 0), data.getColorMonth12th());
 			range.cell("average", rowOffset, 0).putValue(data.formatAverage());
 			range.cell("sum", rowOffset, 0).putValue(data.formatSum());
+			this.setCellStyle(range.cell("sum", rowOffset, 0), data.getColorSum());
 			if (isOutNumExceedTime36Agr && data.isAgreementTime()) {
 				range.cell("numExceedTime", rowOffset, 0).putValue(data.formatMonthsExceeded());
 				range.cell("numRemainingTime", rowOffset, 0).putValue(data.formatMonthsRemaining());

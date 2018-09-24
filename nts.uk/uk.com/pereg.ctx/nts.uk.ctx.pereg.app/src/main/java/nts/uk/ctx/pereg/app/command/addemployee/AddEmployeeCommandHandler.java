@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +25,11 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.DayNumberOfGrant;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveGrantNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.SpecialLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveUsedNumber;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
@@ -41,10 +47,10 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.ItemValueType;
@@ -130,6 +136,13 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		mapSpecialCode = Collections.unmodifiableMap(aMap);
 	}
+	
+	private static final List<String> grantDateLst =  Arrays.asList("IS00409","IS00424","IS00439","IS00454","IS00469","IS00484","IS00499","IS00514","IS00529","IS00544","IS00629","IS00644","IS00659","IS00674","IS00689","IS00704","IS00719","IS00734","IS00749","IS00764");
+	private static final List<String> deadLineLst = Arrays.asList("IS00410","IS00425","IS00440","IS00455","IS00470","IS00485","IS00500","IS00515","IS00530","IS00545","IS00630","IS00645","IS00660","IS00675","IS00690","IS00705","IS00720","IS00735","IS00750","IS00765");
+	private static final List<String> dayNumberOfGrantLst = Arrays.asList("IS00414","IS00429","IS00444","IS00459","IS00474","IS00489","IS00504","IS00519","IS00534","IS00549","IS00634","IS00649","IS00664","IS00679","IS00694","IS00709","IS00724","IS00739","IS00754","IS00769");
+	private static final List<String> dayNumberOfUseLst = Arrays.asList("IS00417","IS00432","IS00447","IS00462","IS00477","IS00492","IS00507","IS00522","IS00537","IS00552","IS00637","IS00652","IS00667","IS00682","IS00697","IS00712","IS00727","IS00742","IS00757","IS00772");
+	private static final List<String> numberOverdaysLst = Arrays.asList("IS00420","IS00434","IS00449","IS00464","IS00479","IS00494","IS00509","IS00524","IS00539","IS00554","IS00639","IS00654","IS00669","IS00684","IS00699","IS00714","IS00729","IS00744","IS00759","IS00774");
+	private static final List<String> dayNumberOfRemainLst = Arrays.asList("IS00422","IS00437","IS00452","IS00467","IS00482","IS00497","IS00512","IS00527","IS00542","IS00557","IS00642","IS00657","IS00672","IS00687","IS00702","IS00717","IS00732","IS00747","IS00762","IS00777");
 
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
@@ -148,7 +161,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 //		FacadeUtils.processHistoryPeriod(inputs, command.getHireDate());
 
-		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
+		helper.addBasicData(command,inputs, personId, employeeId, comHistId, companyId);
 		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
 
 		addNewUser(personId, command, userId);
@@ -179,6 +192,20 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		Optional<ItemsByCategory> CS00020Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
 		
 		Optional<ItemsByCategory> CS00070Opt = inputs.stream().filter( ctg -> ctg.getCategoryCd().equals("CS00070")).findFirst();
+		
+		Optional<ItemsByCategory> affComHist = command.getInputs().stream()
+				.filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		if (!affComHist.isPresent()) {
+			affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals("CS00003")).findFirst();
+		}
+		GeneralDate inputCompanyDate = null;
+		if(affComHist.isPresent()) {
+			Optional<ItemValue>  jobIntryDate = affComHist.get().getItems().stream().filter( c ->  c.itemCode().equals("IS00020") && c.value() != null).findFirst();
+			if(jobIntryDate.isPresent()) {
+				inputCompanyDate = jobIntryDate.get().value();
+			}
+		}
+
 		if(CS00070Opt.isPresent()) {
 			inputs.remove(CS00070Opt.get());
 		}
@@ -269,7 +296,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00070": // WorkingCondition
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(),
 						InfoOperateAttr.ADD, lstItemInfo,
-						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), Optional.empty());
+						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode == null? inputCompanyDate: startDateItemCode, null), Optional.empty());
 				break;
 
 			case "CS00022": // PersonContact
@@ -324,11 +351,16 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00066":
 			case "CS00067":
 			case "CS00068":
-				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
-						lstItemInfo,
-						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
-				//end
+				//gọi lại validate của domain để xem domain có được hợp lệ để lưu data ko 
+				if(validate(input)) {
+					ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(),input.getCategoryName(), InfoOperateAttr.ADD,
+							lstItemInfo,
+							new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), Optional.empty());
+					//end
+					break;
+				}
 				break;
+				
 			case "CS00015": //
 			case "CS00037": // AnnualLeaveGrantRemainingData
 			case "CS00038": // ReserveLeaveGrantRemainingData
@@ -360,7 +392,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					InfoOperateAttr.ADD,
 					lstItemInfoAvatar, 
 					new TargetDataKey(CalendarKeyType.NONE,
-					null, command.getCardNo()), Optional.empty());
+					null, null), Optional.empty());
 			DataCorrectionContext.setParameter(ctgAvatar.getHashID(), ctgAvatar);
 		}
 	}
@@ -605,7 +637,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	}
 
 	private void updateEmployeeRegHist(String companyId, String employeeId) {
-
 		String currentEmpId = AppContexts.user().employeeId();
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getRegHistById(currentEmpId);
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId,
@@ -616,4 +647,48 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			this.empHisRepo.add(newEmpRegHistory);
 		}
 	}
+	
+	private boolean validate(ItemsByCategory input) {
+		List<ItemValue> items = input.getItems();
+		GeneralDate grantDate = null;
+		GeneralDate deadlineDate = null;
+		BigDecimal dayNumberOfGrant = null;
+		BigDecimal dayNumberOfUse = null; 
+		BigDecimal numberOverdays = null;
+		BigDecimal dayNumberOfRemain = null;
+		for(ItemValue c : items) {
+			
+			if(grantDateLst.contains(c.itemCode())) {
+				grantDate = c.valueAfter() == null? null: GeneralDate.fromString(c.valueAfter(), "yyyy/MM/dd");
+			}
+			if(deadLineLst.contains(c.itemCode())) {
+				deadlineDate = c.valueAfter() == null? null: GeneralDate.fromString(c.valueAfter(), "yyyy/MM/dd");
+			}
+			if(dayNumberOfGrantLst.contains(c.itemCode())) {
+				if(c.valueAfter() != null) {
+					dayNumberOfGrant = new BigDecimal(c.valueAfter());
+				}
+			}
+			if(dayNumberOfUseLst.contains(c.itemCode())) {
+				if(c.valueAfter() != null) {
+					dayNumberOfUse = new BigDecimal(c.valueAfter());
+				}
+				
+			}
+			if(numberOverdaysLst.contains(c.itemCode())) {
+				if(c.valueAfter() != null) {
+					numberOverdays = new BigDecimal(c.valueAfter());
+				}
+			}
+			
+			if(dayNumberOfRemainLst.contains(c.itemCode())) {
+				if(c.valueAfter() != null) {
+					dayNumberOfRemain = new BigDecimal(c.valueAfter());
+				}
+			}
+			
+		}
+		 return SpecialLeaveGrantRemainingData.validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays, dayNumberOfRemain);
+	}
+	
 }

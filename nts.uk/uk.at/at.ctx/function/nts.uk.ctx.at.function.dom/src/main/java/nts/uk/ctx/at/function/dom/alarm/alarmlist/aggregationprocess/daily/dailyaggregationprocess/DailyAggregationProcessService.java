@@ -533,20 +533,20 @@ public class DailyAggregationProcessService {
 			case LESS_OR_EQUAL:
 				return new CoupleOperator("≦", "");
 			case BETWEEN_RANGE_OPEN:
-				return new CoupleOperator("＜", "＞");
+				return new CoupleOperator("＜", "＜");
 			case BETWEEN_RANGE_CLOSED:
-				return new CoupleOperator("≦", "≧");
+				return new CoupleOperator("≦", "≦");
 			case OUTSIDE_RANGE_OPEN:
-				return new CoupleOperator("＞", "＜");
+				return new CoupleOperator("＜", "＜");
 			case OUTSIDE_RANGE_CLOSED:
-				return new CoupleOperator("≧", "≦");
+				return new CoupleOperator("≦", "≦");
 		}
 		
 		return null;
 	}
 	
 	private boolean singleCompare(int compareOperator ) {
-		return compareOperator <= CompareType.LESS_OR_EQUAL.value;
+		return compareOperator <= CompareType.GREATER_THAN.value;
 	}
 	private boolean betweenRange(int compareOperator ) {
 		return compareOperator == CompareType.BETWEEN_RANGE_OPEN.value || compareOperator == CompareType.BETWEEN_RANGE_CLOSED.value;

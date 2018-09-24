@@ -82,16 +82,13 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.midJoinEmployee = update.midJoinEmployee;
 		old.reflectResultCls = update.reflectResultCls;
 		old.monthlyAggCls = update.monthlyAggCls;
-		old.indvAlarmCls = update.indvAlarmCls;
-		old.indvMailPrin = update.indvMailPrin;
-		old.indvMailMng = update.indvMailMng;
-		old.wkpAlarmCls = update.wkpAlarmCls;
-		old.wkpMailMng = update.wkpMailMng;
 		old.recreateTypeChangePerson = update.recreateTypeChangePerson;
 		old.recreateTransfers = update.recreateTransfers;
 		old.appRouteUpdateAtr = update.appRouteUpdateAtr;
 		old.createNewEmp = update.createNewEmp;
 		old.appRouteUpdateAtrMon = update.appRouteUpdateAtrMon;
+		old.alarmAtr = update.alarmAtr;
+		old.alarmCode = update.alarmCode;
 		return old;
 	}
 }

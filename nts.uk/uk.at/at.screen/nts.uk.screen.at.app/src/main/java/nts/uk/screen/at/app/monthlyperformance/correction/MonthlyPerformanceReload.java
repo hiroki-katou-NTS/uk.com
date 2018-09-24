@@ -21,11 +21,21 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.AcquireActualStatus;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.EmploymentFixedStatus;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationOutput;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.MonthlyActualSituationStatus;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
+import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -215,7 +225,7 @@ public class MonthlyPerformanceReload {
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
-					employeeId, "", false, false, false, "");
+					employeeId, "", false, false, "〇", "");
 
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream()
 					.filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
@@ -288,6 +298,21 @@ public class MonthlyPerformanceReload {
 	 * 
 	 *            ロック状態一覧：List＜月の実績のロック状態＞
 	 */
+	@Inject
+	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
+	
+	@Inject
+	private IdentityProcessRepository identityProcessRepo;
+	
+	@Inject
+	private IdentificationRepository identificationRepository;
+	
+	@Inject 
+	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo;
+	
+	@Inject 
+	private ApprovalProcessRepository approvalRepo;
+	
 	public List<MonthlyPerformaceLockStatus> checkLockStatus(String cid, List<String> empIds, Integer processDateYM,
 			Integer closureId, DatePeriod closureTime, int intScreenMode) {
 		List<MonthlyPerformaceLockStatus> monthlyLockStatusLst = new ArrayList<MonthlyPerformaceLockStatus>();
@@ -304,12 +329,51 @@ public class MonthlyPerformanceReload {
 		}
 		// 「List＜所属職場履歴項目＞」の件数ループしてください
 		MonthlyPerformaceLockStatus monthlyLockStatus = null;
+		
+		/**
+		 * Fix response kmw003
+		 */
+		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(empIds, closureTime.end());
+		
+		Optional<IdentityProcess> identityOp = identityProcessRepo.getIdentityProcessById(cid);
+		boolean checkIdentityOp = false;
+		//対応するドメインモデル「本人確認処理の利用設定」を取得する
+		if(!identityOp.isPresent()) {
+			checkIdentityOp = true;
+		}else {
+			//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
+			if(identityOp.get().getUseDailySelfCk() == 0){
+				checkIdentityOp = true;
+			}
+		}
+		
+		List<Identification> listIdentification = identificationRepository.findByListEmployeeID(empIds, closureTime.start(), closureTime.end());
+		
+		List<EmployeeDailyPerError> listEmployeeDailyPerError =  employeeDailyPerErrorRepo.finds(empIds, new DatePeriod(closureTime.start(), closureTime.end()));
+		
+		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(cid);
+		
 		for (AffAtWorkplaceImport affWorkplaceImport : affWorkplaceLst) {
+			List<Identification> listIdenByEmpID = new ArrayList<>();
+			for(Identification iden : listIdentification) {
+				if(iden.getEmployeeId().equals(affWorkplaceImport.getEmployeeId())) {
+					listIdenByEmpID.add(iden);
+				}
+			}
+			boolean checkExistRecordErrorListDate = false;
+			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
+				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
+					checkExistRecordErrorListDate = true;
+					break;
+				}
+			}
+			
+			
 			// 月の実績の状況を取得する
 			AcquireActualStatus param = new AcquireActualStatus(cid, affWorkplaceImport.getEmployeeId(), processDateYM,
 					closureId, closureTime.end(), closureTime, affWorkplaceImport.getWorkplaceId());
 			MonthlyActualSituationOutput monthlymonthlyActualStatusOutput = monthlyActualStatus
-					.getMonthlyActualSituationStatus(param);
+					.getMonthlyActualSituationStatus(param,approvalProcOp,listShareAff,checkIdentityOp,listIdenByEmpID,checkExistRecordErrorListDate);
 			// Output「月の実績の状況」を元に「ロック状態一覧」をセットする
 			monthlyLockStatus = new MonthlyPerformaceLockStatus(
 					monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),

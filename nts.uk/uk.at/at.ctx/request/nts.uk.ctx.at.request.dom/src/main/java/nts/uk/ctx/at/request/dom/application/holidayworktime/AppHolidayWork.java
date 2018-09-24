@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -67,6 +69,10 @@ public class AppHolidayWork extends AggregateRoot{
 	 * 就業時間外深夜時間
 	 */
 	private int holidayShiftNight;
+	/**
+	 * 時間外時間の詳細
+	 */
+	private Optional<AppOvertimeDetail> appOvertimeDetail;
 	
 	public AppHolidayWork(String companyID,
 						String appID,

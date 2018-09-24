@@ -10,4 +10,10 @@ public class DailyAttendanceItemPubDto {
 	private String attendanceItemName;
 
 	private int attendanceItemDisplayNumber;
+
+	private int typeOfAttendanceItem;
+	
+	private int frameCategory;
+
+	
 }

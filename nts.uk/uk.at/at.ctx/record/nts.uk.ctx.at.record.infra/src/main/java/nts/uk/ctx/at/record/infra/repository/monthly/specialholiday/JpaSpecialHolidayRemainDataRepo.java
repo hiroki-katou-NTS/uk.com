@@ -41,6 +41,14 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status";
 	
+	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtMonSpRemain a "
+			+ "WHERE a.pk.sid = :employeeId "
+			+ "AND a.pk.ym = :yearMonth "
+			+ "AND a.pk.closureId = :closureId "
+			+ "AND a.pk.closureDay = :closureDay "
+			+ "AND a.pk.chkLastDay = :chkLastDay "
+			+ "ORDER BY a.closureStartDate, a.pk.specialHolidayCd ";
+	
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonSpRemain a "
 			+ "WHERE a.pk.sid = :employeeId "
 			+ "AND a.pk.ym = :yearMonth "
@@ -69,6 +77,21 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 				.setParameter("sid", sid)
 				.setParameter("ym", ym.v())
 				.setParameter("status", status.value)				
+				.getList(c -> toDomain(c));
+	}
+	
+	/** 検索 */
+	// add 2018.9.13 shuichi_ishida
+	@Override
+	public List<SpecialHolidayRemainData> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		
+		return this.queryProxy().query(FIND_BY_CLOSURE, KrcdtMonSpRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("chkLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 				.getList(c -> toDomain(c));
 	}
 	
@@ -223,19 +246,19 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 			valGrantDays = new SpecialLeaveGrantUseDay(entity.grantDays);
 		}
 		
-		// 特別休暇月別残数データ
+		// 特別休暇月別残数データ//
 		return new SpecialHolidayRemainData(
 				entity.pk.sid,
+				new YearMonth(entity.pk.ym),
 				entity.pk.closureId,
+				new ClosureDate(entity.pk.closureDay, (entity.pk.chkLastDay == 1)),
 				new DatePeriod(entity.getClosureStartDate(), entity.getClosureEndDate()),
 				EnumAdaptor.valueOf(entity.getClosureStatus(), ClosureStatus.class),
-				new ClosureDate(entity.pk.closureDay, (entity.pk.chkLastDay == 1)),
-				new YearMonth(entity.pk.ym),
 				entity.pk.specialHolidayCd,
 				actualSpecial,
 				specialLeave,
-				(entity.grantAtr == 1),
-				Optional.ofNullable(valGrantDays));
+				Optional.ofNullable(valGrantDays),
+				(entity.grantAtr == 1));
 	}
 
 	/** 登録および更新 */

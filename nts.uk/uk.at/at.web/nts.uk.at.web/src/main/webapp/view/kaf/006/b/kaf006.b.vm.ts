@@ -104,12 +104,26 @@ module nts.uk.at.view.kaf006.b{
         relaEnable: KnockoutObservable<boolean> = ko.observable(true);
         relaMourner: KnockoutObservable<boolean> = ko.observable(true);
         relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
-            
+        //No.376
+        yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
+        subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
+        subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
+        stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
+        numberRemain: KnockoutObservableArray<any> = ko.observableArray([]);
+        yearDis: KnockoutObservable<boolean> = ko.observable(false);
+        subHdDis: KnockoutObservable<boolean> = ko.observable(false);
+        subVacaDis: KnockoutObservable<boolean> = ko.observable(false);
+        stockDis: KnockoutObservable<boolean> = ko.observable(false);
+        //ver20
+        disAll: KnockoutObservable<boolean> = ko.observable(false);
         displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         enableTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReason: KnockoutObservable<boolean> = ko.observable(false);
         enableReason: KnockoutObservable<boolean> = ko.observable(false);
         displayReasonLst: Array<common.DisplayReason> = []; 
+        //ver21
+        relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
+        hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             super(listAppMetadata, currentApp);
             let self = this;
@@ -137,6 +151,9 @@ module nts.uk.at.view.kaf006.b{
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
+                    //ver21
+                    let relaS = self.findRelaSelected(codeChange);
+                    self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
                 });
             self.isCheck.subscribe(function(checkChange){
                 if(self.mournerDis()){
@@ -156,6 +173,12 @@ module nts.uk.at.view.kaf006.b{
             });
             });
         }
+        findRelaSelected(relaCD: string): any{
+            let self = this;
+            return _.find(self.relationCombo(), function(rela){
+                return rela.relationCd == relaCD;
+            });
+        }
         /**
          * 
          */
@@ -163,7 +186,29 @@ module nts.uk.at.view.kaf006.b{
             nts.uk.ui.block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            service.findByAppID(appID).done((data) => { 
+            service.findByAppID(appID).done((data) => {
+                //No.376
+                if(data.numberRemain != null){
+                    if(data.numberRemain.yearRemain != null){//年休残数
+                        self.yearRemain(data.numberRemain.yearRemain + '日');
+                        self.yearDis(true);
+                    }
+                    if(data.numberRemain.subHdRemain != null){//代休残数
+                        self.subHdRemain(data.numberRemain.subHdRemain + '日');
+                        self.subHdDis(true);
+                    }
+                    if(data.numberRemain.subVacaRemain != null){//振休残数
+                        self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.subVacaDis(true);
+                    }
+                    if(data.numberRemain.stockRemain != null){//ストック休暇残数
+                        self.stockRemain(data.numberRemain.stockRemain + '日');
+                        self.stockDis(true);
+                    }
+                }
+                if(self.yearDis() || self.subHdDis() || self.subVacaDis() || self.stockDis()){
+                    self.disAll(true);
+                }
                 self.initData(data);
                 //find by change AllDayHalfDay
                 self.selectedAllDayHalfDayValue.subscribe((value) => {
@@ -176,6 +221,11 @@ module nts.uk.at.view.kaf006.b{
                 // change workType
                 self.selectedTypeOfDuty.subscribe((value) => {
                     self.findChangeWorkType(value);
+                    if(self.holidayTypeCode() == 3){
+                        self.hdTypeDis(true);
+                    }else{
+                        self.hdTypeDis(false);
+                    }
                 });
                 self.displayWorkTimeName.subscribe((value) => {
                     self.changeDisplayWorkime();
@@ -214,7 +264,8 @@ module nts.uk.at.view.kaf006.b{
             self.relationCombo([]);
             let lstRela = [];
             _.each(data.lstRela, function(rela){
-                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
+                        maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
             });
             self.relationCombo(lstRela);
             let fix = false;
@@ -293,12 +344,13 @@ module nts.uk.at.view.kaf006.b{
                     self.isCheck(false);
                     self.relaReason('');
                 }else{
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
+                    self.typeOfDutys(a);
                     if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
                         self.selectedTypeOfDuty(result.workTypeCode);
                     }
@@ -337,12 +389,13 @@ module nts.uk.at.view.kaf006.b{
                     self.isCheck(false);
                     self.relaReason('');
                 }else{
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
+                    self.typeOfDutys(a);
                     if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
                         self.selectedTypeOfDuty(result.workTypeCode);
                     }
@@ -443,7 +496,14 @@ module nts.uk.at.view.kaf006.b{
             }
             self.timeStart1(data.startTime1 == null ? null : data.startTime1);
             self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-            
+            if(data.holidayAppType == 3){
+                self.hdTypeDis(true);
+            }
+            //rela specHdDto
+            if(data.specHdDto != null && data.specHdDto !== undefined){
+                self.relaRelaReason(data.specHdDto.relationshipReason);
+                self.selectedRelation(data.specHdDto.relationshipCD);
+            }
             if(data.initMode == 0){
                 // display Mode
                 self.enbAllDayHalfDayFlg(false);
@@ -491,16 +551,6 @@ module nts.uk.at.view.kaf006.b{
              let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
              let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), self.enbContentReason());
              let appReason: string;
-//             appReason = self.getReason(
-//                self.selectedReason(),
-//                self.reasonCombo(),
-//                self.multilContent()
-//            );
-//             let appReasonError = !appcommon.CommonProcess.checkAppReason(self.requiredReason(), self.displayTypicalReason(), self.displayReason(), appReason);
-//             if (appReasonError) {
-//                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function() { nts.uk.ui.block.clear(); });
-//                 return;
-//             }
              if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
                  return;
              }

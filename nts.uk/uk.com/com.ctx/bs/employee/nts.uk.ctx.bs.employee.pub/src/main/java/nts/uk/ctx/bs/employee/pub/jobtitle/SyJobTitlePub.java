@@ -66,7 +66,15 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList #??? -> NamPT pls add on
 	Optional<EmployeeJobHistExport> findSJobHistBySId(String employeeId, GeneralDate baseDate);
-
+	/**
+	 * Find list S job hist by list S id.
+	 *
+	 * @param employeeIds
+	 * @param baseDate the base date
+	 * @return the list EmployeeJobHistExport
+	 */
+	List<EmployeeJobHistExport> findSJobHistByListSId(List<String> employeeIds, GeneralDate baseDate);
+	
 	/**
 	 * Find by ids.
 	 *

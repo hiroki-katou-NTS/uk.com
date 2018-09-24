@@ -24,5 +24,14 @@ public interface SyCompanyPub {
 	
 	AffCompanyHistExport GetAffComHisBySidAndBaseDate(String sid, GeneralDate baseDate);
 	
+	/**
+	 * Get Company history by sid
+	 * @param cid
+	 * @param sid
+	 * @return
+	 */
+	
+	AffCompanyHistExport GetAffComHisBySid(String cid, String sid);
+	
 
 }

@@ -87,5 +87,39 @@ public interface DailyRecordToAttendanceItemConverter {
 	DailyRecordToAttendanceItemConverter workingDate(GeneralDate workingDate);
 
 	DailyRecordToAttendanceItemConverter completed();
+	
+	WorkInfoOfDailyPerformance workInfo();
+
+	CalAttrOfDailyPerformance calcAttr();
+
+	Optional<WorkTypeOfDailyPerformance> businessType();
+	
+	AffiliationInforOfDailyPerfor affiliationInfo();
+
+	Optional<OutingTimeOfDailyPerformance> outingTime();
+
+	List<BreakTimeOfDailyPerformance> breakTime();
+
+	Optional<AttendanceTimeOfDailyPerformance> attendanceTime();
+
+	Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork();
+
+	Optional<TimeLeavingOfDailyPerformance> timeLeaving();
+
+	Optional<ShortTimeOfDailyPerformance> shortTime();
+
+	Optional<SpecificDateAttrOfDailyPerfor> specificDateAttr();
+
+	Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate();
+
+	Optional<AnyItemValueOfDaily> anyItems();
+
+	List<EditStateOfDailyPerformance> editStates();
+
+	Optional<TemporaryTimeOfDailyPerformance> temporaryTime();
+	
+	Optional<PCLogOnInfoOfDaily> pcLogInfo();
+	
+	List<RemarksOfDailyPerform> remarks();
 
 }

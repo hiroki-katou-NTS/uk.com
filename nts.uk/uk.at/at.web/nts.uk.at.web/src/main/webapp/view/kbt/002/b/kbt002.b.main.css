@@ -76,3 +76,7 @@
 .container {
     width: 1280px !important;
 }
+
+[dropdown-for="combobox-daily-per-id"] .nts-combo-column-0 {
+  width: 390px !important;
+}

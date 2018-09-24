@@ -12,31 +12,28 @@
 	float: right; */
 }
 
-#emp_reg_info_wizard>.content {
+#emp_reg_info_wizard>.wizard,
+#emp_reg_info_wizard>.contents {
+	position: relative;
+	vertical-align: top;
+	display: inline-block;
+}
+
+#emp_reg_info_wizard {
+	min-width: 1230px;
+}
+
+#emp_reg_info_wizard>.wizard {
+    width: 260px;
+    height: calc(100vh - 200px);
+}
+    
+#emp_reg_info_wizard>.contents {
 	background: none;
+	padding-left: 25px;
+    width: 900px;
 }
 
-.nts-wizard {
-	min-width: 1200px;
-}
-
-.content.clearfix {
-	min-width: 890px;	
-}
-
-.nts-wizard .header .content {
-	margin: 4px 0 5px 0;
-	padding: 0.5em 1em 1em 3em;
-}
-
-.nts-wizard>.steps>ul>li.current>.nts-steps-middle>.nts-bridge>.nts-horizontal-line
-	{
-	width: calc(100% - 53px);
-}
-
-.nts-wizard>.steps>ul>li>.nts-steps-middle {
-	padding-left: 31px;
-}
 /* step1 */
 .step1_top_left_col1 {
 	width: 150px;
@@ -57,6 +54,25 @@
 	position: absolute;
 	top: 0;
 	right: 0;
+    max-width: 340px;
+}
+#step1_content_top_right .form-group>div {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#step1_content_top_right  hr+.form-group>span {
+	width: 170px;
+	display: inline-block;
+}
+
+#step1_content_top_right  hr+.form-group>span+span {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	width: 165px;
 }
 
 .nts-wizard.vertical>.steps {
@@ -130,7 +146,7 @@
 
 /* step 2 */
 #ccgcomponent {
-	margin-left: 250px;
+	margin-left: -30px;
 }
 
 #step2_content {
@@ -248,27 +264,11 @@
 	position: absolute !important;
 }
 
-#contents-area {
-	visibility: hidden;
-	padding: 10px;
-	box-sizing: border-box;
-    height: calc(100vh - 141px) !important;
-}
-
-#emp_reg_info_wizard.nts-wizard {
-	width: 100%;
-}
 
 #emp_reg_info_wizard>.content {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
-}
-
-#emp_reg_info_wizard .nts-wizard>.content>.body {
-	min-width: 820px;
-	width: 100%;
-	height: 100vh;
 }
 
 #emp_reg_info_wizard .form-group {
@@ -323,26 +323,6 @@
 	border-radius: 5px;
 	padding: 10px 20px 0 20px;
 	margin-top: 25px;
-}
-
-#emp_reg_info_wizard.nts-wizard.vertical>* {
-	vertical-align: top;
-}
-
-#emp_reg_info_wizard.nts-wizard.vertical>.steps {
-	float: none;
-	min-height: 100%;
-	height: auto;
-	display: inline-block;
-}
-
-#emp_reg_info_wizard.nts-wizard.vertical>.content{
-	margin: 0;
-	margin-left: 30px;
-	display: inline-block;
-	float: none;
-	height: auto;
-	min-height: 550px;
 }
 
 #emp_reg_info_wizard #employeeAvatar,

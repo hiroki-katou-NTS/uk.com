@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 400,
-					height : 450
+					width : 420,
+					height : 300
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -49,13 +49,13 @@
 						～ <span id="label-date">#{i18n.getText('CPS017_48')}</span>
 					</div>
 				</div>
-				<div id="functions-area-bottom" style="width: 380px">
-					<!-- D2_1: button 決定 -->
-					<button id="A_BTN_REGISTER" class="proceed x-large"
-						data-bind="click : editHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_46')}</button>
-					<!-- D2_2: button キャンセル -->
-					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_47')}</button>
-				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- D2_1: button 決定 -->
+				<button id="A_BTN_REGISTER" class="proceed x-large"
+					data-bind="click : editHistory, enable: $root.errors.isEmpty">#{i18n.getText('CPS017_46')}</button>
+				<!-- D2_2: button キャンセル -->
+				<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_47')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
