@@ -23,17 +23,26 @@ module nts.uk.com.view.cmm001.e {
                 });
                 self.switchHeader = ko.observable(0);
                 self.switchHeader.subscribe((value) => {
-                    ko.utils.arrayForEach(self.dataSource(), function(item) {
-                        if(item.flag()) {
+                    let listItems = self.dataSource();
+                    if (self.selectedCopyItems().length == 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_14" });
+                        return;
+                    }
+                    ko.utils.arrayForEach(listItems, function(item) {
+                        if (item.flag()) {
                             item.copyMethod(value);
-                        } 
-                    })
+                        }
+                    });
                 });
                 self.dataSource = ko.observableArray([]);
                 self.selectedCopyItems = ko.observableArray([]);
                 self.selectedCopyItems = ko.computed(function() {
                     return self.dataSource().filter(function(item) {
-                        return item.flag() === true;
+                        if (item.flag() === true) {
+                            if (item.copyMethod != self.switchHeader())
+                                item.copyMethod(self.switchHeader());
+                            return item;
+                        }
                     });
                 });
 
