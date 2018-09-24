@@ -66,12 +66,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             let params = getShared('CMF002_J_PARAMS');
             self.modeScreen(params.screenMode);
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
-                // get data shared
-                service.getCdConvertName(params.formatSetting.cdConvertCd).done(result => {
-                    if (result) {
-                        self.characterDataFormatSetting().cdConvertName(result);
-                    }
-                });
                 self.characterDataFormatSetting(new model.CharacterDataFormatSetting(params.formatSetting));
             } else {
                 service.getCharacterDataFormatSetting().done(result => {
