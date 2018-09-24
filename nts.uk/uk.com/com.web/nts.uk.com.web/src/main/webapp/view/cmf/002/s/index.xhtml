@@ -77,9 +77,9 @@
 					<button id="S10_2" class="large" tabindex="2"
 						data-bind="click : close">#{i18n.getText('CMF002_246')}</button>
 					<button id="S10_3" class="large" tabindex="3"
-						data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))">#{i18n.getText('CMF002_247')}</button>
+						data-bind="click : download, visible: dialogMode() == 'done', enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))">#{i18n.getText('CMF002_247')}</button>
 					<button id="S10_4" class="large" tabindex="4"
-						data-bind="click : nextToScreenY, enable: isToNext()">#{i18n.getText('CMF002_248')}</button>
+						data-bind="click : nextToScreenY, visible: isToNext(),enable: isToNext()">#{i18n.getText('CMF002_248')}</button>
 				</com:ko-if>
 			</div>
 		</ui:define>
