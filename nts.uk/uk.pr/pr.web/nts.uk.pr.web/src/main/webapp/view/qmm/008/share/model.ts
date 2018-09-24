@@ -461,9 +461,13 @@ module nts.uk.pr.view.qmm008.share.model {
             this.employeeExemptionRate(params ? params.employeeExemptionRate : null);
 
             this.remainBurdenRatio = ko.computed(function() {
+                if (isNaN(this.individualBurdenRatio())|| isNaN(this.individualExemptionRate())) return 0;
+                if (this.individualBurdenRatio() < this.individualExemptionRate()) return 0;
                 return this.individualBurdenRatio() - this.individualExemptionRate();
             }, this);
             this.remainEmployeeContributionRatio = ko.computed(function() {
+                if (isNaN(this.employeeContributionRatio()) || isNaN(this.employeeExemptionRate())) return 0;
+                if (this.employeeContributionRatio() < this.employeeExemptionRate()) return 0;
                 return this.employeeContributionRatio() - this.employeeExemptionRate();
             }, this);
         }

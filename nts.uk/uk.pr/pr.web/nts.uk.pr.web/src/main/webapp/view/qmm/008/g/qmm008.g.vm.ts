@@ -15,6 +15,7 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
         constructor() {
             let self = this;
             let params = getShared("QMM008_G_PARAMS"); 
+            block.invisible();
             if (params){
                 let selectedOffice = params.selectedOffice, displayLastestHistory = "";
                 let history = params.history;
@@ -29,6 +30,7 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY,  lastestHistoryResoure.replace('{0}', displayLastestHistory)));
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
             }
+            block.clear();
         }
         addNewHistory (){ 
             let self = this;
