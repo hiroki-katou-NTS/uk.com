@@ -70,6 +70,10 @@ public class BasicScheduleScreenProcessor {
 	public List<BasicScheduleScreenDto> getByListSidAndDate(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenRepo.getByListSidAndDate(params.employeeId, params.startDate, params.endDate);
 	}
+	
+	public List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(BasicScheduleScreenParams params) {
+		return this.bScheduleScreenRepo.getBasicScheduleWithJDBC(params.employeeId, params.startDate, params.endDate);
+	}
 
 	/**
 	 * get list workTime with abolishAtr = NOT_ABOLISH (in contrast to DISPLAY)
@@ -236,6 +240,13 @@ public class BasicScheduleScreenProcessor {
 		// TODO- ben man master KMK003 khong co phan dang ki sort order nen co le khong can
 		// アラームチェック条件を取得する
 		// da goi o phan khac lien quan den buildTreeShiftCondition
+	}
+	
+	/**
+	 * 
+	 */
+	public void checkStatusForScheduledWork(){
+		
 	}
 
 }

@@ -1,5 +1,8 @@
 package nts.uk.screen.at.infra.schedule.basicschedule;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -137,7 +140,59 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		return datas;
 
 	}
+	
+	/**
+	 * Get data source for screen KSU001
+	 * get data of timezone with cnt = 1 (chi hien thi gio ca 1 nen k can lay gio ca 2) 
+	 * @param employeeIds
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@Override
+	public List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(List<String> employeeIds, GeneralDate startDate,
+			GeneralDate endDate) {
+		List<BasicScheduleScreenDto> listBasicScheduleScreenDto = new ArrayList<>();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
+		String listEmp = "(";
+		for(int i = 0; i < employeeIds.size(); i++){
+			listEmp += "'"+ employeeIds.get(i) +"',";
+		}
+		// remove last , in string and add )
+		listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
+
+		String sqlQueryWhere = " WHERE KSCDT_SCHE_BASIC.SID IN " + listEmp
+				+ " AND (KSCDT_SCHE_BASIC.YMD between " + "'" + startDate + "' and '" + endDate + "')"
+				+ " AND (KSCDT_SCHE_TIMEZONE.CNT IS NULL OR KSCDT_SCHE_TIMEZONE.CNT = " + 1 + ")";
+
+		String sqlQuery = "SELECT KSCDT_SCHE_BASIC.SID, KSCDT_SCHE_BASIC.YMD, KSCDT_SCHE_BASIC.WORKTYPE_CD, KSCDT_SCHE_BASIC.WORKTIME_CD, KSCDT_SCHE_BASIC.CONFIRMED_ATR,"
+				+ " KSCDT_SCHE_TIMEZONE.CNT, KSCDT_SCHE_TIMEZONE.BOUNCE_ATR, KSCDT_SCHE_TIMEZONE.START_CLOCK as TZ_START_CLOCK, KSCDT_SCHE_TIMEZONE.END_CLOCK as TZ_END_CLOCK"
+				+ " FROM KSCDT_SCHE_BASIC LEFT JOIN KSCDT_SCHE_TIMEZONE ON KSCDT_SCHE_BASIC.SID = KSCDT_SCHE_TIMEZONE.SID AND KSCDT_SCHE_BASIC.YMD = KSCDT_SCHE_TIMEZONE.YMD"
+				+ sqlQueryWhere;
+		try {
+			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+			while (rs.next()) {
+				String sId = rs.getString("SID");
+				GeneralDate date = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String workTypeCode = rs.getString("WORKTYPE_CD");
+				String workTimeCode = rs.getString("WORKTIME_CD");
+				int confirmAtr = rs.getInt("CONFIRMED_ATR");
+
+				Integer timezoneCnt = rs.getObject("CNT") == null ? null : Integer.valueOf(rs.getInt("CNT"));
+				Integer bounceAtr = rs.getObject("BOUNCE_ATR") == null ? null : Integer.valueOf(rs.getInt("BOUNCE_ATR"));
+				Integer timezoneStart = rs.getObject("TZ_START_CLOCK") == null ? null : Integer.valueOf(rs.getInt("TZ_START_CLOCK"));
+				Integer timezoneEnd = rs.getObject("TZ_END_CLOCK") == null ? null : Integer.valueOf(rs.getInt("TZ_END_CLOCK"));
+
+				listBasicScheduleScreenDto.add(new BasicScheduleScreenDto(sId, date, workTypeCode, workTimeCode,
+						confirmAtr, timezoneCnt, timezoneStart, timezoneEnd, bounceAtr));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listBasicScheduleScreenDto;
+	}
+	
 	/**
 	 * get list WorkTimeSet by companyId and abolitionAtr = ABOLISH join with
 	 * table WorkTimeSheetSet, sort by workTimeCode

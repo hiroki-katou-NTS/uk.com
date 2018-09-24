@@ -370,11 +370,11 @@ module cps002.a.vm {
 
         autoUpdateCardNo(employeeCode) {
             let self = this,
-                employee = ko.toJS(self.currentEmployee),
+                employee = ko.unwrap(self.currentEmployee),
                 userSetting = self.currentUseSetting(),
                 maxLengthCardNo = ko.toJS(self.stampCardEditing).digitsNumber;
 
-            if (!userSetting || !(employee || {}).cardNo) {
+            if (!userSetting || !(ko.toJS(employee) || {}).cardNo) {
                 return;
             }
 
@@ -385,7 +385,7 @@ module cps002.a.vm {
                     }
                     break;
                 case CardNoValType.CPC_AND_EMPC:
-                    let newCardNo = __viewContext.user.companyCode + employee.employeeCode();
+                    let newCardNo = __viewContext.user.companyCode + (ko.toJS(employee) || {}).employeeCode;
                     if (newCardNo.length <= maxLengthCardNo) {
                         employee.cardNo(newCardNo);
                     }
