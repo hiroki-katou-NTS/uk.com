@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.shr.com.time.calendar.MonthDay;
@@ -355,11 +356,11 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		} else {
 			grantDaysInfor.getLstGrantDaysInfor().stream().forEach(x -> {
 				//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
-				DatePeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
-				GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.start().month(), period.start().day());
+				AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
+				GeneralDate ymd = null ;//GeneralDate.ymd(x.getYmd().year(), period.start().month(), period.start().day());
 				x.setYmd(ymd);
 				//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
-				GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.end().month(), period.end().day());
+				GeneralDate ymdDealine = null ;// GeneralDate.ymd(x.getYmd().year(), period.end().month(), period.end().day());
 				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
 				lstOutput.add(output);
 			});
