@@ -186,6 +186,10 @@ module nts.uk.pr.view.qmm012.b {
                          command.salaryItemId = oldSalaryId;
                     }
                     
+                    if((command.paymentItemSet.limitAmount != null) && isNaN(command.paymentItemSet.limitAmount)) {
+                        command.paymentItemSet.limitAmount = null;
+                    }
+                    
                     block.invisible();
                     service.registerStatementItemData(command).done(function() {
                         block.clear();
@@ -625,6 +629,12 @@ module nts.uk.pr.view.qmm012.b {
                     if(x) {
                         screenModel.statementItemDataSelected().deductionItemSet().note(x);
                         screenModel.statementItemDataSelected().timeItemSet().note(x);
+                    }
+                });
+                
+                self.limitAmountAtr.subscribe(x => {
+                    if((x != null) && (x != model.LimitAmountClassification.FIXED_AMOUNT)) {
+                        $('#C4_8').ntsError('clear');
                     }
                 });
             }
