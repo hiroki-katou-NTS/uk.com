@@ -14,6 +14,7 @@ import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateReposito
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGrade;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRate;
 import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
+import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtGradeWelfarePensionInsurancePremium;
 
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {
@@ -68,13 +69,18 @@ public class JpaContributionRateRepository extends JpaRepository implements Cont
 
 	@Override
 	public void updateContributionByGrade(ContributionRate domain) {
-
+		this.commandProxy().updateAll(QpbmtContributionByGrade.toEntity(domain));
 	}
 
 	@Override
 	public void deleteContributionByGradeByHistoryId(List<String> historyIds) {
 		this.getEntityManager().createQuery(DELETE_CONTRIBUTION_BY_GRADE_BY_HISTORY_ID, QpbmtContributionByGrade.class)
 				.setParameter("historyId", historyIds).executeUpdate();
+	}
+
+	@Override
+	public void insertContributionByGrade(ContributionRate domain) {
+		this.commandProxy().insertAll(QpbmtContributionByGrade.toEntity(domain));
 	}
 
 }

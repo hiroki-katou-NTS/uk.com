@@ -1,14 +1,18 @@
-module nts.uk.com.view.qmm008.j.service {
+module nts.uk.pr.view.qmm008.j.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        extractData: "ctx/sys/assist/datarestoration/extractData",
-        checkProcess: "ctx/sys/assist/datarestoration/getServerPrepare"
+        start: "ctx/pr/core/socialinsurance/salaryhealth/startwelfarestandard",
+        update: "ctx/pr/core/socialinsurance/salaryhealth/updatewelfarestandard",
+        count: "ctx/pr/core/socialinsurance/salaryhealth/countwelfarestandard"
     }
-    export function extractData(fileInfo): JQueryPromise<any> {
-        return ajax(paths.extractData, fileInfo);
+    export function start(command): JQueryPromise<any> {
+        return ajax(paths.start, command);
     }
-    export function checkProcess(processId): JQueryPromise<any> {
-        return ajax("com", paths.checkProcess, processId);
+    export function update(command): JQueryPromise<any> {
+        return ajax("pr", paths.update, command);
+    }
+    export function count(command): JQueryPromise<any> {
+        return ajax(paths.start, command);
     }
 }

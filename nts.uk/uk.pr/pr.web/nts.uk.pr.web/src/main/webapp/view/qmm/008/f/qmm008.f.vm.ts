@@ -42,7 +42,7 @@ module nts.uk.pr.view.qmm008.f {
                 let self = this;
                 let command = {
                     cusWelfarePensions: ko.toJS(self.dataList()),
-                    historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2'
+                    historyId: self.historyId()
                 };
                 nts.uk.pr.view.qmm008.f.service.update(command).done(function(response) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -63,7 +63,7 @@ module nts.uk.pr.view.qmm008.f {
             
             private countReview() :void {
                 let self = this;
-                let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2', date: 201802 };
+                let command = { historyId: self.historyId(), date: self.startMonth() };
                 nts.uk.pr.view.qmm008.f.service.count(command).done(function(response) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.dataList([]);

@@ -10,12 +10,16 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.CusWelfarePensionDto;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.CusWelfarePensionStandardDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.GradeWelfarePensionInsurancePremiumDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.ResponseWelfarePension;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryEmployeesPensionInsuranceRateDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommandHealth;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionGradePerRewardMonthlyRangeDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.WelfarePensionStandardGradePerMonthDto;
+import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionByGrade;
+import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
+import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFee;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.EmployeesPensionMonthlyInsuranceFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance.MonthlyScopeOfWelfarePensionCompensation;
@@ -40,6 +44,9 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 	
 	@Inject
 	private WelfarePensionInsuranceClassificationRepository welfarePensionInsuranceClassificationRepository;
+	
+	@Inject
+	private ContributionRateRepository contributionRateRepository;
 
 	public ResponseWelfarePension findAllWelfarePensionAndRate(StartCommandHealth startCommand, Boolean check) {
 
@@ -124,5 +131,60 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		return response;
 	}
 	
+	
+	public List<CusWelfarePensionStandardDto> findAllWelfarePensionAndContributionRate(StartCommandHealth startCommand, Boolean check) {
+		List<WelfarePensionStandardGradePerMonthDto> standardGradePerMonthDtos = new ArrayList<>();
+		List<WelfarePensionGradePerRewardMonthlyRangeDto> gradePerRewardMonthlyRangeDtos = new ArrayList<>();
+		List<ContributionByGrade> contributionByGrades = new ArrayList<>();
+		// ドメインモデル「厚生年金標準月額」を取得する
+		Optional<WelfarePensionStandardMonthlyFee> welfarePensionStandardMonthlyFee = welfarePensionStandardMonthlyFeeRepository
+				.getWelfarePensionStandardMonthlyFeeByStartYearMonth(startCommand.getDate());
+		if (welfarePensionStandardMonthlyFee.isPresent()) {
+			standardGradePerMonthDtos = welfarePensionStandardMonthlyFee.get().getStandardMonthlyPrice()
+					.stream().map(x -> new WelfarePensionStandardGradePerMonthDto(x.getWelfarePensionGrade(),
+							x.getStandardMonthlyFee()))
+					.collect(Collectors.toList());
+		}
+
+		// ドメインモデル「厚生年金報酬月額範囲」を取得する
+		Optional<MonthlyScopeOfWelfarePensionCompensation> monthlyScopeOfWelfarePensionCompensation = monthlyScopeOfWelfarePensionCompensationRepository
+				.getMonthlyScopeOfWelfarePensionCompensationByStartYearMonth(startCommand.getDate());
+		if (monthlyScopeOfWelfarePensionCompensation.isPresent()) {
+			gradePerRewardMonthlyRangeDtos = monthlyScopeOfWelfarePensionCompensation.get()
+					.getWelfarePensionGradePerRewardMonthlyRange().stream()
+					.map(x -> new WelfarePensionGradePerRewardMonthlyRangeDto(x.getWelfarePensionGrade(),
+							x.getRewardMonthlyLowerLimit(), x.getRewardMonthlyUpperLimit()))
+					.collect(Collectors.toList());
+		}
+		
+		// ドメインモデル「拠出金率」を取得する
+		Optional<ContributionRate> contributionRate = contributionRateRepository.getContributionRateByHistoryId(startCommand.getHistoryId());
+		if(contributionRate.isPresent()) {
+			if(check) {
+				contributionRate.get().algorithmWelfarePensionInsurancePremiumCal(welfarePensionStandardMonthlyFee, contributionRate.get());
+			}
+			contributionByGrades = contributionRate.get().getContributionByGrade();
+		}
+		return mappingToResponse(standardGradePerMonthDtos, gradePerRewardMonthlyRangeDtos, contributionByGrades);
+	}
+	
+	
+	public List<CusWelfarePensionStandardDto> mappingToResponse(List<WelfarePensionStandardGradePerMonthDto> standardGradePerMonthDtos,
+			List<WelfarePensionGradePerRewardMonthlyRangeDto> gradePerRewardMonthlyRangeDtos,
+			List<ContributionByGrade> contributionByGrades) {
+			
+		List<CusWelfarePensionStandardDto> response = new ArrayList<>();
+		for (WelfarePensionStandardGradePerMonthDto standardGradePerMonthDto : standardGradePerMonthDtos) {
+			Optional<WelfarePensionGradePerRewardMonthlyRangeDto> gradePerRewardMonthlyRange = gradePerRewardMonthlyRangeDtos.stream().filter(x -> x.getWelfarePensionGrade() == standardGradePerMonthDto.getWelfarePensionGrade()).findFirst();
+			Optional<ContributionByGrade> contributionGrade = contributionByGrades.stream().filter(x -> x.getWelfarePensionGrade() == standardGradePerMonthDto.getWelfarePensionGrade()).findFirst();
+			CusWelfarePensionStandardDto data = new CusWelfarePensionStandardDto(standardGradePerMonthDto.getWelfarePensionGrade(), 
+					standardGradePerMonthDto.getStandardMonthlyFee(), 
+					gradePerRewardMonthlyRange.isPresent() ? gradePerRewardMonthlyRange.get().getRewardMonthlyLowerLimit() : null, 
+					gradePerRewardMonthlyRange.isPresent() ? gradePerRewardMonthlyRange.get().getRewardMonthlyUpperLimit() : null, 
+					contributionGrade.isPresent() ? contributionGrade.get().getChildCareContribution().v().toString() : null);
+			response.add(data);
+		}
+		return response;
+	}
 	
 }

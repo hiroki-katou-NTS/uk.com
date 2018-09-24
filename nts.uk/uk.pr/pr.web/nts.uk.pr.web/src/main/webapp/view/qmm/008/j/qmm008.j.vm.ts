@@ -1,45 +1,98 @@
-module nts.uk.com.view.qmm008.j {
+module nts.uk.pr.view.qmm008.j {
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
        export class ScreenModel {
            
            dataList: KnockoutObservableArray<RowData>;
-           
+           officeCode: KnockoutObservable<string> = ko.observable(null);
+           socialInsuranceName: KnockoutObservable<string> = ko.observable(null);
+           startMonth: KnockoutObservable<string> = ko.observable(null);
+           endMonth: KnockoutObservable<string> = ko.observable(null);
+           displayStart: KnockoutObservable<string> = ko.observable(null);
+           displayEnd: KnockoutObservable<string> = ko.observable(null);
+           historyId: KnockoutObservable<string> = ko.observable(null);
            constructor(){
                var self = this;
                self.dataList = ko.observableArray([]);
-               self.dataList.push(new RowData("1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1"));
+               let dataGetShare = getShared("QMM008_J_PARAMS");
+               console.log(dataGetShare);
+               self.officeCode(dataGetShare.selectedOffice.socialInsuranceCode);
+               self.socialInsuranceName(dataGetShare.selectedOffice.socialInsuranceName);
+               self.displayStart(dataGetShare.selectedHistory.displayStart);
+               self.displayEnd(dataGetShare.selectedHistory.displayEnd);
+               self.historyId(dataGetShare.selectedHistory.historyId);
+               self.startMonth(dataGetShare.selectedHistory.startMonth);
+               let command = { historyId: self.historyId(),date : self.startMonth() };
+               nts.uk.pr.view.qmm008.j.service.start(command).done(function(response) {
+                    for (var i = 0; i < response.length; i++) {
+                            self.dataList.push(response[i]);
+                     }
+                });
                $("#fixed-table").ntsFixedTable({ height: 300, width: 1366 });
            }
+           
+          
+           
+           /**
+            *  close dialog
+            */
+
+           private closeDialog(): void {
+               nts.uk.ui.windows.close();
+           }
+           
+           private update(): void {
+               let self = this;
+               let command = {
+                   data: ko.toJS(self.dataList()),
+                   historyId: self.historyId()
+               };
+               nts.uk.pr.view.qmm008.j.service.update(command).done(function(response) {
+                   nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                   });
+               }
+           }
+           
+           private countReview() :void {
+                let self = this;
+                let command = { historyId: self.historyId(), date: self.startMonth() };
+                nts.uk.pr.view.qmm008.j.service.count(command).done(function(response) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.dataList([]);
+                        for (var i = 0; i < response.length; i++) {
+                            self.dataList.push(response[i]);
+                        }
+                    });
+                }
+            }
+           
        }
     }
     
+    interface IRowData {
+        welfarePensionGrade: KnockoutObservable<string>,
+        standardMonthlyFee: KnockoutObservable<string>,
+        rewardMonthlyLowerLimit: KnockoutObservable<string>,
+        rewardMonthlyUpperLimit: KnockoutObservable<string>,
+        childCareContribution: KnockoutObservable<string>
+    
+    }
     
     export class RowData {
-        col1: KnockoutObservable<string>;
-        col2: KnockoutObservable<string>;
-        col3: KnockoutObservable<string>;
-        col4: KnockoutObservable<string>;
-        col5: KnockoutObservable<string>;
-        col6: KnockoutObservable<string>;
-        col7: KnockoutObservable<string>;
-        col8: KnockoutObservable<string>;
-        col9: KnockoutObservable<string>;
-        col10: KnockoutObservable<string>;
-        col11: KnockoutObservable<string>;
-        col12: KnockoutObservable<string>;
-        constructor(col1: string, col2: string, col3: string, col4: string, col5: string, col6: string, col7: string, col8: string, col9: string, col10: string, col11: string, col12: string) {
-            this.col1 = ko.observable(col1);
-            this.col2 = ko.observable(col2);
-            this.col3 = ko.observable(col3);
-            this.col4 = ko.observable(col4);
-            this.col5 = ko.observable(col5);
-            this.col6 = ko.observable(col6);
-            this.col7 = ko.observable(col7);
-            this.col8 = ko.observable(col8);
-            this.col9 = ko.observable(col9);
-            this.col10 = ko.observable(col10);
-            this.col11 = ko.observable(col11);
-            this.col12 = ko.observable(col12);
+        welfarePensionGrade: KnockoutObservable<string>  = ko.observable(null);
+        standardMonthlyFee: KnockoutObservable<string>  = ko.observable(null);
+        rewardMonthlyLowerLimit: KnockoutObservable<string>  = ko.observable(null);
+        rewardMonthlyUpperLimit: KnockoutObservable<string>  = ko.observable(null);
+        childCareContribution: KnockoutObservable<string>  = ko.observable(null);
+        
+        constructor(parameter? :IRowData) {
+            this.welfarePensionGrade(parameter.welfarePensionGrade);
+            this.standardMonthlyFee(parameter.standardMonthlyFee);
+            this.rewardMonthlyLowerLimit(parameter.rewardMonthlyLowerLimit);
+            this.rewardMonthlyUpperLimit(parameter.rewardMonthlyUpperLimit);
+            this.childCareContribution(parameter.childCareContribution);
+            
         }
     }
     

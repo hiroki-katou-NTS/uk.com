@@ -11,6 +11,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable('');
         socialInsuranceName: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
+        displayEndMonth: KnockoutObservable<string> = ko.observable('');
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
         isLastestHistory: KnockoutObservable<boolean> = ko.observable(false);
@@ -21,14 +22,16 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
             let self = this;
             let params = getShared("QMM008_H_PARAMS");
             if (params) {
+                block.invisible();
                 let selectedOffice = params.selectedOffice;
                 self.selectedHistory = params.selectedHistory;
                 self.startMonth(self.selectedHistory.startMonth);
+                self.displayEndMonth(getText('QMM008_208').replace('{0}', self.selectedHistory.displayEnd));
                 self.screen = params.screen;
                 let history = params.history;
                 if (history && history.length > 0) {
                     history.forEach((historyItem, index) => {
-                        if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index - 1];
+                        if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index + 1];
                     });
                     self.isLastestHistory(params.selectedHistory.startMonth == history[0].startMonth);
                 }
@@ -37,6 +40,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.DELETE, getText('QMM008_206')));
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.UPDATE, getText('QMM008_207')));
             }
+            block.clear();
         }
         editHistory() {
             let self = this;
