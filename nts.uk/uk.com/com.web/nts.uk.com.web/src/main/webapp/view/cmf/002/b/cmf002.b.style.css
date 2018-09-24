@@ -22,8 +22,10 @@
 }
 
 #B1_6{ }
-#B1_8{margin-left: 550px !important;
-	}
+#B1_8{
+	float: right;
+	margin-right: 10px;
+}
 	
 #B1_2{
 	margin-left: 200px !important;
@@ -39,7 +41,7 @@
 }
 body{
 	overflow: hidden;
-	
+	overflow-y: auto;
 }
 #contents-area {
     position: relative;

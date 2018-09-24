@@ -17,6 +17,7 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
             if (parameter) {
                 self.selectedOutputCodeConvert = ko.observable(parameter.outputCodeConvert.dispConvertCode);
             }
+            $('#V2_2_container').focus();
         }
         start(): JQueryPromise<any> {
             block.invisible();
