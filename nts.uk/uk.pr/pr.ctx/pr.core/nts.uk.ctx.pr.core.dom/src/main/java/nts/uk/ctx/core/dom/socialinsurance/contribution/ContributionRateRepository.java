@@ -22,6 +22,8 @@ public interface ContributionRateRepository {
 	void addContributionByGrade(ContributionRate domain);
 
 	void updateContributionByGrade(ContributionRate domain);
+	
+	void insertContributionByGrade(ContributionRate domain);
 
 	void deleteContributionByGradeByHistoryId(List<String> historyIds);
 }

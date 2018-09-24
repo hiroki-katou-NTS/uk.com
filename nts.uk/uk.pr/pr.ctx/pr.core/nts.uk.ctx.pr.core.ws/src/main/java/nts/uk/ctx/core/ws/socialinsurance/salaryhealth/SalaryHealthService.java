@@ -7,15 +7,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.ContributionRateHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.HealthInsuCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.HealthInsuStandardMonthlyFinder;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.WelfarePensionStandardMonthlyFeeCommand;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.WelfarePensionStandardMonthlyFeeFinder;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.CusWelfarePensionStandardDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.ResponseWelfarePension;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.SalaryHealthDto;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.StartCommandHealth;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateCommandHealth;
 import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateCommandWelfare;
+import nts.uk.ctx.core.app.command.socialinsurance.salaryhealth.dto.UpdateContributionRateDto;
 
 @Path("ctx/pr/core/socialinsurance/salaryhealth")
 @Produces("application/json")
@@ -32,6 +35,9 @@ public class SalaryHealthService {
 	
 	@Inject
 	private WelfarePensionStandardMonthlyFeeCommand feeCommand;
+	
+	@Inject
+	private ContributionRateHandler contributionRateHandler;
 	
 	@POST
 	@Path("/start")
@@ -69,4 +75,21 @@ public class SalaryHealthService {
 		return feeFinder.findAllWelfarePensionAndRate(startCommand,true);
 	}
 	
+	@POST
+	@Path("/startwelfarestandard")
+	public List<CusWelfarePensionStandardDto> startWelfareStandardMonthly(StartCommandHealth startCommand) {
+		return feeFinder.findAllWelfarePensionAndContributionRate(startCommand, false);
+	}
+	
+	@POST
+	@Path("/updatewelfarestandard")
+	public List<String> updateWelfareStandard(UpdateContributionRateDto updateContributionRateDto) {
+		return contributionRateHandler.handle(updateContributionRateDto);
+	}
+	
+	@POST
+	@Path("/countwelfarestandard")
+	public List<CusWelfarePensionStandardDto> countWelfareStandardMonthly(StartCommandHealth startCommand) {
+		return feeFinder.findAllWelfarePensionAndContributionRate(startCommand, true);
+	}
 }

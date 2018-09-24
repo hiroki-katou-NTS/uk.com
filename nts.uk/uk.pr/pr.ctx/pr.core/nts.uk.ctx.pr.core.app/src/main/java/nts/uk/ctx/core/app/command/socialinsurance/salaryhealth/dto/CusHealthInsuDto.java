@@ -12,8 +12,8 @@ public class CusHealthInsuDto {
 	
 	private int healthInsuranceGrade;
 	private long standardMonthlyFee;
-	private long rewardMonthlyLowerLimit;
-	private long rewardMonthlyUpperLimit;
+	private Long rewardMonthlyLowerLimit;
+	private Long rewardMonthlyUpperLimit;
 	private String  inHealthInsurancePremium;
 	private String  inNursingCare;
 	private String  inSpecInsurancePremium;

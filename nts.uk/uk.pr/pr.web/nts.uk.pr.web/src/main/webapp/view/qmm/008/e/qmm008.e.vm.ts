@@ -1,12 +1,27 @@
 module nts.uk.pr.view.qmm008.e {
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
        export class ScreenModel {
            dataList: KnockoutObservableArray<RowData>;
            header : KnockoutObservable<HeaderData> = ko.observable(new HeaderData ());
+           officeCode: KnockoutObservable<string> = ko.observable(null);
+           socialInsuranceName: KnockoutObservable<string> = ko.observable(null);
+           startMonth: KnockoutObservable<string> = ko.observable(null);
+           endMonth: KnockoutObservable<string> = ko.observable(null);
+           displayStart: KnockoutObservable<string> = ko.observable(null);
+           displayEnd: KnockoutObservable<string> = ko.observable(null);
+           historyId: KnockoutObservable<string> = ko.observable(null);
            constructor(){
                var self = this;
                self.dataList = ko.observableArray([]);
-               let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
+               let dataGetShare = getShared("QMM008_E_PARAMS");
+               self.officeCode(dataGetShare.selectedOffice.socialInsuranceCode);
+               self.socialInsuranceName(dataGetShare.selectedOffice.socialInsuranceName);
+               self.displayStart(dataGetShare.selectedHistory.displayStart);
+               self.displayEnd(dataGetShare.selectedHistory.displayEnd);
+               self.historyId(dataGetShare.selectedHistory.historyId);
+               self.startMonth(dataGetShare.selectedHistory.startMonth);
+               let command = { historyId: self.historyId(), date: self.startMonth() };
                nts.uk.pr.view.qmm008.e.service.startScreen(command).done(function(response) {
                    for(var i = 0 ; i < response.cusDataDtos.length ; i++) {
                        self.dataList.push(response.cusDataDtos[i]);
@@ -24,7 +39,7 @@ module nts.uk.pr.view.qmm008.e {
                let self = this;
                let command = {
                 cusDataDtos :    ko.toJS(self.dataList()) ,
-                historyId : 'e091445c-a610-4362-a4e9-fa89db856fd2'
+                historyId : self.historyId()
                };
                nts.uk.pr.view.qmm008.e.service.update(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -35,11 +50,20 @@ module nts.uk.pr.view.qmm008.e {
            }
            
            /**
+            *  close dialog
+            */
+
+           private closeDialog(): void {
+               nts.uk.ui.windows.close();
+           }
+           
+           
+           /**
             * count
             */
            private count() : void {
                let self = this;
-               let command = { historyId: 'e091445c-a610-4362-a4e9-fa89db856fd2',date : 201802 };
+               let command = { historyId: self.historyId(), date: self.startMonth()  };
                nts.uk.pr.view.qmm008.e.service.count(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                        self.dataList([]);
