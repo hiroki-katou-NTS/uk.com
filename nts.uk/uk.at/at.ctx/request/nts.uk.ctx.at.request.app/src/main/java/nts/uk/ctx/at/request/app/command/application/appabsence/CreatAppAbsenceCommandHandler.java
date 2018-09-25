@@ -304,7 +304,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
 				command.getWorkTypeCode() == null ? Optional.empty() : Optional.of(command.getWorkTypeCode()), 
 				command.getWorkTimeCode() == null ? Optional.empty() : Optional.of(command.getWorkTimeCode()), 
-				Optional.empty(), Optional.empty(), Optional.empty()));
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(startDate), Optional.of(endDate)));
 		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, command.getEmployeeID(), 
 				new DatePeriod(startDate, startDate.addYears(1)), false, startDate, new DatePeriod(startDate, endDate),
 				true, new ArrayList<>(), new ArrayList<>(), appData, chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual,

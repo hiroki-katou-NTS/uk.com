@@ -45,8 +45,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private InterimRemainRepository inRemainData;
 	@Inject
-	private InterimRemainRepository interimRemainRepos;
-	@Inject
 	private TmpAnnualHolidayMngRepository annualHolidayMngRepos;
 	@Inject
 	private TmpResereLeaveMngRepository resereLeave;
