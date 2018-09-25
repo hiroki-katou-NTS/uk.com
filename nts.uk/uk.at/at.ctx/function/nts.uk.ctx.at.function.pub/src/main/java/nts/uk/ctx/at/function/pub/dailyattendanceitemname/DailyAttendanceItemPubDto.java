@@ -11,9 +11,9 @@ public class DailyAttendanceItemPubDto {
 
 	private int attendanceItemDisplayNumber;
 
-	private int typeOfAttendanceItem;
+	private Integer typeOfAttendanceItem;
 	
-	private int frameCategory;
+	private Integer frameCategory;
 
 	
 }

@@ -1026,7 +1026,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.initScreenSPR = 1;
                                 self.clickFromExtract = false;
                                 self.showTextStyle = false;
-                                self.loadRowScreen(false);
+                                self.loadRowScreen(false, self.flagCalculation);
                                 errorAll = true;
                             }
 
@@ -1219,7 +1219,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                             if (data.resultError.errorMap[2] != undefined) {
                                 self.listCheckHolidays(data.resultError.errorMap[2]);
-                                self.loadRowScreen(false);
+                                self.loadRowScreen(false, true);
                             }
     
                             if (data.resultError.errorMap[3] != undefined) {
@@ -2947,13 +2947,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 appListAtr: 0,
                 appType: -1,
                 unapprovalStatus: true,
-                approvalStatus: true,//true
-                denialStatus: true,//true
-                agentApprovalStatus: true,//true
+                approvalStatus: false,//false
+                denialStatus: false,//false
+                agentApprovalStatus: false,//false
                 /**承認状況＿差戻*/
-                remandStatus: true,//true 
+                remandStatus: false,//false 
                 /**承認状況＿取消*/
-                cancelStatus: true,//true
+                cancelStatus: false,//false
                 /**申請表示対象*/
                 appDisplayAtr: 0,//0
                 /**社員IDリスト*/

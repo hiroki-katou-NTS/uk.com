@@ -470,10 +470,11 @@ module nts.uk.ui.koExtentions {
             $input.focus(() => {
                 if (!$input.attr('readonly')) {
                     // Remove separator (comma)
-                    let numb = Number(data.value());
+                    let value = ko.toJS(data.value),
+                        numb = Number(value);
 
-                    if(_.isNumber(numb) && !_.isNaN(numb) && String(data.value()).trim() != '') {
-                        $input.val(numb.toLocaleString(undefined, {useGrouping: false}));
+                    if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
+                        $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
                     } else {
                         $input.val(data.value());
                     }
@@ -648,6 +649,15 @@ module nts.uk.ui.koExtentions {
                 }
                 
             });
+        }
+        
+        update($input: JQuery, data: any) {
+            super.update($input, data);
+            let value = ko.unwrap(data.value);
+            if ($input.ntsError("hasError") && typeof(value) === "number") {
+                $input.ntsError("clearKibanError");
+                $input.val(this.getFormatter(data).format(value));
+            }
         }
         
         getDefaultOption(): any {

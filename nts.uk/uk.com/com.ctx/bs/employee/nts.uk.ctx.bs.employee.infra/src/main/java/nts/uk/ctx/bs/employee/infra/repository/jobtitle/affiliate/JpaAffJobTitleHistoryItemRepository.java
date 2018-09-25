@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHistItem;
@@ -180,9 +182,17 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 		if (historyIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BsymtAffJobTitleHistItem> entities = this.queryProxy()
-				.query(GET_ALL_BY_HISTID, BsymtAffJobTitleHistItem.class).setParameter("histIds", historyIds).getList();
-		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
+		
+		List<AffJobTitleHistoryItem> results = new ArrayList<>();
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
+			List<AffJobTitleHistoryItem> subResults = this.queryProxy()
+				.query(GET_ALL_BY_HISTID, BsymtAffJobTitleHistItem.class).setParameter("histIds", subIds)
+				.getList(ent -> toDomain(ent));
+			
+			results.addAll(subResults);
+		});
+
+		return results;
 	}
 	
 	// request list 515

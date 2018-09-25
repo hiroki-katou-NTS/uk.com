@@ -55,65 +55,32 @@ module nts.uk.time {
     }
 
     export function yearInJapanEmpire(date: any): JapanYearMonth {
-        let year = moment.utc(date, defaultInputFormat, true).year();
-        if (year == 1868) {
-            return new JapanYearMonth("明治元年");
-        }
-        if (year <= 1912) {
-            var diff = year - 1867;
-            return new JapanYearMonth("明治 ", diff);
-        }
-        if (year <= 1926) {
-            var diff = year - 1911;
-            return new JapanYearMonth("大正 ", diff);
-        }
-        if (year < 1989) {
-            var diff = year - 1925;
-            return new JapanYearMonth("昭和 ", diff);
-        }
-        if (year == 1989) {
-            return new JapanYearMonth("平成元年 ", diff);
-        }
-        var diff = year - 1988;
-        return new JapanYearMonth("平成 ", diff);
+        return yearmonthInJapanEmpire(date, true);
     }
 
-    export function yearmonthInJapanEmpire(yearmonth): JapanYearMonth {
-        if (!(yearmonth instanceof String)) {
-            yearmonth = "" + yearmonth;
+    export function yearmonthInJapanEmpire(yearmonth: any, onlyYear?: boolean): JapanYearMonth {
+        if(!nts.uk.ntsNumber.isNumber(yearmonth) && _.isEmpty(yearmonth)){
+            return null;
         }
-        var nguyennien = "元年";
-        yearmonth = yearmonth.replace("/", "");
-        var year = parseInt(yearmonth.substring(0, 4));
-        var month = parseInt(yearmonth.substring(4));
-        if (year == 1868) {
-            return new JapanYearMonth("明治元年 ", undefined, month);
+        let dateString = yearmonth.toString(), 
+            seperator = (dateString.match(/\//g) || []).length
+        
+        if(seperator > 2 || seperator < 0){
+            return null;
         }
-        if (year < 1912) {
-            var diff = year - 1867;
-            return new JapanYearMonth("明治 ", diff, month);
+        let format = _.filter(defaultInputFormat, function(f){ return (f.match(/\//g) || []).length === seperator}),
+            formatted = moment.utc(dateString, defaultInputFormat, true),
+            formattedYear = formatted.year();
+        
+        for(let i of __viewContext.env.japaneseEras){
+            let startEraYear = moment(i.start).year(),
+                endEraYear = moment(i.end).year();
+            if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
+                let diff = formattedYear - startEraYear;
+                return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
+            }               
         }
-        if (year == 1912) {
-            if (month < 8) return new JapanYearMonth("明治 ", 45, month);
-            return new JapanYearMonth("大正元年 ", undefined, month);
-        }
-        if (year < 1926) {
-            var diff = year - 1911;
-            return new JapanYearMonth("大正 ", diff, month);
-        }
-        if (year == 1926) {
-            if (month < 12) return new JapanYearMonth("大正", 15, month);
-            return new JapanYearMonth("昭和元年 ", undefined, month);
-        }
-        if (year < 1989) {
-            var diff = year - 1925;
-            return new JapanYearMonth("昭和 ", diff, month);
-        }
-        if (year == 1989) {
-            return new JapanYearMonth("平成元年 ", undefined, month);
-        }
-        var diff = year - 1988;
-        return new JapanYearMonth("平成 ", diff, month);
+        return null;
     }
 
     export class JapanDateMoment {
