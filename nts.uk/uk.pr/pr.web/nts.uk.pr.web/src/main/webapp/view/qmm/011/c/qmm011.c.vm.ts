@@ -29,7 +29,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         empContrRatio: KnockoutObservable<string> = ko.observable('');
         busiOwFracClass: KnockoutObservable<string> = ko.observable('');
         isNewMode: KnockoutObservable<number> = ko.observable(2);
-
+        transferMethod: KnockoutObservable<number> = ko.observable();
         listHisTemp: Array<IOccAccIsHis> = [];
         listAccInsurPreRateTemp: Array<IAccInsurPreRate> = [];
 
@@ -38,18 +38,12 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             self.initScreen(null);
             self.selectedEmpInsHisId.subscribe((data) => {
                 nts.uk.ui.errors.clearAll();
-                if (self.listOccAccIsHis()[0].hisId == HIS_ID_TEMP) {
+                if(data == HIS_ID_TEMP ){
                     self.isNewMode(MODE.NEW);
                 }
                 self.selectedEmpInsHis(self.getIndex(data));
                 self.setOccAccIsHis(self.selectedEmpInsHis());
-                if (self.selectedEmpInsHisId() == HIS_ID_TEMP) {
-                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.listAccInsurPreRateTemp));
-
-                }
-                else {
-                    self.getAccInsurPreRate();
-                }
+                self.getAccInsurPreRate();
             });
         }
 
@@ -86,8 +80,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                         self.isNewMode(MODE.NEW);
                     }
 
-                } else {
-                    console.log("không có data tới !!");
                 }
 
             });
@@ -95,16 +87,19 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         getAccInsurPreRate() {
             let self = this;
-            service.getAccInsurPreRate(self.selectedEmpInsHisId()).done((listAccInsurPreRate: Array<IAccInsurPreRate>) => {
-                console.log(self.selectedEmpInsHisId().toString());
+            let hisId :string = self.selectedEmpInsHisId();
+            if(self.transferMethod() == 0 && self.listOccAccIsHis().length > 1 && self.isNewMode() == MODE.NEW){
+                hisId = self.listOccAccIsHis()[FIRST + 1].hisId;
+            }
+            service.getAccInsurPreRate(hisId).done((listAccInsurPreRate: Array<IAccInsurPreRate>) => {
+
                 if (listAccInsurPreRate && listAccInsurPreRate.length > 0) {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(listAccInsurPreRate)));
-                    if (self.listOccAccIsHis()[0].hisId != HIS_ID_TEMP)
-                        self.isNewMode(MODE.UPDATE);
+                    self.isNewMode(MODE.UPDATE);
+                    if (self.selectedEmpInsHisId() == HIS_ID_TEMP)
+                        self.isNewMode(MODE.NEW);
                 } else {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
-
-
                 }
 
             });
@@ -132,7 +127,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     return o.occAccInsurBusNo == key;
                 });
 
-
                 if (temp == null) {
                     let data: IAccInsurPreRate = {
                         hisId: listAccInsurPreRate[0].hisId,
@@ -150,7 +144,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
             });
             return arrResulf;
-
         }
 
         addOccAccIsHis(start: number, list: Array<OccAccIsHis>, typeCreate: number) {
@@ -160,9 +153,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             occAccIsHis.hisId = '000';
             occAccIsHis.startYearMonth = start.toString();
             occAccIsHis.endYearMonth = '999912';
-            occAccIsHis.display = self.convertMonthYearToString(occAccIsHis.startYearMonth) + " ~ " + self.convertMonthYearToString(occAccIsHis.endYearMonth);
+            occAccIsHis.display = self.convertMonthYearToString(occAccIsHis.startYearMonth) + " ～ " + self.convertMonthYearToString(occAccIsHis.endYearMonth);
             if (list && list.length > 0) {
-                list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " ~ " + self.convertMonthYearToString((start - 1).toString());
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start + 11) : (start - 1);
+                list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " ～ " + self.convertMonthYearToString((end).toString());
             }
             listOccAccIsHis.push(occAccIsHis);
             _.each(list, (item) => {
@@ -193,7 +187,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                         empConRatio: value.empConRatio().toString(),
                         useArt: value.useArt
                     };
-                    console.log(value.toString() + ' fuishuifhsduihfsudif');
                     dataInsurPreRate.push(temp);
                 });
             }
@@ -233,17 +226,16 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
                     self.isNewMode(MODE.NEW);
                     // Create new one OccAccIsPrRate
+                    self.transferMethod(params.transferMethod);
                     self.startYearMonth(params.startYearMonth);
                     self.listOccAccIsHis(self.addOccAccIsHis(self.startYearMonth(), self.listOccAccIsHis(), params.transferMethod));
-                    self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
                     self.listOccAccIsHis(_.sortBy(self.listOccAccIsHis(), 'startYearMonth').reverse());
+                    self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
                     self.getAccInsurPreRate();
 
                 } else {
                     self.initScreen(null);
                 }
-
-
             });
         }
 
@@ -255,7 +247,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 self.getAccInsurPreRate();
                 self.getOccAccIsPrRate();
                 nts.uk.ui.errors.clearAll();
-
             });
         }
 
@@ -337,7 +328,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             let self = this;
             let laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0
             let canDelete: boolean = false;
-            if (self.listOccAccIsHis().length > 2 && self.hisId() == self.listOccAccIsHis()[FIRST].hisId) {
+            if (self.listOccAccIsHis().length > 1 && self.hisId() == self.listOccAccIsHis()[FIRST].hisId) {
                 canDelete = true;
             }
             setShared('QMM011_F_PARAMS_INPUT', {
@@ -411,7 +402,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 dto.hisId = item.hisId;
                 dto.startYearMonth = item.startYearMonth;
                 dto.endYearMonth = item.endYearMonth;
-                dto.display = this.convertMonthYearToString(item.startYearMonth) + " ~ " + this.convertMonthYearToString(item.endYearMonth);
+                dto.display = this.convertMonthYearToString(item.startYearMonth) + " ～ " + this.convertMonthYearToString(item.endYearMonth);
                 listEmp.push(dto);
             })
             return listEmp;
@@ -548,11 +539,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
     export function getListPerFracClass(): Array<model.ItemModel> {
         return [
-            new model.ItemModel('0', getText('CMF002_358')),
-            new model.ItemModel('1', getText('CMF002_359')),
-            new model.ItemModel('2', getText('CMF002_360')),
-            new model.ItemModel('3', getText('CMF002_361')),
-            new model.ItemModel('4', getText('CMF002_362'))
+            new model.ItemModel('0', getText('Enum_InsuPremiumFractionClassification_TRUNCATION')),
+            new model.ItemModel('1', getText('Enum_InsuPremiumFractionClassification_ROUND_UP')),
+            new model.ItemModel('2', getText('Enum_InsuPremiumFractionClassification_ROUND_4_UP_5')),
+            new model.ItemModel('3', getText('Enum_InsuPremiumFractionClassification_ROUND_5_UP_6')),
+            new model.ItemModel('4', getText('Enum_InsuPremiumFractionClassification_ROUND_SUPER_5'))
         ];
     }
 

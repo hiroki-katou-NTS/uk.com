@@ -376,11 +376,11 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
     
     export function getListPerFracClass(): Array<model.ItemModel> {
         return [
-            new model.ItemModel('0', getText('CMF002_358')),
-            new model.ItemModel('1', getText('CMF002_359')),
-            new model.ItemModel('2', getText('CMF002_360')),
-            new model.ItemModel('3', getText('CMF002_361')),
-            new model.ItemModel('4', getText('CMF002_362'))
+            new model.ItemModel('0', getText('Enum_InsuPremiumFractionClassification_TRUNCATION')),
+            new model.ItemModel('1', getText('Enum_InsuPremiumFractionClassification_ROUND_UP')),
+            new model.ItemModel('2', getText('Enum_InsuPremiumFractionClassification_ROUND_4_UP_5')),
+            new model.ItemModel('3', getText('Enum_InsuPremiumFractionClassification_ROUND_5_UP_6')),
+            new model.ItemModel('4', getText('Enum_InsuPremiumFractionClassification_ROUND_SUPER_5'))
         ];
     }
     
