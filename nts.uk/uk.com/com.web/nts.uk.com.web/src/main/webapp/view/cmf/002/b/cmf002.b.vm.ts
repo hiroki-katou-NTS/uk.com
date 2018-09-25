@@ -55,7 +55,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                if (data) {
                    $("#B5_1").focus();
                } else {
-                   $("#B3_3").focus();
+                   $("#B3_3_container").focus();
                }
             });
             
@@ -84,6 +84,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 } else {
                     self.isNewMode(true);
                     self.createNewCondition();
+                    self.conditionSettingList(itemList);
                 }
             }).always(() => {
                 block.clear();

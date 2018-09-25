@@ -25,7 +25,7 @@ module nts.uk.com.view.cmf002.h.viewmodel {
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(7);
-            self.selectedCode = ko.observable(0);
+            self.selectedCode = ko.observable("0");
             self.isEnable = ko.observable(true);
             self.mode = ko.observable(1);
             self.initComponent();

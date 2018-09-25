@@ -66,12 +66,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             let params = getShared('CMF002_J_PARAMS');
             self.modeScreen(params.screenMode);
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
-                // get data shared
-                service.getCdConvertName(params.formatSetting.cdConvertCd).done(result => {
-                    if (result) {
-                        self.characterDataFormatSetting().cdConvertName(result);
-                    }
-                });
                 self.characterDataFormatSetting(new model.CharacterDataFormatSetting(params.formatSetting));
             } else {
                 service.getCharacterDataFormatSetting().done(result => {
@@ -92,7 +86,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             if (self.characterDataFormatSetting().cdEditting() != model.NOT_USE_ATR.USE) {
                 $('#J3_2_1').ntsError('clear');
                 command.cdEditDigit = null;
-                command.spaceEditting = null;
+                command.cdEdittingMethod = null;
             }
              if (self.characterDataFormatSetting().effectDigitLength() != model.NOT_USE_ATR.USE) {
                 $('#J2_2_1').ntsError('clear');
@@ -157,6 +151,8 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             } else {
                 $('#J2_2_1').ntsError('clear');
                 $('#J2_2_3').ntsError('clear');
+                self.characterDataFormatSetting().startDigit(Math.floor(self.characterDataFormatSetting().startDigit()));
+                self.characterDataFormatSetting().endDigit(Math.floor(self.characterDataFormatSetting().endDigit()));
                 return false;
             }
         }
@@ -166,6 +162,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 return true;
             } else {
                 $('#J3_2_1').ntsError('clear');
+                self.characterDataFormatSetting().cdEditDigit(Math.floor(self.characterDataFormatSetting().cdEditDigit()));
                 return false;
             }
         }

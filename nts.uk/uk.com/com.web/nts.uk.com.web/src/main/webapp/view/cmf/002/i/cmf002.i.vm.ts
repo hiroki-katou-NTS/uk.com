@@ -89,6 +89,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let enable = self.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.DECIMAL && self.enableGlobal();
             if (!enable) {
                 $('#I2_2_2').ntsError('clear');
+                self.numberDataFormatSetting().decimalDigit(Math.floor(self.numberDataFormatSetting().decimalDigit()));
             }
             return enable;
         }
@@ -104,6 +105,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let enable = self.numberDataFormatSetting().fixedValueOperation() == self.use && self.enableGlobal();
             if (!enable) {
                 $('#I4_3').ntsError('clear');
+                self.numberDataFormatSetting().fixedCalculationValue(Math.floor((self.numberDataFormatSetting().fixedCalculationValue()) * 100) / 100);
             }
             return enable;
         }
@@ -112,6 +114,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let enable = self.numberDataFormatSetting().fixedLengthOutput() == self.use && self.enableGlobal();
             if (!enable) {
                 $('#I5_2_2').ntsError('clear');
+                self.numberDataFormatSetting().fixedLengthIntegerDigit(Math.floor(self.numberDataFormatSetting().fixedLengthIntegerDigit()));
             }
             return enable;
         }
