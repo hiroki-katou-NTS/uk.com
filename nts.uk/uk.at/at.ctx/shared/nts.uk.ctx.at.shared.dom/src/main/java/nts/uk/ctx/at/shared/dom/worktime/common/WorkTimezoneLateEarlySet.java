@@ -66,8 +66,8 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject {
 	 * 共通設定をtrueに変更した「就業時間帯の遅刻・早退設定」を返す
 	 * @return
 	 */
-	public WorkTimezoneLateEarlySet changeCommonSet() {
-		return new WorkTimezoneLateEarlySet(new EmTimezoneLateEarlyCommonSet(true),this.otherClassSets);
+	public WorkTimezoneLateEarlySet changeCommonSet(boolean flag) {
+		return new WorkTimezoneLateEarlySet(new EmTimezoneLateEarlyCommonSet(flag),this.otherClassSets);
 	}
 	
 }

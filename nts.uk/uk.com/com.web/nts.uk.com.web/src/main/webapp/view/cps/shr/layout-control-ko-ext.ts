@@ -278,6 +278,10 @@ module nts.custombinding {
                         display: inline-block;
                     }
 
+                    .layout-control .item-controls {
+                        min-height: 145px;
+                    }
+
                     .layout-control .item-controls .table-container {
                         color: #000;
                         overflow: hidden;
@@ -784,6 +788,7 @@ module nts.custombinding {
                                     <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
                                         <div class="item-controls">
                                             <div data-bind="ntsFormLabel: { required: false, text: className || '' }" class="limited-label"></div>
+                                            <!-- ko if: ko.toJS($show) -->
                                             <div class="table-container header-1rows" data-bind="let: {
                                                         __lft: ko.observable(0),
                                                         __flft: ko.observable(0)
@@ -833,6 +838,7 @@ module nts.custombinding {
                                                     </table>
                                                 </div>
                                             </div>
+                                            <!-- /ko -->
                                         </div>
                                     <!-- /ko -->
     
@@ -2163,6 +2169,9 @@ module nts.custombinding {
                         }
                         // change value
                         opts.sortable.outData(inputs);
+                    } else {
+                        // init data for save layout
+                        opts.sortable.data.valueHasMutated();
                     }
                 },
                 def_type = (items: Array<any>) => {
@@ -2547,6 +2556,10 @@ module nts.custombinding {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
 
+                    if (!_.has(x, '$show') || !ko.isObservable(x.$show)) {
+                        x.$show = ko.observable(true);
+                    }
+
                     if ((!_.has(x, "items") || !x.items)) {
                         if (x.layoutItemType != IT_CLA_TYPE.SPER) {
                             x.items = [];
@@ -2577,6 +2590,13 @@ module nts.custombinding {
                             case IT_CLA_TYPE.ITEM:
                             case IT_CLA_TYPE.LIST:
                                 _.each(x.items, (def, i) => modifitem(def));
+                                if (x.layoutItemType == IT_CLA_TYPE.LIST) {
+                                    x.$show(false);
+                                    let sto = setTimeout(() => {
+                                        x.$show(true);
+                                        clearTimeout(sto);
+                                    }, 0);
+                                }
                                 break;
                             case IT_CLA_TYPE.SPER:
                                 x.items = undefined;
@@ -2597,7 +2617,7 @@ module nts.custombinding {
                 // write primitive constraints to viewContext
                 primitiveConsts();
 
-                if (typeof $editable === 'boolean' ? $editable === true : $editable === 0) {
+                if (typeof $editable === 'boolean' || $editable !== 2) {
                     // init data for save layout
                     opts.sortable.outData(_(data || []).map((item, i) => {
                         return {
@@ -2905,7 +2925,8 @@ module nts.custombinding {
                                                     $.when.apply($, dfds).then(function() {
                                                         let args = _.flatten(arguments),
                                                             items = _(args)
-                                                                .filter(x => !!x)
+                                                                .filter(x => !!x && x.itemTypeState.itemType == ITEM_TYPE.SINGLE)
+                                                                .uniqBy((x: IItemDefinition) => x.id)
                                                                 .map((x: IItemDefinition) => {
                                                                     if (ids.indexOf(x.id) > -1) {
                                                                         x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;

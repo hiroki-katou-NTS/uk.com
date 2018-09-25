@@ -73,7 +73,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  formulaRepository.find(companyId),
 									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
 									  zeroTimeRepository.findByCId(companyId),
-									  specificWorkRuleRepository.findUpperLimitWkHourByCid(AppContexts.user().companyId()));
+									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId));
 	}
 
 }

@@ -55,18 +55,21 @@ module nts.uk.at.view.kmf022 {
                 switch (tab.id) {
                     case 'a':
                         self.currentTab('a');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelA && typeof view.viewmodelA.start == 'function') {
                             view.viewmodelA.start();
                         }
                         break;
                     case 'l':
                         self.currentTab('l');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelL && typeof view.viewmodelL.start == 'function') {
                             view.viewmodelL.start();
                         }
                         break;
                     case 'm':
                         self.currentTab('m');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelM && typeof view.viewmodelM.start == 'function') {
                             view.viewmodelM.start();
                         }

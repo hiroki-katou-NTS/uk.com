@@ -343,17 +343,17 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 * java.util.List)
 	 */
 	@Override
-	public Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId,
+	public Map<Pair<String, GeneralDate>, Pair<String, String>> getJobTitleMapIdBaseDateName(String companyId,
 			List<String> jobIds, List<GeneralDate> baseDates) {
 		// Query infos
 		Map<GeneralDate, List<JobTitleInfo>> mapJobTitleInfos = this.jobTitleInfoRepository
 				.findByIds(companyId, jobIds, baseDates);
 
-		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
+		Map<Pair<String, GeneralDate>, Pair<String, String>> mapResult = new HashMap<>();
 		mapJobTitleInfos.entrySet().forEach(item -> {
 			item.getValue().forEach(jobTitleInfo -> {
 				mapResult.put(Pair.of(jobTitleInfo.getJobTitleId(), item.getKey()),
-						jobTitleInfo.getJobTitleName().v());
+						Pair.of(jobTitleInfo.getJobTitleCode().v(),jobTitleInfo.getJobTitleName().v()));
 			});
 		});
 

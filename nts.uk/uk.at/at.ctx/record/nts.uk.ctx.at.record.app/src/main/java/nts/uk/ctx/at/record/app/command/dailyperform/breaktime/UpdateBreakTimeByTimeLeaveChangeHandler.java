@@ -14,7 +14,6 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleAction;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleResult;
@@ -117,15 +116,21 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	private BreakTimeOfDailyPerformance mergeWithEditStates(UpdateBreakTimeByTimeLeaveChangeCommand command,
 			BreakTimeOfDailyPerformance breakTime, BreakTimeOfDailyPerformance breakTimeRecord) {
 		List<EditStateOfDailyPerformance> editStates = getEditStateByItems(command);
-		if(CollectionUtil.isEmpty(editStates)){
+		
+		if(editStates.isEmpty() && (breakTime == null || breakTime.getBreakTimeSheets().isEmpty())){
 			return breakTime;
 		}
+		
 		List<Integer> itemsToMerge = getItemsToMerge(editStates);
+		
 		if (!itemsToMerge.isEmpty()) {
 			List<ItemValue> ipByHandValues = AttendanceItemUtil.toItemValues(BreakTimeDailyDto.getDto(breakTime), itemsToMerge);
 			
-			return AttendanceItemUtil.fromItemValues(BreakTimeDailyDto.getDto(breakTimeRecord), ipByHandValues.stream()
-						.filter(c -> c != null).collect(Collectors.toList())).toDomain(command.employeeId, command.targetDate);
+			BreakTimeDailyDto record = BreakTimeDailyDto.getDto(breakTimeRecord);
+			List<ItemValue> recordVal = AttendanceItemUtil.toItemValues(record, itemsToMerge);
+			ipByHandValues.removeAll(recordVal);
+			
+			return AttendanceItemUtil.fromItemValues(record, ipByHandValues).toDomain(command.employeeId, command.targetDate);
 		}
 		
 		return breakTimeRecord;
@@ -152,10 +157,14 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 	}
 
 	private List<Integer> getItemBys(List<EditStateOfDailyPerformance> editStates, List<Integer> toGet) {
+		if(editStates.isEmpty()){
+			return toGet;
+		}
 		
 		List<Integer> edited = editStates.stream().filter(e -> toGet.contains(e.getAttendanceItemId()) && isInputByHands(e.getEditStateSetting()))
 												.map(c -> c.getAttendanceItemId()) 
 												.collect(Collectors.toList());
+		
 		return toGet.stream().filter(i -> !edited.contains(i)).collect(Collectors.toList());
 	}
 

@@ -376,7 +376,7 @@ module nts.uk.ui.mgrid {
             let sizeUi = { headerWrappers: headerWrappers, bodyWrappers: bodyWrappers,
                             sumWrappers: sumWrappers, headerColGroup: headerColGroup,
                             bodyColGroup: bodyColGroup, sumColGroup: sumColGroup };
-            let freeAdjuster = new kt.ColumnAdjuster([ _maxFixedWidth, freeWrapperWidth ], self.headerHeight, sizeUi);
+            let freeAdjuster = new kt.ColumnAdjuster([ _maxFixedWidth, freeWrapperWidth ], self.headerHeight, sizeUi, self.float);
             kt._adjuster = freeAdjuster;
             freeAdjuster.handle();
             su.binding(self.$container, self.autoFitWindow);
@@ -1818,10 +1818,11 @@ module nts.uk.ui.mgrid {
             $ownerDoc: HTMLElement;
             actionDetails: any;
             
-            constructor(widths: Array<string>, height: any, sizeUi: any) {
+            constructor(widths: Array<string>, height: any, sizeUi: any, unshift?: any) {
                 this.headerWrappers = sizeUi.headerWrappers;
                 this.bodyWrappers = sizeUi.bodyWrappers;
                 this.sumWrappers = sizeUi.sumWrappers;
+                this.unshiftRight = unshift;
                 _.forEach(sizeUi.headerColGroup, g => {
                     if (g) {
                         let vCols = g.filter(c => c.style.display !== "none");
@@ -1934,7 +1935,7 @@ module nts.uk.ui.mgrid {
             cursorDown(event: any, trg?: any) {
                 let self = this;
                 if (self.actionDetails) {
-                    self.cursorUp(event);
+                    self.unshiftRight ? self.cursorUp(event) : self.cursorUpShift(event);
                 }
                 let $targetGrip = event.target;
                 if (!selector.is($targetGrip, "." + LINE)
@@ -2313,12 +2314,12 @@ module nts.uk.ui.mgrid {
             syncLines() {
                 let self = this;
                 self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                let left = 0;
-                _.forEach(self.headerColGroup[self.actionDetails.isFixed ? 0 : 1], function($td: HTMLElement, index: number) {
-                    if ($td.style.display === "none") return;
+                let left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
+                _.forEach(group, function($td: HTMLElement, index: number) {
+                    if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1)) return;
                     left += parseFloat($td.style.width);
                     if (index < self.actionDetails.gripIndex) return;
-                    if (index > self.actionDetails.gripIndex) return false;
+                    if (self.unshiftRight && index > self.actionDetails.gripIndex) return false;
                     let lineArr = self.actionDetails.isFixed ? self.fixedLines : self.lines;
                     let div = lineArr[index];
                     div.style.left = left + "px";
@@ -3363,7 +3364,7 @@ module nts.uk.ui.mgrid {
                         }
                     } else if ((sCol = _specialLinkColumn[editor.columnKey]) && sCol.changed) {
                         let data = _mafollicle[_currentPage].origDs[editor.rowIdx];
-                        sCol.changed(editor.columnKey, data[_pk], inputVal, data[editor.columnKey]).done(res => {
+                        sCol.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(res => {
                             let $linkCell = lch.cellAt($grid, editor.rowIdx, sCol.column);
                             if ($linkCell) {
                                 $linkCell.querySelector("a").textContent = res;
@@ -3653,9 +3654,12 @@ module nts.uk.ui.mgrid {
         export function format(column: any, value: any, spl?: any) {
             if (util.isNullOrEmpty(_.trim(value))) return value;
             if (column.constraint) {
-                let constraint = column.constraint;
-                let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
-                            : constraint.cDisplayType;
+                let contrainte, valueType, constraint = column.constraint;
+                if (constraint.primitiveValue) {
+                    contrainte = ui.validation.getConstraint(constraint.primitiveValue);
+                    valueType = contrainte.valueType;
+                } else valueType = constraint.cDisplayType;
+                
                 if (!_.isNil(value) && value !== "") {
                     if (valueType === "TimeWithDay") {
                         let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
@@ -4732,8 +4736,10 @@ module nts.uk.ui.mgrid {
                     let sCol = _specialColumn[data.columnKey];
                     if (sCol) {
                         let $cCell = lch.cellAt(_$grid[0], coord.rowIdx, sCol);
-                        if ($cCell) { 
-                            $cCell.textContent = value;
+                        if ($cCell) {
+                            let column = _columnsMap[sCol];
+                            let formatted = su.format(column[0], value); 
+                            $cCell.textContent = formatted;
                             su.wedgeCell(_$grid[0], { rowIdx: coord.rowIdx, columnKey: sCol },  value);
                             $.data($cCell, v.DATA, value);
                             khl.clear({ id: _dataSource[coord.rowIdx][_pk], columnKey: sCol, element: $cCell });
@@ -5290,9 +5296,18 @@ module nts.uk.ui.mgrid {
                         this.options.mode = "time";
                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                 .validate(value);
-                    case "TimeWithDay":
+                    case "StandardTimeWithDay":
                         this.options.timeWithDay = true;
                         let result = new TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value);
+                        if (result.isValid) {
+                            let formatter = new text.TimeWithDayFormatter(this.options);
+                            result.parsedValue = formatter.format(result.parsedValue);
+                        }
+                        return result;
+                    case "TimeWithDay":
+                        this.options.timeWithDay = true;
+                        let result = new nts.uk.ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
                                         .validate(value);
                         if (result.isValid) {
                             let formatter = new text.TimeWithDayFormatter(this.options);

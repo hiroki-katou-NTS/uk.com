@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.HalfIntegerMinValue;
  */
 //チェック条件値日数
 @HalfIntegerMinValue(-99999999.5)
-@HalfIntegerMaxValue(99999999.5)
+@HalfIntegerMaxValue(999999999.5)
 public class CheckedTimesValueDay  extends HalfIntegerPrimitiveValue<CheckedTimesValueDay> {
 
 	private static final long serialVersionUID = 1L;

@@ -149,9 +149,6 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
 		if(workTypeData.getDailyWork().isOneDay()) {
 			workTypeClass = workTypeData.getDailyWork().getOneDay();
-			if(!this.lstZansu().contains(workTypeClass)) {
-				return lstOutputData;
-			}
 			outputData.setWorkTypeClass(workTypeClass);
 			lstOutputData.add(this.createWithOneDayWorkType(cid, workTypeData, outputData));
 			//勤務区分をチェックする

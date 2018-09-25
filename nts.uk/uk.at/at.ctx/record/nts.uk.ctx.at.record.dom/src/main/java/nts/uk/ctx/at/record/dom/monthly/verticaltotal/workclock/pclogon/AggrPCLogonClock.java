@@ -62,26 +62,30 @@ public class AggrPCLogonClock {
 		val pcLogonInfo = pcLogonInfoOpt.get();
 
 		if (isLogon){
+			boolean isExistLogon = false;
 			
 			// ログオン時刻を合計
 			for (val logonInfo : pcLogonInfo.getLogOnInfo()){
 				if (!logonInfo.getLogOn().isPresent()) continue;
 				this.totalClock = this.totalClock.addMinutes(logonInfo.getLogOn().get().v());
-				
-				// 合計日数を加算
-				this.totalDays = this.totalDays.addDays(1.0);
+				isExistLogon = true;
 			}
+			
+			// 合計日数を加算
+			if (isExistLogon) this.totalDays = this.totalDays.addDays(1.0);
 		}
 		else {
+			boolean isExistLogoff = false;
 			
 			// ログオフ時刻を合計
 			for (val logonInfo : pcLogonInfo.getLogOnInfo()){
 				if (!logonInfo.getLogOff().isPresent()) continue;
 				this.totalClock = this.totalClock.addMinutes(logonInfo.getLogOff().get().v());
-				
-				// 合計日数を加算
-				this.totalDays = this.totalDays.addDays(1.0);
+				isExistLogoff = true;
 			}
+			
+			// 合計日数を加算
+			if (isExistLogoff) this.totalDays = this.totalDays.addDays(1.0);
 		}
 		
 		// 平均時刻を計算

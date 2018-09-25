@@ -274,7 +274,7 @@
 				</div>
 			</div>
 			<!-- A10 - Relationship -->
-			<div class="valign-center-kaf006  control-group-kaf006" data-bind = "if: holidayTypeCode() == 3">
+			<div class="valign-center-kaf006  control-group-kaf006" data-bind = "if: hdTypeDis">
 				<div data-bind = "if: fix">
 					<div class="valign-center-kaf006 control-group-kaf006">
 						<!--A10_1 続柄・喪主-->
@@ -297,6 +297,7 @@
 						</div>
 					</div>
 					<div class="valign-center-kaf006 control-group-kaf006">
+					<div data-bind = "if: relaResonDis">
 						<!--A10_4 続柄入力-->
 						<div class="lblTitle-kaf006 cm-column-kaf006"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_43')}</div>
@@ -316,8 +317,22 @@
                          <div class = 'maxDay' data-bind = "if: maxDayDis">
                          	<div data-bind = "text: maxDayline1"></div>
                          	<div data-bind = "text: maxDayline2"></div>
-                         </div>           	
+                         </div> 
+                   	</div>
+                   	<div data-bind = "if: !relaResonDis()">
+                         <!-- A10_6 -->
+                         <div class = 'maxDay limit-fix' data-bind = "if: maxDayDis">
+                         	<div data-bind = "text: maxDayline1"></div>
+                         	<div data-bind = "text: maxDayline2"></div>
+                         </div> 
+                    </div>          	
 					</div>
+				</div>
+				<div data-bind = "if: !fix() &amp; dataMax()">
+					<div class = 'maxDay limit-fix' data-bind = "if: maxDayDis">
+                       	<div data-bind = "text: maxDayline1"></div>
+                       	<div data-bind = "text: maxDayline2"></div>
+                 </div>
 				</div>
 			</div>
 			<!-- A7 - Reason -->

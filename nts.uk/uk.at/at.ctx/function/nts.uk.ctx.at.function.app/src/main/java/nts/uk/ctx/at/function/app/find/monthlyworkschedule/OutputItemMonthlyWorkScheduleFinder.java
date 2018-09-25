@@ -317,6 +317,6 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	 */
 	private Map<Integer, String> convertListToMapAttendanceItem(List<MonthlyAttendanceItemDto> lst) {
 		return lst.stream()
-				.collect(Collectors.toMap(MonthlyAttendanceItemDto::getCode, MonthlyAttendanceItemDto::getName));
+				.collect(Collectors.toMap(MonthlyAttendanceItemDto::getId, MonthlyAttendanceItemDto::getName));
 	}
 }

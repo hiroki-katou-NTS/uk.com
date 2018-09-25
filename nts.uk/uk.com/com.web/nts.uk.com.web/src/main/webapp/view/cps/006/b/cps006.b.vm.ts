@@ -8,11 +8,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-
         itemInfoDefList: KnockoutObservableArray<ItemInfoDef> = ko.observableArray([]);
-
         currentSelectId: KnockoutObservable<string> = ko.observable('');
-
         columns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', prop: 'id', width: 100, hidden: true },
             { headerText: getText('CPS006_16'), prop: 'itemName', width: 250 },
@@ -25,52 +22,33 @@ module nts.uk.com.view.cps006.b.viewmodel {
         ]);
 
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
-
         categoryType: KnockoutObservable<number> = ko.observable(1);
-
         isRequired: KnockoutObservable<number> = ko.observable(1);
-
         currentItem: KnockoutObservable<ItemInfoDef> = ko.observable(new ItemInfoDef(null));
-
         itemNameText: KnockoutObservable<string> = ko.observable('');
-
         currentCategory: PerInfoCategory;
-
         ckbDisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
-
         ckbIsAbolition: KnockoutObservable<boolean> = ko.observable(false);
-
         constructor() {
             let self = this;
 
             self.currentSelectId.subscribe(function(newValue) {
-                
                 nts.uk.ui.errors.clearAll();
                 if (!newValue) {
-
                     return;
                 }
 
                 service.getPerInfoItemDefById(newValue, self.currentCategory.personEmployeeType).done(function(data: IItemInfoDef) {
-
                     self.currentItem(new ItemInfoDef(data));
-
+                    $("#itemName").focus();
                 });
-
-
             });
 
             self.currentItem.subscribe(function(newItem) {
-                
                 nts.uk.ui.errors.clearAll();
-
                 self.itemNameText(newItem.itemName);
-
                 self.isRequired(newItem.isRequired);
-
                 self.ckbIsAbolition(newItem.isAbolition === 1 ? true : false);
-
-
             });
 
             self.ckbDisplayAbolition.subscribe(function(newValue) {
@@ -81,23 +59,16 @@ module nts.uk.com.view.cps006.b.viewmodel {
         }
 
         start(): JQueryPromise<any> {
-
             let self = this,
                 dfd = $.Deferred();
-
             self.currentCategory = new PerInfoCategory(getShared('categoryInfo'));
-
             self.loadDataForGrid().done(function() {
-
                 dfd.resolve();
-
             });
-
             return dfd.promise();
         }
 
         loadDataForGrid(): JQueryPromise<any> {
-
             let self = this,
                 dfd = $.Deferred(),
                 lastSelectedIndex = self.itemInfoDefList().indexOf(_.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() })),
@@ -107,42 +78,27 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 //set selected item for gridlist
                 if (self.itemInfoDefList().length > 0) {
-
                     if (lastSelectedIndex != -1) {
-
                         let selectItem = _.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() });
-
                         if (selectItem) {
-
                             selectedId = self.currentSelectId();
-
                         } else {
-
                             if (self.itemInfoDefList().length == 0) {
-
                                 selectedId = '';
-
                             } else {
-
                                 if (self.itemInfoDefList().length <= lastSelectedIndex) {
-
                                     selectedId = self.itemInfoDefList()[self.itemInfoDefList().length - 1].id;
-
                                 } else {
-
                                     selectedId = self.itemInfoDefList()[lastSelectedIndex == 0 ? 0 : lastSelectedIndex].id;
-
                                 }
                             }
                         }
                     } else {
-
                         selectedId = self.itemInfoDefList()[0].id;
                     }
                 }
                 self.currentSelectId(selectedId);
                 dfd.resolve();
-
             }).always(() => {
                 block.clear();
             });
@@ -155,25 +111,14 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 categoryId = self.currentCategory.id;
             block.invisible();
             service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
-
                 self.itemInfoDefList([]);
-
                 for (let i of itemInfoDefList) {
-
                     self.itemInfoDefList().push(new ItemInfoDef(i));
-
                 }
-
                 self.itemInfoDefList.valueHasMutated();
-
                 if (self.itemInfoDefList().length < 0) {
-
-
-
                 }
-
                 dfd.resolve();
-
             }).always(() => {
                 block.clear();
             });
