@@ -136,6 +136,7 @@ module nts.uk.at.view.kdw010.a {
             openKDL002Dialog(typeWorkType: any) {
                 var self = this;
                 setShared('KDL002_Multiple', true);
+                setShared('KDL002_isAcceptSelectNone', true);
                 //all possible items
                 var posibleItems = self.listWorkTypeDto().map(e => e.code);
                 setShared('KDL002_AllItemObj', posibleItems);
@@ -157,22 +158,20 @@ module nts.uk.at.view.kdw010.a {
             registration() {
                 blockUI.invisible();
                 var self = this;
-                if (self.selectUse() == NOT_USE) {
-                	$('.nts-input').trigger("validate");
-	                _.defer(() => {
-	                    if (!$('.nts-editor').ntsError("hasError")) {
-	                        var useAtr = self.selectUse() == 1 ? true : false;
-	                        var continuousHolCheckSet: model.ContinuousHolCheckSet = new model.ContinuousHolCheckSet(self.selectedCodeTargetWorkType(), self.selectedCodeIgnoreWorkType(), useAtr, self.displayMessege(), self.maxContinuousDay.value(), self.updateMode());
-	                        //set before value if maxContinuousDays is valid
-	                        if (isNaN(continuousHolCheckSet.maxContinuousDays)) continuousHolCheckSet.maxContinuousDays = self.tempContinuousHolCheckSet.maxContinuousDays;
-	                        service.saveContinuousHolCheckSet(continuousHolCheckSet).done(function() {
-	                            self.updateMode(true);
-	                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-	                        });
-	                    }
-	                });
-                }
-                blockUI.clear();
+                if (self.selectUse() == NOT_USE) $('.nts-input').trigger("validate");
+                _.defer(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        var useAtr = self.selectUse() == 1 ? true : false;
+                        var continuousHolCheckSet: model.ContinuousHolCheckSet = new model.ContinuousHolCheckSet(self.selectedCodeTargetWorkType(), self.selectedCodeIgnoreWorkType(), useAtr, self.displayMessege(), self.maxContinuousDay.value(), self.updateMode());
+                        //set before value if maxContinuousDays is valid
+                        if (isNaN(continuousHolCheckSet.maxContinuousDays)) continuousHolCheckSet.maxContinuousDays = self.tempContinuousHolCheckSet.maxContinuousDays;
+                        service.saveContinuousHolCheckSet(continuousHolCheckSet).done(function() {
+                            self.updateMode(true);
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                        });
+                    }
+                });
+            	blockUI.clear();
             }
         }
     }

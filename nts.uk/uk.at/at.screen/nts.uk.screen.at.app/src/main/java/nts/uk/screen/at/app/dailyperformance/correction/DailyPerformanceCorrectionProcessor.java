@@ -1411,7 +1411,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<Integer, DPAttendanceItem> mapDP = lstAttendanceItem.stream().filter(x -> x.getAttendanceAtr().intValue() != DailyAttendanceAtr.ReferToMaster.value).collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setMapDPAttendance(mapDP);
 		result.setLstAttendanceItem(new ArrayList<>(mapDP.values()));
-		lstFormat = lstFormat.stream().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
+		lstFormat = lstFormat.stream().distinct().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
 		result.addColumnsToSheet(lstFormat, mapDP, showButton);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		for (FormatDPCorrectionDto dto : lstFormat) {

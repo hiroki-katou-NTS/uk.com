@@ -33,9 +33,9 @@ module cps002.i.vm {
 
         }
         start() {
-            let self = this;
-            let dImageId = getShared("CPS002A");
-
+            let self = this,
+                dImageId = getShared("CPS002A"),
+                dataShare = getShared("imageId");
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
                 $(".ntsCheckBox-label input:checkbox").prop('checked', false);
@@ -83,8 +83,8 @@ module cps002.i.vm {
             } else self.close();
         }
         getImage() {
-            let self = this;
-            let id = self.imageId().defaultImgId;
+            let self = this,
+                id = self.imageId().defaultImgId;
             $("#test").ntsImageEditor("selectByFileId", id);
         }
         close() {

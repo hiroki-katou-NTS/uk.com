@@ -50,7 +50,7 @@ public class SpecialHolidayWebService extends WebService {
 	@Path("findForScreenJ")
 	@POST
 	public List<SpecialHolidayFrameDto> findForScreenJ(ScreenJParam param) {
-		return sphdFinder.findForScreenJ(param.getSelectedNos());
+		return sphdFinder.findForScreenJ(param.getCurrentCode());
 	}
 	
 	@Path("findAllItemFrame")
@@ -87,5 +87,5 @@ public class SpecialHolidayWebService extends WebService {
 
 @Value
 class ScreenJParam {
-	private List<Integer> selectedNos;
+	private Integer currentCode;
 }

@@ -55,8 +55,7 @@ public class GetYearHolidayInfo {
 		Optional<LimitedTimeHdTime> contractTime = Optional.empty();
 
 		// Set entry date
-		if (annLea.getEntryDate() != null && annLea.getRetireDate() != null
-				&& baseDate.afterOrEquals(annLea.getEntryDate()) && baseDate.beforeOrEquals(annLea.getRetireDate())) {
+		if (annLea.getEntryDate() != null && baseDate.afterOrEquals(annLea.getEntryDate())) {
 			entryDate = annLea.getEntryDate();
 
 		} else {

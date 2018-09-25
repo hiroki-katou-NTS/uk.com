@@ -166,7 +166,9 @@ public class ScheCreExeWorkTypeHandler {
 			}
 
 			// return work type code by holiday time
-			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()
+					? optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get().v()
+					: null;
 		}
 
 	}
@@ -207,7 +209,9 @@ public class ScheCreExeWorkTypeHandler {
 			if (!optionalWorkingConditionItem.isPresent()) {
 				return command.getWorkTypeCode();
 			}
-			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()
+					? optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get().v()
+					: null;
 		} else {
 
 			int closeAtr = 0;

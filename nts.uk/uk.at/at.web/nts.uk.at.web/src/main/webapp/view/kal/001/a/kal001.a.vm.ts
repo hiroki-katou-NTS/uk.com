@@ -41,7 +41,7 @@ module nts.uk.at.view.kal001.a.model {
         //search component
             self.ccg001ComponentOption = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -237,13 +237,12 @@ module nts.uk.at.view.kal001.a.model {
             setShared("KAL001_A_PARAMS", params);
             modal("/view/kal/001/d/index.xhtml").onClosed(() => {
                 // Set param to screen export B
-                let paramD= getShared("KAL001_D_PARAMS");
-                if (!paramD.extractingFlg) {
+                let paramD = getShared("KAL001_D_PARAMS");
+                if (paramD) {
                     setShared("extractedAlarmData", paramD);
                     modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-
                     });
-                }  
+                }
             });
         }
 
@@ -459,8 +458,9 @@ module nts.uk.at.view.kal001.a.model {
             this.startDate = dto.dateValue().startDate;    
             this.endDate = dto.dateValue().endDate;    
             this.checkBox = dto.checkBox(); 
-            this.required = dto.required();    
+            this.required = dto.required();
             this.visible = dto.visible();
+            this.year = dto.year();
           }
       }
 }

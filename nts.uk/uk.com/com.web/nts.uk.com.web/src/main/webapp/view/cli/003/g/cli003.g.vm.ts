@@ -361,10 +361,9 @@ module nts.uk.com.view.cli003.g.viewmodel {
             
             if ((recoredType == 4 || recoredType == 5 || recoredType == 6)) {
                 self.setDataTypeList();
-                if (self.mode() == MODE.INSERT)) {
+                if (self.mode() == MODE.INSERT) {
                     self.dataType(0);
-                }
-                else {
+                } else {
                     self.dataType(self.currentLogDisplaySet().dataType);
                 }
             } else {

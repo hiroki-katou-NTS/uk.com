@@ -22,23 +22,23 @@ public class KrcdtRemarksMonthlyRecordPK implements Serializable{
 	
 	/** 社員ID */
 	@Column(name = "SID")
-	public String employeeID;
+	public String employeeId;
 	
 	/** 締めID */
 	@Column(name = "CLOSURE_ID")
-	public int closureID;
+	public int closureId;
 	
 	/** 備考欄NO */
 	@Column(name = "REMARKS_NO")
 	public int remarksNo;
-	
+
 	/** 年月 */
 	@Column(name = "REMARKS_YM")
-	public int remarksYM;
+	public int yearMonth;
 	
 	/** 締め日 */
 	@Column(name = "CLOSURE_DAY")
-	public Integer closeDay;
+	public Integer closureDay;
 	
 	
 }

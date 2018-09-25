@@ -38,12 +38,12 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCodes = ko.observableArray([]);
                 self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode = ko.observable(null);
-                self.aICurrentCode.subscribe(attendanceItemId => {
-                    if (attendanceItemId) {
+                self.aICurrentCode.subscribe(displayNumber => {
+                    if (displayNumber) {
                         self.isSave(true);
-                        var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
+                        let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
                         self.txtItemName(attendanceItem.attendanceItemName);
-                        self.txtItemId(attendanceItemId);
+                        self.txtItemId(displayNumber);
                         // self.txtItemName(cAttendanceItem.attandanceItemName);
                         self.unitRoundings([
                             { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
@@ -66,7 +66,7 @@ module nts.uk.at.view.kdw002.a {
 
                         self.linebreak(attendanceItem.nameLineFeedPosition);
                         if (self.isDaily) {
-                            service.getControlOfDailyItem(attendanceItemId).done(cAttendanceItem => {
+                            service.getControlOfDailyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
                                     self.txtItemId(cAttendanceItem.itemDailyID);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfDailyPer);
@@ -77,7 +77,7 @@ module nts.uk.at.view.kdw002.a {
                                 }
                             });
                         } else {
-                            service.getControlOfMonthlyItem(attendanceItemId).done(cAttendanceItem => {
+                            service.getControlOfMonthlyItem(attendanceItem.attendanceItemId).done(cAttendanceItem => {
                                 if (!nts.uk.util.isNullOrUndefined(cAttendanceItem)) {
                                     self.txtItemId(cAttendanceItem.itemMonthlyId);
                                     self.headerColorValue(cAttendanceItem.headerBgColorOfMonthlyPer);
@@ -117,6 +117,38 @@ module nts.uk.at.view.kdw002.a {
                 ]);
                 $(".clear-btn").hide();
                 var attendanceItems = [];
+                if (self.isDaily) {
+                    service.getDailyAttdItem().done(data => {
+                        _.each(data, item => {
+                            attendanceItems.push({
+                                attendanceItemId: item.attendanceItemId,
+                                attendanceItemName: item.attendanceItemName,
+                                dailyAttendanceAtr: item.typeOfAttendanceItem,
+                                nameLineFeedPosition: item.nameLineFeedPosition,
+                                displayNumber: item.attendanceItemDisplayNumber
+                            });
+                        })
+                        self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
+                        self.aICurrentCode(self.attendanceItems()[0].displayNumber);
+                        $("#colorID").focus();
+                    })
+                } else {
+                    service.getMonthlyAttdItem().done(data => {
+                        _.each(data, item => {
+                            attendanceItems.push({
+                                attendanceItemId: item.attendanceItemId,
+                                attendanceItemName: item.attendanceItemName,
+                                dailyAttendanceAtr: item.typeOfAttendanceItem,
+                                nameLineFeedPosition: item.nameLineFeedPosition,
+                                displayNumber: item.attendanceItemDisplayNumber
+                            });
+                        })
+                        self.attendanceItems(_.sortBy(attendanceItems, 'displayNumber'));
+                        self.aICurrentCode(self.attendanceItems()[0].displayNumber);
+                        $("#colorID").focus();
+                    })
+                }
+                /*
                 if (self.isDaily) {
                     service.getListDailyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
@@ -170,7 +202,7 @@ module nts.uk.at.view.kdw002.a {
                             });
                         }
                     });
-                }
+                }*/
 
             }
 
@@ -190,15 +222,16 @@ module nts.uk.at.view.kdw002.a {
                     AtItems = {
                         companyID: ""
                     };
-
+                let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(self.aICurrentCode()) });
                 if (self.headerColorValue()) {
                     AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                 }
                 if (self.timeInputEnable()) {
                     AtItems.inputUnitOfTimeItem = self.timeInputCurrentCode();
                 }
+
                 if (self.isDaily) {
-                    AtItems.itemDailyID = self.aICurrentCode();
+                    AtItems.itemDailyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfDailyPer = self.headerColorValue();
                     }
@@ -207,7 +240,7 @@ module nts.uk.at.view.kdw002.a {
                         $("#colorID").focus();
                     });
                 } else {
-                    AtItems.itemMonthlyID = self.aICurrentCode();
+                    AtItems.itemMonthlyID = attendanceItem.attendanceItemId;
                     if (self.headerColorValue()) {
                         AtItems.headerBgColorOfMonthlyPer = self.headerColorValue();
                     }

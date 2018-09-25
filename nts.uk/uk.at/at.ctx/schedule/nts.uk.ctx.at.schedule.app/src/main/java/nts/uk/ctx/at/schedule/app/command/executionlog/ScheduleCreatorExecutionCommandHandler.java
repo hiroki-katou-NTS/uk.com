@@ -5,13 +5,9 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,11 +18,10 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.collection.ListHashMap;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
@@ -86,9 +81,7 @@ import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -741,8 +734,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// scheduleExecutionLog.getPeriod().end());
 		
 		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(employeeIds, scheduleExecutionLog.getPeriod());
-		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
-
+		
 		// get info by context
 		val asyncTask = context.asAsync();
 		
@@ -750,6 +742,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 
 		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
+			
+			RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 			
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
@@ -816,12 +810,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			}
 
 			// 暫定データを作成する (Tạo data tạm)
-			registrationListDateSchedule.getRegistrationListDateSchedule().stream()
-				.filter(x -> x.getEmployeeId().equals(scheduleCreator.getEmployeeId()))
-				.forEach(x -> {
-					// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
-				});
+			registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
+				// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+			});
 		});
 		
 //		for (val scheduleCreator : scheduleCreators) {

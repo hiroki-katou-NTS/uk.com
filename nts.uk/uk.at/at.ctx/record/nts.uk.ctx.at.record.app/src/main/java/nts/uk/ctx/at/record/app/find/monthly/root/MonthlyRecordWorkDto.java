@@ -12,6 +12,8 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemain;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -77,6 +79,14 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_REMARKS_NAME, layout = MONTHLY_REMARKS_CODE, 
 			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<MonthlyRemarksDto> remarks = new ArrayList<>();
+	
+	/** 介護休暇月別残数データ: 介護休暇月別残数データ */
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_CARE_HD_REMAIN_NAME, layout = MONTHLY_CARE_HD_REMAIN_CODE)
+	private MonthlyCareHdRemainDto care;
+	
+	/** 子の看護月別残数データ: 子の看護月別残数データ */
+	@AttendanceItemLayout(jpPropertyName = MONTHLY_CHILD_CARE_HD_REMAIN_NAME, layout = MONTHLY_CHILD_CARE_HD_REMAIN_CODE)
+	private MonthlyChildCareHdRemainDto childCare;
 	
 	@Override
 	public String employeeId() {
@@ -157,6 +167,16 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
+	public MonthlyRecordWorkDto withCare(MonthlyCareHdRemainDto care){
+		this.care = care;
+		return this;
+	}
+	
+	public MonthlyRecordWorkDto withChildCare(MonthlyChildCareHdRemainDto childCare){
+		this.childCare = childCare;
+		return this;
+	}
+	
 	public AffiliationInfoOfMonthly toAffiliation(){
 		return this.affiliation == null ? null : this.affiliation.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
@@ -192,6 +212,14 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	public List<RemarksMonthlyRecord> toRemarks(){
 		return this.remarks == null ? null :  this.remarks.stream().map(r -> r.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
 	}
+	
+	public MonCareHdRemain toMonCare(){
+		return this.care == null ? null :  this.care.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+	}
+	
+	public MonChildHdRemain toMonChildCare(){
+		return this.childCare == null ? null :  this.childCare.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+	}
 
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
@@ -206,6 +234,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
 				this.specialHoliday.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()),
-				this.remarks.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()));
+				this.remarks.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()),
+				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
+				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
 	}
 }

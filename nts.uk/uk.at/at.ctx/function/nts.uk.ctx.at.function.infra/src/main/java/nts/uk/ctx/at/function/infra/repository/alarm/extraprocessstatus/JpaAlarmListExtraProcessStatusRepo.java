@@ -102,12 +102,13 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 	}
 
 	@Override
-	public boolean isAlListExtaProcessing(String companyId, String employeeId) {
+	public boolean isAlListExtaProcessing(String companyId, String employeeId,int status) {
 		String countProcessSql = new StringBuilder("SELECT COUNT(c.extraProcessStatusID) FROM KfnmtAlarmListExtraProcessStatus c")
 											.append(" WHERE c.companyID = :companyID AND c.employeeID = :employeeID")
-											.append(" AND c.endDate IS NULL AND c.endTime IS NULL").toString();
+											.append(" AND c.status = :status").toString();
 		Long count = queryProxy().query(countProcessSql, Long.class)
-						.setParameter("companyID", companyId).setParameter("employeeID", employeeId).getSingleOrNull();
+						.setParameter("companyID", companyId).setParameter("employeeID", employeeId)
+						.setParameter("status", status).getSingleOrNull();
 		return count != null && count > 0;
 	}
 

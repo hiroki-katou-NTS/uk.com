@@ -47,6 +47,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimitRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -258,6 +259,8 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	@Inject
 	private InsufficientFlexHolidayMntRepository insufficientFlex;
 	/** フレックス不足の繰越上限管理 */
+	@Inject
+	private FlexShortageLimitRepository flexShortageLimit;
 	/** 残業・振替の処理順序を取得する */
 	@Inject
 	private GetOverTimeAndTransferOrder overTimeAndTransferOrder;

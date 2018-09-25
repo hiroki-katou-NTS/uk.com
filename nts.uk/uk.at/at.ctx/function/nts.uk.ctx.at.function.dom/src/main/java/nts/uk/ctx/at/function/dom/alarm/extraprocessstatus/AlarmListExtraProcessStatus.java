@@ -37,7 +37,11 @@ public class AlarmListExtraProcessStatus extends AggregateRoot {
 		this.endTime = Optional.ofNullable(endTime);
 	}
 
-
+	public void setEndDateAndEndTime(GeneralDate endDate,Integer endTime,ExtractionState status) {
+		this.endDate = Optional.ofNullable(endDate);
+		this.endTime = Optional.ofNullable(endTime);
+		this.status = status;
+	}
 
 	public AlarmListExtraProcessStatus(String extraProcessStatusID, String companyID, GeneralDate startDate,
 			int startTime, String employeeID, GeneralDate endDate, Integer endTime,

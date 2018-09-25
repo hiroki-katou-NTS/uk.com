@@ -104,7 +104,8 @@
 									comId: 'item_grid',
 									items: currentCategory().ctgList ,  
 									selectedKey: 'perInfoCtgId',
-									fields: ['categoryName']}" />
+									fields: ['categoryName'],
+									placeHolder:'名称で検索・・・'}" />
 								<div id="history" class="flex valign-center">
 									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
@@ -390,11 +391,14 @@
 															data-bind="ntsComboBox: {
 																	options: selection,
 																	optionsValue: 'optionValue',
+																	visibleItemsCount: 5,
 																	value: selectedCode,
 																	optionsText: 'optionText',
 																	editable: false,
 																	enable: true,
 																	dropDownAttachedToBody:true,
+																	selectFirstIfNull: false,
+																	required: false,
 																	columns: [
 																		{ prop: 'optionText', length: 10 },
 																	]},

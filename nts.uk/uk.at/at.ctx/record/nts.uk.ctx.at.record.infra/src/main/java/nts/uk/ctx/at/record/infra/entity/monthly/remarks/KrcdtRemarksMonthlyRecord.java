@@ -39,19 +39,19 @@ public class KrcdtRemarksMonthlyRecord extends UkJpaEntity implements Serializab
 	@EmbeddedId
 	public KrcdtRemarksMonthlyRecordPK recordPK;
 	
+	
 	/** 期間 - start */
 	@Column(name = "STR_YMD")
 	public GeneralDate startYmd;
 	
-	/** 期間 - end */
-	@Column(name = "END_YMD")
-	public GeneralDate endYmd;
-
 	/** 備考 */
 	@Column(name = "RECORD_REMARKS")
 	public String recordRemarks;
 	
-
+	/** 期間 - end */
+	@Column(name = "END_YMD")
+	public GeneralDate endYmd;
+	
 	
 	@Override
 	protected Object getKey() {
@@ -61,14 +61,14 @@ public class KrcdtRemarksMonthlyRecord extends UkJpaEntity implements Serializab
 public RemarksMonthlyRecord toDomain(){
 		
 		return new RemarksMonthlyRecord(
-				this.recordPK.employeeID,
-				EnumAdaptor.valueOf(this.recordPK.closureID, ClosureId.class),
+				this.recordPK.employeeId,
+				EnumAdaptor.valueOf(this.recordPK.closureId, ClosureId.class),
 				this.recordPK.remarksNo,
-				new YearMonth(this.recordPK.remarksYM),
+				new YearMonth(this.recordPK.yearMonth),
 				new DatePeriod(this.startYmd, 
 						       this.endYmd),
 				new RecordRemarks(this.recordRemarks),
-				new ClosureDate(this.recordPK.closeDay, (true))
+				new ClosureDate(this.recordPK.closureDay, (true))
 				);
 	}
 

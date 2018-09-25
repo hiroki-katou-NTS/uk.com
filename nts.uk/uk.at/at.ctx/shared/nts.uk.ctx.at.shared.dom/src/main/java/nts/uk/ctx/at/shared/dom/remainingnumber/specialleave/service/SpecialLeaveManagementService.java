@@ -15,7 +15,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface SpecialLeaveManagementService {
 	/**
-	 * RequestList273 期間内の特別休暇残を集計する 
+	 * RequestList273 期間内の特別休暇残を集計する
 	 * @return
 	 */
 	InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param);

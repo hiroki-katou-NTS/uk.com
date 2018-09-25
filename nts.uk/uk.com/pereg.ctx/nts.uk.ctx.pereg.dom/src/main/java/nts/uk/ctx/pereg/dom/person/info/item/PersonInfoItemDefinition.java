@@ -301,7 +301,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			case NUMERIC:
 				dataTypeState = DataTypeState.createNumericItem(numericItemMinus.intValue(),
 						numericItemAmount.intValue(), numericItemIntegerPart.intValue(),
-						numericItemDecimalPart.intValue(), numericItemMin, numericItemMax);
+						numericItemDecimalPart == null? null: new Integer(numericItemDecimalPart.intValue()), numericItemMin, numericItemMax);
 				break;
 			case DATE:
 				dataTypeState = DataTypeState.createDateItem(dateItemType.intValue());

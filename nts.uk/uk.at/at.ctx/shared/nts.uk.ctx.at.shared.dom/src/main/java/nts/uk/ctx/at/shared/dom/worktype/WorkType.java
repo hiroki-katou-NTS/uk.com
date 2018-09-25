@@ -188,8 +188,8 @@ public class WorkType extends AggregateRoot {
 		DailyWork dailyWork = new DailyWork();
 		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
 		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
-		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
 		dailyWork.setAfternoon(EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class));
+		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
 		return new WorkType(companyId, new WorkTypeCode(workTypeCode), new WorkTypeSymbolicName(symbolicName),
 				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
@@ -291,8 +291,8 @@ public class WorkType extends AggregateRoot {
 	 * @param atr the atr
 	 * @return the work type set by atr
 	 */
-	public WorkTypeSet getWorkTypeSetByAtr(WorkAtr atr) {
-		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst().get();
+	public Optional<WorkTypeSet> getWorkTypeSetByAtr(WorkAtr atr) {
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
 	}
 	
 	public WorkTypeSet getWorkTypeSetAvailable() {
@@ -310,7 +310,7 @@ public class WorkType extends AggregateRoot {
 		// 1日
 		if (this.isOneDay()) {
 			if (this.isAttendanceOrShootingOrHolidayWork(this.dailyWork.getOneDay())) {
-				return this.getWorkTypeSetByAtr(WorkAtr.OneDay);
+				return this.getWorkTypeSetByAtr(WorkAtr.OneDay).orElse(null);
 			} else {
 				return null;
 			}
@@ -318,15 +318,15 @@ public class WorkType extends AggregateRoot {
 		// 午前と午後
 		else {
 			if (this.isAttendanceOrShooting(this.dailyWork.getMorning())) {
-				WorkTypeSet am = this.getWorkTypeSetByAtr(WorkAtr.Monring);
+				WorkTypeSet am = this.getWorkTypeSetByAtr(WorkAtr.Monring).orElse(null);
 				if (this.isAttendanceOrShooting(this.dailyWork.getAfternoon())) {
-					WorkTypeSet pm = this.getWorkTypeSetByAtr(WorkAtr.Afternoon);
+					WorkTypeSet pm = this.getWorkTypeSetByAtr(WorkAtr.Afternoon).orElse(null);
 					return new WorkTypeSet(pm.getTimeLeaveWork(), am.getAttendanceTime());
 				}
 				return am;
 			} else {
 				if (this.isAttendanceOrShooting(this.dailyWork.getAfternoon())) {
-					return this.getWorkTypeSetByAtr(WorkAtr.Afternoon);
+					return this.getWorkTypeSetByAtr(WorkAtr.Afternoon).orElse(null);
 				} else {
 					return null;
 				}
@@ -374,4 +374,25 @@ public class WorkType extends AggregateRoot {
 	}
 	
 	
+	public HolidayAtr beforeDay(){
+		switch(this.getDailyWork().getWorkTypeUnit()) {
+		case OneDay:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isOneDay()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		case MonringAndAfternoon:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isMorning()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		default:
+			throw new RuntimeException("uknown WorkTypeUnit:"+this.getDailyWork().getWorkTypeUnit());
+		}
+	}
+	
+	public HolidayAtr afterDay() {
+		switch(this.getDailyWork().getWorkTypeUnit()) {
+		case OneDay:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isOneDay()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		case MonringAndAfternoon:
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isAfterNoon()).map(ts -> ts.getHolidayAtr()).findFirst().get();
+		default:
+			throw new RuntimeException("uknown WorkTypeUnit:"+this.getDailyWork().getWorkTypeUnit());
+		}	
+	}
 }

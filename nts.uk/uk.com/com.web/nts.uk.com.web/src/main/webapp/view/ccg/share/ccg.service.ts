@@ -193,9 +193,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 nameType?: number; // 氏名の種類
 
                 /** Required parameter */
-                baseDate?: string; // 基準日
-                periodStartDate?: string; // 対象期間開始日
-                periodEndDate?: string; // 対象期間終了日
+                baseDate?: any; // 基準日 KnockoutObservable<string> or string
+                periodStartDate?: any; // 対象期間開始日 KnockoutObservable<string> or string
+                periodEndDate?: any; // 対象期間終了日 KnockoutObservable<string> or string
+                dateRangePickerValue?: KnockoutObservable<any>;
                 inService: boolean; // 在職区分
                 leaveOfAbsence: boolean; // 休職区分
                 closed: boolean; // 休業区分

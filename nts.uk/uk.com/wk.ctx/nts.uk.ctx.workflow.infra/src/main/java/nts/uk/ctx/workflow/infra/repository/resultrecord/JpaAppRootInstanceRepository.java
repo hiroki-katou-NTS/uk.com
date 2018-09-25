@@ -62,25 +62,28 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.START_DATE <= 'recordDate'";
 	
-	private final String FIND_BY_EMP_DATE_NEWEST = BASIC_SELECT +
+	private final String FIND_BY_EMP_DATE_NEWEST = "SELECT TOP 1 * FROM (" +
+			BASIC_SELECT +
 			" WHERE appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.CID = 'companyID'" +
-			" AND appRoot.ROOT_TYPE = rootType" +
-			" order by appRoot.START_DATE desc";
+			" AND appRoot.ROOT_TYPE = rootType) result" +
+			" order by START_DATE desc";
+	
+	private final String FIND_BY_EMPS_PERIOD = BASIC_SELECT + 
+			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
+			" AND appRoot.CID = 'companyID'"+
+			" AND appRoot.ROOT_TYPE = rootType"+
+			" AND appRoot.END_DATE >= 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'";
 	
 	private final String FIND_BY_APPROVER_PERIOD = BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
+			" WHERE appRoot.ROOT_ID IN (SELECT ROOT_ID FROM (" +
+			BASIC_SELECT +
+			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE > 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'"+
-			" UNION"+
-			" SELECT TOP 1 * FROM ("+
-			BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID IN (employeeIDLst)"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
+			" AND appRoot.END_DATE >= 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate') result)";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -261,21 +264,47 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		String companyID =  AppContexts.user().companyId();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
-			String query = FIND_BY_APPROVER_PERIOD;
+			String query = FIND_BY_EMPS_PERIOD;
 			
 			String employeeIDLstParam = "";
 			if(CollectionUtil.isEmpty(employeeIDLst)){
 				employeeIDLstParam = "''";
 			} else {
 				for(int i = 0; i<employeeIDLst.size(); i++){
+					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 					if(i<employeeIDLst.size()-1){
 						employeeIDLstParam+=",";	
 					}
-					employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
 				}
 			}
 			query = query.replaceAll("companyID", companyID);
 			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
+			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(!CollectionUtil.isEmpty(listResult)){
+				return listResult;
+			} else {
+				return Collections.emptyList();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period,
+			RecordRootType rootType) {
+		String companyID =  AppContexts.user().companyId();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_APPROVER_PERIOD;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("approverID", approverID);
 			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
 			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
 			query = query.replaceAll("rootType", String.valueOf(rootType.value));

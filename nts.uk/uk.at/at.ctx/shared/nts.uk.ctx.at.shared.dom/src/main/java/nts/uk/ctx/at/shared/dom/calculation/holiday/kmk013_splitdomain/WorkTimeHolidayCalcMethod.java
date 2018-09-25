@@ -56,6 +56,12 @@ public class WorkTimeHolidayCalcMethod extends DomainObject{
 			return new WorkTimeHolidayCalcMethod(this.calculateActualOperation,this.advancedSet);
 		}
 	}
+
+	public WorkTimeHolidayCalcMethod(int calculateActualOperation, Optional<WorkTimeCalcMethodDetailOfHoliday> emptyItem) {
+		super();
+		this.calculateActualOperation = CalcurationByActualTimeAtr.valueOf(calculateActualOperation);
+		this.advancedSet = emptyItem;
+	}
 	
 }
 

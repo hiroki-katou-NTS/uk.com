@@ -111,7 +111,7 @@
 							</com:ko-if>
 
 							<com:ko-if
-								bind="(categoryType() === 3 || categoryType() === 4 ||categoryType() === 5 )">
+								bind="(categoryType() === 3 || categoryType() === 4 ||categoryType() === 5 || categoryType() === 6)">
 								<div>
 									<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
 										<label>#{i18n.getText('CPS006_12')}</label>
@@ -124,7 +124,7 @@
 									<label>#{i18n.getText('CPS006_13')}</label>
 								</div>
 
-								<com:ko-if bind="categoryType() === 3 ">
+								<com:ko-if bind="categoryType() === 3 || categoryType() === 6 ">
 									<label id="continue">#{i18n.getText('Enum_HistoryTypes_CONTINUOUS')}</label>
 								</com:ko-if>
 

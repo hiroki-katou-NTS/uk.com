@@ -498,11 +498,12 @@ module nts.uk.ui.validation {
                 inputText = time.convertJapaneseDateToGlobal(inputText);            
             }
             
-            let maxStr, minStr;
+            let maxStr, minStr, max, min;
             // Time duration
             if(this.mode === "time"){
-                var timeParse;
-                if(this.outputFormat.indexOf("s") >= 0){
+                var timeParse, isSecondBase = this.outputFormat.indexOf("s") >= 0,
+                    mesId = isSecondBase ? "FND_E_CLOCK_SECOND" : "FND_E_TIME";
+                if(isSecondBase){
                     timeParse = time.secondsBased.duration.parseString(inputText);    
                 } else {
                     timeParse = time.minutesBased.duration.parseString(inputText);
@@ -518,26 +519,34 @@ module nts.uk.ui.validation {
                 
                 if (!util.isNullOrUndefined(this.constraint.max)) {
                     maxStr = this.constraint.max;
-                    let max = time.parseTime(this.constraint.max);
+                    if(isSecondBase){
+                        max = time.secondsBased.duration.parseString(maxStr);    
+                    } else {
+                        max = time.minutesBased.duration.parseString(maxStr);
+                    }
                     if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                        let msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                        result.fail(msg, "FND_E_TIME");
+                        let msg = nts.uk.resource.getMessage(mesId, [this.name, this.constraint.min, this.constraint.max]);
+                        result.fail(msg, mesId);
                         return result;
                     }
                 }
                 
                 if (!util.isNullOrUndefined(this.constraint.min)) {
                     minStr = this.constraint.min;
-                    let min = time.parseTime(this.constraint.min);
+                    if(isSecondBase){
+                        min = time.secondsBased.duration.parseString(minStr);    
+                    } else {
+                        min = time.minutesBased.duration.parseString(minStr);
+                    }
                     if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                        let msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                        result.fail(msg, "FND_E_TIME");
+                        let msg = nts.uk.resource.getMessage(mesId, [this.name, this.constraint.min, this.constraint.max]);
+                        result.fail(msg, mesId);
                         return result;
                     }
                 }
                 
                 if (!result.isValid && this.constraint.valueType === "Time") {
-                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]), "FND_E_TIME");
+                    result.fail(nts.uk.resource.getMessage(mesId, [ this.name, minStr, maxStr ]), mesId);
                 }
                 return result;   
             }

@@ -372,11 +372,11 @@ public class DailyAggregationProcessService {
 				String alarm = "";
 				if (singleCompare(itemCon.getCompareOperator())) {
 					if (itemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 						+ coupleOperator.getOperatorStart() 
 						+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr()) + ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 						+ coupleOperator.getOperatorStart()
 						+ this.formatHourDataByGroup(String.valueOf(itemCon.getSingleAtdItem()), itemCon.getConditionAtr())+ ")";
 					}
@@ -384,13 +384,14 @@ public class DailyAggregationProcessService {
 				} else {
 					if (betweenRange(itemCon.getCompareOperator())) {
 						alarm = "(式" + (i + 1) 
+								+" "
 								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
 								+ coupleOperator.getOperatorStart()
 								+ calculateAttendanceText(itemCon,listAttenDanceItem) 
 								+ coupleOperator.getOperatorEnd()
 								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareEndValue()), itemCon.getConditionAtr())+ ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 								+ coupleOperator.getOperatorStart() 
 								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
 								+ ", " 
@@ -533,20 +534,20 @@ public class DailyAggregationProcessService {
 			case LESS_OR_EQUAL:
 				return new CoupleOperator("≦", "");
 			case BETWEEN_RANGE_OPEN:
-				return new CoupleOperator("＜", "＞");
+				return new CoupleOperator("＜", "＜");
 			case BETWEEN_RANGE_CLOSED:
-				return new CoupleOperator("≦", "≧");
+				return new CoupleOperator("≦", "≦");
 			case OUTSIDE_RANGE_OPEN:
-				return new CoupleOperator("＞", "＜");
+				return new CoupleOperator("＜", "＜");
 			case OUTSIDE_RANGE_CLOSED:
-				return new CoupleOperator("≧", "≦");
+				return new CoupleOperator("≦", "≦");
 		}
 		
 		return null;
 	}
 	
 	private boolean singleCompare(int compareOperator ) {
-		return compareOperator <= CompareType.LESS_OR_EQUAL.value;
+		return compareOperator <= CompareType.GREATER_THAN.value;
 	}
 	private boolean betweenRange(int compareOperator ) {
 		return compareOperator == CompareType.BETWEEN_RANGE_OPEN.value || compareOperator == CompareType.BETWEEN_RANGE_CLOSED.value;

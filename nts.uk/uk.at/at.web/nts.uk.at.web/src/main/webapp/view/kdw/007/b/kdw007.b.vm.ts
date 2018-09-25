@@ -214,22 +214,24 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             if (self.currentAtdItemCondition.conditionAtr() === 0) {
                 //With type 回数 - Times
                 service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : DailyAttendanceItemAtr.NumberOfTime, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
+                    /*service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.NUMBER : 1, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
-                    });
+                    });*/
+                    dfd.resolve(lstAtdItem);
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 1) {
                 //With type 時間 - Time
                 service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : DailyAttendanceItemAtr.Time, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 0, self.mode).done((lstOptItem) => {
+                    /*service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.TIME : 0, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
-                    });
+                    });*/
+                    dfd.resolve(lstAtdItem);
                 });
             } else if (self.currentAtdItemCondition.conditionAtr() === 2) {
                 //With type 時刻 - TimeWithDay
@@ -239,12 +241,13 @@ module nts.uk.at.view.kdw007.b.viewmodel {
             } else if (self.currentAtdItemCondition.conditionAtr() === 3) {
                 //With type 金額 - AmountMoney
                 service.getAttendanceItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : DailyAttendanceItemAtr.AmountOfMoney, self.mode).done((lstAtdItem) => {
-                    service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 2, self.mode).done((lstOptItem) => {
+                    /*service.getOptItemByAtr(self.mode == 1 ? MonthlyAttendanceItemAtr.AMOUNT : 2, self.mode).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
                         dfd.resolve(lstAtdItem);
-                    });
+                    });*/
+                    dfd.resolve(lstAtdItem);
                 });
             } else { // 日数
                 service.getAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS, self.mode).done((lstAtdItem) => {
@@ -261,6 +264,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 if (self.currentAtdItemCondition.conditionAtr() === 2 || self.currentAtdItemCondition.conditionType() === 2) {
                     //Open dialog KDL021
+                    nts.uk.ui.block.invisible();
                     nts.uk.ui.windows.setShared('Multiple', false);
                     nts.uk.ui.windows.setShared('MonthlyMode', self.mode == 1);
                     nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
@@ -272,6 +276,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                             self.fillTextDisplayTarget();
                         }
                     });
+                    nts.uk.ui.block.clear();
                 } else {
                     //Open dialog KDW007C
                     let param = {
@@ -280,6 +285,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                         lstAddItems: self.currentAtdItemCondition.countableAddAtdItems(),
                         lstSubItems: self.currentAtdItemCondition.countableSubAtdItems()
                     };
+                    nts.uk.ui.block.invisible();
                     nts.uk.ui.windows.setShared("KDW007Params", param);
                     nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
                         let output = nts.uk.ui.windows.getShared("KDW007CResults");
@@ -289,6 +295,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                             self.fillTextDisplayTarget();
                         }
                     });
+                    nts.uk.ui.block.clear();
                 }
             });
             nts.uk.ui.block.clear();

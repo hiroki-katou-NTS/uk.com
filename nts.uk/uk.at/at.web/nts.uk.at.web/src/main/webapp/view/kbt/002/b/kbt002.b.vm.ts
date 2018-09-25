@@ -419,9 +419,12 @@ module nts.uk.at.view.kbt002.b {
                     command.createNewEmp =  self.currentExecItem().createNewEmp();
                     command.appRouteUpdateMonthly =  self.currentExecItem().appRouteUpdateMonthly();
                     command.processExecType = self.currentExecItem().processExecType();
-                    command.alarmCode = self.currentExecItem().alarmCode();
-                    command.alarmExtraction = self.currentExecItem().alarmAtr();
+                    command.alarmCode = _.isNil(self.currentExecItem().alarmCode())?null : self.currentExecItem().alarmCode();
+                    command.alarmAtr = self.currentExecItem().alarmAtr();
+                    command.mailPrincipal = self.currentExecItem().mailPrincipal();
+                    command.mailAdministrator = self.currentExecItem().mailAdministrator();
                 }else{//再作成
+                    self.listGetAlarmByUser()[0] = undefined;
                     self.currentExecItem().creationTarget(1);
                     command.companyId = self.currentExecItem().companyId();
                     command.execItemCd = self.currentExecItem().execItemCd();
@@ -449,9 +452,10 @@ module nts.uk.at.view.kbt002.b {
                     command.createNewEmp =  false;
                     command.appRouteUpdateMonthly =  false;
                     command.processExecType = self.currentExecItem().processExecType();
-                    command.alarmCode = self.listGetAlarmByUser()[0].alarmCode;
-                    command.alarmExtraction = false;
-                    
+                    command.alarmCode = _.isNil(self.listGetAlarmByUser()[0])?null : self.listGetAlarmByUser()[0].alarmCode;
+                    command.alarmAtr = false; 
+                    command.mailPrincipal = false;
+                    command.mailAdministrator = false;
                 }
                 
                 
@@ -513,11 +517,6 @@ module nts.uk.at.view.kbt002.b {
             midJoinEmployee: boolean;
             reflectResultCls: boolean;
             monthlyAggCls: boolean;
-            //indvAlarmCls: boolean;
-            //indvMailPrin: boolean;
-            //indvMailMng: boolean;
-            //wkpAlarmCls: boolean;
-            //wkpMailMng: boolean;
             execScopeCls: number;
             refDate: string;
             workplaceList: Array<string>;
@@ -535,6 +534,8 @@ module nts.uk.at.view.kbt002.b {
             //alarmCode
             alarmCode :string;
             alarmAtr : boolean;
+            mailPrincipal : boolean;
+            mailAdministrator : boolean;
         }
 
         export class ExecutionItem {
@@ -573,6 +574,8 @@ module nts.uk.at.view.kbt002.b {
             dailyPerfClsReCreate :KnockoutObservable<boolean> = ko.observable(false);
             alarmCode : KnockoutObservable<string> = ko.observable('');
             alarmAtr :KnockoutObservable<boolean> = ko.observable(false);
+            mailPrincipal :KnockoutObservable<boolean> = ko.observable(false);
+            mailAdministrator :KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
                 let self = this;
                 if (param && param != null) {
@@ -611,6 +614,8 @@ module nts.uk.at.view.kbt002.b {
                     self.dailyPerfClsReCreate(param.dailyPerfCls||false);
                     self.alarmCode(param.alarmCode || '');
                     self.alarmAtr(param.alarmAtr||false);
+                    self.mailPrincipal(param.mailPrincipal||false);
+                    self.mailAdministrator(param.mailAdministrator||false);
                     if(self.processExecType()==0){
                         self.creationTarget(0);
                         self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
@@ -669,13 +674,15 @@ module nts.uk.at.view.kbt002.b {
                     self.alarmAtr(false);
                     self.perScheduleClsNomarl(false);
                     self.perScheduleClsReCreate(false);
+                    self.mailPrincipal(false);
+                    self.mailAdministrator(false);
                 }
                 
                 self.appRouteUpdateAtr.subscribe(x=>{
                     if(x==true && self.perScheduleCls()==true){
                         self.checkCreateNewEmp(true);
                     }else{
-                        self.checkCreateNewEmp(false);
+                        self.checkCreateNewEmp(false); 
                     }
                 });
                 self.perScheduleCls.subscribe(x=>{

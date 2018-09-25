@@ -15,6 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SettingNo65;
@@ -283,7 +284,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・会社ID＝ログイン会社ID
 //		・社員ID＝申請者社員ID
 //		・集計開始日＝申請開始日
-//		・集計終了日＝申請開始日＋２年
+//		・集計終了日＝申請開始日＋1年
 //		・モード＝その他モード
 //		・基準日＝申請開始日
 //		・登録期間の開始日＝申請開始日
@@ -298,14 +299,14 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・公休チェック区分＝（休暇申請設定．公休残数不足登録できる＝false）
 //		・超休チェック区分＝true
 		List<AppRemainCreateInfor> appData = new ArrayList<>();
-		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDate.today(), startDate, 
+		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDateTime.now(), startDate, 
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
 				command.getWorkTypeCode() == null ? Optional.empty() : Optional.of(command.getWorkTypeCode()), 
 				command.getWorkTimeCode() == null ? Optional.empty() : Optional.of(command.getWorkTimeCode()), 
 				Optional.empty(), Optional.empty(), Optional.empty()));
 		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, command.getEmployeeID(), 
-				new DatePeriod(startDate, startDate.addYears(2)), false, startDate, new DatePeriod(startDate, endDate),
+				new DatePeriod(startDate, startDate.addYears(1)), false, startDate, new DatePeriod(startDate, endDate),
 				true, new ArrayList<>(), new ArrayList<>(), appData, chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual,
 				chkSpecial, chkPublicHoliday, chkSuperBreak);
 		EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
@@ -313,43 +314,42 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		//代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分 = true（残数不足）
 		if(checkResult.isChkSubHoliday() || checkResult.isChkPause() || checkResult.isChkAnnual() 
 				|| checkResult.isChkFundingAnnual() || checkResult.isChkSpecial()){
-			//ドメインモデル「休暇申請種類表示名」を取得する
-			List<HdAppDispName> lstHdName = repoHdAppDispName.getAllHdApp();
+			//QA#100887
 			String name = "";
 			String nametmp = "";
-			if(checkResult.isChkSubHoliday()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
-				name = name != "" && name != "" ? name + "," + nametmp : name;
+			if(hdAppSet.isPresent()){
+				HdAppSet hdApp = hdAppSet.get();
+				if(checkResult.isChkSubHoliday()){
+					//代表者名 - HdAppType.TEMP_HD
+					nametmp = hdApp.getObstacleName() == null ? "" : hdApp.getObstacleName().v();
+					name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+				}
+				if(checkResult.isChkPause()){
+					//振休名称 - HdAppType.SHIFT
+					nametmp = hdApp.getFurikyuName() == null ? "" : hdApp.getFurikyuName().v();
+					name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+				}
+				if(checkResult.isChkAnnual()){
+					//年休名称 - HdAppType.ANNUAL_HD
+					nametmp = hdApp.getYearHdName() == null ? "" : hdApp.getYearHdName().v();
+					name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+				}
+				if(checkResult.isChkFundingAnnual()){
+					//積休名称 - HdAppType.YEARLY_RESERVED
+					nametmp = hdApp.getYearResig() == null ? "" : hdApp.getYearResig().v();
+					name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+				}
+				if(checkResult.isChkSpecial()){
+					//特別休暇名称 - HdAppType.SPECIAL_VACATION
+					nametmp = hdApp.getSpecialVaca() == null ? "" : hdApp.getSpecialVaca().v();
+					name = name != "" && name != "" ? name + "," + nametmp : name + nametmp;
+				}
 			}
-			if(checkResult.isChkPause()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
-				name = name != "" && name != "" ? name + "," + nametmp : name;
-			}
-			if(checkResult.isChkAnnual()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
-				name = name != "" && name != "" ? name + "," + nametmp : name;
-			}
-			if(checkResult.isChkFundingAnnual()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
-				name = name != "" && name != "" ? name + "," + nametmp : name;
-			}
-			if(checkResult.isChkSpecial()){
-				nametmp = this.findHdNameErr(lstHdName, HdAppType.TEMP_HD);
-				name = name != "" && name != "" ? name + "," + nametmp : name;
-			}
-			
 			//エラーメッセージ（Msg_1409）
 			throw new BusinessException("Msg_1409", name);
 		}
 	}
-	private String findHdNameErr(List<HdAppDispName> lstHdName, HdAppType hdType){
-		for (HdAppDispName hdName : lstHdName) {
-			if(hdName.getHdAppType().equals(hdType)){
-				return hdName.getDispName().v();
-			}
-		}
-		return "";
-	}
+
 	//return エラーメッセージ-確認メッセージ
 	public void checkRegister(ParamCheckRegister param){
 		SettingNo65 setNo65 = param.getSetNo65();

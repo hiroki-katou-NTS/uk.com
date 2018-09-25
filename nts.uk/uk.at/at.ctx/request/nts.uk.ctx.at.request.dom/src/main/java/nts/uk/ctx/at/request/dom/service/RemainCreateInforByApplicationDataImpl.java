@@ -95,7 +95,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			outData.setAppId(appData.getAppID());			
 			outData.setAppType(EnumAdaptor.valueOf(appData.getAppType().value, ApplicationType.class));
 			outData.setPrePosAtr(EnumAdaptor.valueOf(appData.getPrePostAtr().value, PrePostAtr.class));
-			outData.setInputDate(appData.getInputDate().toDate());
+			outData.setInputDate(appData.getInputDate());
 			outData.setWorkTimeCode(Optional.empty());
 			outData.setWorkTypeCode(Optional.empty());
 			switch(outData.getAppType()) {

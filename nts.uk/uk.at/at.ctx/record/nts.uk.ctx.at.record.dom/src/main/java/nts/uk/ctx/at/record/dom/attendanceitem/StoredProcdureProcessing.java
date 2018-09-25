@@ -15,9 +15,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
@@ -40,9 +45,12 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -169,15 +177,15 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				divergenceTime = timeOn = startTime < leaveGateStartTime ? 0 : startTime - leaveGateStartTime;
 				mergeOptionalTimeItemWithNo(optionalItem, timeOn, 8);
 			} else {
-				updateOptionalTimeItemWithNo(optionalItem, timeOn, 8);
+				updateOptionalTimeItemWithNo(optionalItem, timeOff, 8);
 			}
 			
 			/** 任意項目10 */
 			if(endTime != null && leaveGateEndTime != null){
-				timeOn = endTime < leaveGateEndTime ? 0 : endTime - leaveGateEndTime;
-				mergeOptionalTimeItemWithNo(optionalItem, timeOn, 10);
+				timeOn = leaveGateEndTime - endTime; 
+				mergeOptionalTimeItemWithNo(optionalItem, timeOn < 0 ? 0 : timeOn, 10);
 			} else {
-				updateOptionalTimeItemWithNo(optionalItem, timeOn, 10);
+				updateOptionalTimeItemWithNo(optionalItem, timeOff, 10);
 			}
 			
 			timeOn = 1; timeOff = 0;
@@ -204,15 +212,13 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				processOptionalItem(() -> timePre > 0, optionalItem, countOn, countOff, 18, 28);
 				
 				/** 任意項目19: 事前残業1~10 > 0 かつ　乖離時間が発生していない事が条件 */
-				processOptionalItem(() -> timePre > 0 && time <= 0, optionalItem, countOn, countOff, 19);
+				processOptionalItem(() -> timePre > 0 && overTime.stream().allMatch(t -> t <= 0), optionalItem, countOn, countOff, 19);
 				
 				/** 任意項目21: 事前残業1~10 > 0 かつ　乖離時間が発生している事が条件 */
-				processOptionalItem(() -> timePre > 0 && overTime.stream().anyMatch(t -> t > 0),
-						optionalItem, countOn, countOff, 21);
+				processOptionalItem(() -> timePre > 0 && overTime.stream().anyMatch(t -> t > 0), optionalItem, countOn, countOff, 21);
 				
 				/** 任意項目23: 残業あり かつ 事前残業なし　が条件 */
-				processOptionalItem(() -> checkOnPair(overTime, preOver, (ot, pot) -> ot > 0 && pot <= 0),
-						optionalItem, countOn, countOff, 23);
+				processOptionalItem(() -> checkOnPair(overTime, preOver, (ot, pot) -> ot > 0 && pot <= 0), optionalItem, countOn, countOff, 23);
 				
 				/** 任意項目27: 残業あり かつ 事前残業なし　が条件 */
 				processOptionalItem(() -> time > 0, optionalItem, countOn, countOff, 27);
@@ -279,23 +285,53 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				d.setAnyItemValue(Optional.empty());
 			}
 			
-			if(d.getAttendanceTimeOfDailyPerformance().isPresent() && atdStampTime != null){
+			if(atdStampTime != null){
 				if(d.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(DEFAULT_WORK_TYPE) 
-						&& d.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(DEFAULT_WORK_TIME)){
-					overTimeD.ifPresent(ot -> {
-						ot.getOverTimeWorkFrameTime().stream().filter(otf -> otf.getOverWorkFrameNo().v() == 4).findFirst().ifPresent(f4 -> {
-							f4.getOverTimeWork().setTime(new AttendanceTime(30));
-						});
-						ot.getOverTimeWorkFrameTime().stream().filter(otf -> otf.getOverWorkFrameNo().v() == 5).findFirst().ifPresent(f5 -> {
-							f5.getOverTimeWork().setTime(new AttendanceTime(60));
-						});
-					});
+						|| d.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(DEFAULT_WORK_TIME)){
+					if(!d.getAttendanceTimeOfDailyPerformance().isPresent()){
+						d.setAttendanceTimeOfDailyPerformance(Optional.of(new AttendanceTimeOfDailyPerformance(d.getWorkInformation().getEmployeeId(), 
+								d.getWorkInformation().getYmd(), WorkScheduleTimeOfDaily.defaultValue(), 
+								ActualWorkingTimeOfDaily.defaultValue(), 
+								new StayingTimeOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO), 
+								AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO, 
+								new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO))));
+					}
+					Optional<OverTimeOfDaily>  ot = d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
+					if(ot.isPresent()){
+						processOverTime(ot.get(), 4, 30);
+						
+						processOverTime(ot.get(), 5, 60);
+					} else {
+						OverTimeOfDaily otn = new OverTimeOfDaily(new ArrayList<>(), new ArrayList<>(), 
+								Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(AttendanceTime.ZERO))));
+						
+						processOverTime(otn, 4, 30);
+						
+						processOverTime(otn, 5, 60);
+						
+						d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+								.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().updateOverTime(otn);
+					}
 				}
 			}
 			
 		});
 		
 		return dailies;
+	}
+	
+	private void processOverTime(OverTimeOfDaily ot, int no, int val){
+		Optional<OverTimeFrameTime> frame = ot.getOverTimeWorkFrameTime().stream()
+				.filter(otf -> otf.getOverWorkFrameNo().v() == no).findFirst();
+		if(frame.isPresent()){
+			frame.get().getOverTimeWork().setTime(new AttendanceTime(val));
+		} else {
+			ot.getOverTimeWorkFrameTime().add(new OverTimeFrameTime(new OverTimeFrameNo(no), 
+					TimeDivergenceWithCalculation.sameTime(new AttendanceTime(val)), 
+					TimeDivergenceWithCalculation.sameTime(AttendanceTime.ZERO), 
+					AttendanceTime.ZERO, AttendanceTime.ZERO));
+		}
 	}
 
 	private Map<WorkTypeCode, WorkType> getWorkType(String companyId, Set<String> workTypeCode, Map<WorkTypeCode, WorkType> workTypeMap) {
@@ -442,15 +478,18 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 
 	private boolean isNotActualWork(IntegrationOfDaily d, WorkTypeUnit atr, WorkTypeClassification oneDay,
 			WorkTypeClassification morning, WorkTypeClassification afternoon) {
-		return (atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday || oneDay == WorkTypeClassification.SpecialHoliday || oneDay == WorkTypeClassification.SubstituteHoliday))
+		AttendanceTime actualWork = d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime();
+		return (atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday 
+				|| oneDay == WorkTypeClassification.SpecialHoliday || oneDay == WorkTypeClassification.SubstituteHoliday))
 			|| (atr == WorkTypeUnit.MonringAndAfternoon && 
-				((morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SpecialHoliday) ||
+						((morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SpecialHoliday) ||
 						(morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SubstituteHoliday) ||
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.SubstituteHoliday) ||
 						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
 						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.SpecialHoliday)))
-			&& d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime() != null;
+			&&  (actualWork == null || actualWork.valueAsMinutes() == 0);
 	}
 
 	private void processOptionalItem(Supplier<Boolean> condition, AnyItemValueOfDaily optionalItem,
@@ -485,9 +524,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	private void updateOptionalTimesItemWithNo(AnyItemValueOfDaily d, BigDecimal count, int... itemNo) {
 		AnyItemTimes val = count == null ? null : new AnyItemTimes(count);
 		for (int no : itemNo) {
-			if(d.getNo(no).isPresent()){
-				d.getNo(no).get().updateTimes(val);
-			} 
+			d.getNo(no).ifPresent(oi -> oi.updateTimes(val));
 		}
 	}
 	
@@ -505,9 +542,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	private void updateOptionalTimeItemWithNo(AnyItemValueOfDaily d, Integer time, int... itemNo) {
 		AnyItemTime val = time == null ? null : new AnyItemTime(time);
 		for (int no : itemNo) {
-			if(d.getNo(no).isPresent()){
-				d.getNo(no).get().updateTime(val);
-			} 
+			d.getNo(no).ifPresent(oi -> oi.updateTime(val));
 		}
 	}
 	
@@ -523,7 +558,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	}
 
 	private Integer getOnDefault(List<Integer> overTime, int idx) {
-		return overTime.get(idx) == null ? 0 : overTime.get(idx);
+		return idx >= overTime.size() || overTime.get(idx) == null ? 0 : overTime.get(idx);
 	}
 
 }

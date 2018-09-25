@@ -33,7 +33,7 @@ public class MonthlyPerfomanceAuthorityFinder {
 		
 		List<AttendanceItemName> listAttendanceItemName = companyMonthlyItemService.getMonthlyItems(companyId, itemAuthority.isPresent() ? Optional.of(itemAuthority.get().getAuthorityDailyId()) : Optional.empty(), null, null).stream()
 				.map(x -> new AttendanceItemName(x.getAttendanceItemId(), x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber(),
-						x.getTypeOfAttendanceItem(), x.getFrameCategory())).collect(Collectors.toList());
+						x.getUserCanUpdateAtr(), x.getNameLineFeedPosition(), x.getTypeOfAttendanceItem(), x.getFrameCategory())).collect(Collectors.toList());
 		return listAttendanceItemName;
 	}
 }

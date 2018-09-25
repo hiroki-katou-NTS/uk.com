@@ -91,18 +91,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_BREAK_TIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
-		try {
-			con.createStatement().executeUpdate(sqlQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-//				.setParameter("ymd", ymd).executeUpdate();
-//		this.getEntityManager().flush();
 		try {
 			val statement = this.connection().prepareStatement(
 					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?");
@@ -150,7 +138,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				return entity;
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 		if (krcdtDaiBreakTimes == null || krcdtDaiBreakTimes.isEmpty()) {
@@ -198,7 +186,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

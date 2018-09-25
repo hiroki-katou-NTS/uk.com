@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +106,6 @@ public class PeregCommandFacade {
 	@Inject
 	private FacadeUtils facadeUtils;
 	
-	private final static String nameStartDate = "開始日";
-	
 	private final static String nameEndate = "終了日";
 	
 	private final static String valueEndate = "9999/12/31";
@@ -190,6 +187,7 @@ public class PeregCommandFacade {
 		PersonCorrectionLogParameter target  = null;
 		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
 		String employeeId = inputContainer.getEmployeeId();
+		// get user info
 		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
 		
@@ -258,11 +256,16 @@ public class PeregCommandFacade {
 		String personId = container.getPersonId();
 		String employeeId = container.getEmployeeId();
 
-		// getall required items by category id
+		// Getall items by category id
 		Map<String, List<ItemBasicInfo>> itemByCtgId = perInfoItemDefRepositoty
-				.getItemCDByListCategoryIdWithoutAbolition(container.getInputs().stream()
+				.getItemCDByListCategoryIdWithAbolition(container.getInputs().stream()
 						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
 						AppContexts.user().contractCode());
+		
+		// Filter required item
+		Map<String, List<ItemBasicInfo>> requiredItemByCtgId = itemByCtgId.entrySet().stream()
+				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+						.filter(info -> info.getRequiredAtr() == 1 && info.getAbolitionAtr() == 0).collect(Collectors.toList())));
 		
 		// Check is enough item to regist
 		// Item missing
@@ -271,15 +274,15 @@ public class PeregCommandFacade {
 		addInputs.forEach(ctg -> {
 			List<String> listScreenItem = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
 			// Set all default item
-			List<ItemValue> listDefault = facadeUtils.getListDefaultItem(ctg.getCategoryCd(), listScreenItem,
-					container.getEmployeeId());
+			List<ItemValue>	 listDefault = facadeUtils.getListDefaultItem(ctg.getCategoryCd(), listScreenItem,
+					container.getEmployeeId(),itemByCtgId.get(ctg.getCategoryId()) );
 			ctg.getItems().addAll(listDefault);
 
 			List<String> listItemAfter = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
 
-			if (itemByCtgId.containsKey(ctg.getCategoryId())) {
+			if (requiredItemByCtgId.containsKey(ctg.getCategoryId())) {
 
-				itemExclude.addAll(itemByCtgId.get(ctg.getCategoryId()).stream()
+				itemExclude.addAll(requiredItemByCtgId.get(ctg.getCategoryId()).stream()
 						.filter(i -> !listItemAfter.contains(i.getItemCode())).collect(Collectors.toList()));
 			}
 
@@ -463,8 +466,8 @@ public class PeregCommandFacade {
 							boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
 							if(historyLst.size() == 1) {
 								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-									item.setContentAfter(isContinuousHistory ? valueEndate: item.contentAfter());
+									item.setValueAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
+									item.setContentAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
 								}
 								
 							}else {									
@@ -478,8 +481,8 @@ public class PeregCommandFacade {
 											info = InfoOperateAttr.ADD_HISTORY;
 											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
 											if (item.itemCode().equals(dateRange.getEndDateCode())) {
-												item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-												item.setContentAfter(isContinuousHistory? valueEndate: item.contentAfter());
+												item.setValueAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
+												item.setContentAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.contentAfter());
 											}else {
 												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 													if(item.itemCode().equals(dateRange.getStartDateCode())) {
@@ -514,14 +517,6 @@ public class PeregCommandFacade {
 
 									}
 								}
-							}
-						
-							
-						}else {
-							if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
-								info = InfoOperateAttr.ADD;
-							}else {
-								info = InfoOperateAttr.UPDATE;
 							}
 						}
 						break;

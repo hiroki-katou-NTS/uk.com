@@ -42,7 +42,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
-            baseDateOfParentScreen: KnockoutObservable<string>;
+            baseDateOfParentScreen: KnockoutObservable<any>;
+            periodStartOfParentScreen: KnockoutObservable<any>;
+            periodEndOfParentScreen: KnockoutObservable<any>;
+            dateRangeOfParentScreen: KnockoutObservable<DateRangePickerModel>;
             inputPeriod: KnockoutObservable<DateRangePickerModel>;
             baseDate: KnockoutComputed<moment.Moment>;
             periodStart: KnockoutComputed<moment.Moment>;
@@ -674,16 +677,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
-                if (_.isFunction(options.baseDate)) {
-                    self.baseDateOfParentScreen = options.baseDate;
-                    self.inputBaseDate(options.baseDate());
-                } else {
-                    self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
-                }
+                self.setBaseDateAndPeriodOnInit(options);
 
-                const periodStart = _.isNil(options.periodStartDate) ? moment().toISOString() : options.periodStartDate;
-                const periodEnd = _.isNil(options.periodEndDate) ? moment().toISOString() : options.periodEndDate;
-                self.inputPeriod(new DateRangePickerModel(periodStart, periodEnd));
                 self.selectedIncumbent(options.inService);
                 self.selectedLeave(options.leaveOfAbsence);
                 self.selectedClosed(options.closed);
@@ -919,6 +914,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 if (self.isFirstTime) {
                     // Apply data search & load Kcp components
+                    self.synchronizeDate();
                     self.toggleSlide().done(() => $.when(self.applyDataSearch(), self.loadKcp005()).always(() => {
                         // Set acquired base date to status period end date
                         self.inputStatusPeriodEnd(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toISOString());
@@ -932,19 +928,40 @@ module nts.uk.com.view.ccg.share.ccg {
                     }));
                 } else {
                     // toggle slide ccg001
-                    self.toggleSlide().done(() => {
-                        // update baseDate
-                        if (self.baseDateOfParentScreen) {
-                            const isSameDate = moment.isMoment(self.baseDateOfParentScreen()) ?
-                                self.baseDateOfParentScreen().isSame(self.inputBaseDate()) : self.inputBaseDate() == self.baseDateOfParentScreen();
-                            if (!isSameDate) {
-                                self.inputBaseDate(self.baseDateOfParentScreen())
-                            }
-                        }
-                    });
+                    self.toggleSlide().done(() => self.synchronizeDate());
                     dfd.resolve();
                 }
                 return dfd.promise();
+            }
+
+            /**
+             * Synchronize date with parent screen
+             */
+            private synchronizeDate(): void {
+                let self = this;
+                // synchronize baseDate
+                if (self.baseDateOfParentScreen) {
+                    const isSameDate = moment.isMoment(self.baseDateOfParentScreen()) ?
+                        self.baseDateOfParentScreen().isSame(self.inputBaseDate()) : self.inputBaseDate() == self.baseDateOfParentScreen();
+                    if (!isSameDate) {
+                        self.inputBaseDate(self.baseDateOfParentScreen())
+                    }
+                }
+
+                // synchronize period
+                if (self.dateRangeOfParentScreen) {
+                    const isSameDate = DateRangePickerModel.isSamePeriod(self.dateRangeOfParentScreen(), self.inputPeriod());
+                    if (!isSameDate) {
+                        self.inputPeriod(self.dateRangeOfParentScreen());
+                    }
+                } else if (self.periodStartOfParentScreen) {
+                    const isSameDate = moment.isMoment(self.periodStartOfParentScreen()) ?
+                        self.periodStartOfParentScreen().isSame(self.inputPeriod().startDate) && self.periodEndOfParentScreen().isSame(self.inputPeriod().endDate) :
+                        self.periodStartOfParentScreen() == self.inputPeriod().startDate && self.periodEndOfParentScreen() == self.inputPeriod().endDate;
+                    if (!isSameDate) {
+                        self.inputPeriod(new DateRangePickerModel(self.periodStartOfParentScreen(), self.periodEndOfParentScreen()));
+                    }
+                }
             }
 
             /**
@@ -1307,7 +1324,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
                     isMultiple: true,
                     selectedSystemType: self.systemType,
-                    selectedCodes: self.selectedCodeWorkplace()
+                    selectedCodes: self.selectedCodeWorkplace(),
+                    isShowBaseDate :false
                 };
                 nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
                 nts.uk.ui.windows.sub.modal('com',"/view/cdl/008/a/index.xhtml").onClosed(() => {
@@ -1456,8 +1474,9 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set period
                 if (self.showPeriod) {
+                    const periodEnd = self.showPeriodYM ? self.periodEnd().endOf("month") : self.periodEnd();
                     self.queryParam.periodStart = self.periodStart().format(CcgDateFormat.DEFAULT_FORMAT);
-                    self.queryParam.periodEnd = self.periodEnd().endOf("month").format(CcgDateFormat.DEFAULT_FORMAT);
+                    self.queryParam.periodEnd = periodEnd.format(CcgDateFormat.DEFAULT_FORMAT);
                     if (!self.showBaseDate) {
                         self.acquiredBaseDate(self.queryParam.periodEnd);
                     }
@@ -1482,6 +1501,35 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 return dfd.promise();
+            }
+
+            /**
+             * Set baseDate & period on init component
+             */
+            private setBaseDateAndPeriodOnInit(options: GroupOption): void {
+                let self = this;
+                // set baseDate
+                if (_.isFunction(options.baseDate)) {
+                    self.baseDateOfParentScreen = options.baseDate;
+                    self.inputBaseDate(options.baseDate());
+                } else {
+                    self.inputBaseDate(_.isNil(options.baseDate) ? moment().toISOString() : options.baseDate);
+                }
+
+                // set period
+                if (options.dateRangePickerValue) {
+                    self.dateRangeOfParentScreen = options.dateRangePickerValue;
+                    self.inputPeriod(self.dateRangeOfParentScreen());
+                }
+                else if (_.isFunction(options.periodStartDate) && _.isFunction(options.periodEndDate)) {
+                    self.periodStartOfParentScreen = options.periodStartDate;
+                    self.periodEndOfParentScreen = options.periodEndDate;
+                    self.inputPeriod(new DateRangePickerModel(options.periodStartDate(), options.periodEndDate()));
+                } else {
+                    const periodStart = _.isNil(options.periodStartDate) ? moment().toISOString() : options.periodStartDate;
+                    const periodEnd = _.isNil(options.periodEndDate) ? moment().toISOString() : options.periodEndDate;
+                    self.inputPeriod(new DateRangePickerModel(periodStart, periodEnd));
+                }
             }
 
             /**
@@ -2019,6 +2067,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 self.startDate = startDate;
                 self.endDate = endDate;
+            }
+
+            public static isSamePeriod(a: DateRangePickerModel, b: DateRangePickerModel): boolean {
+                return a.startDate == b.startDate && a.endDate == b.endDate
             }
         }
 
