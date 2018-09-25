@@ -66,20 +66,20 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 		return new KshstGrantPeriodic(
 				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
 				domain.getTimeSpecifyMethod().value, 
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDate() : null,
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDate() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDateValue() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDateValue() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getMonths().v() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getYears().v() : null,
 				domain.getLimitCarryoverDays().v());
 	}
 
-	public KshstGrantPeriodic(KshstGrantPeriodicPK pk, int timeMethod, MonthDay startDate,
-			MonthDay endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
+	public KshstGrantPeriodic(KshstGrantPeriodicPK pk, int timeMethod, Integer startDate,
+			Integer endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
 		
 		this.pk = pk;
 		this.timeMethod = timeMethod;
-		this.startDate = startDate.getMonth() * 100 + startDate.getDay();
-		this.endDate = endDate.getMonth() * 100 + endDate.getDay();
+		this.startDate = startDate;
+		this.endDate = endDate;
 		this.deadlineMonths = deadlineMonths;
 		this.deadlineYears = deadlineYears;
 		this.limitCarryoverDays = limitCarryoverDays;

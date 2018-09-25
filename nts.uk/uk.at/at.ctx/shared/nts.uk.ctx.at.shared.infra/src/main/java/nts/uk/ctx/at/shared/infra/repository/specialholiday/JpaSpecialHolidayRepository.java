@@ -252,8 +252,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return new KshstGrantPeriodic(
 				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), 
 				domain.getGrantPeriodic().getTimeSpecifyMethod().value, 
-				domain.getGrantPeriodic().getAvailabilityPeriod().getStartDate(), 
-				domain.getGrantPeriodic().getAvailabilityPeriod().getEndDate(), 
+				domain.getGrantPeriodic().getAvailabilityPeriod().getStartDateValue(), 
+				domain.getGrantPeriodic().getAvailabilityPeriod().getEndDateValue(), 
 				domain.getGrantPeriodic().getExpirationDate().getMonths().v(), 
 				domain.getGrantPeriodic().getExpirationDate().getYears().v(), 
 				domain.getGrantPeriodic().getLimitCarryoverDays().v());
