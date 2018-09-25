@@ -155,7 +155,11 @@ public class MonthlyAggregateProcessService {
 					Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
 							.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
 					if (checkDeadline.isPresent()) {
-						checkDeadline.get().setAlarmValueMessage(listFixed.get(1).getMessage());
+						
+						int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+						
+						checkDeadline.get().setComment(Optional.ofNullable(listFixed.get(1).getMessage()));
+						checkDeadline.get().setAlarmValueMessage(TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)));
 						checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
 						String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
 						checkDeadline.get().setAlarmValueDate(dateString);
@@ -575,13 +579,10 @@ public class MonthlyAggregateProcessService {
 									String endValue= "";
 									String nameErrorAlarm = "";
 									//get name attdanceName 
-									if(!erAlAtdItemCon.getCountableAddAtdItems().isEmpty()) {
-										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
-										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-									}else {
-										List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
-										nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-									}
+									List<AttendanceItemName> listAttdNameAdd =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
+									nameErrorAlarm = getNameErrorAlarm(listAttdNameAdd,0,nameErrorAlarm);//0 add atd item
+									List<AttendanceItemName> listAttdNameSub =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
+									nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
 									//if type = time
 									if(erAlAtdItemCon.getConditionAtr() == 1) {
 										startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
@@ -632,13 +633,10 @@ public class MonthlyAggregateProcessService {
 										String endValue= "";
 										String nameErrorAlarm = "";
 										//get name attdanceName 
-										if(!erAlAtdItemCon2.getCountableAddAtdItems().isEmpty()) {
-											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
-											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-										}else {
-											List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
-											nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-										}
+										List<AttendanceItemName> listAttdNameAdd =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
+										nameErrorAlarm = getNameErrorAlarm(listAttdNameAdd,0,nameErrorAlarm);//0 add atd item
+										List<AttendanceItemName> listAttdNameSub =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemCon2.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
+										nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
 										//if type = time
 										if(erAlAtdItemCon2.getConditionAtr() == 1) {
 											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
@@ -715,14 +713,10 @@ public class MonthlyAggregateProcessService {
 								CompareOperatorText compareOperatorText = convertCompareType(compare);
 								String nameErrorAlarm = "";
 								//0 is monthly,1 is dayly
-								if(!erAlAtdItemConAdapterDto.getCountableAddAtdItems().isEmpty()) {
-									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
-									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-								}else {
-									List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
-									nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-								}
-								
+								List<AttendanceItemName> listAttdNameAdd =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableAddAtdItems(), TypeOfItem.Monthly.value);
+								nameErrorAlarm = getNameErrorAlarm(listAttdNameAdd,0,nameErrorAlarm);//0 add atd item
+								List<AttendanceItemName> listAttdNameSub =  attdItemNameDomainService.getNameOfAttendanceItem(erAlAtdItemConAdapterDto.getCountableSubAtdItems(), TypeOfItem.Monthly.value);
+								nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
 								
 								String nameItem = "";
 								String alarmDescription = "";
@@ -815,17 +809,17 @@ public class MonthlyAggregateProcessService {
 									}else {
 										endValueMoney = String.valueOf(endValue.intValue());
 										if(compare>5 && compare<=7) {
-											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
+											alarmDescription = TextResource.localize("KAL010_277",startValueMoney,
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
 													compareOperatorText.getCompareright()+
-													endValueMoney+".00"
+													endValueMoney
 													);	
 										}else {
 											alarmDescription = TextResource.localize("KAL010_277",
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
-													startValueMoney + ".00," + endValueMoney+".00",
+													startValueMoney + "," + endValueMoney,
 													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
@@ -925,6 +919,27 @@ public class MonthlyAggregateProcessService {
 		
 		return compare;
 	}
-		
+	
+	/*
+	 * get name error Alarm
+	 * @param attendanceItemNames : list attendance item name
+	 * @param type : 0 add/1 sub
+	 * @param nameErrorAlarm : String input to join
+	 * @return string
+	 */
+	private String getNameErrorAlarm(List<AttendanceItemName> attendanceItemNames ,int type,String nameErrorAlarm){
+		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
+			for(int i=0; i< attendanceItemNames.size(); i++) {
+				String beforeOperator = "";
+				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? "-" : "+";
+				
+				if (!"".equals(nameErrorAlarm) || type == 1) {
+					beforeOperator = (i == 0) ? type == 1 ? "-" : "+" : "";
+				}
+                nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
+			}
+		}		
+		return nameErrorAlarm;
+	}
 
 }

@@ -53,7 +53,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		
 //		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
@@ -73,7 +73,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(insertTableSQL);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			Statement statementU = con.createStatement();
 			statementU.executeUpdate(JDBCUtil.toInsertWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -15,17 +15,22 @@ public class PersonalInfoCopyAdapterImp implements PersonalInfoDataCopyAdapter {
     PerInfoCategoryPub perInfoCategoryPub;
 
     @Override
-    public void copyA(String companyId, int copyMethod) {
-        perInfoCategoryPub.doCopyA(companyId, copyMethod);
+    public void personalInfoDefEvent(String companyId, int copyMethod) {
+        perInfoCategoryPub.personalInfoDefEvent(companyId, copyMethod);
     }
 
     @Override
-    public void copyB(String companyId, int copyMethod) {
-        perInfoCategoryPub.doCopyB(companyId, copyMethod);
+    public void newLayoutEvent(String companyId, int copyMethod) {
+        perInfoCategoryPub.newLayoutEvent(companyId, copyMethod);
     }
 
     @Override
-    public void copyC(String companyId, int copyMethod) {
-        perInfoCategoryPub.doCopyC(companyId, copyMethod);
+    public void personalInfoItemGroupEvent(String companyId, int copyMethod) {
+        perInfoCategoryPub.personalInfoItemGroupEvent(companyId, copyMethod);
+    }
+
+    @Override
+    public void personalInfoSelectItemEvent(String companyId, int copyMethod) {
+        perInfoCategoryPub.personalInfoSelectItemEvent(companyId, copyMethod);
     }
 }

@@ -9,8 +9,11 @@ import lombok.Data;
 public class MonthlyAttendanceItemDto {
 
 	/** The code. */
-	private String code;
+	private int code;
 	
 	/** The name. */
 	private String name;
+	
+	/** The id. */
+	private int id;
 }

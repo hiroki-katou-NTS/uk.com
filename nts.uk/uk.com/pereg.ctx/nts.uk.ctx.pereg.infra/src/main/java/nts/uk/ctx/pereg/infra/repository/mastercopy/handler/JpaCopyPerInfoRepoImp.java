@@ -11,17 +11,23 @@ import javax.ejb.Stateless;
 @Stateless
 public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoRepository {
     @Override
-    public void doCopyA(String companyId, int copyMethod) {
+    public void personalInfoDefEvent(String companyId, int copyMethod) {
         new PersonalInfoDefCopyHandler(this, copyMethod, companyId).doCopy();
     }
 
     @Override
-    public void doCopyB(String companyId, int copyMethod) {
+    public void newLayoutEvent(String companyId, int copyMethod) {
         new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
     }
 
     @Override
-    public void doCopyC(String companyId, int copyMethod) {
+    public void personalInfoItemGroupEvent(String companyId, int copyMethod) {
         new PpemtPInfoItemGroupDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
+    }
+
+    @Override
+    public void personalInfoSelectItemEvent(String companyId, int copyMethod) {
+        new PerInfoSelectionItemCopyHandler(this, copyMethod, companyId).doCopy();
+
     }
 }

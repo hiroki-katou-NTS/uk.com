@@ -62,12 +62,15 @@
 	text-overflow: ellipsis;
 }
 
-#step1_content_top_right  hr+.form-group>span {
+#step1_content_top_right  hr~.form-group>span {
 	width: 170px;
 	display: inline-block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
-#step1_content_top_right  hr+.form-group>span+span {
+#step1_content_top_right  hr~.form-group>span+span {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -186,7 +189,49 @@
 }
 
 #cover_table {
-	width: 453px;
+	border: 1px solid #000;
+	background-color: #BFEA60;
+}
+
+#cover_table table{
+	display: block !important;
+}
+
+#cover_table table tbody {
+	display: block;
+	max-height: 309px;
+	overflow-y: scroll;
+	border-top: 1px solid #000;
+}
+
+#cover_table table th {
+	border-bottom: 0;
+}
+
+#cover_table table th,
+#cover_table table td {
+	border-top: 0;
+	box-sizing: border-box;
+}
+
+#cover_table table th:first-child,
+#cover_table table td:first-child {
+	width: 180px;
+	border-left: 0;
+}
+
+#cover_table table th:last-child,
+#cover_table table td:last-child {
+	width: 250px;
+	border-right: 0;
+}
+
+#cover_table table tr:first-child td {
+	border-top: 0;
+}
+
+#cover_table table tr:last-child td {
+	border-bottom: 0;
 }
 
 .table_item th, .table_item td {

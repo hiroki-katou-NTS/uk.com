@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -33,11 +33,11 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 	
 	/* 使用可能期間.開始日 */
 	@Column(name = "START_DATE")
-	public GeneralDate startDate;
+	public Integer startDate;
 
 	/* 使用可能期間.終了日 */
 	@Column(name = "END_DATE")
-	public GeneralDate endDate;
+	public Integer endDate;
 
 	/* 特別休暇の有効期限.月数 */
 	@Column(name = "DEADLINE_MONTHS")
@@ -66,15 +66,15 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 		return new KshstGrantPeriodic(
 				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
 				domain.getTimeSpecifyMethod().value, 
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().start() : null,
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().end() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDateValue() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDateValue() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getMonths().v() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getYears().v() : null,
 				domain.getLimitCarryoverDays().v());
 	}
 
-	public KshstGrantPeriodic(KshstGrantPeriodicPK pk, int timeMethod, GeneralDate startDate,
-			GeneralDate endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
+	public KshstGrantPeriodic(KshstGrantPeriodicPK pk, int timeMethod, Integer startDate,
+			Integer endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
 		
 		this.pk = pk;
 		this.timeMethod = timeMethod;

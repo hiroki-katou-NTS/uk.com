@@ -4207,6 +4207,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.krcdtMonRemainPk.getClosureId(),
 				this.krcdtMonRemainPk.getClosureDay(),
 				(this.krcdtMonRemainPk.getIsLastDay() != 0),
+				EnumAdaptor.valueOf(closureStatus, ClosureStatus.class),
 				this.startDate,
 				this.endDate,
 				new DayOffDayAndTimes(

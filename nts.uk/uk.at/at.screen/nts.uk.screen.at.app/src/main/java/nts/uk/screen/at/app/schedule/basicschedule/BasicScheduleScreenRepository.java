@@ -22,6 +22,8 @@ public interface BasicScheduleScreenRepository {
 	 * @return
 	 */
 	List<BasicScheduleScreenDto> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
+	
+	List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 
 	/**
 	 * Get data from WorkTimeSet and WorkTimeSheetSet

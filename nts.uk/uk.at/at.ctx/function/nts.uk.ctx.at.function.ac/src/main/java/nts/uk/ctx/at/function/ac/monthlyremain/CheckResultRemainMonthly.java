@@ -56,16 +56,16 @@ public class CheckResultRemainMonthly implements CheckResultRemainMonthlyAdapter
 		return check(typeOperator, actualValue, checkRemainNumberMonFunImport);
 	}
 	
-	private boolean check(Integer typeOperator,Double actualValue, CheckRemainNumberMonFunImport checkRemainNumberMonFunImport){
+	private boolean check(int typeOperator,double actualValue, CheckRemainNumberMonFunImport checkRemainNumberMonFunImport){
 		boolean check = false;
 		//check single
 		if(typeOperator == 0){
 			int compare =  checkRemainNumberMonFunImport.getCompareSingleValueEx().getCompareOperator();
 			double targetValue = checkRemainNumberMonFunImport.getCompareSingleValueEx().getValue().getDaysValue().doubleValue();
-			check = CompareSingle(
-					targetValue,
+			check = compareSingle(
+					actualValue,
 					EnumAdaptor.valueOf(compare,SingleValueCompareType.class),
-					actualValue
+					targetValue
 					);
 		}
 		//check range
@@ -73,58 +73,56 @@ public class CheckResultRemainMonthly implements CheckResultRemainMonthlyAdapter
 			int compare =  checkRemainNumberMonFunImport.getCompareRangeEx().getCompareOperator();
 			double targetValueEnd = checkRemainNumberMonFunImport.getCompareRangeEx().getEndValue().getDaysValue().doubleValue();
 			double targetValueStart = checkRemainNumberMonFunImport.getCompareRangeEx().getStartValue().getDaysValue().doubleValue();
-			check = CompareDouble(actualValue, targetValueStart, targetValueEnd, EnumAdaptor.valueOf(compare,RangeCompareType.class));
+			check = compareDouble(actualValue, targetValueStart, targetValueEnd, EnumAdaptor.valueOf(compare,RangeCompareType.class));
 		}
 		return check;
 	}
 	
-	private boolean CompareSingle(Double target,SingleValueCompareType compareType, Double compare) {
-		if(target == null) {
-			return false;
-		}
+	private boolean compareSingle(double actualValue,SingleValueCompareType compareType, double targetValue) {
+		
 		switch (compareType) {
 		case EQUAL:
-			return target.compareTo(compare) == 0;
+			return actualValue == targetValue;
 		case GREATER_OR_EQUAL:
-			return target.compareTo(compare) >= 0;
+			return actualValue >= targetValue;
 		case GREATER_THAN:
-			return target.compareTo(compare) > 0;
+			return actualValue > targetValue;
 		case LESS_OR_EQUAL:
-			return target.compareTo(compare) <= 0;
+			return actualValue <= targetValue;
 		case LESS_THAN:
-			return target.compareTo(compare) < 0;
+			return actualValue < targetValue;
 		case NOT_EQUAL:
-			return target.compareTo(compare) != 0;
+			return actualValue != targetValue;
 		default:
 			throw new RuntimeException("invalid compareOpertor: " + compareType);
 		}
 	}
-	private boolean CompareDouble(Double valueActual, Double valueAgreementStart, Double valueAgreementEnd,
+	private boolean compareDouble(double valueActual, double valueAgreementStart, double valueAgreementEnd,
 			RangeCompareType compare) {
 		boolean check = false;
 		
 		switch (compare) {
 		/* 範囲の間（境界値を含まない）（＜＞） */
 		case BETWEEN_RANGE_OPEN:
-			if (valueActual.compareTo(valueAgreementStart) > 0 && valueActual.compareTo(valueAgreementEnd) < 0) {
+			if (valueActual > valueAgreementStart && valueActual < valueAgreementEnd) {
 				check = true;
 			}
 			break;
 		/* 範囲の間（境界値を含む）（≦≧） */
 		case BETWEEN_RANGE_CLOSED:
-			if (valueActual.compareTo(valueAgreementStart) >= 0 && valueActual.compareTo(valueAgreementEnd) <= 0) {
+			if (valueActual >= valueAgreementStart && valueActual <= valueAgreementEnd) {
 				check = true;
 			}
 			break;
 		/* 範囲の外（境界値を含まない）（＞＜） */
 		case OUTSIDE_RANGE_OPEN:
-			if (valueActual.compareTo(valueAgreementStart) < 0 || valueActual.compareTo(valueAgreementEnd) > 0) {
+			if (valueActual < valueAgreementStart || valueActual > valueAgreementEnd) {
 				check = true;
 			}
 			break;
 		/* 範囲の外（境界値を含む）（≧≦） */
 		case OUTSIDE_RANGE_CLOSED:
-			if (valueActual.compareTo(valueAgreementStart) <= 0 || valueActual.compareTo(valueAgreementEnd) >= 0) {
+			if (valueActual <= valueAgreementStart || valueActual >= valueAgreementEnd) {
 				check = true;
 			}
 			break;

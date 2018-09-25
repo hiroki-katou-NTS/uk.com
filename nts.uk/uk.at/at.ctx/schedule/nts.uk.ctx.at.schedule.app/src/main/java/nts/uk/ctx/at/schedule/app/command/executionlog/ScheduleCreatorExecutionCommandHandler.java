@@ -299,58 +299,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule) {
 		
-		/**************************************************/
-		
-//		ExecutorService executorService = Executors.newFixedThreadPool(20);
-//		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
-//
-//		betweenDates.forEach(dateInPeriod -> {
-//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//					.build(() -> {
-//						// get info by context
-//						val asyncTask = context.asAsync();
-//
-//						// 中断フラグを判断
-//						if (asyncTask.hasBeenRequestedToCancel()) {
-//							// ドメインモデル「スケジュール作成実行ログ」を更新する
-//							// TODO - hinh nhu chua lam
-//							asyncTask.finishedAsCancelled();
-//							return;
-//						}
-//						// ドメインモデル「勤務予定基本情報」を取得する
-//						Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-//								.find(command.getEmployeeId(), dateInPeriod);
-//						if (optionalBasicSchedule.isPresent()) {
-//							command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
-//							command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
-//							// 入力パラメータ「再作成区分」を判断
-//							// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
-//							if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
-//									|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
-//								// 再設定する情報を取得する
-//								this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, dateInPeriod,
-//										empGeneralInfo, listBusTypeOfEmpHis);
-//							}
-//						}
-//
-//						// Count down latch.
-//						countDownLatch.countDown();
-//					});
-//			executorService.submit(task);
-//		});
-//
-//		// Wait for latch until finish.
-//		try {
-//			countDownLatch.await();
-//		} catch (InterruptedException ie) {
-//			throw new RuntimeException(ie);
-//		} finally {
-//			// // Force shut down executor services.
-//			executorService.shutdown();
-//		}
-		
-		/**************************************************/
-
 		// get info by context
 		val asyncTask = context.asAsync();
 		
@@ -366,8 +314,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			}
 			// ドメインモデル「勤務予定基本情報」を取得する
 			// fix for response
-//			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
-//					toDate);
 			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream().filter(
 					x -> (x.getEmployeeId().equals(command.getEmployeeId()) && x.getDate().compareTo(toDate) == 0))
 					.findFirst();
@@ -422,8 +368,22 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		domain.updateExecutionTimeEndToNow();
 		this.scheduleExecutionLogRepository.update(domain);
 	}
-
-	private void createScheduleBasedPersonOneDate(
+	
+	/**
+	 * tra ve true la muon ket thuc vong lap
+	 * tra ve false la k chay cac xu ly ben duoi, sang object tiep theo
+	 * 
+	 * @param command
+	 * @param creator
+	 * @param domain
+	 * @param context
+	 * @param dateInPeriod
+	 * @param masterCache
+	 * @param listBasicSchedule
+	 * @param dateRegistedEmpSche
+	 * @return
+	 */
+	private boolean createScheduleBasedPersonOneDate(
 			ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator,
 			ScheduleExecutionLog domain,
@@ -441,9 +401,27 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			asyncTask.finishedAsCancelled();
 			// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
 			this.updateStatusScheduleExecutionLog(domain, CompletionStatus.INTERRUPTION);
-			return;
+			return true;
 		}
-
+		
+		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
+		// EA修正履歴　No2716
+		List<EmploymentInfoImported> listEmploymentInfo = masterCache.getMapEmploymentStatus().get(creator.getEmployeeId());
+		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
+		if (listEmploymentInfo != null) {
+			optEmploymentInfo = listEmploymentInfo.stream()
+					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(dateInPeriod)).findFirst();
+		}
+		// status employment equal RETIREMENT (退職)
+		if (!optEmploymentInfo.isPresent() || optEmploymentInfo.get().getEmploymentState() == RETIREMENT) {
+			return true;
+		}
+		EmploymentInfoImported employmentInfo = optEmploymentInfo.get();
+		// status employment equal BEFORE_JOINING (入社前)
+		if (employmentInfo.getEmploymentState() == BEFORE_JOINING) {
+			return false;
+		}
+		
 		// 労働条件情報からパラメータ.社員ID、ループ中の対象日から該当する労働条件項目を取得する
 		// EA修正履歴 No1830
 		Optional<WorkCondItemDto> _workingConditionItem = masterCache.getListWorkingConItem().stream().filter(
@@ -456,17 +434,17 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
 					dateInPeriod, creator.getEmployeeId());
 			this.scheduleErrorLogRepository.add(scheduleErrorLog);
-			return;
+			return false; 
 		}
 
 		WorkCondItemDto workingConditionItem = _workingConditionItem.get();
 
 		if (workingConditionItem.getScheduleManagementAtr() == ManageAtr.NOTUSE) {
-			return;
+			return false;
 		}
 
 		if (!workingConditionItem.getScheduleMethod().isPresent()) {
-			return;
+			return false;
 		}
 
 		WorkScheduleBasicCreMethod basicCreateMethod = workingConditionItem.getScheduleMethod().get()
@@ -480,8 +458,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					workingConditionItem,
 					masterCache,
 					listBasicSchedule,
-					dateRegistedEmpSche);
-			break;
+					dateRegistedEmpSche,
+					employmentInfo);
+			return false;
 		case MONTHLY_PATTERN:
 			// アルゴリズム「月間パターンで勤務予定を作成する」を実行する
 			// create schedule by monthly pattern
@@ -491,13 +470,16 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					workingConditionItem,
 					masterCache,
 					listBasicSchedule,
-					dateRegistedEmpSche);
-			break;
+					dateRegistedEmpSche,
+					employmentInfo);
+			return false;
 		case PERSONAL_DAY_OF_WEEK:
 			// アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
 			// TODO
 			// 対象外
-			break;
+			return false;
+		default:
+			return false;
 		}
 		
 	}
@@ -546,7 +528,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			betweenDates.forEach(dateInPeriod -> {
 	//			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 	//					.build(() -> {
-							createScheduleBasedPersonOneDate(
+							boolean isEndLoop = this.createScheduleBasedPersonOneDate(
 									command,
 									creator,
 									domain,
@@ -555,7 +537,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 									masterCache,
 									listBasicSchedule,
 									dateRegistedEmpSche);
-	
+							if(isEndLoop) return;
 							// // Count down latch.
 	//						countDownLatch.countDown();
 			});
@@ -592,69 +574,46 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	private void createWorkScheduleByBusinessDayCalenda(
-			ScheduleCreatorExecutionCommand command,
-			GeneralDate dateInPeriod,
-			WorkCondItemDto workingConditionItem,
-			CreateScheduleMasterCache masterCache,
-			List<BasicSchedule> listBasicSchedule,
-			DateRegistedEmpSche dateRegistedEmpSche) {
-		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
-		// EA No1689
-		List<EmploymentInfoImported> listEmploymentInfo = masterCache.getMapEmploymentStatus().get(workingConditionItem.getEmployeeId());
-		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
-		if (listEmploymentInfo != null) {
-			optEmploymentInfo = listEmploymentInfo.stream()
-					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(dateInPeriod)).findFirst();
-		}
+	private void createWorkScheduleByBusinessDayCalenda(ScheduleCreatorExecutionCommand command,
+			GeneralDate dateInPeriod, WorkCondItemDto workingConditionItem, CreateScheduleMasterCache masterCache,
+			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche,
+			EmploymentInfoImported employmentInfo) {
 
-		// status employment equal RETIREMENT (退職)
-		if (!optEmploymentInfo.isPresent() || optEmploymentInfo.get().getEmploymentState() == RETIREMENT) {
-			return;
-		}
+		// ドメインモデル「勤務予定基本情報」を取得する(lấy dữ liệu domain 「勤務予定基本情報」)
+		// fix for response
+		Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
+				.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
+						&& x.getDate().compareTo(dateInPeriod) == 0))
+				.findFirst();
 
-		// status employment not equal BEFORE_JOINING (入社前)
-		if (optEmploymentInfo.get().getEmploymentState() != BEFORE_JOINING) {
-			// ドメインモデル「勤務予定基本情報」を取得する(lấy dữ liệu domain 「勤務予定基本情報」)
-//			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository
-//					.find(workingConditionItem.getEmployeeId(), dateInPeriod);
-			// fix for response
-			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
-					.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
-							&& x.getDate().compareTo(dateInPeriod) == 0))
-					.findFirst();
-
-			if (optionalBasicSchedule.isPresent()) {
-				BasicSchedule basicSchedule = optionalBasicSchedule.get();
-				// checked2018
-				// 登録前削除区分をTrue（削除する）とする
-				command.setIsDeleteBeforInsert(true); // FIX BUG #87113
-				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
-				// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
-				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
-					this.createWorkScheduleByRecreate(command, dateInPeriod, basicSchedule, workingConditionItem,
-							optEmploymentInfo, masterCache, listBasicSchedule, dateRegistedEmpSche);
-				}
-			} else {
-				// EA No1841
-				ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
-				BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-				if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
-						&& !this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command,
-								dateInPeriod, basicSche, optEmploymentInfo, workingConditionItem,
-								masterCache)) {
-					return;
-				}
-
-				// 登録前削除区分をTrue（削除する）とする
-				// checked2018
-				command.setIsDeleteBeforInsert(false); // FIX BUG #87113
-
-				// not exist data basic schedule
-				this.scheCreExeWorkTypeHandler.createWorkSchedule(
-						command, dateInPeriod, workingConditionItem,
-						masterCache, listBasicSchedule, dateRegistedEmpSche);
+		if (optionalBasicSchedule.isPresent()) {
+			BasicSchedule basicSchedule = optionalBasicSchedule.get();
+			// checked2018
+			// 登録前削除区分をTrue（削除する）とする
+			command.setIsDeleteBeforInsert(true); // FIX BUG #87113
+			// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
+			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
+			if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
+				this.createWorkScheduleByRecreate(command, dateInPeriod, basicSchedule, workingConditionItem,
+						employmentInfo, masterCache, listBasicSchedule, dateRegistedEmpSche);
 			}
+		} else {
+			// EA No1841
+			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
+			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
+			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
+					&& !this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod,
+							basicSche, employmentInfo, workingConditionItem, masterCache)) {
+				return;
+			}
+
+			// 登録前削除区分をTrue（削除する）とする
+			// checked2018
+			command.setIsDeleteBeforInsert(false); // FIX BUG #87113
+
+			// not exist data basic schedule
+			this.scheCreExeWorkTypeHandler.createWorkSchedule(command, dateInPeriod, workingConditionItem, masterCache,
+					listBasicSchedule, dateRegistedEmpSche);
 		}
 	}
 
@@ -674,7 +633,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			GeneralDate dateInPeriod,
 			BasicSchedule basicSchedule,
 			WorkCondItemDto workingConditionItem,
-			Optional<EmploymentInfoImported> optEmploymentInfo,
+			EmploymentInfoImported employmentInfo,
 			CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
@@ -685,7 +644,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				|| basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
 			// アルゴリズム「スケジュール作成判定処理」を実行する
 			if (this.scheCreExeMonthlyPatternHandler.scheduleCreationDeterminationProcess(command, dateInPeriod,
-					basicSchedule, optEmploymentInfo, workingConditionItem, masterCache)) {
+					basicSchedule, employmentInfo, workingConditionItem, masterCache)) {
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(
 						command,
 						dateInPeriod,
@@ -725,16 +684,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// マスタ情報を取得する
 		CreateScheduleMasterCache masterCache = this.acquireData(companyId, employeeIds, period);
 
-
-		// find all data BasicSchedule
-		// List<BasicSchedule> listBasicSchedule =
-		// this.basicScheduleRepository.findAllBetweenDate(employeeIds,
-		// scheduleExecutionLog.getPeriod().start(),
-		// scheduleExecutionLog.getPeriod().end());
-		
 		List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(employeeIds, scheduleExecutionLog.getPeriod());
-		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
-
+		
 		// get info by context
 		val asyncTask = context.asAsync();
 		
@@ -742,6 +693,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 
 		this.parallel.forEach(scheduleCreators, scheduleCreator -> {
+			
+			RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 			
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
@@ -808,12 +761,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			}
 
 			// 暫定データを作成する (Tạo data tạm)
-			registrationListDateSchedule.getRegistrationListDateSchedule().stream()
-				.filter(x -> x.getEmployeeId().equals(scheduleCreator.getEmployeeId()))
-				.forEach(x -> {
-					// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
-					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
-				});
+			registrationListDateSchedule.getRegistrationListDateSchedule().forEach(x -> {
+				// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
+				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
+			});
 		});
 		
 //		for (val scheduleCreator : scheduleCreators) {
@@ -889,31 +840,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// アルゴリズム「実行ログ作成処理」を実行する
 		this.executionLogCreationProcess(scheduleExecutionLog, scheduleCreateContent, scheduleCreators);
 	}
-
-	// private void insertUpdateAllBasicSchedule(List<BasicSchedule>
-	// listBasicSchedule, List<BasicSchedule> allData) {
-	// List<BasicSchedule> listUpdates = new ArrayList<>();
-	// List<BasicSchedule> listInsert = new ArrayList<>();
-	// allData.forEach(x -> {
-	// Optional<BasicSchedule> opt = listBasicSchedule.stream()
-	// .filter(y -> (y.getEmployeeId().equals(x.getEmployeeId()) &&
-	// y.getDate().equals(x.getDate())))
-	// .findFirst();
-	// if (opt.isPresent()) {
-	// listUpdates.add(x);
-	// } else {
-	// listInsert.add(x);
-	// }
-	// });
-	//
-	// if (listInsert.size() > 0) {
-	// this.basicScheduleRepository.insertAll(listInsert);
-	// }
-	// if (listUpdates.size() > 0) {
-	// this.basicScheduleRepository.updateAll(listUpdates);
-	// }
-	//
-	// }
 
 	/**
 	 * 実行ログ作成処理

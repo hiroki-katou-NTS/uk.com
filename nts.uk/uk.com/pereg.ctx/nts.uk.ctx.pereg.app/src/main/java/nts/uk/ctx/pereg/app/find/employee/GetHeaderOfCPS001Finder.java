@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.find.employee;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
 import java.util.List;
 
 import java.util.Optional;
@@ -30,6 +29,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
@@ -67,6 +68,9 @@ public class GetHeaderOfCPS001Finder {
 	@Inject
 	private PersonInfoItemAuthRepository perItemAuthRepo;
 
+	@Inject
+	private SyWorkplacePub wkpPublish;
+
 	public EmployeeInfo getEmployeeInfo(String sid) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.today();
@@ -79,10 +83,13 @@ public class GetHeaderOfCPS001Finder {
 		boolean isEmployeement = isSelfAuth(roleId, "CS00014", "IS00068", AppContexts.user().employeeId().equals(sid));
 		boolean isJobEntryRef = isSelfAuth(roleId, "CS00003", "IS00020", AppContexts.user().employeeId().equals(sid));
 		boolean isBirthdayRef = isSelfAuth(roleId, "CS00002", "IS00017", AppContexts.user().employeeId().equals(sid));
+
 		if (!empInfo.isPresent())
 			return new EmployeeInfo();
+
 		EmployeeInfo _emp = empInfo.get();
 		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid, sid);
+
 		if (tempHist.isPresent()) {
 			_emp.setNumberOfTempHist(tempHist.get().items().stream()
 					.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
@@ -109,6 +116,13 @@ public class GetHeaderOfCPS001Finder {
 						_emp.setDepartmentName(" ");
 					}
 				}
+			} else {
+				Optional<SWkpHistExport> wkp = wkpPublish.findBySid(sid, date);
+
+				wkp.ifPresent(wk -> {
+					_emp.setDepartmentCode(wk.getWorkplaceCode());
+					_emp.setDepartmentName(wk.getWorkplaceName());
+				});
 			}
 		} else {
 			_emp.setDepartmentCode(" ");
@@ -141,7 +155,8 @@ public class GetHeaderOfCPS001Finder {
 		if (isPosition) {
 			Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
 			if (jobTitleHisItem.isPresent()) {
-				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),date);
+				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),
+						date);
 				if (jobInfo.isPresent()) {
 					_emp.setPosition(jobInfo.get().getJobTitleName().toString());
 				}
@@ -153,7 +168,8 @@ public class GetHeaderOfCPS001Finder {
 		}
 
 		if (isEmployeement) {
-			Optional<EmploymentInfo> employment = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId, sid, date);
+			Optional<EmploymentInfo> employment = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId,
+					sid, date);
 			if (employment.isPresent()) {
 				_emp.setContractCodeType(employment.get().getEmploymentName());
 			} else {

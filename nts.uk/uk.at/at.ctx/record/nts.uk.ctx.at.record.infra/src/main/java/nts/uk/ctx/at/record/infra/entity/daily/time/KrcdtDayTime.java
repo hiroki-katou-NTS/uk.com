@@ -21,6 +21,7 @@ import javax.persistence.Table;
 
 import lombok.val;
 import nts.gul.reflection.FieldReflection;
+import nts.gul.text.StringUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -2866,63 +2867,63 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 												  new AttendanceTime(entity.deductionTime1),
 												  new AttendanceTime(entity.divergenceTime1),
 												  1,
-												  entity.reason1 == null ? null : new DivergenceReasonContent(entity.reason1),
-												  entity.reasonCode1 == null ? null : new DiverdenceReasonCode(entity.reasonCode1)));
+												  StringUtil.isNullOrEmpty(entity.reason1, true) ? null : new DivergenceReasonContent(entity.reason1),
+												  StringUtil.isNullOrEmpty(entity.reasonCode1, true) ? null : new DiverdenceReasonCode(entity.reasonCode1)));
 		
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime2),
 				  								  new AttendanceTime(entity.deductionTime2),
 				  								  new AttendanceTime(entity.divergenceTime2),
 				  								  2,
-				  								  entity.reason2 == null ? null : new DivergenceReasonContent(entity.reason2),
-				  								  entity.reasonCode2 == null ? null : new DiverdenceReasonCode(entity.reasonCode2)));
+				  								StringUtil.isNullOrEmpty(entity.reason2, true) ? null : new DivergenceReasonContent(entity.reason2),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode2, true) ? null : new DiverdenceReasonCode(entity.reasonCode2)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime3),
 				  								  new AttendanceTime(entity.deductionTime3),
 				  								  new AttendanceTime(entity.divergenceTime3),
 				  								  3,
-				  								  entity.reason3 == null ? null : new DivergenceReasonContent(entity.reason3),
-				  								  entity.reasonCode3 == null ? null : new DiverdenceReasonCode(entity.reasonCode3)));
+				  								StringUtil.isNullOrEmpty(entity.reason3, true) ? null : new DivergenceReasonContent(entity.reason3),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode3, true) ? null : new DiverdenceReasonCode(entity.reasonCode3)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime4),
 												  new AttendanceTime(entity.deductionTime4),
 												  new AttendanceTime(entity.divergenceTime4),
 												  4,
-												  entity.reason4 == null ? null : new DivergenceReasonContent(entity.reason4),
-												  entity.reasonCode4 == null ? null : new DiverdenceReasonCode(entity.reasonCode4)));
+												  StringUtil.isNullOrEmpty(entity.reason4, true) ? null : new DivergenceReasonContent(entity.reason4),
+												  StringUtil.isNullOrEmpty(entity.reasonCode4, true) ? null : new DiverdenceReasonCode(entity.reasonCode4)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime5),
 				  								  new AttendanceTime(entity.deductionTime5),
 				  								  new AttendanceTime(entity.divergenceTime5),
 				  								  5,
-				  								  entity.reason5 == null ? null : new DivergenceReasonContent(entity.reason5),
-				  								  entity.reasonCode5 == null ? null : new DiverdenceReasonCode(entity.reasonCode5)));
+				  								StringUtil.isNullOrEmpty(entity.reason5, true) ? null : new DivergenceReasonContent(entity.reason5),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode5, true) ? null : new DiverdenceReasonCode(entity.reasonCode5)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime6),
 				  								  new AttendanceTime(entity.deductionTime6),
 				  								  new AttendanceTime(entity.divergenceTime6),
 				  								  6,
-				  								  entity.reason6 == null ? null : new DivergenceReasonContent(entity.reason6),
-				  								  entity.reasonCode6 == null ? null : new DiverdenceReasonCode(entity.reasonCode6)));
+				  								StringUtil.isNullOrEmpty(entity.reason6, true) ? null : new DivergenceReasonContent(entity.reason6),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode6, true) ? null : new DiverdenceReasonCode(entity.reasonCode6)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime7),
 				  								  new AttendanceTime(entity.deductionTime7),
 				  								  new AttendanceTime(entity.divergenceTime7),
 				  								  7,
-				  								  entity.reason7 == null ? null : new DivergenceReasonContent(entity.reason7),
-				  								  entity.reasonCode7 == null ? null : new DiverdenceReasonCode(entity.reasonCode7)));
+				  								StringUtil.isNullOrEmpty(entity.reason7, true) ? null : new DivergenceReasonContent(entity.reason7),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode7, true) ? null : new DiverdenceReasonCode(entity.reasonCode7)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime8),
 				  								  new AttendanceTime(entity.deductionTime8),
 				  								  new AttendanceTime(entity.divergenceTime8),
 				  								  8,
-				  								  entity.reason8 == null ? null : new DivergenceReasonContent(entity.reason8),
-				  								  entity.reasonCode8 == null ? null : new DiverdenceReasonCode(entity.reasonCode8)));
+				  								StringUtil.isNullOrEmpty(entity.reason8, true) ? null : new DivergenceReasonContent(entity.reason8),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode8, true) ? null : new DiverdenceReasonCode(entity.reasonCode8)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime9),
 				  								  new AttendanceTime(entity.deductionTime9),
 				  								  new AttendanceTime(entity.divergenceTime9),
 				  								  9,
-				  								  entity.reason9 == null ? null : new DivergenceReasonContent(entity.reason9),
-				  								  entity.reasonCode9 == null ? null : new DiverdenceReasonCode(entity.reasonCode9)));
+				  								StringUtil.isNullOrEmpty(entity.reason9, true) ? null : new DivergenceReasonContent(entity.reason9),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode9, true) ? null : new DiverdenceReasonCode(entity.reasonCode9)));
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime10),
 				  								  new AttendanceTime(entity.deductionTime10),
 				  								  new AttendanceTime(entity.divergenceTime10),
 				  								  10,
-				  								  entity.reason10 == null ? null : new DivergenceReasonContent(entity.reason10),
-			  									  entity.reasonCode10 == null ? null : new DiverdenceReasonCode(entity.reasonCode10)));
+				  								StringUtil.isNullOrEmpty(entity.reason10, true) ? null : new DivergenceReasonContent(entity.reason10),
+		  										StringUtil.isNullOrEmpty(entity.reasonCode10, true) ? null : new DiverdenceReasonCode(entity.reasonCode10)));
 		
 		val divergence = new DivergenceTimeOfDaily(divergenceTimeList);
 		

@@ -141,9 +141,8 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
 	public List<DisplayTimeItemDto> executeCopy(@PathParam("codeCopy") String codeCopy,
-			@PathParam("codeSourceSerivce") String codeSourceSerivce,
-			List<OutputItemMonthlyWorkScheduleCopyCommand> lstCommandCopy) {
-		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
+			@PathParam("codeSourceSerivce") String codeSourceSerivce) {
+		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}
 	
 	/**

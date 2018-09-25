@@ -354,9 +354,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             } else {
                 // 勤務時間の大小チェック
                 if(!nts.uk.util.isNullOrUndefined(self.timeStart1()) && !nts.uk.util.isNullOrUndefined(self.timeEnd1())){
-                    if (self.timeStart1() > self.timeEnd1()) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
-                        return;
+                    if(!nts.uk.util.isNullOrEmpty(self.timeStart1()) && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
+                        if (self.timeStart1() > self.timeEnd1()) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
+                            return;
+                        }
                     }
                 }
                 // 勤務時間2の大小チェック

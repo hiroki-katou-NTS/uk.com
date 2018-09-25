@@ -98,6 +98,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			outData.setInputDate(appData.getInputDate());
 			outData.setWorkTimeCode(Optional.empty());
 			outData.setWorkTypeCode(Optional.empty());
+			outData.setStartDate(appData.getStartDate());
+			outData.setEndDate(appData.getEndDate());
 			switch(outData.getAppType()) {
 			case WORK_CHANGE_APPLICATION:
 				Optional<AppWorkChange> workChange = workChangeService.getAppworkChangeById(cid, appData.getAppID());

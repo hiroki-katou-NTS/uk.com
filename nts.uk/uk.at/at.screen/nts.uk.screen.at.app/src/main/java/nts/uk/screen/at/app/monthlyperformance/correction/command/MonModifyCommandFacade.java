@@ -109,13 +109,13 @@ public class MonModifyCommandFacade {
 		this.removeMonApproval(listRemove,dataParent.getEndDate());
 
 		// add correction log
-		ExecutorService executorService = Executors.newFixedThreadPool(1);
-		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-				.build(() -> {
+//		ExecutorService executorService = Executors.newFixedThreadPool(1);
+//		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+//				.build(() -> {
 					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery);
 					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
-				});
-		executorService.submit(task);
+//				});
+//		executorService.submit(task);
 		return Collections.emptyMap();
 	}
 	
@@ -180,7 +180,7 @@ public class MonModifyCommandFacade {
 		for(MPItemCheckBox dataCheckApproval : dataCheckApprovals) {
 			empAndDates.add(Pair.of(dataCheckApproval.getEmployeeId(), endDate));
 		}
-		registerDayApproval.removeMonApproval(AppContexts.user().userId(), 
+		registerDayApproval.removeMonApproval(AppContexts.user().employeeId(), 
 				new ArrayList<>(empAndDates), 2, AppContexts.user().companyId());
 	}
 	
