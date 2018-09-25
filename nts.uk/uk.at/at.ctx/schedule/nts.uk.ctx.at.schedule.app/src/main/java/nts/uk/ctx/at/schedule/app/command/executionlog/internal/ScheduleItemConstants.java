@@ -55,4 +55,10 @@ public class ScheduleItemConstants {
 	
 	/** The Constant FLEX_TIME. */
 	public static final int FLEX_TIME = 39;
+	
+	/** The Constant CONFIRM_STATUS. */
+	public static final int CONFIRM_STATUS = 40;
+	
+	/** The Constant BOUNCE_ATR. */
+	public static final int[] BOUNCE_ATR = {41, 42}; 
 }
