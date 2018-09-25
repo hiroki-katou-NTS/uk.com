@@ -819,7 +819,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);
-            self.ageBaseDate(101);
+            self.ageBaseDate(0);
             self.ageBaseDateReq(false);
             self.ageBaseDateDefaultValue(true);
             self.yearReq(true);
