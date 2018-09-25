@@ -698,11 +698,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	// request list 515
 	@Override
 	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+		String cid = AppContexts.user().companyId();
 		List<AffJobTitleHistoryItem> listAffItem = new ArrayList<>();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
 		List<String> employee = new ArrayList<>();
 		// Lấy domain [AffJobHistory]
-		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate);
+		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate, cid);
 		if (affHist.isPresent()) {
 			// (Lấy domain [AffJobHistoryItem])
 			for (String item : affHist.get().getHistoryIds()) {
@@ -726,9 +727,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (!listAffComHist.isEmpty()) {
 				// lấy list employee Id
 				for (AffCompanyHist object : listAffComHist) {
-					List<String> employeetemp = object.getLstAffCompanyHistByEmployee().stream().map(x -> x.getSId())
-							.collect(Collectors.toList());
-					employee.addAll(employeetemp);
+					if(object != null){
+						List<String> employeetemp = object.getLstAffCompanyHistByEmployee().stream().map(x -> x.getSId())
+								.collect(Collectors.toList());
+						employee.addAll(employeetemp);
+					}
 				}
 			}
 			return employee;
@@ -737,13 +740,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	}
 
 	@Override
-	public EmpInfoRegistered getEmpInfo(String cid, String pid) {
+	public Optional<EmpInfoRegistered> getEmpInfo(String cid, String pid) {
 
 		boolean check = false;
 
 		Optional<EmployeeDataMngInfo> empData = empDataMngRepo.findByCidPid(cid, pid);
 		if (!empData.isPresent())
-			return null;
+			return Optional.empty();
 
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
@@ -751,23 +754,24 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		List<AffCompanyHistByEmployee> affComHist = affComHistRepo
 				.getAffEmployeeHistory(Arrays.asList(empData.get().getEmployeeId()));
 		if (affComHist.isEmpty())
-			return null;
+			return Optional.empty();
 		
 		List<AffCompanyHistItem> lstAffComHisItem = affComHist.get(0).items();
 		
 		for (int i = 0; i < lstAffComHisItem.size(); i++) {
-			if (lstAffComHisItem.get(i).afterOrEqualsStandardDate(systemDate) && lstAffComHisItem.get(i).beforeOrEqualsStandardDate(systemDate)) {
+			if (!lstAffComHisItem.get(i).afterOrEqualsStandardDate(systemDate) && !lstAffComHisItem.get(i).beforeOrEqualsStandardDate(systemDate)) {
 				check = true;
+				break;
 			}
 		}
 		
 		if(!check)
-			return null;
+			return Optional.empty();
 		
 		Optional<Person> personOpt = this.personRepository.getByPersonId(empData.get().getPersonId());
 		
 		if(!personOpt.isPresent())
-			return null;
+			return Optional.empty();
 		
 		EmpInfoRegistered result = new EmpInfoRegistered(
 				cid,
@@ -776,6 +780,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				personOpt.get().getPersonNameGroup().getBusinessName()!= null ? personOpt.get().getPersonNameGroup().getBusinessName().v() : null,
 				pid);
 		
-		return result;
+		return Optional.of(result);
 	}
 }

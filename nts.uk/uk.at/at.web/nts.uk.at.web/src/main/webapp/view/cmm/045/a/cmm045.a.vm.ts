@@ -28,7 +28,7 @@ module cmm045.a.viewmodel {
         approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
-        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,2,3,4,5,6]);// check box
+        selectedIds: KnockoutObservableArray<any> = ko.observableArray([1]);// check box
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
@@ -325,7 +325,7 @@ module cmm045.a.viewmodel {
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
             var self = this;
-            let widthAuto = isHidden == false ? '1110px' : '1030px';
+            let widthAuto = isHidden == false ? '1110px' : '1045px';
             $("#grid2").ntsGrid({
                 width: widthAuto,
                 height: '500px',
@@ -338,15 +338,15 @@ module cmm045.a.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '55px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px'},
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px', hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '270px', 
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '65px', hidden: isHidden},
+                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '157px'},
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '408px', 
                         formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px'}
+                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px'},
+                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '75px'}
                 ],
                 features: [
                     { name: 'Resizing' },
@@ -493,7 +493,7 @@ module cmm045.a.viewmodel {
         }
         reloadGridApproval(lstHidden: Array<any>, colorBackGr: any, isHidden: boolean) {
             var self = this;
-            let widthAuto = isHidden == false ? '1175px' : '1105px';
+            let widthAuto = isHidden == false ? '1175px' : '1110px';
             $("#grid1").ntsGrid({
                 width: widthAuto,
                 height: '530px',
@@ -505,18 +505,18 @@ module cmm045.a.viewmodel {
                 rows: 8,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '80px', 
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', 
                             showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
-                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '60px', unbound: false, ntsControl: 'Button' },
+                    { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '55px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
                     { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '90px'},
-                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '70px', hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '220px',
+                    { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '65px', hidden: isHidden},
+                    { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '157px'},
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '341px',
                         formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '165px'},
-                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '83px'},
-                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '105px' },
+                    { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '120px'},
+                    { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '75px'},
+                    { headerText: getText('CMM045_58'), key: 'displayAppStatus', dataType: 'string', width: '95px' },
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', ntsControl: 'Label', hidden: true }
                 ],
                 features: [{ name: 'Resizing' },
@@ -572,7 +572,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
             let appContent010: string = getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
@@ -783,7 +783,7 @@ module cmm045.a.viewmodel {
             //reason application
             let reason = self.displaySet().appReasonDisAtr == 0 || app.applicationReason == '' ? '' : '<br/>' + app.applicationReason;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let ca1 = hdWork.startTime1 == '' ? '' : hdWork.startTime1 + getText('CMM045_100') + hdWork.endTime1;
             let ca2 = hdWork.startTime2 == '' ? '' : hdWork.startTime2 + getText('CMM045_100') + hdWork.endTime2;
             let appContentPost: string = getText('CMM045_272') + getText('CMM045_275') + hdWork.workTypeName + hdWork.workTimeName + ca1 + ca2 + getText('CMM045_276') + self.convertFrameTimeHd(hdWork.lstFrame);
@@ -932,7 +932,7 @@ module cmm045.a.viewmodel {
         formatWorkChange(app: vmbase.ApplicationDto_New, wkChange: vmbase.AppWorkChangeFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let go1 = wkChange.goWorkAtr1 == 0 ? wkChange.workTimeStart1 : '' + getText('CMM045_252') + wkChange.workTimeStart1;
             let back1 = wkChange.backHomeAtr1 == 0 ? wkChange.workTimeEnd1 : getText('CMM045_252') + wkChange.workTimeEnd1;
             let time1 = go1 == '' ? '' : go1 + getText('CMM045_100') + back1;
@@ -959,7 +959,7 @@ module cmm045.a.viewmodel {
         formatAbsence(app: vmbase.ApplicationDto_New, absence: vmbase.AppAbsenceFull, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
-            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
+            let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
             let reason = self.displaySet().appReasonDisAtr == 1 ? '<br/>' + app.applicationReason : '';
             let appContent006 = '';
             if(absence.allDayHalfDayLeaveAtr == 0 && absence.holidayAppType != 3){//休暇申請.終日半日休暇区分　＝　終日休暇 且休暇申請.休暇種類　≠ 特別休暇 ver39
@@ -1094,10 +1094,24 @@ module cmm045.a.viewmodel {
                 masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, complt.appSub.appID, app.reflectPerState);
             return a;
         }
-        inputDateColor(input: string, classApp: string): string{
+        inputDateColor_Old(input: string, classApp: string): string{
             let inputDate = '<div class = "' + classApp + '" >' + input + '</div>';
             //fill color text input date
             let colorIn = input.substring(11,12);
+            if (colorIn == '土') {//土
+                inputDate = '<div class = "saturdayCell ' + classApp + '" >' + input + '</div>';
+            }
+            if (colorIn == '日') {//日
+                inputDate = '<div class = "sundayCell ' + classApp + '" >' + input + '</div>';
+            }
+            return inputDate;
+        }
+        //ver41
+        inputDateColor(input: string, classApp: string): string{
+            let inputDate = '<div class = "' + classApp + '" >' + input + '</div>';
+            //fill color text input date
+            let a = input.split("(")[1];
+            let colorIn = a.substring(0,1);
             if (colorIn == '土') {//土
                 inputDate = '<div class = "saturdayCell ' + classApp + '" >' + input + '</div>';
             }
@@ -1354,7 +1368,7 @@ module cmm045.a.viewmodel {
                     return '-';
             }
         }
-        //yyyy/MM/dd
+        //yyyy/MM/dd(W)
         convertDate(date: string) {
             let a: number = moment(date, 'YYYY/MM/DD').isoWeekday();
             switch (a) {
@@ -1374,7 +1388,7 @@ module cmm045.a.viewmodel {
                     return date + '(日)';
             }
         }
-        //MM/dd ver24
+        //MM/dd(W) ver24
         convertDateMDW(date: string) {
             let a: number = moment(date, 'YYYY/MM/DD').isoWeekday();
             let toDate = moment(date, 'YYYY/MM/DD').toDate();
@@ -1403,12 +1417,20 @@ module cmm045.a.viewmodel {
             let dateMDW = (toDate.getMonth()+1) + '/'+ toDate.getDate();
             return dateMDW;
         }
-        //yyyy/MM/dd hh:mm
-        convertDateTime(dateTime: string) {
+        //yyyy/MM/dd(W) hh:mm
+        convertDateTime_Old(dateTime: string) {
             let a: number = moment(dateTime, 'YYYY/MM/DD hh:mm').isoWeekday();
             let date = dateTime.split(" ")[0];
             let time = dateTime.split(" ")[1];
             return this.convertDate(date) + ' ' + time;
+        }
+        //ver41
+        //Short_MDW  hh:mm : MM/dd(W) hh:mm
+        convertDateTime(dateTime: string) {
+            let a: number = moment(dateTime, 'YYYY/MM/DD hh:mm').isoWeekday();
+            let date = dateTime.split(" ")[0];
+            let time = dateTime.split(" ")[1];
+            return this.convertDateMDW(date) + ' ' + time;
         }
         /**
          * when click button 検索

@@ -1356,6 +1356,32 @@ module nts.layout {
                 CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                workingCondInfo: Array<IWorkingConditionInfo> = [{
+                    category: 'CS00020',
+                    workTypeCode: 'IS00130',
+                    workTypeTime: 'IS00131'
+                }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00139',
+                        workTypeTime: 'IS00140'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00157',
+                        workTypeTime: 'IS00158'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00166',
+                        workTypeTime: 'IS00167'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00175',
+                        workTypeTime: 'IS00176'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00148',
+                        workTypeTime: 'IS00149'
+                    }
+                ],
                 initCDL008Data = (data: IItemData) => {
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
@@ -1370,7 +1396,8 @@ module nts.layout {
                             isMultiple: false,
                             selectedSystemType: 5,
                             isrestrictionOfReferenceRange: false,
-                            showNoSelection: !data.required
+                            showNoSelection: !data.required,
+                            isShowBaseDate: false
                         }, true);
                     } else if (location.href.indexOf('/view/cps/001') > -1) {
                         if (!!CS00017_IS00082) {
@@ -1568,40 +1595,47 @@ module nts.layout {
 
             if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
                 CS00017_IS00084.data.value.subscribe(wc => {
-                    if (CS00020_IS00130) {
-                        let comboData = ko.toJS(CS00020_IS00130.data);
+                    _(workingCondInfo).each(ctgInfo => {
+                        
+                        let workTypeCd: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeCode),
+                            workTypeTime: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeTime);
+                        
+                        if (workTypeCd) {
+                            let comboData = ko.toJS(workTypeCd.data);
 
-                        fetch.get_cb_data({
-                            comboBoxType: comboData.item.referenceType,
-                            categoryId: comboData.categoryId,
-                            required: comboData.required,
-                            standardDate: undefined,
-                            typeCode: undefined,
-                            masterType: comboData.item.masterType,
-                            employeeId: undefined,
-                            cps002: true,
-                            workplaceId: CS00017_IS00084.data.value()
-                        }).done(data => {
-                            CS00020_IS00130.data.lstComboBoxValue(data);
-                        });;
-                    }
-                    if (CS00020_IS00131) {
-                        let comboData = ko.toJS(CS00020_IS00131.data);
+                            fetch.get_cb_data({
+                                comboBoxType: comboData.item.referenceType,
+                                categoryId: comboData.categoryId,
+                                required: comboData.required,
+                                standardDate: undefined,
+                                typeCode: undefined,
+                                masterType: comboData.item.masterType,
+                                employeeId: undefined,
+                                cps002: true,
+                                workplaceId: CS00017_IS00084.data.value()
+                            }).done(data => {
+                                workTypeCd.data.lstComboBoxValue(data);
+                            });;
+                        }
+                        if (workTypeTime) {
+                            let comboData = ko.toJS(workTypeTime.data);
 
-                        fetch.get_cb_data({
-                            comboBoxType: comboData.item.referenceType,
-                            categoryId: comboData.categoryId,
-                            required: comboData.required,
-                            standardDate: undefined,
-                            typeCode: undefined,
-                            masterType: comboData.item.masterType,
-                            employeeId: undefined,
-                            cps002: true,
-                            workplaceId: CS00017_IS00084.data.value()
-                        }).done(data => {
-                            CS00020_IS00131.data.lstComboBoxValue(data);
-                        });;
-                    }
+                            fetch.get_cb_data({
+                                comboBoxType: comboData.item.referenceType,
+                                categoryId: comboData.categoryId,
+                                required: comboData.required,
+                                standardDate: undefined,
+                                typeCode: undefined,
+                                masterType: comboData.item.masterType,
+                                employeeId: undefined,
+                                cps002: true,
+                                workplaceId: CS00017_IS00084.data.value()
+                            }).done(data => {
+                                workTypeTime.data.lstComboBoxValue(data);
+                            });;
+                        }
+                    });
+
                 });
             }
         }
@@ -1650,14 +1684,37 @@ module nts.layout {
                         || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-
+                    
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
                         endWork = '9999/12/31';
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
+                    
+                     let conTimePrimi = CS00020_IS00253 ? __viewContext.primitiveValueConstraints[CS00020_IS00253.data.constraint] : null;
+                    // Value is not match with primitive
+                    if ((conTime && isNaN(conTime) || (conTime && (conTime < conTimePrimi.min || conTime > conTimePrimi.max)))) {
+                        return;
+                    }
 
+                    // If input date out of range
+                    if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    // If input date out of range
+                    if (startWork && (!moment.utc(startWork)._isValid || moment.utc(startWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(startWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    if (endWork && (!moment.utc(endWork)._isValid || moment.utc(endWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(endWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
                     fetch.get_ro_data({
                         employeeId: employeeId,
                         standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
@@ -1993,6 +2050,16 @@ module nts.layout {
                                 || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0
                                 || (grantDays && isNaN(grantDays) || (grantDays && (grantDays < consGrantDays.min || grantDays > consGrantDays.max)))) {
                                 return;
+                            }
+                            
+                            if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
+                            }
+                            
+                            if (yearRefDates && (!moment.utc(yearRefDates)._isValid || moment.utc(yearRefDates).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(yearRefDates).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
                             }
 
                             if (location.href.indexOf('/view/cps/002') > -1) {
@@ -2500,7 +2567,12 @@ module nts.layout {
         method: EDIT_METHOD;
         digitsNumber: number;
     }
-
+    
+    interface IWorkingConditionInfo {
+        category: string;
+        workTypeCode: string;
+        workTypeTime: string;
+    }
     enum EDIT_METHOD {
         PreviousZero = 1,
         AfterZero = 2,

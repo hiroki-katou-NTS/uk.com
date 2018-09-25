@@ -363,8 +363,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingCode: self.currentCategory().settingCode()
                 };
             self.ctgIdUpdate(false);
-            block.invisible();
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+           
+            confirm({ messageId: "Msg_18" }).ifYes(() => { 
                 service.deleteInitVal(objDelete).done(function(data) {
                     dialog.info({ messageId: "Msg_16" }).then(function() {
                         $('#ctgName').focus();
@@ -385,12 +385,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             self.start(undefined);
 
                         }
-                        block.clear();
                     });
-                });
+                })
             }).ifNo(() => {
                 $('#ctgName').focus();
-                block.clear();
                 return;
             });
         }
@@ -433,10 +431,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return item.selectedRuleCode() == 2;
                 });
             $('#date1').trigger('validate');
+            $('.sub-input-units ').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
-            if(nts.uk.ui.errors.hasError()){ return;}
+            if(error.hasError()){ return;}
 
             block.invisible();
             service.update(updateObj).done(function(data) {
@@ -462,6 +461,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
         historyFilter() {
+            if(error.hasError()) return;
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),

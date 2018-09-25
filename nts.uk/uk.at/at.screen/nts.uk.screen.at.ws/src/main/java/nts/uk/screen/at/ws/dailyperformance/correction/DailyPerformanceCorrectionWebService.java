@@ -21,8 +21,8 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
-import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
@@ -223,13 +223,13 @@ public class DailyPerformanceCorrectionWebService {
 	 */
 	@POST
 	@Path("getNameMonthlyAttItem")
-	public List<AttendanceItemName> getNameOfMonthlyAttendanceItem(List<Integer> monthlyAttendanceItemIds) {
+	public List<AttItemName> getNameOfMonthlyAttendanceItem(List<Integer> monthlyAttendanceItemIds) {
 		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemName(monthlyAttendanceItemIds);
 	}
 	
 	@POST
 	@Path("getNamedailyAttItem")
-	public List<AttendanceItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
+	public List<AttItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
 		return this.dailyPerformanceAuthoritySetting.getListAttendanceItemName(dailyAttendanceItemIds);
 	}
 	

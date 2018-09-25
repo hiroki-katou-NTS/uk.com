@@ -43,7 +43,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String GET_LIST_BY_CID_SCD = String.join(" ", SELECT_NO_PARAM,
 			"WHERE e.companyId = :cId AND e.employeeCode = :sCd ");
-
+	
 	private static final String SELECT_BY_COM_ID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId");
 
 	private static final String SELECT_BY_COM_ID_AND_BASEDATE = "SELECT e.companyId, e.employeeCode, e.bsymtEmployeeDataMngInfoPk.sId, e.bsymtEmployeeDataMngInfoPk.pId  , ps.businessName , ps.personName"
@@ -122,7 +122,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			+ "e.bsymtEmployeeDataMngInfoPk.sId = :sid AND e.delStatus = :delStatus ";
 	
 	private static final String SELECT_EMP_NOT_DEL = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = :0 ");
+			" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sId AND e.delStatus = 0 ");
 	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -416,6 +416,22 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			return Optional.empty();
 		}
 	}
+	
+	@Override
+	public Optional<EmployeeDataMngInfo> getEmployeeNotDel(String cId, String sCd) {
+		// query to Req 18
+		BsymtEmployeeDataMngInfo entity = queryProxy().query(SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY, BsymtEmployeeDataMngInfo.class)
+				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
+
+		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
+		if (entity != null) {
+			empDataMng = toDomain(entity);
+			return Optional.of(empDataMng);
+
+		} else {
+			return Optional.empty();
+		}
+	}
 
 	// sonnlb code start
 	@Override
@@ -499,7 +515,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	 */
 	@Override
 	public List<EmployeeDataMngInfo> findBySidNotDel(List<String> sId) {
-		return this.queryProxy().query("SELECT_EMP_NOT_DEL", BsymtEmployeeDataMngInfo.class)
+		return this.queryProxy().query(SELECT_EMP_NOT_DEL, BsymtEmployeeDataMngInfo.class)
 								.setParameter("sId", sId).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 

@@ -3937,7 +3937,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		/** 休出日数  */
 		val holidayWorkDays = vtWorkDays.getHolidayWorkDays();
-		this.holidayDays = holidayWorkDays.getDays().v();
+		this.holidayWorkDays = holidayWorkDays.getDays().v();
 		
 		/** 給与用日数 */
 		val payDays = vtWorkDays.getPayDays();

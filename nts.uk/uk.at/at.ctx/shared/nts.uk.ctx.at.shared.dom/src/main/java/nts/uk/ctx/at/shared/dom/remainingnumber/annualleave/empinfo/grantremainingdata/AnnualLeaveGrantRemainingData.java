@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-// domain name: 年休付与残数データ
+// domain name CS00037: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 
 	private String annLeavID;
@@ -164,9 +164,8 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 	
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
-		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
-			return false;
-
+		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
+		if(isNull == false) return isNull;
 		if (grantDays != null || usedDays != null || remainDays != null) {
 			if (deadlineDate == null || grantDate == null) {
 				if (grantDate == null) {
@@ -189,6 +188,11 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 				throw new BusinessException("Msg_1023");
 			}
 		}
+		return isNull;
+	}
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays) {
+		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
+			return false;
 		return true;
 	}
 }
