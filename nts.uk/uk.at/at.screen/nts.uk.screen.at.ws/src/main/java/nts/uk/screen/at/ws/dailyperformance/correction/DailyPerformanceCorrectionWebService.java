@@ -303,7 +303,7 @@ public class DailyPerformanceCorrectionWebService {
 		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits());
 		session.setAttribute("domainEdits", result.getDailyEdits());
 		result.setDailyEdits(Collections.emptyList());
-		return dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits());
+		return result;
 	}
 	
 	@POST
@@ -323,7 +323,7 @@ public class DailyPerformanceCorrectionWebService {
 		val result = dailyCalculationService.calculateCorrectedResults(dataParent);
 		session.setAttribute("domainEdits", result.getCalculatedRows());
 		result.setCalculatedRows(Collections.emptyList());
-		return dailyCalculationService.calculateCorrectedResults(dataParent);
+		return result;
 	}
 	
 	@POST
