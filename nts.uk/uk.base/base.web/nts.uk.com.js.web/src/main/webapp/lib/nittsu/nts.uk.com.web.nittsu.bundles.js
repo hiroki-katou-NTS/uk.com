@@ -1693,67 +1693,27 @@ var nts;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
             function yearInJapanEmpire(date) {
-                var year = moment.utc(date, defaultInputFormat, true).year();
-                if (year == 1868) {
-                    return new JapanYearMonth("明治元年");
-                }
-                if (year <= 1912) {
-                    var diff = year - 1867;
-                    return new JapanYearMonth("明治 ", diff);
-                }
-                if (year <= 1926) {
-                    var diff = year - 1911;
-                    return new JapanYearMonth("大正 ", diff);
-                }
-                if (year < 1989) {
-                    var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff);
-                }
-                if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", diff);
-                }
-                var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff);
+                return yearmonthInJapanEmpire(date, true);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
-            function yearmonthInJapanEmpire(yearmonth) {
-                if (!(yearmonth instanceof String)) {
-                    yearmonth = "" + yearmonth;
+            function yearmonthInJapanEmpire(yearmonth, onlyYear) {
+                if (!nts.uk.ntsNumber.isNumber(yearmonth) && _.isEmpty(yearmonth)) {
+                    return null;
                 }
-                var nguyennien = "元年";
-                yearmonth = yearmonth.replace("/", "");
-                var year = parseInt(yearmonth.substring(0, 4));
-                var month = parseInt(yearmonth.substring(4));
-                if (year == 1868) {
-                    return new JapanYearMonth("明治元年 ", undefined, month);
+                var dateString = yearmonth.toString(), seperator = (dateString.match(/\//g) || []).length;
+                if (seperator > 2 || seperator < 0) {
+                    return null;
                 }
-                if (year < 1912) {
-                    var diff = year - 1867;
-                    return new JapanYearMonth("明治 ", diff, month);
+                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
+                for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
+                    var i = _a[_i];
+                    var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
+                    if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
+                        var diff = formattedYear - startEraYear;
+                        return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
+                    }
                 }
-                if (year == 1912) {
-                    if (month < 8)
-                        return new JapanYearMonth("明治 ", 45, month);
-                    return new JapanYearMonth("大正元年 ", undefined, month);
-                }
-                if (year < 1926) {
-                    var diff = year - 1911;
-                    return new JapanYearMonth("大正 ", diff, month);
-                }
-                if (year == 1926) {
-                    if (month < 12)
-                        return new JapanYearMonth("大正", 15, month);
-                    return new JapanYearMonth("昭和元年 ", undefined, month);
-                }
-                if (year < 1989) {
-                    var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff, month);
-                }
-                if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", undefined, month);
-                }
-                var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff, month);
+                return null;
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             var JapanDateMoment = (function () {
@@ -4753,23 +4713,23 @@ var nts;
                             return result;
                         }
                         //let validateResult;
-                        // Check CharType
-                        result = checkCharType(inputText, this.charType);
-                        if (!result.isValid)
-                            return result;
                         // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
-                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
-                                var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
-                                return result;
-                            }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
                                     result.fail(nts.uk.resource.getMessage('Msg_1285', [this.name]), 'Msg_1285');
                                     return result;
                                 }
                             }
+                        }
+                        // Check CharType
+                        result = checkCharType(inputText, this.charType);
+                        if (!result.isValid)
+                            return result;
+                        if (!_.isNil(this.constraint) && this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                            var maxLength = this.constraint.maxLength;
+                            result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
+                            return result;
                         }
                         result.success(inputText);
                         return result;
@@ -6003,16 +5963,52 @@ var nts;
                         if (typeof arguments[1] !== 'string') {
                             return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        return dialog(webAppId, path, true, options);
+                        var $dialog = dialog(webAppId, path, true, options);
+                        setTimeout(function () {
+                            $(window.top).on('resize', function (evt) { return resizeDialog(evt, $dialog); }).trigger('resize');
+                        }, 1000);
+                        return $dialog;
                     }
                     sub.modal = modal;
                     function modeless(webAppId, path, options) {
                         if (typeof arguments[1] !== 'string') {
                             return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        return dialog(webAppId, path, false, options);
+                        var $dialog = dialog(webAppId, path, false, options);
+                        setTimeout(function () {
+                            $(window.top).on('resize', function (evt) { return resizeDialog(evt, $dialog); }).trigger('resize');
+                        }, 1000);
+                        return $dialog;
                     }
                     sub.modeless = modeless;
+                    function resizeDialog(evt, $subWindow) {
+                        console.log('resize dialog');
+                        var $dialog = $subWindow.$dialog;
+                        if (!$dialog) {
+                            return;
+                        }
+                        var width = $dialog.width(), height = $dialog.parent().outerHeight(), 
+                        // because the height() function don't includes title's height
+                        $data = $($dialog).data('__size__');
+                        if (!$data || !$data.width || !$data.height) {
+                            $data = { width: width, height: height };
+                            $($dialog).data('__size__', $data);
+                        }
+                        // resize width
+                        if (evt.target.innerWidth <= $data.width) {
+                            $dialog.dialog('option', 'width', evt.target.innerWidth - 30);
+                        }
+                        else {
+                            $dialog.dialog('option', 'width', $data.width);
+                        }
+                        // resize height    
+                        if (evt.target.innerHeight <= $data.height) {
+                            $dialog.dialog('option', 'height', evt.target.innerHeight - 30);
+                        }
+                        else {
+                            $dialog.dialog('option', 'height', $data.height);
+                        }
+                    }
                     function dialog(webAppId, path, modal, options) {
                         options = options || {};
                         options.modal = modal;
@@ -7433,7 +7429,7 @@ var nts;
                     function groupHeader($container, options, isUpdate) {
                         var $table = selector.create("table").html("<tbody></tbody>").addClass(options.tableClass)
                             .css({ position: "relative", "table-layout": "fixed", width: "100%",
-                            "border-collapse": "separate", "user-select": "none" }).getSingle();
+                            /**"border-collapse": "separate",**/ "user-select": "none" }).getSingle();
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
                         if (!isUpdate) {
@@ -7478,7 +7474,7 @@ var nts;
                         $table.style.position = "relative";
                         $table.style.tableLayout = "fixed";
                         $table.style.width = "100%";
-                        $table.style.borderCollapse = "separate";
+                        //            $table.style.borderCollapse = "separate";
                         $table.style.userSelect = "none";
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
@@ -7631,7 +7627,7 @@ var nts;
                             $.data(td, internal.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + "; position: relative;";
+                                + ws + ";"; //"; position: relative;";
                             self.highlight(td);
                             if (!self.visibleColumnsMap[key])
                                 tdStyle += "; display: none;"; //td.style.display = "none";
@@ -7666,7 +7662,7 @@ var nts;
                                     //                       spread.bindSticker(div, rowIdx, key, self.options);
                                 });
                                 style.detCell(self.$container, td, rowIdx, key);
-                                tdStyle += "; padding: 0px;";
+                                tdStyle += "; position: relative; padding: 0px;";
                                 td.style.cssText += tdStyle;
                                 if (self.options.overflowTooltipOn)
                                     widget.textOverflow(td);
@@ -17532,9 +17528,9 @@ var nts;
                         $input.focus(function () {
                             if (!$input.attr('readonly')) {
                                 // Remove separator (comma)
-                                var numb = Number(data.value());
-                                if (_.isNumber(numb) && !_.isNaN(numb) && String(data.value()).trim() != '') {
-                                    $input.val(numb.toLocaleString(undefined, { useGrouping: false }));
+                                var value = ko.toJS(data.value), numb = Number(value);
+                                if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
+                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
                                 }
                                 else {
                                     $input.val(data.value());
@@ -17692,6 +17688,14 @@ var nts;
                                 $input.select();
                             }
                         });
+                    };
+                    TimeWithDayAttrEditorProcessor.prototype.update = function ($input, data) {
+                        _super.prototype.update.call(this, $input, data);
+                        var value = ko.unwrap(data.value);
+                        if ($input.ntsError("hasError") && typeof (value) === "number") {
+                            $input.ntsError("clearKibanError");
+                            $input.val(this.getFormatter(data).format(value));
+                        }
                     };
                     TimeWithDayAttrEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeWithDayAttrEditorOption();
@@ -17992,6 +17996,7 @@ var nts;
                         var columnResize = ko.unwrap(data.columnResize);
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
+                        var rowVirtualization = ko.unwrap(data.rowVirtualization) ? true : false;
                         var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
@@ -18130,6 +18135,7 @@ var nts;
                             columns: iggridColumns,
                             virtualization: virtualization,
                             virtualizationMode: 'continuous',
+                            rowVirtualization: rowVirtualization,
                             features: features,
                             tabIndex: -1
                         });
@@ -21281,9 +21287,18 @@ var nts;
                                     data.targetSource(source);
                                     //                        $targetElement.igGrid("option", "dataSource", source);
                                     //                        $targetElement.igGrid("dataBind");
-                                    var index = upDown + grouped["group1"][0].index;
+                                    //                        var index = upDown + grouped["group1"][0].index;
+                                    var id = grouped["group1"][0].id;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
-                                    _.defer(function () { $targetElement.igGrid("virtualScrollTo", index); });
+                                    _.defer(function () {
+                                        var row = { element: $targetElement.igGrid("rowById", id), id: id };
+                                        if ($targetElement.igGrid("option").virtualization === true) {
+                                            nts.uk.ui.ig.grid.virtual.expose(row, $targetElement);
+                                        }
+                                        else {
+                                            nts.uk.ui.ig.grid.expose(row, $targetElement);
+                                        }
+                                    });
                                 }
                             }
                         };
@@ -38108,7 +38123,7 @@ var nts;
                             .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
                             .mergeRelativePath(iconFileName)
                             .serialize();
-                        var $icon = $(element);
+                        var $icon = $(element), $parent = $icon.closest("td[role='gridcell']");
                         $icon.addClass("img-icon");
                         $icon.css({
                             "background-image": "url(" + iconPath + ")",
@@ -38116,6 +38131,9 @@ var nts;
                             width: width,
                             height: height
                         });
+                        if (!_.isNil($parent)) {
+                            $parent.css("white-space", "nowrap");
+                        }
                     };
                     NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
