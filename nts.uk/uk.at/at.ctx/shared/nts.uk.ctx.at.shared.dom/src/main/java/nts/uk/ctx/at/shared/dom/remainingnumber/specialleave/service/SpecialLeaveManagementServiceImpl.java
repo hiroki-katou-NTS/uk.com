@@ -264,12 +264,13 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				
 			}
 			//特別休暇付与残数データの有無チェックをする
-			if(specialLeaverDataTmp.isEmpty() && beforeUseDaysRemain != 0) {				
+			if(specialLeaverDataTmp.isEmpty()) {				
 				//「特別休暇の残数」．付与前明細．残数 -= 特別休暇暫定データ．特休使用
 				inPeriodData.getRemainDays().getGrantDetailBefore().setRemainDays(-beforeUseDaysRemain);
 			}
 			
 			for (SpecialLeaveGrantRemainingData grantData : specialLeaverDataTmp) {
+				//特別休暇暫定データ．特休使用をDBから取得した付与日の古い特別休暇付与残数データから引く
 				Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(grantData.getSpecialId());
 				if(!grantDataById.isPresent()) {
 					continue;
