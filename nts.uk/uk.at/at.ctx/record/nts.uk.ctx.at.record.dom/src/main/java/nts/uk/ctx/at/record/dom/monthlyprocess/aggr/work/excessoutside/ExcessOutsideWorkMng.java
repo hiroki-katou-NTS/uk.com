@@ -51,7 +51,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 時間外超過管理
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class ExcessOutsideWorkMng {
@@ -660,6 +660,9 @@ public class ExcessOutsideWorkMng {
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			addSet = GetAddSet.get(this.workingSystem, PremiumAtr.PREMIUM, this.settingsByDefo.getHolidayAdditionMap());
 		}
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		// 「期間．終了日」を処理日にする
 		GeneralDate procDate = this.procPeriod.end();
@@ -808,6 +811,9 @@ public class ExcessOutsideWorkMng {
 		
 		// 加算設定を取得する　（割増）
 		val addSet = GetAddSet.get(this.workingSystem, PremiumAtr.PREMIUM, this.settingsByDefo.getHolidayAdditionMap());
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		// 「期間．終了日」を処理日にする
 		GeneralDate procDate = this.procPeriod.end();
@@ -973,5 +979,17 @@ public class ExcessOutsideWorkMng {
 		
 		// 「内訳項目時間」を「時間外超過累積時間」に加算する
 		this.totalExcessOutside = this.totalExcessOutside.addMinutes(breakdownItemTime.v());
+	}
+	
+	/**
+	 * エラー情報の取得
+	 * @return エラー情報リスト
+	 */
+	public List<MonthlyAggregationErrorInfo> getErrorInfos(){
+		
+		List<MonthlyAggregationErrorInfo> results = new ArrayList<>();
+		results.addAll(this.errorInfos);
+		results.addAll(this.monthlyDetail.getErrorInfos());
+		return results;
 	}
 }
