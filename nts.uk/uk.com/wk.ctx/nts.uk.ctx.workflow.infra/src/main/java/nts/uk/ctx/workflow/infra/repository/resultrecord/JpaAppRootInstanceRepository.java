@@ -62,11 +62,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.START_DATE <= 'recordDate'";
 	
-	private final String FIND_BY_EMP_DATE_NEWEST = BASIC_SELECT +
+	private final String FIND_BY_EMP_DATE_NEWEST = "SELECT TOP 1 * FROM (" +
+			BASIC_SELECT +
 			" WHERE appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.CID = 'companyID'" +
-			" AND appRoot.ROOT_TYPE = rootType" +
-			" order by appRoot.START_DATE desc";
+			" AND appRoot.ROOT_TYPE = rootType) result" +
+			" order by START_DATE desc";
 	
 	private final String FIND_BY_EMPS_PERIOD = BASIC_SELECT + 
 			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
