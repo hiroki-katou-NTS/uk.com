@@ -404,7 +404,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd) {
 		// query to Req 125
-		BsymtEmployeeDataMngInfo entity = queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
+		BsymtEmployeeDataMngInfo entity = queryProxy().query(SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY, BsymtEmployeeDataMngInfo.class)
 				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
 
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();
