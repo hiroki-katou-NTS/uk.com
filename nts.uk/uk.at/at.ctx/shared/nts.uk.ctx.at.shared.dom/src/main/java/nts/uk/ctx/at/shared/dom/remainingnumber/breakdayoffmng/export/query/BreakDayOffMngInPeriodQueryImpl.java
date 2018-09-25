@@ -658,7 +658,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//INPUT．モードをチェックする
 		if(inputParam.isMode()) {
 			//暫定残数管理データを作成する
-			Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemainData(inputParam.getCid(), inputParam.getSid(), inputParam.getDateData());
+			Map<GeneralDate, DailyInterimRemainMngData> interimData = createDataService.monthInterimRemain3Data(inputParam.getCid(), inputParam.getSid(), inputParam.getDateData());
 			//メモリ上からドメインモデル「暫定振休管理データ」を取得する
 			if(!interimData.isEmpty()) {				
 				List<DailyInterimRemainMngData> lstRemainMngData = interimData.values().stream().collect(Collectors.toList());
