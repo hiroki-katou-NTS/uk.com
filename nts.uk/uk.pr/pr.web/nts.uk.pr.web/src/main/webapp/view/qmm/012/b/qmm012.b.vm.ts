@@ -142,31 +142,31 @@ module nts.uk.pr.view.qmm012.b {
                 nts.uk.ui.errors.clearAll();
                 
                 if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
-                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorUpperRangeValueAmount() == null)) {
+                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && ((itemRangeSet.errorUpperRangeValueAmount() == null) || (itemRangeSet.errorUpperRangeValueAmount().toString() == ""))) {
                         $('#C2_12').ntsError('set', { messageId: "MsgQ_14" });
                     }
                     
-                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && (itemRangeSet.errorLowerRangeValueAmount() == null)) {
+                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && ((itemRangeSet.errorLowerRangeValueAmount() == null) || (itemRangeSet.errorLowerRangeValueAmount().toString() == ""))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_15" });
                     }
                     
                     if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.errorUpperRangeValueAmount() != null) && (itemRangeSet.errorLowerRangeValueAmount() != null)
-                            && itemRangeSet.errorUpperRangeValueAmount() <= itemRangeSet.errorLowerRangeValueAmount()) {
+                            && (parseInt(itemRangeSet.errorUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.errorLowerRangeValueAmount().toString(), 10))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_1" });
                     }
                     
-                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmUpperRangeValueAmount() == null)) {
+                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && ((itemRangeSet.alarmUpperRangeValueAmount() == null) || (itemRangeSet.alarmUpperRangeValueAmount().toString() == ""))) {
                         $('#C2_19').ntsError('set', { messageId: "MsgQ_16" });
                     }
                     
-                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerRangeValueAmount() == null)) {
+                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && ((itemRangeSet.alarmLowerRangeValueAmount() == null) || (itemRangeSet.alarmLowerRangeValueAmount().toString() == ""))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_17" });
                     }
                     
                     if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.alarmUpperRangeValueAmount() != null) && (itemRangeSet.alarmLowerRangeValueAmount() != null)
-                            && itemRangeSet.alarmUpperRangeValueAmount() <= itemRangeSet.alarmLowerRangeValueAmount()) {
+                            && (parseInt(itemRangeSet.alarmUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.alarmLowerRangeValueAmount().toString(), 10))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_2" });
                     }
                 }
