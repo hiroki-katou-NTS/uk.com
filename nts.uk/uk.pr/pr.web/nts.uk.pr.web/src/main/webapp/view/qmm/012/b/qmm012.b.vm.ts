@@ -177,6 +177,20 @@ module nts.uk.pr.view.qmm012.b {
                 
                 $(".check-validate").trigger("validate");
                 
+                // clear rangeSet validate if disable
+                if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                    $('#C2_12').ntsError('clear');
+                }
+                if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                    $('#C2_15').ntsError('clear');
+                }
+                if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                    $('#C2_19').ntsError('clear');
+                }
+                if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                    $('#C2_22').ntsError('clear');
+                }
+                
                 if(!nts.uk.ui.errors.hasError()) {
                     let oldSalaryId = self.statementItemDataSelected().salaryItemId();
                     let command = ko.toJS(self.statementItemDataSelected);
@@ -190,8 +204,31 @@ module nts.uk.pr.view.qmm012.b {
                          command.salaryItemId = oldSalaryId;
                     }
                     
-                    if((command.paymentItemSet.limitAmount != null) && isNaN(command.paymentItemSet.limitAmount)) {
+                    // clear limitAmount value if not visible
+                    if((command.paymentItemSet.limitAmount != null) && (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT)) {
                         command.paymentItemSet.limitAmount = null;
+                    }
+                    
+                    // clear rangeSet value if disable
+                    if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                        command.itemRangeSet.errorUpperRangeValueAmount = null;
+                        command.itemRangeSet.errorUpperRangeValueTime = null;
+                        command.itemRangeSet.errorUpperRangeValueNum = null;
+                    }
+                    if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                        command.itemRangeSet.errorLowerRangeValueAmount = null;
+                        command.itemRangeSet.errorLowerRangeValueTime = null;
+                        command.itemRangeSet.errorLowerRangeValueNum = null;
+                    }
+                    if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                        command.itemRangeSet.alarmUpperRangeValueAmount = null;
+                        command.itemRangeSet.alarmUpperRangeValueTime = null;
+                        command.itemRangeSet.alarmUpperRangeValueNum = null;
+                    }
+                    if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                        command.itemRangeSet.alarmLowerRangeValueAmount = null;
+                        command.itemRangeSet.alarmLowerRangeValueTime = null;
+                        command.itemRangeSet.alarmLowerRangeValueNum = null;
                     }
                     
                     block.invisible();
@@ -732,7 +769,6 @@ module nts.uk.pr.view.qmm012.b {
             
                 self.numberEditorOption = {
                     grouplength: 3,
-                    decimallength: 3,
                     width: "150px",
                     textalign: "right",
                     currencyformat: "JPY"
@@ -786,6 +822,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.errorUpperLimitSettingAtr(1);
                     } else {
                         self.errorUpperLimitSettingAtr(0);
+                        $('#C2_12').ntsError('clear');
                     }
                 });
                 
@@ -794,6 +831,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.errorLowerLimitSettingAtr(1);
                     } else {
                         self.errorLowerLimitSettingAtr(0);
+                        $('#C2_15').ntsError('clear');
                     }
                 });
                 
@@ -802,6 +840,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.alarmUpperLimitSettingAtr(1);
                     } else {
                         self.alarmUpperLimitSettingAtr(0);
+                        $('#C2_19').ntsError('clear');
                     }
                 });
                 
@@ -810,6 +849,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.alarmLowerLimitSettingAtr(1);
                     } else {
                         self.alarmLowerLimitSettingAtr(0);
+                        $('#C2_22').ntsError('clear');
                     }
                 });
             }

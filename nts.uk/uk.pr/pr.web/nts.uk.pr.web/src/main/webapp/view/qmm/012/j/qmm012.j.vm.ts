@@ -21,6 +21,7 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
 
         constructor() {
             let self = this;
+            $("#J2_1").focus();
             $("#fixed-table").ntsFixedTable({ height: 503, width: 780 });
             let categoryAtrScreenB = getShared('QMM012_B');
             if (categoryAtrScreenB != null) {
@@ -95,6 +96,17 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             let self = this;
             block.invisible();
             // update
+            let data : Array<DataScreen> = ([]);
+            _.forEach(self.lstCustomes(), item =>{
+                if (_.isEmpty(item.englishName())){
+                    item.englishName = null;
+                }
+                if (_.isEmpty(item.otherLanguageName())){
+                    item.otherLanguageName = null;
+                }
+                data.push(item);
+            })
+            self.lstCustomes(data);
             service.updateStatementItemName(ko.toJS(self.lstCustomes())).done(() => {
                 self.getData();
                 dialog.info({ messageId: "Msg_15" });

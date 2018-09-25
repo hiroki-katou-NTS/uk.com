@@ -24,10 +24,10 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         constructor() {
             let self = this,
                 dfd = $.Deferred();
-            
+
             let params = getShared("QMM012_B_TO_I_PARAMS");
-            
-            if(params) {
+
+            if (params) {
                 self.salaryItemId(params.salaryItemId);
                 self.bindAtr(params.categoryName);
             }
@@ -92,15 +92,16 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
                     service.addBreakdownItemSet(ko.toJS(data)).done(() => {
                         self.getAllData().done(() => {
                             dialog.info({ messageId: "Msg_15" }).then(() => {
-                                $("#breakdownItemCode").focus();
+                                $("#breakdownItemName").focus();
                                 self.isNewMode(false);
                                 self.currentCode(data.breakdownItemCode);
                             });
                         });
                     }).fail(function(error) {
-                        alertError(error);
+                        alertError(error).then(() => {
+                            $("#breakdownItemCode").focus();
+                        });
                     }).always(function() {
-                        $("#breakdownItemCode").focus();
                         block.clear();
                     });
                 } else {
@@ -166,9 +167,9 @@ module nts.uk.pr.view.qmm012.i.viewmodel {
         }
         close() {
             let self = this;
-            
+
             setShared("QMM012_I_IS_SETTING", (self.lstBreakdownItemSet().length > 0));
-            
+
             nts.uk.ui.windows.close();
         }
 
