@@ -1941,7 +1941,15 @@ module nts.custombinding {
                                         def.textValue(selected.optionText);
                                     } else {
                                         def.value(undefined);
-                                        def.textValue(text('CPS001_107'));
+                                        switch (def.item.referenceType) {
+                                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                def.textValue(`${cbv}　${text('CPS001_107')}`);
+                                                break;
+                                            case ITEM_SELECT_TYPE.CODE_NAME:
+                                            case ITEM_SELECT_TYPE.ENUM:
+                                                def.textValue(text('CPS001_107'));
+                                                break;
+                                        }
                                     }
                                 } else {
                                     def.textValue('');
