@@ -146,11 +146,11 @@ module nts.uk.pr.view.qmm008.share.model {
         ]);
 
         constructor(params: IHealthContributionRate) {
-            this.longCareInsuranceRate(params ? params.longCareInsuranceRate : null);
-            this.basicInsuranceRate(params ? params.basicInsuranceRate : null);
-            this.healthInsuranceRate(params ? params.healthInsuranceRate : null);
+            this.longCareInsuranceRate(params ? params.longCareInsuranceRate : 0.000);
+            this.basicInsuranceRate(params ? params.basicInsuranceRate : 0.000);
+            this.healthInsuranceRate(params ? params.healthInsuranceRate : 0.000);
             this.fractionCls(params ? params.fractionCls : null);
-            this.specialInsuranceRate(params ? params.specialInsuranceRate : null);
+            this.specialInsuranceRate(params ? params.specialInsuranceRate : 0.000);
         }
     }
 
