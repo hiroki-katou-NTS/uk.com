@@ -1951,7 +1951,7 @@ public class ProgramsManager {
 	 */
 	public static final Program CMM053A = new Program(WebAppId.COM, ProgramIdConsts.CMM053A, "CMM053_1",
 			"/view/cmm/053/a/index.xhtml");
-	public static final Program CMM053B = new Program(WebAppId.COM, ProgramIdConsts.CMM053B, "CMM053_2",
+	public static final Program CMM053B = new Program(WebAppId.COM, ProgramIdConsts.CMM053B, "CMM053_1",
 			"/view/cmm/053/b/index.xhtml");
 	/**
 	 * KRD001
