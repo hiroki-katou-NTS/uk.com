@@ -25,22 +25,23 @@
 			</table>
 			<table style="height: 300px;">
 				<tr>
-					<td rowspan="2" style="width: 360px;">
+					<td rowspan="2" style="width: 395px;">
 						<div class="" style="width: 360px; float: left;">
 							<!--P5 条件設定選択(パネル)-->
 							<div
 								data-bind="ntsPanel:{
-									width: '315px',
-									 height: '332px',
+									width: '355px',
+									 height: '350px',
 									  direction: 'none',
 									   showIcon: true,
 									    visible: true
 									    }">
-								<!--P5_1 コード/名称-->
-								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
-								<!--P5_2 絞り込み検索-->
-								<div tabindex="2" style="width: 320px"
-									data-bind="ntsSearchBox: {
+								<div class="flex">
+                                    <!--P5_1 コード/名称-->
+                                    <div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
+                                    <!--P5_2 絞り込み検索-->
+                                    <div tabindex="2" style="width: 350px"
+                                         data-bind="ntsSearchBox: {
 										searchMode: 'filter',
 										targetKey: 'code',
 										comId: 'grd_Condition',
@@ -49,16 +50,17 @@
 										selectedKey: 'code',
 										fields: ['code', 'name'],
 										mode: 'igGrid'}" />
+                                </div>
 								<!--P5_3 条件設定一覧-->
 								<table id="grd_Condition"
 									data-bind="ntsGridList: {
-										rows: 10,
+										rows: 12,
 										name: '#[CMF002_345]',
 				 						dataSource: listCondition,
 										primaryKey: 'code',
 				 						columns: [
-											{ headerText: '#{i18n.getText('CMF002_37')}', key: 'code', width: 60, formatter: _.escape },
-										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'name', width: 220, formatter: _.escape },
+											{ headerText: '#{i18n.getText('CMF002_37')}', key: 'code', width: 85, formatter: _.escape },
+										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'name', width: 255, formatter: _.escape },
 										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'catelogoryId', width: 220, formatter: _.escape,hidden:'true' }
 										],
 										multiple: false,
@@ -107,7 +109,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td style="vertical-align: bottom; padding-left: 10px;">
+					<td style="vertical-align: bottom; padding-left: 15px;">
 						<!--P20_1 ←処理を選びなおす-->
 						<button tabindex="4" class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
 						<!--P20_2 次へ→-->

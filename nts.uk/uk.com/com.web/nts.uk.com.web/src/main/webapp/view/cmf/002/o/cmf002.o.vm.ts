@@ -311,10 +311,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 showEmployeeSelection: true, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: false, // 基準日利用
+                showBaseDate: true, // 基準日利用
                 showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: true, // 対象期間利用
+                showPeriod: false, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(), // 基準日
