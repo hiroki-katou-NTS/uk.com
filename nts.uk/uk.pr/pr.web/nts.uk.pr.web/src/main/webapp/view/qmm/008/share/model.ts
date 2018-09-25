@@ -601,10 +601,14 @@ module nts.uk.pr.view.qmm008.share.model {
         code: string;
         displayText: string;
         child: Array<TreeGridNode>;
-        constructor(code: string, displayText: string, child: Array<TreeGridNode>) {
+        officeCode: string;
+        officeName: string;;;
+        constructor(code: string, displayText: string, child: Array<TreeGridNode>, officeCode, officeName) {
             this.code = code;
             this.displayText = displayText;
             this.child = child;
+            this.officeCode = officeCode;
+            this.officeName = officeName;
         }
     }
     // 社会保険事業所

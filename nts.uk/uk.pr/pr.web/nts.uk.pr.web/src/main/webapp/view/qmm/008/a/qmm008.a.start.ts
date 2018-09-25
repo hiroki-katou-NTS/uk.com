@@ -13,12 +13,12 @@ module nts.uk.pr.view.qmm008.a {
         viewmodelB.startPage().done(function() {
             $("#B1_5").focus();
             let isStartC, isStartI = false;
-            $(".tab-b").click(function() {
+            $(".tab-b-sidebar").click(function() {
                 setTimeout(function(){
                     $('#B1_5').focus();
                 }, 50);
             });
-            $(".tab-c").click(function() {
+            $(".tab-c-sidebar").click(function() {
                 if (!isStartC){
                     viewmodelC.startPage().done(function() {
                         $('#C1_5').focus();

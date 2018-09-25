@@ -1,4 +1,4 @@
-<div>
+<div class = "tab-b">
 	<div class="sidebar-content-header flex valign-center ">
 		<!-- A2_3 厚生年金 -->
 		<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_7')}</span>
@@ -32,7 +32,7 @@
 								selected: selectedHealthInsurance, 
 								selectedKey: 'code', 
 								childField: 'child', 
-								fields: ['code', 'displayText']}" />
+								fields: ['officeCode', 'officeName']}" />
 				<div style="width: 100%">
 					<button id="B1_3" tabindex="2"
 							data-bind="click: createNewHistory, enable: $vm.viewmodelB.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
