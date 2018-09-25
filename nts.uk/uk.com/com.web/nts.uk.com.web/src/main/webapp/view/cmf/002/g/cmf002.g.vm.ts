@@ -56,7 +56,10 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     }).always(function() {
                         block.clear();
                     });
+                } else {
+                    self.btnCreateCodeConvert();
                 }
+                
             });
         } // END constructor
 
