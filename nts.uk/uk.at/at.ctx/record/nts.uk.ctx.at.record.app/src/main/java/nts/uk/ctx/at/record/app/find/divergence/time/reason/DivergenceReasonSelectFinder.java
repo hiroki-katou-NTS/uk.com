@@ -57,11 +57,6 @@ public class DivergenceReasonSelectFinder {
 			return code1 - code2;
 			});
 		return result;
-//		return reasonList.stream().map(e -> {
-//			DivergenceReasonSelectDto dto = new DivergenceReasonSelectDto();
-//			e.saveToMemento(dto);
-//			return dto;
-//		}).collect(Collectors.toList());
 	}
 
 	/**
