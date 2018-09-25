@@ -786,6 +786,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.errorUpperLimitSettingAtr(1);
                     } else {
                         self.errorUpperLimitSettingAtr(0);
+                        $('#C2_12').ntsError('clear');
                     }
                 });
                 
@@ -794,6 +795,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.errorLowerLimitSettingAtr(1);
                     } else {
                         self.errorLowerLimitSettingAtr(0);
+                        $('#C2_15').ntsError('clear');
                     }
                 });
                 
@@ -802,6 +804,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.alarmUpperLimitSettingAtr(1);
                     } else {
                         self.alarmUpperLimitSettingAtr(0);
+                        $('#C2_19').ntsError('clear');
                     }
                 });
                 
@@ -810,6 +813,7 @@ module nts.uk.pr.view.qmm012.b {
                         self.alarmLowerLimitSettingAtr(1);
                     } else {
                         self.alarmLowerLimitSettingAtr(0);
+                        $('#C2_22').ntsError('clear');
                     }
                 });
             }
