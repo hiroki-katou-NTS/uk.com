@@ -28,8 +28,8 @@ public class ValPayDateSet extends AggregateRoot {
 	public ValPayDateSet(String cid, int processCateNo, int processMonth, int disposalDay, int refeMonth, int refeDate,
 			int datePayMent, BigDecimal workDay, int printingMonth, int socialInsuColleMonth, int empInsurRefeDate,
 			int empInsurBaseMonth, int inComRefeDate, int inComBaseYear, int inComBaseMonth, int sociInsuBaseMonth,
-			int sociInsuBaseYear, int sociInsuRefeDate, int timeCloseDate, int closeDateBaseMonth,
-			int closeDateBaseYear, int closeDateRefeDate) {
+			int sociInsuBaseYear, int sociInsuRefeDate, int timeCloseDate, Integer closeDateBaseMonth,
+						 Integer closeDateBaseYear, Integer closeDateRefeDate) {
 		super();
 		this.cid = cid;
 		this.processCateNo = processCateNo;

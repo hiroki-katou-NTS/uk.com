@@ -85,7 +85,8 @@
                             <button
                                     data-bind="enable: processInfomation.processDivisionName,click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
-                        <td data-bind="attr: { 'data-id': processInfomation.processCateNo }">
+                        <td>
+                            <div class="flex valign-center">
                             <!--A2_11 処理年一覧-->
                             <div id="combo-box" data-bind="ntsComboBox: {
                                 name: 'Sample List', width:80,
@@ -102,8 +103,7 @@
                             <span
                                 class="caret-right caret-inline"></span>
                             <!--A2_14 次回給与支払日-->
-                            <div
-                                    data-bind="ntsComboBox: {
+                            <div data-bind="ntsComboBox: {
                             name: 'Sample List', width:250,
                             options: monthsSubcriceYear,
                             optionsValue: 'code',
@@ -116,8 +116,8 @@
 
                                 { prop: 'name', length: 10 },
                             ]}"
-                                    style="width: 200px; top: 3px;"></div>
-
+                                    style="width: 200px; margin-left: 10px"></div>
+                            </div>
                         </td>
                     </tr>
                     </tbody>

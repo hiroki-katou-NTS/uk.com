@@ -28,13 +28,14 @@
 				
 				<!-- D1_2  処理区分名称 -->				
 				<input data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}" />
-				
-				<!-- D2_3 この処理区分を廃止する -->				
-				<div data-bind="ntsCheckBox: { checked: enableChecckBox , enable: mode==0 }">#{i18n.getText('QMM005_80')}</div>
-				
-				<!-- D2_4 支払年月日区分 -->				
-				<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
-				
+
+				<div data-bind="if : mode==0">
+					<!-- D2_3 この処理区分を廃止する -->
+					<div data-bind="ntsCheckBox: { checked: enableChecckBox   }">#{i18n.getText('QMM005_80')}</div>
+
+					<!-- D2_4 支払年月日区分 -->
+					<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
+				</div>
 			</div>
 
 			<div id="contents-area">

@@ -41,8 +41,8 @@ public class AdvancedSetting extends DomainObject {
 
 	public AdvancedSetting(int printingMonth, int socialInsuColleMon, int empInsurRefeDate, int empInsurBaseMonth,
 			int inComRefeDate, int inComBaseYear, int inComBaseMonth, int sociInsuBaseMonth, int sociInsuBaseYear,
-			int sociInsuRefeDate, int timeCloseDate, int closeDateBaseMonth, int closeDateBaseYear,
-			int closeDateRefeDate) {
+			int sociInsuRefeDate, int timeCloseDate, Integer closeDateBaseMonth, Integer closeDateBaseYear,
+						   Integer closeDateRefeDate) {
 		super();
 		this.itemPrintingMonth = new DetailPrintingMonth(printingMonth);
 		this.socialInsuColleMon = new SalaryInsuColMon(socialInsuColleMon);
