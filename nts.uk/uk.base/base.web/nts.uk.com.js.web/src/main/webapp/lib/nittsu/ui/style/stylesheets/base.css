@@ -3596,8 +3596,9 @@ button.nts-switch-button[disabled].selected {
 /* line 1, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper {
   margin-bottom: 15px;
+  white-space: nowrap;
 }
-/* line 4, ../sass/components/_searchbox.scss */
+/* line 5, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper input.ntsSearchBox {
   box-sizing: border-box;
   border: 1px solid #999;
@@ -3610,12 +3611,12 @@ button.nts-switch-button[disabled].selected {
   vertical-align: top;
   transition: width 0.4s ease-in-out;
 }
-/* line 17, ../sass/components/_searchbox.scss */
+/* line 18, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper input.ntsSearchBox:focus {
   box-shadow: 0 0 1px 1px #0096f2;
   outline: none;
 }
-/* line 22, ../sass/components/_searchbox.scss */
+/* line 23, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper button.search-btn,
 .nts-searchbbox-wrapper button.clear-btn {
   vertical-align: top;
@@ -3623,11 +3624,11 @@ button.nts-switch-button[disabled].selected {
   min-width: 65px;
   padding: 3px;
 }
-/* line 30, ../sass/components/_searchbox.scss */
+/* line 31, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
 }
-/* line 33, ../sass/components/_searchbox.scss */
+/* line 34, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div {
   vertical-align: middle !important;
 }
