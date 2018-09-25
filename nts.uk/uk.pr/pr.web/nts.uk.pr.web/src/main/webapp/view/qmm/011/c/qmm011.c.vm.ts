@@ -490,7 +490,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 dto.occAccInsurBusNo = item.occAccInsurBusNo;
                 dto.name = item.name;
                 dto.fracClass = ko.observable(item.fracClass);
-                dto.empConRatio = ko.observable(item.empConRatio);
+                dto.empConRatio = item.empConRatio == 0 ? ko.observable('') : ko.observable(item.empConRatio);
                 dto.useArt = item.useArt;
 
                 listEmp.push(dto);
