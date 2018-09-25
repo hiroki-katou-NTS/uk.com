@@ -73,7 +73,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             let self = this;
             modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
                 // Reload tree grid if data change
-                if (getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
+                self.showAllOfficeAndHistory();
             });
         }
 
@@ -83,8 +83,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
             setShared("QMM008_E_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.welfareInsuranceRateHistory.history });
             modal("/view/qmm/008/e/index.xhtml").onClosed(() => {
-                // Reload tree grid if data change
-                if (getShared("QMM008_E_RES_PARAMS")) self.showAllOfficeAndHistory();
+                // TODO
             });
         }
 
@@ -182,10 +181,11 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         self.showEmployeeHealthInsuranceByHistoryId(self.selectedHistoryId);
-                    } else {
-                        // display none if not found
-                        self.selectedHistoryPeriod({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
                     }
+                }
+                else {
+                    // display none if not found
+                    self.selectedHistoryPeriod({ displayStart: '', displayJapanYearMonth: '', displayEnd: '' });
                 }
             }
         }
@@ -212,14 +212,14 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 displayHealthInsuranceList: Array<model.TreeGridNode> = [],
                 pensionItem = {};
             healthInsuranceList.forEach(function(office) {
-                let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
+                let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, [], office.socialInsuranceCode, office.socialInsuranceName);
                 if (office.healthInsuranceFeeRateHistory) {
                     let displayStart, displayEnd = "";
                     office.healthInsuranceFeeRateHistory.history.forEach(function(history) {
                         displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
                         displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
                         // ___ is for child contain office code and history id
-                        healthInsuranceItem.child.push(new model.TreeGridNode(office.socialInsuranceCode + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, []));
+                        healthInsuranceItem.child.push(new model.TreeGridNode(office.socialInsuranceCode + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, [], "", ""));
                     });
                 }
                 displayHealthInsuranceList.push(healthInsuranceItem);
@@ -230,9 +230,9 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return nts.uk.time.formatYearMonth(yearMonth);
         }
-        
-        convertYearMonthToDisplayJpanYearMonth (yearMonth) {
-            return nts.uk.time.yearmonthInJapanEmpire(yearMonth).toString().split(' ').join('');    
+
+        convertYearMonthToDisplayJpanYearMonth(yearMonth) {
+            return nts.uk.time.yearmonthInJapanEmpire(yearMonth).toString().split(' ').join('');
         }
 
         createNewHistory() {
@@ -266,7 +266,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
                         self.showEmployeeHealthInsuranceByHistoryId(history[1].historyId);
                     } else {
-                        self.initBlankData();    
+                        self.initBlankData();
                     }
                     self.isUpdateMode(false);
                 }
@@ -289,18 +289,18 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     self.convertToTreeGridList();
                     // change selected value
                     if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
-                        if (history.length <= 1){
+                        if (history.length <= 1) {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
                         } else {
-                            self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)    
+                            self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)
                         }
                     } else {
                         let selectedHealthInsurance = self.selectedHealthInsurance();
-                        setTimeout(function(){
+                        setTimeout(function() {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
                             self.selectedHealthInsurance(selectedHealthInsurance);
                         }, 50);
-                        
+
                     }
                 }
             });
