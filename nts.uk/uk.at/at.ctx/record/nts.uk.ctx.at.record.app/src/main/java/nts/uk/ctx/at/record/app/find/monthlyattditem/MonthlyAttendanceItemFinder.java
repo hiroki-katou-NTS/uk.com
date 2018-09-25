@@ -25,10 +25,11 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -48,8 +49,8 @@ public class MonthlyAttendanceItemFinder {
 
 	/** The attd item name adapter. */
 	@Inject
-	private DailyAttendanceItemNameAdapter attdItemNameAdapter;
-	
+	private AtItemNameAdapter attdItemNameAdapter;
+
 	@Inject
     private OptionalItemRepository optItemRepo;
 	
@@ -93,8 +94,8 @@ public class MonthlyAttendanceItemFinder {
 				.collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
 
 		// get attd item name list
-		List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.attdItemNameAdapter
-				.getDailyAttendanceItemName(new ArrayList<Integer>(attdItemsMap.keySet()));
+		List<AttItemName> attdItemNames = this.attdItemNameAdapter
+				.getNameOfAttendanceItem(new ArrayList<Integer>(attdItemsMap.keySet()), TypeOfItemImport.Monthly);
 
 		// set attendance item name
 		attdItemNames.forEach(item -> {

@@ -47,6 +47,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private AppReflectManager appRefMng;
 	@Inject
 	private GetClosureStartForEmployee getClosureStartForEmp;
+
 	
 	@Override
 	public ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext) {
@@ -101,6 +102,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		Optional<ExeStateOfCalAndSumImport> optState = execuLog.executionStatus(workId);
 		//処理した社員の実行状況を「完了」にする
 		execuLog.updateLogInfo(sid, workId, 2, 0);
+		execuLog.updateLogInfo(workId, 2, 0);
 		dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);
 		if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
 			return false;

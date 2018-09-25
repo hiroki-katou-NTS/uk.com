@@ -115,7 +115,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		// return new OutputExecAlarmListPro(false,errorMessage);
 
 		RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listEmploymentCode, dateTime.toDate(),
-				dateTime.toDate());
+				dateTime.toDate(),workplaceIdList);
 		List<RegulationInfoEmployeeAdapterDto> lstRegulationInfoEmployee = this.regulationInfoEmployeeAdapter
 				.find(employeeInfo);
 		// if (lstRegulationInfoEmployee.isEmpty())
@@ -174,11 +174,11 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else if (checkConditionTime.getCategoryName().equals("36協定　年間")) {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getYear() + "/"
-									+ checkConditionTime.getStartDate().substring(5, 7) + "/01", "yyyy/MM/dd");
+									+ checkConditionTime.getStartMonth().substring(4, 6) + "/01", "yyyy/MM/dd");
 							GeneralDate endDate = GeneralDate
 									.fromString(
 											checkConditionTime.getYear() + "/"
-													+ checkConditionTime.getEndDate().substring(5, 7) + "/01",
+													+ checkConditionTime.getEndMonth().substring(4, 6) + "/01",
 											"yyyy/MM/dd")
 									.addYears(1).addMonths(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
@@ -240,16 +240,15 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 	}
 
 	private RegulationInfoEmployeeAdapterImport createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate,List<String> wordplaceIds) {
 		RegulationInfoEmployeeAdapterImport query = new RegulationInfoEmployeeAdapterImport();
 		query.setBaseDate(GeneralDateTime.now());
-		query.setReferenceRange(EmployeeReferenceRange.DEPARTMENT_ONLY.value);
+		query.setReferenceRange(EmployeeReferenceRange.ONLY_MYSELF.value);
 		query.setFilterByEmployment(false);
 		query.setEmploymentCodes(Collections.emptyList());
 		// query.setFilterByDepartment(false);
 		// query.setDepartmentCodes(Collections.emptyList());
-		query.setFilterByWorkplace(false);
-		query.setWorkplaceCodes(Collections.emptyList());
+		query.setFilterByWorkplace(true);
 		query.setFilterByClassification(false);
 		query.setClassificationCodes(Collections.emptyList());
 		query.setFilterByJobTitle(false);
@@ -259,8 +258,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		query.setPeriodStart(startDate);
 		query.setPeriodEnd(endDate);
 		query.setIncludeIncumbents(true);
-		query.setIncludeWorkersOnLeave(true);
-		query.setIncludeOccupancy(true);
+		query.setIncludeWorkersOnLeave(false);
+		query.setIncludeOccupancy(false);
 		// query.setIncludeAreOnLoan(true);
 		// query.setIncludeGoingOnLoan(false);
 		query.setIncludeRetirees(false);
@@ -268,6 +267,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		query.setRetireEnd(GeneralDate.today());
 		query.setFilterByClosure(false);
 		query.setSystemType(2);
+		query.setWorkplaceCodes(wordplaceIds);
+		query.setNameType("ビジネスネーム日本語");
 		return query;
 	}
 

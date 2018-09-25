@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.SetInforReflAprResultExpo
 
 @Stateless
 public class ExecutionLogExportPubImpl implements ExecutionLogExportPub{
+	
 	@Inject
 	private ExecutionLogRepository logRepo;
 	@Inject
@@ -58,6 +59,11 @@ public class ExecutionLogExportPubImpl implements ExecutionLogExportPub{
 	@Override
 	public void updateLogInfo(String employeeID, String empCalAndSumExecLogId, int executionContent, int state) {
 		targetPerson.updateWithContent(employeeID, empCalAndSumExecLogId, executionContent, state);
+	}
+	@Override
+	public void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus) {
+		logRepo.updateLogInfo(empCalAndSumExecLogID, executionContent, processStatus);
+		
 	}
 
 }

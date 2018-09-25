@@ -128,7 +128,7 @@ public class DailyCalculationCommandFacade {
 			}
 
 			// check error sau khi tinh toan
-			DataResultAfterIU afterError = errorCheckAfterCalculation(editedDomains, monthlyResults, dataParent.getMonthValue(), dataParent.getDateRange());
+			DataResultAfterIU afterError = errorCheckAfterCalculation(editedDomains, monthlyResults, dataParent.getMonthValue(), dataParent.getDateRange(), dataParent.getMode());
 			resultError = afterError.getErrorMap();
 			flexShortage = afterError.getFlexShortage();
 
@@ -234,7 +234,7 @@ public class DailyCalculationCommandFacade {
 	 * 計算後エラーチェック
 	 */
 	private DataResultAfterIU errorCheckAfterCalculation(List<IntegrationOfDaily> dailyResults,
-			List<IntegrationOfMonthly> monthlyResults, DPMonthValue monthlyParam, DateRange dateRange) {
+			List<IntegrationOfMonthly> monthlyResults, DPMonthValue monthlyParam, DateRange dateRange, int mode) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
 		
 		// 乖離エラーのチェック
@@ -243,6 +243,7 @@ public class DailyCalculationCommandFacade {
 
 		// フレックス繰越時間が正しい範囲で入力されているかチェックする
 		UpdateMonthDailyParam monthParam = null;
+		FlexShortageRCDto flexError = null;
 		if (monthlyParam != null) {
 			val month = monthlyParam;
 			if (month != null && month.getItems() != null) {
@@ -262,7 +263,9 @@ public class DailyCalculationCommandFacade {
 								dateRange.getStartDate(), dateRange.getEndDate()), month.getRedConditionMessage(), month.getHasFlex());
 			}
 		}
-		FlexShortageRCDto flexError = validatorDataDaily.errorCheckFlex(monthlyResults, monthParam);
+		if (mode == 0 && monthParam.getHasFlex()) {
+			flexError = validatorDataDaily.errorCheckFlex(monthlyResults, monthParam);
+		}
 
 		// 残数系のエラーチェック
 		List<DPItemValue> errorMonth = validatorDataDaily.errorMonth(monthlyResults, null).get(TypeError.ERROR_MONTH.value);
