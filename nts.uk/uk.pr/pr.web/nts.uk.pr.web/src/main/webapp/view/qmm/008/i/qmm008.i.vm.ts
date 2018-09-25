@@ -19,7 +19,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         selectedHealthInsurance: KnockoutObservable<number> = ko.observable(null);
 
         // Contribution contribution item
-        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '',displayStartJM: '' });
+        selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '', displayStartJM: '' });
         contributionRate: KnockoutObservable<model.ContributionRate> = ko.observable(null);
         constructor() {
             let self = this;
@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         }
 
         initBlankData() {
-            let self = this;           
+            let self = this;
             self.contributionRate(new model.ContributionRate(null));
         }
 
@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         registerBusinessEstablishment() {
             let self = this;
             modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
-                if(getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
+                if (getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
             });
         }
 
@@ -76,7 +76,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
             setShared("QMM008_J_PARAMS", { selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.contributionRateHistory.history });
             modal("/view/qmm/008/j/index.xhtml").onClosed(() => {
-                if(getShared("QMM008_E_RES_PARAMS")) self.showAllOfficeAndHistory();
+                if (getShared("QMM008_E_RES_PARAMS")) self.showAllOfficeAndHistory();
             });
         }
 
@@ -166,7 +166,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
                         //Todo
-                        selectedHistoryPeriod.displayStartJM = nts.uk.time.yearmonthInJapanEmpire( selectedHistoryPeriod.displayStart).toString().split(' ').join('');
+                        selectedHistoryPeriod.displayStartJM = nts.uk.time.yearmonthInJapanEmpire(selectedHistoryPeriod.displayStart).toString().split(' ').join('');
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
                         //アルゴリズム「選択処理」を実行する
                         self.showContributionRateByHistoryId(self.selectedHistoryId);
@@ -183,8 +183,6 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             service.findContributionRateByHistoryId(historyId).done(function(data) {
                 if (data) {
                     self.contributionRate(new model.ContributionRate(data));
-                } else {
-                    self.isUpdateMode(true);
                 }
                 if (!self.isUpdateMode()) $('#I2_7').focus();
                 block.clear();
@@ -202,7 +200,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             healthInsuranceList.forEach(function(office) {
                 let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
                 if (office.contributionRateHistory) {
-                    let displayStart, displayEnd = "", displayStartJM  = "";
+                    let displayStart, displayEnd = "", displayStartJM = "";
                     office.contributionRateHistory.history.forEach(function(history) {
                         displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
                         displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
@@ -227,7 +225,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             modal("/view/qmm/008/g/index.xhtml").onClosed(() => {
                 let params = getShared("QMM008_G_RES_PARAMS");
                 if (params) {
-                   let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
+                    let socialInsuranceOfficeList = ko.toJS(self.socialInsuranceOfficeList);
                     let historyId = nts.uk.util.randomId();
                     // update previous history
                     if (history.length > 0) {
@@ -249,7 +247,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
                         self.showContributionRateByHistoryId(history[1].historyId);
                     } else {
-                        self.initBlankData();    
+                        self.initBlankData();
                     }
                     self.isUpdateMode(false);
                 }
@@ -262,7 +260,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
             let history = selectedOffice.contributionRateHistory.history;
-            setShared("QMM008_H_PARAMS", { screen: "I",selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.contributionRateHistory.history });
+            setShared("QMM008_H_PARAMS", { screen: "I", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: selectedOffice.contributionRateHistory.history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#I1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
@@ -272,18 +270,18 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                     self.convertToTreeGridList();
                     // change selected value
                     if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
-                        if (history.length <= 1){
+                        if (history.length <= 1) {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
                         } else {
-                            self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)    
+                            self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)
                         }
                     } else {
                         let selectedHealthInsurance = self.selectedHealthInsurance();
-                        setTimeout(function(){
+                        setTimeout(function() {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
                             self.selectedHealthInsurance(selectedHealthInsurance);
                         }, 50);
-                        
+
                     }
                 }
             });
