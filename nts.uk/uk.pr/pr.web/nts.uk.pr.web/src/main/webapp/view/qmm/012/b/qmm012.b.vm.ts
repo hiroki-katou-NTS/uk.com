@@ -198,6 +198,7 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.setValidity;
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
+                    delete command.screenModel;
                     
                     if(self.statementItemDataSelected().checkCreate()) {
                          oldSalaryId = nts.uk.util.randomId();
@@ -278,6 +279,7 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.setValidity;
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
+                    delete command.screenModel;
                     
                     block.invisible();
                     service.removeStatementItemData(command).done(function() {
@@ -362,8 +364,11 @@ module nts.uk.pr.view.qmm012.b {
             // mode of screen
             checkCreate: KnockoutObservable<boolean> = ko.observable(true);
             
+            screenModel: ScreenModel;
+            
             constructor(data: IStatementItemData, screenModel: ScreenModel) {
                 let self = this;
+                self.screenModel = screenModel;
                 
                 if (data) {
                     self.cid = data.cid;
@@ -443,7 +448,19 @@ module nts.uk.pr.view.qmm012.b {
                 setShared("QMM012_B_TO_I_PARAMS", {salaryItemId: self.salaryItemId(), categoryName: self.statementItem().categoryName()});
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
-                    self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
+                    let isSetting = getShared("QMM012_I_IS_SETTING");
+                    self.isSetBreakdownItem(isSetting);
+                    
+                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
+                    
+                    if(index >= 0) {
+                        if(isSetting) {
+                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [{breakdownItemCode: 1, breakdownItemName: "1"}];
+                        } else {
+                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [];
+                        }
+                    }
+                    
                     $("#C3_8").focus();
                 });
             }
@@ -459,7 +476,32 @@ module nts.uk.pr.view.qmm012.b {
                 });
 
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
-                    self.isSetValidity(getShared("QMM012_H_IS_SETTING"));
+                    let isSetting = getShared("QMM012_H_IS_SETTING");
+                    
+                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
+                    
+                    if(isSetting && (isSetting.exitStatus == 1)) {
+                        self.isSetValidity(isSetting);
+                        if(index >= 0) {
+                            self.screenModel.statementItemDataList()[index].validityPeriodAndCycleSet = {cycleSettingAtr: 0,
+                                                                                                        january: 0,
+                                                                                                        february: 0,
+                                                                                                        march: 0,
+                                                                                                        april: 0,
+                                                                                                        may: 0,
+                                                                                                        june: 0,
+                                                                                                        july: 0,
+                                                                                                        august: 0,
+                                                                                                        september: 0,
+                                                                                                        october: 0,
+                                                                                                        november: 0,
+                                                                                                        december: 0,
+                                                                                                        periodAtr: 0,
+                                                                                                        yearPeriodStart: 0,
+                                                                                                        yearPeriodEnd: 0};
+                        }
+                    }
+                    
                     $("#C3_2").focus();
                 });
             }
@@ -676,6 +718,13 @@ module nts.uk.pr.view.qmm012.b {
                 self.limitAmountAtr.subscribe(x => {
                     if((x != null) && (x != model.LimitAmountClassification.FIXED_AMOUNT)) {
                         $('#C4_8').ntsError('clear');
+                    }
+                });
+                
+                self.taxAtr.subscribe(x => {
+                    if((x != null) && (x != model.TaxAtr.LIMIT_TAX_EXEMPTION) && (x != model.TaxAtr.COMMUTING_EXPENSES_MANUAL)) {
+                        $('#C4_8').ntsError('clear');
+                        self.limitAmount(null);
                     }
                 });
             }
