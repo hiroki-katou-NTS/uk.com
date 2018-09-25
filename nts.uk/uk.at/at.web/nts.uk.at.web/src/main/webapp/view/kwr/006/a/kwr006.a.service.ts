@@ -31,7 +31,7 @@ module nts.uk.at.view.kwr006.a {
         }
 
         export function getCurrentLoginerRole(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.getCurrentLoginerRole);
+            return nts.uk.request.ajax(paths.getCurrentLoginerRole);
         }
         
         export module model {
