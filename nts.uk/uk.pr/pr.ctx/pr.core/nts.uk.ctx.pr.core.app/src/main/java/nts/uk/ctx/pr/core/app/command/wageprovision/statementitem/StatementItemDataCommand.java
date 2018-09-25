@@ -3,31 +3,20 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.statementitem;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.BreakdownItemSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.DeductionItemSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.IntegratedItemDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.ItemRangeSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.PaymentItemSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDisplaySetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemNameDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.TaxExemptionLimitDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.TimeItemSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.ValidityPeriodAndCycleSetDto;
 
 @Value
 public class StatementItemDataCommand {
-	private StatementItemDto statementItem;
-	private StatementItemNameDto statementItemName;
-	private PaymentItemSetDto paymentItemSet;
-	private DeductionItemSetDto deductionItemSet;
-	private TimeItemSetDto timeItemSet;
-	private StatementItemDisplaySetDto statementDisplaySet;
-	private ItemRangeSetDto itemRangeSet;
-	private ValidityPeriodAndCycleSetDto validityPeriodAndCycleSet;
-	private List<BreakdownItemSetDto> breakdownItemSet;
-	private TaxExemptionLimitDto taxExemptionLimit;
-	private IntegratedItemDto integratedItem;
+	private StatementItemCommand statementItem;
+	private StatementItemNameCommand statementItemName;
+	private PaymentItemSetCommand paymentItemSet;
+	private DeductionItemSetCommand deductionItemSet;
+	private TimeItemSetCommand timeItemSet;
+	private StatementItemDisplaySetCommand statementDisplaySet;
+	private ItemRangeSetCommand itemRangeSet;
+	private ValidityPeriodAndCycleSetCommand validityPeriodAndCycleSet;
+	private List<BreakdownItemSetCommand> breakdownItemSet;
+	private TaxExemptionLimitCommand taxExemptionLimit;
+	private IntegratedItemCommand integratedItem;
 	private boolean checkCreate;
 	/**
 	 * 給与項目ID

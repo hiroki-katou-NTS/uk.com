@@ -13,7 +13,7 @@ public class StatementItemCommand {
 	/**
 	 * 項目名コード
 	 */
-	private int itemNameCd;
+	private String itemNameCd;
 
 	/**
 	 * 給与項目ID
@@ -43,6 +43,6 @@ public class StatementItemCommand {
 	/**
 	 * 統合コード
 	 */
-	private Integer intergrateCd;
+	private String intergrateCd;
 
 }
