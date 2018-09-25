@@ -19,6 +19,9 @@ module nts.uk.pr.view.qmm012.a.viewmodel {
             });
             self.selectedCategoryAtr(0);
             $("#A2_2").focus();
+            $( "#A2_2" ).dblclick(function() {
+              self.saveData();
+            });
         }
         saveData() {
             let self = this;

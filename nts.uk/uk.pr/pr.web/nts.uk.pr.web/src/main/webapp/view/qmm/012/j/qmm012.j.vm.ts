@@ -22,7 +22,12 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
         constructor() {
             let self = this;
             $("#J2_1").focus();
-            $("#fixed-table").ntsFixedTable({ height: 503, width: 780 });
+            //Fixed table
+            if (/Chrome/.test(navigator.userAgent)) {
+                $("#fixed-table").ntsFixedTable({ height: 503, width: 780 });
+            } else {
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 780 });
+            }
             let categoryAtrScreenB = getShared('QMM012_B');
             if (categoryAtrScreenB != null) {
                 self.categoryAtr(categoryAtrScreenB);
