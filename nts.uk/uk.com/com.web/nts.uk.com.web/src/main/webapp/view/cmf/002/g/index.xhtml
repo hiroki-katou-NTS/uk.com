@@ -108,21 +108,16 @@
 						<button class="danger push-right-1x" data-bind="click: btnRemoveCdConvertDetails"
 							tabindex="9">#{i18n.getText('CMF002_126')}</button>
 					</div>
-					<div class="flex">
+					<div class="div_line">
 						<table id="fixed-table" tabindex="8">
-							<!--<colgroup>
-								<col width="20px" />
-								<col width="125px" />
-								<col width="125px" />
-
-
-							</colgroup>-->
-
 							<colgroup>
-								<col width="33px"/>
-								<col width="121px"/>
-								<col width="108px"/>
+								<col width="30px" />
+								<col width="150px" />
+								<col width="160px" />
+
+
 							</colgroup>
+
 							<thead>
 								<tr>
 									<th class="ui-widget-header"></th>
@@ -135,9 +130,9 @@
 									<td class="order-column"><span
 										data-bind="text: lineNumber"></span></td>
 									<td><input tabindex="9"
-										data-bind="ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '98px'}}" /></td>
+										data-bind="ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '125px'}}" /></td>
 									<td><input tabindex="10"
-										data-bind="ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '98px'}}" /></td>
+										data-bind="ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '125px'}}" /></td>
 								</tr>
 							</tbody>
 						</table>
