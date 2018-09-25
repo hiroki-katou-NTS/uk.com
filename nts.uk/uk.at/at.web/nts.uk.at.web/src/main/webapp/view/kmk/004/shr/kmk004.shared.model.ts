@@ -1181,6 +1181,7 @@ module nts.uk.at.view.kmk004.shared.model {
     export class FlexSetParams {
         isIncludeOverTime: boolean;
         shortageSetting: number;
+        isEnableOverTime: boolean;
 
         constructor() {
             let self = this;
