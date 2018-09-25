@@ -9,5 +9,5 @@ import nts.arc.time.GeneralDateTime;
  *
  */
 public interface ExecAlarmListProcessingService {
-	public boolean execAlarmListProcessing(String extraProcessStatusID,String companyId,List<String> workplaceIdList,List<String> listPatternCode,GeneralDateTime dateTime);
+	public OutputExecAlarmListPro execAlarmListProcessing(String extraProcessStatusID,String companyId,List<String> workplaceIdList,List<String> listPatternCode,GeneralDateTime dateTime,boolean sendMailPerson,boolean sendMailAdmin);
 }

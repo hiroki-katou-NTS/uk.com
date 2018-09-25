@@ -241,18 +241,18 @@
 					</tr>
 					<!-- A17_6 -->
 					<tr>
-						<td data-bind="" class="tab" >#{i18n.getText('KTG029_50')}</td>
+						<td data-bind="" class="tab" >#{i18n.getText('KTG029_50')}<span data-bind="visible: yearlyHoliday.showGrantDate">#{i18n.getText('KTG029_65')}</span></td>
 						<td data-bind="" class="limited-label"><span data-bind="text: yearlyHoliday.nextGrantDateInfo.day"></span>#{i18n.getText('KTG029_60')}<span data-bind="visible: yearlyHoliday.nextGrantDateInfo.displayHours">#{i18n.getText('KTG029_42')}<span data-bind="text: yearlyHoliday.nextGrantDateInfo.hours"></span></span></td>
 					</tr>
 				</table>
-				<table class="widget-table fix3" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
+				<table class="widget-table fix3" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHaftDayOff, with:dataRecord()">
 					<!-- A17_7 -->
 					<tr>
-						<td data-bind="" class="tab" >#{i18n.getText('KTG029_51')}</td>
+						<td data-bind="" class="tab" >#{i18n.getText('KTG029_51')}<span data-bind="visible: yearlyHoliday.showGrantDate">#{i18n.getText('KTG029_65')}</span></td>
 						<td data-bind="">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.nextGrantDateInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
 				</table>
-				<table class="widget-table fix" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">					
+				<table class="widget-table fix" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHaftDayOff, with:dataRecord()">					
 					<!-- A17_8 -->
 					<tr>
 						<td data-bind="" class="tab limited-label" >#{i18n.getText('KTG029_52')}</td>
@@ -261,42 +261,43 @@
 				</table>
 				<table class="widget-table" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 					<!-- A17_9 -->
-					<tr>
+					<tr data-bind="visible: yearlyHoliday.showGrantDate">
 						<td data-bind="" class="tab" >#{i18n.getText('KTG029_53')}</td>
 						<td data-bind="" class="limited-label"><span data-bind="text: yearlyHoliday.afterGrantDateInfo.day"></span>#{i18n.getText('KTG029_60')}<span data-bind="visible: yearlyHoliday.afterGrantDateInfo.displayHours">#{i18n.getText('KTG029_42')}<span data-bind="text: yearlyHoliday.afterGrantDateInfo.hours"></span></span></td>
 					</tr>
 				</table>
-				<table class="widget-table fix3" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
+				<table class="widget-table fix3" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHoursOfHoliday, with:dataRecord()">
 					<!-- A17_10 -->
-					<tr>
+					<tr data-bind="visible: yearlyHoliday.showGrantDate">
 						<td data-bind="" class="tab" >#{i18n.getText('KTG029_54')}</td>
 						<td data-bind="">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.afterGrantDateInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
 				</table>
-				<table class="widget-table fix" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
+				<table class="widget-table fix" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHoursOfHoliday, with:dataRecord()">
 					<!-- A17_11 -->
-					<tr>
+					<tr data-bind="visible: yearlyHoliday.showGrantDate">
 						<td data-bind="" class="tab limited-label" >#{i18n.getText('KTG029_55')}</td>
 						<td data-bind="">#{i18n.getText('KTG029_47')}<span data-bind="text: yearlyHoliday.afterGrantDateInfo.timeYearLimit"></span>#{i18n.getText('KTG029_48')}</td>
 					</tr>
 				</table>
+				<!-- 
 				<table class="widget-table" data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
-					<!-- A17_12 -->
+					A17_12
 					<tr data-bind="visible: yearlyHoliday.calculationMethod != 3">
 						<td data-bind="" class="tab">#{i18n.getText('KTG029_56')}</td>
 						<td></td>
 					</tr>
-					<!-- A17_13 -->
+					A17_13
 					<tr data-bind="visible: yearlyHoliday.calculationMethod == 1">
 						<td class="tab" >#{i18n.getText('KTG029_57')}</td>
 						<td><span data-bind="text: yearlyHoliday.attendanceRate"></span>#{i18n.getText('KTG029_58')}</td>
 					</tr>
-					<!-- A17_14 -->
+					A17_14
 					<tr data-bind="visible: yearlyHoliday.calculationMethod == 0">
 						<td class="tab" >#{i18n.getText('KTG029_59')}</td>
 						<td><span data-bind="text: yearlyHoliday.workingDays"></span>#{i18n.getText('KTG029_60')}</td>
 					</tr>
-				</table>
+				</table> -->
 				<!-- A18 -->
 				<table class="widget-table" data-bind="with:dataRecord(),visible: displayYearRemainNo">
 					<tr>

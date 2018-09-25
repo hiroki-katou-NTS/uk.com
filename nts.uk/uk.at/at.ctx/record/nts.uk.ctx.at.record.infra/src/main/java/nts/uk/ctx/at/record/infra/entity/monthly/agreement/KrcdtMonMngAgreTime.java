@@ -85,9 +85,13 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 	@Column(name = "TRANS_HDWK_TIME")
 	public int transferHolidayWorkTime;
 	
-	/** フレックス超過時間 */
-	@Column(name = "FLEX_EXCESS_TIME")
-	public int flexExcessTime;
+	/** フレックス法定内時間 */
+	@Column(name = "FLEX_LEGAL_TIME")
+	public int flexLegalTime;
+	
+	/** フレックス法定外時間 */
+	@Column(name = "FLEX_ILLEGAL_TIME")
+	public int flexIllegalTime;
 	
 	/** 週割増時間 */
 	@Column(name = "WEEK_PREMIUM_TIME")
@@ -128,7 +132,8 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.transferOverTime),
 				new AttendanceTimeMonth(this.holidayWorkTime),
 				new AttendanceTimeMonth(this.transferHolidayWorkTime),
-				new AttendanceTimeMonth(this.flexExcessTime),
+				new AttendanceTimeMonth(this.flexLegalTime),
+				new AttendanceTimeMonth(this.flexIllegalTime),
 				new AttendanceTimeMonth(this.withinPresctibedPremiumTime),
 				new AttendanceTimeMonth(this.weeklyPremiumTime),
 				new AttendanceTimeMonth(this.monthlyPremiumTime));
@@ -176,7 +181,8 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 		this.transferOverTime = breakdown.getTransferOverTime().v();
 		this.holidayWorkTime = breakdown.getHolidayWorkTime().v();
 		this.transferHolidayWorkTime = breakdown.getTransferTime().v();
-		this.flexExcessTime = breakdown.getFlexExcessTime().v();
+		this.flexLegalTime = breakdown.getFlexLegalTime().v();
+		this.flexIllegalTime = breakdown.getFlexIllegalTime().v();
 		this.weeklyPremiumTime = breakdown.getWeeklyPremiumTime().v();
 		this.monthlyPremiumTime = breakdown.getMonthlyPremiumTime().v();
 	}
