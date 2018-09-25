@@ -169,6 +169,6 @@ public interface SyEmployeePub {
 	 * @param cid
 	 * @param pid
 	 */
-	EmpInfoRegistered getEmpInfo(String cid, String pid);
+	Optional<EmpInfoRegistered> getEmpInfo(String cid, String pid);
 	
 }

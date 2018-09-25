@@ -65,6 +65,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageBaseDateReq: KnockoutObservable<boolean>;
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
         dateRange: KnockoutObservableArray<any> = ko.observable({});
+        startYM: KnockoutObservable<number> = ko.observable();
+        endYM: KnockoutObservable<number> = ko.observable();
         
         constructor() {
             let self = this;
@@ -107,8 +109,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
                         self.expYears(data.grantPeriodicDto.expirationDate.years);
                         self.expMonth(data.grantPeriodicDto.expirationDate.months);
-                        self.dateRange({ startDate: data.grantPeriodicDto.availabilityPeriod.startDate, endDate: data.grantPeriodicDto.availabilityPeriod.endDate });
-                        
+                        self.startYM(data.grantPeriodicDto.availabilityPeriod.startDate);
+                        self.endYM(data.grantPeriodicDto.availabilityPeriod.endDate);
                         self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
                         self.selectedGender(data.specialLeaveRestrictionDto.gender);
                         self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
@@ -269,7 +271,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.endDateEnable(false);
                         self.expYears('');
                         self.expMonth('');
-                        self.dateRange({ startDate: "", endDate: "" });
+                        self.startYM();
+                        self.endYM();
                         break;
                     case 1:
                         self.limitedDaysEnable(false);
@@ -278,7 +281,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startDateEnable(false);
                         self.endDateEnable(false);
                         self.limitedDays('');
-                        self.dateRange({ startDate: "", endDate: "" });
+                        self.startYM();
+                        self.endYM();
                         break;
                     case 2:
                         self.limitedDaysEnable(false);
@@ -289,7 +293,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays('');
                         self.expYears('');
                         self.expMonth('');
-                        self.dateRange({ startDate: "", endDate: "" });
+                        self.startYM();
+                        self.endYM();
                         break;
                     case 3:
                         self.limitedDaysEnable(false);
@@ -549,25 +554,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 allowDisappear: self.allowDisappear(),
                 grantTime: grantTime
             };
+            let start = self.startYM(),
+                end = self.endYM();
             
-            let start = null,
-                end = null,
-                startDate = self.dateRange().startDate,
-                endDate = self.dateRange().endDate;
-            if (startDate) {
-                if (startDate.indexOf("T") > -1 && startDate.indexOf("-") > -1) {
-                    start = startDate != "" ? startDate.substring(0, startDate.indexOf('T')).replace("-", "/").replace("-", "/") : null;
-                } else {
-                    start = startDate != "" ? startDate : null;
-                }
-            }
-            if (endDate) {
-                if (endDate.indexOf("T") > -1 && endDate.indexOf("-") > -1) {
-                    end = endDate != "" ? endDate.substring(0, endDate.indexOf('T')).replace("-", "/").replace("-", "/") : null;
-                } else {
-                    end = endDate != "" ? endDate : null;
-                }
-            }
             let availabilityPeriod : service.AvailabilityPeriod = {
                 startDate: start,
                 endDate: end
@@ -817,6 +806,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.limitedDays('');
             self.expYears('');
             self.expMonth('');
+            self.startYM();
+            self.endYM();
             self.dateRange({ startDate: "", endDate: "" });
             self.genderSelected(false);
             self.empSelected(false);

@@ -373,9 +373,12 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			if (user.get().getAssociatedPersonID().isPresent()) {
 				String personalID = user.get().getAssociatedPersonID().get();
 				//Lay thong tin Request 101
-				EmployeeImport empImport = employeeAdapter.getEmpInfo(companyID, personalID);
+				Optional<EmployeeImport> empImport = employeeAdapter.getEmpInfo(companyID, personalID);
+				if(!empImport.isPresent()){
+					return new ArrayList<>();
+				}
 				//OUTPUT 社員ID（List）に③社員.社員IDを追加する
-				listEmpID.add(empImport.getEmployeeId());
+				listEmpID.add(empImport.get().getEmployeeId());
 			}
 		}
 

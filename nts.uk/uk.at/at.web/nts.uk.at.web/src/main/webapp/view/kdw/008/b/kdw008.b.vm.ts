@@ -421,53 +421,10 @@ module nts.uk.at.view.kdw008.b {
                 }
             }
 
-<<<<<<< HEAD
-            registerMonthly() {
-                let self = this; 
-//                $(".need-check").trigger("validate");
-                
-                if (!nts.uk.ui.errors.hasError()) {
-                    let listDisplayTimeItem = [];
-                    for (let i = 0; i < self.valuesMonth().length; i++) {
-                        var indexOfItem = _.findIndex(self.valuesMonth(), { attendanceItemId: self.valuesMonth()[i].attendanceItemId });
-                        let obj = new DisplayTimeItem(
-                            indexOfItem,
-                            self.valuesMonth()[i].attendanceItemId,
-                            null
-                        );
-                        listDisplayTimeItem.push(obj);
-                    }
-
-
-                    let listSheetMonthly = [new SheetCorrectedMonthly(
-                        self.selectedSheetNo(),
-                        self.selectedSheetName(),
-                        listDisplayTimeItem
-                    )];
-
-                    let temp = new MonthlyRecordWorkType("", self.currentBusinessTypeCode(),
-                        new MonthlyActualResults(listSheetMonthly)
-                    );
-                    nts.uk.ui.block.invisible();
-                    new service.Service().updateMonthly(temp).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            nts.uk.ui.block.clear();
-//                            self.getMonthRight(self.currentBusinessTypeCode(), 1);
-//                            self.initSelectedSheetNoHasMutated();
-                        });
-                        $("#currentName").focus();
-                    }).always(function() {
-                    }).fail(function(error) {
-                        nts.uk.ui.block.clear();
-                        $('#currentCode').ntsError('set', error);
-                    });
-                }
-=======
             private getMonthlyRightCmdDel(): MonthlyRecordWorkTypeDto {
                 let self = this;
                 let listDisplayTimeItem: Array<IDisplayTimeItemDto> = [];
                 return this.getMonthlyRightCmd(listDisplayTimeItem);
->>>>>>> pj/at/dev/team_C/Fix_Bug
             }
 
             private getMonthlyRightCmdUpdate(): MonthlyRecordWorkTypeDto {

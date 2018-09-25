@@ -139,7 +139,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 
 		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {
 			return f.getFrameNo().v();
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 
 		if (attendanceItemAndFrameNos.isEmpty()) {
 			return attendanceItems;
