@@ -57,8 +57,8 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                     self.selectedItemType.subscribe(code => {
                         if (code == 10) {
                             self.categoryItemList(data);
-                        }else{
-                        self.categoryItemList(_.filter(data, ['itemType', code]));
+                        } else {
+                            self.categoryItemList(_.filter(data, ['itemType', code]));
                         }
                     });
                 }
@@ -119,18 +119,24 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                     var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == item.id });
                     self.selectedAddOutputItem.push(ko.toJS(new AddOutputItem(parseInt(_.max(_listOutputItemCode)), self.condSetCd(), _selectedItem.itemName, _selectedItem.itemType, _selectedItem.itemNo, _selectedItem.categoryId)));
                 }
-                service.addOutputItem(self.selectedAddOutputItem()).done(function() {
-                    self.excursionMode(true);
-                    info({ messageId: "Msg_15" });
-                    service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
-                        if (data && data.length) {
-                            self.outputItemList(data);
-                        }
-                    })
-                    self.selectionItemList.removeAll();
-                }).always(function() {
+                let _outputItemCode = self.outputItemList().length == 0 ? 0 : parseInt(_.max(_listOutputItemCode));
+                if ((_outputItemCode + self.selectedAddOutputItem().length) <= 999) {
+                    service.addOutputItem(self.selectedAddOutputItem()).done(function() {
+                        self.excursionMode(true);
+                        info({ messageId: "Msg_15" });
+                        service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
+                            if (data && data.length) {
+                                self.outputItemList(data);
+                            }
+                        })
+                        self.selectionItemList.removeAll();
+                    }).always(function() {
+                        block.clear();
+                    });
+                } else {
+                    alertError({ messageId: 'MAX 999 dang QA' });
                     block.clear();
-                });
+                }
             } else {
                 alertError({ messageId: 'Msg_656' });
             }
