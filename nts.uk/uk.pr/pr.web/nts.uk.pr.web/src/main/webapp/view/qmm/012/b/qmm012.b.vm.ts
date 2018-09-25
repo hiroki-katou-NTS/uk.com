@@ -142,31 +142,31 @@ module nts.uk.pr.view.qmm012.b {
                 nts.uk.ui.errors.clearAll();
                 
                 if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
-                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorUpperRangeValueAmount() == null)) {
+                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && ((itemRangeSet.errorUpperRangeValueAmount() == null) || (itemRangeSet.errorUpperRangeValueAmount().toString() == ""))) {
                         $('#C2_12').ntsError('set', { messageId: "MsgQ_14" });
                     }
                     
-                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && (itemRangeSet.errorLowerRangeValueAmount() == null)) {
+                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && ((itemRangeSet.errorLowerRangeValueAmount() == null) || (itemRangeSet.errorLowerRangeValueAmount().toString() == ""))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_15" });
                     }
                     
                     if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.errorUpperRangeValueAmount() != null) && (itemRangeSet.errorLowerRangeValueAmount() != null)
-                            && itemRangeSet.errorUpperRangeValueAmount() <= itemRangeSet.errorLowerRangeValueAmount()) {
+                            && (parseInt(itemRangeSet.errorUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.errorLowerRangeValueAmount().toString(), 10))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_1" });
                     }
                     
-                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmUpperRangeValueAmount() == null)) {
+                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && ((itemRangeSet.alarmUpperRangeValueAmount() == null) || (itemRangeSet.alarmUpperRangeValueAmount().toString() == ""))) {
                         $('#C2_19').ntsError('set', { messageId: "MsgQ_16" });
                     }
                     
-                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerRangeValueAmount() == null)) {
+                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && ((itemRangeSet.alarmLowerRangeValueAmount() == null) || (itemRangeSet.alarmLowerRangeValueAmount().toString() == ""))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_17" });
                     }
                     
                     if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.alarmUpperRangeValueAmount() != null) && (itemRangeSet.alarmLowerRangeValueAmount() != null)
-                            && itemRangeSet.alarmUpperRangeValueAmount() <= itemRangeSet.alarmLowerRangeValueAmount()) {
+                            && (parseInt(itemRangeSet.alarmUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.alarmLowerRangeValueAmount().toString(), 10))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_2" });
                     }
                 }
@@ -586,11 +586,11 @@ module nts.uk.pr.view.qmm012.b {
                 self.screenModel = screenModel;
                 
                 self.taxList = ko.observableArray([
-                    new model.ItemModel(model.TaxAtr.TAXATION.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.LIMIT_TAX_EXEMPTION.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.NO_LIMIT_TAX_EXEMPTION.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_MANUAL.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.toString(), getText('QMM012_x'))
+                    new model.ItemModel(model.TaxAtr.TAXATION.toString(), getText('Enum_TaxAtr_TAXATION')),
+                    new model.ItemModel(model.TaxAtr.LIMIT_TAX_EXEMPTION.toString(), getText('Enum_TaxAtr_LIMIT_TAX_EXEMPTION')),
+                    new model.ItemModel(model.TaxAtr.NO_LIMIT_TAX_EXEMPTION.toString(), getText('Enum_TaxAtr_NO_LIMIT_TAX_EXEMPTION')),
+                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_MANUAL.toString(), getText('Enum_TaxAtr_COMMUTING_EXPENSES_MANUAL')),
+                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.toString(), getText('Enum_TaxAtr_COMMUTING_EXPENSES_USING_COMMUTER'))
                 ]);
                 
                 self.coveredList = ko.observableArray([
@@ -867,10 +867,10 @@ module nts.uk.pr.view.qmm012.b {
                 let self = this;
                 
                 self.deductionItemList = ko.observableArray([
-                    new model.ItemModel(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM.toString(), getText('QMM012_y')),
-                    new model.ItemModel(model.DeductionItemAtr.SOCIAL_INSURANCE_ITEM.toString(), getText('QMM012_y')),
-                    new model.ItemModel(model.DeductionItemAtr.INCOME_TAX_ITEM.toString(), getText('QMM012_y')),
-                    new model.ItemModel(model.DeductionItemAtr.INHABITANT_TAX_ITEM.toString(), getText('QMM012_y'))
+                    new model.ItemModel(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM.toString(), getText('Enum_DeductionItemAtr_OPTIONAL_DEDUCTION_ITEM')),
+                    new model.ItemModel(model.DeductionItemAtr.SOCIAL_INSURANCE_ITEM.toString(), getText('Enum_DeductionItemAtr_SOCIAL_INSURANCE_ITEM')),
+                    new model.ItemModel(model.DeductionItemAtr.INCOME_TAX_ITEM.toString(), getText('Enum_DeductionItemAtr_INCOME_TAX_ITEM')),
+                    new model.ItemModel(model.DeductionItemAtr.INHABITANT_TAX_ITEM.toString(), getText('Enum_DeductionItemAtr_INHABITANT_TAX_ITEM'))
                 ]);
                 
                 if (data) {
@@ -1046,15 +1046,15 @@ module nts.uk.pr.view.qmm012.b {
         function getCategoryAtrText(itemAtr, row) {
             switch (itemAtr) {
                 case "0":
-                    return getText('QMM012_3');
+                    return getText('Enum_CategoryAtr_PAYMENT_ITEM');
                 case "1":
-                    return getText('QMM012_4');
+                    return getText('Enum_CategoryAtr_DEDUCTION_ITEM');
                 case "2":
-                    return getText('QMM012_5');
+                    return getText('Enum_CategoryAtr_ATTEND_ITEM');
                 case "3":
-                    return getText('QMM012_6');
+                    return getText('Enum_CategoryAtr_REPORT_ITEM');
                 case "4":
-                    return getText('QMM012_7');
+                    return getText('Enum_CategoryAtr_OTHER_ITEM');
                 default:
                     return "";
             }
