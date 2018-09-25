@@ -22,7 +22,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class JpaContributionRateHistoryRepository extends JpaRepository implements ContributionRateHistoryRepository {
 
-	private static final String FIND_BY_OFFICE_CODE = "select a from QpbmtContributionRateHistory a where a.contributionHistPk.cid = :cid AND a.contributionHistPk.socialInsuranceOfficeCd = :officeCode";
+	private static final String FIND_BY_OFFICE_CODE = "select a from QpbmtContributionRateHistory a where a.contributionHistPk.cid = :cid AND a.contributionHistPk.socialInsuranceOfficeCd = :officeCode ORDER BY a.startYearMonth DESC";
 	private static final String DELETE = "DELETE FROM QpbmtContributionRateHistory a WHERE a.contributionHistPk.cid = :cid AND a.contributionHistPk.socialInsuranceOfficeCd = :officeCode";
 
 	/**
