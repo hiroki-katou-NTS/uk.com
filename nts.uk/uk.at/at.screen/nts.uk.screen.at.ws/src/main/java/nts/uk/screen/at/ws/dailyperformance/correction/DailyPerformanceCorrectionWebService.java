@@ -3,6 +3,8 @@
  */
 package nts.uk.screen.at.ws.dailyperformance.correction;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,18 +12,22 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.val;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.arc.layer.ws.ProducedRequest;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
-import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
@@ -103,9 +109,6 @@ public class DailyPerformanceCorrectionWebService {
 	private DailyPerformErrorReferFinder dailyPerforErrorReferFinder;
 	
 	@Inject
-	private AttendanceItemNameDomainService attendanceItemNameDomainService;
-	
-	@Inject
 	private FindEmployeeBase findEmployeeBase;
 	
 	@Inject
@@ -126,22 +129,41 @@ public class DailyPerformanceCorrectionWebService {
 	@Inject
 	private MonthlyPerfomanceAuthorityFinder monthlyPerfomanceAuthorityFinder;
 	
+	@Inject
+	@ProducedRequest
+	private HttpServletRequest httpRequest;
+	
 	@POST
 	@Path("startScreen")
 	public DailyPerformanceCorrectionDto startScreen(DPParams params ) throws InterruptedException{
-		return this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare);
+		DailyPerformanceCorrectionDto dtoResult = this.processor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.formatCodes, params.showError, params.showLock, params.objectShare);
+		HttpSession session = httpRequest.getSession();
+		session.setAttribute("domainOlds", dtoResult.getDomainOld());
+		session.setAttribute("domainEdits", null);
+		dtoResult.setDomainOld(Collections.emptyList());
+		return dtoResult;
 	}
 	
 	@POST
 	@Path("errorCode")
 	public DailyPerformanceCorrectionDto condition(DPParams params ) throws InterruptedException{
-		return this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
+		val results = this.errorProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.mode, params.displayFormat, params.correctionOfDaily, params.errorCodes, params.formatCodes);
+		HttpSession session = httpRequest.getSession();
+		session.setAttribute("domainOlds", results.getDomainOld());
+		session.setAttribute("domainEdits", null);
+		results.setDomainOld(Collections.emptyList());
+		return results;
 	}
 	
 	@POST
 	@Path("selectCode")
 	public DailyPerformanceCorrectionDto selectFormatCode(DPParams params ) throws InterruptedException{
-		return this.selectProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes);
+		val results = this.selectProcessor.generateData(params.dateRange, params.lstEmployee, params.initScreen, params.displayFormat, params.correctionOfDaily, params.formatCodes);
+		HttpSession session = httpRequest.getSession();
+		session.setAttribute("domainOlds", results.getDomainOld());
+		session.setAttribute("domainEdits", null);
+		results.setDomainOld(Collections.emptyList());
+		return results;
 	}
 	
 	@POST
@@ -170,8 +192,20 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("addAndUpdate")
+	@SuppressWarnings("unchecked")
 	public DataResultAfterIU addAndUpdate(DPItemParent dataParent) {
-          return dailyModifyResCommandFacade.insertItemDomain(dataParent);
+		HttpSession session = httpRequest.getSession();
+		val domain  = session.getAttribute("domainEdits");
+		List<DailyRecordDto> dailyEdits = new ArrayList<>();
+		if(domain == null){
+			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		}else{
+			dailyEdits = (List<DailyRecordDto>) domain;
+		}
+		dataParent.setDailyEdits(dailyEdits);
+		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		
+        return dailyModifyResCommandFacade.insertItemDomain(dataParent);
 	}
 	
 	@POST
@@ -199,8 +233,21 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("loadRow")
+	@SuppressWarnings("unchecked")
 	public DailyPerformanceCorrectionDto reloadRow(DPPramLoadRow param) {
-		return loadRowProcessor.reloadGrid(param);
+		HttpSession session = httpRequest.getSession();
+		val domain  = session.getAttribute("domainEdits");
+		List<DailyRecordDto> dailyEdits = new ArrayList<>();
+		if(domain == null){
+			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		}else{
+			dailyEdits = (List<DailyRecordDto>) domain;
+		}
+		param.setDailys(dailyEdits);
+		val result = loadRowProcessor.reloadGrid(param);
+		session.setAttribute("domainEdits", result.getDomainOld());
+		result.setDomainOld(Collections.emptyList());
+		return result;
 	}
 	
 	@POST
@@ -242,13 +289,40 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("calcTime")
+	@SuppressWarnings("unchecked")
 	public DCCalcTime calcTime(DCCalcTimeParam dcTimeParam) {
-		return dailyCorrectCalcTimeService.calcTime(dcTimeParam.getDailyEdits(), dcTimeParam.getItemEdits());
+		HttpSession session = httpRequest.getSession();
+		val domain  = session.getAttribute("domainEdits");
+		List<DailyRecordDto> dailyEdits = new ArrayList<>();
+		if(domain == null){
+			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		}else{
+			dailyEdits = (List<DailyRecordDto>) domain;
+		}
+		
+		val result = dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits());
+		session.setAttribute("domainEdits", result.getDailyEdits());
+		result.setDailyEdits(Collections.emptyList());
+		return dailyCorrectCalcTimeService.calcTime(dailyEdits, dcTimeParam.getItemEdits());
 	}
 	
 	@POST
 	@Path("calculation")
+	@SuppressWarnings("unchecked")
 	public DailyPerformanceCalculationDto calculation(DPItemParent dataParent) {
+		HttpSession session = httpRequest.getSession();
+		val domain  = session.getAttribute("domainEdits");
+		List<DailyRecordDto> dailyEdits = new ArrayList<>();
+		if(domain == null){
+			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+		}else{
+			dailyEdits = (List<DailyRecordDto>) domain;
+		}
+		dataParent.setDailyEdits(dailyEdits);
+		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+		val result = dailyCalculationService.calculateCorrectedResults(dataParent);
+		session.setAttribute("domainEdits", result.getCalculatedRows());
+		result.setCalculatedRows(Collections.emptyList());
 		return dailyCalculationService.calculateCorrectedResults(dataParent);
 	}
 	

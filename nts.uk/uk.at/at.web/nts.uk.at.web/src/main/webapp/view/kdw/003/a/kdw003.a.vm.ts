@@ -573,8 +573,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let startTime: number = performance.now();
             console.log(data);
             self.loadFirst = false;
-            self.lstDomainOld = data.domainOld;
-            self.lstDomainEdit = _.cloneDeep(data.domainOld);
+            //self.lstDomainOld = data.domainOld;
+            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
             if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
                 localStorage.removeItem(window.location.href + '/dpGrid');
             }
@@ -816,7 +816,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.showFlex(false);
                 self.lstErrorFlex = [];
                 if (self.displayFormat() === 0) {
-                    self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                    self.itemValueMonthParent = data.monthResult == undefined ? {} : data.monthResult.flexShortage.monthParent;
                     self.valueUpdateMonth = self.itemValueMonthParent;
                     self.valueUpdateMonth["hasFlex"] = false;
                 }
@@ -957,8 +957,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataCheckApproval: dataCheckApproval,
                     mode: self.displayFormat(),
                     spr: sprStampSourceInfo,
-                    dailyOlds: self.lstDomainOld,
-                    dailyEdits: self.lstDomainEdit,
+                   // dailyOlds: self.lstDomainOld,
+                   //dailyEdits: self.lstDomainEdit,
                     flagCalculation: self.flagCalculation
                 }
                 if (self.displayFormat() == 0) {
@@ -1153,15 +1153,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 });
-                if (!_.isEmpty(self.lstDomainOld)) {
+                //if (!_.isEmpty(self.lstDomainOld)) {
                     let dataParent = {
                         itemValues: dataChangeProcess,
                         dataCheckSign: dataCheckSign,
                         dataCheckApproval: dataCheckApproval,
                         mode: self.displayFormat(),
                         spr: sprStampSourceInfo,
-                        dailyOlds: self.lstDomainOld,
-                        dailyEdits: self.lstDomainEdit,
+                        //dailyOlds: self.lstDomainOld,
+                        //dailyEdits: self.lstDomainEdit,
                         flagCalculation: updateAll
                     }
                     if (self.displayFormat() == 0) {
@@ -1188,7 +1188,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         }
                         if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
-                            self.lstDomainEdit = data.calculatedRows;
+                            //self.lstDomainEdit = data.calculatedRows;
                             let lstValue = data.resultValues;
                             _.forEach(self.dpData, row => {
                                 let cellDatas = row.cellDatas;
@@ -1242,8 +1242,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve();
                     });
                     dfd.promise();
-                } else 
-                    nts.uk.ui.block.clear();
+//                } else 
+//                    nts.uk.ui.block.clear();
             }
         }
 
@@ -1324,7 +1324,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 autBussCode: self.autBussCode(),
                 dateMonth: moment(self.dateRanger().endDate).utc().toISOString(),
                 onlyLoadMonth: onlyLoadMonth,
-                dailys: self.lstDomainEdit,
+                //dailys: self.lstDomainEdit,
                 dateExtract: {
                     startDate: moment(self.dateRanger().startDate).toISOString(),
                     endDate: moment(self.dateRanger().endDate).toISOString()
@@ -1341,8 +1341,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return dfd.resolve();
                 }
                 self.showTighProcess(data.showTighProcess);
-                self.lstDomainEdit = data.domainOld;
-                self.lstDomainOld = _.cloneDeep(data.domainOld);
+                //self.lstDomainEdit = data.domainOld;
+                //self.lstDomainOld = _.cloneDeep(data.domainOld);
                 self.processFlex(data, true);
                 let dataSourceRow, dataSource, dataSourceNew, dataRowTemp = [];
                 dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
@@ -1599,13 +1599,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
                     if (_.isEmpty(data.lstEmployee) && _.isEmpty(data.lstControlDisplayItem.lstHeader)) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
-                            return;
-                        });
+                         self.destroyGrid();
+                         self.processFlex(data, false);
+                         self.hasEmployee = false;
+//                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
+//                            return;
+//                        });
                     } else {
                         self.initScreenSPR = 1;
-                        self.lstDomainOld = data.domainOld;
-                        self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                        //self.lstDomainOld = data.domainOld;
+                        //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                         if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
                             localStorage.removeItem(window.location.href + '/dpGrid');
                         }
@@ -1943,8 +1946,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
-                            self.lstDomainOld = data.domainOld;
-                            self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                            //self.lstDomainOld = data.domainOld;
+                            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                             self.dataAll(data);
                             self.removeErrorRefer();
                             self.createSumColumn(data);
@@ -1999,8 +2002,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.startScreen(param).done((data) => {
-                            self.lstDomainOld = data.domainOld;
-                            self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                            //self.lstDomainOld = data.domainOld;
+                            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                             self.dataAll(data);
                             self.removeErrorRefer();
                             self.createSumColumn(data);
@@ -2636,7 +2639,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
-                width: (window.screen.availWidth) + "px",
+                width: '1920px',
                 height: (window.screen.availHeight - 250) + "px",
                 headerHeight: '45px',
                 dataSource: self.lstDataSourceLoad,
@@ -3334,11 +3337,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataChageRow.push(dataMap);
                     
                     let param = {
-                        dailyEdits: __viewContext.vm.lstDomainEdit,
+                        //dailyEdits: __viewContext.vm.lstDomainEdit,
                         itemEdits: dataChageRow
                     };
                     service.calcTime(param).done((value) => {
-                        __viewContext.vm.lstDomainEdit = value.dailyEdits;
+                        //__viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
                             $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                         })
