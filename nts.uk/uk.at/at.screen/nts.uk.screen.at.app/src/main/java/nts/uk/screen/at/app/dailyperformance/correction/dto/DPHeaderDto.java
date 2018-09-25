@@ -173,10 +173,9 @@ public class DPHeaderDto {
 
 	public void setHeaderText(DPAttendanceItem param) {
 	
-		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0) {
+		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0 && param.getName() != null) {
 			val length = param.getName().length() > param.getLineBreakPosition() ?  param.getLineBreakPosition() :  param.getName().length(); 
-			this.headerText = param.getName() != null ? param.getName().substring(0, length)
-					+ "<br/>" + param.getName().substring(length, param.getName().length()) : "";
+			this.headerText = param.getName().substring(0, length) + "<br/>" + param.getName().substring(length, param.getName().length());
 		} else {
 			this.headerText = param.getName() != null ? param.getName() : "";
 		}
