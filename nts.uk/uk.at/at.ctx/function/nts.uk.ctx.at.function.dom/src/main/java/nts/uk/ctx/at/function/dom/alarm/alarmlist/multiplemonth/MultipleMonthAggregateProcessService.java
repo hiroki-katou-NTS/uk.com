@@ -127,22 +127,19 @@ public class MultipleMonthAggregateProcessService {
 			String nameErrorAlarm = "";
 			List<Integer> listAttendanceItemIds = new ArrayList<>();
 			if (!CollectionUtil.isEmpty(tmp)) {
-				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, TypeOfItem.Monthly.value);
-				listAttendanceItemIds= listAttdName.stream()
-                        .map(AttendanceItemName::getAttendanceItemId)
-                        .collect(Collectors.toList());
-				if(!CollectionUtil.isEmpty(listAttdName))
-				nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-				
-			} else {
-				if (!CollectionUtil.isEmpty(tmp2)) {
-					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,TypeOfItem.Monthly.value);
-					listAttendanceItemIds= listAttdName.stream()
-	                        .map(AttendanceItemName::getAttendanceItemId)
-	                        .collect(Collectors.toList());
-					if(!CollectionUtil.isEmpty(listAttdName))
-					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-				}
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp,
+						TypeOfItem.Monthly.value);
+				listAttendanceItemIds = listAttdName.stream().map(AttendanceItemName::getAttendanceItemId)
+						.collect(Collectors.toList());
+					nameErrorAlarm = getNameErrorAlarm(listAttdName,0,nameErrorAlarm);
+			}
+
+			if (!CollectionUtil.isEmpty(tmp2)) {
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,
+						TypeOfItem.Monthly.value);
+				listAttendanceItemIds.addAll(listAttdName.stream().map(AttendanceItemName::getAttendanceItemId)
+						.collect(Collectors.toList()));
+					nameErrorAlarm = getNameErrorAlarm(listAttdName,1,nameErrorAlarm);
 			}
 			
 			// 月別実績を取得する
@@ -362,5 +359,26 @@ public class MultipleMonthAggregateProcessService {
 
 		return compare;
 	}
-
+	/*
+	 * get name error Alarm
+	 * @param attendanceItemNames : list attendance item name
+	 * @param type : 0 add/1 sub
+	 * @param nameErrorAlarm : String input to join
+	 * @return string
+	 */
+	private String getNameErrorAlarm(List<AttendanceItemName> attendanceItemNames ,int type,String nameErrorAlarm){
+		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
+			
+			for(int i=0; i< attendanceItemNames.size(); i++) {
+				String beforeOperator = "";
+				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? "-" : "+";
+				
+				if (!"".equals(nameErrorAlarm) || type == 1) {
+					beforeOperator = (i == 0) ? type == 1 ? "-" : "+" : "";
+				}
+                nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
+			}
+		}		
+		return nameErrorAlarm;
+	}
 }

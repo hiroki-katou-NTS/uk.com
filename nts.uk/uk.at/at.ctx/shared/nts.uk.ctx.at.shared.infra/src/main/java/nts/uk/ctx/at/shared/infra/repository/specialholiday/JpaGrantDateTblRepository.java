@@ -40,7 +40,6 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	
 	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
 			+ "WHERE e.pk.companyId =:companyId "
-			+ "AND e.pk.specialHolidayCode =:specialHolidayCode "
 			+ "AND e.pk.grantDateCd =:grantDateCd ";
 	
 	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
@@ -161,7 +160,6 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
 				.setParameter("companyId", grantDateTbl.getCompanyId())
 				.setParameter("grantDateCd", grantDateTbl.getGrantDateCode().v())
-				.setParameter("specialHolidayCode", grantDateTbl.getSpecialHolidayCode().v())
 				.executeUpdate();
 		
 		List<KshstElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
@@ -173,7 +171,6 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
 				.setParameter("companyId", companyId)
 				.setParameter("grantDateCd", grantDateCode)
-				.setParameter("specialHolidayCode", specialHolidayCode)
 				.executeUpdate();
 		
 		KshstGrantDateTblPK gPk = new KshstGrantDateTblPK(companyId, specialHolidayCode, grantDateCode);
@@ -188,18 +185,6 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 					.setParameter("companyId", companyId)
 					.setParameter("specialHolidayCode", specialHolidayCode)
 					.executeUpdate();
-	}
-
-	private GrantDateTbl createGrantDateTbl(KshstGrantDateTbl etity) {
-		List<ElapseYear> ElapseYear = this.findElapseByGrantDateCd(etity.pk.companyId,etity.pk.specialHolidayCode,etity.pk.grantDateCd);
-		return GrantDateTbl.createFromJavaType( etity.pk.companyId,
-												etity.pk.specialHolidayCode,
-												etity.pk.grantDateCd, 
-												etity.grantName,
-												etity.isSpecified == 1 ? true : false, 
-												etity.isSpecified == 1 ? true : false,
-												etity.numberOfDays == null ? 0 : (int) etity.numberOfDays, 
-												ElapseYear);
 	}
 
 	@Override
