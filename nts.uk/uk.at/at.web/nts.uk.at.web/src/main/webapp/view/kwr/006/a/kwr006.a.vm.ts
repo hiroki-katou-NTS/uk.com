@@ -50,6 +50,10 @@ module nts.uk.at.view.kwr006.a {
             // start variable of CCG001
             ccg001ComponentOption: GroupOption;
             // end variable of CCG001
+            
+            //enable export
+            enableExport: KnockoutComputed<boolean>;
+            
             constructor() {
                 let self = this;
                 self.monthlyWorkScheduleConditionModel = new MonthlyWorkScheduleConditionModel();
@@ -62,6 +66,10 @@ module nts.uk.at.view.kwr006.a {
                 self.datepickerValue = ko.observable({});
                 self.startDatepicker = ko.observable("");
                 self.endDatepicker = ko.observable("");
+                
+                self.enableExport = ko.pureComputed(() => {
+                    return !_.isEmpty(self.itemListCodeTemplate());    
+                });
 
                 // dropdownlist A7_3
                 self.itemListCodeTemplate = ko.observableArray([]);
