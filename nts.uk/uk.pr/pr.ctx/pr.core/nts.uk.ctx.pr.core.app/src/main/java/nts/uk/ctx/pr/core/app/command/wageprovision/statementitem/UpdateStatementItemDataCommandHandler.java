@@ -123,7 +123,7 @@ public class UpdateStatementItemDataCommandHandler extends CommandHandler<Statem
 		if (categoryAtr == CategoryAtr.PAYMENT_ITEM || categoryAtr == CategoryAtr.DEDUCTION_ITEM
 				|| categoryAtr == CategoryAtr.ATTEND_ITEM || categoryAtr == CategoryAtr.REPORT_ITEM) {
 			// ドメインモデル「明細項目の表示設定」を新規追加する
-			val statementDisplay = command.getStatementDisplaySet();
+			val statementDisplay = command.getStatementItemDisplaySet();
 			if (statementDisplay != null) {
 				statementItemDisplaySetRepository.update(new StatementItemDisplaySet(cid, salaryItemId,
 						statementDisplay.getZeroDisplayAtr(), statementDisplay.getItemNameDisplay()));
