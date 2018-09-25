@@ -1941,7 +1941,15 @@ module nts.custombinding {
                                         def.textValue(selected.optionText);
                                     } else {
                                         def.value(undefined);
-                                        def.textValue(text('CPS001_107'));
+                                        switch (def.item.referenceType) {
+                                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                def.textValue(`${cbv}　${text('CPS001_107')}`);
+                                                break;
+                                            case ITEM_SELECT_TYPE.CODE_NAME:
+                                            case ITEM_SELECT_TYPE.ENUM:
+                                                def.textValue(text('CPS001_107'));
+                                                break;
+                                        }
                                     }
                                 } else {
                                     def.textValue('');
@@ -2555,8 +2563,8 @@ module nts.custombinding {
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
-                    
-                    if (!_.has(x, '$show')) {
+
+                    if (!_.has(x, '$show') || !ko.isObservable(x.$show)) {
                         x.$show = ko.observable(true);
                     }
 
@@ -2925,7 +2933,8 @@ module nts.custombinding {
                                                     $.when.apply($, dfds).then(function() {
                                                         let args = _.flatten(arguments),
                                                             items = _(args)
-                                                                .filter(x => !!x)
+                                                                .filter(x => !!x && x.itemTypeState.itemType == ITEM_TYPE.SINGLE)
+                                                                .uniqBy((x: IItemDefinition) => x.id)
                                                                 .map((x: IItemDefinition) => {
                                                                     if (ids.indexOf(x.id) > -1) {
                                                                         x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;

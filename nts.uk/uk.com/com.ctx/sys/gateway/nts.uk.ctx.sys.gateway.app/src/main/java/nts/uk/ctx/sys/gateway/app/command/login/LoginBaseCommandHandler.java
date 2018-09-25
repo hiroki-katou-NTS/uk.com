@@ -321,8 +321,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-					null, null, null, null);
+			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
@@ -336,15 +335,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(lstCompanyId.get(FIST_COMPANY));
-			if (opEm.isPresent()) {
-				// set info to session if em # null
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
 						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
 			} else {
 				// set info to session
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode(), null, null);
+				manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
+						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
 			}
 		}
 		this.setRoleId(user.getUserId());
