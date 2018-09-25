@@ -193,10 +193,6 @@ public class TotalTimesFromDailyRecord {
 			String workTimeCd = "";
 			if (workInfo.getWorkTimeCode() != null) workTimeCd = workInfo.getWorkTimeCode().v();
 			
-			// 「日別実績の勤怠時間」を取得
-			if (!this.attendanceTimeOfDailyMap.containsKey(procDate)) continue;
-			val attendanceTimeOfDaily = this.attendanceTimeOfDailyMap.get(procDate);
-			
 			for (val totalTimes : totalTimesList){
 				if (totalTimes.getUseAtr() == UseAtr.NotUse) continue;
 				val totalCountNo = totalTimes.getTotalCountNo();
@@ -260,6 +256,10 @@ public class TotalTimesFromDailyRecord {
 				if (!isTargetAttendance) continue;
 				
 				if (totalTimes.getTotalCondition().getAtdItemId() != null){
+
+					// 「日別実績の勤怠時間」を取得
+					if (!this.attendanceTimeOfDailyMap.containsKey(procDate)) continue;
+					val attendanceTimeOfDaily = this.attendanceTimeOfDailyMap.get(procDate);
 					
 					// 日別実績を回数集計用のクラスに変換
 					val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
