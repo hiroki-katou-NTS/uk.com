@@ -20,7 +20,7 @@ public class ItemRangeSetCommand {
 	/**
 	 * エラー上限値金額
 	 */
-	private BigDecimal errorUpperRangeValueAmount;
+	private Long errorUpperRangeValueAmount;
 
 	/**
 	 * エラー上限値時間
@@ -40,7 +40,7 @@ public class ItemRangeSetCommand {
 	/**
 	 * エラー上限値金額
 	 */
-	private BigDecimal errorLowerRangeValueAmount;
+	private Long errorLowerRangeValueAmount;
 
 	/**
 	 * エラー上限値時間
@@ -60,7 +60,7 @@ public class ItemRangeSetCommand {
 	/**
 	 * アラーム上限値金額
 	 */
-	private BigDecimal alarmUpperRangeValueAmount;
+	private Long alarmUpperRangeValueAmount;
 
 	/**
 	 * アラーム上限値時間
@@ -80,7 +80,7 @@ public class ItemRangeSetCommand {
 	/**
 	 * アラーム上限値金額
 	 */
-	private BigDecimal alarmLowerRangeValueAmount;
+	private Long alarmLowerRangeValueAmount;
 
 	/**
 	 * アラーム上限値時間

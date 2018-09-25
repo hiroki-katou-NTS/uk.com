@@ -33,7 +33,7 @@ public class AlarmUpperLimitSetting extends DomainObject {
 	 */
 	private Optional<TimesValue> alarmUpperRangeValueNum;
 
-	public AlarmUpperLimitSetting(int alarmUpperLimitSetAtr, BigDecimal alarmUpRangeValAmount,
+	public AlarmUpperLimitSetting(int alarmUpperLimitSetAtr, Long alarmUpRangeValAmount,
 			Integer alarmUpRangeValTime, BigDecimal alarmUpRangeValNum) {
 		this.alarmUpperLimitSettingAtr =  EnumAdaptor.valueOf(alarmUpperLimitSetAtr, RangeSettingEnum.class);
 		this.alarmUpperRangeValueAmount = alarmUpRangeValAmount == null ? Optional.empty() : Optional.of(new MonetaryValue(alarmUpRangeValAmount));

@@ -49,7 +49,7 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "ERROR_UP_RANGE_VAL_AMOUNT")
-	public BigDecimal errorUpRangeValAmount;
+	public Long errorUpRangeValAmount;
 
 	/**
 	 * エラー上限値時間
@@ -77,7 +77,7 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "ERROR_LO_RANGE_VAL_AMOUNT")
-	public BigDecimal errorLoRangeValAmount;
+	public Long errorLoRangeValAmount;
 
 	/**
 	 * エラー上限値時間
@@ -105,7 +105,7 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "ALARM_UP_RANGE_VAL_AMOUNT")
-	public BigDecimal alarmUpRangeValAmount;
+	public Long alarmUpRangeValAmount;
 
 	/**
 	 * アラーム上限値時間
@@ -133,7 +133,7 @@ public class QpbmtItemRangeSetInit extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "ALARM_LO_RANGE_VAL_AMOUNT")
-	public BigDecimal alarmLoRangeValAmount;
+	public Long alarmLoRangeValAmount;
 
 	/**
 	 * アラーム上限値時間

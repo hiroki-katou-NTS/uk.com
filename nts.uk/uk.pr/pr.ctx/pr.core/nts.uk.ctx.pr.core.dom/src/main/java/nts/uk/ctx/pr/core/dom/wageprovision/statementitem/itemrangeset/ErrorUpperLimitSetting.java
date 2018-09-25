@@ -33,7 +33,7 @@ public class ErrorUpperLimitSetting extends DomainObject {
 	 */
 	private Optional<TimesValue> errorUpperRangeValueNum;
 	
-	public ErrorUpperLimitSetting(int errorUpperLimitSetAtr, BigDecimal errorUpRangeValAmount,
+	public ErrorUpperLimitSetting(int errorUpperLimitSetAtr, Long errorUpRangeValAmount,
 			Integer errorUpRangeValTime, BigDecimal errorUpRangeValNum) {
 		this.errorUpperLimitSettingAtr = EnumAdaptor.valueOf(errorUpperLimitSetAtr, RangeSettingEnum.class);
 		this.errorUpperRangeValueAmount = errorUpRangeValAmount == null ? Optional.empty()

@@ -1,17 +1,17 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.LongPrimitiveValue;
+import nts.arc.primitive.constraint.LongMaxValue;
+import nts.arc.primitive.constraint.LongMinValue;
 
 /**
  * 金額値
  */
-@DecimalRange(min = "0", max = "9999999999")
-public class MonetaryValue extends DecimalPrimitiveValue<MonetaryValue>{
+@LongMinValue(0L)
+@LongMaxValue(9999999999L)
+public class MonetaryValue extends LongPrimitiveValue<MonetaryValue>{
 
-	public MonetaryValue(BigDecimal rawValue) {
+	public MonetaryValue(long rawValue) {
 		super(rawValue);
 	}
 

@@ -21,8 +21,8 @@ public class ErrorRangeSetting extends DomainObject {
 	 */
 	private ErrorLowerLimitSetting errorLowerLimitSetting;
 
-	public ErrorRangeSetting(int errorUpperLimitSetAtr, BigDecimal errorUpRangeValAmount, Integer errorUpRangeValTime,
-			BigDecimal errorUpRangeValNum, int errorLowerLimitSetAtr, BigDecimal errorLoRangeValAmount,
+	public ErrorRangeSetting(int errorUpperLimitSetAtr, Long errorUpRangeValAmount, Integer errorUpRangeValTime,
+			BigDecimal errorUpRangeValNum, int errorLowerLimitSetAtr, Long errorLoRangeValAmount,
 			Integer errorLoRangeValTime, BigDecimal errorLoRangeValNum) {
 		this.errorUpperLimitSetting = new ErrorUpperLimitSetting(errorUpperLimitSetAtr, errorUpRangeValAmount,
 				errorUpRangeValTime, errorUpRangeValNum);

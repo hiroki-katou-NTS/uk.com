@@ -21,8 +21,8 @@ public class AlarmRangeSetting extends DomainObject {
 	 */
 	private AlarmLowerLimitSetting alarmLowerLimitSetting;
 
-	public AlarmRangeSetting(int alarmUpperLimitSetAtr, BigDecimal alarmUpRangeValAmount, Integer alarmUpRangeValTime,
-			BigDecimal alarmUpRangeValNum, int alarmLowerLimitSetAtr, BigDecimal alarmLoRangeValAmount,
+	public AlarmRangeSetting(int alarmUpperLimitSetAtr, Long alarmUpRangeValAmount, Integer alarmUpRangeValTime,
+			BigDecimal alarmUpRangeValNum, int alarmLowerLimitSetAtr, Long alarmLoRangeValAmount,
 			Integer alarmLoRangeValTime, BigDecimal alarmLoRangeValNum) {
 		this.alarmUpperLimitSetting = new AlarmUpperLimitSetting(alarmUpperLimitSetAtr, alarmUpRangeValAmount,
 				alarmUpRangeValTime, alarmUpRangeValNum);

@@ -33,7 +33,7 @@ public class ErrorLowerLimitSetting extends DomainObject {
 	 */
 	private Optional<TimesValue> errorLowerRangeValueNum;
 
-	public ErrorLowerLimitSetting(int errorLowerLimitSetAtr, BigDecimal errorLoRangeValAmount,
+	public ErrorLowerLimitSetting(int errorLowerLimitSetAtr, Long errorLoRangeValAmount,
 			Integer errorLoRangeValTime, BigDecimal errorLoRangeValNum) {
 		this.errorLowerLimitSettingAtr = EnumAdaptor.valueOf(errorLowerLimitSetAtr, RangeSettingEnum.class);
 		this.errorLowerRangeValueAmount = errorLoRangeValAmount == null ? Optional.empty()

@@ -38,11 +38,11 @@ public class ItemRangeSet extends AggregateRoot {
 	private AlarmRangeSetting alarmRangeSetting;
 
 	public ItemRangeSet(String cid, String salaryItemId, int rangeValueAtr, int errorUpperLimitSetAtr,
-			BigDecimal errorUpRangeValAmount, Integer errorUpRangeValTime, BigDecimal errorUpRangeValNum,
-			int errorLowerLimitSetAtr, BigDecimal errorLoRangeValAmount, Integer errorLoRangeValTime,
-			BigDecimal errorLoRangeValNum, int alarmUpperLimitSetAtr, BigDecimal alarmUpRangeValAmount,
+			Long errorUpRangeValAmount, Integer errorUpRangeValTime, BigDecimal errorUpRangeValNum,
+			int errorLowerLimitSetAtr, Long errorLoRangeValAmount, Integer errorLoRangeValTime,
+			BigDecimal errorLoRangeValNum, int alarmUpperLimitSetAtr, Long alarmUpRangeValAmount,
 			Integer alarmUpRangeValTime, BigDecimal alarmUpRangeValNum, int alarmLowerLimitSetAtr,
-			BigDecimal alarmLoRangeValAmount, Integer alarmLoRangeValTime, BigDecimal alarmLoRangeValNum) {
+			Long alarmLoRangeValAmount, Integer alarmLoRangeValTime, BigDecimal alarmLoRangeValNum) {
 		this.cid = cid;
 		this.salaryItemId = salaryItemId;
 		this.rangeValueAtr = EnumAdaptor.valueOf(rangeValueAtr, RangeValueEnum.class);
