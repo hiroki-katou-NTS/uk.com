@@ -103,9 +103,14 @@ public class RegisterLayoutFinder {
 			// get data from server
 			dataServer = this.getSetItems(command, false);
 		}
-		
+		String workPlaceId = null;
+		Optional<SettingItemDto> workPlace = dataServer.stream()
+				.filter(i -> i.getCategoryCode().equals("CS00017") && i.getItemCode().equals("IS00084")).findFirst();
+		if (workPlace.isPresent()){
+			workPlaceId = workPlace.get().getSaveData().getValue().toString();
+		}
 		// set to layout's item
-		mapToLayoutItems(classItemList, dataServer, command.getHireDate());;
+		mapToLayoutItems(classItemList, dataServer, command.getHireDate(),workPlaceId);;
 		
 		
 		// check and set 9999/12/31 to endDate
@@ -139,10 +144,11 @@ public class RegisterLayoutFinder {
 		return classItemList;
 	}
 	
-	private void mapToLayoutItems(List<LayoutPersonInfoClsDto> classItemList, List<SettingItemDto> dataServer, GeneralDate hireDate) {
+	private void mapToLayoutItems(List<LayoutPersonInfoClsDto> classItemList, List<SettingItemDto> dataServer, GeneralDate hireDate, String workPlaceId) {
 		Map<String, List<LayoutPersonInfoClsDto>> mapByCategory = classItemList.stream()
 				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
 				.collect(Collectors.groupingBy(LayoutPersonInfoClsDto::getPersonInfoCategoryID));
+		
 		for (Map.Entry<String, List<LayoutPersonInfoClsDto>>  entry : mapByCategory.entrySet()) {
 			
 			Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty
@@ -155,7 +161,7 @@ public class RegisterLayoutFinder {
 				List<LayoutPersonInfoValueDto> items = classItem.getListItemDf().stream().map(itemDef -> {
 					Optional<SettingItemDto> dataServerItemOpt = dataServer.stream()
 							.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
-					return createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, hireDate, perInfoCategory.get());
+					return createLayoutItemByDef(dataServerItemOpt, itemDef, classItem, hireDate, perInfoCategory.get(),workPlaceId);
 				}).collect(Collectors.toList());
 				
 				// clear definitionItem's list
@@ -168,7 +174,7 @@ public class RegisterLayoutFinder {
 
 	private LayoutPersonInfoValueDto createLayoutItemByDef(Optional<SettingItemDto> dataServerItemOpt,
 			PerInfoItemDefDto itemDef, LayoutPersonInfoClsDto classItem, GeneralDate hireDate,
-			PersonInfoCategory perInfoCategory) {
+			PersonInfoCategory perInfoCategory, String workPlaceId) {
 		
 		// initial basic info from definition item
 		LayoutPersonInfoValueDto item = LayoutPersonInfoValueDto.createFromDefItem(perInfoCategory, itemDef);
@@ -197,7 +203,7 @@ public class RegisterLayoutFinder {
 				boolean isDataType6 = dataTypeValue == DataTypeValue.SELECTION.value;
 				List<ComboBoxObject> comboValues = cbbfact.getComboBox(selectionItemDto, null, hireDate,
 						item.isRequired(), perInfoCategory.getPersonEmployeeType(), isDataType6,
-						perInfoCategory.getCategoryCode().v());
+						perInfoCategory.getCategoryCode().v(), workPlaceId);
 				item.setLstComboBoxValue(comboValues);
 
 				// value of item in comboBox is string
