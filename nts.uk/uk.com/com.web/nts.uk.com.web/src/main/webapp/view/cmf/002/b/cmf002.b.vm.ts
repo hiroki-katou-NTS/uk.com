@@ -41,14 +41,18 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.getListCategory();
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
-                nts.uk.ui.errors.clearAll();
-                block.invisible();
-                self.index(self.getIndex(data));
-                self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                self.getOutItem(data);
-                self.settingCurrentCondition();
-                self.isNewMode(false);
-                block.clear();
+                if (data) {
+                    nts.uk.ui.errors.clearAll();
+                    block.invisible();
+                    self.index(self.getIndex(data));
+                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
+                    self.getOutItem(data);
+                    self.settingCurrentCondition();
+                    self.isNewMode(false);
+                    block.clear();
+                } else {
+                    self.createNewCondition();
+                }
             });
             
             self.isNewMode.subscribe((data) => {
@@ -290,23 +294,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
         }
         
-        clear(){
-            let self = this;
-            self.conditionSetData(new ConditionSet ({
-                                                    cId: '',
-                                                    conditionSetCode: '',
-                                                    conditionSetName: '',
-                                                    categoryId: '',
-                                                    conditionOutputName: 0,
-                                                    autoExecution: 1,
-                                                    delimiter: 1,
-                                                    stringFormat: 0,
-                                                    itemOutputName: ''
-                                                    }));
-            self.categoryName('');
-            
-        }
-        
         createNewCondition() {
             let self = this;
             let outputItem: Array<IOutputItem> = [];
@@ -315,17 +302,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.selectedConditionSetting(null);
             self.outputItemList(outputItem);
             self.categoryName('');
-            self.conditionSetData(new ConditionSet ({
-                                                    cId: '',
-                                                    conditionSetCode: '',
-                                                    conditionSetName: '',
-                                                    categoryId: '',
-                                                    conditionOutputName: 0,
-                                                    autoExecution: 1,
-                                                    delimiter: 1,
-                                                    stringFormat: 0,
-                                                    itemOutputName: ''
-                                                    }));
+            self.conditionSetData().cId('');
+            self.conditionSetData().conditionSetCode('');
+            self.conditionSetData().conditionSetName('');
+            self.conditionSetData().categoryId('');
+            self.conditionSetData().conditionOutputName(0);
+            self.conditionSetData().autoExecution(1);
+            self.conditionSetData().delimiter(1);
+            self.conditionSetData().stringFormat(0);
+            self.conditionSetData().itemOutputName(0);
             self.isNewMode(true);
             $("#B5_1").focus();
         }

@@ -23,11 +23,11 @@
 				<div id="V21" class="dialog-title"
 					data-bind="ntsFormLabel: {required : true }">#{i18n.getText('CMF002_268')}</div>
 				<!--V2:条件設定選択(パネル)-->
-				<div id="V2" class="table-contents-area">
+				<div class="table-contents-area">
 					<!--V2_1:絞り込み検索-->
-					<div id="V2_1" tabindex="1"
+					<div id="V2" 
 						data-bind="ntsPanel:{width: '280px', height: '300px', direction: 'none', showIcon: true, visible: true}">
-						<div
+						<div id = "V2_1" tabindex="1"
 							data-bind="ntsSearchBox: {
 							searchMode: 'highlight', 
 							targetKey: 'dispConvertCode', 
