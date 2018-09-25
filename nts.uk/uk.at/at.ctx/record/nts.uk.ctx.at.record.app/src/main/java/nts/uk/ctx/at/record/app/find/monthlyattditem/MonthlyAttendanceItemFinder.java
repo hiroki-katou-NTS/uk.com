@@ -28,8 +28,8 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -94,7 +94,7 @@ public class MonthlyAttendanceItemFinder {
 				.collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
 
 		// get attd item name list
-		List<AttItemNameImport> attdItemNames = this.attdItemNameAdapter
+		List<AttItemName> attdItemNames = this.attdItemNameAdapter
 				.getNameOfAttendanceItem(new ArrayList<Integer>(attdItemsMap.keySet()), TypeOfItemImport.Monthly);
 
 		// set attendance item name
