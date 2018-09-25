@@ -187,6 +187,8 @@
                 if (x) {
                     self.checkCreateaaa(false);
                     self.enableCreateNew(true);
+                    self.enableRemove(true);
+                    self.enableOpenDialogB(true);
                     nts.uk.ui.errors.clearAll();
                     let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
