@@ -138,11 +138,11 @@ module nts.uk.pr.view.qmm008.share.model {
         
         // Control item
         insurancePremiumFractionClassification: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.TRUNCATION, '切り捨て'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_UP, '切り上げ'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND4_UP5, '四捨五入'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND5_UP6, '五捨六入'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_LESS_OR_EQUAL_5, '五捨五超入')
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.TRUNCATION, getText('Enum_InsuPremiumFractionClassification_TRUNCATION')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_UP, getText('Enum_InsuPremiumFractionClassification_ROUND_UP')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND4_UP5, getText('Enum_InsuPremiumFractionClassification_ROUND_4_UP_5')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND5_UP6, getText('Enum_InsuPremiumFractionClassification_ROUND_5_UP_6')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_LESS_OR_EQUAL_5, getText('Enum_InsuPremiumFractionClassification_ROUND_SUPER_5'))
         ]);
 
         constructor(params: IHealthContributionRate) {
@@ -193,8 +193,8 @@ module nts.uk.pr.view.qmm008.share.model {
         
          // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
-            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
+            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
+            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
         constructor(params: IBonusHealthInsuranceRate) {
             this.historyId(params ? params.historyId : null);
@@ -218,8 +218,8 @@ module nts.uk.pr.view.qmm008.share.model {
         employeeBurdenRatio: KnockoutObservable<HealthContributionRate> = ko.observable(null);
         // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
-            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
+            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
+            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
         constructor(params: ISalaryHealthInsurancePremiumRate) {
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
@@ -488,11 +488,11 @@ module nts.uk.pr.view.qmm008.share.model {
 
         // Control item
         insurancePremiumFractionClassification: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.TRUNCATION, '切り捨て'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_UP, '切り上げ'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND4_UP5, '四捨五入'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND5_UP6, '五捨六入'),
-            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_LESS_OR_EQUAL_5, '五捨五超入')
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.TRUNCATION, getText('Enum_InsuPremiumFractionClassification_TRUNCATION')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_UP, getText('Enum_InsuPremiumFractionClassification_ROUND_UP')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND4_UP5, getText('Enum_InsuPremiumFractionClassification_ROUND_4_UP_5')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND5_UP6, getText('Enum_InsuPremiumFractionClassification_ROUND_5_UP_6')),
+            new EnumModel(INSU_FRACTION_CLASSIFICATION.ROUND_LESS_OR_EQUAL_5, getText('Enum_InsuPremiumFractionClassification_ROUND_SUPER_5'))
         ]);
 
         constructor(params: IEmployeePensionClassification) {
@@ -520,8 +520,8 @@ module nts.uk.pr.view.qmm008.share.model {
 
         // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
-            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
+            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
+            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
         constructor(params: ISalaryEmployeePensionInsuRate) {
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
@@ -584,8 +584,8 @@ module nts.uk.pr.view.qmm008.share.model {
 
         // Control item
         shareAmountMethodItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, '全体の保険料から被保険者分を差し引く'),
-            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, '事業主負担率を用いて計算する')
+            new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
+            new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
         constructor(params: IBonusEmployeePensionInsuranceRate) {
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
