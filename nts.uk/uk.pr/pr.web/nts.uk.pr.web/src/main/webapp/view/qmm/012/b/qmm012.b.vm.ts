@@ -52,11 +52,35 @@ module nts.uk.pr.view.qmm012.b {
                                    ];
                 
                 self.selectedCategory.subscribe(() => {
-                    self.loadListData();
+                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    
+                    self.loadListData().done(function() {
+                        let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
+                            return oldSalaryId == o.salaryItemId;
+                        });
+                        
+                        if(matchSalaryID.length > 0) {
+                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                        }
+                        
+                        $("#B3_3").focus();
+                    });
                 });
 
                 self.isdisplayAbolition.subscribe(() => {
-                    self.loadListData();
+                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    
+                    self.loadListData().done(function() {
+                        let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
+                            return oldSalaryId == o.salaryItemId;
+                        });
+                        
+                        if(matchSalaryID.length > 0) {
+                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                        }
+                        
+                        $("#B3_3").focus();
+                    });
                 });
             }//end constructor
             
