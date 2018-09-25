@@ -650,6 +650,15 @@ module nts.uk.ui.koExtentions {
             });
         }
         
+        update($input: JQuery, data: any) {
+            super.update($input, data);
+            let value = ko.unwrap(data.value);
+            if ($input.ntsError("hasError") && typeof(value) === "number") {
+                $input.ntsError("clearKibanError");
+                $input.val(this.getFormatter(data).format(value));
+            }
+        }
+        
         getDefaultOption(): any {
             return new nts.uk.ui.option.TimeWithDayAttrEditorOption();
         }
