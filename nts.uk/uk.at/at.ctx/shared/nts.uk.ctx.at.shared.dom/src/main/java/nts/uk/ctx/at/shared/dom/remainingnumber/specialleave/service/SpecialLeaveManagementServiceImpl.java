@@ -180,7 +180,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				useNumber.setTimeOfUse(Optional.empty());
 				useNumber.setUseSavingDays(Optional.empty());
 				details.setUsedNumber(useNumber);
-				SpecialLeaveRemainingNumber remainingNumber = new SpecialLeaveRemainingNumber(new DayNumberOfRemain((double) 0), Optional.empty());
+				SpecialLeaveRemainingNumber remainingNumber = new SpecialLeaveRemainingNumber(new DayNumberOfRemain((double) memoryInfor.getGrantDaysInfor().getGrantDays()), Optional.empty());
 				details.setRemainingNumber(remainingNumber);
 				SpecialLeaveGrantRemainingData grantMemoryData = new SpecialLeaveGrantRemainingData(mngId, 
 						cid,
@@ -274,12 +274,12 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				specialLeaverData.remove(grantData);
 				//特別休暇暫定データ．特休使用をDBから取得した付与日の古い特別休暇付与残数データから引く
 				Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(grantData.getSpecialId());
-				if(grantDataById.isPresent()) {
+				//if(grantDataById.isPresent()) {
 					DayNumberOfRemain remainDaysInfor = grantData.getDetails().getRemainingNumber().getDayNumberOfRemain();
 					double remainDays = remainDaysInfor.v() - useDays;
 					//「特別休暇付与残数データ」．残数 -= 特別休暇暫定データ．特休使用
 					grantData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain(remainDays));
-				}
+				//}
 				//特別休暇暫定データ．特休使用を該当特別休暇付与残数データに特休使用に計上する
 				//「特別休暇付与残数データ」．使用数 += 特別休暇暫定データ．特休使用
 				double userDay = grantData.getDetails().getUsedNumber().getDayNumberOfUse().v();
@@ -350,7 +350,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//INPUT．モードをチェックする
 		if(param.isMode()) {
 			//暫定残数管理データを作成する
-			Map<GeneralDate, DailyInterimRemainMngData> interimMngData = interimMonthProcess.monthInterimRemain3Data(param.getCid(),
+			Map<GeneralDate, DailyInterimRemainMngData> interimMngData = interimMonthProcess.monthInterimRemainData(param.getCid(),
 					param.getSid(), param.getDateData());
 			List<DailyInterimRemainMngData> lstDailyInterimRemainMngData = interimMngData.values()
 					.stream().collect(Collectors.toList());
