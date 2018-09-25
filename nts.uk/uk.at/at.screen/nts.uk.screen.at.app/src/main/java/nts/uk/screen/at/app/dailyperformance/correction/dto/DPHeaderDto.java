@@ -10,6 +10,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
@@ -171,9 +172,11 @@ public class DPHeaderDto {
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
-		if (param.getLineBreakPosition() > 0) {
-			this.headerText = param.getName() != null ? param.getName().substring(0, param.getLineBreakPosition())
-					+ "<br/>" + param.getName().substring(param.getLineBreakPosition(), param.getName().length()) : "";
+	
+		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0) {
+			val length = param.getName().length() > param.getLineBreakPosition() ?  param.getLineBreakPosition() :  param.getName().length(); 
+			this.headerText = param.getName() != null ? param.getName().substring(0, length)
+					+ "<br/>" + param.getName().substring(length, param.getName().length()) : "";
 		} else {
 			this.headerText = param.getName() != null ? param.getName() : "";
 		}
