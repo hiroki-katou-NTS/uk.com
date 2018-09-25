@@ -286,8 +286,8 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			}
 			
 			if(atdStampTime != null){
-				if(d.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(DEFAULT_WORK_TYPE) 
-						|| d.getWorkInformation().getRecordInfo().getWorkTimeCode().equals(DEFAULT_WORK_TIME)){
+				if(DEFAULT_WORK_TYPE.equals(d.getWorkInformation().getRecordInfo().getWorkTypeCode())  
+						|| DEFAULT_WORK_TIME.equals(d.getWorkInformation().getRecordInfo().getWorkTimeCode())){
 					if(!d.getAttendanceTimeOfDailyPerformance().isPresent()){
 						d.setAttendanceTimeOfDailyPerformance(Optional.of(new AttendanceTimeOfDailyPerformance(d.getWorkInformation().getEmployeeId(), 
 								d.getWorkInformation().getYmd(), WorkScheduleTimeOfDaily.defaultValue(), 
