@@ -2898,19 +2898,19 @@ button.nts-switch-button[disabled].selected {
 
 /* line 19, ../sass/components/_treedrag.scss */
 .ui-igtree .ui-igtree-dropindicator .ui-icon {
-	float: none !important;
-	top: 0;
-	margin-top: -1px;
+  float: none !important;
+  top: 0;
+  margin-top: -1px;
 }
 
 /* line 25, ../sass/components/_treedrag.scss */
-.ui-igtree .ui-igtree-dropindicator .ui-icon-arrowthick-1-e{
-	margin-top: -5px;
+.ui-igtree .ui-igtree-dropindicator .ui-icon-arrowthick-1-e {
+  margin-top: -5px;
 }
 
 /* line 29, ../sass/components/_treedrag.scss */
 .ui-igtree .ui-igtree-dropindicator p {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 /* line 77, ../sass/components/_ignitecommons.scss */
@@ -2995,10 +2995,9 @@ button.nts-switch-button[disabled].selected {
 .nts-treegridview .ui-icon-triangle-1-e {
   display: none;
 }
-
 /* line 24, ../sass/components/_treegridview.scss */
-.nts-treegridview .ui-igtreegrid-expandcell{
-	margin-top: -10px !important;
+.nts-treegridview .ui-igtreegrid-expandcell {
+  margin-top: -10px !important;
 }
 
 /* line 2, ../sass/components/_combobox.scss */
@@ -5408,30 +5407,35 @@ div .ex-area-line.x-stay {
   text-align: center;
   padding-top: 8px;
   white-space: nowrap;
+  background-color: #fff;
+  z-index: 999999;
 }
 
 /* line 1, ../sass/frame/_contents.scss */
-#contents-area {
+#master-wrapper {
+  height: 100vh;
+}
+/* line 3, ../sass/frame/_contents.scss */
+#master-wrapper div#contents-area {
   position: relative;
   padding: 10px;
   overflow-y: auto;
 }
-
-/* line 6, ../sass/frame/_contents.scss */
-#master-wrapper {
-  height: 100vh;
+/* line 7, ../sass/frame/_contents.scss */
+#master-wrapper div#contents-area:first-child {
+  max-height: calc(100vh - 86px) !important;
 }
 
-/* line 11, ../sass/frame/_contents.scss */
+/* line 13, ../sass/frame/_contents.scss */
 .fixed-flex-layout {
   display: flex;
 }
-/* line 14, ../sass/frame/_contents.scss */
+/* line 16, ../sass/frame/_contents.scss */
 .fixed-flex-layout > .fixed-flex-layout-left {
   margin-right: 30px;
   /* specify width each screens */
 }
-/* line 20, ../sass/frame/_contents.scss */
+/* line 22, ../sass/frame/_contents.scss */
 .fixed-flex-layout > .fixed-flex-layout-right {
   flex: 1;
 }
