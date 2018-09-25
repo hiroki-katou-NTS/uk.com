@@ -17,8 +17,9 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 
 @Stateless
 public class ExecutionLogRequestImportImpl implements ExecutionLogRequestImport {
+	
 	@Inject
-	private ExecutionLogExportPub execuLog;
+	private ExecutionLogExportPub execuLog;	
 	@Override
 	public Optional<SetInforReflAprResultImport> optReflectResult(String empCalAndSumExecLogID, int executionContent) {
 		Optional<SetInforReflAprResultExport> optExport = execuLog.optReflectResult(empCalAndSumExecLogID, executionContent);
@@ -45,6 +46,10 @@ public class ExecutionLogRequestImportImpl implements ExecutionLogRequestImport 
 	@Override
 	public void updateLogInfo(String employeeID, String empCalAndSumExecLogId, int executionContent, int state) {
 		execuLog.updateLogInfo(employeeID, empCalAndSumExecLogId, executionContent, state);
+	}
+	@Override
+	public void updateLogInfo(String empCalAndSumExecLogId, int executionContent, int state) {
+		execuLog.updateLogInfo(empCalAndSumExecLogId, executionContent, state);
 	}
 
 	

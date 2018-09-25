@@ -134,30 +134,31 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd";
 
-	private final static String SELECT_NO_WHERE = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
-			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
-			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca "
-			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId";
+	private final static String SELECT_NO_WHERE = String.join(" ",
+			"SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+			"co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder",
+			"FROM PpemtPerInfoCtg ca",
+			"INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
+			"INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId");
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = SELECT_NO_WHERE
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
-	private final static String SELECT_CTG_WITH_AUTH = SELECT_NO_WHERE
-			+ " INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId"
-			+ " WHERE ca.cid = :cid " 
-			+ " AND co.categoryParentCd IS NULL " 
-			+ " AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)"
-			+ " AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId"
-			+ " AND 0 != (SELECT COUNT(i) FROM PpemtPerInfoItem i"
-			+ "	JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId "
-			+ " AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) "
-			+ " AND (0 = :selfAuth or (1 = :selfAuth and iau.selfAuthType != 1)))"
-			+ " AND 0 != (SELECT COUNT(c) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId "
-			+ " AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1)) "
-			+ " AND (0 = :selfAuth or (1 = :selfAuth and c.selfAuthType != 1)))";
+	private final static String SELECT_CTG_WITH_AUTH = String.join(" ",
+			SELECT_NO_WHERE,
+			"INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId",
+			"WHERE ca.cid = :cid",
+			"AND co.categoryParentCd IS NULL", 
+			"AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)",
+			"AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId",
+			"AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtPerInfoItem i",
+			"JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId",
+			"AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId",
+			"AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) ",
+			"AND (0 = :selfAuth OR (1 = :selfAuth and iau.selfAuthType != 1)))",
+			"AND 0 != (SELECT COUNT(c.ppemtPersonItemAuthPk.roleId) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId",
+			"AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1))",
+			"AND (0 = :selfAuth OR (1 = :selfAuth AND c.selfAuthType != 1)))");
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -551,6 +552,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 					+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
 					+ " ORDER BY po.disporder";
 		}
+		
 		return this.queryProxy().query(fullQuery, Object[].class).setParameter("cid", companyId)
 				.setParameter("roleId", roleId).setParameter("selfAuth", selfAuth).setParameter("otherAuth", otherAuth)
 				.setParameter("forAttendance", forAttendance)

@@ -32,13 +32,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -88,6 +88,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	ApplicationSettingRepository applicationSettingRepository;
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlg;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
@@ -278,13 +280,19 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 			chkFundingAnnual = hdSet.getRegisShortReser().value == 1 ? true : false;//休暇申請設定．積立年休残数不足登録できる
 			chkPublicHoliday = hdSet.getRegisLackPubHd().value == 1 ? true : false;//休暇申請設定．公休残数不足登録できる
 		}
+		//社員の当月の期間を算出する - 4.社員の当月の期間を算出する
+//		＜INPUT＞
+//		・会社ID＝ログイン会社ID
+//		・社員ID＝申請者社員ID
+//		・基準日 = システム日付
+		PeriodCurrentMonth cls = otherCommonAlg.employeePeriodCurrentMonthCalculate(companyID, command.getEmployeeID(), GeneralDate.today());
 		//登録時の残数チェック
 		/** ・登録対象一覧 :	申請(List) */
 		//＜INPUT＞
 //		・会社ID＝ログイン会社ID
 //		・社員ID＝申請者社員ID
-//		・集計開始日＝申請開始日
-//		・集計終了日＝申請開始日＋1年
+//		・集計開始日＝締め開始日
+//		・集計終了日＝締め開始日＋１年先
 //		・モード＝その他モード
 //		・基準日＝申請開始日
 //		・登録期間の開始日＝申請開始日
@@ -304,9 +312,9 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
 				command.getWorkTypeCode() == null ? Optional.empty() : Optional.of(command.getWorkTypeCode()), 
 				command.getWorkTimeCode() == null ? Optional.empty() : Optional.of(command.getWorkTimeCode()), 
-				Optional.empty(), Optional.empty(), Optional.empty()));
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(startDate), Optional.of(endDate)));
 		InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(companyID, command.getEmployeeID(), 
-				new DatePeriod(startDate, startDate.addYears(1)), false, startDate, new DatePeriod(startDate, endDate),
+				new DatePeriod(cls.getStartDate(), cls.getStartDate().addYears(1)), false, startDate, new DatePeriod(startDate, endDate),
 				true, new ArrayList<>(), new ArrayList<>(), appData, chkSubHoliday, chkPause, chkAnnual, chkFundingAnnual,
 				chkSpecial, chkPublicHoliday, chkSuperBreak);
 		EarchInterimRemainCheck checkResult = interimRemainCheckReg.checkRegister(inputParam);
