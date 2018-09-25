@@ -228,6 +228,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         loadFirst: boolean = true;
         
         clickCounter: CLickCount = new CLickCount();
+        
+        itemInputName: any = [];
 
         constructor(dataShare: any) {
             var self = this;
@@ -581,6 +583,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dateRanger().endDate = data.dateRange.endDate;
             self.dateRanger.valueHasMutated();
             //if(self.displayFormat() == 1) //self.selectedDate(data.dateRange.startDate);
+            // pair name input
+            self.itemInputName = data.lstControlDisplayItem.itemInputName;
             self.dataAll(data);
             self.itemValueAll(data.itemValues);
             self.comment(data.comment != null ? '■ ' + data.comment : null);
@@ -1607,6 +1611,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                         localStorage.setItem('kdw003_type', data.typeBussiness);
                         self.dataAll(data);
+                        self.itemInputName = data.lstControlDisplayItem.itemInputName;
                         self.formatCodes(data.lstControlDisplayItem.formatCode);
                         self.autBussCode(data.autBussCode);
                         self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
@@ -1797,11 +1802,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return String(data.key) === "A" + value.itemId;
                 })
                 object.itemName = (item == undefined) ? "" : item.headerText;
-
-                let itemGroup = _.find(self.optionalHeader, (data) => {
-                    return String(data.key) === "A" + value.group;
-                })
-                let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup.headerText;
+                let itemOtherInGroup = CHECK_INPUT[value.itemId+""];
+                let itemGroup = self.itemInputName[Number(itemOtherInGroup)];
+                let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup;
                 object.message = nts.uk.resource.getMessage("Msg_1108", [object.itemName, nameGroup]);
                 errorValidateScreeen.push(object);
             });
@@ -2633,7 +2636,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
-                width: (window.screen.availWidth - 200) + "px",
+                width: (window.screen.availWidth) + "px",
                 height: (window.screen.availHeight - 250) + "px",
                 headerHeight: '45px',
                 dataSource: self.lstDataSourceLoad,
