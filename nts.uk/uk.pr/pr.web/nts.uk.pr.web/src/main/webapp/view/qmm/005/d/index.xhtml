@@ -13,7 +13,7 @@
 			
 		</com:ValidatorScript>
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 850, height: 480 };</script>
+			<script>var dialogSize = { width: 650, height: 480 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm005.d.start.js" />
@@ -29,13 +29,13 @@
 				<!-- D1_2  処理区分名称 -->				
 				<input data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}" />
 
-				<div data-bind="if : mode==0">
+				<span data-bind="if : mode==0">
 					<!-- D2_3 この処理区分を廃止する -->
 					<div data-bind="ntsCheckBox: { checked: enableChecckBox   }">#{i18n.getText('QMM005_80')}</div>
 
 					<!-- D2_4 支払年月日区分 -->
 					<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
-				</div>
+				</span>
 			</div>
 
 			<div id="contents-area">
@@ -84,7 +84,7 @@
 						<tr>
 							<td>
 								<!-- D3_5 個人情報の履歴参照日 -->					
-								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_51')}</div>
+								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_30')}</div>
 								
 								<!-- D3_6 個人情報の履歴参照日について -->					
 								<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
@@ -138,7 +138,7 @@
 						</td>
 						<!-- D5_2 -->
 						<td>
-							<span style="width: 45px"><input data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'DecimalPrimitiveValue' }" style="width: 45px"/></span>
+							<span style="width: 45px"><input data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'DecimalPrimitiveValue' }" style="width: 45px; text-align: left !important;"/></span>
 							<span class="label">#{i18n.getText('QMM005_40')}</span>
 						</td>
 
@@ -147,6 +147,7 @@
 						<tr>
 							<td>
 								<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
+								<button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
 							</td>
 							<td>
 								<span class="label" style="padding-left: 30px">#{i18n.getText('QMM005_56')}</span>
@@ -191,7 +192,7 @@
 						</tr>					
 					</tbody>
 				</table>
-				<a class="hyperlink" data-bind="click: reSize">アイコン無し、ただのリンク</a>
+				<a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_50')}</a>
 				
 				<table>
 					<colgroup>
@@ -461,7 +462,7 @@
 											]}"></div>
 
 						</div>
-						<div class="flex valign-center" style="margin-top: 15px">
+						<div class="flex valign-center" style="margin-top: 20px">
 							<!-- D4_40 -->
 
 							<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>

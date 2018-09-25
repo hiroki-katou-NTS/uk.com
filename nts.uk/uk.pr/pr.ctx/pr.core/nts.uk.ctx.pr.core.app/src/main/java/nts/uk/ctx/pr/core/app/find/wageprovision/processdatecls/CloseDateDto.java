@@ -19,21 +19,24 @@ public class CloseDateDto {
 	/**
 	 * 基準月
 	 */
-	private int baseMonth;
+	private Integer baseMonth;
 
 	/**
 	 * 基準年
 	 */
-	private int baseYear;
+	private Integer baseYear;
 
 	/**
 	 * 基準日
 	 */
-	private int refeDate;
+	private Integer refeDate;
 
 	public static CloseDateDto fromDomain(CloseDate domain) {
-		return new CloseDateDto(domain.getTimeCloseDate(), domain.getCloseDateBaseMonth().get().value,
-				domain.getCloseDateBaseYear().get().value, domain.getCloseDateRefeDate().get().value);
+		return new CloseDateDto(domain.getTimeCloseDate(),
+                domain.getCloseDateBaseMonth().map(i -> i.value).orElse(null),
+				domain.getCloseDateBaseYear().map(i -> i.value).orElse(null),
+                domain.getCloseDateRefeDate().map(i -> i.value).orElse(null)
+        );
 	}
 
 }

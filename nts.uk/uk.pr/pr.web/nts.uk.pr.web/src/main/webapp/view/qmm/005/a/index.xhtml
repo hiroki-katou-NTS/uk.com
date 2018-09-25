@@ -18,15 +18,15 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1 登録-->
-            <button class="proceed" data-bind="click: registerProcessing">#{i18n.getText('QMM005_1')}</button>
+            <button class="proceed" data-bind="click: registerProcessing" style="margin-left: 30px">#{i18n.getText('QMM005_1')}</button>
             <!--A1_2 マスタ修正ログ-->
-            <button class="">#{i18n.getText('QMM005_2')}</button>
+            <button class="" data-bind="enable: false">#{i18n.getText('QMM005_2')}</button>
             <!--A1_3 賞与の基準日設定-->
-            <button class="" style="margin-left: 100px">#{i18n.getText('QMM005_3')}</button>
+            <button class="" style="margin-left: 450px" data-bind="enable: false">#{i18n.getText('QMM005_3')}</button>
             <!--A1_4 予備の基準日設定-->
-            <button class="">#{i18n.getText('QMM005_4')}</button>
+            <button class="" data-bind="enable: false">#{i18n.getText('QMM005_4')}</button>
             <!--A1_5 雇用区分の登録-->
-            <a class="goout" data-bind="ntsLinkButton: { }">#{i18n.getText('QMM005_5')}</a>
+            <a class="goout" data-bind="ntsLinkButton: { },enable: false" style="margin-left: 30px">#{i18n.getText('QMM005_5')}</a>
 
 
         </div>
@@ -34,13 +34,14 @@
             <!--A2_1 給与・賞与の処理年月の設定を行います。-->
             <div class="label" style="margin-left: 25px; margin: 15px 25px;">#{i18n.getText('QMM005_6')}</div>
             <!--A2_2 処理区分一覧-->
+            <div style="width: 1200px">
             <div class="table-left" style="margin-left: 25px;">
                 <table id="A2_2">
                     <colgroup>
                         <col width="50px"/>
-                        <col width="250px"/>
+                        <col width="180px"/>
                         <col width="90px"/>
-                        <col width="370px"/>
+                        <col width="360px"/>
                     </colgroup>
                     <thead>
                     <tr>
@@ -59,12 +60,12 @@
                     </thead>
                     <tbody data-bind="foreach: itemBinding">
                     <tr>
-                        <td>
+                        <td style="background-color: #CFF1A5" >
                             <!--A2_7 処理区分NO-->
                             <div class="label"
-                                 data-bind="text:processInfomation.processCateNo"></div>
+                                 data-bind="text:processInfomation.processCateNo" ></div>
                         </td>
-                        <td>
+                        <td style="text-align: center;background-color: #CFF1A5" >
                             <!--A2_8 処理区分名称-->
                             <div id="A2_8"
                                  data-bind="if: processInfomation.processDivisionName != ''">
@@ -76,7 +77,7 @@
                                 <button id="button_" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
                             </div>
                             <com:ko-if bind="processInfomation.processDivisionName == ''">
-                            <button
+                            <button style="width: 150px"
                                     data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
                             </com:ko-if>
                         </td>
@@ -155,6 +156,7 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
 
         </div>

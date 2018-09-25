@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
     import current = nts.uk.request.location.current;
     const MAX_NUMBER_SETTING = 5;
+
     export class ScreenModel {
         //A2_2
         itemTable: ItemTable;
@@ -42,11 +43,16 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 let action: number = param.action;
                 let processInformationUpdate = param.processInfomationUpdate;
                 if (action == 0) {
-                    self.itemBinding.removeAll();
-                    self.startPage();
-                    if(processInformationUpdate.deprecatCate==0){
+                    // self.startPage().done(function () {
+                    //     self.itemBinding.removeAll();
+                    //
+                    // });
+                    if (processInformationUpdate.deprecatCate == 1) {
                         self.resetEmployee(processInformationUpdate.processCateNo);
                     }
+
+
+
                 }
                 if (action == 1) {
                     self.itemBinding.removeAll();
@@ -94,8 +100,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         comparer(otherArray) {
             return (current => {
                 return otherArray.filter(other => {
-                        return other.code == current.code && other.name == current.name
-                    }).length == 0
+                    return other.code == current.code && other.name == current.name
+                }).length == 0
             })
         }
 
@@ -136,7 +142,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 Araybinding.push(new ItemComboBox(
                     ArrSetDaySuport[i].processCateNo,
                     ArrSetDaySuport[i].processDate,
-                        nts.uk.time.applyFormat("Short_YMDW", ArrSetDaySuport[i].paymentDate) + ' | ' + ArrSetDaySuport[i].empExtraRefeDate
+                    nts.uk.time.applyFormat("Short_YMDW", ArrSetDaySuport[i].paymentDate) + ' | ' + ArrSetDaySuport[i].empExtraRefeDate
                     )
                 )
             }
@@ -154,8 +160,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             var dfd = $.Deferred();
             service.findDisplayRegister().done(data => {
                 self.itemTable = new ItemTable(data);
-                if(data){
-                    self.itemTable =new ItemTable(data);
+                if (data) {
+                    self.itemTable = new ItemTable(data);
                 }
                 for (let i: number = self.itemTable.processInfomations.length; i < MAX_NUMBER_SETTING; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
