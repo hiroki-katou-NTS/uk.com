@@ -69,7 +69,8 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> OptionalItemOfDailyPerformDto.getDtoWith(c, optionalMaster)).collect(Collectors.toList());
 	}

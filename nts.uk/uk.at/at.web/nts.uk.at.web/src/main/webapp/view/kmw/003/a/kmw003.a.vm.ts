@@ -388,11 +388,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //画面項目の非活制御をする
                 self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
                 self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
-                if (data.showRegisterButton == false) {
-                    self.showButton().enable_A1_1(data.showRegisterButton);
-                    self.showButton().enable_A1_2(data.showRegisterButton);
-                    self.showButton.valueHasMutated();
-                }
+//                if (data.showRegisterButton == false) {
+//                    self.showButton().enable_A1_1(data.showRegisterButton);
+//                    self.showButton().enable_A1_2(data.showRegisterButton);
+//                    self.showButton.valueHasMutated();
+//                }
                 nts.uk.ui.block.clear();
                 dfd.resolve(data.processDate, data.selectedClosure);
             }).fail(function(error) {
@@ -488,11 +488,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //画面項目の非活制御をする
                 self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
                 self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
-                if (data.showRegisterButton == false) {
-                    self.showButton().enable_A1_1(data.showRegisterButton);
-                    self.showButton().enable_A1_2(data.showRegisterButton);
-                    self.showButton.valueHasMutated();
-                }
+//                if (data.showRegisterButton == false) {
+//                    self.showButton().enable_A1_1(data.showRegisterButton);
+//                    self.showButton().enable_A1_2(data.showRegisterButton);
+//                    self.showButton.valueHasMutated();
+//                }
                 nts.uk.ui.block.clear();
                 dfd.resolve(data.processDate);
             }).fail(function(error) {
