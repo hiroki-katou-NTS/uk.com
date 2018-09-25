@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemA
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemAuthority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
@@ -35,7 +35,7 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 	private AtItemNameAdapter atItemNameAdapter;
 
 	@Override
-	public List<AttItemNameImport> getDailyItems(String cid, Optional<String> authorityId,
+	public List<AttItemName> getDailyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
 		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
 		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
@@ -68,10 +68,8 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<AttItemNameImport> dailyAttItem = atItemNameAdapter.getNameOfAttendanceItem(
-				dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),
-				TypeOfItemImport.Daily);
-		for (AttItemNameImport att : dailyAttItem) {
+		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItem);
+		for (AttItemName att : dailyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {
 				att.setAuthority(authorityMap.get(id));

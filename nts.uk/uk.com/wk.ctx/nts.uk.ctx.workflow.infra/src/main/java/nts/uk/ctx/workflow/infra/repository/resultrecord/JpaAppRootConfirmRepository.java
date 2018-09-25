@@ -45,7 +45,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAppRootConfirmRepository extends JpaRepository implements AppRootConfirmRepository {
 	
 	private final String BASIC_SELECT = 
-			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, " +
+			/*"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, " +
 			"phaseJoin.PHASE_ORDER, phaseJoin.APP_PHASE_ATR, phaseJoin.FRAME_ORDER, phaseJoin.APPROVER_ID, phaseJoin.REPRESENTER_ID, phaseJoin.APPROVAL_DATE " + 
 			"FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN " +
 			"(SELECT phase.ROOT_ID, phase.PHASE_ORDER, phase.APP_PHASE_ATR, " +
@@ -53,7 +53,15 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"FROM WWFDT_APP_PHASE_CONFIRM phase " +
 			"LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame " +
 			"ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER) phaseJoin " +
-			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";
+			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
+			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
+			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+   
+			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
+			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
+			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
+			"LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame "+
+			"ON phase.ROOT_ID = frame.ROOT_ID "+
+			"AND phase.PHASE_ORDER = frame.PHASE_ORDER";
 	
 	private final String FIND_BY_ID = BASIC_SELECT + " WHERE appRoot.ROOT_ID = 'rootID'";
 	

@@ -243,10 +243,15 @@
 								</tr>
 								<tr>
 									<td colspan="2">
-									<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: startDateEnable , enable: startDateEnable , value: dateRange }"/>
+									<div>
+											<div id="startDate" style="float: left;"
+												data-bind="ntsMonthDays: {name:'#[KMF004_44]',value: startYM , required: startDateEnable , enable: startDateEnable }" />
+											<div
+												style="float: left; line-height: 30px; margin-left: 5px;">#{i18n.getText('KMF004_45')}</div>
+											<div id="endDate" style="float: left; margin-left: 15px;"
+												data-bind="ntsMonthDays: {name:'#[KMF004_46]',value: endYM , required: startDateEnable , enable: startDateEnable }" />
+										</div>
 									</td>
-									
-									<td></td>
 								</tr>
 							</table>
 						</div>

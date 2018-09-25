@@ -299,6 +299,14 @@ public class ItemValue {
 		this.defValue = defValue;
 	}
 	
+	public void setDataType(int type) {
+		this.type = type;
+	}
+	
+	public void setLogType(int logType) {
+		this.logType = logType;
+	}
+	
 	public void setValueBefore(Object defValue) {
 		if (defValue == null){
 			this.defValue = null;

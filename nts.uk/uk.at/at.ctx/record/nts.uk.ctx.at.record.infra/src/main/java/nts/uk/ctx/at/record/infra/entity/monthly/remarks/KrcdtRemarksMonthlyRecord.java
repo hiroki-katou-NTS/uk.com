@@ -40,10 +40,6 @@ public class KrcdtRemarksMonthlyRecord extends UkJpaEntity implements Serializab
 	public KrcdtRemarksMonthlyRecordPK recordPK;
 	
 	
-	/** 年月 */
-	@Column(name = "REMARKS_YM")
-	public int yearMonth;
-	
 	/** 期間 - start */
 	@Column(name = "STR_YMD")
 	public GeneralDate startYmd;
@@ -68,7 +64,7 @@ public RemarksMonthlyRecord toDomain(){
 				this.recordPK.employeeId,
 				EnumAdaptor.valueOf(this.recordPK.closureId, ClosureId.class),
 				this.recordPK.remarksNo,
-				new YearMonth(this.yearMonth),
+				new YearMonth(this.recordPK.yearMonth),
 				new DatePeriod(this.startYmd, 
 						       this.endYmd),
 				new RecordRemarks(this.recordRemarks),

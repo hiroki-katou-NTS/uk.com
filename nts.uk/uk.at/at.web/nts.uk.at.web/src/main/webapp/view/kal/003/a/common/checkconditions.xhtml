@@ -8,6 +8,7 @@
         nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
         <!-- month -->
         nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
+        nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition
     </com:ValidatorScript>
 	<com:EnumScript>
 		nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond
@@ -54,17 +55,18 @@
 	                       <span data-bind="text: rowId"></span>
 	                   </td>
 	                   <td>
-	                       <input class ="nameAlarmDaily" data-bind="ntsTextEditor: {
+	                       <input class ="nameAlarmDailyM" data-bind="ntsTextEditor: {
 	                       value: nameWKRecord, 
-	                       required: true, 
+	                       required: true,
 	                       constraint: 'NameAlarmExtractionCondition', 
 	                       name: '#[KAL003_12]', 
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-				                textmode: 'text',
-				                placeholder: '',
-				                width: '203px',
-				                textalign: 'left'
-				            }))}" />
+				                	textmode: 'text',
+				                	placeholder: '',
+				                	width: '203px',
+				                	textalign: 'left'
+				            	})
+				            )}" />
 	                   </td>
 	                   <td style ="text-align: center;">
 	                       <button data-bind="click: $parent.btnSettingCheckCondition_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button>
@@ -88,7 +90,7 @@
 		</div>
 		<div class="valign-center control-group">
 			<div
-				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4'}"></div>
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'value', optionText: 'name', group: 'D4W4', enable : false}"></div>
 			<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
 		</div>
 	</div>
@@ -138,14 +140,15 @@
 	                       <input class ="nameWKRecordID" 
 	                       data-bind="ntsTextEditor: {value: nameAlarmMulMon,
 	                        	required: true,
-	                         	constraint: 'NameWKRecord',
+	                         	constraint: 'NameAlarmExtractionCondition',
 	                          	name: '#[KAL003_12]', 
 		                       	option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-				                textmode: 'text',
-				                placeholder: '',
-				                width: '203px',
-				                textalign: 'left'
-				            }))}" />
+				                	textmode: 'text',
+				                	placeholder: '',
+				                	width: '203px',
+				                	textalign: 'left'
+				            	})
+				            )}" />
 	                   </td>
 	                   <td style ="text-align: center;">
 	                       <button data-bind="click: $parent.btnSettingCheckCondition_click.bind($parent, rowId),enable: true">#{i18n.getText('KAL003_14')}</button>

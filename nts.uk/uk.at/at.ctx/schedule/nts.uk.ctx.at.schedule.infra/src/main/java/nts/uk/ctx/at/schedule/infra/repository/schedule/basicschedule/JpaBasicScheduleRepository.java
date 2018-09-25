@@ -246,14 +246,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
 		this.removeScheduleMaster(employeeId, baseDate);
-	}
-
-	@Override
-	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule) {
-		this.removeAllTimeZone(employeeId, baseDate);
-		this.removeAllScheduleBreakTime(employeeId, baseDate);
-		this.removeAllChildCare(employeeId, baseDate);
-		this.removeScheduleTime(employeeId, baseDate);
+		this.removeScheStateWithoutListScheState(employeeId, baseDate);
 	}
 
 	/*
@@ -862,15 +855,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	private void insertScheduleMaster(ScheMasterInfo scheMasterInfo) {
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
 		String classificationCd = scheMasterInfo.getClassificationCd() != null
 				? "'" + scheMasterInfo.getClassificationCd() + "'" : null;
 		String businessTypeCd = scheMasterInfo.getBusinessTypeCd() != null
 				? "'" + scheMasterInfo.getBusinessTypeCd() + "'" : null;
+		// jobId, workplaceId, employmentCd trong DB khac null nhung van can check do nhieu truong hop no van = null
+		String jobId = scheMasterInfo.getJobId() != null
+				? "'" + scheMasterInfo.getJobId() + "'" : null;
+		String workplaceId = scheMasterInfo.getWorkplaceId() != null
+				? "'" + scheMasterInfo.getWorkplaceId() + "'" : null;
+		String employmentCd = scheMasterInfo.getEmploymentCd() != null
+				? "'" + scheMasterInfo.getEmploymentCd() + "'" : null;
 
 		String sqlQuery = "INSERT INTO KSCDT_SCHE_MASTER (SID, YMD, EMP_CD, CLS_CD, BUSINESS_TYPE_CD, JOB_ID, WKP_ID) VALUES ("
-				+ "'" + scheMasterInfo.getSId() + "', " + "'" + scheMasterInfo.getGeneralDate() + "', " + "'"
-				+ scheMasterInfo.getEmploymentCd() + "', " + classificationCd + ", " + businessTypeCd + ", " + "'"
-				+ scheMasterInfo.getJobId() + "', " + "'" + scheMasterInfo.getWorkplaceId() + "'" + ")";
+				+ "'" + scheMasterInfo.getSId() + "', " + "'" + scheMasterInfo.getGeneralDate() + "', "
+				+ employmentCd + ", " + classificationCd + ", " + businessTypeCd + ", "
+				+ jobId + ", " + workplaceId + ")";
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
@@ -1041,6 +1042,17 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
 				+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void removeScheStateWithoutListScheState(String employeeId, GeneralDate baseDate) {
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
