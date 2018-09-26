@@ -24,12 +24,12 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- D1_1  処理区分 -->
-				<div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
+				<div style="margin-left: 10px" data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
 				
 				<!-- D1_2  処理区分名称 -->				
-				<input data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}" />
+				<input data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}" style="width: 150px" />
 
-				<span data-bind="if : mode==0">
+				<span data-bind="if : mode==0" style="margin-left: 30px">
 					<!-- D2_3 この処理区分を廃止する -->
 					<div data-bind="ntsCheckBox: { checked: enableChecckBox   }">#{i18n.getText('QMM005_80')}</div>
 
@@ -138,7 +138,7 @@
 						</td>
 						<!-- D5_2 -->
 						<td>
-							<span style="width: 45px"><input data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'DecimalPrimitiveValue' }" style="width: 45px; text-align: left !important;"/></span>
+							<span style="width: 45px"><input data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'DecimalPrimitiveValue' }" style="width: 40px; text-align: left !important;"/></span>
 							<span class="label">#{i18n.getText('QMM005_40')}</span>
 						</td>
 
@@ -186,13 +186,13 @@
 											]}"></div>
 							</td>
 							<td>
-								<div class="label">#{i18n.getText('QMM005_60')}</div>
+								<div class="label">#{i18n.getText('QMM005_59')}</div>
 							</td>
 							
 						</tr>					
 					</tbody>
 				</table>
-				<a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_50')}</a>
+				<a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')}</a>
 				
 				<table>
 					<colgroup>
@@ -407,7 +407,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: timeCloseDateSelectedCode,
-									}" style="width: 200px;margin-left: 80px;"></div>
+									}" style="width: 175px;margin-left: 80px;"></div>
 
 						</div>
 
@@ -415,7 +415,7 @@
 						
 						<div class="flex valign-center" style="margin-top: 5px">
 							<!-- D4_33 -->
-							<div class="label" style="width: 70px;margin-left: 245px;">#{i18n.getText('QMM005_68')}</div>
+							<div class="label" style="width: 80px;margin-left: 245px;">#{i18n.getText('QMM005_68')}</div>
 							<!--  D4_34 -->
 
 								<div  data-bind="ntsComboBox: {

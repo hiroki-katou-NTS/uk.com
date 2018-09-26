@@ -196,12 +196,17 @@ public class QpbmtValPayDateSet extends UkJpaEntity implements Serializable {
 				domain.getBasicSetting().getWorkDay().v(),
 				domain.getAdvancedSetting().getItemPrintingMonth().getPrintingMonth().value,
 				domain.getAdvancedSetting().getSocialInsuColleMon().getMonthCollected().value,
-				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value,
-				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseMonth().value,
-				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseYear().value,
+
+				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value,
 				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseMonth().value,
 				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComBaseYear().value,
-				domain.getAdvancedSetting().getIncomTaxBaseYear().getInComRefeDate().value,
+
+
+
+
+				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseMonth().value,
+				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuBaseYear().value,
+				domain.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value,
 				domain.getAdvancedSetting().getCloseDate().getTimeCloseDate(),
 				domain.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null),
 				domain.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null),

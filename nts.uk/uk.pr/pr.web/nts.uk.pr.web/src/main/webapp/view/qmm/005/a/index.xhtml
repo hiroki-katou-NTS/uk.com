@@ -38,7 +38,7 @@
             <div class="table-left" style="margin-left: 25px;">
                 <table id="A2_2">
                     <colgroup>
-                        <col width="50px"/>
+                        <col width="35px"/>
                         <col width="180px"/>
                         <col width="90px"/>
                         <col width="360px"/>
@@ -60,7 +60,7 @@
                     </thead>
                     <tbody data-bind="foreach: itemBinding">
                     <tr>
-                        <td style="background-color: #CFF1A5" >
+                        <td style="background-color: #CFF1A5;text-align: right" >
                             <!--A2_7 処理区分NO-->
                             <div class="label"
                                  data-bind="text:processInfomation.processCateNo" ></div>
@@ -68,23 +68,23 @@
                         <td style="text-align: center;background-color: #CFF1A5" >
                             <!--A2_8 処理区分名称-->
                             <div id="A2_8"
-                                 data-bind="if: processInfomation.processDivisionName != ''">
+                                 data-bind="if: processInfomation.processDivisionName() != ''">
                                 <div style="width: 100px" id="A2_8_label">
                                     <label
-                                            data-bind="text: processInfomation.processDivisionName"></label>
+                                            data-bind="text: processInfomation.processDivisionName()"></label>
                                 </div>
                                 <!--A2_9 編集-->
-                                <button id="button_" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
+                                <button class="small" id="button_" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
                             </div>
-                            <com:ko-if bind="processInfomation.processDivisionName == ''">
-                            <button style="width: 150px"
+                            <com:ko-if bind="processInfomation.processDivisionName() == ''">
+                            <button style="width: 150px" class="small"
                                     data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
                             </com:ko-if>
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             <!--A2_10 詳細設定-->
-                            <button
-                                    data-bind="enable: processInfomation.processDivisionName,click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
+                            <button class="small"
+                                    data-bind="enable: processInfomation.processDivisionName(),click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
                         <td>
                             <div class="flex valign-center">
@@ -94,7 +94,7 @@
                                 options: years,
                                 optionsValue: 'code',
                                  visibleItemsCount: 8,
-                                 enable: processInfomation.processDivisionName != '',
+                                 enable: processInfomation.processDivisionName() != '',
                                 value:yaersSelected,
                                 dropDownAttachedToBody:true,
                                 columns:
@@ -112,12 +112,12 @@
                             value: monthsSelectd,
                             optionsText: 'name',
                             dropDownAttachedToBody:true,
-                            enable: processInfomation.processDivisionName != '',
+                            enable: processInfomation.processDivisionName() != '',
                             columns: [
 
                                 { prop: 'name', length: 10 },
                             ]}"
-                                    style="width: 200px; margin-left: 10px"></div>
+                                    style="width: 222px; margin-left: 10px"></div>
                             </div>
                         </td>
                     </tr>
@@ -143,14 +143,14 @@
                     <tr>
                         <td>
                             <!--A3_3 雇用設定-->
-                            <button
-                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable:processInfomation.processDivisionName != '' ">#{i18n.getText('QMM005_20')}</button>
+                            <button class="small"
+                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable:processInfomation.processDivisionName() != '' ">#{i18n.getText('QMM005_20')}</button>
                             <!--A3_4 対象雇用-->
                             <input
                                     data-bind="ntsTextEditor: {
                                 value: employeeString,
                                 readonly: true,
-                                enable:processInfomation.processDivisionName != '',
+                                enable:processInfomation.processDivisionName() != '',
                                 }"/>
                         </td>
                     </tr>

@@ -144,7 +144,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             let init=getShared('QMM005_output_D');
             self.mode=init.mode;
-            self.processInfomation=init.processInfomation;
+            self.processInfomation=new model.ProcessInfomation(ko.toJS(init.processInfomation));
             self.processCategoryNo=self.processInfomation.processCateNo;
 
 
@@ -171,7 +171,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, 'AFTER_YEAR'),
                 new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, 'LEAP_YEAR')
             ]);
-            self.yearSelectClassificationSelectedCode = ko.observable(0);
+            self.yearSelectClassificationSelectedCode = ko.observable(1);
 
             //D4_44
             self.incomeTaxBaseMonth = ko.observableArray([
@@ -213,7 +213,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.SocialInsuColleMonth.NEXT_MONTH, 'NEXT_MONTH'),
                 new model.ItemModel(model.SocialInsuColleMonth.SECOND_FOLLOWING_MONTH, 'SECOND_FOLLOWING_MONTH'),
             ]);
-            self.timeClosingStandardMonthSelectedCode = ko.observable(1);
+            self.timeClosingStandardMonthSelectedCode = ko.observable(0);
 
             //D4_38
             self.timeReferenceStandardDay = ko.observableArray([]);
@@ -341,7 +341,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.InsuranceStanMonthClassSification.DECEMBER, 'DECEMBER')
 
             ]);
-            self.guaranteedBaseMonthSelectedCode = ko.observable(1);
+            self.guaranteedBaseMonthSelectedCode = ko.observable(0);
 
 
             self.pushDaytoList(self.disposalDay, model.DateSelectClassification);
@@ -443,7 +443,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
                         self.processCategoryNo=self.processInfomation.processCateNo;
-                        self.processName(self.processInfomation.processDivisionName);
+                        self.processName(self.processInfomation.processDivisionName());
                         self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate);
 
 
@@ -561,9 +561,10 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         pushDaytoList(itemList: KnockoutObservableArray<model.ItemModel>, codeEnum: any): void {
             let items = itemList;
             let code = codeEnum;
-            for(let i=1;i<32;i++){
+            for(let i=1;i<31;i++){
                 itemList.push(new model.ItemModel(i,i+'日'));
             }
+            itemList.push(new model.ItemModel(31,'末日'));
 
 //            let i = 1;
 //            for (let data in codeEnum) {

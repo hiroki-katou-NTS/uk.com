@@ -13,7 +13,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
     export class ScreenModel {
         //A2_2
-        itemTable: ItemTable;
+        itemTable:ItemTable;
         //A3_4 対象雇用
         targetEmployment: KnockoutObservableArray<number>;
         processCategoryNO: number;
@@ -37,16 +37,13 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 mode: mode,
                 processInfomation: processInfomation
             }
-            setShared("QMM005_output_D", param);
+            setShared("QMM005_output_D",ko.toJS( param));
             modal('/view/qmm/005/d/index.xhtml', {title: '',}).onClosed(function (): any {
                 let param = getShared("QMM005_output_A");
                 let action: number = param.action;
                 let processInformationUpdate = param.processInfomationUpdate;
                 if (action == 0) {
-                    // self.startPage().done(function () {
-                    //     self.itemBinding.removeAll();
-                    //
-                    // });
+                    self.itemBinding()[processInformationUpdate.deprecatCate-1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
                     if (processInformationUpdate.deprecatCate == 1) {
                         self.resetEmployee(processInformationUpdate.processCateNo);
                     }
@@ -159,9 +156,12 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.findDisplayRegister().done(data => {
-                self.itemTable = new ItemTable(data);
+                self.itemTable=new ItemTable();
                 if (data) {
-                    self.itemTable = new ItemTable(data);
+                    // data.informationDto.forEach(item =>{
+                    //     self.itemTable.processInfomations.push(new model.ProcessInfomation(item));
+                    // });
+                    self.itemTable.setData(data);
                 }
                 for (let i: number = self.itemTable.processInfomations.length; i < MAX_NUMBER_SETTING; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
@@ -204,6 +204,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     ));
 
                 }
+                console.log(self.itemBinding());
             });
             dfd.resolve();
             return dfd.promise();
@@ -277,19 +278,28 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     }
 
     export class ItemTable {
+
         processInfomations: Array<model.ProcessInfomation> = [];
         setDaySupports: Array<model.SetDaySupport> = [];
         currentProcessDates: Array<model.CurrentProcessDate> = [];
         empCdNameImports: Array<model.EmpCdNameImport> = [];
         empTiedProYear: Array<model.EmpTiedProYear> = [];
 
-        constructor(param: IitemTable) {
+        constructor() {
+
+        }
+
+
+        setData(param:IitemTable){
+            let self=this;
             if (param) {
-                this.processInfomations = param.informationDto;
-                this.currentProcessDates = param.currProcessDateDto;
-                this.setDaySupports = param.setDaySupportDto;
-                this.empCdNameImports = param.empCdNameImports;
-                this.empTiedProYear = param.empTiedProYearDto;
+                param.informationDto.forEach(function (item) {
+                    self.processInfomations.push(new model.ProcessInfomation(item));
+                });
+                self.currentProcessDates = param.currProcessDateDto;
+                self.setDaySupports = param.setDaySupportDto;
+                self.empCdNameImports = param.empCdNameImports;
+                self.empTiedProYear = param.empTiedProYearDto;
             }
         }
     }
