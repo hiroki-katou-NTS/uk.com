@@ -3,13 +3,12 @@ package nts.uk.ctx.at.record.dom.monthly.information.care;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface MonCareHdRemainRepository {
+	
 	/**
 	 * Find by YearMonth, ClosureId & ClosureDate
 	 * @param employeeId
@@ -57,22 +56,6 @@ public interface MonCareHdRemainRepository {
 	 * @return
 	 */
 	List<MonCareHdRemain> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
-	
-	/**
-	 * 
-	 * @param employeeId
-	 * @param criteriaDate
-	 * @return
-	 */
-	List<MonCareHdRemain> findByDate(String employeeId, GeneralDate criteriaDate);
-
-	/**
-	 * 
-	 * @param employeeId
-	 * @param period
-	 * @return
-	 */
-	List<MonCareHdRemain> findByPeriodIntoEndYmd(String employeeId, DatePeriod period);
 
 	/**
 	 * 

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResu
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
@@ -34,7 +35,13 @@ public class EventCorrectResult {
 	}
 	
 	public List<ItemValue> getCorrectedItemsWithStrict(){
-		List<Integer> canBeUpdated = AttendanceItemIdContainer.getItemIdByDailyDomains(correctedType);
+		List<Integer> canBeUpdated = AttendanceItemIdContainer.getItemIdByDailyDomains(correctedType, (type, path) -> {
+			if(type == DailyDomainGroup.BREAK_TIME) {
+				return path.contains(ItemConst.E_WORK_REF);
+			}
+			
+			return true;
+		});
 		
 		List<ItemValue> canBeCorrected = AttendanceItemUtil.toItemValues(corrected, canBeUpdated);
 		List<ItemValue> beforeCorrect = AttendanceItemUtil.toItemValues(base, canBeUpdated);

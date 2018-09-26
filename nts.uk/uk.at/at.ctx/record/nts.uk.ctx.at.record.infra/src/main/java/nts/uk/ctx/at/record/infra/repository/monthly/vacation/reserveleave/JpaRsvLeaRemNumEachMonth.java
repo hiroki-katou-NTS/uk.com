@@ -14,8 +14,8 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.reserveleave.KrcdtMonRsvleaRemain;
-import nts.uk.ctx.at.record.infra.entity.monthly.vacation.reserveleave.KrcdtMonRsvleaRemainPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -26,33 +26,33 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @Stateless
 public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRemNumEachMonthRepository {
 
-	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonRsvleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
+	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
 			+ "ORDER BY a.startDate ";
 
-	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonRsvleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
+	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
+			+ "AND a.krcdtMonRemainPk.closureId = :closureId "
 			+ "ORDER BY a.startDate ";
 
-	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonRsvleaRemain a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay "
-			+ "ORDER BY a.PK.employeeId, a.startDate ";
+	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
+			+ "AND a.krcdtMonRemainPk.closureId = :closureId "
+			+ "AND a.krcdtMonRemainPk.closureDay = :closureDay "
+			+ "AND a.krcdtMonRemainPk.isLastDay = :isLastDay "
+			+ "ORDER BY a.krcdtMonRemainPk.employeeId, a.startDate ";
 
-	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonRsvleaRemain a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.startDate ";
+	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
+			+ "AND a.krcdtMonRemainPk.yearMonth IN :yearMonths "
+			+ "ORDER BY a.krcdtMonRemainPk.employeeId, a.startDate ";
 
-	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRsvleaRemain a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRemain a "
+			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth ";
 
 	/** 検索 */
 	@Override
@@ -60,24 +60,24 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 			ClosureDate closureDate) {
 		
 		return this.queryProxy()
-				.find(new KrcdtMonRsvleaRemainPK(
+				.find(new KrcdtMonMergePk(
 						employeeId,
 						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)),
-						KrcdtMonRsvleaRemain.class)
-				.map(c -> c.toDomain());
+						KrcdtMonRemain.class)
+				.map(c -> c.toDomainRsvLeaRemNumEachMonth());
 	}
 	
 	/** 検索　（年月） */
 	@Override
 	public List<RsvLeaRemNumEachMonth> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 		
-		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRsvleaRemain.class)
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainRsvLeaRemNumEachMonth());
 	}
 	
 	/** 検索　（年月と締めID） */
@@ -85,11 +85,11 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 	public List<RsvLeaRemNumEachMonth> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
 		
-		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonRsvleaRemain.class)
+		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainRsvLeaRemNumEachMonth());
 	}
 	
 	/** 検索　（社員IDリスト） */
@@ -99,13 +99,13 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 		
 		List<RsvLeaRemNumEachMonth> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS, KrcdtMonRsvleaRemain.class)
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS, KrcdtMonRemain.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> c.toDomain()));
+					.getList(c -> c.toDomainRsvLeaRemNumEachMonth()));
 		});
 		return results;
 	}
@@ -118,10 +118,10 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 		
 		List<RsvLeaRemNumEachMonth> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRsvleaRemain.class)
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+					.getList(c -> c.toDomainRsvLeaRemNumEachMonth()));
 		});
 		return results;
 	}
@@ -131,7 +131,7 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 	public void persistAndUpdate(RsvLeaRemNumEachMonth domain) {
 		
 		// キー
-		val key = new KrcdtMonRsvleaRemainPK(
+		val key = new KrcdtMonMergePk(
 				domain.getEmployeeId(),
 				domain.getYearMonth().v(),
 				domain.getClosureId().value,
@@ -139,14 +139,15 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 				(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
 		
 		// 登録・更新
-		KrcdtMonRsvleaRemain entity = this.getEntityManager().find(KrcdtMonRsvleaRemain.class, key);
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
 		if (entity == null){
-			entity = new KrcdtMonRsvleaRemain();
-			entity.fromDomainForPersist(domain);
+			entity = new KrcdtMonRemain();
+			entity.setKrcdtMonRemainPk(key);
+			entity.toEntityRsvLeaRemNumEachMonth(domain);
 			this.getEntityManager().persist(entity);
 		}
 		else {
-			entity.fromDomainForUpdate(domain);
+			entity.toEntityRsvLeaRemNumEachMonth(domain);
 		}
 	}
 	
@@ -154,8 +155,8 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonRsvleaRemain.class,
-				new KrcdtMonRsvleaRemainPK(
+		this.commandProxy().remove(KrcdtMonRemain.class,
+				new KrcdtMonMergePk(
 						employeeId,
 						yearMonth.v(),
 						closureId.value,

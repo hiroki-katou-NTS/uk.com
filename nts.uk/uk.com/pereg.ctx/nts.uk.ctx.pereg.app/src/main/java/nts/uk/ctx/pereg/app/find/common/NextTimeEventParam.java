@@ -14,8 +14,6 @@ public class NextTimeEventParam {
 	
 	private GeneralDate entryDate;
 	
-	private GeneralDate retireDate;
-	
 	private GeneralDate startWorkCond;
 	
 	private GeneralDate endWorkCond;

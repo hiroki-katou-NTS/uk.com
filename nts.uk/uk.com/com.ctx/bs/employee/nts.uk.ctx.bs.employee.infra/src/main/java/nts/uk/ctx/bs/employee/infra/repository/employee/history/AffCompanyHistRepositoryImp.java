@@ -153,7 +153,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 		return toDomain(lstBsymtAffCompanyHist);
 	}
-
+	
 	private AffCompanyHist toDomain(List<BsymtAffCompanyHist> entities) {
 		if (entities.isEmpty()) {
 			return null;

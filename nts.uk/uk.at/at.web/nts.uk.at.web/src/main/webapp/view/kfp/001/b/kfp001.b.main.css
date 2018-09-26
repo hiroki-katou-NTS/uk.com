@@ -1,5 +1,4 @@
 #contents-area {
-	height: 600px !important;
 	overflow: hidden;
 }
 
@@ -89,7 +88,7 @@ div.label {
 
 .nts-wizard.vertical>.steps {
 	width: 240px;
-	height: 800px;
+	height: 100%;
 }
 
 .nts-wizard {

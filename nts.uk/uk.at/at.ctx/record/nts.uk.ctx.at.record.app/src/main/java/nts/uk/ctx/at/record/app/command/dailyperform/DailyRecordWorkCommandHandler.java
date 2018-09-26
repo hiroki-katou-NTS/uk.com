@@ -68,8 +68,10 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
@@ -256,7 +258,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private UpdateAllDomainMonthService updateAllDomainMonthService;
 
-	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
+	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
 	{
@@ -338,7 +340,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		//calculate
 		ManagePerCompanySet  manageComanySet = commonCompanySettingForCalc.getCompanySetting();
-		domainDailyNew = calcService.calculatePassCompanySetting(domainDailyNew, Optional.ofNullable(manageComanySet));
+		domainDailyNew = calcService.calculatePassCompanySetting(domainDailyNew, Optional.ofNullable(manageComanySet),ExecutionType.NORMAL_EXECUTION);
 		// get error after caculator
 		List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);
 		if (!items.isEmpty()) {

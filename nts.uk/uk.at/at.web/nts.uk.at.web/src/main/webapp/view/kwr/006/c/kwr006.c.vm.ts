@@ -31,8 +31,8 @@ module nts.uk.at.view.kwr006.c {
             remarkInputContents: KnockoutObservableArray<ItemModel>;
             currentRemarkInputContent: KnockoutObservable<number>;
             isEnableRemarkInputContents: KnockoutComputed<boolean>;
-            
-             // store map to convert id and code attendance item
+
+            // store map to convert id and code attendance item
             mapIdCodeAtd: any;
             mapCodeIdAtd: any;
 
@@ -101,7 +101,7 @@ module nts.uk.at.view.kwr006.c {
                 if (lstDisplayedAttendance) {
                     lstSwapRight = lstDisplayedAttendance.map(item => {
                         return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
-                    }).sort((a, b) =>a.code - b.code);
+                    });
                 }
 
                 // refresh data for C7_8
@@ -113,11 +113,6 @@ module nts.uk.at.view.kwr006.c {
             public sortItems(): void {
                 let self = nts.uk.ui._viewModel.content;
                 self.items(_.sortBy(self.items(), item => item.code));
-            }
-
-            public sortCurrentCodeListSwap(): void {
-                let self = nts.uk.ui._viewModel.content;
-                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => item.code));
             }
 
             /*
@@ -136,7 +131,7 @@ module nts.uk.at.view.kwr006.c {
                         self.selectedCodeC2_3('');
                         if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
                             _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
-                                value.code = self.mapIdCodeAtd[value.id];    
+                                value.code = self.mapIdCodeAtd[value.id];
                             })
                             const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
                             if (!_.isEmpty(chosen)) {
@@ -196,9 +191,9 @@ module nts.uk.at.view.kwr006.c {
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
-                
+
                 _.map(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code]});
+                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code] });
                 });
 
                 if (self.selectedCodeA8_2() == 1) {
@@ -275,7 +270,7 @@ module nts.uk.at.view.kwr006.c {
             */
             public closeScreenC(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('selectedCodeScreenC',self.selectedCodeC2_3(),true)
+                nts.uk.ui.windows.setShared('selectedCodeScreenC', self.selectedCodeC2_3(), true)
                 nts.uk.ui.windows.close();
             }
 
@@ -303,24 +298,19 @@ module nts.uk.at.view.kwr006.c {
                     self.allMainDom(data.outputItemMonthlyWorkSchedule);
 
                     // variable temporary 
-                    let temp: any[] = [];
-                    _.forEach(data.monthlyAttendanceItem, function(value) {
-                        temp.push(value);
-                    })
-                    self.outputItemPossibleLst(temp);
+                    self.outputItemPossibleLst(data.monthlyAttendanceItem);
 
-                    let arrCodeName: ItemModel[] = [];
-                    _.forEach(data.outputItemMonthlyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode, name: value.itemName });
+                    let arrCodeName = _.map(data.outputItemMonthlyWorkSchedule, value => {
+                        return { code: value.itemCode, name: value.itemName };
                     });
                     self.outputItemList(arrCodeName);
-                    
+
                     _.forEach(data.monthlyAttendanceItem, (value) => {
                         self.mapCodeIdAtd[value.code] = value.id;
-                        self.mapIdCodeAtd[value.id] = value.code;        
+                        self.mapIdCodeAtd[value.id] = value.code;
                     })
-                    
-                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
+
+                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : _.sortBy(data.monthlyAttendanceItem, o => o.code));
                     dfd.resolve();
                 })
 
@@ -380,9 +370,11 @@ module nts.uk.at.view.kwr006.c {
         class ItemModel {
             code: string;
             name: string;
-            constructor(code: string, name: string) {
+            id: string;
+            constructor(code: string, name: string, id: string) {
                 this.code = code;
                 this.name = name;
+                this.id = id;
             }
         }
 

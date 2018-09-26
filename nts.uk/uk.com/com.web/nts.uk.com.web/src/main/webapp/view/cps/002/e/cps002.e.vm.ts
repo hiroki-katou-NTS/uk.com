@@ -37,7 +37,7 @@ module cps002.e.vm {
             setTimeout(dfd.resolve(),100);
             setTimeout(function(c){
                 $("#employeeCode").focus();    
-            }),100);
+            },100);
             return dfd.promise();
         }
 

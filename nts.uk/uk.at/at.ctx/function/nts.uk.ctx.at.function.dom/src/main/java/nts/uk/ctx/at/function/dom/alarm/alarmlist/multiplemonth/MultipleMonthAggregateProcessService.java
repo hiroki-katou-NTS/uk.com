@@ -29,6 +29,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.shr.com.i18n.TextResource;
@@ -126,22 +127,19 @@ public class MultipleMonthAggregateProcessService {
 			String nameErrorAlarm = "";
 			List<Integer> listAttendanceItemIds = new ArrayList<>();
 			if (!CollectionUtil.isEmpty(tmp)) {
-				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
-				listAttendanceItemIds= listAttdName.stream()
-                        .map(AttendanceItemName::getAttendanceItemId)
-                        .collect(Collectors.toList());
-				if(!CollectionUtil.isEmpty(listAttdName))
-				nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-				
-			} else {
-				if (!CollectionUtil.isEmpty(tmp2)) {
-					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,0);
-					listAttendanceItemIds= listAttdName.stream()
-	                        .map(AttendanceItemName::getAttendanceItemId)
-	                        .collect(Collectors.toList());
-					if(!CollectionUtil.isEmpty(listAttdName))
-					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-				}
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp,
+						TypeOfItem.Monthly.value);
+				listAttendanceItemIds = listAttdName.stream().map(AttendanceItemName::getAttendanceItemId)
+						.collect(Collectors.toList());
+					nameErrorAlarm = getNameErrorAlarm(listAttdName,0,nameErrorAlarm);
+			}
+
+			if (!CollectionUtil.isEmpty(tmp2)) {
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,
+						TypeOfItem.Monthly.value);
+				listAttendanceItemIds.addAll(listAttdName.stream().map(AttendanceItemName::getAttendanceItemId)
+						.collect(Collectors.toList()));
+					nameErrorAlarm = getNameErrorAlarm(listAttdName,1,nameErrorAlarm);
 			}
 			
 			// 月別実績を取得する
@@ -158,8 +156,6 @@ public class MultipleMonthAggregateProcessService {
 				if (CollectionUtil.isEmpty(result)) continue;
 				switch (checkItem) {
 				case TIME:
-				case TIMES:
-				case AMOUNT:
 					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
 
 						checkAddAlarm = true;
@@ -184,9 +180,31 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+				case TIMES:
+				case AMOUNT:
+					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
+
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue());
+						String endValueTime = "";
+						if (compare <= 5) {
+							alarmDescription = TextResource.localize("KAL010_254", periodYearMonth, nameErrorAlarm,
+									compareOperatorText.getCompareLeft(), startValueTime);
+						} else {
+							endValueTime = String.valueOf(endValue.intValue());
+							if (compare > 5 && compare <= 7) {
+								alarmDescription = TextResource.localize("KAL010_255", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							} else {
+								alarmDescription = TextResource.localize("KAL010_256", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm, nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							}
+						}
+					}
+					break;
 				case AVERAGE_TIME:
-				case AVERAGE_TIMES:
-				case AVERAGE_AMOUNT:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
@@ -210,9 +228,30 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+				case AVERAGE_TIMES:
+				case AVERAGE_AMOUNT:
+					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue());
+						String endValueTime = "";
+						if (compare <= 5) {
+							alarmDescription = TextResource.localize("KAL010_264", periodYearMonth, nameErrorAlarm,
+									compareOperatorText.getCompareLeft(), startValueTime);
+						} else {
+							endValueTime = String.valueOf(endValue.intValue());
+							if (compare > 5 && compare <= 7) {
+								alarmDescription = TextResource.localize("KAL010_265", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							} else {
+								alarmDescription = TextResource.localize("KAL010_266", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm, nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							}
+						}
+					}
+					break;
 				case CONTINUOUS_TIME:
-				case CONTINUOUS_TIMES:
-				case CONTINUOUS_AMOUNT:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
@@ -222,13 +261,35 @@ public class MultipleMonthAggregateProcessService {
 								String.valueOf(extra.getContinuousMonths()));
 					}
 					break;
-				// 9-10-11
+				case CONTINUOUS_TIMES:
+				case CONTINUOUS_AMOUNT:
+					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue());
+						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameErrorAlarm,
+								compareOperatorText.getCompareLeft(), startValueTime,
+								String.valueOf(extra.getContinuousMonths()));
+					}
+					break;
+				
+				case NUMBER_TIME:
+					ArrayList<Integer> listMonthNumberTime = checkActualResultMulMonth.checkMulMonthCheckCondCosp(period,companyId,employee.getId(),result,extra) ;
+					if (!CollectionUtil.isEmpty(listMonthNumberTime)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
+								+ String.valueOf(startValue.intValue() % 60);
+						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
+								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
+								listMonthNumberTime.toString(), String.valueOf(extra.getTimes()));
+
+					}
+					break;
+					//10,11
 				default:
 					ArrayList<Integer> listMonthNumber = checkActualResultMulMonth.checkMulMonthCheckCondCosp(period,companyId,employee.getId(),result,extra) ;
 					if (!CollectionUtil.isEmpty(listMonthNumber)) {
 						checkAddAlarm = true;
-						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
-								+ String.valueOf(startValue.intValue() % 60);
+						String startValueTime = String.valueOf(startValue.intValue());
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
 								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
 								listMonthNumber.toString(), String.valueOf(extra.getTimes()));
@@ -286,17 +347,38 @@ public class MultipleMonthAggregateProcessService {
 			compare.setCompareright("≦");
 			break;
 		case 8 :/* 範囲の外（境界値を含まない）（＞＜） */
-			compare.setCompareLeft("＞");
-			compare.setCompareright("＞");
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
 			break;
 		
 		default :/* 範囲の外（境界値を含む）（≧≦） */
-			compare.setCompareLeft("≧");
-			compare.setCompareright("≧");
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
 			break; 
 		}
 
 		return compare;
 	}
-
+	/*
+	 * get name error Alarm
+	 * @param attendanceItemNames : list attendance item name
+	 * @param type : 0 add/1 sub
+	 * @param nameErrorAlarm : String input to join
+	 * @return string
+	 */
+	private String getNameErrorAlarm(List<AttendanceItemName> attendanceItemNames ,int type,String nameErrorAlarm){
+		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
+			
+			for(int i=0; i< attendanceItemNames.size(); i++) {
+				String beforeOperator = "";
+				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? "-" : "+";
+				
+				if (!"".equals(nameErrorAlarm) || type == 1) {
+					beforeOperator = (i == 0) ? type == 1 ? "-" : "+" : "";
+				}
+                nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
+			}
+		}		
+		return nameErrorAlarm;
+	}
 }

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;

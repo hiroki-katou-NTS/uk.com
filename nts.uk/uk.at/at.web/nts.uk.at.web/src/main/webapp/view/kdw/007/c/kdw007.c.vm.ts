@@ -85,7 +85,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this,
             listItems = [];
             _.forEach(lstItems, (item) => {
-                listItems.push({ code: item.attendanceItemId, name: item.attendanceItemName, operator: listType == 1 ? '+' : '-', displayOrder: item.attendanceItemDisplayNumber });
+                listItems.push({ id: item.attendanceItemId, code: item.attendanceItemDisplayNumber, name: item.attendanceItemName, operator: listType == 1 ? '+' : '-', displayOrder: item.attendanceItemDisplayNumber });
             });
             if (listType == 0) { // list All items
                 self.lstAllItems(listItems);
@@ -110,7 +110,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
                 });
                 if (targetItem) {
                     self.lstAddSubItems.push(
-                        { code: targetItem.code, name: targetItem.name, operator: '+' }
+                        { id: targetItem.id, code: targetItem.code, name: targetItem.name, operator: '+' }
                     );
                     self.lstAllItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
@@ -127,7 +127,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
                 });
                 if (targetItem) {
                     self.lstAddSubItems.push(
-                        { code: targetItem.code, name: targetItem.name, operator: '-' }
+                        { id: targetItem.id, code: targetItem.code, name: targetItem.name, operator: '-' }
                     );
                     self.lstAllItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
@@ -170,10 +170,10 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let resultData = {
                 lstAddItems: _.filter(self.lstAddSubItems(), (item) => {
                     return item.operator === '+';
-                }).map((item) => { return item.code; }),
+                }).map((item) => { return item.id; }),
                 lstSubItems: _.filter(self.lstAddSubItems(), (item) => {
                     return item.operator === '-';
-                }).map((item) => { return item.code; })
+                }).map((item) => { return item.id; })
             };
             nts.uk.ui.windows.setShared("KDW007CResults", resultData);
             nts.uk.ui.windows.close();

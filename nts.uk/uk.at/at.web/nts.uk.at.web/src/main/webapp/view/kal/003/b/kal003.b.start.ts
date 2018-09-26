@@ -6,6 +6,8 @@ module nts.uk.at.view.kal003.b {
             $("#table-group1condition").ntsFixedTable();
             $("#table-group2condition").ntsFixedTable();
             $('#cbxTypeCheckWorkRecordcategory5').focus();
+            $('#cbxTypeCheckWorkRecordcategory7').focus();
+            $('#cbxTypeCheckWorkRecordcategory9').focus();
         });
     });
 }

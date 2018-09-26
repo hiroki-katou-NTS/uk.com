@@ -53,16 +53,13 @@ public class MonthlyCorrectionLogCommandHandler extends CommandHandler<MonthlyCo
 			MonthlyRecordWorkDto oldDto = oldDtos.get(i);
 			MonthlyRecordWorkDto newDto = newDtos.get(i);
 			List<Integer> editItems = editMap.get(oldDto.getEmployeeId());
-			List<ItemValue> oldItemValues = AttendanceItemUtil.toItemValues(oldDto, ITEM_ID_ALL,
-					AttendanceItemType.MONTHLY_ITEM);
-			List<ItemValue> newItemValues = AttendanceItemUtil.toItemValues(newDto, ITEM_ID_ALL,
-					AttendanceItemType.MONTHLY_ITEM);
-			Map<Integer, ItemValue> itemOldMap = oldItemValues.stream()
+			Map<Integer, ItemValue> itemOldMap = AttendanceItemUtil
+					.toItemValues(oldDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
 					.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			Map<Integer, ItemValue> itemNewMap = newItemValues.stream()
+			Map<Integer, ItemValue> itemNewMap = AttendanceItemUtil
+					.toItemValues(newDto, ITEM_ID_ALL, AttendanceItemType.MONTHLY_ITEM).stream()
 					.collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			MonthlyCorrectionTarget monthTarget = new MonthlyCorrectionTarget(oldDto.getEmployeeId(),
-					GeneralDate.ymd(oldDto.getYearMonth().year(), oldDto.getYearMonth().month(), 1));
+			MonthlyCorrectionTarget monthTarget = new MonthlyCorrectionTarget(oldDto.getEmployeeId(), context.getCommand().getEndPeriod());
 			itemNewMap.forEach((key, value) -> {
 				ItemValue itemNew = value;
 				ItemValue itemOld = itemOldMap.get(key);

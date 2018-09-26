@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 /**
  * 残数作成元情報(申請)
@@ -23,7 +24,7 @@ public class AppRemainCreateInfor {
 	/**	申請ID */
 	private String appId;
 	/**	入力日 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	/**	申請日 */
 	private GeneralDate appDate;
 	/**事前事後区分	 */
@@ -40,4 +41,9 @@ public class AppRemainCreateInfor {
 	private Optional<Integer> appBreakTimeTotal;
 	/**	申請残業時間合計 */
 	private Optional<Integer> appOvertimeTimeTotal;
+	/**
+	 * 
+	 */
+	private Optional<GeneralDate> startDate;
+	private Optional<GeneralDate> endDate;
 }

@@ -711,9 +711,6 @@
                     responseText=res;
                 }).fail(function() {
                 });
-                if (responseText.length == 0 || responseText === messageId) {
-                    return messageId;
-                }
                 message = responseText;
                 messages[messageId] = message;
             }

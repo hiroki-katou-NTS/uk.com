@@ -29,7 +29,6 @@ public class NextTimeEventService extends WebService{
 	 * パラメータ＝労働条件の期間：NULL
 	 * パラメータ＝契約時間：NULL
 	 * パラメータ＝入社年月日：NULL
-	 * パラメータ＝退職年月日：NULL
 	 * @return 次回年休付与日, 次回年休付与日数, 次回時間年休付与上限
 	 */
 	@POST
@@ -41,7 +40,7 @@ public class NextTimeEventService extends WebService{
 		AnnLeaEmpBasicInfo annLea = new AnnLeaEmpBasicInfo(param.getEmployeeId(),
 				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(),
 				new DatePeriod(param.getStartWorkCond(), param.getEndWorkCond()), param.getContactTime(),
-				param.getEntryDate(), param.getRetireDate());
+				param.getEntryDate());
 		return NextTimeEventDto.fromDomain(getYearHolidayInfo.getYearHolidayInfo(annLea));
 	}
 

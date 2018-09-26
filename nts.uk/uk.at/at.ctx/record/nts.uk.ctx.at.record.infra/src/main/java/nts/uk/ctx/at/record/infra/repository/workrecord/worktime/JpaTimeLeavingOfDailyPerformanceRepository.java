@@ -15,7 +15,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -84,44 +83,22 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_TIME_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"  + "and TIME_LEAVING_TYPE = 0" ;
 		try {
-			con.createStatement().executeUpdate(sqlQuery);
+			val timeLeavingWorkStatement = this.connection().prepareStatement(
+					"delete from KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
+			timeLeavingWorkStatement.setString(1, employeeId);
+			timeLeavingWorkStatement.setDate(2, Date.valueOf(ymd.toLocalDate()));
+			timeLeavingWorkStatement.setInt(3, 0);
+			timeLeavingWorkStatement.execute();
+			
+			val statement = this.connection().prepareStatement(
+					"delete from KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?");
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
+			statement.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		
-		String daiLeavingWorkQuery = "Delete From KRCDT_DAI_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
-		try {
-			con.createStatement().executeUpdate(daiLeavingWorkQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-//		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
-//				.setParameter("ymd", ymd).setParameter("timeLeavingType", 0).executeUpdate();
-//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-//				.setParameter("ymd", ymd).executeUpdate();
-//		this.getEntityManager().flush();
-		
-//		try {
-//			val timeLeavingWorkStatement = this.connection().prepareStatement(
-//					"delete from KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?");
-//			timeLeavingWorkStatement.setString(1, employeeId);
-//			timeLeavingWorkStatement.setDate(2, Date.valueOf(ymd.toLocalDate()));
-//			timeLeavingWorkStatement.setInt(3, 0);
-//			timeLeavingWorkStatement.executeUpdate();
-//			
-//			val statement = this.connection().prepareStatement(
-//					"delete from KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?");
-//			statement.setString(1, employeeId);
-//			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
-//			statement.executeUpdate();
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
 	}
 
 	@Override
@@ -263,8 +240,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			
 			return krcdtDaiBreakTimes.get();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return getDefault(employee, date);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -313,8 +289,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			
 			return krcdtTimeLeaveWorks;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw new RuntimeException(e);
 		}
 	}
 

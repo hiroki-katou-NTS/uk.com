@@ -4,23 +4,23 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.dom.event.DomainEventSubscriber;
-import nts.uk.ctx.at.record.dom.optitem.event.OptionalItemAtrDomainEvent;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemUpdateDomainEvent;
 import nts.uk.ctx.at.shared.dom.scherec.event.OptionalItemAtrExport;
 import nts.uk.ctx.at.shared.dom.scherec.service.AttendanceAtrService;
 
 @Stateless
-public class OptionalItemAtrDomainEventSubscriber implements DomainEventSubscriber<OptionalItemAtrDomainEvent> {
+public class OptionalItemAtrDomainEventSubscriber implements DomainEventSubscriber<OptionalItemUpdateDomainEvent> {
 
 	@Inject
 	private AttendanceAtrService attendanceAtrService;
 
 	@Override
-	public Class<OptionalItemAtrDomainEvent> subscribedToEventType() {
-		return OptionalItemAtrDomainEvent.class;
+	public Class<OptionalItemUpdateDomainEvent> subscribedToEventType() {
+		return OptionalItemUpdateDomainEvent.class;
 	}
 
 	@Override
-	public void handle(OptionalItemAtrDomainEvent domainEvent) {
+	public void handle(OptionalItemUpdateDomainEvent domainEvent) {
 		OptionalItemAtrExport optItem = new OptionalItemAtrExport(domainEvent.getPerformanceAtr().value,
 				domainEvent.getOptionalItemAtr().value, domainEvent.getOptionalItemNo().v());
 		attendanceAtrService.updateAttendanceAtr(optItem);

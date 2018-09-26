@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.CreateApprovalStaOfDailyPerforService;
+import nts.uk.ctx.at.record.dom.adapter.createdailyapprover.CreateDailyApproverAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 
@@ -20,7 +20,7 @@ public class InsertWorkInfoOfDailyPerforServiceImpl implements InsertWorkInfoOfD
 	private UpdateWorkInfoOfDailyPerforService updateWorkInfoOfDailyPerforService;
 	
 	@Inject
-	private CreateApprovalStaOfDailyPerforService createApprovalStaOfDailyPerforService;
+	private CreateDailyApproverAdapter createDailyApproverAdapter;
 
 	@Override
 	public void updateWorkInfoOfDailyPerforService(String companyId, String employeeID, GeneralDate processingDate,
@@ -37,7 +37,9 @@ public class InsertWorkInfoOfDailyPerforServiceImpl implements InsertWorkInfoOfD
 		} else {
 			// ドメインモデル「日別実績の勤務情報」を登録 - insert
 			this.workInformationRepository.insert(workInfoOfDailyPerformanceUpdate);
-//			this.createApprovalStaOfDailyPerforService.createApprovalStaOfDailyPerforService(companyId, employeeID, processingDate);
+			// 日別実績の就業実績確認状態を作成する
+			// RequestList 523
+			this.createDailyApproverAdapter.createApprovalStatus(employeeID, processingDate, 1);
 		}
 
 	}
