@@ -167,3 +167,7 @@ div#list-box_b1 {
 	width: auto !important;
 	max-width: 800px !important;
 }
+
+.ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
+	z-index: 99999999;
+}
