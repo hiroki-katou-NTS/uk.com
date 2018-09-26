@@ -587,17 +587,6 @@
                                     <col width="*" />
                                 </colgroup>
                                 <tr class="row">
-                                    <!-- B2-1: メッセージ色 - Message color -->
-                                    <!-- <td class="pad_left_10px">
-
-                                        <div>#{i18n.getText('KAL003_28')}</div>
-                                    </td>
-                                    <td class="pad_left_5px">
-                                        B2-2
-                                        <div id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 60}" />
-                                    </td> -->
-                                </tr>
-                                <tr class="row">
                                     <!-- B3-1: 表示するメッセージ - Message content -->
                                     <td class="pad_left_10px">
                                         <div>#{i18n.getText('KAL003_25')}</div>
@@ -614,14 +603,6 @@
 												readonly: false}" />
                                         </div>
                                     </td>
-                                </tr>
-                                <tr class="row">
-
-                                    <!-- <td class="pad_left_10px"></td>
-                                    <td>
-                                        B3-3: ■メッセージを太字にする - Make the message bold
-                                        <div data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
-                                    </td> -->
                                 </tr>
                             </table>
                         </div>
@@ -981,14 +962,6 @@
                                     </com:ko>
                                     <tr class="row">
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_28')}</div>
-                                        </td>
-                                        <td class="pad_left_5px">
-                                            <div tabindex = "8" id="colorpicker" data-bind="ntsColorPicker: {value: messageColor, width: 60}" />
-                                        </td>
-                                    </tr>
-                                    <tr class="row">
-                                        <td class="pad_left_10px">
                                             <div>#{i18n.getText('KAL003_25')}</div>
                                         </td>
                                         <td class="pad_left_5px">
@@ -998,15 +971,6 @@
                                             					name: '#[KAL003_25]',
                                              					constraint: 'MessageDisplay'
                                              					}" />
-                                        </td>
-                                    </tr>
-                                    <tr class="row">
-                                        <td class="pad_left_10px">
-
-                                        </td>
-                                        <td class="pad_left_5px">
-                                            <div tabindex = "10" data-bind="ntsCheckBox: { checked: messageBold}">#{i18n.getText('KAL003_29')}</div>
-                                            <!-- </div><div>#{i18n.getText('メッセージを太字にする')}</div> -->
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1439,17 +1403,7 @@
 									<col width="150px" />
 									<col width="*" />
 								</colgroup>
-								<tr class="row">
-									<!-- B1_101: メッセージ色 - Message color -->
-									<td class="pad_left_10px">
-										<div>#{i18n.getText('KAL003_28')}</div>
-									</td>
-									<td class="pad_left_5px">
-										<!-- B2-2-->
-										<div id="colorpicker" tabindex = "8"
-											data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 60}" />
-									</td>
-								</tr>
+
 								<tr class="row">
 									<!-- B3-1: 表示するメッセージ -->
 									<td class="pad_left_10px">
@@ -1467,13 +1421,6 @@
                                     			enable: true, 
                                     			readonly: false}" />
 										</div>
-									</td>
-								</tr>
-								<!-- B3-3: ■メッセージを太字にする-->
-								<tr class="row">
-									<td class="pad_left_10px"></td>
-									<td>
-										<div tabindex = "10" data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
 									</td>
 								</tr>
 							</table>

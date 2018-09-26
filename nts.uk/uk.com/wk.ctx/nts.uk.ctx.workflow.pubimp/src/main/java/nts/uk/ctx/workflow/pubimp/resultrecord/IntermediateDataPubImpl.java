@@ -152,7 +152,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
 					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
 			if(appRootInstance == null){
-				throw new BusinessException("Msg_1430",approverID);
+				throw new BusinessException("Msg_1430", "承認者");
 			}
 			// 対象日の就業実績確認状態を取得する
 			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);

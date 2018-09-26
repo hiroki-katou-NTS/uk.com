@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.j {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             transAttendMethod: KnockoutObservableArray<ItemModel>;
@@ -166,9 +169,9 @@ module nts.uk.at.view.kmk013.j {
             
             // Save data
             saveData(): void {
-                let self = this;
-                
-                let data = {};
+                let self = this,
+                    data: any = {};
+                blockUI.grayout();
                 data.attendanceItemCountingMethod = self.selectedItem();
                 
                 service.registerVertical(data).done(function() {
@@ -187,7 +190,7 @@ module nts.uk.at.view.kmk013.j {
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message);
                         }).always(() => {
-                            nts.uk.ui.block.clear();
+                            blockUI.clear();
                         });
                     }
                 });

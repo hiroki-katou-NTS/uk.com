@@ -53,9 +53,9 @@ public class ExitStampCheck {
 									|| (attendanceLeavingGate.getLeaving().isPresent()
 											&& attendanceLeavingGate.getLeaving().get().getTimeWithDay() == null))) {
 						if (attendanceLeavingGate.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(75);
+							attendanceItemIDList.add(77);
 						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(79);
+							attendanceItemIDList.add(81);
 						}
 					}
 					// 入門のみ存在している(only has leaving time)
@@ -65,9 +65,9 @@ public class ExitStampCheck {
 							&& (attendanceLeavingGate.getLeaving().isPresent()
 									&& attendanceLeavingGate.getLeaving().get().getTimeWithDay() != null)) {
 						if (attendanceLeavingGate.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(77);
+							attendanceItemIDList.add(75);
 						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(81);
+							attendanceItemIDList.add(79);
 						}
 					}
 					// 両方存在しない(both has not data)

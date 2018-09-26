@@ -171,14 +171,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
+                        $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
                             setTimeout(() => {
                                 if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
                                     $('#endValue').ntsError('set', { messageId: "Msg_927" });
                                 }
                             }, 25);
-                        } else {
-                            $(".nts-input").ntsError("clear");
                         }
                     });
                     break;

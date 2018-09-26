@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,8 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.Constraint;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -102,26 +106,32 @@ public class MPHeaderDto {
 	public void setHeaderColor(MPAttendanceItemControl param) {
 		this.color = param.getHeaderBackgroundColor();
 	}
-	public static MPHeaderDto createSimpleHeader(PAttendanceItem item, ControlOfMonthlyDto ctrOfMonthlyDto) {
+
+	public static MPHeaderDto createSimpleHeader(PAttendanceItem item, ControlOfMonthlyDto ctrOfMonthlyDto,
+			MonthlyAttendanceItemDto maiDto) {
 		String key = mergeString(ADD_CHARACTER, String.valueOf(item.getId()));
 		String width = String.valueOf(item.getColumnWidth() == null ? 100 : item.getColumnWidth()) + PX;
 		MPHeaderDto dto = new MPHeaderDto("", key, "String", width, "", false, "", false, false);
-		int attendanceAtr = item.getAttendanceAtr();
-
-		if (attendanceAtr == 4) {
-			// dto.setNtsControl("TextEditorNumberSeparated");
-			dto.setConstraint(new Constraint("Currency", false, ""));
-		} else if (attendanceAtr == 1) {
-			// dto.setNtsControl("TextEditorTimeShortHM");
-			dto.setConstraint(new Constraint("Clock", false, ""));
-		} else if (attendanceAtr == 2) {
-			dto.setConstraint(new Constraint("Integer", false, ""));
-		} else if (attendanceAtr == 3) {
-			dto.setConstraint(new Constraint("HalfInt", false, ""));
+		// set constraint
+		if (maiDto != null && maiDto.getPrimitive() != null) {
+			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(maiDto.getPrimitive())));
+		} else {
+			int attendanceAtr = item.getAttendanceAtr();
+			if (attendanceAtr == MonthlyAttendanceItemAtr.AMOUNT.value) {
+				// dto.setNtsControl("TextEditorNumberSeparated");
+				dto.setConstraint(new Constraint("Currency", false, ""));
+			} else if (attendanceAtr == MonthlyAttendanceItemAtr.TIME.value) {
+				// dto.setNtsControl("TextEditorTimeShortHM");
+				dto.setConstraint(new Constraint("Clock", false, ""));
+			} else if (attendanceAtr == MonthlyAttendanceItemAtr.NUMBER.value) {
+				dto.setConstraint(new Constraint("Integer", false, ""));
+			} else if (attendanceAtr == MonthlyAttendanceItemAtr.DAYS.value) {
+				dto.setConstraint(new Constraint("HalfInt", false, ""));
+			}
+			// else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+			// dto.setConstraint(new Constraint("TimeWithDay", false, ""));
+			// }
 		}
-//		else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
-//			dto.setConstraint(new Constraint("TimeWithDay", false, ""));
-//		}
 		// Set header text
 		if (null != item.getLineBreakPosition() && item.getLineBreakPosition() > 0) {
 			dto.headerText = item.getName() != null ? item.getName().substring(0, item.getLineBreakPosition()) + "<br/>"
@@ -134,7 +144,13 @@ public class MPHeaderDto {
 		}
 		return dto;
 	}
+	
 	private static String mergeString(String... x) {
 		return StringUtils.join(x);
+	}
+	
+	private static String getPrimitiveAllName(Integer primitive) {
+		if(primitive == null) return "";
+		return PrimitiveValueMonthly.mapValuePrimitive.get(primitive);
 	}
 }
