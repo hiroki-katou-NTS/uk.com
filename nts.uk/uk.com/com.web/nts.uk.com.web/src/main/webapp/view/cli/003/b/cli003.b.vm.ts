@@ -721,7 +721,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         name: "Filtering",
                         type: "local",
                         filterDropDownItemIcons: false,
-                        filterDropDownWidth: 200
+                        filterDropDownWidth: 200,
+                        columnSettings: [
+                            { columnKey: "parentKey", allowFiltering: false },
+                            { columnKey: "operationId", allowFiltering: false }
+                        ]
                     }
                 ],
                 enableTooltip : true,
@@ -770,7 +774,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         name: "Filtering",
                         type: "local",
                         filterDropDownItemIcons: false,
-                        filterDropDownWidth: 200
+                        filterDropDownWidth: 200,
+                        columnSettings: [
+                            { columnKey: "parentKey", allowFiltering: false },
+                            { columnKey: "operationId", allowFiltering: false }
+                        ]
                     }
                 ],
                 autoGenerateColumns: false,
@@ -853,7 +861,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         name: "Filtering",
                         type: "local",
                         filterDropDownItemIcons: false,
-                        filterDropDownWidth: 200
+                        filterDropDownWidth: 200,
+                        columnSettings: [
+                            { columnKey: "parentKey", allowFiltering: false },
+                            { columnKey: "operationId", allowFiltering: false }
+                        ]
                     }
                 ],
                 autoGenerateColumns: false,
