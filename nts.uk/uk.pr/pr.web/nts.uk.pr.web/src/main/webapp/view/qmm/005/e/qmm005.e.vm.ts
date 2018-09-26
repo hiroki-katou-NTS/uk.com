@@ -34,7 +34,6 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
         numWorkingDaysCheck = ko.observable(true);
         socialInsuranceDateCheck = ko.observable(true);
         empInsuranceStandardDateCheck = ko.observable(true);
-        timeClosingCheck = ko.observable(true);
         timeClosingDateCheck = ko.observable(true);
         incomeTaxReferenceCheck = ko.observable(true);
         accountingClosureDateCheck = ko.observable(true);
@@ -140,7 +139,6 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                     numWorkingDaysCheck: self.numWorkingDaysCheck(),
                     socialInsuranceDateCheck: self.socialInsuranceDateCheck(),
                     empInsuranceStandardDateCheck: self.empInsuranceStandardDateCheck(),
-                    timeClosingCheck: self.timeClosingCheck(),
                     timeClosingDateCheck: self.timeClosingDateCheck(),
                     incomeTaxReferenceCheck: self.incomeTaxReferenceCheck(),
                     accountingClosureDateCheck: self.accountingClosureDateCheck(),

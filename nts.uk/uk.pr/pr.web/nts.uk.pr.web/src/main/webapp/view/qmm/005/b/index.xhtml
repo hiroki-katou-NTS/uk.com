@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 1200,
-                height : 600
+                width : 1035,
+                height : 720
             };
         </script>
         <com:ValidatorScript>
@@ -80,7 +80,7 @@
                             <!--B3_7	システム基準日情報反映-->
                             <button class="small" style="margin-left: 20px;" data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
                         </div>
-                        <table id="expand-example">
+                        <table id="expand-table" class="margin-right-12">
                             <tbody>
                             <tr id="row-nonboder">
                                 <th colspan="5"></th>
@@ -95,29 +95,29 @@
                                 <th rowspan="2"></th>
                                 <!--B4_2	給与設定-->
                                 <th colspan="5">#{i18n.getText('QMM005_28')}</th>
-                                <th colspan="5" style="border-right: none;" data-bind="css: { hidden: !show() }"></th>
+                                <th colspan="5" data-bind="css: { hidden: !show() }"></th>
                             </tr>
                             <tr class="bg-header">
                                 <!--B4_3	支払年月日-->
-                                <th>#{i18n.getText('QMM005_29')}</th>
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_29')}</th>
                                 <!--B4_4	社員抽出基準日-->
-                                <th>#{i18n.getText('QMM005_30')}</th>
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_30')}</th>
                                 <!--B4_5	社会保険徴収月-->
-                                <th>#{i18n.getText('QMM005_31')}</th>
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_31')}</th>
                                 <!--B4_6	明細書印字年月-->
-                                <th>#{i18n.getText('QMM005_32')}</th>
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_32')}</th>
                                 <!--B4_7	要勤務日数-->
-                                <th>#{i18n.getText('QMM005_33')}</th>
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_33')}</th>
                                 <!--B6_2	社会保険基準日-->
-                                <th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_44')}</th>
+                                <th class="th-center th-nowrap" data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_44')}</th>
                                 <!--B6_3	雇用保険基準日-->
-                                <th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_45')}</th>
+                                <th class="th-center th-nowrap" data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_45')}</th>
                                 <!--B6_4	勤怠締め日-->
-                                <th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_112')}</th>
+                                <th class="th-center th-nowrap" data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_112')}</th>
                                 <!--B6_5	所得税基準日-->
-                                <th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_46')}</th>
+                                <th class="th-center th-nowrap" data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_46')}</th>
                                 <!--B6_6	経理締め日-->
-                                <th data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_47')}</th>
+                                <th class="th-center th-nowrap" data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_47')}</th>
                             </tr>
                             <com:ko-foreach bind="settingPaymentList">
                                 <tr>
