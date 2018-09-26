@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
@@ -302,41 +304,59 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		if(employeeIDLst.isEmpty()){
 			return new ArrayList<>();
 		}
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, ");
-		sql.append(" frame.PHASE_ORDER, phase.APPROVAL_FORM, frame.FRAME_ORDER, frame.CONFIRM_ATR, a.APPROVER_CHILD_ID  ");
-		sql.append(" FROM WWFDT_APP_ROOT_INSTANCE appRoot LEFT JOIN WWFDT_APP_PHASE_INSTANCE phase ON appRoot.ROOT_ID = phase.ROOT_ID ");
-		sql.append(" LEFT JOIN WWFDT_APP_FRAME_INSTANCE frame ON phase.ROOT_ID = frame.ROOT_ID AND phase.PHASE_ORDER = frame.PHASE_ORDER ");
-		sql.append(" LEFT JOIN WWFDT_APP_APPROVE_INSTANCE a ON frame.ROOT_ID = a.ROOT_ID AND frame.PHASE_ORDER = a.PHASE_ORDER AND frame.FRAME_ORDER = a.FRAME_ORDER ");
-		sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.END_DATE >= ? AND appRoot.START_DATE <= ? ");
-		sql.append(" AND appRoot.EMPLOYEE_ID IN ( ");
-		sql.append(employeeIDLst.stream().map(s -> "?").collect(Collectors.joining(",")));
-		sql.append(" ) ");
+		List<AppRootInstance> result = new ArrayList<>();
+		MutableValue<Exception> exception = new MutableValue<>(null);
 		
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(sql.toString());
-			statement.setString(1, compID);
-			statement.setInt(2, rootType.value);
-			statement.setDate(3, Date.valueOf(period.end().localDate()));
-			statement.setDate(4, Date.valueOf(period.start().localDate()));
-			for (int i = 0; i < employeeIDLst.size(); i++) {
-				statement.setString(i + 5, employeeIDLst.get(i));
+		CollectionUtil.split(employeeIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, c -> {
+			if(exception.optional().isPresent()){
+				return;
 			}
-			return toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootInstance(rs)));
-			
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			try {
+				StringBuilder sql = new StringBuilder();
+				sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, ");
+				sql.append(" frame.PHASE_ORDER, phase.APPROVAL_FORM, frame.FRAME_ORDER, frame.CONFIRM_ATR, a.APPROVER_CHILD_ID  ");
+				sql.append(" FROM WWFDT_APP_ROOT_INSTANCE appRoot LEFT JOIN WWFDT_APP_PHASE_INSTANCE phase ON appRoot.ROOT_ID = phase.ROOT_ID ");
+				sql.append(" LEFT JOIN WWFDT_APP_FRAME_INSTANCE frame ON phase.ROOT_ID = frame.ROOT_ID AND phase.PHASE_ORDER = frame.PHASE_ORDER ");
+				sql.append(" LEFT JOIN WWFDT_APP_APPROVE_INSTANCE a ON frame.ROOT_ID = a.ROOT_ID AND frame.PHASE_ORDER = a.PHASE_ORDER AND frame.FRAME_ORDER = a.FRAME_ORDER ");
+				sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.END_DATE >= ? AND appRoot.START_DATE <= ? ");
+				sql.append(" AND appRoot.EMPLOYEE_ID IN ( ");
+				sql.append(joinParam(c));
+				sql.append(" ) ");
+				
+				PreparedStatement statement = this.connection().prepareStatement(sql.toString());
+				statement.setString(1, compID);
+				statement.setInt(2, rootType.value);
+				statement.setDate(3, Date.valueOf(period.end().localDate()));
+				statement.setDate(4, Date.valueOf(period.start().localDate()));
+				for (int i = 0; i < employeeIDLst.size(); i++) {
+					statement.setString(i + 5, employeeIDLst.get(i));
+				}
+				result.addAll(toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootInstance(rs,compID, rootType.value))));
+				
+			} catch (SQLException e) {
+				exception.set(e);
+			}
+		});
+		
+		if(exception.optional().isPresent()){
+			throw new RuntimeException(exception.get());
 		}
+		
+		return result;
 	}
 
-	private FullJoinAppRootInstance createFullJoinAppRootInstance(NtsResultRecord rs){
+	private String joinParam(List<String> employeeIDLst) {
+		return employeeIDLst.stream().map(x -> "?").collect(Collectors.joining(","));
+	}
+
+	private FullJoinAppRootInstance createFullJoinAppRootInstance(NtsResultRecord rs, String comID, int rootType){
 		return new FullJoinAppRootInstance(
 				rs.getString("ROOT_ID"), 
-				rs.getString("CID"), 
+				comID, 
 				rs.getString("EMPLOYEE_ID"), 
 				rs.getGeneralDate("START_DATE"), 
 				rs.getGeneralDate("END_DATE"), 
-				rs.getInt("ROOT_TYPE"), 
+				rootType, 
 				rs.getInt("PHASE_ORDER"), 
 				rs.getInt("APPROVAL_FORM"), 
 				rs.getInt("FRAME_ORDER"), 
