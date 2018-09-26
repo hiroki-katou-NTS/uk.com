@@ -91,7 +91,7 @@ public class InitValueSetItemFinder {
 			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
 			for (SettingItemDto settingItemDto : result) {
 				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
-					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					comboBoxStandardDate = settingItemDto.getSaveData().getValue().toString().isEmpty()? comboBoxStandardDate :(GeneralDate) settingItemDto.getSaveData().getValue();
 					break;
 				}
 			}

@@ -57,6 +57,7 @@ module cps002.a.vm {
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
         enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
+        wrkPlaceStartDate: KnockoutObservable<string> = ko.observable("");
 
         ccgcomponent: any = {
             /** Common properties */
@@ -306,9 +307,9 @@ module cps002.a.vm {
                         break;
                     case 'CPS002_14':
                         if (ko.toJS(self.createTypeId) === 1) {
-                            //start Screen C
-                            //Set name Screen C　#CPS002_3
-                            $('#pg-name').text('CPS002C' + ' ' + text('CPS002_3'));
+                            //start Screen B
+                            //Set name Screen B　#CPS002_2
+                            $('#pg-name').text('CPS002B' + ' ' + text('CPS002_2'));
                             // init ccg component
                             let sto = setTimeout(() => {
                                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
@@ -317,9 +318,9 @@ module cps002.a.vm {
                                 clearTimeout(sto);
                             }, 100);
                         } else {
-                            //start Screen B
-                            //Set name Screen B　#CPS002_2
-                            $('#pg-name').text('CPS002B' + ' ' + text('CPS002_2'));
+                            //start Screen C
+                            //Set name Screen C　#CPS002_3
+                            $('#pg-name').text('CPS002C' + ' ' + text('CPS002_3'));
                             self.loadInitSettingData();
                         }
 
@@ -340,6 +341,7 @@ module cps002.a.vm {
 
                         service.getLayoutByCreateType(command).done((data: ILayout) => {
                             self.listItemCls(data.itemsClassification || []);
+                            self.wrkPlaceStartDate(data.wrkPlaceStartDate);
                             if (self.listItemCls().length > 0) {
                                 new vc(self.listItemCls());
                             }
@@ -1036,6 +1038,7 @@ module cps002.a.vm {
         itemsClassification?: Array<any>;
         classificationItems?: Array<any>;
         standardDate?: string;
+        wrkPlaceStartDate? :string;
     }
 
     class EmpRegHistory {
