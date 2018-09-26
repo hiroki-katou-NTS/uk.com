@@ -78,6 +78,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -297,6 +298,8 @@ public class DailyPerformanceCorrectionProcessor {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
 		
+		List<String> employeeIdsOri = changeEmployeeIds;
+		
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
 		/**
@@ -373,6 +376,17 @@ public class DailyPerformanceCorrectionProcessor {
 			screenDto.setLstData(screenDto.getLstData().stream()
 					.filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
 		}
+		
+		List<DPDataDto> listData = new ArrayList<>();
+		for (String employeeId : employeeIdsOri) {
+			screenDto.getLstData().stream().forEach(item -> {
+				if(item.getEmployeeId().equals(employeeId)){
+					listData.add(item);
+				}				
+			});
+			
+		}
+		screenDto.setLstData(listData);
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
@@ -1389,7 +1403,17 @@ public class DailyPerformanceCorrectionProcessor {
 		List<Integer> lstAtdItemUnique = disItem.getLstAtdItemUnique();
 		List<FormatDPCorrectionDto> lstFormat = disItem.getLstFormat();
 		if (!lstAtdItemUnique.isEmpty()) {
-			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(lstAtdItemUnique)
+			Set<Integer> lstGroupInput = new HashSet<>();
+			lstAtdItemUnique.stream().forEach(x -> {
+				val item = ValidatorDataDailyRes.INPUT_CHECK_MAP.get(x.intValue());
+				if(item != null) {
+					lstGroupInput.add(item);
+					lstGroupInput.add(x);
+				}else{
+					lstGroupInput.add(x);
+				}
+			});
+			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(lstGroupInput))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
 							x -> x.getAttendanceItemName())); // 9s
 			lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
@@ -1397,6 +1421,7 @@ public class DailyPerformanceCorrectionProcessor {
 						x.setName(itemName.get(x.getId()));
 						return x;
 					}).collect(Collectors.toList());
+			result.setItemInputName(itemName);
 		}
 		
 		//set item atr from optional
@@ -1468,6 +1493,8 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setComboItemCalc(EnumCodeName.getCalcHours());
 		result.setComboItemDoWork(EnumCodeName.getDowork());
 		result.setComboItemReason(EnumCodeName.getReasonGoOut());
+		result.setComboItemCalcCompact(EnumCodeName.getCalcCompact());
+		result.setComboTimeLimit(EnumCodeName.getComboTimeLimit());
 		result.setItemIds(lstAtdItemUnique);
 		return result;
 	}

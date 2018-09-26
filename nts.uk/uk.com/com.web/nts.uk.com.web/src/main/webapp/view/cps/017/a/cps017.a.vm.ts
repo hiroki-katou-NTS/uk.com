@@ -187,6 +187,8 @@
                 if (x) {
                     self.checkCreateaaa(false);
                     self.enableCreateNew(true);
+                    self.enableRemove(true);
+                    self.enableOpenDialogB(true);
                     nts.uk.ui.errors.clearAll();
                     let selectLists: ISelection1 = _.find(self.listSelection(), (item) => {
                         return item.selectionID == x;
@@ -507,21 +509,15 @@
                                 self.historySelection().histId.valueHasMutated();
                             }
                         });
-                        if (self.listSelection().length > 1) {
-                            self.checkCreateaaa(false);
-                        } else {
-                            let selection: Selection = self.selection();
-                            self.enableSelectionCd(true);
-                            selection.externalCD('');
-                            selection.selectionCD('');
-                            selection.selectionName('');
-                            selection.memoSelection('');
-                            self.focus.code(true);
-                            self.checkCreateaaa(true);
-                        }
+                        
                     });
                 });
-                
+                if (self.listSelection().length > 1) {
+                    self.checkCreateaaa(false);
+                } else {
+                    self.createNewData();
+                    self.checkCreateaaa(true);
+                }
             }).ifNo(() => {
                 self.selection().selectionID.valueHasMutated();
             })

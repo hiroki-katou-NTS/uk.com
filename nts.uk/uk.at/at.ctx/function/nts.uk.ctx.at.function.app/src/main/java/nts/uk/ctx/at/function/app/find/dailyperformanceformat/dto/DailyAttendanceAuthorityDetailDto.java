@@ -6,12 +6,8 @@ import lombok.Value;
 
 @Value
 public class DailyAttendanceAuthorityDetailDto {
-	
+
 	private int attendanceItemId;
-	
-	private int dislayNumber;
-	
-	private String attendanceItemName;
 
 	private int order;
 
