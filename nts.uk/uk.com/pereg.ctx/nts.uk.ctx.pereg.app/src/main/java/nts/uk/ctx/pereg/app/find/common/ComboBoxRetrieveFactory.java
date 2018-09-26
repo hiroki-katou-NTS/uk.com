@@ -165,7 +165,7 @@ public class ComboBoxRetrieveFactory {
 	private static final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, String workplaceId) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -187,7 +187,7 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, null, isRequired, perEmplType, isDataType6, categoryCode);
+		return getComboBox(RefType, refCd, standardDate, employeeId, workplaceId, isRequired, perEmplType, isDataType6, categoryCode);
 	}
 
 	/**

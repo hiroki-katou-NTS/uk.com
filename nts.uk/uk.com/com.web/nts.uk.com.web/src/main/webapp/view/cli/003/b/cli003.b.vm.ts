@@ -701,16 +701,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 height: "calc(100% - 5px)",
                 features: [
                     {
-                        name: "Tooltips",
-                        tooltipShown : function(evt, args) {
-                            setTimeout(() => {
-                            let lengthToolTip = args.value.length * 16 ;
-                            let maxPx = lengthToolTip <= 240 ? "max-content" : "240px" ;
-                            $("#igGridLog_tooltips").css("max-width",maxPx);
-                            $("#igGridLog_tooltips_content").css("width","max-content");
-                            console.log(maxPx);
-                            }, 1);
-                        }
+                        name: "Tooltips"
                     },
                     {
                         name: "Paging",
@@ -752,16 +743,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 features: [
                     {
                         name: "Tooltips",
-                        inherit: true,
-                        tooltipShown : function(evt, args) {
-                            setTimeout(() => {
-                            let lengthToolTip = args.value.length * 16 ;
-                            let maxPx = lengthToolTip <= 240 ? "max-content" : "240px" ;
-                            $("#igGridLog_tooltips").css("max-width",maxPx);
-                            $("#igGridLog_tooltips_content").css("width","max-content");
-                            console.log(maxPx);
-                            }, 1);
-                        }
+                        inherit: true
                     },
                     {
                         name: "Responsive",
@@ -770,7 +752,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     {
                         name: "Resizing",
                         deferredResizing: false,
-                        allowDoubleClickToResize: true
+                        allowDoubleClickToResize: true,
+                        inherit: true
                     },
                     {
                         name: "Sorting",
@@ -826,17 +809,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
                                 columnSettings: []
-                            },
-                            {
-                                name: "Resizing",
-                                deferredResizing: false,
-                                allowDoubleClickToResize: true
-                            },
-                            {
-                                name: "Paging",
-                                pageSize: 100,
-                                type: "local",
-                                inherit: true
                             }
                         ]
                     }
@@ -855,16 +827,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 features: [
                     {
                         name: "Tooltips",
-                        inherit: true,
-                        tooltipShown: function(evt, args) {
-                            setTimeout(() => {
-                                let lengthToolTip = args.value.length * 16;
-                                let maxPx = lengthToolTip <= 240 ? "max-content" : "240px";
-                                $("#igGridLog_tooltips").css("max-width", maxPx);
-                                $("#igGridLog_tooltips_content").css("width", "max-content");
-                                console.log(maxPx);
-                            }, 1);
-                        }
+                        inherit: true
                     },
                     {
                         name: "Responsive",
@@ -873,11 +836,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     {
                         name: "Resizing",
                         deferredResizing: false,
-                        allowDoubleClickToResize: true
+                        allowDoubleClickToResize: true,
+                        inherit: true
                     },
                     {
                         name: "Sorting",
-                        inherit: true
+                        inherit: false
                     },
                     {
                         name: "Paging",
@@ -917,9 +881,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "correctionAttr", headerText: "correctionAttr", dataType: "string", width: "170px" }
                         ],
                         features: [
-                            {
-                                name: "Tooltips"
-                            },
+                            
                             {
                                 name: 'Selection',
                                 multipleSelection: false
@@ -928,43 +890,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 name: "Responsive",
                                 enableVerticalRendering: false,
                                 columnSettings: []
-                            },
-                            {
-                                name: "Resizing",
-                                deferredResizing: false,
-                                allowDoubleClickToResize: true
-                            },
-                            {
-                                name: "Paging",
-                                pageSize: 100,
-                                type: "local",
-                                inherit: true
-                            },
-                            {
-                                name: "Sorting",
-                                columnSettings: [
-                                    {
-                                        columnKey: 'targetDate',
-                                        allowSorting: false
-                                    },
-                                    {
-                                        columnKey: 'itemName',
-                                        allowSorting: false
-                                    },
-                                    {
-                                        columnKey: 'valueBefore',
-                                        allowSorting: false
-                                    },
-                                    {
-                                        columnKey: 'valueAfter',
-                                        allowSorting: false
-                                    },
-                                    {
-                                        columnKey: 'correctionAttr',
-                                        allowSorting: false
-                                    }
-                                ]
                             }
+                           
                         ]
                     }
                 ],
@@ -985,6 +912,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var headerSetting = $(ui.element).data("headersetting");
                 var header = ui.element.find("th[role='columnheader']");
                 ui.element.parent().addClass("default-overflow");
+                ui.element.parent().css("overflow-x","");
                 let screenModel = new viewmodel.ScreenModel();
                 let helpButton = $('<button>', {
                     text: getText('?'),
@@ -1008,17 +936,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     var container = helpButton.closest(".igscroll-touchscrollable");
                     var tooltip = helpButton.parent().find(".nts-help-button-image");
                     if (tooltip.css("display") !== "none") {
-                        //                        container.addClass("overflow-show");
                         container.addClass("default-overflow");
-                        container.css("overflow", "visible");
+                        container.removeClass("overflow-show");
+                        container.css("overflow-x","");
                         $("#igGridLog").data("icon-showed", helpButton);
                     } else {
                         container.removeClass("default-overflow");
-                        container.css("overflow", "");
+                        container.addClass("overflow-show");
+                        container.css("overflow-x","auto");
                         $("#igGridLog").data("icon-showed", null);
                     }
                 })
-                //                 binding new viewmodel for only button help
+                //  binding new viewmodel for only button help
                 ko.applyBindings({}, helpButton[0]);
             });
 
@@ -1047,10 +976,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     $(ui.element).data("headersetting", headerSetting);
                 }
             });
-             
-        
-            $(document).delegate("#igGridLog", "iggridtooltipstooltipshowing", function(evt, args) {
-                console.log(args.columnKey);
+            $(document).delegate("#igGridLog", "iggridresizingcolumnresizing", function(evt, ui) {
+                $(".ui-iggrid-scrolldiv.ui-widget-content.igscroll-touchscrollable.default-overflow").css("overflow-x", "auto");
             });
         }
 

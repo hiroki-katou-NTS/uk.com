@@ -553,9 +553,15 @@ module nts.uk.at.view.kdw002.c {
                 dto.itemDailyName = app.attendanceItemName;
                 dto.displayNumber = app.attendanceItemDisplayNumber;
                 dto.userCanUpdateAtr = app.userCanUpdateAtr;
-                dto.toUse = app.authority.toUse;
-                dto.canBeChangedByOthers = app.authority.canBeChangedByOthers;
-                dto.youCanChangeIt = app.authority.youCanChangeIt;
+                if (app.authority != null) {
+                    dto.toUse = app.authority.toUse;
+                    dto.canBeChangedByOthers = app.authority.canBeChangedByOthers;
+                    dto.youCanChangeIt = app.authority.youCanChangeIt;
+                } else {
+                    dto.toUse = false;
+                    dto.canBeChangedByOthers = false;
+                    dto.youCanChangeIt = false;
+                }
                 return dto;
             }
         }
