@@ -48,7 +48,7 @@ public class GetAgreementPeriodFromYearImpl implements GetAgreementPeriodFromYea
 		int startMonth = agreementOperationSet.getStartingMonth().value + 1;
 		
 		// 36協定の「締め日」を確認
-		ClosureDate closureDate = new ClosureDate(0, true);
+		ClosureDate closureDate = new ClosureDate(1, true);
 		if (agreementOperationSet.getClosingDateType() != ClosingDateType.LASTDAY){
 			closureDate = new ClosureDate(agreementOperationSet.getClosingDateType().value + 1, false);
 		}

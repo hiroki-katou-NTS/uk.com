@@ -63,7 +63,7 @@ public class AddEmployeeCommandFacade {
 			command.getInputs().add(createCardNoCategory(command.getCardNo()));
 		}
 		
-		
+		// trường hợp phi thẳng vào layout
 		if (command.getCreateType() == 3) {
 			return command.getInputs();
 		}

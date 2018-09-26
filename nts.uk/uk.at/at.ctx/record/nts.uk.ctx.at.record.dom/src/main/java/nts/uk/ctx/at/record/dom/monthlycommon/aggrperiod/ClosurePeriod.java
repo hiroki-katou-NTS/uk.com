@@ -37,7 +37,7 @@ public class ClosurePeriod {
 	public ClosurePeriod(){
 	
 		this.closureId = ClosureId.RegularEmployee;
-		this.closureDate = new ClosureDate(0, true);
+		this.closureDate = new ClosureDate(1, true);
 		this.yearMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
 		this.closureYmd = GeneralDate.today();
 		this.aggrPeriods = new ArrayList<>();
