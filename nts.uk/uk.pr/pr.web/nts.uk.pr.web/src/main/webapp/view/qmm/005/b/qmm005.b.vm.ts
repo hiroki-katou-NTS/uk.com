@@ -34,30 +34,20 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             self.processingYearList = ko.observableArray([]);
             self.show = ko.observable(false);
             self.btnText = ko.computed(function () {
-                let windowSize = nts.uk.ui.windows.getSelf();
+                // let windowSize = nts.uk.ui.windows.getSelf();
                 if (self.show()) {
-                    windowSize.$dialog.dialog('option', {
-                        position: {
-                            my: "top-100",
-                            at: "left+200",
-                            of: $("#content_dialog")
-                        },
-                        width: 1700,
-                        height: 500
-                    });
-                    windowSize.$dialog.resize();
+                    // windowSize.$dialog.dialog('option', {
+                    //     width: 12,
+                    //     height: 830
+                    // });
+                    // windowSize.$dialog.resize();
                     return "-";
                 } else {
-                    windowSize.$dialog.dialog('option', {
-                        position: {
-                            my: "top-100",
-                            at: "left+200)",
-                            of: $("#content_dialog")
-                        },
-                        width: 1100,
-                        height: 500
-                    });
-                    windowSize.$dialog.resize();
+                    // windowSize.$dialog.dialog('option', {
+                    //     width: 1100,
+                    //     height: 830
+                    // });
+                    // windowSize.$dialog.resize();
                     return "+";
                 }
             });
@@ -65,7 +55,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             self.processingYear = ko.observable(null);
             self.processingYearNative = null;
             self.processingYear.subscribe(function (newValue) {
-                if(newValue != self.processingYearNative && newValue != ''){
+                if (newValue != self.processingYearNative && newValue != '') {
                     self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
@@ -126,7 +116,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 });
                 self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
-                    self.processingYearNative = Number.parseInt(self.processingYearList()[0].code);
+                    self.processingYearNative = parseInt(self.processingYearList()[0].code);
                     self.processingYear(self.processingYearList()[0].code);
                     self.selectProcessingYear(self.processingYearList()[0].code);
                 }
@@ -175,7 +165,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         firstArray[i]["specificationPrintDate"] = secondArray[i]["specificationPrintDate"];
                     }
                     self.settingPaymentList(firstArray);
-                    if($("#B2_2  tbody  tr:nth-child(1)  td")[0]){
+                    if ($("#B2_2  tbody  tr:nth-child(1)  td")[0]) {
                         $("#B2_2  tbody  tr:nth-child(1)  td")[0].focus();
                     }
                 } else {
@@ -187,7 +177,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         creatNewProcessYear() {
             var self = this;
             self.isNewMode(true);
-            if ($('#B2_2_container')){
+            if ($('#B2_2_container')) {
                 $('#B2_2_container').focus();
             }
             self.processingYear(null);
@@ -207,8 +197,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                                 targetMonth: ko.observable(index + '月の設定'),
                                 paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYear(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
                                 employeeExtractionReferenceDate: ko.observable(self.preDateTime(self.processingYear(), index, data.basicSetting.employeeExtractionReferenceDate.refeDate)),
-                                socialInsuranceCollectionMonth: ko.observable(Number.parseInt(self.processingYear() + self.fullMonth(index))),
-                                specificationPrintDate: ko.observable(Number.parseInt(self.processingYear() + '' + index)),
+                                socialInsuranceCollectionMonth: ko.observable(parseInt(self.processingYear() + self.fullMonth(index))),
+                                specificationPrintDate: ko.observable(parseInt(self.processingYear() + '' + index)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
                                 socialInsuranceStandardDate: ko.observable(self.preDateTime(self.processingYear(), index, data.advancedSetting.sociInsuStanDate.refeDate)),
                                 employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYear() - 1), index, data.advancedSetting.empInsurStanDate.refeDate)),
@@ -282,7 +272,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B4_12	社員抽出基準日
                         // ※2　対象社員抽出基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.empExtractionRefDateCheck) {
-                            settingPayment.employeeExtractionReferenceDate(self.preDateTime(self.processingYear(), basicSetting.employeeExtractionReferenceDate.refeMonth, basicSetting.employeeExtractionReferenceDate.refeDate));
+                            let month = index - parseInt(basicSetting.employeeExtractionReferenceDate.refeMonth);
+                            settingPayment.employeeExtractionReferenceDate(self.preDateTime(self.passYear(self.processingYear(), month, false).year, self.passYear(self.processingYear(), month, false).month, basicSetting.employeeExtractionReferenceDate.refeDate));
                         }
                         // B4_11    支払曜日
                         // ※1　支払日チェックが入っている場合のみ更新する
@@ -293,14 +284,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // ※3　社会保険徴収月チェックが入っている場合のみ更新する
                         if (params.checkbox.socialInsuranceMonthCheck) {
                             let year = self.processingYear();
-                            let month = index + Number.parseInt(advancedSetting.salaryInsuColMon.monthCollected) - SOCIAL_INSU_COLLE_MONTH_INDEX;
+                            let month = index + parseInt(advancedSetting.salaryInsuColMon.monthCollected) - SOCIAL_INSU_COLLE_MONTH_INDEX;
                             settingPayment.socialInsuranceCollectionMonth(self.passYear(year, month, true));
                         }
                         // B4_15	明細書印字年月
                         // ※4　要勤務日数チェックが入っている場合のみ更新する
                         if (params.checkbox.specPrintDateCheck) {
                             let year = self.processingYear();
-                            let month = index + Number.parseInt(advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX;
+                            let month = index + parseInt(advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX;
                             settingPayment.specificationPrintDate(self.passYear(year, month, true));
                         }
                         // B4_16	要勤務日数
@@ -311,14 +302,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B6_7		社会保険基準日
                         // ※6　社会保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.socialInsuranceDateCheck) {
-                            let year = self.processingYear() + Number.parseInt(advancedSetting.sociInsuStanDate.baseYear) - SOCI_INSU_BASE_YEAR_INDEX;
+                            let year = self.processingYear() + parseInt(advancedSetting.sociInsuStanDate.baseYear) - SOCI_INSU_BASE_YEAR_INDEX;
                             let month = parseInt(advancedSetting.sociInsuStanDate.baseMonth);
                             if (month == 0 || month == 1) {
                                 month = index + advancedSetting.sociInsuStanDate.baseMonth - SOCI_INSU_BASE_MONTH_INDEX;
                             } else {
                                 month = month - SOCI_INSU_BASE_MONTH_INDEX;
                             }
-                            let date = Number.parseInt(advancedSetting.sociInsuStanDate.refeDate);
+                            let date = parseInt(advancedSetting.sociInsuStanDate.refeDate);
                             settingPayment.socialInsuranceStandardDate(self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, date));
                         }
                         // B6_8		雇用保険基準日
@@ -342,7 +333,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         /*B6_11	経理締め日
                          ※9　経理締め日チェックが入っている場合のみ更新する*/
                         if (params.checkbox.accountingClosureDateCheck) {
-                            let month = index - Number.parseInt(basicSetting.accountingClosureDate.processMonth); //THIS_MONTH:0 LAST_MONTH :1
+                            let month = index - parseInt(basicSetting.accountingClosureDate.processMonth); //THIS_MONTH:0 LAST_MONTH :1
                             settingPayment.accountingClosureDate(self.preDateTime(self.passYear(self.processingYear(), month, false).year, self.passYear(self.processingYear(), month, false).month, basicSetting.accountingClosureDate.disposalDay));
                         }
                     }
@@ -351,8 +342,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         }
 
         passYear(year, month, flag) {
-            year = Number.parseInt(year);
-            month = Number.parseInt(month);
+            year = parseInt(year);
+            month = parseInt(month);
             if (month > -11 && month < 1) {
                 month = month + 12;
                 return flag ? (year - 1) + '/' + (month < 10 ? '0' + month : month) : {year: year, month: month};
