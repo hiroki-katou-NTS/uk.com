@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
@@ -418,24 +419,48 @@ public class DailyModifyResCommandFacade {
 
 	public List<Pair<String, GeneralDate>> checkEditedItems(List<DailyModifyResult> resultOlds,
 			List<DailyModifyResult> resultNews) {
-		Set<Pair<String, GeneralDate>> editedDate = new HashSet<>();
-		for (DailyModifyResult r : resultOlds) {
-			val newR = resultNews.stream()
-					.filter(n -> n.getEmployeeId().equals(r.getEmployeeId()) && n.getDate().equals(r.getDate()))
-					.findFirst();
-			if (newR.isPresent()) {
-				List<ItemValue> oldItems = r.getItems();
-				List<ItemValue> newItems = newR.get().getItems();
-				oldItems.forEach(ov -> {
-					val nv = newItems.stream().filter(n -> n.getItemId() == ov.getItemId()).findFirst();
-					if (nv.isPresent() && nv.get().getValue() != null && !nv.get().getValue().equals(ov.getValue())
-							&& DPText.TMP_DATA_CHECK_ITEMS.contains(nv.get().getItemId())) {
-						editedDate.add(Pair.of(r.getEmployeeId(), r.getDate()));
-					}
-				});
+		List<Pair<String, GeneralDate>> editedDate = new ArrayList<>();
+		val old = mapTo(resultOlds);
+		val news = mapTo(resultNews);
+		old.entrySet().forEach(o -> {
+			List<ItemValue> niv = getFrom(news, o.getKey());
+			if(!CollectionUtil.isEmpty(niv)){
+				if(niv.stream().anyMatch(c -> o.getValue().stream().filter(oi -> c.valueAsObjet() != null && c.equals(oi)).findFirst().isPresent())){
+					editedDate.add(o.getKey());
+				}
 			}
+		});
+//		for (DailyModifyResult r : resultOlds) {
+//			val newR = resultNews.stream()
+//					.filter(n -> n.getEmployeeId().equals(r.getEmployeeId()) && n.getDate().equals(r.getDate()))
+//					.findFirst();
+//			if (newR.isPresent()) {
+//				List<ItemValue> oldItems = r.getItems();
+//				List<ItemValue> newItems = newR.get().getItems();
+//				oldItems.forEach(ov -> {
+//					val nv = newItems.stream().filter(n -> n.getItemId() == ov.getItemId()).findFirst();
+//					if (nv.isPresent() && nv.get().getValue() != null && !nv.get().getValue().equals(ov.getValue())
+//							&& DPText.TMP_DATA_CHECK_ITEMS.contains(nv.get().getItemId())) {
+//						editedDate.add(Pair.of(r.getEmployeeId(), r.getDate()));
+//					}
+//				});
+//			}
+//		}
+		return editedDate;
+	}
+	
+	private List<ItemValue> getFrom(Map<Pair<String, GeneralDate>, List<ItemValue>> source, Pair<String, GeneralDate> key){
+		if(source.containsKey(key)){
+			return source.get(key);
 		}
-		return new ArrayList<>(editedDate);
+		return null;
+	}
+	
+	private Map<Pair<String, GeneralDate>, List<ItemValue>> mapTo(List<DailyModifyResult> source){
+		return source.stream().collect(Collectors.groupingBy(r -> Pair.of(r.getEmployeeId(), r.getDate()), 
+				Collectors.collectingAndThen(Collectors.toList(), 
+						list -> list.stream().map(c -> c.getItems()).flatMap(List::stream).distinct()
+						.filter(c -> DPText.TMP_DATA_CHECK_ITEMS.contains(c.getItemId())).collect(Collectors.toList()))));
 	}
 	
 }
