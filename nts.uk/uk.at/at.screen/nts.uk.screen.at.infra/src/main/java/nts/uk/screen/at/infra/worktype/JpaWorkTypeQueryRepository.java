@@ -1,6 +1,8 @@
 package nts.uk.screen.at.infra.worktype;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,7 +117,7 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 				"ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");
 		stringBuilder.append(" AND c.deprecateAtr = 0 ");
-		stringBuilder.append(" AND (c.oneDayAtr = 0 OR c.oneDayAtr = 11 OR c.oneDayAtr = 7 OR c.oneDayAtr = 10 OR c.morningAtr = 0 OR c.morningAtr = 11 OR c.morningAtr = 7 OR c.morningAtr = 10 OR c.afternoonAtr = 0 OR c.afternoonAtr = 11 OR c.afternoonAtr = 7 OR c.afternoonAtr = 10 )");
+		stringBuilder.append(" AND ((c.worktypeAtr = 0 AND c.oneDayAtr IN :oneDayAtr) OR (c.worktypeAtr = 1 AND c.morningAtr IN :halfDay) OR (c.worktypeAtr = 1 AND c.afternoonAtr IN :halfDay))");
 		stringBuilder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		SELECT_OT_KAF022 = stringBuilder.toString();
 		
@@ -153,8 +155,8 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		stringBuilder.append(
 				"ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");
-		stringBuilder.append(" AND c.deprecateAtr = 0 AND (c.oneDayAtr = 0 ");
-		stringBuilder.append(" OR c.oneDayAtr = 11 OR c.oneDayAtr = 7 OR c.morningAtr IN :halfDay OR c.afternoonAtr IN :halfDay)");
+		stringBuilder.append(" AND c.deprecateAtr = 0 ");
+		stringBuilder.append(" AND ((c.worktypeAtr = 0 AND (c.oneDayAtr = 0  OR c.oneDayAtr = 11 OR c.oneDayAtr = 7)) OR (c.worktypeAtr = 1 AND (c.morningAtr IN :halfDay OR c.afternoonAtr IN :halfDay)))");
 		stringBuilder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		SELECT_BOUNCE_KAF022 = stringBuilder.toString();
 		
@@ -217,9 +219,10 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		if(halfDay.isEmpty()){
 			return Collections.emptyList();
 		}else{
-			return this.queryProxy().query(SELECT_BOUNCE_KAF022, WorkTypeDto.class).setParameter("companyId", companyId)
+			List<WorkTypeDto> a = this.queryProxy().query(SELECT_BOUNCE_KAF022, WorkTypeDto.class).setParameter("companyId", companyId)
 					.setParameter("halfDay", halfDay)
 					.getList();
+			return a;
 		}
 	}
 	
@@ -240,7 +243,23 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 	
 	@Override
 	public List<WorkTypeDto> findOtKaf022(String companyId) {
+		List<Integer> oneDayAtr = new ArrayList<>();
+		List<Integer> halfDay = new ArrayList<>();
+		oneDayAtr.add(0);
+		oneDayAtr.add(11);
+		oneDayAtr.add(7);
+		oneDayAtr.add(10);
+		halfDay.add(1);
+		halfDay.add(7);
+		halfDay.add(2);
+		halfDay.add(0);
+		halfDay.add(4);
+		halfDay.add(5);
+		halfDay.add(6);
+		halfDay.add(9);
 		return this.queryProxy().query(SELECT_OT_KAF022, WorkTypeDto.class).setParameter("companyId", companyId)
+																			.setParameter("oneDayAtr", oneDayAtr)
+																			.setParameter("halfDay", halfDay)
 				.getList();
 	}
 	
