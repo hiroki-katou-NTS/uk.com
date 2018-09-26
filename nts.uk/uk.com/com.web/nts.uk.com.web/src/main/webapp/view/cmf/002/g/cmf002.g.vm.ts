@@ -22,7 +22,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         constructor() {
             let self = this;
             self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
-            $("#fixed-table").ntsFixedTable({ height: 184, width: 600 });
+            $("#fixed-table").ntsFixedTable({ height: 184 });
 
             self.acceptWithoutSettingItems = ko.observableArray([
                 new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_131')),
