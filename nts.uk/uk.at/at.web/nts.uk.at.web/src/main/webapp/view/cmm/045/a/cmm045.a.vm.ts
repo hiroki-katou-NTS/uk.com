@@ -1711,7 +1711,7 @@ module cmm045.a.viewmodel {
                 if(app.appStatusNo == 5){ unApprovalNumber += 1; }//UNAPPROVED:5
                 if(app.appStatusNo == 4){//APPROVED: 4
                     let agent = self.findAgent(app.appId);
-                    if(agent != undefined && agent.agentId != null && agent.agentId != ''){
+                    if(agent != undefined && agent.agentId != null && agent.agentId != '' && agent.agentId.match(/^\s+$/) == null){
                         approvalAgentNumber += add;
                     }else{
                         approvalNumber += add;

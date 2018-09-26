@@ -189,7 +189,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						a.getSpecialHolidayCode(),
 						false,
 						true,
-						interimSpecialChk,
+						interimSpecial,
 						specialHolidayData);
 				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
 				for (SpecialLeaveError speError : speOutCheck.getLstError()) {

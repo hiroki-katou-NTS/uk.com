@@ -75,7 +75,7 @@ module nts.uk.at.view.kwr001.a {
             enableByOutputFormat: KnockoutObservable<boolean>;
             enableBtnConfigure: KnockoutObservable<boolean>;
             enableConfigErrCode: KnockoutObservable<boolean>;
-            isAuthority: KnockoutObservable<boolean>;
+            isEmployeeCharge: KnockoutObservable<boolean>;
             
             taskId: KnockoutObservable<string>;
             errorLogs : KnockoutObservableArray<EmployeeError>;
@@ -84,7 +84,7 @@ module nts.uk.at.view.kwr001.a {
             constructor() {
                 let self = this;
                 
-                self.isAuthority = ko.observable(true);
+                self.isEmployeeCharge = ko.observable(true);
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
                 self.enableBtnConfigure = ko.observable(true);
@@ -134,6 +134,10 @@ module nts.uk.at.view.kwr001.a {
                     self.datepickerValue().endDate = value;   
                     self.datepickerValue.valueHasMutated();      
                 });
+                
+                self.datepickerValue.subscribe((value) => {
+//                    console.log(value);
+                })
                 // end set variable for datepicker A1_6
                 
                 self.taskId = ko.observable('');
@@ -193,7 +197,7 @@ module nts.uk.at.view.kwr001.a {
                                 employeeSearchs.push(employee);    
                             }
                         });
-                        self.ccg001ComponentOption.baseDate = data.baseDate;
+//                        self.ccg001ComponentOption.baseDate = data.baseDate;
                         self.employeeList(employeeSearchs);
                     }
                 }
@@ -243,7 +247,7 @@ module nts.uk.at.view.kwr001.a {
                 })
                 self.selectedCodeA13_1.valueHasMutated();
                 
-                self.isAuthority.subscribe(function(value) {
+                self.isEmployeeCharge.subscribe(function(value) {
                     self.enableBtnConfigure(value);
                 })
                 
@@ -284,7 +288,7 @@ module nts.uk.at.view.kwr001.a {
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
                         
                         self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
-                        self.isAuthority(dataService.existAuthority);
+                        self.isEmployeeCharge(dataService.employeeCharge);
                         switch(dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:
@@ -293,12 +297,12 @@ module nts.uk.at.view.kwr001.a {
                             // return screen A, don't have data characteristic
                             case STRING_EMPTY:
                                 break;
-                            case OPEN_SCREEN_C:
-                                self.openScreenC();
-                                break;
-                            case "Msg_1348":
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
-                                break;
+//                            case OPEN_SCREEN_C:
+//                                self.openScreenC();
+//                                break;
+//                            case "Msg_1348":
+//                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
+//                                break;
                             default:
                                 break;
                         }
@@ -792,7 +796,7 @@ module nts.uk.at.view.kwr001.a {
             isInDialog?: boolean;
         
             /** Required parameter */
-            baseDate?: string; // 基準日
+            baseDate?: any; // 基準日
             periodStartDate?: string; // 対象期間開始日
             periodEndDate?: string; // 対象期間終了日
             inService: boolean; // 在職区分
