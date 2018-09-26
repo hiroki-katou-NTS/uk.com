@@ -52,6 +52,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         //Q5_1
         conditionSettingName: KnockoutObservable<string> = ko.observable('');
         mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
+
         constructor() {
             var self = this;
             //起動する
@@ -129,7 +130,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             }
             this.employeeList(employeeSearchs);
         }
-      
+
         selectStandardMode() {
             block.invisible();
             let self = this;
@@ -150,7 +151,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 block.clear();
             });
 
-           
+
         }
 
         next() {
@@ -166,8 +167,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
 
             if (isNextGetData) {
-                alertError({ messageId: "Msg_662" });
+                $('#P6_1').ntsError('set', {messageId: "Msg_662"});
                 return;
+            }else{
+                $('#P6_1').ntsError('clear');
             }
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -201,6 +204,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             }
 
         }
+
 
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
@@ -249,10 +253,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
 
         }
-            
+
         createExOutText() {
             block.invisible();
-            
+
             let self = this;
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
@@ -265,7 +269,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
                 block.clear();
-                
+
                 let params = {
                     processingId: res,
                     startDate: startDate,
