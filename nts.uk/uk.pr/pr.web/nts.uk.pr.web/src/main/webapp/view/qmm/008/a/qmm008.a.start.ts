@@ -5,38 +5,28 @@ module nts.uk.pr.view.qmm008.a {
         var viewmodelI = new nts.uk.pr.view.qmm008.i.viewmodel.ScreenModel();
         __viewContext.viewModel = {
             viewmodelB: viewmodelB,
-            viewmodelC: viewmodelC
-//            ,
-//            viewmodelI: viewmodelI
+            viewmodelC: viewmodelC,
+            viewmodelI: viewmodelI
         };
         __viewContext.bind(__viewContext.viewModel);
         viewmodelB.startPage().done(function() {
             $("#B1_5").focus();
-            let isStartC, isStartI = false;
             $(".tab-b-sidebar").click(function() {
-                setTimeout(function(){
+                viewmodelB.isSelectFirstOfficeAndHistory = true;
+                viewmodelB.startPage().done(function() {
                     $('#B1_5').focus();
-                }, 50);
+                });
             });
             $(".tab-c-sidebar").click(function() {
-                if (!isStartC){
-                    viewmodelC.startPage().done(function() {
-                        $('#C1_5').focus();
-                        isStartC = true;
-                    });
-                }
-                setTimeout(function(){
+                viewmodelC.startPage().done(function() {
                     $('#C1_5').focus();
-                }, 50);
+                });
             });
-//            $(".tab-i").click(function() {
-//                if (!isStartI){
-//                    viewmodelI.startPage().done(function() {
-//                        $('#emp-component').focus();
-//                        isStartI = true;
-//                    });
-//                }
-//            });
-        });  
+            $(".tab-i-sidebar").click(function() {
+                viewmodelI.startPage().done(function() {
+                    $("#I1_5").focus();
+                });
+            });
+        });
     });
 }
