@@ -46,7 +46,8 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 			+ "AND awh.strDate <= :refDate "
 			+ "AND awh.endDate >= :refDate "
 			+ "AND wkphist.strD <= :refDate "
-			+ "AND wkphist.endD >= :refDate";
+			+ "AND wkphist.endD >= :refDate "
+			+ "AND e.delStatus = 0";
 	
 
 	/*
@@ -78,23 +79,19 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 			GeneralDate absEnd = (GeneralDate) employee[7];
 			Integer absNo = (Integer) employee[8];
 
+			Boolean isWorking = (comStart.beforeOrEquals(refDate) && comEnd.afterOrEquals(refDate)) && (absStart == null || (absStart.afterOrEquals(refDate) || absEnd.beforeOrEquals(refDate)));
 			switch (StatusOfEmployment.valueOf(status)) {
-			case INCUMBENT:
-				return absStart == null && comStart.beforeOrEquals(input.getReferenceDate())
-						&& comEnd.afterOrEquals(input.getReferenceDate());
-			case HOLIDAY:
-				return absStart != null && absNo != LEAVE_ABSENCE_QUOTA_NO && absStart.beforeOrEquals(refDate)
-						&& absEnd.afterOrEquals(refDate) && comStart.beforeOrEquals(refDate)
-						&& comEnd.afterOrEquals(refDate);
-			case LEAVE_OF_ABSENCE:
-				return absStart != null && absNo == LEAVE_ABSENCE_QUOTA_NO && absStart.beforeOrEquals(refDate)
-						&& absEnd.afterOrEquals(refDate) && comStart.beforeOrEquals(refDate)
-						&& comEnd.afterOrEquals(refDate);
-			case RETIREMENT:
-				return absStart == null && comEnd.beforeOrEquals(input.getReferenceDate());
-			default:
-				return false;
-			}
+	        case INCUMBENT:
+	            return isWorking;
+	        case HOLIDAY:
+	            return !isWorking && comEnd.afterOrEquals(refDate) && absNo != LEAVE_ABSENCE_QUOTA_NO;
+	        case LEAVE_OF_ABSENCE:
+	            return !isWorking && comEnd.afterOrEquals(refDate) && absNo == LEAVE_ABSENCE_QUOTA_NO;
+	        case RETIREMENT:
+	            return comEnd.before(refDate);
+	        default:
+	            return false;
+	        }					
 		})).map(filteredItem -> {
 			return EmployeeSearchOutput.builder()
 					.employeeId((String) filteredItem[0])

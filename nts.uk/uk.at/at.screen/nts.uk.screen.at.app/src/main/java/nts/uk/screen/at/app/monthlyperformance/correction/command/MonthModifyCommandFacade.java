@@ -1,9 +1,9 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.command;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -17,9 +17,9 @@ import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 
 @Stateless
@@ -58,18 +58,17 @@ public class MonthModifyCommandFacade {
 			yearmonth.add(new YearMonth(q.getYearMonth()));
 		});
 		List<MonthlyRecordWorkDto> oldValues = finder.find(emps, yearmonth);
-		List<MonthlyRecordWorkCommand> newValues = new ArrayList<>();
-		oldValues.forEach(oldDto -> {
+		return oldValues.stream().map(v -> {
 			MonthlyModifyQuery q = query.stream().filter(qr -> {
-				return qr.getClosureId() == oldDto.getClosureID() && qr.getEmployeeId().equals(oldDto.getEmployeeId())
-						&& oldDto.yearMonth().compareTo(qr.getYearMonth()) == 0 && oldDto.getClosureDate().equals(qr.getClosureDate());
+				return qr.getClosureId() == v.getClosureID() && qr.getEmployeeId().equals(v.getEmployeeId())
+						&& v.yearMonth().compareTo(qr.getYearMonth()) == 0 && v.getClosureDate().equals(qr.getClosureDate());
 			}).findFirst().orElse(null);
-			if (q != null) {
-				MonthlyRecordWorkDto newDto = AttendanceItemUtil.fromItemValues(oldDto, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
-				newValues.add(createCommand(newDto, q));
+			if(q == null){
+				return null;
 			}
-		});
-		return newValues;
+			MonthlyRecordWorkDto dto = AttendanceItemUtil.fromItemValues(v, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
+			return createCommand(dto, q);
+		}).filter(v -> v != null).collect(Collectors.toList());
 	}
 
 	private MonthlyRecordWorkCommand createCommand(MonthlyRecordWorkDto dto, MonthlyModifyQuery query) {

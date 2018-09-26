@@ -228,11 +228,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeAndSiftType.setSiftType(siftTypes.get(0));
 			}
 		}else{
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			workTypeOvertime.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			if(workType.isPresent()){
-				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
-			}
+			WorkType workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString())
+					.orElseGet(()->{
+						return workTypeRepository.findByCompanyId(companyID).get(0);
+					});
+			workTypeOvertime.setWorkTypeCode(workType.getWorkTypeCode().toString());
+			workTypeOvertime.setWorkTypeName(workType.getName().toString());
 			workTypeAndSiftType.setWorkType(workTypeOvertime);
 			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
 					.orElseGet(()->{

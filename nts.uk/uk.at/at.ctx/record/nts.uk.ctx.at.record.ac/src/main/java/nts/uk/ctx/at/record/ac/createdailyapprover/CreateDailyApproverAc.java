@@ -29,6 +29,16 @@ public class CreateDailyApproverAc implements CreateDailyApproverAdapter {
 		AppRootInsContentExport data = intermediateDataPub.createDailyApprover(employeeID, rootType, recordDate);
 		return convertToAppRootInsContentExport(data);
 	}
+
+	@Override
+	public void createApprovalStatus(String employeeID, GeneralDate date, Integer rootType) {
+		intermediateDataPub.createApprovalStatus(employeeID, date, rootType);
+	}
+
+	@Override
+	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType) {
+		intermediateDataPub.deleteApprovalStatus(employeeID, date, rootType);
+	}
 	
 	private AppRootInsContentFnImport convertToAppRootInsContentExport(AppRootInsContentExport export) {
 		return new AppRootInsContentFnImport(

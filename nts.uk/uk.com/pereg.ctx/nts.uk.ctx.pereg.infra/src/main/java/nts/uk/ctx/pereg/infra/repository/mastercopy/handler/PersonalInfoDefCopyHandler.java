@@ -39,16 +39,10 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             "WHERE p.perInfoCtgId IN :perInfoCtgIdList";
     private static final String FIND_ALL_DATE_RANGE_ITEM = "SELECT d FROM PpemtDateRangeItem d " +
             "WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdList";
-
-//    private static final String FIND_ALL_PERSONAL_INFO_ITEM_ON_CID_AND_CCD = "SELECT i FROM PpemtPerInfoItem i " +
-//            "WHERE i.perInfoCtgId IN (SELECT p.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg p WHERE p.cid =:cid and p.categoryCd=:ccd)";
-
-//    private static final String FIND_ALL_DATE_RANGE_ITEM_ON_CID_AND_CCD = "SELECT d FROM PpemtDateRangeItem d " +
-//            "WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN (SELECT p.ppemtPerInfoCtgPK.perInfoCtgId FROM PpemtPerInfoCtg p WHERE p.cid =:cid and p.categoryCd=:ccd)";
-
-    private static final String FIND_ALL_PERSONAL_INFO_ITEM_ON_PER_INFO_CTG_ID = "SELECT i FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId";
-    private static final String FIND_ALL_DATE_RANGE_ITEM_ON_PER_INFO_CTG_ID = "SELECT d FROM PpemtDateRangeItem d WHERE d.ppemtPerInfoCtgPK.perInfoCtgId  = :perInfoCtgId";
-
+    private static final String FIND_ALL_PERSONAL_INFO_ITEM_ON_PER_INFO_CTG_ID = "SELECT i FROM PpemtPerInfoItem i " +
+            "WHERE i.perInfoCtgId = :perInfoCtgId";
+    private static final String FIND_ALL_DATE_RANGE_ITEM_ON_PER_INFO_CTG_ID = "SELECT d FROM PpemtDateRangeItem d " +
+            "WHERE d.ppemtPerInfoCtgPK.perInfoCtgId  = :perInfoCtgId";
 
     /**
      * The copy method.
@@ -88,7 +82,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
         switch (copyMethod) {
             case REPLACE_ALL:
                 // Delete all old data
-                copyMasterData(sourceCid, targetCid, false);
+                copyMasterData(sourceCid, targetCid);
                 break;
             case ADD_NEW:
                 // Insert Data
@@ -179,9 +173,8 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
      *
      * @param sourceCid
      * @param targetCid
-     * @param isReplace
      */
-    public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+    public void copyMasterData(String sourceCid, String targetCid) {
         //Get data company zero
         List<PpemtPerInfoCtg> sPerInfoCtgEntities = findAllPerInfoCtgByCid(sourceCid);
         List<PpemtPerInfoCtgOrder> sPerInfoCtgOrderEntities = new ArrayList<>();
@@ -230,9 +223,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             Map<String, List<PpemtPerInfoCtg>> groupPersonalInfoCatByCatId = new HashMap<>();
             Map<String, List<PpemtPerInfoCtgOrder>> groupPersonalInfoCatOrderByCatId = new HashMap<>();
             Map<String, List<PpemtPerInfoItem>> groupPersonalInfoItemByCatId = new HashMap<>();
-//            Map<String, List<PpemtPerInfoItem>> groupPersonalInfoItemByDefId = new HashMap<>();
             Map<String, List<PpemtPerInfoItemOrder>> groupPersonalInfoItemOrderByCatId = new HashMap<>();
-//            Map<String, List<PpemtPerInfoItemOrder>> groupPersonalInfoItemOrderByDefId = new HashMap<>();
             Map<String, List<PpemtDateRangeItem>> groupDateRangeByCatId = new HashMap<>();
             if (!CollectionUtil.isEmpty(sPerInfoCtgEntities)) {
                 groupPersonalInfoCatByCatId = sPerInfoCtgEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoCtgPK.perInfoCtgId));
@@ -242,11 +233,9 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             }
             if (!CollectionUtil.isEmpty(sPerInfoItemEntities)) {
                 groupPersonalInfoItemByCatId = sPerInfoItemEntities.stream().collect(Collectors.groupingBy(o -> o.perInfoCtgId));
-//                groupPersonalInfoItemByDefId = sPerInfoItemEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoItemPK.perInfoItemDefId));
             }
             if (!CollectionUtil.isEmpty(sPerInfoItemOrderEntities)) {
                 groupPersonalInfoItemOrderByCatId = sPerInfoItemOrderEntities.stream().collect(Collectors.groupingBy(o -> o.perInfoCtgId));
-//                groupPersonalInfoItemOrderByDefId = sPerInfoItemOrderEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoItemPK.perInfoItemDefId));
             }
             if (!CollectionUtil.isEmpty(sDateRangeItemEntities)) {
                 groupDateRangeByCatId = sDateRangeItemEntities.stream().collect(Collectors.groupingBy(o -> o.ppemtPerInfoCtgPK.perInfoCtgId));
@@ -301,11 +290,14 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 groupPersonalInfoItemByDefId = s3.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItem -> perInfoItem));
             Map<String, PpemtPerInfoItemOrder> groupPersonalInfoItemOrderByDefId = new HashMap<>();
             if (!CollectionUtil.isEmpty(s4))
-                groupPersonalInfoItemOrderByDefId = s4.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItem -> perInfoItem));
-
+                groupPersonalInfoItemOrderByDefId = s4.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItemOrder -> perInfoItemOrder));
+            Map<String, PpemtDateRangeItem> groupDateRangeItemByDefId = new HashMap<>();
+            if (!CollectionUtil.isEmpty(s5))
+                groupDateRangeItemByDefId = s5.stream().collect(Collectors.toMap(o -> o.startDateItemId, dateRangeItem -> dateRangeItem));
 
             final List<PpemtPerInfoItem> s33 = new ArrayList<>();
             final List<PpemtPerInfoItemOrder> s44 = new ArrayList<>();
+            final List<PpemtDateRangeItem> s55 = new ArrayList<>();
 
             Set<String> sourcePersonalInfoItemDefId = s3.stream()
                     .map(ppemtPerInfoItem -> ppemtPerInfoItem.ppemtPerInfoItemPK.perInfoItemDefId)
@@ -320,10 +312,16 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
 
 
                 PpemtPerInfoItemOrder perInfoItemOrderEntity = groupPersonalInfoItemOrderByDefId.get(defId);
-                if(perInfoItemOrderEntity == null) continue;
+                if (perInfoItemOrderEntity == null) continue;
                 PpemtPerInfoItemOrder cloneObject2 = SerializationUtils.clone(perInfoItemOrderEntity);
                 cloneObject2.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
                 s44.add(cloneObject2);
+
+                PpemtDateRangeItem dateRangeItemEntity = groupDateRangeItemByDefId.get(defId);
+                if (dateRangeItemEntity == null) continue;
+                PpemtDateRangeItem cloneObject3 = SerializationUtils.clone(dateRangeItemEntity);
+                cloneObject3.startDateItemId = newDefId;
+                s55.add(cloneObject3);
             }
 
             // insert new
@@ -331,8 +329,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             this.commandProxy.insertAll(s2);
             this.commandProxy.insertAll(s33);
             this.commandProxy.insertAll(s44);
-            this.commandProxy.insertAll(s5);
-
+            this.commandProxy.insertAll(s55);
         } else {//取得できた場合（会社ID　＝　Input．会社IDの個人情報定義）//Lấy được
             //group by personal info category Id
             Map<String, PpemtPerInfoCtg> sgroupPersonalInfoCatByCatCd = new HashMap<>();
@@ -378,15 +375,6 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                         this.commandProxy.update(desPerInfoItem);
                     }
                 }
-
-                //3 
-                PpemtDateRangeItem sourceDateRangeItem = findAlldateRangeItemByPerInfoCtgId(src.ppemtPerInfoCtgPK.perInfoCtgId);
-                PpemtDateRangeItem destDateRangeItem = findAlldateRangeItemByPerInfoCtgId(des.ppemtPerInfoCtgPK.perInfoCtgId);
-                if (sourceDateRangeItem == null || destDateRangeItem == null) continue;
-                destDateRangeItem.startDateItemId = sourceDateRangeItem.startDateItemId;
-                destDateRangeItem.endDateItemId = sourceDateRangeItem.endDateItemId;
-                destDateRangeItem.dateRangeItemId = sourceDateRangeItem.dateRangeItemId;
-                this.commandProxy.update(destDateRangeItem);
             }
         }
     }

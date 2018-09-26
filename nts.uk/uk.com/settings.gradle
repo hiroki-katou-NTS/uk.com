@@ -60,9 +60,12 @@ include 'com.ctx:sys:log:nts.uk.ctx.sys.log.pub'
 include 'com.ctx:sys:log:nts.uk.ctx.sys.log.pubimp'
 include 'com.ctx:sys:log:nts.uk.ctx.sys.log.ws'
 
+include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.ac'
 include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.app'
 include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.dom'
 include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.infra'
+include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.pub'
+include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp'
 include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.ws'
 
 include 'wk.ctx:nts.uk.ctx.workflow.app'

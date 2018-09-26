@@ -8,8 +8,10 @@ import lombok.Value;
 @Value
 public class BusinessTypeFormatDailyDto {
 
+	// private List<AttendanceItemDto> attendanceItemDtos;
+
 	private BigDecimal sheetNo;
-	
+
 	private String sheetName;
 
 	private List<BusinessTypeFormatDetailDto> businessTypeFormatDetailDtos;

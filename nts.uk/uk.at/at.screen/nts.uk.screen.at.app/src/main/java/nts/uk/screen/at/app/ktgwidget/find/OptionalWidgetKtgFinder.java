@@ -339,7 +339,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setEarlyRetreat(earlyRetreat);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.YEARLY_HD.value) {
 					//sử lý 15
-					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, systemDate));
+					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, systemDate, datePeriod));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
@@ -381,10 +381,11 @@ public class OptionalWidgetKtgFinder {
 						}
 					}
 					double preGrantStatement = 0.0;
+					boolean showAfter = false;
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+						showAfter = true;
 					}
-					boolean showAfter = afterGrantStatement > 0.0;
 					// tạm thời ngày cấp đang fix là ngày hệ thống
 					dto.setChildRemainNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
@@ -398,10 +399,11 @@ public class OptionalWidgetKtgFinder {
 						}
 					}
 					double preGrantStatement = 0.0;
+					boolean showAfter = false;
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+						showAfter = true;
 					}
-					boolean showAfter = afterGrantStatement > 0.0;
 					// tạm thời ngày cấp đang fix là ngày hệ thống
 					dto.setCareLeaveNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
@@ -438,25 +440,27 @@ public class OptionalWidgetKtgFinder {
 		}
 		return dto;
 	}
-	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date) {
+	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date, DatePeriod datePeriod) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		//lấy request list 210		
 		List<NextAnnualLeaveGrantImport> listNextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
-		if(listNextAnnualLeaveGrant.isEmpty()) {
-			return yearlyHoliday;
+		if(!listNextAnnualLeaveGrant.isEmpty()) {
+			NextAnnualLeaveGrantImport NextAnnualLeaveGrant = listNextAnnualLeaveGrant.get(0);
+			yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
+			yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
+			yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays());
+			if(datePeriod.contains(NextAnnualLeaveGrant.getGrantDate())) {
+				yearlyHoliday.setShowGrantDate(true);
+			}
 		}
-		NextAnnualLeaveGrantImport NextAnnualLeaveGrant = listNextAnnualLeaveGrant.get(0); 
 		//lấy request 198
 		NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 		
-		yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
-		yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
-		yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays());
 		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberImport();
-		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
+		/*yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
 															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
 															remainingNumber.getNumberOfRemainGrantPre(), 
-															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()%60)));
+															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()%60)));*/
 		yearlyHoliday.setNextGrantDateInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
 															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
 															remainingNumber.getNumberOfRemainGrantPre(), 
@@ -465,8 +469,9 @@ public class OptionalWidgetKtgFinder {
 															new TimeOT(remainingNumber.getAnnualLeaveGrantPostTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPostTime().intValue()%60), 
 															remainingNumber.getNumberOfRemainGrantPost(), 
 															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()%60)));
-		yearlyHoliday.setAttendanceRate(remainingNumber.getAttendanceRate());
+		/*yearlyHoliday.setAttendanceRate(remainingNumber.getAttendanceRate());
 		yearlyHoliday.setWorkingDays(remainingNumber.getWorkingDays());
+		yearlyHoliday.setCalculationMethod(optionalWidgetAdapter.getGrantHdTblSet(cID, employeeId));*/
 		return yearlyHoliday;
 	}
 }

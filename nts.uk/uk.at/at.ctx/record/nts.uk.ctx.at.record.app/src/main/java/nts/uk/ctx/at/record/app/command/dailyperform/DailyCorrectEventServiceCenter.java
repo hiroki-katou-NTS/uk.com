@@ -34,7 +34,6 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
@@ -146,10 +145,11 @@ public class DailyCorrectEventServiceCenter {
 	
 	
 	private DailyRecordDto setOptionalItemAtr(DailyRecordDto dto){
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		dto.getOptionalItem().ifPresent(optional -> {
+			Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+					.findAll(AppContexts.user().companyId()).stream()
+					.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+			
 			optional.correctItems(optionalMaster);
 		});
 		return dto;

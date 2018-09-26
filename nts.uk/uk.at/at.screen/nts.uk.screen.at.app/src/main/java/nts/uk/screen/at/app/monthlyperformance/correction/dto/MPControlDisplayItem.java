@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
 @Data
@@ -87,8 +87,8 @@ public class MPControlDisplayItem {
 			this.lstSheet.forEach(s -> {
 				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
 					int attendanceAtr = mapDP.get(f.getAttendanceItemId()).getAttendanceAtr() ;
-					if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
-						if(attendanceAtr == DailyAttendanceAtr.Code.value){
+					if(attendanceAtr == MonthlyAttendanceItemAtr.CODE.value || attendanceAtr == MonthlyAttendanceItemAtr.CLASSIFICATION.value ){
+						if(attendanceAtr == MonthlyAttendanceItemAtr.CODE.value){
 						s.addColumn("Code"+f.getAttendanceItemId());
 						}else{
 					   s.addColumn("NO"+f.getAttendanceItemId());

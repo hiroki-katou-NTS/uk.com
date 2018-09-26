@@ -16,6 +16,7 @@ module nts.uk.at.view.kdw003.a {
             }
             __viewContext.bind(screenModel);
             if (data.bindDataMap) {
+                screenModel.setSprFromItem(data.data);
                 screenModel.processFlex(data.data, false);
             }
             

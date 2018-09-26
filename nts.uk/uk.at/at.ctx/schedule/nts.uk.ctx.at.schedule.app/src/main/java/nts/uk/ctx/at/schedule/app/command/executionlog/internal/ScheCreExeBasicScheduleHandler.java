@@ -155,9 +155,9 @@ public class ScheCreExeBasicScheduleHandler {
 			List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
 
-		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得す�
-		// EA修正履歴�No2135
-		// EA修正履歴�No2136
+		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得す�
+		// EA修正履歴�No2135
+		// EA修正履歴�No2136
 		Optional<ShortWorkTimeDto> optionalShortTime = masterCache.getListShortWorkTimeDto().stream()
 				.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getPeriod().contains(dateInPeriod)))
 				.findFirst();
@@ -179,7 +179,7 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		// 勤務予定�スタ惱を取得す�
+		// 勤務予定�スタ惱を取得す�
 		if (!this.saveScheduleMaster(
 				commandSave,
 				command.getExecutionId(),
@@ -217,7 +217,7 @@ public class ScheCreExeBasicScheduleHandler {
 			}
 		}
 		
-		// 休�予定時間帯を取得す�
+		// 休�予定時間帯を取得す�
 		commandSave.setWorkScheduleBreaks(
 				this.getBreakTime(
 						command.getCompanyId(),
@@ -227,7 +227,7 @@ public class ScheCreExeBasicScheduleHandler {
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
-        // 勤務予定時�
+        // 勤務予定時�
 		List<Integer> startClock = new ArrayList<>();
 		List<Integer> endClock = new ArrayList<>();
 		List<Integer> breakStartTime = new ArrayList<>();
@@ -332,7 +332,7 @@ public class ScheCreExeBasicScheduleHandler {
 	// 勤務予定情報を登録する-for KSC001
 	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule,
 			boolean isDeleteBeforeInsert, DateRegistedEmpSche dateRegistedEmpSche) {
-		// 登録対象日を保持しておく�暫定データ作�用
+		// 登録対象日を保持しておく�暫定データ作�用
 		dateRegistedEmpSche.getListDate().add(command.getYmd());
 		
 		// if delete before, it always insert
@@ -368,22 +368,22 @@ public class ScheCreExeBasicScheduleHandler {
 			ShortChildCareFrameDto shortChildCareFrameDto, int childCareAtr) {
 		ChildCareScheduleSaveCommand command = new ChildCareScheduleSaveCommand();
 
-		// 予定育児介護回数 = 取得した短時間勤� 時間帯. 回数
+		// 予定育児介護回数 = 取得した短時間勤� 時間帯. 回数
 		command.setChildCareNumber(shortChildCareFrameDto.getTimeSlot());
 
-		// 予定育児介護開始時刻 = 取得した短時間勤� 時間帯. 開始時刻
+		// 予定育児介護開始時刻 = 取得した短時間勤� 時間帯. 開始時刻
 		command.setChildCareScheduleStart(shortChildCareFrameDto.getStartTime().valueAsMinutes());
 
-		// 予定育児介護終亙�刻 = 取得した短時間勤� 時間帯. 終亙�刻
+		// 予定育児介護終亙�刻 = 取得した短時間勤� 時間帯. 終亙�刻
 		command.setChildCareScheduleEnd(shortChildCareFrameDto.getEndTime().valueAsMinutes());
 
-		// 育児介護区�= 取得した短時間勤� 育児介護区�
+		// 育児介護区�= 取得した短時間勤� 育児介護区�
 		command.setChildCareAtr(childCareAtr);
 		return command;
 	}
 
 	/**
-	 * 再設定する情報を取得す�
+	 * 再設定する情報を取得す�
 	 * 
 	 * Reset all data to command save.
 	 *
@@ -403,17 +403,17 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(toDate);
-		// 勤務開始�終亙�刻を�設定す�
+		// 勤務開始�終亙�刻を�設定す�
 		commandSave = this.resetCreatedData(command, commandSave);
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
-		// マスタ惱を�設定す�
-		// 勤務予定�スタ惱を取得す�
+		// マスタ惱を�設定す�
+		// 勤務予定�スタ惱を取得す�
 		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
 			return;
 		
-		 // 勤務予定時�
+		 // 勤務予定時�
 		List<Integer> startClock = new ArrayList<>();
 		List<Integer> endClock = new ArrayList<>();
 		List<Integer> breakStartTime = new ArrayList<>();
@@ -452,7 +452,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param resetAtr
 	 *            the reset atr
 	 */
-	// 作�済みの�タを�設定す�
+	// 作�済みの�タを�設定す�
 	private BasicScheduleSaveCommand resetCreatedData(BasicScheduleResetCommand command,
 			BasicScheduleSaveCommand commandSave) {
 		Optional<BounceAtr> optionalBounceAtr = this.resetDirectLineBounce(command);
@@ -470,10 +470,10 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * Reset direct line bounce.
 	 */
-	// 直行直帰再設�
+	// 直行直帰再設�
 	private Optional<BounceAtr> resetDirectLineBounce(BasicScheduleResetCommand command) {
 		// comment code below because not do in this phrase
-		// check is 直行直帰再設�TRUE
+		// check is 直行直帰再設�TRUE
 		// if (command.getResetAtr().getResetDirectLineBounce()) {
 
 		WorkType worktype = this.workTypeRepository.findByPK(command.getCompanyId(), command.getWorkTypeCode()).get();
@@ -495,25 +495,25 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	private BounceAtr getBounceAtr(WorkTypeSet workTypeSet) {
 
-		// 出勤時刻を直行とする�False AND 退勤時刻を直行とする�False�直行直帰な�
+		// 出勤時刻を直行とする�False AND 退勤時刻を直行とする�False�直行直帰な�
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
 			return BounceAtr.NO_DIRECT_BOUNCE;
 		}
 
-		// 出勤時刻を直行とする�True AND 退勤時刻を直行とする�False�直行�み
+		// 出勤時刻を直行とする�True AND 退勤時刻を直行とする�False�直行�み
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
 			return BounceAtr.DIRECTLY_ONLY;
 		}
 
-		// 出勤時刻を直行とする�False AND 退勤時刻を直行とする�True�直帰のみ
+		// 出勤時刻を直行とする�False AND 退勤時刻を直行とする�True�直帰のみ
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 			return BounceAtr.BOUNCE_ONLY;
 		}
 
-		// 出勤時刻を直行とする�True AND 退勤時刻を直行とする�True�直行直帰
+		// 出勤時刻を直行とする�True AND 退勤時刻を直行とする�True�直行直帰
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 			return BounceAtr.DIRECT_BOUNCE;
@@ -528,11 +528,11 @@ public class ScheCreExeBasicScheduleHandler {
 	 *            the command
 	 * @return the basic schedule save command
 	 */
-	// 就業時間帯再設�
+	// 就業時間帯再設�
 	private BasicScheduleSaveCommand resetWorkTime(BasicScheduleResetCommand command,
 			BasicScheduleSaveCommand commandSave) {
 
-		// check 就業時間帯再設�is TRUE
+		// check 就業時間帯再設�is TRUE
 		if (command.getResetAtr().getResetWorkingHours()) {
 			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
 			commandGetter.setWorktypeCode(command.getWorkTypeCode());
@@ -591,14 +591,14 @@ public class ScheCreExeBasicScheduleHandler {
 	}
 
 	/**
-	 * 勤務予定�スタ惱を取得す�
+	 * 勤務予定�スタ惱を取得す�
 	 * 
 	 * @param employeeId
 	 * @param toDate
 	 */
 	private boolean saveScheduleMaster(BasicScheduleSaveCommand commandSave, String executionId,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
-		// 勤務予定�スタ惱を取得す�
+		// 勤務予定�スタ惱を取得す�
 		Optional<ScheduleMasterInformationDto> scheduleMasterInforOpt = this.scheduleMasterInformationService
 				.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd(), executionId,
 						empGeneralInfo, listBusTypeOfEmpHis);
@@ -614,7 +614,7 @@ public class ScheCreExeBasicScheduleHandler {
 	}
 
 	/**
-	 * 勤務予定時�
+	 * 勤務予定時�
 	 */
 	private BasicScheduleSaveCommand saveScheduleTime(Object companySetting, ScTimeParam param, BasicScheduleSaveCommand commandSave) {
 		ScTimeImport scTimeImport = CalculationCache.getResult(
@@ -653,7 +653,7 @@ public class ScheCreExeBasicScheduleHandler {
 		BasicSchedule basicSchedule;
 		String sid = AppContexts.user().employeeId();
 
-		// 予定時間を計算す�
+		// 予定時間を計算す�
 		ScTimeParam.ScTimeParamBuilder bld = ScTimeParam.builder();
 		bld.employeeId(employeeId);
 		bld.targetDate(baseDate);
@@ -685,7 +685,7 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// 該当日の該当社員の個人勤務予定が既に存在するかチェヂ�
 		if (optPrescribedSetting.isPresent()) {
-			// 存在しなぴ�
+			// 存在しなぴ�
 			prescribedTimezoneSetting = optPrescribedSetting.get();
 			
 			List<Integer> lstStart = new ArrayList<>();
@@ -701,7 +701,7 @@ public class ScheCreExeBasicScheduleHandler {
 //			bld.startClock(prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).map(timeZone -> timeZone.getStart() != null ? timeZone.getStart().v() : null).collect(Collectors.toList()));
 //			bld.endClock(prescribedTimezoneSetting.getLstTimezone().stream().filter(timeZone -> timeZone.getUseAtr() == UseSetting.USE).map(timeZone -> timeZone.getEnd() != null ? timeZone.getEnd().v() : null).collect(Collectors.toList()));
 		} else {
-			// 存在する場�
+			// 存在する場�
 			PrescribedTimezoneSettingDto prescribedTimezoneSettingDto = new PrescribedTimezoneSettingDto();
 			prescribedTimezoneSettingDto.setMorningEndTime(DEFAULT_VALUE);
 			prescribedTimezoneSettingDto.setAfternoonStartTime(DEFAULT_VALUE);
@@ -713,7 +713,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		ScTimeParam param = bld.build();
 		
-		// Imported�勤務予定）「勤務予定�計算時間」を取得す�
+		// Imported�勤務予定）「勤務予定�計算時間」を取得す�
 		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
 		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand);
 		

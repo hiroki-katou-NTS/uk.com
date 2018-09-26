@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 
 /**
  * 月別実績の乖離時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class DivergenceTimeOfMonthly {
@@ -148,34 +148,34 @@ public class DivergenceTimeOfMonthly {
 			}
 			int alarmTimeNo = 0;
 			switch (errorAlarmCode){
-			case "D001":
+			case "D002":
 				alarmTimeNo = 1;
 				break;
-			case "D003":
+			case "D004":
 				alarmTimeNo = 2;
 				break;
-			case "D005":
+			case "D006":
 				alarmTimeNo = 3;
 				break;
-			case "D007":
+			case "D008":
 				alarmTimeNo = 4;
 				break;
-			case "D009":
+			case "D010":
 				alarmTimeNo = 5;
 				break;
-			case "D011":
+			case "D012":
 				alarmTimeNo = 6;
 				break;
-			case "D013":
+			case "D014":
 				alarmTimeNo = 7;
 				break;
-			case "D015":
+			case "D016":
 				alarmTimeNo = 8;
 				break;
-			case "D017":
+			case "D018":
 				alarmTimeNo = 9;
 				break;
-			case "D019":
+			case "D020":
 				alarmTimeNo = 10;
 				break;
 			}

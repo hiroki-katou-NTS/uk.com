@@ -49,7 +49,7 @@ public class SyCompanyAdapterImp implements SyCompanyAdapter{
 		
 		List<AffComHistItem> result = new ArrayList<>();
 
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, sid);
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(sid);
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(sid);
 

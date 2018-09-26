@@ -8,7 +8,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.*;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.*;
-import nts.uk.ctx.sys.assist.infra.repository.mastercopy.handler.CopyDataRepositoryFactory;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -16,7 +15,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +43,18 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository#doCopy(java.lang.String, nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod, java.lang.String)
 	 */
 	@Override
-	public void doCopy(String tableName, CopyMethod copyMethod, String companyId) {
+	public void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId, boolean isOnlyCid) {
 		//case 0,1
-		CopyDataRepositoryFactory repositoryFactory = new CopyDataRepositoryFactory();
-		DataCopyHandler copyHandler = repositoryFactory.getCopyHandler(tableName);
-		copyHandler.setCompanyId(companyId);
-		copyHandler.setCopyMethod(copyMethod);
-		copyHandler.setEntityManager(getEntityManager());
-		copyHandler.doCopy();
+        DataCopyHandler.DataCopyHandlerBuilder.aDataCopyHandler()
+                .withOnlyCid(isOnlyCid)
+                .withCompanyId(companyId)
+                .withCopyMethod(copyMethod)
+                .withEntityManager(getEntityManager())
+                .withKeys(keys)
+                .withTableName(tableName)
+                .buildQuery()
+                .build()
+                .doCopy();
 	}
 
 	@Override

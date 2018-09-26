@@ -23,8 +23,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAtt
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class PerTimeMonActualResultDefault implements PerTimeMonActualResultService {
@@ -108,7 +108,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 						.collect(Collectors.toList());
 			});
 			if (check == true) {
-				results.put(employeeID + yearMonth.toString(),1);
+				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
 			}
 		}
 		return results;

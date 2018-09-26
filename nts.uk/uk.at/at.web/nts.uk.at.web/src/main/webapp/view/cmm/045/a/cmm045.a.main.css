@@ -72,3 +72,9 @@
 	text-overflow: ellipsis;
     white-space: nowrap;
 }
+#A4_4_2{
+	display: inline-block;
+	margin-left: 30px;
+	vertical-align: middle;
+	margin-top: -24px !important;
+}
