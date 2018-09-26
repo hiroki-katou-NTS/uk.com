@@ -4343,7 +4343,8 @@ var nts;
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
                         var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
                         $manualBtn.on(constants.CLICK, function () {
-                            // TODO: Open manual
+                            var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                            window.open(path);
                         });
                         var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
                         $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
