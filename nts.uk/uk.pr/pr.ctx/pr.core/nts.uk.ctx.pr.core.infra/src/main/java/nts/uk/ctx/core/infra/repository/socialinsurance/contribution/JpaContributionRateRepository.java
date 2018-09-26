@@ -13,8 +13,6 @@ import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRate;
 import nts.uk.ctx.core.dom.socialinsurance.contribution.ContributionRateRepository;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionByGrade;
 import nts.uk.ctx.core.infra.entity.socialinsurance.contribution.QpbmtContributionRate;
-import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthInsurancePerGradeFee;
-import nts.uk.ctx.core.infra.entity.socialinsurance.welfarepensioninsurance.QpbmtGradeWelfarePensionInsurancePremium;
 
 @Stateless
 public class JpaContributionRateRepository extends JpaRepository implements ContributionRateRepository {
