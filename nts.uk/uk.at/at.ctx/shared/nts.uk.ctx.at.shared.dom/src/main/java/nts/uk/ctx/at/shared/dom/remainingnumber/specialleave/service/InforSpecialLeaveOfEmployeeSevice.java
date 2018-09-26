@@ -40,7 +40,7 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @param genderRest: 特別休暇利用条件.性別条件
 	 * @return
 	 */
-	ErrorFlg checkUse(String cid, String sid, DatePeriod period, SpecialHoliday speHoliday);
+	ErrorFlg checkUse(String cid, String sid, GeneralDate baseDate, SpecialHoliday speHoliday);
 	/**
 	 * テーブルに基づいた付与日数一覧を求める
 	 * @param cid

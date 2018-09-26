@@ -62,7 +62,7 @@ public class ValidatorDataDailyRes {
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 			17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 
-	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed()
+	public static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed()
 			.collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x % 2 == 0 ? INPUT_CHECK[x + 1] : INPUT_CHECK[x - 1]));
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,

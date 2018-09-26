@@ -19,18 +19,12 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.CreateScheduleMasterCache
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
-import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
-import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -213,7 +207,7 @@ public class ScheCreExeWorkTypeHandler {
 					? optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get().v()
 					: null;
 		} else {
-
+ 
 			int closeAtr = 0;
 			String WorkTypeCd = null;
 			// convert TEMP_ABS_FRAME_NO -> CLOSE_ATR
@@ -363,6 +357,7 @@ public class ScheCreExeWorkTypeHandler {
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
 
 		// get basic work setting.
+		// 「基本勤務設定」を取得する
 		Optional<BasicWorkSetting> optionalBasicWorkSetting = this.scheCreExeBasicWorkSettingHandler
 				.getBasicWorkSetting(commandBasicGetter, masterCache.getEmpGeneralInfo());
 
@@ -379,6 +374,7 @@ public class ScheCreExeWorkTypeHandler {
 
 			// set work type code to command
 			commandWorkTypeEmploymentStatus.setWorkTypeCode(basicWorkSetting.getWorktypeCode().v());
+			// 在職状態に対応する「勤務種類コード」を取得する(lâý thông tin worktype code theo trạng thái làm việc(在職状態))
 			return this.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus, masterCache);
 		}
 

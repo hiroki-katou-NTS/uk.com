@@ -1232,6 +1232,7 @@ public class MonthlyCalculation {
 		List<MonthlyAggregationErrorInfo> results = new ArrayList<>();
 		results.addAll(this.errorInfos);
 		results.addAll(this.actualWorkingTime.getErrorInfos());
+		results.addAll(this.actualWorkingTime.getIrregularPeriodCarryforwardsTime().getErrorInfos());
 		results.addAll(this.flexTime.getErrorInfos());
 		return results;
 	}
