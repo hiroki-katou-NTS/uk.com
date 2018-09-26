@@ -427,7 +427,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//大塚モードの場合には遅刻早退から休憩時間を控除する必要があり、控除時間帯の作成時にはこの休憩が作成されないので
 		//就業時間帯から直接取得した休憩を遅刻早退から控除する為に取得
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
-		 Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
+		 Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, 
+				 targetDate,integrationOfDaily.getWorkInformation(), companyCommonSetting.getErrorAlarm());
 		if(test != null) {
 			if(test.isPresent()) {
 				breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
