@@ -99,9 +99,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     if (self.selectedEmpInsHisId() == HIS_ID_TEMP)
                         self.isNewMode(MODE.NEW);
                 } else {
-                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
+                    if(self.selectedEmpInsHisId() != HIS_ID_TEMP ) {
+                        self.isNewMode(MODE.UPDATE);
+                    }
                 }
-
+                self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
             });
         }
 
@@ -560,4 +562,4 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         NO = 2
     }
 
-    export const HIS_ID_TEMP = "000"
+    export const HIS_ID_TEMP = "000";

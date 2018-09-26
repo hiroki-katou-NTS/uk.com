@@ -17,6 +17,7 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
             if (params && params.startYearMonth) {
                 this.startLastYearMonth(params.startYearMonth);
                 this.startYearMonth(Number(this.startLastYearMonth()));
+                this.listTakeOver()[0] = new model.ItemModel(0,getText('QMM011_48', [this.convertMonthYearToString(this.startYearMonth())]));
             }
         }
 
