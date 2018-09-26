@@ -354,7 +354,8 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 					item.setAttendanceItemName(MessageFormat.format(attName,
 							specialHoliday.get(itemLink.getFrameNo().v()).getSpecialHolidayName().v()));
 				} else {
-					item.setAttendanceItemName(MessageFormat.format("特別休暇{0}", itemLink.getFrameNo().v()));
+					String sphdName = MessageFormat.format("特別休暇{0}", itemLink.getFrameNo().v());
+					item.setAttendanceItemName(MessageFormat.format(attName, sphdName));
 				}
 				break;
 			}
