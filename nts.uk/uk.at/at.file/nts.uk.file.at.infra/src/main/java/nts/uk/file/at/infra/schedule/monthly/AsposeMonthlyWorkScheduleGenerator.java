@@ -1954,7 +1954,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				// B5_1
 				Cell employeeCell = cells.get(currentRow, 0);
 				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
-				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName())) {
+				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName()) && condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
 					colorWhite = !colorWhite;
 					
 					// Loop until getting the correct row, then remove page break
