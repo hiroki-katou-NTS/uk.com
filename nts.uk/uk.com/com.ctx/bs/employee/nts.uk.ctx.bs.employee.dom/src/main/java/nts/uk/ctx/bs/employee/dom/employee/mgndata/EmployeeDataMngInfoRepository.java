@@ -101,6 +101,15 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd);
+	
+	/**
+	 * Req No.18
+	 * deletedStatus = 0
+	 * @param cId
+	 * @param sCd
+	 * @return
+	 */
+	Optional<EmployeeDataMngInfo> getEmployeeNotDel(String cId, String sCd);
 
 	/**
 	 * @param companyId

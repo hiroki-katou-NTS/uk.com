@@ -727,9 +727,11 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (!listAffComHist.isEmpty()) {
 				// lấy list employee Id
 				for (AffCompanyHist object : listAffComHist) {
-					List<String> employeetemp = object.getLstAffCompanyHistByEmployee().stream().map(x -> x.getSId())
-							.collect(Collectors.toList());
-					employee.addAll(employeetemp);
+					if(object != null){
+						List<String> employeetemp = object.getLstAffCompanyHistByEmployee().stream().map(x -> x.getSId())
+								.collect(Collectors.toList());
+						employee.addAll(employeetemp);
+					}
 				}
 			}
 			return employee;
