@@ -38,14 +38,14 @@
 				<div class="clear"></div>
 			</div>
 			<div id="contents-area">
-				<div style="text-align: center; width: 1270px; height: 40px; margin-bottom:10px">
+				<div style="text-align: center; width: 1250px; height: 40px; margin-bottom:10px">
 					<span id = "B4" class="label warning">#{i18n.getText('CMF002_39')}</span>
 				</div>
 				<div class="fixed-flex-layout" data-bind="with: conditionSetData">
 					<div class="fixed-flex-layout-left padding-item">
 						<!--B3 条件設定選択(パネル)-->
 						<div id="B3"
-							data-bind="ntsPanel:{width: '330px', height: '400px', showIcon:true, direction: 'none', visible: true}">
+							data-bind="ntsPanel:{width: '330px', height: '390px', showIcon:true, direction: 'none', visible: true}">
 							<div class="flex">
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
@@ -69,7 +69,6 @@
 								<table id="B3_3"
 									data-bind="ntsGridList: {
 													name: '#[CMF002_345]',
-													height: 490,
 													rows: 14,
 		                                            options: $parent.conditionSettingList,
 		                                            optionsValue: $parent.selectedConditionSetting,
@@ -196,7 +195,7 @@
 							<div class="pull-left">
 								<!--B13 条件設定選択(パネル)-->
 								<div id="B13"
-									data-bind="ntsPanel:{width: '280px', height: '400px', direction: 'none', visible: true}">
+									data-bind="ntsPanel:{width: '260px', height: '390px', direction: 'none', visible: true}">
 									<div class="div-line">
 										<!--B13_1 出力項目(ラベル)-->
 										<label>#{i18n.getText('CMF002_59')}</label>
@@ -206,12 +205,11 @@
 										<div class="cell pull-left">
 											<table id="B13_2"
 												data-bind="ntsGridList: {
-													height: 392,
+												
 													rows: 15,
 													dataSource: $parent.outputItemList,
 													primaryKey: 'outItemCd',
 													columns: [	
-																{headerText:'', key: 'order', width: 30, formatter: _.escape},
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 50, formatter: _.escape},
 																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 160, formatter: _.escape}
 															],
