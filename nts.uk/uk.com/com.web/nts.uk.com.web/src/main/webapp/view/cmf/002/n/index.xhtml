@@ -154,7 +154,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- N20_1設定 -->
-				<button class="x-large" data-bind="click: saveSetting">#{i18n.getText('CMF002_161')}</button>
+				<button class="x-large" data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
 				<!-- N20_2キャンセル -->
 				<button id="BTN_CLOSE" class="large"
 					data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>

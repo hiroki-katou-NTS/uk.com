@@ -35,11 +35,13 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
 
         constructor() {
+            block.invisible();
             let self = this;
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
             self.getListCategory();
             self.initScreen(null);
+            block.clear();
             self.selectedConditionSettingCode.subscribe((data) => {
                 if (data) {
                     nts.uk.ui.errors.clearAll();
@@ -128,7 +130,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.outputItemList.removeAll();
                 service.outSetContent(selectedConditionSettingCode, self.standType()).done((itemList: Array<IOutputItem>) =>{
                     if (itemList && itemList.length > 0) {
-                        self.fillNumberic(itemList);
                         self.outputItemList(itemList);
                     }
                 }).always(() => {
@@ -137,15 +138,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }
         }
         
-        fillNumberic(itemList: Array<IConditionSet>){
-            let self = this;
-            let index;
-            for(let i = 0 ; i<itemList.length; i++) {
-                index = i + 1;
-                itemList[i].order = index;
-            }
-        }
-
         getListCategory(){
             let self = this;
             if (!self.roleAuthority) {
