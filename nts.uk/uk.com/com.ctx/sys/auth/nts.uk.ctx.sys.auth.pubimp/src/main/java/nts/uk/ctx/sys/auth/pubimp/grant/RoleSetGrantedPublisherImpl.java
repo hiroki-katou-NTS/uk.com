@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedJobTitleDetailDto;
@@ -25,7 +26,7 @@ public class RoleSetGrantedPublisherImpl implements RoleSetGrantedPublisher {
 	
 	@Override
 	public Optional<RoleSetGrantedPersonDto> getPersonGranted(String employeeId) {
-		return roleSetPersonRepo.getByEmployeeId(employeeId)
+		return roleSetPersonRepo.getByEmployeeDate(employeeId, GeneralDate.today())
 				.map(r -> new RoleSetGrantedPersonDto(r.getRoleSetCd().v(), r.getCompanyId(), 
 						r.getValidPeriod(), r.getEmployeeID()));
 	}
