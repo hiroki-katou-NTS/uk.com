@@ -45,6 +45,7 @@ module nts.uk.at.view.kdw008.a {
 
             //swap list tab 3
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            monthCorrectionFormatList: KnockoutObservableArray<MonPfmCorrectionFormatDto>;
             monthCorrectionFormat: KnockoutObservable<MonPfmCorrectionFormatDto>;
             monthCorrectionValue: KnockoutObservableArray<AttendanceItemDto>;
             monthCorrectionDataSource: KnockoutObservableArray<AttendanceItemDto>;
@@ -62,6 +63,7 @@ module nts.uk.at.view.kdw008.a {
                 self.dailyAttItems = ko.observableArray([]);
                 self.monthlyAttItems = ko.observableArray([]);
 
+                self.monthCorrectionFormatList = ko.observableArray([]);
                 self.monthCorrectionFormat = ko.observable({});
                 self.monthCorrectionValue = ko.observableArray([]);
                 self.monthCorrectionDataSource = ko.observableArray([]);
@@ -173,9 +175,8 @@ module nts.uk.at.view.kdw008.a {
                             self.initSelectedSheetNoHasMutated();
                         });
                     } else {
-                        self.getMonPfmCorrectionFormat(self.currentDailyFormatCode()).done(() => {
-                            self.initSelectedSheetNoHasMutated();
-                        })
+                        self.getMonPfmCorrectionFormat(self.currentDailyFormatCode());
+                        self.initSelectedSheetNoHasMutated();
                     }
                 });
 
@@ -243,6 +244,7 @@ module nts.uk.at.view.kdw008.a {
                         $.when(dtdGetMonthlyAttItem).done(() => {
                             if (data && data.length > 0) {
                                 self.formatCodeItems(FormatCode.fromMonthly(data));
+                                self.monthCorrectionFormatList(MonPfmCorrectionFormatDto.fromApp(data));
                                 let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
                                 self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
                             } else {
@@ -370,18 +372,12 @@ module nts.uk.at.view.kdw008.a {
             }
 
 
-            getMonPfmCorrectionFormat(formatCode): JQueryPromise<any> {
+            getMonPfmCorrectionFormat(formatCode){
                 let self = this;
-                let dfd = $.Deferred();
-                service.getMonPfmCorrectionFormat(formatCode).done(function(data) {
-                    if (data) {
-                        self.monthCorrectionFormat(MonPfmCorrectionFormatDto.fromApp(data));
-                    }
-                    dfd.resolve();
-                }).fail(err => {
-                    dfd.reject(err);
-                });
-                return dfd.promise();
+                let monthItem: MonPfmCorrectionFormatDto = _.find(self.monthCorrectionFormatList(), (item: MonPfmCorrectionFormatDto) => {
+                    return item.monthlyPfmFormatCode == formatCode;
+                })
+                self.monthCorrectionFormat(monthItem);
             }
 
             getMonthCorrectionDetail(sheetNo: string) {
@@ -910,8 +906,11 @@ module nts.uk.at.view.kdw008.a {
                 this.displayItem = MonthlyActualResultsDto.fromApp(data.displayItem);
             }
 
-            static fromApp(item: IMonPfmCorrectionFormatDto): MonPfmCorrectionFormatDto {
-                return new MonPfmCorrectionFormatDto(item);
+            static fromApp(listItem: Array<IMonPfmCorrectionFormatDto>): Array<MonPfmCorrectionFormatDto> {
+                let result = _.map(listItem, (item: IMonPfmCorrectionFormatDto) => {
+                    return new MonPfmCorrectionFormatDto(item);
+                })
+                return result;
             }
         }
 
