@@ -34,20 +34,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             self.processingYearList = ko.observableArray([]);
             self.show = ko.observable(false);
             self.btnText = ko.computed(function () {
-                // let windowSize = nts.uk.ui.windows.getSelf();
                 if (self.show()) {
-                    // windowSize.$dialog.dialog('option', {
-                    //     width: 12,
-                    //     height: 830
-                    // });
-                    // windowSize.$dialog.resize();
                     return "-";
                 } else {
-                    // windowSize.$dialog.dialog('option', {
-                    //     width: 1100,
-                    //     height: 830
-                    // });
-                    // windowSize.$dialog.resize();
                     return "+";
                 }
             });

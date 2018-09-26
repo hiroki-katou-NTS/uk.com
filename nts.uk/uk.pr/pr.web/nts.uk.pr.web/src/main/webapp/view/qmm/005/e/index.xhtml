@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 500,
+                width : 520,
                 height : 655
             };
         </script>
@@ -135,7 +135,7 @@
                         <td></td>
                         <td colspan="2">
                             <!--    E2_15		以下の設定は原則チェックありの状態としてください。-->
-                            <div style="padding: 10px 0px;" class="label">#{i18n.getText('QMM005_86')}</div>
+                            <div style="padding: 10px 5px;" class="label">#{i18n.getText('QMM005_86')}</div>
                         </td>
                     </tr>
                     <tr>
@@ -165,7 +165,7 @@
                         <td></td>
                         <td>
                             <!--    E2_20		勤怠締め日-->
-                            <div tabindex="9" data-bind="ntsCheckBox: { checked: timeClosingCheck }">#{i18n.getText('QMM005_112')}</div>
+                            <div tabindex="9" data-bind="ntsCheckBox: { checked: timeClosingDateCheck }">#{i18n.getText('QMM005_112')}</div>
 
                         </td>
                         <td>
