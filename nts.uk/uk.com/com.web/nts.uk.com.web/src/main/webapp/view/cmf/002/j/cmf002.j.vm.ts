@@ -83,22 +83,37 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             let self = this;
             let command = ko.toJS(self.characterDataFormatSetting);
             command.cdConvertCd = ("").equals(command.cdConvertCd) ? null : command.cdConvertCd;
+            if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
+                command.effectDigitLength = null;
+                command.startDigit = null;
+                command.endDigit = null;
+                command.cdEditDigit = null;
+                command.cdEdittingMethod = null;
+                command.spaceEditting = null;
+                command.cdConvertCd = null;
+                command.cdConvertName = null;
+                command.nullValueReplace = null;
+                command.valueOfNullValueReplace = null;
+            }
+            if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
+                command.valueOfFixedValue = null;
+            }
             if (self.characterDataFormatSetting().cdEditting() != model.NOT_USE_ATR.USE) {
                 $('#J3_2_1').ntsError('clear');
                 command.cdEditDigit = null;
                 command.cdEdittingMethod = null;
             }
-             if (self.characterDataFormatSetting().effectDigitLength() != model.NOT_USE_ATR.USE) {
+            if (self.characterDataFormatSetting().effectDigitLength() != model.NOT_USE_ATR.USE) {
                 $('#J2_2_1').ntsError('clear');
                 $('#J2_2_3').ntsError('clear');
                 command.startDigit = null;
                 command.endDigit = null;
             }
-             if (self.characterDataFormatSetting().nullValueReplace() != model.NOT_USE_ATR.USE) {
+            if (self.characterDataFormatSetting().nullValueReplace() != model.NOT_USE_ATR.USE) {
                 $('#J6_2').ntsError('clear');
                 command.valueOfNullValueReplace = null;
             }
-             if (self.characterDataFormatSetting().fixedValue() != model.NOT_USE_ATR.USE) {
+            if (self.characterDataFormatSetting().fixedValue() != model.NOT_USE_ATR.USE) {
                 $('#J7_2').ntsError('clear');
                 command.valueOfFixedValue = null;
             }
@@ -117,10 +132,10 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             if ((self.characterDataFormatSetting().cdEditting() == model.NOT_USE_ATR.USE) && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 $("#J3_2_1").ntsError('check');
             }
-             if (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
+            if (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 $('#J6_2').ntsError('check');
             }
-             if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
+            if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
                 $('#J7_2').ntsError('check');
             }
             if (!hasError()) {
@@ -168,20 +183,20 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         }
         enableNullValueReplace() {
             var self = this;
-            if(self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE){
-            return true;    
-            }else{
+            if (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
+                return true;
+            } else {
                 $('#J6_2').ntsError('clear');
                 return false;
             }
         }
         enableFixedValue() {
             var self = this;
-            if(self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE){
-            return true;    
-            }else{
-                 $('#J7_2').ntsError('clear');
-            return false;    
+            if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
+                return true;
+            } else {
+                $('#J7_2').ntsError('clear');
+                return false;
             }
         }
         nullValueReplaceItemcls() {
