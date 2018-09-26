@@ -45,26 +45,36 @@
 				<!-- E1_7 履歴の引継ぎ -->
 				<div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
 					<span class="label">#{i18n.getText('QMM011_47')}</span>
-					<!-- E1_8 履歴の引継ぎ -->
-					<div id="E1_9" class="cell" style="margin-left: 30px"
-										data-bind="ntsRadioButton: {
-										checked: takeOver, 
-										option: listTakeOver()[0], 
+					<com:ko-if bind="flag()">
+						<!-- E1_8 履歴の引継ぎ -->
+						<div id="E1_9" class="cell" style="margin-left: 30px"
+							 data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[0],
 										optionValue: 'code',
 										optionText: 'name',
-										group: 'periodOption'}">
+										group: 'periodOption'}" >
 						</div>
 						<br/>
 						<div id="E1_10"  class="cell" style="margin-left: 113px"
-							data-bind="ntsRadioButton: {
-										checked: takeOver, 
-										option: listTakeOver()[1], 
-										optionValue: 'code', 
+							 data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
 										optionText: 'name',
-										group: 'periodOption'}">
+										group: 'periodOption'}" >
 						</div>
-					
-
+					</com:ko-if>
+					<com:ko-if bind="!flag()">
+						<div id="E1_10"  class="cell" style="margin-left: 30px"
+							 data-bind="ntsRadioButton: {
+										checked: takeOver,
+										option: listTakeOver()[1],
+										optionValue: 'code',
+										optionText: 'name',
+										group: 'periodOption'}" >
+						</div>
+					</com:ko-if>
 				</div>
 
 			</div>

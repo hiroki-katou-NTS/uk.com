@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
         startLastYearMonth:          KnockoutObservable<number> = ko.observable();
         insuranceName:               KnockoutObservable<string> = ko.observable('');
         listTakeOver:                KnockoutObservableArray<any> = ko.observableArray(getListtakeOver());
+        flag:                        KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             let self = this;
@@ -21,6 +22,10 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
                 self.startLastYearMonth(params.startYearMonth);
                 self.startYearMonth(Number(self.startLastYearMonth()));
                 self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM011_48', [self.convertMonthYearToString(self.startYearMonth())]));
+                self.flag(true);
+            }else{
+                self.takeOver(1);
+                self.flag(false);
             }
         }
 
