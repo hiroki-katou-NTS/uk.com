@@ -28,9 +28,9 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button data-bind="click: btnCreateCodeConvert, enable: enableBtn"
+            <button data-bind="click: btnCreateCodeConvert, enable: enableBtn "
                     tabindex="1">#{i18n.getText('CMF002_114')}</button>
-            <button class="proceed" data-bind="click: btnRegOutputCodeConvert"
+            <button class="proceed" data-bind="click: btnRegOutputCodeConvert, enable: $root.errors.isEmpty"
                     tabindex="2">#{i18n.getText('CMF002_115')}</button>
             <button data-bind="click: btnCloseDialog" tabindex="3">#{i18n.getText('CMF002_116')}</button>
             <button class="danger" data-bind="click: btnDeleteOutputCodeConvert, enable: screenMode() == 1"

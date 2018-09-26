@@ -1355,26 +1355,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 					setting.getEndDigit().get().v().intValue() - setting.getStartDigit().get().v().intValue());
 		}
 
-		Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
-		if (setting.getConvertCode().isPresent() && codeConvert.isPresent()) {
-			for (CdConvertDetail convertDetail : codeConvert.map(OutputCodeConvert::getListCdConvertDetails).orElseGet(ArrayList::new)) {
-				if (!targetValue.equals(convertDetail.getSystemCd())) {
-					continue;
+		if (setting.getConvertCode().isPresent()) {
+			Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
+			
+			if(codeConvert.isPresent()) {
+				for (CdConvertDetail convertDetail : codeConvert.map(OutputCodeConvert::getListCdConvertDetails).orElseGet(ArrayList::new)) {
+					if (!targetValue.equals(convertDetail.getSystemCd())) {
+						continue;
+					}
+					targetValue = convertDetail.getOutputItem().map(i->i.v()).orElse("");
+					inConvertCode = true;
+					break;
 				}
-				targetValue = convertDetail.getOutputItem().map(i->i.v()).orElse("");
-				inConvertCode = true;
-				break;
-			}
-
-			if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
-				state = RESULT_NG;
-				errorMess = "mes-678";
-
-				result.put(RESULT_STATE, state);
-				result.put(ERROR_MESS, errorMess);
-				result.put(RESULT_VALUE, targetValue);
-
-				return result;
+	
+				if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
+					state = RESULT_NG;
+					errorMess = "mes-678";
+	
+					result.put(RESULT_STATE, state);
+					result.put(ERROR_MESS, errorMess);
+					result.put(RESULT_VALUE, targetValue);
+	
+					return result;
+				}
 			}
 		}
 

@@ -75,7 +75,7 @@ module nts.uk.com.view.cmf002.s {
             //開始
             start(): JQueryPromise<any> {
                 let self = this,
-                dfd = $.Deferred();
+                    dfd = $.Deferred();
 
                 //データ保存監視処理: 
                 self.interval = setInterval(self.confirmProcess, 1000, self);
@@ -133,13 +133,16 @@ module nts.uk.com.view.cmf002.s {
                                                     if (fileId) {
                                                         nts.uk.request.specials.donwloadFile(fileId);
                                                         self.isDownloaded(true);
-                                                        $('#S10_3').focus();
+                                                        $('#S10_2').focus();
                                                     }
                                                 })
                                                 .ifNo(() => {
                                                     $('#S10_2').focus();
                                                     return;
                                                 });
+                                            if (self.errCnt() == 0) {
+                                                self.isToNext(false);
+                                            }
                                         }
                                     }
                                 }).fail(function(res: any) {
@@ -179,7 +182,9 @@ module nts.uk.com.view.cmf002.s {
                         clearInterval(self.interval);
                         $('#S10_2').focus();
                         // don't nextTo ScreenY
-                        self.isToNext(false);
+                        if (self.errCnt() == 0) {
+                            self.isToNext(false);
+                        }
 
                         //delete dataStorageMng of process when interrupt
                         let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);

@@ -28,13 +28,14 @@ public class CharacterDfsFinder {
 		Optional<CharacterDataFmSetting> dataOpt = finder.getCharacterDataFmSettingByID(cid, conditionSettingCode,
 				outputItemCode);
 		if (dataOpt.isPresent()) {
+			String[] cdConvertName = new String[1];
 			if (dataOpt.get().getConvertCode().isPresent()) {
-				String[] cdConvertName = new String[1];
 				repository.getOutputCodeConvertById(cid, dataOpt.get().getConvertCode().get().v())
 						.ifPresent(x -> {
 							cdConvertName[0] = x.getConvertName().v();
 						});
-				return dataOpt.map(i -> CharacterDfsDto.fromDomain(i, cdConvertName[0])).orElse(null);			}
+				}
+			return dataOpt.map(i -> CharacterDfsDto.fromDomain(i, cdConvertName[0])).orElse(null);			
 		}
 		return null;
 	}

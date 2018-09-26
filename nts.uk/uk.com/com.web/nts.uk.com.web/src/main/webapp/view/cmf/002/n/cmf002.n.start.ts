@@ -3,11 +3,9 @@ module nts.uk.com.view.cmf002.n {
         __viewContext['screenModel'] = new viewmodel.ScreenModel();
         __viewContext['screenModel'].start().done(function() {
             __viewContext.bind(__viewContext['screenModel']);
-            _.defer(() => {
-                __viewContext['screenModel'].atWorkDataOutputItem().fixedValue() == 1 ? $('#N3_1').focus() : $('#N2_1_2').focus(); 
-//                }
-//                $('#N2_1_2').focus();
-            });
+            _.delay(() => {
+                __viewContext['screenModel'].atWorkDataOutputItem().fixedValue() == 1 ? $('#N3_1').focus() : $('#N2_1_2').focus();
+            }, 1000);
         });
     });
 }
