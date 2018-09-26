@@ -428,14 +428,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//就業時間帯から直接取得した休憩を遅刻早退から控除する為に取得
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
 		 Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, 
-				 targetDate,integrationOfDaily.getWorkInformation(), companyCommonSetting.getErrorAlarm());
-		if(test != null) {
-			if(test.isPresent()) {
-				breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
-			}
-		}
-		else {
-			test = Optional.empty();
+				 targetDate,integrationOfDaily.getWorkInformation(), companyCommonSetting.getErrorAlarm(), workTime);
+		
+		if(test.isPresent()) {
+			breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
 		}
 		
 		//加給設定の取得

@@ -269,7 +269,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 																		record.getAffiliationInfor().getEmploymentCode().toString(),
 																		record.getAffiliationInfor().getEmployeeId(),
 																		record.getAffiliationInfor().getYmd(),
-																		nowWorkingItem.get().getValue().getLaborSystem());
+																		nowWorkingItem.get().getValue().getLaborSystem(),
+																		companyCommonSetting.getUsageSetting());
 				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
 					dailyUnit = new DailyUnit(new TimeOfDay(0));
 				//実績計算

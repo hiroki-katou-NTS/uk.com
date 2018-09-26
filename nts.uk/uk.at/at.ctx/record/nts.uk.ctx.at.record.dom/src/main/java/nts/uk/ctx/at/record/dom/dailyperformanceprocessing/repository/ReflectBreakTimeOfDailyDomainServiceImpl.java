@@ -318,6 +318,15 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	public boolean checkBreakTimeSetting(String companyId, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, WorkInfoOfDailyPerformance WorkInfo,
 			BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, List<ErrorAlarmWorkRecord> errorMaster) {
+		return checkBreakTimeSetting(companyId, employeeID, processingDate, 
+				empCalAndSumExecLogID, WorkInfo, breakTimeZoneSettingOutPut, errorMaster, Optional.empty());
+	}
+	
+	// 休憩時間帯設定を確認する
+	public boolean checkBreakTimeSetting(String companyId, String employeeID, GeneralDate processingDate,
+			String empCalAndSumExecLogID, WorkInfoOfDailyPerformance WorkInfo,
+			BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, List<ErrorAlarmWorkRecord> errorMaster,
+			Optional<WorkTimeSetting> workTime) {
 		// fixed thieu reset breaktime
 		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		// 1日半日出勤・1日休日系の判定
@@ -332,11 +341,11 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		
 		if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {
 			String workTimeCode = WorkInfo.getRecordInfo().getWorkTimeCode().v();
-			Optional<WorkTimeSetting> wts = this.workTimeSettingRepo.findByCode(companyId, workTimeCode);
+			WorkTimeSetting wts = workTime.orElseGet(() -> this.workTimeSettingRepo.findByCode(companyId, workTimeCode).get());
 			// WorkTimeDailyAtr = 通常勤務・変形労働用
-			if (wts.get().getWorkTimeDivision().getWorkTimeDailyAtr().value == 0) {
+			if (wts.getWorkTimeDivision().getWorkTimeDailyAtr().value == 0) {
 
-				switch (wts.get().getWorkTimeDivision().getWorkTimeMethodSet().value) {
+				switch (wts.getWorkTimeDivision().getWorkTimeMethodSet().value) {
 				case 2:// 流動勤務
 					return this.confirmIntermissionTimeZone(companyId, weekdayHolidayClassification,
 							workTimeCode, breakTimeZoneSettingOutPut);
@@ -761,6 +770,12 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	@Override
 	public Optional<BreakTimeOfDailyPerformance> getBreakTime(String companyId, String employeeID,
 			GeneralDate processingDate, WorkInfoOfDailyPerformance WorkInfo, List<ErrorAlarmWorkRecord> errorMaster) {
+		return getBreakTime(companyId, employeeID, processingDate, WorkInfo, errorMaster, Optional.empty());
+	}
+	
+	public Optional<BreakTimeOfDailyPerformance> getBreakTime(String companyId, String employeeID,
+			GeneralDate processingDate, WorkInfoOfDailyPerformance WorkInfo, List<ErrorAlarmWorkRecord> errorMaster,
+			Optional<WorkTimeSetting> workTime) {
 		// Optional<BreakTimeOfDailyPerformance> breakOpt =
 		// this.breakTimeOfDailyPerformanceRepo.find(employeeID,
 		// processingDate, 0);
@@ -771,7 +786,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 		// 休憩時間帯設定を確認する
 		boolean checkBreakTimeSetting = this.checkBreakTimeSetting(companyId, employeeID, processingDate, null,
-				WorkInfo, breakTimeZoneSettingOutPut, errorMaster);
+				WorkInfo, breakTimeZoneSettingOutPut, errorMaster, workTime);
 		if (!checkBreakTimeSetting) {
 			return Optional.empty();
 		}
