@@ -13,6 +13,9 @@
                 height : 600
             };
         </script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ReqStandardWorkingDays
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:stylefile path="qmm005.b.style.css"/>
@@ -120,7 +123,7 @@
                                 <tr>
                                     <td class="bg-header">
                                         <!--B4_8	対象月-->
-                                        <div class="label" data-bind="text: targetMonth"></div>
+                                        <div style="width: 75px" class="label" data-bind="text: targetMonth"></div>
                                     </td>
                                     <td>
                                         <!--B4_10	支払年月日-->
@@ -146,10 +149,10 @@
                                     <td>
                                         <div style="width: 85px;">
                                             <!--B4_16	要勤務日数-->
-                                            <input tabindex="8" data-bind="ntsNumberEditor: {value: numberOfWorkingDays}"
+                                            <input tabindex="8" data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint: 'ReqStandardWorkingDays', required: true,}"
                                                    class="number-editor"/>
                                             <!--B4_17	日-->
-                                            <span data-bind="if:numberOfWorkingDays">#{i18n.getText('QMM005_40')}</span></div>
+                                            <span>#{i18n.getText('QMM005_40')}</span></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_7	社会保険基準日-->
