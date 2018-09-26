@@ -180,6 +180,7 @@
 										value: searchCharStartVal, 
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
+										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
 										<!-- D6_C4_4 --> <input tabindex="8" class="D6_C4_4"
 										data-bind="ntsNumberEditor: {
@@ -198,6 +199,7 @@
 										option: $vm.optionNum,
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
+										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
 										<!-- D6_C4_7 -->
 										<div tabindex="10" class="D6_C4_7"
@@ -209,7 +211,8 @@
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_NORMAL"></div>
 
 										<!-- D6_C4_8 -->
-										<div tabindex="12" class="D6_C4_8"
+										<div tabindex="12" style="float: right;
+ padding-right: 10px;" class="D6_C4_8"
 											data-bind="ntsDatePicker: {
 										name: '#[CMF002_106]',
 										value: searchDateStart, 
@@ -274,16 +277,15 @@
 											visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.SEARCH_CODE_LIST">?</button>
 
 									</td>
-									<td class="view-control view-over">
-										<!-- D6_C4_3 --> <input tabindex="9" class="D6_C4_3"
+									<td class="view-control view-over" >
+										<!-- D6_C4_3 --> <input tabindex="9" class="D6_C4_3" style="float: right ;padding-left: 5px"
 										data-bind="ntsTextEditor: {
 										name: '#[CMF002_108]',
 										constraint: 'OutCndCharVal', 
 										value: searchCharEndVal, 
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
-
-										<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
+											<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
 										data-bind="ntsNumberEditor: {
 										name: '#[CMF002_108]',
 										constraint: 'OutCndNumVal', 
@@ -291,15 +293,16 @@
 										option: $vm.optionNum,
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
-
+										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD">#{i18n.getText('CMF002_407')}</span>
 										<!-- D6_C4_9 -->
-										<div tabindex="13" class="D6_C4_9"
+										<div tabindex="13"  class="D6_C4_9"
 											data-bind="ntsDatePicker: {
 										name: '#[CMF002_106]',
 										value: searchDateEnd, 
 										dateFormat: 'YYYY/MM/DD', 
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD"></div>
+										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
 										<!-- D6_C4_12 --> <input tabindex="14" class="D6_C4_12"
 										data-bind="ntsTimeEditor: {
@@ -310,6 +313,7 @@
 										mode: 'time',
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD" />
+										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
 										<!-- D6_C4_15 --> <input tabindex="16" class="D6_C4_15"
 										data-bind="ntsTimeEditor: {
@@ -320,6 +324,7 @@
 										mode: 'time',
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
+
 									</td>
 								</tr>
 							</tbody>

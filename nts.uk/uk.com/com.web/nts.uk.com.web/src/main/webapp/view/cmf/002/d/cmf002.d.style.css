@@ -66,6 +66,7 @@
 
 #fixed-table tr td {
 	padding: 2px;
+	text-align: center;
 }
 
 .fixed-table tr td:NTH-CHILD(4) {

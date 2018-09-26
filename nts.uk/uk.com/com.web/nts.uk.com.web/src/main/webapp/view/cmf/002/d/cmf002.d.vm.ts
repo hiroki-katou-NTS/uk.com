@@ -214,6 +214,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             newItemDetail.subscribeCondBetween(newItemDetail.conditionSymbol());
             newItemDetail.searchValueCd = item.searchValueCd;
             self.cndDetai().listOutCndDetailItem.push(newItemDetail);
+
+
         }
 
         btnLeftClick() {
