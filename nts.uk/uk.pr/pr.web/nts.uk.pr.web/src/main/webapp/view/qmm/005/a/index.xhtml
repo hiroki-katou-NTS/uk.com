@@ -30,11 +30,11 @@
 
 
         </div>
-        <div class="contents-area" style="overflow-x: hidden;">
+        <div class="contents-area" style="overflow-x: hidden; ">
             <!--A2_1 給与・賞与の処理年月の設定を行います。-->
             <div class="label" style="margin-left: 25px; margin: 15px 25px;">#{i18n.getText('QMM005_6')}</div>
             <!--A2_2 処理区分一覧-->
-            <div style="width: 1200px">
+            <div style="width: 1280px">
             <div class="table-left" style="margin-left: 25px;">
                 <table id="A2_2">
                     <colgroup>
@@ -141,17 +141,19 @@
                     </thead>
                     <tbody data-bind="foreach: itemBinding">
                     <tr>
-                        <td>
+                        <td >
+                            <div class="flex valign-center">
                             <!--A3_3 雇用設定-->
                             <button class="small"
                             data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable:processInfomation.processDivisionName() != '' ">#{i18n.getText('QMM005_20')}</button>
                             <!--A3_4 対象雇用-->
-                            <input
+                            <input style="padding-left: 10px"
                                     data-bind="ntsTextEditor: {
                                 value: employeeString,
                                 readonly: true,
                                 enable:processInfomation.processDivisionName() != '',
                                 }"/>
+                            </div>
                         </td>
                     </tr>
                     </tbody>

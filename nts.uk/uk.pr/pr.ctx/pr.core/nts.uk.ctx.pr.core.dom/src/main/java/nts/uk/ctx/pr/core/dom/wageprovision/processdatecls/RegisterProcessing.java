@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Stateless
 public class RegisterProcessing {
@@ -29,6 +30,8 @@ public class RegisterProcessing {
 
     @Inject
     private EmpTiedProYearRepository empTiedProYearRepository;
+
+
 
     private static final int NUMBER_OF_MONTH_IN_TWO_YEAR = 24;
 
@@ -162,8 +165,17 @@ public class RegisterProcessing {
     public void addCurrProcessDate(ValPayDateSet valPayDateSet) {
         String cid = AppContexts.user().companyId();
         GeneralDate currentDay = GeneralDate.today();
-        int currTreatYear = currentDay.yearMonth().v();
         int processCateNo = valPayDateSet.getProcessCateNo();
+        List<SetDaySupport> arr=this.setDaySupportRepository.getSetDaySupportById(cid,processCateNo);
+        int currTreatYear=currentDay.yearMonth().v();
+        for(int i=0;i<arr.size();i++){
+            if(arr.get(i).getPaymentDate().after(currentDay)){
+                currTreatYear=arr.get(i).getPaymentDate().yearMonth().v();
+                break;
+            }
+        }
+
+
         this.currProcessDateRepository.add(new CurrProcessDate(cid, processCateNo, currTreatYear));
     }
 

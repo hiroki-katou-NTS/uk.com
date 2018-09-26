@@ -24,8 +24,23 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         constructor() {
             var self = this;
-            $("#A2_2").ntsFixedTable({height: 247, width: 1000});
-            $("#A3_1").ntsFixedTable({height: 247, width: 400});
+            // $("#A2_2").ntsFixedTable({height: 247, width: 1000});
+            // $("#A3_1").ntsFixedTable({height: 247, width: 400});
+
+            if (/Chrome/.test(navigator.userAgent)) {
+                $("#A2_2").ntsFixedTable({height: 247, width: 1000});
+                $("#A3_1").ntsFixedTable({height: 247, width: 400});
+            }
+            else if(/Edge/.test(navigator.userAgent)){
+                $("#A2_2").ntsFixedTable({height: 248, width: 1000});
+                $("#A3_1").ntsFixedTable({height: 247, width: 400});
+            }
+            else {
+                $("#A2_2").ntsFixedTable({height: 248, width: 1000});
+                $("#A3_1").ntsFixedTable({height: 247, width: 400});
+            }
+
+
             //A3_4 対象雇用
             self.targetEmployment = ko.observable([]);
             self.itemBinding = ko.observableArray([]);
@@ -214,7 +229,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             let self = this;
             let commandData = {currProcessDateCommand: [], empTiedProYearCommand: []};
             for (let i = 0; i < MAX_NUMBER_SETTING; i++) {
-                if (self.itemBinding()[i].processInfomation.processDivisionName != '') {
+                if (self.itemBinding()[i].processInfomation.processDivisionName() != '') {
                     commandData.currProcessDateCommand.push({giveCurrTreatYear: self.itemBinding()[i].monthsSelectd()});
                     let codeList = _.map(self.itemBinding()[i].employeeList(), "code");
                     if (codeList.length > 0) {
@@ -244,7 +259,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>) {
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,) {
             var self = this;
             self.processInfomation = processInfomation;
             self.setDaySupports = ko.observableArray(setDaySupports);
