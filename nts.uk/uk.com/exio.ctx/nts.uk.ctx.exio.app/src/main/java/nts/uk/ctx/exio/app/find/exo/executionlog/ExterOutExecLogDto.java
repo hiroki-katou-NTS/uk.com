@@ -52,7 +52,7 @@ public class ExterOutExecLogDto {
 	/**
 	 * ロール種類
 	 */
-	private int roleType;
+	private Integer roleType;
 
 	/**
 	 * 処理単位
@@ -107,7 +107,7 @@ public class ExterOutExecLogDto {
 	/**
 	 * 結果状態
 	 */
-	private int resultStatus;
+	private Integer resultStatus;
 
 	/**
 	 * 設定名称
@@ -119,9 +119,10 @@ public class ExterOutExecLogDto {
 				domain.getOutputProcessId(), domain.getUserId().orElse(null), domain.getTotalErrorCount(),
 				domain.getTotalCount(), domain.getFileId().orElse(null), domain.getFileSize().orElse(null),
 				domain.getDeleteFile() != null ? domain.getDeleteFile().value : null,
-				domain.getFileName().map(i -> i.v()).orElse(null), domain.getCategoryID().map(i -> i.v()).orElse(null),
+				domain.getFileName().isPresent() ? domain.getFileName().get().v() : null,
+				domain.getCategoryID().isPresent() ? domain.getCategoryID().get().v() : null,
 				domain.getProcessUnit().orElse(null),
-				domain.getProcessEndDateTime().map(i -> i.toString()).orElse(null),
+				domain.getProcessEndDateTime().isPresent() ? domain.getProcessEndDateTime().get().toString() : null,
 				domain.getProcessStartDateTime() != null ? domain.getProcessStartDateTime().toString() : null,
 				domain.getStandardClass() != null ? domain.getStandardClass().value : null,
 				domain.getExecuteForm() != null ? domain.getExecuteForm().value : null,
@@ -130,7 +131,7 @@ public class ExterOutExecLogDto {
 				domain.getSpecifiedEndDate() != null ? domain.getSpecifiedEndDate().toString() : null,
 				domain.getSpecifiedStartDate() != null ? domain.getSpecifiedStartDate().toString() : null,
 				domain.getCodeSettingCondition() != null ? domain.getCodeSettingCondition().v() : null,
-				domain.getResultStatus().map(i -> i.value).orElse(null),
+				domain.getResultStatus().isPresent() ? domain.getResultStatus().get().value : null,
 				domain.getNameSetting() != null ? domain.getNameSetting().v() : null);
 	}
 

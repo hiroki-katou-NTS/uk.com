@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.app.find.exo.categoryitemdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,9 @@ public class CtgItemDataFinder {
 	}
 
 	public List<ExOutCtgDto> getExternalOutputCategoryList(RoleAuthorityDto param) {
+		if(param == null){
+			return new ArrayList<ExOutCtgDto>();
+		}
 		List<ExOutCtgDto> lstCategory = acquisitionCategory.getExternalOutputCategoryList(param.getEmpRole()).stream()
 				.map(item -> ExOutCtgDto.fromDomain(item)).collect(Collectors.toList());
 		return lstCategory;
