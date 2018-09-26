@@ -20,13 +20,14 @@
 		<ui:define name="content">
 			<div class="header-content">
 				<div data-bind="ntsFormLabel: {}">
-					#{i18n.getText('KWR002_130')} <span data-bind="text:layoutCode" style="margin-left:10px"></span>
-					<span style="margin-left: 10px;" data-bind="text:layoutName"></span>
-					<span style="margin-left: 20px;" data-bind="text:directText"></span>
+					#{i18n.getText('KWR002_130')} <span data-bind="text:layoutCode"
+						style="margin-left: 10px"></span> <span style="margin-left: 10px;"
+						data-bind="text:layoutName"></span> <span
+						style="margin-left: 20px;" data-bind="text:directText"></span>
 				</div>
 			</div>
 
-			<div class="contents-area">
+			<div class="contents-area" style="display: inline-block">
 				<div>
 					<table>
 						<colgroup>
@@ -39,7 +40,8 @@
 								<div
 									data-bind="ntsFormLabel: { constraint: 'ItemName', required: true }">#{i18n.getText('KWR002_134')}</div>
 							</td>
-							<td><input id="attendanceName" tabindex="1" class="nts-input"
+							<td><input id="attendanceName" tabindex="1"
+								class="nts-input"
 								data-bind="ntsTextEditor: {
                                           name: '#[KWR002_135]',
                                           value: attendanceRecordName,
@@ -55,8 +57,12 @@
 						class="bg-green caret-right caret-background fixed-flex-layout-left">
 						<i class="icon icon-searchbox"></i>
 						<div class="cf">
-							<div class="drop-down-attendance"><div class="labelCombo"><span >#{i18n.getText('KWR002_136')}</span></div>
-								<div  tabindex="2" style="width: 110px;margin-left:15px;" id="combo-box" class="combo"
+							<div class="drop-down-attendance">
+								<div class="labelCombo">
+									<span>#{i18n.getText('KWR002_136')}</span>
+								</div>
+								<div tabindex="2" style="width: 110px; margin-left: 15px;"
+									id="combo-box" class="combo"
 									data-bind="ntsComboBox: {
 																name: '#[KWR002_135]',
 																options: listAttendanceType,
@@ -91,19 +97,20 @@
 					<div class="group-swith-button" style="float: left">
 						<div>
 							<button tabindex="7" data-bind="click: selectAttendanceRec">
-								<i class="icon icon-button-arrow-right" style="width:23px;"></i>
+								<i class="icon icon-button-arrow-right" style="width: 23px;"></i>
 							</button>
 						</div>
-						<div style="margin-top:20px;">
+						<div style="margin-top: 20px;">
 							<button tabindex="8" data-bind="click: removeAttendanceSelected">
-								<i class="icon icon-button-arrow-left" style="width:23px;"></i>
+								<i class="icon icon-button-arrow-left" style="width: 23px;"></i>
 							</button>
 						</div>
 					</div>
-					<div id="right-content" class="bg-green" style="float: left;margin-top:30px;">
+					<div id="right-content" class="bg-green"
+						style="float: left; margin-top: 30px;">
 						<div class="cf">
 							<div style="float: left">
-								<table  id="single-list-dataSource"
+								<table id="single-list-dataSource"
 									data-bind="ntsGridList:{
 									name:'#[KWR002_148]',
 									width: 250,
@@ -120,8 +127,9 @@
 					</div>
 				</div>
 			</div>
-			
-			<div id="functions-area-bottom">
+
+			<div id="functions-area-bottom"
+				style="margin-top: 30px; position: unset">
 				<button tabindex="9" class="x-large proceed"
 					data-bind="click: decideButtonClick">#{i18n.getText('KWR002_151')}</button>
 				<button tabindex="10" class="large" data-bind="click: closeDialog">#{i18n.getText('KWR002_152')}</button>
