@@ -58,9 +58,14 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 let action: number = param.action;
                 let processInformationUpdate = param.processInfomationUpdate;
                 if (action == 0) {
-                    self.itemBinding()[processInformationUpdate.deprecatCate-1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
+                    self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
+                    if(processInformationUpdate.deprecatCate==1)
+                        self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=1;
+                    if(processInformationUpdate.deprecatCate==0)
+                        self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=0;
                     if (processInformationUpdate.deprecatCate == 1) {
                         self.resetEmployee(processInformationUpdate.processCateNo);
+                        nts.uk.ui.dialog.alertError({ messageId: "MsgQ_158" });
                     }
 
 
@@ -215,8 +220,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
                         self.getYear(self.itemTable.setDaySupports, i)
                         ,
-                        self.getListMonth(self.itemTable.setDaySupports, i)
-                    ));
+                        self.getListMonth(self.itemTable.setDaySupports, i),
+                        self.itemTable.currentProcessDates[i]
+                    )
+                    );
 
                 }
                 console.log(self.itemBinding());
@@ -259,7 +266,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,) {
+
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
             var self = this;
             self.processInfomation = processInfomation;
             self.setDaySupports = ko.observableArray(setDaySupports);

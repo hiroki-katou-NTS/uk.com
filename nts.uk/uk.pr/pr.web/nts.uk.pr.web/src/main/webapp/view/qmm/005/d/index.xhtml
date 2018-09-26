@@ -138,12 +138,13 @@
                         <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_33')}</div>
                     </td>
                     <!-- D5_2 -->
-                    <td>
+                    <td style="text-align: right;">
                         <span style="width: 45px"><input
                                 data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'ReqStandardWorkingDays' }"
-                                style="width: 40px; text-align: left !important;"/></span>
-                        <span class="label">#{i18n.getText('QMM005_40')}</span>
+                                style="width: 45px; text-align: left !important;"/></span>
+
                     </td>
+                    <td> <span class="label">#{i18n.getText('QMM005_40')}</span></td>
 
 
                 </tr>
@@ -195,8 +196,9 @@
                 </tr>
                 </tbody>
             </table>
-            <a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')}</a>
-
+            <div style="height: 80px;" class="flex valign-center">
+            <a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')} #{i18n.getText('QMM005_66')}</a>
+            </div>
             <table>
                 <colgroup>
                     <col width="200px"/>
