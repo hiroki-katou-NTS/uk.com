@@ -8,12 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryDto;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Class ClosureHistorySaveCommand.

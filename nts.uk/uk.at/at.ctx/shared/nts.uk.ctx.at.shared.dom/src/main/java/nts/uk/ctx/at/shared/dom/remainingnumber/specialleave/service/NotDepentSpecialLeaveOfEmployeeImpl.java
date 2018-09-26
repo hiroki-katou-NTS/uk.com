@@ -100,15 +100,17 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 		GrantDaysInforByDates outputData = new GrantDaysInforByDates(startLoopDate, new ArrayList<>());
 		//パラメータ「比較年月日」に取得している「特別休暇．付与情報．固定付与日．周期」を加算する
 		List<GrantDaysInfor> lstGrantDays = new ArrayList<>();
-		for(GeneralDate loopData = param.getGrantDate(); loopData.beforeOrEquals(param.getDatePeriod().end());) {
+		/*for(GeneralDate loopData = param.getGrantDate(); loopData.beforeOrEquals(param.getDatePeriod().end());) {*/
+		for(int i = 0; param.getGrantDate().daysTo(param.getDatePeriod().end()) - i >= 0; i++){
+			GeneralDate loopDate = param.getGrantDate().addDays(i);
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
-			outputData.setGrantDate(loopData);
-			if(loopData.before(param.getDatePeriod().start())) {
-				loopData = loopData.addYears(speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v());
+			outputData.setGrantDate(loopDate);
+			if(loopDate.before(param.getDatePeriod().start())) {
+				loopDate = loopDate.addYears(speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v());
 				continue;
 			}			
-			if(param.getDatePeriod().start().beforeOrEquals(loopData)
-					&& loopData.beforeOrEquals(param.getDatePeriod().end())) {
+			if(param.getDatePeriod().start().beforeOrEquals(loopDate)
+					&& loopDate.beforeOrEquals(param.getDatePeriod().end())) {
 				double grantDays = 0;
 				if(param.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED) {
 					grantDays = param.getFixedGrantDays().isPresent() ? param.getFixedGrantDays().get() : 0;
@@ -116,12 +118,12 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 					grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
 				}
 				//パラメータ「付与日数一覧」を追加する
-				GrantDaysInfor infor = new GrantDaysInfor(loopData, Optional.empty(), grantDays);
+				GrantDaysInfor infor = new GrantDaysInfor(loopDate, Optional.empty(), grantDays);
 				lstGrantDays.add(infor);
 				if(param.isSignFlg()) {
 					break;
 				}
-				loopData = loopData.addYears(speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v());
+				loopDate = loopDate.addYears(speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v());
 			}
 		}
 		if(!lstGrantDays.isEmpty()) {

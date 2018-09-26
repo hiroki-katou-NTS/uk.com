@@ -334,9 +334,9 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	}
 
 	@Override
-	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState) {
+	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+		String employeeID = approverID;
 		// 承認できるフラグ
 		Boolean authorFlag = false;
 		// 指定する社員の承認区分

@@ -21,9 +21,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -111,19 +109,20 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.Budg
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
-import nts.uk.shr.com.enumcommon.DayAttr;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -3937,7 +3936,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		/** 休出日数  */
 		val holidayWorkDays = vtWorkDays.getHolidayWorkDays();
-		this.holidayDays = holidayWorkDays.getDays().v();
+		this.holidayWorkDays = holidayWorkDays.getDays().v();
 		
 		/** 給与用日数 */
 		val payDays = vtWorkDays.getPayDays();
@@ -5622,8 +5621,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.flexExcessTime),
 				new AttendanceTimeMonth(this.flexShortageTime),
 				FlexCarryforwardTime.of(
-						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(this.flexCarryforwardTime),
+						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(this.flexCarryforwardShortageTime)),
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(this.excessFlexAtr, ExcessFlexAtr.class),

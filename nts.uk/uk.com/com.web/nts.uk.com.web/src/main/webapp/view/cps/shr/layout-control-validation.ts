@@ -1396,7 +1396,8 @@ module nts.layout {
                             isMultiple: false,
                             selectedSystemType: 5,
                             isrestrictionOfReferenceRange: false,
-                            showNoSelection: !data.required
+                            showNoSelection: !data.required,
+                            isShowBaseDate: false
                         }, true);
                     } else if (location.href.indexOf('/view/cps/001') > -1) {
                         if (!!CS00017_IS00082) {
@@ -1683,14 +1684,37 @@ module nts.layout {
                         || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-
+                    
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
                         endWork = '9999/12/31';
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
+                    
+                     let conTimePrimi = CS00020_IS00253 ? __viewContext.primitiveValueConstraints[CS00020_IS00253.data.constraint] : null;
+                    // Value is not match with primitive
+                    if ((conTime && isNaN(conTime) || (conTime && (conTime < conTimePrimi.min || conTime > conTimePrimi.max)))) {
+                        return;
+                    }
 
+                    // If input date out of range
+                    if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    // If input date out of range
+                    if (startWork && (!moment.utc(startWork)._isValid || moment.utc(startWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(startWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    if (endWork && (!moment.utc(endWork)._isValid || moment.utc(endWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(endWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
                     fetch.get_ro_data({
                         employeeId: employeeId,
                         standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
@@ -2026,6 +2050,16 @@ module nts.layout {
                                 || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0
                                 || (grantDays && isNaN(grantDays) || (grantDays && (grantDays < consGrantDays.min || grantDays > consGrantDays.max)))) {
                                 return;
+                            }
+                            
+                            if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
+                            }
+                            
+                            if (yearRefDates && (!moment.utc(yearRefDates)._isValid || moment.utc(yearRefDates).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(yearRefDates).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
                             }
 
                             if (location.href.indexOf('/view/cps/002') > -1) {

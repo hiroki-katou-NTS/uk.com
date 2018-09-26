@@ -41,4 +41,9 @@ public class AppRemainCreateInfor {
 	private Optional<Integer> appBreakTimeTotal;
 	/**	申請残業時間合計 */
 	private Optional<Integer> appOvertimeTimeTotal;
+	/**
+	 * 
+	 */
+	private Optional<GeneralDate> startDate;
+	private Optional<GeneralDate> endDate;
 }
