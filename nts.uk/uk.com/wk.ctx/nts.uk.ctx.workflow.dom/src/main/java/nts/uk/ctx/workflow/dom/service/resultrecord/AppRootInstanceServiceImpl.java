@@ -357,7 +357,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				// 中間データから承認ルートインスタンスに変換する
 				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 				// 指定した社員が承認できるかの判断(NoDBACCESS)
-				ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState);
+				ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState, approvalRouteDetails.getEmployeeID());
 				// 実行結果をチェックする
 				if(approverPersonOutput.getAuthorFlag()&&
 						(approverPersonOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED)&&
@@ -391,7 +391,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					// 中間データから承認ルートインスタンスに変換する
 					ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 					// 指定した社員が承認できるかの判断(NoDBACCESS)
-					ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState);
+					ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState, approvalRouteDetails.getEmployeeID());
 					// 実行結果をチェックする
 					if(approverPersonOutput.getAuthorFlag()&&
 							(approverPersonOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED)&&
