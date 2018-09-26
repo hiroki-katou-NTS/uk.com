@@ -1648,7 +1648,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		}
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1 AND s.PERFORMANCE_ATR = 1 AND s.OPTIONAL_ITEM_NO IN ("
+			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1  AND s.OPTIONAL_ITEM_NO IN ("
 					+ textIn + ")";
 			PreparedStatement pstatement = con.prepareStatement(query);
 			pstatement.setString(1, companyId);

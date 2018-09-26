@@ -45,10 +45,11 @@ public class DailyCorrectCalcTimeService {
 	
 	@Inject
 	private ValidatorDataDailyRes validatorDataDaily;
+	
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits) {
-
-	DCCalcTime calcTime = new DCCalcTime();
+		
+	    DCCalcTime calcTime = new DCCalcTime();
         
 		DPItemValue itemEditCalc = itemEdits.stream().filter(x -> !x.getColumnKey().equals("USE")).findFirst().get();
 		getWplPosId(itemEdits);
@@ -70,7 +71,8 @@ public class DailyCorrectCalcTimeService {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
+//		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
+		AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
 
 		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
 		List<ItemValue> items = result.getCorrectedItemsWithStrict();
@@ -87,7 +89,6 @@ public class DailyCorrectCalcTimeService {
 		calcTime.setCellEdits(items.stream().map(x -> new DCCellEdit(itemEditCalc.getRowId(), "A" + x.getItemId(),
 				convertData(x.getValueType().value, x.getValue()))).collect(Collectors.toList()));
 		calcTime.setDailyEdits(dailyEditsResult);
-
 		return calcTime;
 	}
 	

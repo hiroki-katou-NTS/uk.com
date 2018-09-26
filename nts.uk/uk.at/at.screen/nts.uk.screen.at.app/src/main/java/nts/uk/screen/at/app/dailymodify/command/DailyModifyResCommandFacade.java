@@ -37,7 +37,6 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -122,7 +121,8 @@ public class DailyModifyResCommandFacade {
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
+				.findAll(AppContexts.user().companyId())
+				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 		
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()

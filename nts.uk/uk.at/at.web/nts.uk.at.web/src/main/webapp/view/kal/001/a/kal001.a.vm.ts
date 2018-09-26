@@ -110,7 +110,9 @@ module nts.uk.at.view.kal001.a.model {
                 maxRows  : 22
             };
             self.empCount = ko.observable(0);
-            
+            self.currentAlarmCode.subscribe((newCode) => {
+                errors.clearAll();
+            });
                    
         }
 
@@ -153,7 +155,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             
             self.currentAlarmCode.subscribe((newCode)=>{
-                    $(".nts-input").ntsError("clear");
+                    $(".nts-combobox").ntsError("clear");
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);

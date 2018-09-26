@@ -60,7 +60,7 @@ module nts.uk.pr.view.kmf001.d {
                     alreadySettingList: self.alreadySettingList
                 };
                 
-                self.retentionYearsAmount = ko.observable(0);
+                self.retentionYearsAmount = ko.observable(99);
                 self.maxDaysCumulation = ko.observable(0);
                 self.yearsAmountByEmp = ko.observable(0);
                 self.maxDaysCumulationByEmp = ko.observable(0);
@@ -131,7 +131,7 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
                     if (data == null) {
-                        self.retentionYearsAmount(0);
+                        self.retentionYearsAmount(99);
                         self.maxDaysCumulation(0);
                         self.leaveAsWorkDays(true);
                         self.selectedComManagement(1);

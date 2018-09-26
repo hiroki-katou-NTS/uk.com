@@ -780,7 +780,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 		this.calcTotalHolidayWorkTime = holidayWorkTime.getTotalHolidayWorkTime().getCalcTime().v();
 		this.beforeHolidayWorkTime = holidayWorkTime.getBeforeHolidayWorkTime().v();
 		this.totalTransferHdwkTime = holidayWorkTime.getTotalTransferTime().getTime().v();
-		this.calcTotalTransferHdwkTime = holidayWorkTime.getTotalHolidayWorkTime().getCalcTime().v();
+		this.calcTotalTransferHdwkTime = holidayWorkTime.getTotalTransferTime().getCalcTime().v();
 		
 		val vacationUseTime = aggregateTime.getVacationUseTime();
 		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getUseTime().v();

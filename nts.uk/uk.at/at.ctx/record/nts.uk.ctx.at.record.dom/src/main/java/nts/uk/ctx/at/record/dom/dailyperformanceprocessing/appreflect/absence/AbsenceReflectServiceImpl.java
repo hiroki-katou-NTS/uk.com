@@ -43,14 +43,20 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		try {
 			for(int i = 0; absencePara.getStartDate().daysTo(absencePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = absencePara.getStartDate().addDays(i);
+				WorkInfoOfDailyPerformance dailyInfor = workRepository.find(absencePara.getEmployeeId(), loopDate).get();
+				boolean isRecordWorkType = true;
 				//予定勤種の反映
-				boolean isRecordWorkType = this.updateRecordWorktype(absencePara, true);
+				if(!commonService.checkReflectScheWorkTimeType(absencePara, true)) {
+					isRecordWorkType = false;
+				}
+				dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), absencePara.getBaseDate(), absencePara.getWorkTypeCode(), true, dailyInfor);
 				//予定開始終了時刻の反映
 				this.reflectScheStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), isRecordWorkType);			
 				//勤種の反映
-				workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), false);
+				dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), false, dailyInfor);
 				//開始終了時刻の反映
 				this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode());
+				workRepository.updateByKeyFlush(dailyInfor);
 			}
 			return true;
 		} catch (Exception e) {
@@ -62,7 +68,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		if(!commonService.checkReflectScheWorkTimeType(absencePara, isSche)) {
 			return false;
 		}
-		workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), absencePara.getBaseDate(), absencePara.getWorkTypeCode(), isSche);
+		//workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), absencePara.getBaseDate(), absencePara.getWorkTypeCode(), isSche);
 		return true;
 	}
 	@Override

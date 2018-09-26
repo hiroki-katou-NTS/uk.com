@@ -18,4 +18,6 @@ public class UpdateAgreementYearSettingCommand {
 	private int errorOneYear;
 	
 	private int alarmOneYear;
+	
+	private int yearMonthValueOld;
 }

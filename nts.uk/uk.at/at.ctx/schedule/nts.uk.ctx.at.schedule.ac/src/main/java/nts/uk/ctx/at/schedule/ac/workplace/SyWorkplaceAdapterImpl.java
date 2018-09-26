@@ -33,7 +33,7 @@ public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 	}
 
 	@Override
-	public Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+	public Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates) {
 		return this.syWorkplacePub.getWorkplaceMapCodeBaseDateName(companyId, wpkCodes, baseDates);
 	}

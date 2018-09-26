@@ -106,7 +106,8 @@ module cps002.a.vm {
         classWarning: KnockoutObservable<string> = ko.observable("");
 
         constructor() {
-            let self = this;
+            let self = this,
+                employee = self.currentEmployee();
 
             self.createTypeId.subscribe((newValue) => {
                 self.initValueList([]);
@@ -115,12 +116,23 @@ module cps002.a.vm {
                 self.categorySelectedCode('');
                 self.initSettingSelectedCode('');
                 self.currentInitSetting(new InitSetting(null));
+
+                nts.uk.ui.errors.clearAll();
+                (nts.uk.ui._viewModel || {
+                    kiban: {
+                        errorDialogViewModel: {
+                            errors: {
+                                removeAll: () => { }
+                            }
+                        }
+                    }
+                }).kiban.errorDialogViewModel.errors.removeAll();
             });
 
             self.employeeBasicInfo.subscribe((data) => {
                 if (data) {
 
-                    self.currentEmployee().hireDate(data.jobEntryDate);
+                    employee.hireDate(data.jobEntryDate);
                     self.createTypeId(data.employeeCreationMethod);
 
                     let copyEmployeeId = data.copyEmployeeId;
@@ -180,17 +192,17 @@ module cps002.a.vm {
             });
 
             self.categorySelectedCode.subscribe(code => {
-                if (!_.isNil(code)) {
+                if (!_.isNil(code) && !_.isEmpty(code)) {
                     self.itemSettingList.removeAll();
 
                     if (self.createTypeId() === 2) {
-                        let command = ko.toJS(self.currentEmployee());
+                        let command = ko.toJS(employee);
 
                         command = _.omit(command, ['initSettingId', 'baseDate', 'categoryCd']);
 
                         command = _.extend(command, {
                             categoryCd: code,
-                            baseDate: self.currentEmployee().hireDate(),
+                            baseDate: employee.hireDate(),
                             initSettingId: self.currentInitSetting().itemId
                         });
 
@@ -207,7 +219,7 @@ module cps002.a.vm {
                 }
             });
 
-            self.currentEmployee().avatarCropedId.subscribe((avartarId) => {
+            employee.avatarCropedId.subscribe((avartarId) => {
                 let self = this,
                     avartarContent = $("#employeeAvatar");
 
@@ -222,14 +234,14 @@ module cps002.a.vm {
                 }
             });
 
-            self.currentEmployee().employeeCode.subscribe((employeeCode) => {
+            employee.employeeCode.subscribe((employeeCode) => {
                 let self = this;
                 self.autoUpdateCardNo(employeeCode);
             });
 
-            self.currentEmployee().cardNo.subscribe((cardNo) => {
+            employee.cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing);
-                let emp = self.currentEmployee();
+                let emp = employee;
                 if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
                     if (cardNo && cardNo.length <= ce.digitsNumber) {
                         switch (ce.method) {
@@ -273,70 +285,80 @@ module cps002.a.vm {
             });
             self.checkLicense();
 
-            ko.computed({
-                owner: self.currentStep,
-                read: () => {
-                    let step = ko.toJS(self.currentStep);
-
-                    // clear all error when step change
-                    nts.uk.ui.errors.clearAll();
-
-                    switch (step) {
-                        case 'CPS002_13':
-                            $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
-                            break;
-                        case 'CPS002_14':
-                            if (ko.toJS(self.createTypeId) === 1) {
-                                //start Screen C
-                                //Set name Screen C　#CPS002_3
-                                $('#pg-name').text('CPS002C' + ' ' + text('CPS002_3'));
-                                // init ccg component
-                                let sto = setTimeout(() => {
-                                    $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                                        self.loadCopySettingCtgData();
-                                    });
-                                    clearTimeout(sto);
-                                }, 100);
-                            } else {
-                                //start Screen B
-                                //Set name Screen B　#CPS002_2
-                                $('#pg-name').text('CPS002B' + ' ' + text('CPS002_2'));
-                                self.loadInitSettingData();
+            self.currentStep.subscribe((step: string) => {
+                // clear all error when step change
+                nts.uk.ui.errors.clearAll();
+                (nts.uk.ui._viewModel || {
+                    kiban: {
+                        errorDialogViewModel: {
+                            errors: {
+                                removeAll: () => { }
                             }
+                        }
+                    }
+                }).kiban.errorDialogViewModel.errors.removeAll();
 
-                            $('#combo-box').focus();
-                            break;
-                        case 'CPS002_15':
-                            let command = ko.toJS(self.currentEmployee());
+                switch (step) {
+                    case 'CPS002_13':
+                        $('#pg-name').text('CPS002A' + ' ' + text('CPS002_1'));
+                        self.layoutData.removeAll();
+                        self.listItemCls.removeAll();
+                        break;
+                    case 'CPS002_14':
+                        if (ko.toJS(self.createTypeId) === 1) {
+                            //start Screen C
+                            //Set name Screen C　#CPS002_3
+                            $('#pg-name').text('CPS002C' + ' ' + text('CPS002_3'));
+                            // init ccg component
+                            let sto = setTimeout(() => {
+                                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+                                    self.loadCopySettingCtgData();
+                                });
+                                clearTimeout(sto);
+                            }, 100);
+                        } else {
+                            //start Screen B
+                            //Set name Screen B　#CPS002_2
+                            $('#pg-name').text('CPS002B' + ' ' + text('CPS002_2'));
+                            self.loadInitSettingData();
+                        }
 
-                            $('#pg-name').text('CPS002D' + ' ' + text('CPS002_4'));
+                        self.layoutData.removeAll();
+                        self.listItemCls.removeAll();
 
-                            //add atr
-                            command.employeeCopyId = self.copyEmployee().employeeId;
-                            command.initSettingId = self.currentInitSetting().itemId;
-                            command.createType = self.createTypeId();
+                        $('#combo-box').focus();
+                        break;
+                    case 'CPS002_15':
+                        let command = ko.toJS(employee);
 
-                            service.getLayoutByCreateType(command).done((data: ILayout) => {
-                                self.listItemCls(data.itemsClassification || []);
-                                if (self.listItemCls().length > 0) {
-                                    new vc(self.listItemCls());
-                                }
-                            });
+                        $('#pg-name').text('CPS002D' + ' ' + text('CPS002_4'));
 
-                            // check quyen có thể upload Avatar duoc khong
-                            permision().done((data: Array<IPersonAuth>) => {
-                                if (data) {
-                                    for (var i = 0; i < data.length; i++) {
-                                        if (data[i].functionNo == FunctionNo.No2_Allow_UploadAva) {
-                                            self.isAllowAvatarUpload(!!data[i].available);
-                                        }
+                        //add atr
+                        command.employeeCopyId = self.copyEmployee().employeeId;
+                        command.initSettingId = self.currentInitSetting().itemId;
+                        command.createType = self.createTypeId();
+
+                        service.getLayoutByCreateType(command).done((data: ILayout) => {
+                            self.listItemCls(data.itemsClassification || []);
+                            if (self.listItemCls().length > 0) {
+                                new vc(self.listItemCls());
+                            }
+                        });
+
+                        // check quyen có thể upload Avatar duoc khong
+                        permision().done((data: Array<IPersonAuth>) => {
+                            if (data) {
+                                for (var i = 0; i < data.length; i++) {
+                                    if (data[i].functionNo == FunctionNo.No2_Allow_UploadAva) {
+                                        self.isAllowAvatarUpload(!!data[i].available);
                                     }
                                 }
-                            });
-                            break;
-                    }
+                            }
+                        });
+                        break;
                 }
             });
+            self.currentStep.valueHasMutated();
 
             self.start();
         }
@@ -370,11 +392,11 @@ module cps002.a.vm {
 
         autoUpdateCardNo(employeeCode) {
             let self = this,
-                employee = ko.toJS(self.currentEmployee),
+                employee = self.currentEmployee(),
                 userSetting = self.currentUseSetting(),
                 maxLengthCardNo = ko.toJS(self.stampCardEditing).digitsNumber;
 
-            if (!userSetting || !(employee || {}).cardNo) {
+            if (!userSetting || !(ko.toJS(employee) || {}).cardNo) {
                 return;
             }
 
@@ -385,7 +407,7 @@ module cps002.a.vm {
                     }
                     break;
                 case CardNoValType.CPC_AND_EMPC:
-                    let newCardNo = __viewContext.user.companyCode + employee.employeeCode();
+                    let newCardNo = __viewContext.user.companyCode + (ko.toJS(employee) || {}).employeeCode;
                     if (newCardNo.length <= maxLengthCardNo) {
                         employee.cardNo(newCardNo);
                     }
@@ -628,6 +650,16 @@ module cps002.a.vm {
                 ctyp = ko.toJS(self.createTypeId);
 
             nts.uk.ui.errors.clearAll();
+            (nts.uk.ui._viewModel || {
+                kiban: {
+                    errorDialogViewModel: {
+                        errors: {
+                            removeAll: () => { }
+                        }
+                    }
+                }
+            }).kiban.errorDialogViewModel.errors.removeAll();
+
             self.listItemCls.removeAll();
 
             setShared("CPS002A", null);
@@ -767,19 +799,23 @@ module cps002.a.vm {
 
         openIModal() {
             let self = this,
-                avatarId = self.defaultImgId();
+                avatarId = self.defaultImgId(),
+                employee = self.currentEmployee();
 
             if (avatarId != "") {
                 setShared("CPS002A", avatarId);
             }
+
             if (self.isAllowAvatarUpload()) {
-                setShared("openIDialog", self.currentEmployee().avatarOrgId());
+                setShared("openIDialog", employee.avatarOrgId());
+
                 subModal('/view/cps/002/i/index.xhtml', { title: '' }).onClosed(() => {
                     let dataShare = getShared("imageId");
+
                     if (dataShare) {
-                        self.currentEmployee().avatarOrgId(dataShare.imageOriginalId);
-                        self.currentEmployee().avatarCropedId(dataShare.imageCropedId);
-                        self.currentEmployee().fileName(dataShare.fileName);
+                        employee.avatarOrgId(dataShare.imageOriginalId);
+                        employee.avatarCropedId(dataShare.imageCropedId);
+                        employee.fileName(dataShare.fileName);
                         self.defaultImgId(dataShare.imageOriginalId);
                     }
                 });

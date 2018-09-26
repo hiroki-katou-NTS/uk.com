@@ -17,18 +17,20 @@
 							<div id="D1_3" class="inline34"
 								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CLI003_22')}</div>
 						</td>
-						
+
 						<td>
-							<div id="D1_4" class="validate_form" tabindex="1" data-name="DateTimePairRange Editor" data-bind="ntsDateTimePairRangeEditor:
+							<div id="D1_4" class="validate_form" tabindex="1"
+								data-name="DateTimePairRange Editor"
+								data-bind="ntsDateTimePairRangeEditor:
 							 {value: ko.observable({start: startDateOperator, end: endDateOperator}),
-							   required: required, enable: enable, readonly: readonly, maxRange:1,startName: startDateNameOperator, endName:endDateNameOperator,constraint:'AttendanceClock' }">
+							   required: required, enable: enable, readonly: readonly, maxRange:1,startName: startDateNameOperator, endName:endDateNameOperator,constraint:'TimeClockWithSeconds' }">
 							</div>
 						</td>
 					</tr>
 				</table>
 			</div>
 
-			<div class="panel panel-frame" id="D2_2" >
+			<div class="panel panel-frame" id="D2_2">
 
 				<table>
 					<tr>

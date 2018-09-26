@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 
 public interface CompanyMonthlyItemService {
 
@@ -21,7 +21,7 @@ public interface CompanyMonthlyItemService {
 	 *            List＜月次勤怠項目の属性＞
 	 * @return
 	 */
-	List<AttItemNameImport> getMonthlyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
+	List<AttItemName> getMonthlyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
 			List<MonthlyAttendanceItemAtr> itemAtrs);
 
 }

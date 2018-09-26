@@ -825,23 +825,34 @@ public class AttendanceItemUtil implements ItemConst {
 		return newValue;
 	}
 
+	private static final Map<String, String> cacheForGetCurrentPath = new HashMap<>();
+	
 	private static String getCurrentPath(int layoutIdx, String text, boolean isList) {
 
+		String cacheKey = layoutIdx + text + isList;
+		if (cacheForGetCurrentPath.containsKey(cacheKey)) {
+			return cacheForGetCurrentPath.get(cacheKey);
+		}
+		
 		String[] layouts = text.split(Pattern.quote(DEFAULT_SEPERATOR));
-
+		String result;
+		
 		if (layouts.length <= layoutIdx) {
-			return EMPTY_STRING;
+			result = EMPTY_STRING;
+		} else {
+			String path = layouts[layoutIdx];
+			if (isList) {
+				result = getIdx(path);
+			} else {
+				result = getTextWithNoCondition(path);
+			}
 		}
-
-		String path = layouts[layoutIdx];
-
-		if (isList) {
-			return getIdx(path);
-		}
-
-		return getTextWithNoCondition(path);
+		
+		cacheForGetCurrentPath.put(cacheKey, result);
+		
+		return result;
 	}
-
+	
 	private static String getIdx(String path) {
 
 		String notIdx = getTextWithNoIdx(path);

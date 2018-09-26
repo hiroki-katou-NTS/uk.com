@@ -256,10 +256,12 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void updateByKey(WorkInfoOfDailyPerformance domain) {
-		Optional<KrcdtDaiPerWorkInfo> dataOpt = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", domain.getEmployeeId())
-				.setParameter("ymd", domain.getYmd()).getSingle();
-		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo(new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd()));
+
 		if(domain != null){
+			KrcdtDaiPerWorkInfo data = this.findKrcdtDaiPerWorkInfoWithJdbc(
+					domain.getEmployeeId(), domain.getYmd())
+					.orElseGet(() -> new KrcdtDaiPerWorkInfo(new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd())));
+
 			if(domain.getRecordInfo() != null){
 				data.recordWorkWorktimeCode = domain.getRecordInfo().getWorkTimeCode() == null 
 						? null : domain.getRecordInfo().getWorkTimeCode().v();
@@ -300,6 +302,59 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			this.commandProxy().update(data);
 			this.commandProxy().updateAll(data.scheduleTimes);
 		}
+	}
+	
+	@SneakyThrows
+	private Optional<KrcdtDaiPerWorkInfo> findKrcdtDaiPerWorkInfoWithJdbc(String employeeId, GeneralDate ymd) {
+		
+		PreparedStatement stmtFindById = this.connection().prepareStatement(
+				"select * from KRCDT_DAI_PER_WORK_INFO"
+				+ " where SID = ? and YMD = ?");
+		stmtFindById.setString(1, employeeId);
+		stmtFindById.setDate(2, Date.valueOf(ymd.toLocalDate()));
+		
+		return new NtsResultSet(stmtFindById.executeQuery()).getSingle(rec -> {
+			KrcdtDaiPerWorkInfoPK pk = new KrcdtDaiPerWorkInfoPK();
+			pk.employeeId = rec.getString("SID");
+			pk.ymd = rec.getGeneralDate("YMD");
+			
+			KrcdtDaiPerWorkInfo entity = new KrcdtDaiPerWorkInfo();
+			entity.krcdtDaiPerWorkInfoPK = pk;
+			entity.recordWorkWorktypeCode = rec.getString("RECORD_WORK_WORKTYPE_CODE");
+			entity.recordWorkWorktimeCode = rec.getString("RECORD_WORK_WORKTIME_CODE");
+			entity.scheduleWorkWorktypeCode = rec.getString("SCHEDULE_WORK_WORKTYPE_CODE");
+			entity.scheduleWorkWorktimeCode = rec.getString("SCHEDULE_WORK_WORKTIME_CODE");
+			entity.calculationState = rec.getInt("CALCULATION_STATE");
+			entity.goStraightAttribute = rec.getInt("GO_STRAIGHT_ATR");
+			entity.backStraightAttribute = rec.getInt("BACK_STRAIGHT_ATR");
+			entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
+			
+			try {
+				PreparedStatement stmtSche = this.connection().prepareStatement(
+						"select * from KRCDT_WORK_SCHEDULE_TIME"
+						+ " where where SID = ? and YMD = ?");
+				stmtSche.setString(1, pk.employeeId);
+				stmtSche.setDate(2, Date.valueOf(pk.ymd.toLocalDate()));
+				
+				entity.scheduleTimes = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
+					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
+					pks.employeeId = rs.getString("SID");
+					pks.ymd = rs.getGeneralDate("YMD");
+					pks.workNo = rs.getInt("WORK_NO");
+					
+					KrcdtWorkScheduleTime es = new KrcdtWorkScheduleTime();
+					es.krcdtWorkScheduleTimePK = pks;
+					es.attendance = rs.getInt("ATTENDANCE");
+					es.leaveWork = rs.getInt("LEAVE_WORK");
+					
+					return es;
+				});
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			
+			return entity;
+		});
 	}
 
 	@Override

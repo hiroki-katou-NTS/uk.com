@@ -42,7 +42,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
 		// Req No.125
 
-		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.getEmployeeByCidScd(companyId, employeeCode);
+		Optional<EmployeeDataMngInfo> empInfo = empDataMngRepo.getEmployeeNotDel(companyId, employeeCode);
 
 		if (!empInfo.isPresent()) {
 			return Optional.empty();

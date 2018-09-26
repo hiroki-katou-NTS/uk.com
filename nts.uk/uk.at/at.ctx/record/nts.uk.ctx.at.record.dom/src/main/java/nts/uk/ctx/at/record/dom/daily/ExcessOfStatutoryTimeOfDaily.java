@@ -69,6 +69,14 @@ public class ExcessOfStatutoryTimeOfDaily {
 		this.workHolidayTime = workHolidayTime;
 	}
 	
+	public void updateOverTime(OverTimeOfDaily ot){
+		this.overTimeWork = Optional.ofNullable(ot);
+	}
+	
+	public void updateHoliday(HolidayWorkTimeOfDaily ht){
+		this.workHolidayTime = Optional.ofNullable(ht);
+	}
+	
 	/**
 	 * 各時間の計算を指示するクラス
 	 * @param integrationOfDaily 
