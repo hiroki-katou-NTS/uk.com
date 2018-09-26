@@ -102,8 +102,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     if(self.selectedEmpInsHisId() != HIS_ID_TEMP ) {
                         self.isNewMode(MODE.UPDATE);
                     }
+                    self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
                 }
-                self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
             });
         }
 
