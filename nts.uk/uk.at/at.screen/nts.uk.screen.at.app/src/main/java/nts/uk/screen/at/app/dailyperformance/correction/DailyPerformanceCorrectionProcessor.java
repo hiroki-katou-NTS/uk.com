@@ -297,6 +297,8 @@ public class DailyPerformanceCorrectionProcessor {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
 		
+		List<String> employeeIdsOri = changeEmployeeIds;
+		
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
 		/**
@@ -373,6 +375,17 @@ public class DailyPerformanceCorrectionProcessor {
 			screenDto.setLstData(screenDto.getLstData().stream()
 					.filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
 		}
+		
+		List<DPDataDto> listData = new ArrayList<>();
+		for (String employeeId : employeeIdsOri) {
+			screenDto.getLstData().stream().forEach(item -> {
+				if(item.getEmployeeId().equals(employeeId)){
+					listData.add(item);
+				}				
+			});
+			
+		}
+		screenDto.setLstData(listData);
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
