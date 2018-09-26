@@ -288,7 +288,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			try {
 				PreparedStatement stmtSche = this.connection().prepareStatement(
 						"select * from KRCDT_WORK_SCHEDULE_TIME"
-						+ " where where SID = ? and YMD = ?");
+						+ " where SID = ? and YMD = ?");
 				stmtSche.setString(1, pk.employeeId);
 				stmtSche.setDate(2, Date.valueOf(pk.ymd.toLocalDate()));
 				
