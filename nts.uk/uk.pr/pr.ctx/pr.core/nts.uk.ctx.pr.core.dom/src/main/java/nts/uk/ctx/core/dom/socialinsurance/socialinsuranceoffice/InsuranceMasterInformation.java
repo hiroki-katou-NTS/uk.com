@@ -55,7 +55,7 @@ public class InsuranceMasterInformation extends DomainObject {
     public InsuranceMasterInformation(Integer welfarePensionFundNumber, String welfarePensionOfficeNumber, Integer healthInsuranceOfficeNumber, String healthInsuranceUnionOfficeNumber, OfficeOrganizationNumber officeOrganizeNumber, ForMagneticMedia forMagneticMedia) {
         this.welfarePensionFundNumber = Objects.isNull(welfarePensionFundNumber) ? Optional.empty() : Optional.of(new WelfarePensionFundNumber(welfarePensionFundNumber.toString()));
         this.welfarePensionOfficeNumber = Objects.isNull(welfarePensionOfficeNumber) ? Optional.empty() : Optional.of(new WelfarePensionOfficeNumber(welfarePensionOfficeNumber));
-        this.healthInsuranceOfficeNumber = Objects.isNull(healthInsuranceOfficeNumber) ? Optional.empty() : Optional.of(new HealthInsuranceOfficeNumber(healthInsuranceOfficeNumber));
+        this.healthInsuranceOfficeNumber = Objects.isNull(healthInsuranceOfficeNumber) ? Optional.empty() : Optional.of(new HealthInsuranceOfficeNumber(String.valueOf(healthInsuranceOfficeNumber)));
         this.healthInsuranceUnionOfficeNumber = Objects.isNull(healthInsuranceUnionOfficeNumber) ? Optional.empty() : Optional.of(new HealthInsuranceUnionOfficeNumber(healthInsuranceUnionOfficeNumber));
         this.officeOrganizeNumber = officeOrganizeNumber;
         this.forMagneticMedia = forMagneticMedia;

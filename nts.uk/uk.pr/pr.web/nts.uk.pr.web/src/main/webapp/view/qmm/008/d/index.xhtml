@@ -43,7 +43,6 @@
 					nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.HealthInsuranceOfficeNumber
 					nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.HealthInsuranceUnionOfficeNumber
 					nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice.Memo
-					nts.uk.ctx.bs.employee.dom.employee.employeelicense.MaxNumberLicenses
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="qmm008.d.vm.js" />
@@ -256,9 +255,9 @@
 								<hr style="margin-top: 8px; margin-bottom: 8px;"></hr>
 								<div class="flex valign-center">
 									<div id="D5_28"
-										data-bind="ntsFormLabel: { constraint: 'MaxNumberLicenses', required: false }">#{i18n.getText('QMM008_138')}</div>
+										data-bind="ntsFormLabel: { constraint: 'HealthInsuranceOfficeNumber', required: false }">#{i18n.getText('QMM008_138')}</div>
 									<input id="D5_29" tabindex="32"
-										data-bind="ntsTextEditor: {constraint: 'MaxNumberLicenses',value: healthInsuranceOfficeNumber}, name: '#{i18n.getText('QMM008_138')}'" />
+										data-bind="ntsTextEditor: {constraint: 'HealthInsuranceOfficeNumber',value: healthInsuranceOfficeNumber}, name: '#{i18n.getText('QMM008_138')}'" />
 								</div>
 								<div class="flex valign-center">
 									<div id="D5_30"
