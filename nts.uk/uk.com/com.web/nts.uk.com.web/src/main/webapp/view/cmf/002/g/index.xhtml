@@ -39,16 +39,16 @@
         <div id="contents-area" class="fixed-flex-layout">
             <div id="left-content" class="fixed-flex-layout-left" style="padding-top: 5px;">
                 <div
-                        data-bind="ntsPanel:{width: '320px', height: '410px', showIcon:true, direction: 'none', visible: true}"
-                        style="padding-top: 5px;">
+                        data-bind="ntsPanel:{showIcon:true, direction: 'none', visible: true}"
+                        style="padding-top: 10px;">
                     <div class="flex">
                         <div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</div>
-                        <div style="width: 200px" tabindex="5"
+                        <div style="width: 220px" tabindex="5"
                              data-bind="ntsSearchBox: {
 									searchMode :'filter',
 									targetKey: 'dispConvertCode',
 									mode: 'igGrid',
-									comId: 'table-single-list',
+									comId: 'G2_3',
 									items: listOutputCodeConvert,
 									selected: selectedCodeConvert,
 									selectedKey: 'dispConvertCode',
@@ -63,10 +63,10 @@
                                             columns:
                                             [
                                             	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 70, formatter: _.escape},
-			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 220, formatter: _.escape} ],
+			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 248, formatter: _.escape} ],
                                             multiple: false,
                                             value: selectedCodeConvert,
-                                            rows: 15,
+                                            rows: 14,
                                             enable: true}">
                         </table>
                     </div>
@@ -110,14 +110,6 @@
                 </div>
                 <div class="flex">
                     <table id="fixed-table" tabindex="8">
-                        <!--<colgroup>
-                            <col width="20px" />
-                            <col width="125px" />
-                            <col width="125px" />
-
-
-                        </colgroup>-->
-
                         <colgroup>
                             <col width="33px"/>
                             <col width="121px"/>

@@ -729,6 +729,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
+                if(searchCode.length > 20){
+                    self.setError(control, "Msg_1346");
+                    return false;
+                }
 
                 // 検索コードがカテゴリ項目の型と同じ場合
                 switch (self.dataType) {
