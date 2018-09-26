@@ -57,7 +57,7 @@ public class ChangeCompanyCommandHandler extends CommandHandler<ChangeCompanyCom
 					empDto.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), empDto.getEmployeeId(), empDto.getEmployeeCode());
 		} else {
 			contextManager.changeCompany(userCtx.userId(), userCtx.personId(), userCtx.contractCode(), 
-					command.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), null, null);
+					command.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), userCtx.employeeId(), userCtx.employeeCode());
 		}
 		command.setPersonName(personInfoAdapter.getBusinessName(userCtx.employeeId()));
 		
