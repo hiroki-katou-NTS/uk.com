@@ -151,7 +151,7 @@ public class MonthlyCalculation {
 		this.employeeId = "empty";
 		this.yearMonth = new YearMonth(0);
 		this.closureId = ClosureId.RegularEmployee;
-		this.closureDate = new ClosureDate(0, true);
+		this.closureDate = new ClosureDate(1, true);
 		this.procPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.workingConditionItem = null;
 		this.workingSystem = WorkingSystem.REGULAR_WORK;
