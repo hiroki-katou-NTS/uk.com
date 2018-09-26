@@ -302,6 +302,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// add scheMaster
 				// set scheMaster = scheMaster of basicSche from DB
 				// (compare to insert state and log, not to update in DB)
+				// hien tai tai lieu excel dang ghi la "khong update"
 				bSchedule.setWorkScheduleMaster(basicSche.getWorkScheduleMaster());
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);

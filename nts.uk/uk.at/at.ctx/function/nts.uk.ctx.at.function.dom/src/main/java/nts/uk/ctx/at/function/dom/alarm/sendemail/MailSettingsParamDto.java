@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 
 @Data
+@NoArgsConstructor
 public class MailSettingsParamDto {
 	/** Subject email employee */
 	private String subject;

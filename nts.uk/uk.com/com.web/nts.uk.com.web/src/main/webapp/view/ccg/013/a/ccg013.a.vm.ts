@@ -621,7 +621,7 @@ module ccg013.a.viewmodel {
                         }
                     });
                     }
-                    
+                 );   
                 }
             });
         }

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkSchedu
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
@@ -147,7 +149,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			}
 			
 			Integer timeOff = null, timeOn = leaveGateStartTime, divergenceTime = 0;
-			List<Integer> overTime = new ArrayList<>(); List<Integer> preOver = new ArrayList<>();
+			List<Integer> overTime = new ArrayList<>(), preOver = new ArrayList<>();
 			boolean isGotoWork = isGotoWork(atr, dailyWork.getOneDay(), dailyWork.getMorning(), dailyWork.getAfternoon());
 			/** データ準備エンド　*/
 
@@ -162,6 +164,17 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			/** 任意項目5: その日にPCログオン = null and ログオフ <> null が条件 */
 			processOptionalItem(() -> atdStampTime != null && logonTime != null && logoffTime == null, 
 					optionalItem, countOn, countOff, 5);
+			
+			/** 任意項目14: その日にPCログオン = null が条件 */
+			processOptionalItem(() -> atdStampTime != null && logonTime == null, optionalItem, countOn, countOff, 14);
+			
+			/** 任意項目15: その日にPCログオフ = null が条件 */
+			processOptionalItem(() -> atdStampTime != null && logoffTime == null, optionalItem, countOn, countOff, 15);
+			
+			/** TODO: update*/
+			/** 任意項目16: 出勤時刻が入っており、PCログオンログオフのどちらかが無い事が条件 */
+			processOptionalItem(() -> atdStampTime != null && (logonTime == null || logoffTime == null), 
+					optionalItem, countOn, countOff, 16);
 			
 			/** 任意項目7: 出勤の判断 */
 			processOptionalItem(() -> isGotoWork, optionalItem, timeOn, timeOff, 7);
@@ -203,22 +216,29 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 						preOver.add(getAttendanceTime(o.getBeforeApplicationTime()));
 					});
 				});
+				FlexTime flex = getFlexTime(overTimeD);
 				
-				int timePre = preOver.stream().mapToInt(t -> t).sum(),
-						time = overTime.stream().mapToInt(t -> t).sum() + timePre,
-						flexTime = getFlexTime(overTimeD);
+				int timePreFlex = getAttendanceTime(flex.getBeforeApplicationTime()),
+						flexTime = flex.getFlexTime().getTime().valueAsMinutes(), 
+						timeFlex = flexTime > 0 ? flexTime - timePreFlex : 0,
+						timePre = preOver.stream().mapToInt(t -> t).sum() + timePreFlex,
+						time = overTime.stream().mapToInt(t -> t).sum() + timePre + flexTime;
 				
 				/** 任意項目18, 任意項目28: 事前残業時間 > 0 である事が条件 */
 				processOptionalItem(() -> timePre > 0, optionalItem, countOn, countOff, 18, 28);
 				
 				/** 任意項目19: 事前残業1~10 > 0 かつ　乖離時間が発生していない事が条件 */
-				processOptionalItem(() -> timePre > 0 && overTime.stream().allMatch(t -> t <= 0), optionalItem, countOn, countOff, 19);
+				processOptionalItem(() -> timePre > 0 && time <= 0 && timeFlex <= 0, 
+						optionalItem, countOn, countOff, 19);
 				
 				/** 任意項目21: 事前残業1~10 > 0 かつ　乖離時間が発生している事が条件 */
-				processOptionalItem(() -> timePre > 0 && overTime.stream().anyMatch(t -> t > 0), optionalItem, countOn, countOff, 21);
+				processOptionalItem(() -> timePre > 0 && (timeFlex > 0 || overTime.stream().anyMatch(t -> t > 0)),
+						optionalItem, countOn, countOff, 21);
 				
 				/** 任意項目23: 残業あり かつ 事前残業なし　が条件 */
-				processOptionalItem(() -> checkOnPair(overTime, preOver, (ot, pot) -> ot > 0 && pot <= 0), optionalItem, countOn, countOff, 23);
+				processOptionalItem(() -> (timePreFlex <= 0 && timeFlex > 0) || 
+								checkOnPair(overTime, preOver, (ot, pot) -> ot > 0 && pot <= 0),
+						optionalItem, countOn, countOff, 23);
 				
 				/** 任意項目27: 残業あり かつ 事前残業なし　が条件 */
 				processOptionalItem(() -> time > 0, optionalItem, countOn, countOff, 27);
@@ -452,13 +472,12 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		return time == null ? 0 : getAttendanceTime(time.getTime());
 	}
 	
-	private int getFlexTime(Optional<OverTimeOfDaily> overTimeD){ 
-		if(overTimeD.isPresent() && overTimeD.get().getFlexTime() != null 
-				&& overTimeD.get().getFlexTime().getFlexTime() != null
-					&& overTimeD.get().getFlexTime().getFlexTime().getTime() != null){
-				return overTimeD.get().getFlexTime().getFlexTime().getTime().valueAsMinutes();
+	private FlexTime getFlexTime(Optional<OverTimeOfDaily> overTimeD){ 
+		if(overTimeD.isPresent() && overTimeD.get().getFlexTime() != null ){
+				return overTimeD.get().getFlexTime();
 		}
-		return 0;
+		return new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(AttendanceTimeOfExistMinus.ZERO), 
+							AttendanceTime.ZERO);
 	}
 	
 	private Optional<OverTimeOfDaily> getOverTime(AttendanceTimeOfDailyPerformance attendanceTime){
