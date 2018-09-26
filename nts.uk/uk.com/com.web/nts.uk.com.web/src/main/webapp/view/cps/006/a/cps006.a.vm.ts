@@ -6,12 +6,11 @@ module nts.uk.com.view.cps006.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
-
     export class ScreenModel {
         id: KnockoutObservable<string> = ko.observable('');
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_6'), key: 'categoryName', width: 250, formatter: _.escape },
+            { headerText: text('CPS006_6'), key: 'categoryName', width: 230, formatter: _.escape },
             {
                 headerText: text('CPS006_7'), key: 'isAbolition', width: 50,
                 formatter: makeIcon
@@ -450,10 +449,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
         currentItemId: KnockoutObservable<string> = ko.observable('');
         itemColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_16'), key: 'itemName', width: 250},
+            { headerText: text('CPS006_16'), key: 'itemName', width: 250, formatter: _.escape},
             {
                 headerText: text('CPS006_17'), key: 'isAbolition', width: 50,
-                formatter: makeIcon
+                formatter: makeIcon, 
             }
         ]);
         constructor(params: ICategoryInfoDetail) {
