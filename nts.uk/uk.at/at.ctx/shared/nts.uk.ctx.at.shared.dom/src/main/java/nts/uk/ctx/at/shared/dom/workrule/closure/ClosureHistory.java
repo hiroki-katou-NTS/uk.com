@@ -11,6 +11,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Class ClosureHistorry.
