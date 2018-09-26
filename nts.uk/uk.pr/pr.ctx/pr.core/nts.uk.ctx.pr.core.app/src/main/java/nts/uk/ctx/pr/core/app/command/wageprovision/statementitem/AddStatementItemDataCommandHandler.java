@@ -119,7 +119,7 @@ public class AddStatementItemDataCommandHandler extends CommandHandler<Statement
 		}
 
 		// ドメインモデル「明細項目の表示設定」を新規追加する
-		val statementDisplay = command.getStatementDisplaySet();
+		val statementDisplay = command.getStatementItemDisplaySet();
 		if (statementDisplay != null) {
 			statementItemDisplaySetRepository.add(new StatementItemDisplaySet(cid, salaryItemId,
 					statementDisplay.getZeroDisplayAtr(), statementDisplay.getItemNameDisplay()));

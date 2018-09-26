@@ -56,21 +56,13 @@ public class RemoveStatementItemDataCommandHandler extends CommandHandler<Statem
 		switch (EnumAdaptor.valueOf(command.getStatementItem().getCategoryAtr(), CategoryAtr.class)) {
 		case PAYMENT_ITEM:
 			paymentItemSetRepository.remove(cid, salaryItemId);
-			if (command.getValidityPeriodAndCycleSet() != null) {
-				setPeriodCycleRepository.remove(salaryItemId);
-			}
-			if (command.getBreakdownItemSet() != null) {
-				breakdownItemSetRepository.removeAll(salaryItemId);
-			}
+			setPeriodCycleRepository.remove(salaryItemId);
+			breakdownItemSetRepository.removeAll(salaryItemId);
 			break;
 		case DEDUCTION_ITEM:
 			deductionItemSetRepository.remove(cid, salaryItemId);
-			if (command.getValidityPeriodAndCycleSet() != null) {
-				setPeriodCycleRepository.remove(salaryItemId);
-			}
-			if (command.getBreakdownItemSet() != null) {
-				breakdownItemSetRepository.removeAll(salaryItemId);
-			}
+			setPeriodCycleRepository.remove(salaryItemId);
+			breakdownItemSetRepository.removeAll(salaryItemId);
 			break;
 		case ATTEND_ITEM:
 			timeItemSetRepository.remove(cid, salaryItemId);

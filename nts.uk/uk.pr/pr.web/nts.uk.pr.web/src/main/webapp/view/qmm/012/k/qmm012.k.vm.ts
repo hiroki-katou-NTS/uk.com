@@ -43,6 +43,7 @@ module nts.uk.pr.view.qmm012.k.viewmodel {
         }
 
         cancelSetting() {
+            setShared("QMM012_K_DATA", {});
             nts.uk.ui.windows.close();
         }
     }

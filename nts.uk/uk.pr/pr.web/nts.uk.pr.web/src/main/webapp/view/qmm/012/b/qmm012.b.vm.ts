@@ -52,11 +52,35 @@ module nts.uk.pr.view.qmm012.b {
                                    ];
                 
                 self.selectedCategory.subscribe(() => {
-                    self.loadListData();
+                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    
+                    self.loadListData().done(function() {
+                        let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
+                            return oldSalaryId == o.salaryItemId;
+                        });
+                        
+                        if(matchSalaryID.length > 0) {
+                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                        }
+                        
+                        $("#B3_3").focus();
+                    });
                 });
 
                 self.isdisplayAbolition.subscribe(() => {
-                    self.loadListData();
+                    let oldSalaryId = self.statementItemDataSelected().salaryItemId();
+                    
+                    self.loadListData().done(function() {
+                        let matchSalaryID = _.filter(self.statementItemDataList(), function(o) {
+                            return oldSalaryId == o.salaryItemId;
+                        });
+                        
+                        if(matchSalaryID.length > 0) {
+                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                        }
+                        
+                        $("#B3_3").focus();
+                    });
                 });
             }//end constructor
             
@@ -142,31 +166,31 @@ module nts.uk.pr.view.qmm012.b {
                 nts.uk.ui.errors.clearAll();
                 
                 if((categoryAtr == model.CategoryAtr.PAYMENT_ITEM) || (categoryAtr == model.CategoryAtr.DEDUCTION_ITEM)) {
-                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorUpperRangeValueAmount() == null)) {
+                    if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && ((itemRangeSet.errorUpperRangeValueAmount() == null) || (itemRangeSet.errorUpperRangeValueAmount().toString() == ""))) {
                         $('#C2_12').ntsError('set', { messageId: "MsgQ_14" });
                     }
                     
-                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && (itemRangeSet.errorLowerRangeValueAmount() == null)) {
+                    if((itemRangeSet.errorLowerLimitSettingAtr() == 1) && ((itemRangeSet.errorLowerRangeValueAmount() == null) || (itemRangeSet.errorLowerRangeValueAmount().toString() == ""))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_15" });
                     }
                     
                     if((itemRangeSet.errorUpperLimitSettingAtr() == 1) && (itemRangeSet.errorLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.errorUpperRangeValueAmount() != null) && (itemRangeSet.errorLowerRangeValueAmount() != null)
-                            && itemRangeSet.errorUpperRangeValueAmount() <= itemRangeSet.errorLowerRangeValueAmount()) {
+                            && (parseInt(itemRangeSet.errorUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.errorLowerRangeValueAmount().toString(), 10))) {
                         $('#C2_15').ntsError('set', { messageId: "MsgQ_1" });
                     }
                     
-                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmUpperRangeValueAmount() == null)) {
+                    if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && ((itemRangeSet.alarmUpperRangeValueAmount() == null) || (itemRangeSet.alarmUpperRangeValueAmount().toString() == ""))) {
                         $('#C2_19').ntsError('set', { messageId: "MsgQ_16" });
                     }
                     
-                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerRangeValueAmount() == null)) {
+                    if((itemRangeSet.alarmLowerLimitSettingAtr() == 1) && ((itemRangeSet.alarmLowerRangeValueAmount() == null) || (itemRangeSet.alarmLowerRangeValueAmount().toString() == ""))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_17" });
                     }
                     
                     if((itemRangeSet.alarmUpperLimitSettingAtr() == 1) && (itemRangeSet.alarmLowerLimitSettingAtr() == 1)
                             && (itemRangeSet.alarmUpperRangeValueAmount() != null) && (itemRangeSet.alarmLowerRangeValueAmount() != null)
-                            && itemRangeSet.alarmUpperRangeValueAmount() <= itemRangeSet.alarmLowerRangeValueAmount()) {
+                            && (parseInt(itemRangeSet.alarmUpperRangeValueAmount().toString(), 10) <= parseInt(itemRangeSet.alarmLowerRangeValueAmount().toString(), 10))) {
                         $('#C2_22').ntsError('set', { messageId: "MsgQ_2" });
                     }
                 }
@@ -198,6 +222,7 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.setValidity;
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
+                    delete command.screenModel;
                     
                     if(self.statementItemDataSelected().checkCreate()) {
                          oldSalaryId = nts.uk.util.randomId();
@@ -278,6 +303,7 @@ module nts.uk.pr.view.qmm012.b {
                     delete command.setValidity;
                     delete command.paymentItemSet.screenModel;
                     delete command.paymentItemSet.setTaxExemptionLimit;
+                    delete command.screenModel;
                     
                     block.invisible();
                     service.removeStatementItemData(command).done(function() {
@@ -362,8 +388,11 @@ module nts.uk.pr.view.qmm012.b {
             // mode of screen
             checkCreate: KnockoutObservable<boolean> = ko.observable(true);
             
+            screenModel: ScreenModel;
+            
             constructor(data: IStatementItemData, screenModel: ScreenModel) {
                 let self = this;
+                self.screenModel = screenModel;
                 
                 if (data) {
                     self.cid = data.cid;
@@ -443,7 +472,19 @@ module nts.uk.pr.view.qmm012.b {
                 setShared("QMM012_B_TO_I_PARAMS", {salaryItemId: self.salaryItemId(), categoryName: self.statementItem().categoryName()});
 
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
-                    self.isSetBreakdownItem(getShared("QMM012_I_IS_SETTING"));
+                    let isSetting = getShared("QMM012_I_IS_SETTING");
+                    self.isSetBreakdownItem(isSetting);
+                    
+                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
+                    
+                    if(index >= 0) {
+                        if(isSetting) {
+                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [{breakdownItemCode: 1, breakdownItemName: "1"}];
+                        } else {
+                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [];
+                        }
+                    }
+                    
                     $("#C3_8").focus();
                 });
             }
@@ -459,7 +500,32 @@ module nts.uk.pr.view.qmm012.b {
                 });
 
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
-                    self.isSetValidity(getShared("QMM012_H_IS_SETTING"));
+                    let isSetting = getShared("QMM012_H_IS_SETTING");
+                    
+                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
+                    
+                    if(isSetting && (isSetting.exitStatus == 1)) {
+                        self.isSetValidity(isSetting);
+                        if(index >= 0) {
+                            self.screenModel.statementItemDataList()[index].validityPeriodAndCycleSet = {cycleSettingAtr: 0,
+                                                                                                        january: 0,
+                                                                                                        february: 0,
+                                                                                                        march: 0,
+                                                                                                        april: 0,
+                                                                                                        may: 0,
+                                                                                                        june: 0,
+                                                                                                        july: 0,
+                                                                                                        august: 0,
+                                                                                                        september: 0,
+                                                                                                        october: 0,
+                                                                                                        november: 0,
+                                                                                                        december: 0,
+                                                                                                        periodAtr: 0,
+                                                                                                        yearPeriodStart: 0,
+                                                                                                        yearPeriodEnd: 0};
+                        }
+                    }
+                    
                     $("#C3_2").focus();
                 });
             }
@@ -586,11 +652,11 @@ module nts.uk.pr.view.qmm012.b {
                 self.screenModel = screenModel;
                 
                 self.taxList = ko.observableArray([
-                    new model.ItemModel(model.TaxAtr.TAXATION.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.LIMIT_TAX_EXEMPTION.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.NO_LIMIT_TAX_EXEMPTION.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_MANUAL.toString(), getText('QMM012_x')),
-                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.toString(), getText('QMM012_x'))
+                    new model.ItemModel(model.TaxAtr.TAXATION.toString(), getText('Enum_TaxAtr_TAXATION')),
+                    new model.ItemModel(model.TaxAtr.LIMIT_TAX_EXEMPTION.toString(), getText('Enum_TaxAtr_LIMIT_TAX_EXEMPTION')),
+                    new model.ItemModel(model.TaxAtr.NO_LIMIT_TAX_EXEMPTION.toString(), getText('Enum_TaxAtr_NO_LIMIT_TAX_EXEMPTION')),
+                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_MANUAL.toString(), getText('Enum_TaxAtr_COMMUTING_EXPENSES_MANUAL')),
+                    new model.ItemModel(model.TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.toString(), getText('Enum_TaxAtr_COMMUTING_EXPENSES_USING_COMMUTER'))
                 ]);
                 
                 self.coveredList = ko.observableArray([
@@ -676,6 +742,13 @@ module nts.uk.pr.view.qmm012.b {
                 self.limitAmountAtr.subscribe(x => {
                     if((x != null) && (x != model.LimitAmountClassification.FIXED_AMOUNT)) {
                         $('#C4_8').ntsError('clear');
+                    }
+                });
+                
+                self.taxAtr.subscribe(x => {
+                    if((x != null) && (x != model.TaxAtr.LIMIT_TAX_EXEMPTION) && (x != model.TaxAtr.COMMUTING_EXPENSES_MANUAL)) {
+                        $('#C4_8').ntsError('clear');
+                        self.limitAmount(null);
                     }
                 });
             }
@@ -867,10 +940,10 @@ module nts.uk.pr.view.qmm012.b {
                 let self = this;
                 
                 self.deductionItemList = ko.observableArray([
-                    new model.ItemModel(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM.toString(), getText('QMM012_y')),
-                    new model.ItemModel(model.DeductionItemAtr.SOCIAL_INSURANCE_ITEM.toString(), getText('QMM012_y')),
-                    new model.ItemModel(model.DeductionItemAtr.INCOME_TAX_ITEM.toString(), getText('QMM012_y')),
-                    new model.ItemModel(model.DeductionItemAtr.INHABITANT_TAX_ITEM.toString(), getText('QMM012_y'))
+                    new model.ItemModel(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM.toString(), getText('Enum_DeductionItemAtr_OPTIONAL_DEDUCTION_ITEM')),
+                    new model.ItemModel(model.DeductionItemAtr.SOCIAL_INSURANCE_ITEM.toString(), getText('Enum_DeductionItemAtr_SOCIAL_INSURANCE_ITEM')),
+                    new model.ItemModel(model.DeductionItemAtr.INCOME_TAX_ITEM.toString(), getText('Enum_DeductionItemAtr_INCOME_TAX_ITEM')),
+                    new model.ItemModel(model.DeductionItemAtr.INHABITANT_TAX_ITEM.toString(), getText('Enum_DeductionItemAtr_INHABITANT_TAX_ITEM'))
                 ]);
                 
                 if (data) {
@@ -1046,15 +1119,15 @@ module nts.uk.pr.view.qmm012.b {
         function getCategoryAtrText(itemAtr, row) {
             switch (itemAtr) {
                 case "0":
-                    return getText('QMM012_3');
+                    return getText('Enum_CategoryAtr_PAYMENT_ITEM');
                 case "1":
-                    return getText('QMM012_4');
+                    return getText('Enum_CategoryAtr_DEDUCTION_ITEM');
                 case "2":
-                    return getText('QMM012_5');
+                    return getText('Enum_CategoryAtr_ATTEND_ITEM');
                 case "3":
-                    return getText('QMM012_6');
+                    return getText('Enum_CategoryAtr_REPORT_ITEM');
                 case "4":
-                    return getText('QMM012_7');
+                    return getText('Enum_CategoryAtr_OTHER_ITEM');
                 default:
                     return "";
             }

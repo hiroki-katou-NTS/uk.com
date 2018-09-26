@@ -11,7 +11,7 @@ public class StatementItemDataCommand {
 	private PaymentItemSetCommand paymentItemSet;
 	private DeductionItemSetCommand deductionItemSet;
 	private TimeItemSetCommand timeItemSet;
-	private StatementItemDisplaySetCommand statementDisplaySet;
+	private StatementItemDisplaySetCommand statementItemDisplaySet;
 	private ItemRangeSetCommand itemRangeSet;
 	private ValidityPeriodAndCycleSetCommand validityPeriodAndCycleSet;
 	private List<BreakdownItemSetCommand> breakdownItemSet;
