@@ -57,12 +57,12 @@
 
 		</ui:define>
 
-		<ui:define name="sidebar" tabindex="1">
-			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: tabpanel1Click">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="click: tabpanel2Click">#{i18n.getText('Com_Employment')}</a></li>
-				<li><a href="#tabpanel-3" role="tab-navigator" data-bind="click: tabpanel3Click">#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a href="#tabpanel-4" role="tab-navigator" data-bind="click: tabpanel4Click">#{i18n.getText('Com_Class')}</a></li>
+		<ui:define name="sidebar">
+			<ul tabindex="1" class="navigator">
+				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active" data-bind="click: tabpanel1Click">#{i18n.getText('Com_Company')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-2" role="tab-navigator" data-bind="click: tabpanel2Click">#{i18n.getText('Com_Employment')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-3" role="tab-navigator" data-bind="click: tabpanel3Click">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a tabindex="-1" href="#tabpanel-4" role="tab-navigator" data-bind="click: tabpanel4Click">#{i18n.getText('Com_Class')}</a></li>
 			</ul>
 		</ui:define>
 

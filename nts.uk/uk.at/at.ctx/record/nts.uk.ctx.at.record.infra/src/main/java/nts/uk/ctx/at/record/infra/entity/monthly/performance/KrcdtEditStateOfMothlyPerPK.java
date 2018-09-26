@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 @Embeddable
 @EqualsAndHashCode
@@ -33,6 +32,10 @@ public class KrcdtEditStateOfMothlyPerPK implements Serializable {
 	/** 締め日 */
 	@Column(name = "CLOSURE_DAY")
 	public Integer closeDay;
+
+	/** 末日とする */
+	@Column(name = "IS_LAST_DAY")
+	public Integer isLastDay;
 	
 	/** 勤怠項目ID */
 	@Column(name = "ATTENDANCE_ITEM_ID")

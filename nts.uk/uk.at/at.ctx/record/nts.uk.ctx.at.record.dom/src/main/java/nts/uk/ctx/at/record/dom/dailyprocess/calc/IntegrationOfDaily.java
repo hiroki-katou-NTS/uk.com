@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGat
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
@@ -83,6 +84,10 @@ public class IntegrationOfDaily {
 	//日別実績の臨時出退勤
 	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
 	
+	//日別実績の備考
+	@Setter
+	private List<RemarksOfDailyPerform> remarks;
+	
 	/**
 	 * Constructor
 	 * @param workInformation 日別実績の勤務情報
@@ -113,7 +118,8 @@ public class IntegrationOfDaily {
 			Optional<TimeLeavingOfDailyPerformance> attendanceLeave, Optional<ShortTimeOfDailyPerformance> shortTime,
 			Optional<SpecificDateAttrOfDailyPerfor> specDateAttr,
 			Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate, Optional<AnyItemValueOfDaily> anyItemValue,
-			List<EditStateOfDailyPerformance> editState, Optional<TemporaryTimeOfDailyPerformance> tempTime) {
+			List<EditStateOfDailyPerformance> editState, Optional<TemporaryTimeOfDailyPerformance> tempTime,
+			List<RemarksOfDailyPerform> remarks) {
 		super();
 		this.businessType = businessType;
 		this.workInformation = workInformation;
@@ -137,6 +143,7 @@ public class IntegrationOfDaily {
 		this.anyItemValue = anyItemValue;
 		this.editState = editState;
 		this.tempTime = tempTime;
+		this.remarks = remarks;
 	}
 	
 	

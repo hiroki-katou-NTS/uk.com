@@ -51,7 +51,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		//残数作成元情報を作成する
 		InforFormerRemainData formerRemainData = this.createInforFormerRemainData(cid, sid, baseDate, detailData, dayOffTimeIsUse,
 				comHolidaySetting, employmentHolidaySetting);
-		if(formerRemainData == null || !formerRemainData.getWorkTypeRemain().isPresent()) {
+		if(formerRemainData == null 
+				|| formerRemainData.getWorkTypeRemain().isEmpty()) {
 			return null;
 		}
 		//残数作成元情報から暫定残数管理データを作成する
@@ -65,9 +66,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		InforFormerRemainData outputData = new InforFormerRemainData(sid, 
 				baseDate, 
 				dayOffTimeIsUse, 
+				Collections.emptyList(), 
 				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(),
+				Collections.emptyList(), 
 				comHolidaySetting,
 				employmentHolidaySetting);		
 		//最新の勤務種類変更を伴う申請を抽出する
@@ -102,7 +103,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		}
 		//残数関連の申請を抽出する
 		List<AppRemainCreateInfor> lstAppInfor = lstAppData.stream()
-				.filter(x -> x.getSid().equals(sid) && x.getAppDate().equals(baseDate) && x.getWorkTypeCode().isPresent())
+				.filter(x -> x.getSid().equals(sid) && x.getWorkTypeCode().isPresent() && (x.getAppDate().equals(baseDate) 
+						|| (x.getStartDate().isPresent() && x.getEndDate().isPresent() && x.getStartDate().get().beforeOrEquals(baseDate) && x.getEndDate().get().afterOrEquals(baseDate))))
 				.collect(Collectors.toList());
 		if(lstAppInfor.isEmpty()) {
 			return null;
@@ -117,47 +119,61 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	@Override
 	public InforFormerRemainData createInterimDataFromecord(String cid,RecordRemainCreateInfor recordData, InforFormerRemainData outputData) {
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
-		WorkTypeRemainInfor dataDetail = this.createWorkTypeRemainInfor(cid, CreateAtr.RECORD, recordData.getWorkTypeCode());
-		if(dataDetail == null) {
+		List<WorkTypeRemainInfor> dataDetail = this.createWorkTypeRemainInfor(cid, CreateAtr.RECORD, recordData.getWorkTypeCode());
+		if(dataDetail.isEmpty()) {
 			return outputData;
 		}
-		outputData.setWorkTypeRemain(Optional.of(dataDetail));
+		outputData.setWorkTypeRemain(dataDetail);
 		//アルゴリズム「実績から代休振替情報を設定する」を実行する
 		DayoffTranferInfor dayOffInfor = this.createDayOffTranferFromRecord(cid, CreateAtr.RECORD, recordData, outputData.isDayOffTimeIsUse());
-		outputData.setDayOffTranfer(Optional.of(dayOffInfor));
+		List<DayoffTranferInfor> lstOutput = new ArrayList<>();
+		lstOutput.add(dayOffInfor);
+		outputData.setDayOffTranfer(lstOutput);
 		return outputData;
 	}
 
 	@Override
-	public WorkTypeRemainInfor createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode) {
+	public List<WorkTypeRemainInfor> createWorkTypeRemainInfor(String cid, CreateAtr createAtr, String workTypeCode) {
 		WorkTypeRemainInfor outputData = new WorkTypeRemainInfor(null, null,null, new ArrayList<>(), new ArrayList<>());
+		List<WorkTypeRemainInfor> lstOutputData = new ArrayList<>();
 		//ドメインモデル「勤務種類」を取得する
 		Optional<WorkType> optWorkTypeData = workTypeRepo.findByPK(cid, workTypeCode);
 		
 		if(!optWorkTypeData.isPresent()) {
-			return outputData;
+			return lstOutputData;
 		}
 		WorkType workTypeData = optWorkTypeData.get();
-		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
-		if(workTypeData.getDailyWork().isOneDay()) {
-			workTypeClass = workTypeData.getDailyWork().getOneDay();
-		} else if (workTypeData.getDailyWork().IsLeaveForMorning()) {
-			workTypeClass = workTypeData.getDailyWork().getMorning();
-		} else if (workTypeData.getDailyWork().IsLeaveForAfternoon()) {
-			workTypeClass = workTypeData.getDailyWork().getAfternoon();
-			
-		}
-		outputData.setWorkTypeClass(workTypeClass);
-		if(!this.lstZansu().contains(workTypeClass)) {
-			return outputData;
-		}
-		
 		//勤務種類別残数情報を作成する
 		outputData.setCreateData(createAtr);
 		outputData.setWorkTypeCode(workTypeCode);
 		outputData.setOccurrenceDetailData(this.createDetailData());
+		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
+		if(workTypeData.getDailyWork().isOneDay()) {
+			workTypeClass = workTypeData.getDailyWork().getOneDay();
+			outputData.setWorkTypeClass(workTypeClass);
+			lstOutputData.add(this.createWithOneDayWorkType(cid, workTypeData, outputData));
+			//勤務区分をチェックする
+			return lstOutputData;
+		} else {
+			//午前
+			WorkTypeClassification workTypeMorning = workTypeData.getDailyWork().getMorning();
+			if(this.lstZansu().contains(workTypeMorning)) {
+				WorkTypeRemainInfor morning = new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypeMorning, createAtr, 
+						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData()); 
+				morning = this.createWithOneDayWorkType(cid, workTypeData, morning);
+				lstOutputData.add(morning);
+			}
+			//午後
+			WorkTypeClassification workTypAfternoon = workTypeData.getDailyWork().getAfternoon();
+			if(this.lstZansu().contains(workTypAfternoon)) {
+				WorkTypeRemainInfor after =  new WorkTypeRemainInfor(outputData.getWorkTypeCode(), workTypAfternoon, createAtr,
+						outputData.getOccurrenceDetailData(), outputData.getSpeHolidayDetailData());
+				after = this.createWithOneDayWorkType(cid, workTypeData, after);
+				lstOutputData.add(after);
+			}
+		}
 		//勤務区分をチェックする
-		return this.createWithOneDayWorkType(cid, workTypeData, outputData);
+		return lstOutputData;
 	}
 
 	@Override
@@ -180,7 +196,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
 			for (WorkTypeSet x : workTypeSetList) {
 				//アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
-				List<Integer> holidaySpecialCd = holidayRepo.findByAbsframeNo(cid, x.getSumSpHodidayNo());				
+				List<Integer> holidaySpecialCd = holidayRepo.findBySphdSpecLeave(cid, x.getSumSpHodidayNo());				
 				if(!holidaySpecialCd.isEmpty()) {
 					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), days);
 					lstSpeUseDetail.add(detailData);
@@ -322,29 +338,36 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	public DailyInterimRemainMngData createDataInterimRemain(InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(Optional.empty(), Collections.emptyList(), Optional.empty(), 
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
-		if(!inforData.getWorkTypeRemain().isPresent()
-				|| inforData.getWorkTypeRemain().get().getWorkTypeClass() == null) {
+		if(inforData.getWorkTypeRemain().isEmpty()) {
 			return null;
-		}	
-		switch (inforData.getWorkTypeRemain().get().getWorkTypeClass()) {
-				case Pause:
-					return createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
-				case SubstituteHoliday:	
-					return createEachData.createInterimDayOffData(inforData, WorkTypeClassification.SubstituteHoliday, outputData);
-				case AnnualHoliday:
-					return createEachData.createInterimAnnualHoliday(inforData, WorkTypeClassification.AnnualHoliday, outputData);
-				case YearlyReserved:
-					return createEachData.createInterimReserveHoliday(inforData, WorkTypeClassification.YearlyReserved,	outputData);
-				case SpecialHoliday:
-					return createEachData.createInterimSpecialHoliday(inforData, WorkTypeClassification.SpecialHoliday, outputData);
-				case Shooting:
-					return createEachData.createInterimRecData(inforData, WorkTypeClassification.Shooting, outputData);
-				case HolidayWork:
-					return createEachData.createInterimBreak(inforData, WorkTypeClassification.HolidayWork, outputData);
-					default:
-						return outputData;
+		}
+		for (WorkTypeRemainInfor workTypeInfor : inforData.getWorkTypeRemain()) {
+			switch (workTypeInfor.getWorkTypeClass()) {
+			case Pause:
+				outputData = createEachData.createInterimAbsData(inforData, WorkTypeClassification.Pause, outputData);
+				break;
+			case SubstituteHoliday:	
+				outputData = createEachData.createInterimDayOffData(inforData, WorkTypeClassification.SubstituteHoliday, outputData);
+				break;
+			case AnnualHoliday:
+				outputData = createEachData.createInterimAnnualHoliday(inforData, WorkTypeClassification.AnnualHoliday, outputData);
+				break;
+			case YearlyReserved:
+				outputData = createEachData.createInterimReserveHoliday(inforData, WorkTypeClassification.YearlyReserved,	outputData);
+				break;
+			case SpecialHoliday:
+				outputData = createEachData.createInterimSpecialHoliday(inforData, WorkTypeClassification.SpecialHoliday, outputData);
+				break;
+			case Shooting:
+				outputData = createEachData.createInterimRecData(inforData, WorkTypeClassification.Shooting, outputData);
+				break;
+			case HolidayWork:
+				outputData = createEachData.createInterimBreak(inforData, WorkTypeClassification.HolidayWork, outputData);
+				default:
+					break;
 			}
-		
+		}
+		return outputData;
 	}
 
 	
@@ -354,38 +377,44 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			InforFormerRemainData outputData, boolean dayOffTimeIsUse) {
 		String workTimeCode = scheData.getWorkTimeCode().isPresent() ? scheData.getWorkTimeCode().get() : "000";
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
-		WorkTypeRemainInfor remainInfor = this.createWorkTypeRemainInfor(cid, CreateAtr.SCHEDULE, scheData.getWorkTypeCode());
+		List<WorkTypeRemainInfor> remainInfor = this.createWorkTypeRemainInfor(cid, CreateAtr.SCHEDULE, scheData.getWorkTypeCode());
 		//勤務種類別残数情報を設定する
-		outputData.setWorkTypeRemain(Optional.of(remainInfor));
+		outputData.setWorkTypeRemain(remainInfor);
 		//アルゴリズム「就業時間帯から代休振替情報を作成する」を実行する
-		DayoffTranferInfor tranferData = this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, null, CreateAtr.SCHEDULE, null, dayOffTimeIsUse);
-		outputData.setDayOffTranfer(tranferData == null ? Optional.empty() : Optional.of(tranferData));
+		List<DayoffTranferInfor> tranferData = this.createDayoffFromWorkTime(cid, remainInfor, workTimeCode, null, 
+				CreateAtr.SCHEDULE, null, dayOffTimeIsUse);
+		outputData.setDayOffTranfer(tranferData);
 		return outputData;
 	}
 
 	@Override
-	public DayoffTranferInfor createDayoffFromWorkTime(String cid, WorkTypeRemainInfor remainInfor, String workTimeCode,
+	public List<DayoffTranferInfor> createDayoffFromWorkTime(String cid, List<WorkTypeRemainInfor> remainInfor, String workTimeCode,
 			Integer timeSetting, CreateAtr createAtr, Integer timeOverSetting, boolean dayOffTimeIsUse) {
-		//アルゴリズム「代休を発生させる勤務種類かを判定する」を実行する
-		boolean chkDayOff = this.checkDayoffOcc(remainInfor);
-		if(!chkDayOff) {
-			return null;
+		List<DayoffTranferInfor> lstOutput = new ArrayList<>();
+		for (WorkTypeRemainInfor workTypeInfor : remainInfor) {
+			//アルゴリズム「代休を発生させる勤務種類かを判定する」を実行する
+			boolean chkDayOff = this.checkDayoffOcc(workTypeInfor);
+			if(!chkDayOff) {
+				continue;
+			}
+			TranferTimeInfor transferBreak = new TranferTimeInfor(createAtr, timeSetting, Optional.empty());
+			TranferTimeInfor transferOver = new TranferTimeInfor(createAtr, timeOverSetting, Optional.empty());
+			//振替可能時間をチェックする
+			if(timeSetting == null) {
+				//アルゴリズム「所定時間を取得」を実行する
+				timeSetting = workTimeService.getTimeByWorkTimeTypeCode(workTimeCode, workTypeInfor.getWorkTypeCode());
+			}
+			if(timeOverSetting != null && dayOffTimeIsUse) {
+				//振替残業時間を作成する
+				transferOver = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeOverSetting, DayoffChangeAtr.OVERTIME);
+			}
+			//アルゴリズム「代休振替時間を算出する」を実行する
+			transferBreak = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeSetting, DayoffChangeAtr.BREAKTIME);
+			
+			lstOutput.add(new DayoffTranferInfor(Optional.of(workTimeCode), Optional.of(transferBreak), Optional.of(transferOver)));
 		}
-		TranferTimeInfor transferBreak = new TranferTimeInfor(createAtr, timeSetting, Optional.empty());
-		TranferTimeInfor transferOver = new TranferTimeInfor(createAtr, timeOverSetting, Optional.empty());
-		//振替可能時間をチェックする
-		if(timeSetting == null) {
-			//アルゴリズム「所定時間を取得」を実行する
-			timeSetting = workTimeService.getTimeByWorkTimeTypeCode(workTimeCode, remainInfor.getWorkTypeCode());
-		}
-		if(timeOverSetting != null && dayOffTimeIsUse) {
-			//振替残業時間を作成する
-			transferOver = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeOverSetting, DayoffChangeAtr.OVERTIME);
-		}
-		//アルゴリズム「代休振替時間を算出する」を実行する
-		transferBreak = this.calDayoffTranferTime(cid, createAtr, workTimeCode, timeSetting, DayoffChangeAtr.BREAKTIME);
 		
-		return new DayoffTranferInfor(Optional.of(workTimeCode), Optional.of(transferBreak), Optional.of(transferOver));
+		return lstOutput;
 	}
 	/**
 	 * 代休を発生させる勤務種類かを判定する
@@ -475,27 +504,30 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			InforFormerRemainData outputData, boolean dayOffTimeIsUse, CreateAtr createAtr) {
 		String workTypeCode = appInfor.getWorkTypeCode().isPresent() ? appInfor.getWorkTypeCode().get() : "000";
 		//アルゴリズム「勤務種類別残数情報を作成する」を実行する
-		WorkTypeRemainInfor remainInfor = this.createWorkTypeRemainInfor(cid, createAtr, workTypeCode);
-		if(remainInfor == null) {
+		List<WorkTypeRemainInfor> remainInfor = this.createWorkTypeRemainInfor(cid, createAtr, workTypeCode);
+		if(remainInfor.isEmpty()) {
 			return null;
 		}
+		outputData.setWorkTypeRemain(remainInfor);
 		//申請種類をチェックする
 		if(appInfor.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 			// 休日出勤申請から代休振替情報を作成する
-			DayoffTranferInfor tranferInforFromHoliday = this.tranferInforFromHolidayWork(cid, dayOffTimeIsUse, appInfor, remainInfor, createAtr);
-			outputData.setDayOffTranfer(tranferInforFromHoliday == null ? Optional.empty() : Optional.of(tranferInforFromHoliday));
+			List<DayoffTranferInfor> tranferInforFromHoliday = this.tranferInforFromHolidayWork(cid, dayOffTimeIsUse, appInfor,
+					remainInfor, createAtr);
+			outputData.setDayOffTranfer(tranferInforFromHoliday);
 		} else {
 			//休日出勤以外の申請から代休振替情報を作成する
-			DayoffTranferInfor tranferInforNotFromHoliday = this.transferInforFromNotHolidayWork(cid, dayOffTimeIsUse, appInfor, createInfo, remainInfor, createAtr);
-			outputData.setDayOffTranfer(tranferInforNotFromHoliday == null ? Optional.empty() : Optional.of(tranferInforNotFromHoliday));
+			List<DayoffTranferInfor> tranferInforNotFromHoliday = this.transferInforFromNotHolidayWork(cid, dayOffTimeIsUse, appInfor, 
+					createInfo, remainInfor, createAtr);
+			outputData.setDayOffTranfer(tranferInforNotFromHoliday);
 		}
 		
 		return outputData;
 	}
 
 	@Override
-	public DayoffTranferInfor tranferInforFromHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
-			WorkTypeRemainInfor remainInfor, CreateAtr createAtr) {
+	public List<DayoffTranferInfor> tranferInforFromHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
+			List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr) {
 		Integer breakTime = 0;
 		//時間代休利用をチェックする
 		if(dayOffTimeIsUse) {
@@ -511,8 +543,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	}
 
 	@Override
-	public DayoffTranferInfor transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
-			InterimRemainCreateInfor createInfo, WorkTypeRemainInfor remainInfor, CreateAtr createAtr) {
+	public List<DayoffTranferInfor> transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
+			InterimRemainCreateInfor createInfo, List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr) {
 		// 休出以外の申請が利用する振替用就業時間帯コードを取得する
 		String workTimeCode = this.workTimeCode(createInfo, appInfor.getSid(), appInfor.getAppDate());
 		//実績をチェックする

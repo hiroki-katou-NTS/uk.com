@@ -47,7 +47,7 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		
 		// Get all attendanceItemId from domain BasicSchedule
 		List<Integer> attItemIds = new ArrayList<>();
-		for(int i =1; i<=66; i++){
+		for(int i =1; i<=103; i++){
 			attItemIds.add(Integer.valueOf(i));
 		}
 		
@@ -93,7 +93,8 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
 
 		// set correctionAttr
-		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,38,39,43,44,45,46,47,48,49,50,51,52);
+		// attendanceItemId lien quan den SCHE_TIME (lien quan den tinh toan- CALCULATE)
+		List<Integer> correctionItemIds = Arrays.asList(34,35,36,37,39,43,44,45,46,47,48,49,50,51,52,102,103);
 		itemNewMap.forEach((key, value) -> {
 			val itemOldValueMap = itemOldMap.get(key);
 			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
@@ -127,7 +128,12 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		});
 		return targets;
 	}
-
+	
+	/**
+	 * Convert type ValueType from to DataValueAttribute
+	 * @param valueType
+	 * @return
+	 */
 	private Integer convertType(ValueType valueType) {
 		switch (valueType.value) {
 
@@ -137,6 +143,9 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 
 		case 13:
 			return DataValueAttribute.MONEY.value;
+			
+		case 15:
+			return DataValueAttribute.CLOCK.value;
 
 		default:
 			return DataValueAttribute.STRING.value;

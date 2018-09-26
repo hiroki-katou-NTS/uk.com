@@ -27,13 +27,6 @@ public class PlanAnnualUserDetailExportImpl implements PlanAnnualUserDetailExpor
 		lstPlanMana.stream().forEach(x -> {
 			outData.add(x.getYmd());
 		});
-		//ドメインモデル「暫定年休管理データ」を取得する
-		List<TempAnnualLeaveManagement> lstLeaveMng = tempMngRepo.findBySidWorkTypePeriod(sId, workTypeCd, dateData);
-		lstLeaveMng.stream().forEach(x -> {
-			if(!outData.contains(x.getYmd())) {
-				outData.add(x.getYmd());
-			}
-		});
 		return outData;
 	}
 

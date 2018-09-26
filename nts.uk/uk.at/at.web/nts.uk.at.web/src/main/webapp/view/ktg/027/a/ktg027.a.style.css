@@ -6,14 +6,14 @@
 .widget-table .widget-table{height: 37px;}
 #contents-area.ktg002{overflow-y: hidden;}
 .nts-datepicker-wrapper{margin-left: 30px;}
-div#contents-area {height: 400px ! important}
-div.nts-fixed-body-container.ui-iggrid{max-width: 449px ! important}
-div.nts-fixed-body-wrapper{height: 209px ! important}
+div.nts-fixed-body-wrapper{ width: 450px !important; height: 217px ! important;}
+div.nts-fixed-header-container.ui-iggrid.nts-fixed-header{width : 449px ! important;}
+div.nts-fixed-body-container.ui-iggrid{padding-right: 0px !important;}
 .nts-fixed-table.cf{margin-top: 15px;}
 div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90px;}
 #fixed-table tbody>tr:last-child {
 	position: absolute;
-	bottom: 7px;
+	bottom: 3px;
 	border-right: 1px solid #CCC;
 	border-top: double;
 }
@@ -33,6 +33,8 @@ div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; padding-right: 90p
 #fixed-table tbody>tr>td:not(:first-child) {
 	text-align: right;
 }
-div.nts-fixed-header-wrapper{ width : 450px !important}
-div.nts-fixed-body-wrapper{width: 450px !important }
-div.nts-fixed-body-container.ui-iggrid{ height: 215px;}
+
+#func-notifier-errors.shown {
+    position: absolute;
+    bottom: 380px;
+}

@@ -267,8 +267,10 @@ public class TotalWorkingTime {
 			&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
 			&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null){
 				if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null) {
-					//所定外深夜事前申請取り出し処理						
-					beforeApplicationTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getBeforeApplicationTime();			
+					if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime() != null) {
+						//所定外深夜事前申請取り出し処理						
+						beforeApplicationTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime().getBeforeApplicationTime();			
+					}
 					if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
 						&& recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null) {
 							//事前フレックス
@@ -382,7 +384,7 @@ public class TotalWorkingTime {
 																							 Optional.of(leaveLateSet)
 																							 );
 			
-			//コアタイム無しの遅刻時間計算
+			//控除用コアタイム無しの遅刻時間計算
 			TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(DeductionAtr.Deduction, 
 					 																				  PremiumAtr.RegularWork,
 					 																				  recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
@@ -724,8 +726,18 @@ public class TotalWorkingTime {
 	 * @return
 	 */
 	private int calcWithinTime() {
-		return this.withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
-				+ this.withinStatutoryTimeOfDaily.getWithinPrescribedPremiumTime().valueAsMinutes();
+		if(this.getWithinStatutoryTimeOfDaily() != null) {
+			int workTime = this.getWithinStatutoryTimeOfDaily().getWorkTime() != null
+							?this.getWithinStatutoryTimeOfDaily().getWorkTime().valueAsMinutes()
+							:0;
+			int premiumTime = this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime() != null
+							? this.getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime().valueAsMinutes()
+							:0;
+			return workTime + premiumTime;
+		}
+		else {
+			return 0;
+		}
 	}
 	
 	/**

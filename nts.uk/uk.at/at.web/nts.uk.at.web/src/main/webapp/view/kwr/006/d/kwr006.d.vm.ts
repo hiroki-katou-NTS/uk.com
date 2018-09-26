@@ -1,5 +1,6 @@
 module nts.uk.at.view.kwr006.d {
     import service = nts.uk.at.view.kwr006.d.service;
+    import blockUI = nts.uk.ui.block;
 
     export module viewmodel {
         export class ScreenModel {
@@ -27,6 +28,7 @@ module nts.uk.at.view.kwr006.d {
             */
             public startPage(): JQueryPromise<void> {
                 let self = this;
+                blockUI.grayout();
                 let dfd = $.Deferred<void>();
                 let data = nts.uk.ui.windows.getShared('KWR006_D');
 
@@ -38,6 +40,7 @@ module nts.uk.at.view.kwr006.d {
                         let arr = _.map(data.listItems, item => new ItemModel(item.code, item.name));
                         self.itemList(arr);
                     }
+                    blockUI.clear();
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -53,7 +56,7 @@ module nts.uk.at.view.kwr006.d {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR006_D')).done(function(data: any) {
+                service.executeCopy(self.D1_6_value(), self.selectedCode()).done(function(data: any) {
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();

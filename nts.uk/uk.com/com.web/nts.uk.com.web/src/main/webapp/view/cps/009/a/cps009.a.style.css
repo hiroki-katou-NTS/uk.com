@@ -263,10 +263,3 @@ abbr[title] {
 .selectionName {
 	width: 180px;
 }
- .ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.no-close.ui-dialog-buttons.ui-draggable.ui-resizable{
-	position: absolute !important;
-    top: 160px !important;
-    left: 35px !important;
-    height: auto !important;
-    width: 442px !important;
-}

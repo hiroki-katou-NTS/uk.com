@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +30,17 @@ public class RaisingSalaryTimeDailyPerformDto implements ItemConst {
 		return domain == null ? null : new RaisingSalaryTimeDailyPerformDto(toArray(domain.getAutoCalRaisingSalarySettings()), toArray(domain.getRaisingSalaryTimes()));
 	}
 	
+	@Override
+	public RaisingSalaryTimeDailyPerformDto clone(){
+		return new RaisingSalaryTimeDailyPerformDto(cloneA(specificDayOfRaisingSalaryTime), cloneA(raisingSalaryTime));
+	}
+	
 	private static List<RaisingSalaryTimeDto> toArray(List<BonusPayTime> domain){
 		return ConvertHelper.mapTo(domain, c -> RaisingSalaryTimeDto.toDto(c));
+	}
+	
+	private List<RaisingSalaryTimeDto> cloneA(List<RaisingSalaryTimeDto> dto){
+		return dto == null ? null : dto.stream().map(t -> t.clone()).collect(Collectors.toList());
 	}
 	
 	public RaiseSalaryTimeOfDailyPerfor toDomain(){

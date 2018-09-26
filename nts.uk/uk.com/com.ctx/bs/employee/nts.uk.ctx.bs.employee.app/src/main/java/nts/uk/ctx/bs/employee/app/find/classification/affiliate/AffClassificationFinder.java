@@ -55,10 +55,10 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 	@Override
 	public AffClassificationDto getSingleData(PeregQuery query) {
 		Optional<AffClassHistItem> histItem;
-		Optional<DateHistoryItem> history;
+		Optional<DateHistoryItem> history = Optional.empty();
 		if (query.getInfoId() != null) {
 			history = affClassHistRepo.getByHistoryId(query.getInfoId());
-		} else {
+		} else if (query.getStandardDate() != null){
 			history = affClassHistRepo.getByEmpIdAndStandardDate(query.getEmployeeId(), query.getStandardDate());
 		}
 		if (history.isPresent()) {

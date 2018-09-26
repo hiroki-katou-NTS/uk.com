@@ -75,7 +75,7 @@ module nts.uk.at.view.kwr006.a {
                 fifthLevel: boolean;
                 sixthLevel: boolean;
                 seventhLevel: boolean;
-                eightLevel: boolean;
+                eighthLevel: boolean;
                 ninthLevel: boolean;
             }
         }

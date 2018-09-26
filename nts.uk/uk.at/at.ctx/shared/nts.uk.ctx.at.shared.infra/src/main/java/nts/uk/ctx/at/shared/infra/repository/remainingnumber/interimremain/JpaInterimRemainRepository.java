@@ -95,7 +95,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 
 	@Override
 	public void deleteById(String mngId) {
-		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("remainMngId", mngId);
+		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("remainMngId", mngId).executeUpdate();
 	}
 
 	@Override

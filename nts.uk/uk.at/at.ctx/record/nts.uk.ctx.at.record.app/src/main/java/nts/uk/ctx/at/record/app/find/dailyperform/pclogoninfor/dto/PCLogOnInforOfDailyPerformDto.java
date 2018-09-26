@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
@@ -20,6 +24,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
 	 @AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = INFO, listMaxLength = 2, indexField = DEFAULT_INDEX_FIELD_NAME)
@@ -46,6 +51,18 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
+	@Override
+	public PCLogOnInforOfDailyPerformDto clone(){
+		PCLogOnInforOfDailyPerformDto dto = new PCLogOnInforOfDailyPerformDto();
+		dto.setLogonTime(logonTime == null ? null : logonTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;

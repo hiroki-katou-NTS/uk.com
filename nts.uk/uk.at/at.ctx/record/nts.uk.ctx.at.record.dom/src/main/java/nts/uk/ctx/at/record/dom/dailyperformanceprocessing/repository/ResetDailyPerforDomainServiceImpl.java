@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -61,6 +63,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomainService {
 
@@ -127,6 +130,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void resetDailyPerformance(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, PeriodInMasterList periodInMasterList,
@@ -159,8 +163,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						// 計算区分を日別実績に反映する(Reflect 計算区分 in 日別実績)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getCalculationClassificationResetting() == true) {
+							
+							List<Integer> attItemIds = AttendanceItemIdContainer
+									.getItemIdByDailyDomains(DailyDomainGroup.CALCULATION_ATTR);
 
-							this.editStateOfDailyPerformanceRepository.delete(employeeID, processingDate);
+							this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeID, processingDate, attItemIds);
 
 							calAttrOfDailyPerformance = this.reflectWorkInforDomainService.reflectCalAttOfDaiPer(
 									companyID, employeeID, processingDate, affiliationInforOfDailyPerfor.get(),
@@ -170,8 +177,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						// 所属情報を反映する(Reflect info 所属情報)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getMasterReconfiguration() == true) {
+							
+							List<Integer> attItemIds = AttendanceItemIdContainer
+									.getItemIdByDailyDomains(DailyDomainGroup.AFFILIATION_INFO);
 
-							this.editStateOfDailyPerformanceRepository.delete(employeeID, processingDate);
+							this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeID, processingDate, attItemIds);
 
 							affiliationInforState = this.reflectWorkInforDomainService.createAffiliationInforState(
 									companyID, employeeID, processingDate, empCalAndSumExecLogID,
@@ -187,7 +197,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						// 特定日を日別実績に反映する(Reflect 日別実績) 特定日を再設定する
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getSpecificDateClassificationResetting() == true) {
-							this.editStateOfDailyPerformanceRepository.delete(employeeID, processingDate);
+							
+							List<Integer> attItemIds = AttendanceItemIdContainer
+									.getItemIdByDailyDomains(DailyDomainGroup.SPECIFIC_DATE_ATTR);
+							
+							this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeID, processingDate, attItemIds);
 
 							specificDateAttrOfDailyPerfor = reflectWorkInforDomainService.reflectSpecificDate(companyID,
 									employeeID, processingDate, affiliationInforOfDailyPerfor.get().getWplID(),
@@ -196,7 +210,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						// 短時間勤務時間帯を反映する(reflect 短時間勤務時間帯) 育児・介護短時間を再設定する
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getResetTimeChildOrNurseCare() == true) {
-							this.editStateOfDailyPerformanceRepository.delete(employeeID, processingDate);
+							
+							List<Integer> attItemIds = AttendanceItemIdContainer
+									.getItemIdByDailyDomains(DailyDomainGroup.SHORT_TIME);
+							
+							this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeID, processingDate, attItemIds);
 							// #日別作成修正 2018/7/5 市岡
 							// 日別実績の短時間勤務時間帯
 							this.shortTimeOfDailyPerformanceRepository.deleteByEmployeeIdAndDate(employeeID,
@@ -234,7 +252,11 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 						// 就業時間帯再設定(reSetting worktime)
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getResettingWorkingHours() == true) {
-							this.editStateOfDailyPerformanceRepository.delete(employeeID, processingDate);
+							
+							List<Integer> attItemIds = AttendanceItemIdContainer
+									.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME);
+							
+							this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeID, processingDate, attItemIds);
 							this.breakTimeOfDailyPerformanceRepository.deleteByBreakType(employeeID, processingDate, 0);
 							// ドメインモデル「日別実績の出退勤」を取得する
 							Optional<TimeLeavingOfDailyPerformance> timeLeavingOpt = this.timeLeavingOfDailyPerformanceRepository
@@ -410,37 +432,28 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 								// update value of Attendance Item Id
 								converter2.merge(valueList);
 								// set data stampOutPut
-								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(
-										converter.toDomain().getAttendanceLeave().orElse(null));
-								stampOutput.getReflectStampOutput()
-										.setOutingTimeOfDailyPerformance(converter.toDomain().getOutingTime().orElse(null));
-								stampOutput.getReflectStampOutput()
-										.setTemporaryTimeOfDailyPerformance(converter.toDomain().getTempTime().orElse(null));
-								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(
-										converter.toDomain().getAttendanceLeavingGate().orElse(null));
-								stampOutput.getReflectStampOutput()
-										.setPcLogOnInfoOfDaily(converter.toDomain().getPcLogOnInfo().orElse(null));
+								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter.timeLeaving().orElse(null));
+								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter.outingTime().orElse(null));
+								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter.temporaryTime().orElse(null));
+								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter.attendanceLeavingGate().orElse(null));
+								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter.pcLogInfo().orElse(null));
 							} else {
 								// set data stampOutPut
-								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(
-										converter2.toDomain().getAttendanceLeave().orElse(null));
-								stampOutput.getReflectStampOutput()
-										.setOutingTimeOfDailyPerformance(converter2.toDomain().getOutingTime().orElse(null));
-								stampOutput.getReflectStampOutput()
-										.setTemporaryTimeOfDailyPerformance(converter2.toDomain().getTempTime().orElse(null));
-								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(
-										converter2.toDomain().getAttendanceLeavingGate().orElse(null));
-								stampOutput.getReflectStampOutput()
-										.setPcLogOnInfoOfDaily(converter2.toDomain().getPcLogOnInfo().orElse(null));
+								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
+								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
+								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
+								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
+								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
 							}
 
-						}						
+						}
 					}
 				}
 			}
 
-			if (errMesInfos.isEmpty() && ((stampOutput.getErrMesInfos()!= null && stampOutput.getErrMesInfos().isEmpty())
-					|| stampOutput.getErrMesInfos() == null)) {
+			if (errMesInfos.isEmpty()
+					&& ((stampOutput.getErrMesInfos() != null && stampOutput.getErrMesInfos().isEmpty())
+							|| stampOutput.getErrMesInfos() == null)) {
 				this.registerDailyPerformanceInfoService.registerDailyPerformanceInfo(companyID, employeeID,
 						processingDate, stampOutput.getReflectStampOutput(), affiliationInfor, dailyPerformance,
 						specificDateAttrOfDailyPerfor, calAttrOfDailyPerformance, null, breakTimeOfDailyPerformance);
@@ -448,7 +461,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 				errMesInfos.forEach(action -> {
 					this.errMessageInfoRepository.add(action);
 				});
-				if(stampOutput.getErrMesInfos() != null){
+				if (stampOutput.getErrMesInfos() != null) {
 					stampOutput.getErrMesInfos().forEach(item -> {
 						this.errMessageInfoRepository.add(item);
 					});

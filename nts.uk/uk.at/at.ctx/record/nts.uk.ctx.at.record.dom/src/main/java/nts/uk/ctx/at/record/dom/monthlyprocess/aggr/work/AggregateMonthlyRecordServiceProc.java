@@ -41,6 +41,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -81,9 +82,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -742,12 +743,12 @@ public class AggregateMonthlyRecordServiceProc {
 			int flexMinutes = flexTime.getFlexTime().getFlexTime().getTime().v();
 			if (flexMinutes < 0){
 				this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-						ErrorType.FLEX,
+						ErrorType.FLEX_SUPP,
 						this.yearMonth,
 						this.employeeId,
 						this.closureId,
 						this.closureDate,
-						Flex.FLEX_EXCESS_CARRYOVER_TIME,	// 仮
+						null,
 						null,
 						null));
 			}
@@ -796,7 +797,11 @@ public class AggregateMonthlyRecordServiceProc {
 		// いずれかの手修正値を戻した時、戻した後の勤怠時間を返す
 		if (this.isRetouch){
 			val convertedOpt = convert.toAttendanceTime();
-			if (convertedOpt.isPresent()) attendanceTime = convertedOpt.get();
+			if (convertedOpt.isPresent()) {
+				val retouchedTime = convertedOpt.get();
+				retouchedTime.getMonthlyCalculation().copySettings(attendanceTime.getMonthlyCalculation());
+				return retouchedTime;
+			}
 		}
 		return attendanceTime;
 	}
@@ -840,7 +845,9 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 計算後データを確認
 		val monthlyConverter = this.repositories.getAttendanceItemConverter().createMonthlyConverter();
-		val convert = monthlyConverter.withAnyItem(this.aggregateResult.getAnyItemList());
+		MonthlyRecordToAttendanceItemConverter convert =
+				monthlyConverter.withAttendanceTime(this.aggregateResult.getAttendanceTime().get());
+		convert = convert.withAnyItem(this.aggregateResult.getAnyItemList());
 		
 		// 月別実績の編集状態を取得
 		for (val editState : this.editStates){
@@ -1095,6 +1102,21 @@ public class AggregateMonthlyRecordServiceProc {
 					new AttendanceDaysMonthToTal(aggrResult.getCarryForwardDays()),
 					new RemainDataDaysMonth(aggrResult.getUnDigestedDays()));
 			this.aggregateResult.getAbsenceLeaveRemainList().add(absLeaRemNum);
+			
+			// 振休エラー処理
+			if (aggrResult.getPError() != null){
+				if (aggrResult.getPError().size() > 0){
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							ErrorType.REMAIN_LEFT,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							null));
+				}
+			}
 		}
 	}
 	
@@ -1156,6 +1178,21 @@ public class AggregateMonthlyRecordServiceProc {
 							new RemainDataDaysMonth(aggrResult.getUnDigestedDays()),
 							Optional.of(new RemainDataTimesMonth(aggrResult.getUnDigestedTimes()))));
 			this.aggregateResult.getMonthlyDayoffRemainList().add(monDayRemNum);
+			
+			// 代休エラー処理
+			if (aggrResult.getLstError() != null){
+				if (aggrResult.getLstError().size() > 0){
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							ErrorType.REMAINING_ALTERNATION_NUMBER,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							null));
+				}
+			}
 		}
 	}
 	
@@ -1176,6 +1213,7 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		// 「特別休暇」を取得する
+		boolean isError = false;
 		val specialHolidays = this.specialHolidayRepo.findByCompanyId(this.companyId);
 		for (val specialHoliday : specialHolidays){
 			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
@@ -1202,6 +1240,24 @@ public class AggregateMonthlyRecordServiceProc {
 					inPeriod,
 					remainNoMinus);
 			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
+			
+			// 特別休暇エラーがあるか
+			if (inPeriod.getLstError() != null){
+				if (inPeriod.getLstError().size() > 0) isError = true;
+			}
+		}
+		
+		if (isError){
+			// 特別休暇エラー処理
+			this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+					ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
+					this.yearMonth,
+					this.employeeId,
+					this.closureId,
+					this.closureDate,
+					null,
+					null,
+					null));
 		}
 	}
 	

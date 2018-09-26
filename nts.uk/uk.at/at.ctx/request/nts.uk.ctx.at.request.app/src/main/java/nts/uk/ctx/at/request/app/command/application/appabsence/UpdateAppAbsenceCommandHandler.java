@@ -139,7 +139,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				1, 
 				appAbsence.getAppID(), 
 				appAbsence.getApplication().getPrePostAtr(), command.getVersion());
-		//check update
+		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
 				opAppAbsence.get().getApplication().getAppDate(),
 				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
@@ -158,7 +158,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		repoApplication.updateWithVersion(appAbsence.getApplication());
 		// 暫定データの登録
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
-		GeneralDate cmdEndDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			listDate.add(loopDate);
@@ -176,6 +176,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		creat.setPrePostAtr(command.getPrePostAtr());
 		creat.setHolidayAppType(command.getHolidayAppType());
 		creat.setWorkTypeCode(command.getWorkTypeCode());
+		creat.setSpecHd(command.getSpecHd());
 		return creat;
 	}
 

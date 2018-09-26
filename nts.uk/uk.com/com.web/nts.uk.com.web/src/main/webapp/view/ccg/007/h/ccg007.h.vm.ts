@@ -76,7 +76,7 @@ module nts.uk.pr.view.ccg007.h {
                 blockUI.invisible();
 
                 //add command
-                let command: ForgotPasswordCommand = new ForgotPasswordCommand(self.embeddedId(), self.userId(), self.passwordNew(), self.passwordNewConfirm());
+                let command: ForgotPasswordCommand = new ForgotPasswordCommand(self.embeddedId(), self.userId(), _.escape(self.passwordNew()), _.escape(self.passwordNewConfirm()));
 
                 service.submitForgotPass(command).done(function() {
                     

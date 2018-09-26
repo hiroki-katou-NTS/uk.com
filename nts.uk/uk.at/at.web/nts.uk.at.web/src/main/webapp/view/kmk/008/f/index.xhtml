@@ -4,7 +4,7 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
+		<span tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button class="proceed" tabindex="3"
 			data-bind="click: addUpdateDataClassification, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
@@ -65,7 +65,7 @@
 						value: limitWeek, 
 						inputFormat: 'time', 
 						mode: 'time', 
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" />
 					</td>
@@ -100,7 +100,7 @@
 						value: limitTwoWeeks, 
 						inputFormat: 'time', 
 						mode: 'time', 
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" /></td>
 				</tr>
@@ -133,7 +133,7 @@
 						value: limitFourWeeks, 
 						inputFormat: 'time', 
 						mode: 'time', 
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" /></td>
 				</tr>
@@ -166,7 +166,7 @@
 						value: limitOneMonth, 
 						inputFormat: 'time', 
 						mode: 'time', 
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" /></td>
 				</tr>
@@ -199,7 +199,7 @@
 						value: limitTwoMonths, 
 						inputFormat: 'time', 
 						mode: 'time', 
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" /></td>
 				</tr>
@@ -232,7 +232,7 @@
 						value: limitThreeMonths, 
 						inputFormat: 'time', 
 						mode: 'time', 
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" /></td>
 				</tr>
@@ -265,7 +265,7 @@
 						value: limitOneYear, 
 						inputFormat: 'time', 
 						mode: 'time',
-						enable: true, 
+						enable: false, 
 						readonly: false, 
 						required: false }" /></td>
 				</tr>

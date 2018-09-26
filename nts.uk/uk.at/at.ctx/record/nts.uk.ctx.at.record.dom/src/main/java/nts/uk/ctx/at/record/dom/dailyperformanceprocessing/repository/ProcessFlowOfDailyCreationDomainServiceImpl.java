@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
@@ -58,7 +60,8 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	@Inject
 	private ExecutionLogRepository executionLogRepository;
-	
+	@Inject
+	private AppReflectManagerFromRecordImport appReflectService;
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
@@ -71,10 +74,21 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		dataSetter.setData("dailyCreateCount", 0);
 		dataSetter.setData("dailyCreateStatus", ExecutionStatus.PROCESSING.nameId);
 		dataSetter.setData("dailyCreateHasError", " ");
+		dataSetter.setData("dailyCreateStartTime", 0);		
+		dataSetter.setData("dailyCreateEndTime", 0);
 		
 
 		dataSetter.setData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("dailyCalculateStartTime", 0);
+		dataSetter.setData("dailyCalculateEndTime", 0);
+		
 		dataSetter.setData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("monthlyAggregateStartTime", 0);
+		dataSetter.setData("monthlyAggregateEndTime", 0);
+		
+		dataSetter.setData("reflectApprovalStatus", ExecutionStatus.INCOMPLETE.nameId);
+		dataSetter.setData("reflectApprovalStartTime", 0);
+		dataSetter.setData("reflectApprovalEndTime", 0);
 		
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -118,6 +132,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		// 日別実績の作成　実行
 		if (logsMap.containsKey(ExecutionContent.DAILY_CREATION)
 				&& finalStatus == ProcessState.SUCCESS) {
+			dataSetter.updateData("dailyCreateStartTime", GeneralDateTime.now().toString());
 			
 			Optional<ExecutionLog> dailyCreationLog =
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
@@ -131,7 +146,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 				this.updateExecutionState(dataSetter, empCalAndSumExecLogID);
 			} else {
 				dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
+				asyncContext.finishedAsCancelled();
 			}
+			dataSetter.updateData("dailyCreateEndTime", GeneralDateTime.now().toString());
 		}
 		
 		//***** ↓　以下、仮実装。ログ制御全体を見直して、正確な手順に再修正要。（2018.1.16 Shuichi Ishida）
@@ -139,30 +156,49 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 		if (logsMap.containsKey(ExecutionContent.DAILY_CALCULATION)
 				&& finalStatus == ProcessState.SUCCESS) {
 			dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.PROCESSING.nameId);
+			dataSetter.updateData("dailyCalculateStartTime", GeneralDateTime.now().toString());
 			
 			Optional<ExecutionLog> dailyCalculationLog =
 					Optional.of(logsMap.get(ExecutionContent.DAILY_CALCULATION));
 			finalStatus = this.dailyCalculationService.manager(asyncContext, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, dailyCalculationLog);
+			dataSetter.updateData("dailyCalculateEndTime", GeneralDateTime.now().toString());
+		}
+
+		//承認反映
+		if(finalStatus == ProcessState.SUCCESS
+				&& logsMap.containsKey(ExecutionContent.REFLRCT_APPROVAL_RESULT)) {
+			dataSetter.updateData("reflectApprovalStartTime", GeneralDateTime.now().toString());
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
+			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.SUCCESS) {
+				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
+			}
+			dataSetter.updateData("reflectApprovalEndTime", GeneralDateTime.now().toString());
 		}
 		
 		// 月別実績の集計　実行
 		if (logsMap.containsKey(ExecutionContent.MONTHLY_AGGREGATION)
 				&& finalStatus == ProcessState.SUCCESS) {
 
+			dataSetter.updateData("monthlyAggregateStartTime", GeneralDateTime.now().toString());
 			dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.PROCESSING.nameId);
 			
 			Optional<ExecutionLog> monthlyAggregationLog =
 					Optional.of(logsMap.get(ExecutionContent.MONTHLY_AGGREGATION));
 			finalStatus = this.monthlyAggregationService.manager(asyncContext, companyId, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, monthlyAggregationLog);
+			dataSetter.updateData("monthlyAggregateEndTime", GeneralDateTime.now().toString());
 		}
+		
 		//***** ↑
 		
 		// ドメインモデル「就業計算と修正実行ログ」を更新する
 		// 就業計算と集計実行ログ．実行状況　←　実行中止
 		if (finalStatus == ProcessState.INTERRUPTION) {
 			this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);
+			dataSetter.setData("endTime", GeneralDateTime.now().toString());
+			asyncContext.finishedAsCancelled();
 		} else {
 			// 完了処理 (Xử lý hoàn thành)
 			List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
@@ -172,7 +208,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			} else {
 				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.DONE_WITH_ERROR.value);
 			}
-		}		
+			dataSetter.setData("endTime", GeneralDateTime.now().toString());
+		}	
+		
+		
 	}
 	
 	private void updateExecutionState(TaskDataSetter dataSetter, String empCalAndSumExecLogID){

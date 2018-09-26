@@ -91,11 +91,11 @@ module cps001.a.vm {
         titleResource: KnockoutObservable<string> = ko.observable(text("CPS001_39"));
 
         layout: Layout = new Layout();
-        
+
         // check quyen có thể delete employee ở đăng ký thông tin cá nhân 
         enaBtnManagerEmp: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDelEmp: KnockoutObservable<boolean> = ko.observable(true);
-        
+
         licenseCheck: KnockoutObservable<string> = ko.observable("");
         licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
         classWarning: KnockoutObservable<string> = ko.observable("");
@@ -106,6 +106,7 @@ module cps001.a.vm {
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             employee.employeeId.subscribe(id => {
+                self.layout.listItemCls.removeAll();
                 self.block();
             });
 
@@ -118,18 +119,19 @@ module cps001.a.vm {
             });
 
             setInterval(() => {
-                let aut = _(self.layout.listItemCls())
-                    .map((m: any) => m.items || undefined)
-                    .filter(x => !!x)
-                    .flatten() // flat set item
-                    .flatten() // flat list item
-                    .map((m: any) => !ko.toJS(m.readonly))
-                    .filter(x => !!x)
-                    .value();
+                let id = ko.toJS(self.employee.employeeId),
+                    aut = _(self.layout.listItemCls())
+                        .map((m: any) => m.items || undefined)
+                        .filter(x => !!x)
+                        .flatten() // flat set item
+                        .flatten() // flat list item
+                        .map((m: any) => !ko.toJS(m.readonly))
+                        .filter(x => !!x)
+                        .value();
 
-                self.saveAble(!!aut.length && !hasError());
+                self.saveAble(!!aut.length && !hasError() && !!id);
             }, 0);
-            
+
             // check quyen có thể delete employee ở đăng ký thông tin cá nhân
             permision().done((data: Array<IPersonAuth>) => {
                 if (data) {
@@ -146,7 +148,7 @@ module cps001.a.vm {
             self.checkLicenseStart();
         }
 
-        reload() {
+        reload(ids?: Array<string>) {
             let self = this,
                 employee = self.employee,
                 employees = ko.toJS(employee.employees),
@@ -154,10 +156,17 @@ module cps001.a.vm {
                 nids = _.map(employees, m => m.employeeId),
                 vids = _.clone(nids);
 
-            if (!_.isEqual(oids.sort(), nids.sort())) {
-                employee.employeeIds(vids);
+            if (ids) {
+                employee.employeeIds(_.concat(vids, ids));
+
+                // select last id
+                employee.employeeId(_.last(ids));
             } else {
-                employee.employeeIds.valueHasMutated();
+                if (!_.isEqual(oids.sort(), nids.sort())) {
+                    employee.employeeIds(vids);
+                } else {
+                    employee.employeeIds.valueHasMutated();
+                }
             }
             self.checkLicense();
         }
@@ -205,15 +214,23 @@ module cps001.a.vm {
             let self = this;
 
             modal('../c/index.xhtml').onClosed(() => {
-                self.reload();
+                let ids: Array<string> = getShared('CPS001C_RESTORE');
+                if (_.size(ids)) {
+                    // add list restore id
+                    self.reload(ids);
+                }
             });
         }
 
         saveData() {
             let self = this,
                 emp = self.employee,
-                controls = self.layout.listItemCls(),
-                inputs = self.layout.outData(),
+                controls = self.layout.listItemCls();
+
+            // refresh data from layout
+            self.layout.outData.refresh();
+
+            let inputs = self.layout.outData(),
                 command: IPeregCommand = {
                     personId: emp.personId(),
                     employeeId: emp.employeeId(),
@@ -235,14 +252,14 @@ module cps001.a.vm {
                     info({ messageId: "Msg_15" }).then(function() {
                         self.reload();
                     });
-                }).fail((mes : any) => {
+                }).fail((mes: any) => {
                     self.unblock();
                     if (mes.messageId == "Msg_346") {
                         let lstCardNumber = _.map($('[data-code = IS00779]'), e => e.value);
                         let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
                         $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
-                        alert(mes.message);
+                        alert(mes);
                     }
 
                 });
@@ -267,9 +284,14 @@ module cps001.a.vm {
                     categoryId: evt.id,
                     categoryCode: evt.ccode,
                     standardDate: undefined,
-                    personId: ko.toJS(__viewContext.viewModel.employee.personId),
-                    employeeId: ko.toJS(__viewContext.viewModel.employee.employeeId)
+                    personId: ko.toJS(self.employee.personId),
+                    employeeId: ko.toJS(self.employee.employeeId)
                 };
+
+                if (!query.employeeId) {
+                    self.layout.listItemCls.removeAll();
+                    return;
+                }
 
                 if (evt.ctype) {
                     switch (evt.ctype) {
@@ -344,31 +366,31 @@ module cps001.a.vm {
                 });
             }
         }
-        
-        checkLicenseStart(): void{
+
+        checkLicenseStart(): void {
             var self = this;
             service.licenseCheckStart().done((data: ILicensenCheck) => {
                 self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
                 self.licenseCheckDipslay(data.display);
-                if(data.message != ''){
+                if (data.message != '') {
                     self.classWarning('color-schedule-error');
-                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered]});
-                }else{
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered] });
+                } else {
                     self.classWarning('');
-                }  
+                }
             });
-        } 
-        
-        checkLicense(){
+        }
+
+        checkLicense() {
             var self = this;
-            if(self.licenseCheckDipslay()){
+            if (self.licenseCheckDipslay()) {
                 service.licenseCheck().done((data: ILicensenCheck) => {
                     self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
-                    if(data.status === 'NORMAL'){
+                    if (data.status === 'NORMAL') {
                         self.classWarning('');
-                    }else{
+                    } else {
                         self.classWarning('color-schedule-error');
-                    } 
+                    }
                 });
             }
         }
@@ -398,8 +420,13 @@ module cps001.a.vm {
                         query: ILayoutQuery = {
                             layoutId: id,
                             browsingEmpId: ko.toJS(__viewContext.viewModel.employee.employeeId),
-                            standardDate: ddate
+                            standardDate: !_.isNaN(ddate.getTime()) ? ddate : moment.utc().toDate()
                         };
+                    
+                    if (!query.browsingEmpId) {
+                        self.listItemCls.removeAll();
+                        return;
+                    }
 
                     service.getCurrentLayout(query).done((data: any) => {
                         if (data) {
@@ -527,7 +554,7 @@ module cps001.a.vm {
         TIMEPOINT = 5,
         SELECTION = 6
     }
-    
+
     interface IPersonAuth {
         functionNo: number;
         functionName: string;
@@ -535,7 +562,7 @@ module cps001.a.vm {
         description: string;
         orderNumber: number;
     }
-    
+
     enum FunctionNo {
         No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
         No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
@@ -549,7 +576,7 @@ module cps001.a.vm {
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
-    
+
     interface ILicensenCheck {
         display: boolean;
         registered: number;

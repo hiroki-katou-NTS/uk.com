@@ -8,8 +8,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 月別実績の任意項目
@@ -118,5 +118,17 @@ public class AnyItemOfMonthly extends AggregateRoot {
 				this.amount = Optional.of(new AnyAmountMonth(target.amount.get().v()));
 			}
 		}
+	}
+
+	public void updateTime(AnyTimeMonth time){
+		this.time = Optional.ofNullable(time);
+	}
+	
+	public void updateTimes(AnyTimesMonth times){
+		this.times = Optional.ofNullable(times);
+	}
+	
+	public void updateAmount(AnyAmountMonth amount){
+		this.amount = Optional.ofNullable(amount);
 	}
 }

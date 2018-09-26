@@ -658,9 +658,9 @@ public class AppOvertimeFinder {
 						List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 						// 07_勤務種類取得: lay loai di lam 
 						List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,approvalFunctionSetting,appEmploymentWorkType);
-						if(!CollectionUtil.isEmpty(workTypeOvertimes)){
+						/*if(!CollectionUtil.isEmpty(workTypeOvertimes)){
 							result.setWorkType(workTypeOvertimes.get(0));
-						}
+						}*/
 						List<String> workTypeCodes = new ArrayList<>();
 						for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
 							workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
@@ -673,9 +673,15 @@ public class AppOvertimeFinder {
 							siftCodes.add(siftType.getSiftCode());
 						}
 						result.setSiftTypes(siftCodes);
-						if(!CollectionUtil.isEmpty(siftTypes)){
+						/*if(!CollectionUtil.isEmpty(siftTypes)){
 							result.setSiftType(siftTypes.get(0));
-						}
+						}*/
+						// 09_勤務種類就業時間帯の初期選択をセットする
+						WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
+								Strings.isBlank(appDate) ? appCommonSettingOutput.generalDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 
+								workTypeOvertimes, siftTypes);
+						result.setWorkType(workTypeAndSiftType.getWorkType());
+						result.setSiftType(workTypeAndSiftType.getSiftType());
 					}else{
 						result.setDisplayCaculationTime(false);
 					}
@@ -765,7 +771,8 @@ public class AppOvertimeFinder {
 				result.setSiftTypes(siftCodes);
 				
 				// 09_勤務種類就業時間帯の初期選択をセットする
-				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, baseDate, workTypeOvertimes, siftTypes);
+				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
+						Strings.isBlank(appDate) ? baseDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
 				result.setWorkType(workTypeAndSiftType.getWorkType());
 				result.setSiftType(workTypeAndSiftType.getSiftType());
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do

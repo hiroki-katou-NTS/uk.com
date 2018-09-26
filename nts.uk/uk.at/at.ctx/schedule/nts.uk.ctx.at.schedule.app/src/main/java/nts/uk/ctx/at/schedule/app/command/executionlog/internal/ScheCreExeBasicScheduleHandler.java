@@ -23,6 +23,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.schedule.app.command.executionlog.CreateScheduleMasterCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
@@ -161,18 +162,20 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param listDiffTimeWorkSetting
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
-			String employeeId, WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
-			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto,
-			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
+	public void updateAllDataToCommandSave(
+			ScheduleCreatorExecutionCommand command,
+			GeneralDate dateInPeriod,
+			String employeeId,
+			WorktypeDto worktypeDto,
+			String workTimeCode,
+			CreateScheduleMasterCache masterCache,
+			List<BasicSchedule> listBasicSchedule,
+			DateRegistedEmpSche dateRegistedEmpSche) {
 
 		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得する
 		// EA修正履歴：No2135
 		// EA修正履歴：No2136
-		Optional<ShortWorkTimeDto> optionalShortTime = listShortWorkTimeDto.stream()
+		Optional<ShortWorkTimeDto> optionalShortTime = masterCache.getListShortWorkTimeDto().stream()
 				.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getPeriod().contains(dateInPeriod)))
 				.findFirst();
 
@@ -194,7 +197,11 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 
 		// 勤務予定マスタ情報を取得する
-		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
+		if (!this.saveScheduleMaster(
+				commandSave,
+				command.getExecutionId(),
+				masterCache.getEmpGeneralInfo(),
+				masterCache.getListBusTypeOfEmpHis()))
 			return;
 
 		// check not exist error
@@ -228,8 +235,11 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		
 		// 休憩予定時間帯を取得する
-		this.saveBreakTime(command.getCompanyId(), commandSave, listWorkType, listWorkTimeSetting, mapFixedWorkSetting,
-				mapFlowWorkSetting, mapDiffTimeWorkSetting);
+		commandSave.setWorkScheduleBreaks(
+				this.getBreakTime(
+						command.getCompanyId(),
+						commandSave,
+						masterCache));
 
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
@@ -260,11 +270,11 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(param, commandSave);
+		this.saveScheduleTime(command.getCompanySetting(), param, commandSave);
         
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
+			this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
 		}
 		
 		// save command
@@ -446,7 +456,7 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, toDate, new WorkTypeCode(workTypeCode),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(param, commandSave);
+		this.saveScheduleTime(command.getCompanySetting(), param, commandSave);
 		
 		boolean isDeleteBeforeInsert = false;
 		// save command
@@ -554,36 +564,38 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		return commandSave;
 	}
-
+	
 	/**
 	 * 勤務予定休憩
 	 * 
 	 * @param employeeId
 	 * @param toDate
 	 */
-	private BasicScheduleSaveCommand saveBreakTime(String companyId, BasicScheduleSaveCommand commandSave,
-			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
+	private List<WorkScheduleBreakSaveCommand> getBreakTime(
+			String companyId,
+			BasicScheduleSaveCommand commandSave,
+			CreateScheduleMasterCache masterCache) {
 		if(CollectionUtil.isEmpty(commandSave.getWorkScheduleTimeZones())){
-			commandSave.setWorkScheduleBreaks(Collections.emptyList());
-			return commandSave;
+			return Collections.emptyList();
 		}
 		List<DeductionTime> listScheTimeZones = commandSave.getWorkScheduleTimeZones().stream()
 				.map(x -> new DeductionTime(x.getScheduleStartClock(), x.getScheduleEndClock()))
 				.collect(Collectors.toList());
-		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.getScheduleBreakTime(companyId,
-				commandSave.getWorktypeCode(), commandSave.getWorktimeCode(), listWorkType, listWorkTimeSetting,
-				mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting, listScheTimeZones);
+		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.getScheduleBreakTime(
+				companyId,
+				commandSave.getWorktypeCode(),
+				commandSave.getWorktimeCode(),
+				masterCache.getListWorkType(),
+				masterCache.getListWorkTimeSetting(),
+				masterCache.getMapFixedWorkSetting(),
+				masterCache.getMapFlowWorkSetting(),
+				masterCache.getMapDiffTimeWorkSetting(),
+				listScheTimeZones);
 		if (businessDayCal == null) {
-			return commandSave;
+			return Collections.emptyList();
 		}
 		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<>();
 		List<DeductionTime> timeZones = businessDayCal.getTimezones();
-
-		if (timeZones == null) {
-			timeZones = new ArrayList<>();
-		}
 
 		for (int i = 0; i < timeZones.size(); i++) {
 			WorkScheduleBreakSaveCommand wBreakSaveCommand = new WorkScheduleBreakSaveCommand();
@@ -592,8 +604,7 @@ public class ScheCreExeBasicScheduleHandler {
 			wBreakSaveCommand.setScheduledEndClock(timeZones.get(i).getEnd().valueAsMinutes());
 			workScheduleBreaks.add(wBreakSaveCommand);
 		}
-		commandSave.setWorkScheduleBreaks(workScheduleBreaks);
-		return commandSave;
+		return workScheduleBreaks;
 	}
 
 	/**
@@ -622,15 +633,18 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
-		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
+	private BasicScheduleSaveCommand saveScheduleTime(Object companySetting, ScTimeParam param, BasicScheduleSaveCommand commandSave) {
+		ScTimeImport scTimeImport = CalculationCache.getResult(
+				param.forCache(),
+				() -> scTimeAdapter.calculation(companySetting, param));
+		
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
 			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i)));
 		}
 		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
-				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildTime(), scTimeImport.getCareTime(), scTimeImport.getFlexTime());
 		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
 		return commandSave;
 	}
@@ -649,6 +663,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param baseDate
 	 *            the base date (input from screen A)
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void registerBasicScheduleSaveCommand(String companyId, Optional<BasicSchedule> optBasicSchedule,
 			Optional<PrescribedTimezoneSetting> optPrescribedSetting, WorkTimeSetGetterCommand command,
 			String employeeId, GeneralDate baseDate, WorkType workType) {
@@ -706,7 +721,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
 		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
-		basicScheduleSaveCommand = saveScheduleTime(param, basicScheduleSaveCommand);
+		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand);
 		
 		// Get all schedule item by company id (for optimization)
 		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);
@@ -734,7 +749,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param basicScheduleSaveCommand
 	 */
 	private void addEditDetailsLog(String companyId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItem, String employeeId, GeneralDate targetDate, boolean isUpdate) {
-		
+		String sid = AppContexts.user().employeeId();
 		
 		//勤務種類コード
 		Optional<ScheduleItem> optScheduleItemWorkType = lstScheduleItem.stream().filter(x -> StringUtils.equals(x.getScheduleItemId(), String.valueOf(WORK_TYPE_CODE))).findFirst();
@@ -760,7 +775,7 @@ public class ScheCreExeBasicScheduleHandler {
 		// 育児介護終了時刻 1~2
 		List<ScheduleItem> optScheduleItemChildEndTime = lstScheduleItem.stream().filter(x -> IntStream.of(CHILD_END_TIME).anyMatch(y -> y == Integer.parseInt(x.getScheduleItemId()))).collect(Collectors.toList());
 		
-		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(employeeId);
+		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(sid);
 		StartPageLog lastLog = lstStartPageLog.get(lstStartPageLog.size() - 1);
 		
 		// 「データ修正記録のパラメータ」を生成する
@@ -846,28 +861,58 @@ public class ScheCreExeBasicScheduleHandler {
 				
 				switch(timeType) {
 				case 0:
-					if (i == lstOldScheTimeZoneCount || i == lstSaveScheTimeZoneCount) break;
-					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleStartClock().v(), lstSaveScheTimeZone.get(i).getScheduleStartClock().v());
+					if (i > lstOldScheTimeZoneCount && i > lstSaveScheTimeZoneCount) break;
+					else if (i >= lstOldScheTimeZoneCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, null, lstSaveScheTimeZone.get(i).getScheduleStartClock().v());
+					else if (i >= lstSaveScheTimeZoneCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleStartClock().v(), null);
+					else
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleStartClock().v(), lstSaveScheTimeZone.get(i).getScheduleStartClock().v());
 					break;
 				case 1:
-					if (i == lstOldScheTimeZoneCount || i == lstSaveScheTimeZoneCount) break;
-					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleEndClock().v(), lstSaveScheTimeZone.get(i).getScheduleEndClock().v());
+					if (i > lstOldScheTimeZoneCount && i > lstSaveScheTimeZoneCount) break;
+					else if (i >= lstOldScheTimeZoneCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, null, lstSaveScheTimeZone.get(i).getScheduleEndClock().v());
+					else if (i >= lstSaveScheTimeZoneCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleEndClock().v(), null);
+					else
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldScheTimeZone.get(i).getScheduleEndClock().v(), lstSaveScheTimeZone.get(i).getScheduleEndClock().v());
 					break;
 				case 2:
-					if (i == lstOldBreakTimeCount || i == lstSaveBreakTimeCount) break;
-					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledStartClock().v(), lstSaveBreakTime.get(i).getScheduledStartClock().v());
+					if (i > lstOldBreakTimeCount && i > lstSaveBreakTimeCount) break;
+					else if (i >= lstOldBreakTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, null, lstSaveBreakTime.get(i).getScheduledStartClock().v());
+					else if (i >= lstSaveBreakTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledStartClock().v(), null);
+					else
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledStartClock().v(), lstSaveBreakTime.get(i).getScheduledStartClock().v());
 					break;
 				case 3:
-					if (i == lstOldBreakTimeCount || i == lstSaveBreakTimeCount) break;
-					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledEndClock().v(), lstSaveBreakTime.get(i).getScheduledEndClock().v());
+					if (i > lstOldBreakTimeCount && i > lstSaveBreakTimeCount) break;
+					else if (i >= lstOldBreakTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, null, lstSaveBreakTime.get(i).getScheduledEndClock().v());
+					else if (i >= lstSaveBreakTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledEndClock().v(), null);
+					else
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldBreakTime.get(i).getScheduledEndClock().v(), lstSaveBreakTime.get(i).getScheduledEndClock().v());
 					break;
 				case 4:
-					if (i == lstOldChildTimeCount || i == lstSaveChildTimeCount) break;
-					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleStart().v(), lstSaveChildTime.get(i).getChildCareScheduleStart().v());
+					if (i > lstOldChildTimeCount && i > lstSaveChildTimeCount) break;
+					else if (i >= lstOldChildTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, null, lstSaveChildTime.get(i).getChildCareScheduleStart().v());
+					else if (i >= lstSaveChildTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleStart().v(), null);
+					else
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleStart().v(), lstSaveChildTime.get(i).getChildCareScheduleStart().v());
 					break;
 				case 5:
-					if (i == lstOldChildTimeCount || i == lstSaveChildTimeCount) break;
-					itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleEnd().v(), lstSaveChildTime.get(i).getChildCareScheduleEnd().v());
+					if (i > lstOldChildTimeCount && i > lstSaveChildTimeCount) break;
+					else if (i >= lstOldChildTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, null, lstSaveChildTime.get(i).getChildCareScheduleEnd().v());
+					else if (i >= lstSaveChildTimeCount)
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleEnd().v(), null);
+					else
+						itemInfo = ItemInfo.create(item.scheduleItemId, item.scheduleItemName, DataValueAttribute.CLOCK, lstOldChildTime.get(i).getChildCareScheduleEnd().v(), lstSaveChildTime.get(i).getChildCareScheduleEnd().v());
 					break;
 				}
 				

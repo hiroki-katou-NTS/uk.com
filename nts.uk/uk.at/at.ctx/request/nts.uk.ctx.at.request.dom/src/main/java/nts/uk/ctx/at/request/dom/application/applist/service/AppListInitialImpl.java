@@ -578,16 +578,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	private boolean checkApprove(PhaseStatus statusPhase, int phaseOrderCur){
 		List<Integer> phaseAtr = statusPhase.getPhaseAtr();
-		Integer tmp = phaseOrderCur-2;
+		Integer tmp = phaseOrderCur-2;//index phase(n-1) before phase current(n)
 		Integer stt = null;
 		if(tmp < 0){
 			return true;
 		}
-		do {
-			stt = phaseAtr.get(tmp);
-			tmp -= 1;
-        } while (tmp >= 0 && stt == null);
-		return stt == null ? false :  stt == 1 ? true : false;
+		boolean check = false;
+		for(int i = tmp; i >= 0; i--){//loop phase (n-1) -> phase 1
+			if(phaseAtr.get(i) != null){//phase setting
+				stt = phaseAtr.get(i);
+				check = true;
+				return check ? stt == 1 ? true : false : true;
+			}
+		}
+		return true;
 	}
 	/**
 	 * lam o ui

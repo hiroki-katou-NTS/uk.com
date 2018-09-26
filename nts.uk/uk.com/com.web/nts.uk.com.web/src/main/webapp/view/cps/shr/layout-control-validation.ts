@@ -1,4 +1,9 @@
 module nts.layout {
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'],
+        moment: any = window['moment'];
+
     import ajax = nts.uk.request.ajax;
     import modal = nts.uk.ui.windows.sub.modal;
     import nou = nts.uk.util.isNullOrUndefined;
@@ -48,7 +53,7 @@ module nts.layout {
                     }
                 });
 
-            setTimeout(() => {
+            let tout = setTimeout(() => {
                 let _item: any = _(items)
                     .filter(x => _.has(x, "items") && !!x.items)
                     .map(x => x.items)
@@ -58,9 +63,19 @@ module nts.layout {
                     //.orderBy((x: any) => x.dispOrder)
                     .find((x: any) => !!ko.toJS(x.editable));
 
-                if (_item) {
-                    _item.hasFocus(true);
+                if ($('input[tabindex="17"].ntsDatepicker').length) {
+                    $('input[tabindex="17"].ntsDatepicker').focus();
+                } else {
+                    if (_item) {
+                        if ((_item.item || {}).dataTypeValue != ITEM_SINGLE_TYPE.DATE) {
+                            _item.hasFocus(true);
+                        } else {
+                            $('#COM1000000000000000CS00001IS00001').find('input').focus();
+                        }
+                    }
                 }
+
+                clearTimeout(tout);
             }, 50);
         },
         checkError: (items: Array<any>) => {
@@ -198,7 +213,7 @@ module nts.layout {
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
-        get_sphd_nextGrantDate: (param: ISpeacialParam)  => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`,param)
+        get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param)
     }
 
     export class validation {
@@ -208,7 +223,7 @@ module nts.layout {
 
             self.finder = new constraint(lstCls);
 
-            setTimeout(() => {
+            let tout = setTimeout(() => {
                 self.textBox();
                 self.radio();
                 self.button();
@@ -235,6 +250,8 @@ module nts.layout {
                 // self.annLeaGrantRemnNum();
 
                 validate.initCheckError(lstCls);
+
+                clearTimeout(tout);
             }, 50);
         }
 
@@ -281,6 +298,7 @@ module nts.layout {
 
 
             if (CS00020_IS00248) {
+
                 CS00020_IS00248.data.value.subscribe(x => {
                     let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
 
@@ -291,8 +309,9 @@ module nts.layout {
                     });
                 });
 
-                setTimeout(() => {
+                let tout = setTimeout(() => {
                     CS00020_IS00248.data.value.valueHasMutated();
+                    clearTimeout(tout);
                 }, 0);
             }
 
@@ -310,8 +329,9 @@ module nts.layout {
                     });
                 });
 
-                setTimeout(() => {
+                let tout = setTimeout(() => {
                     CS00020_IS00121.data.value.valueHasMutated();
+                    clearTimeout(tout);
                 }, 0);
             }
         }
@@ -564,8 +584,9 @@ module nts.layout {
                             });
                         });
 
-                        setTimeout(() => {
+                        let tout = setTimeout(() => {
                             rd.data.value.valueHasMutated();
+                            clearTimeout(tout);
                         }, 0);
                     }
                 };
@@ -783,7 +804,7 @@ module nts.layout {
                     if (firstTimes && secondTimes) {
                         if (firstTimes.end && secondTimes.start) {
                             $(`${firstTimes.end.id}, ${secondTimes.start.id}`).on('blur', () => {
-                                setTimeout(() => {
+                                let tout = setTimeout(() => {
                                     let dom1 = $(firstTimes.end.id),
                                         dom2 = $(secondTimes.start.id),
                                         pv = ko.toJS(firstTimes.end.data.value),
@@ -814,6 +835,7 @@ module nts.layout {
                                             dom2.parent().removeClass('error');
                                         }
                                     }
+                                    clearTimeout(tout);
                                 }, 50);
                             });
                         }
@@ -900,121 +922,153 @@ module nts.layout {
 
                     if (!workTime) {
 
-                        workType.ctrl.on('click', () => {
-                            setShared("KDL002_Multiple", false, true);
-                            setShared('kdl002isSelection', false, true);
-                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
-                            setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+                        workType.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workType.ctrl.data('safeClick');
 
-                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
-                                let childData: Array<any> = getShared('KDL002_SelectedNewItem');
-
-                                if (childData[0]) {
-                                    setData(workType, childData[0].code);
+                                // prevent multi click
+                                workType.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
                                 }
-                            });
-                        });
-                    } else {
 
-                        validateEditable(group, workTime.data.value, mt);
-
-                        workType.ctrl.on('click', () => {
-
-                            if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
-                                setShared('parentCodes', {
-                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                                }, true);
-
-                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                    let childData: IChildData = getShared('childData');
-
-                                    if (childData) {
-                                        setData(workType, childData.selectedWorkTypeCode);
-
-                                        setData(workTime, childData.selectedWorkTimeCode);
-
-                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
-
-                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
-
-                                        validateEditable(group, workTime.data.value);
-                                    }
-                                });
-                            } else {
                                 setShared("KDL002_Multiple", false, true);
-                                setShared('kdl002isSelection', true, true);
+                                setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
                                     let childData: Array<any> = getShared('KDL002_SelectedNewItem');
 
-                                    if (childData.length > 0) {
+                                    if (childData[0]) {
                                         setData(workType, childData[0].code);
                                     }
                                 });
-                            }
-                        });
+                            });
+                    } else {
 
-                        // handle click event of workTime
-                        workTime.ctrl.on('click', () => {
-                            if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
-                                setShared('parentCodes', {
-                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                                }, true);
+                        validateEditable(group, workTime.data.value, mt);
 
-                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                    let childData: IChildData = getShared('childData');
+                        workType.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workType.ctrl.data('safeClick');
 
-                                    if (childData) {
-                                        setData(workType, childData.selectedWorkTypeCode);
+                                // prevent multi click
+                                workType.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
 
-                                        setData(workTime, childData.selectedWorkTimeCode);
+                                if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
+                                    setShared('parentCodes', {
+                                        workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                        workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                    }, true);
 
-                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+                                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                        let childData: IChildData = getShared('childData');
 
-                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+                                        if (childData) {
+                                            setData(workType, childData.selectedWorkTypeCode);
 
-                                        validateEditable(group, workTime.data.value);
-                                    }
-                                });
-                            } else {
+                                            setData(workTime, childData.selectedWorkTimeCode);
 
+                                            firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                            firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
 
-                                setShared("kml001multiSelectMode", false);
-                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
-                                setShared("kml001isSelection", true);
-                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
-
-                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
-                                    let childData: Array<any> = getShared('kml001selectedTimes');
-                                    if (childData) {
-                                        if (childData.length > 0) {
-                                            let data: any = childData[0];
-                                            setData(workTime, data.selectedWorkTimeCode);
-
-                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
-                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
-
-                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
-                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+                                            secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                            secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
 
                                             validateEditable(group, workTime.data.value);
                                         }
-                                    }
-                                });
-                            }
-                        });
+                                    });
+                                } else {
+                                    setShared("KDL002_Multiple", false, true);
+                                    setShared('kdl002isSelection', true, true);
+                                    setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                    setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                    modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                        let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                                        if (childData.length > 0) {
+                                            setData(workType, childData[0].code);
+                                        }
+                                    });
+                                }
+                            });
+
+                        // handle click event of workTime
+                        workTime.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workTime.ctrl.data('safeClick');
+
+                                // prevent multi click
+                                workTime.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
+
+                                if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
+                                    setShared('parentCodes', {
+                                        workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                        workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                    }, true);
+
+                                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                        let childData: IChildData = getShared('childData');
+
+                                        if (childData) {
+                                            setData(workType, childData.selectedWorkTypeCode);
+
+                                            setData(workTime, childData.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                            firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                            secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                            secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    });
+                                } else {
+
+
+                                    setShared("kml001multiSelectMode", false);
+                                    setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                    setShared("kml001isSelection", true);
+                                    setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                    modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                        let childData: Array<any> = getShared('kml001selectedTimes');
+                                        if (childData) {
+                                            if (childData.length > 0) {
+                                                let data: any = childData[0];
+                                                setData(workTime, data.selectedWorkTimeCode);
+
+                                                firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                                firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                                secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                                secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                                validateEditable(group, workTime.data.value);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
                     }
                 });
             });
@@ -1140,41 +1194,52 @@ module nts.layout {
                         label: IFindData = finder.find(btn.ctgCode, btn.lblCode);
 
                     if (button) {
-                        $(button.id).on('click', (evt) => {
-                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
-                            setShared('CPS001GHI_VALUES', {
-                                ctgCode: button.data.categoryCode,
-                                sid: sid
-                            });
+                        $(button.id)
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = $(button.id).data('safeClick');
 
-                            modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
-                                // load lai du lieu
-
-                                if (!sid) {
+                                // prevent multi click
+                                $(button.id).data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
                                     return;
                                 }
 
-                                switch (btn.dialogId) {
-                                    case "g":
-                                        fetch.get_annLeaNumber(sid).done(data => {
-                                            button.data.value(data.annualLeaveNumber);
-                                            if (label) {
-                                                label.data.value(data.lastGrantDate);
-                                            }
-                                        });
-                                        break;
-                                    case "h":
-                                        fetch.get_resvLeaNumber(sid).done(data => {
-                                            button.data.value(data);
-                                        });
-                                        break;
-                                    case "i":
-                                        fetch.get_calDayTime(sid, btn.specialCd).done(data => {
-                                            button.data.value(data);
-                                        });
-                                }
+                                let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
+                                setShared('CPS001GHI_VALUES', {
+                                    ctgCode: button.data.categoryCode,
+                                    sid: sid
+                                });
+
+                                modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
+                                    // load lai du lieu
+
+                                    if (!sid) {
+                                        return;
+                                    }
+
+                                    switch (btn.dialogId) {
+                                        case "g":
+                                            fetch.get_annLeaNumber(sid).done(data => {
+                                                button.data.value(data.annualLeaveNumber);
+                                                if (label) {
+                                                    label.data.value(data.lastGrantDate);
+                                                }
+                                            });
+                                            break;
+                                        case "h":
+                                            fetch.get_resvLeaNumber(sid).done(data => {
+                                                button.data.value(data);
+                                            });
+                                            break;
+                                        case "i":
+                                            fetch.get_calDayTime(sid, btn.specialCd).done(data => {
+                                                button.data.value(data);
+                                            });
+                                    }
+                                });
                             });
-                        });
                     }
                 };
 
@@ -1291,26 +1356,36 @@ module nts.layout {
                 CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                workingCondInfo: Array<IWorkingConditionInfo> = [{
+                    category: 'CS00020',
+                    workTypeCode: 'IS00130',
+                    workTypeTime: 'IS00131'
+                }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00139',
+                        workTypeTime: 'IS00140'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00157',
+                        workTypeTime: 'IS00158'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00166',
+                        workTypeTime: 'IS00167'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00175',
+                        workTypeTime: 'IS00176'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00148',
+                        workTypeTime: 'IS00149'
+                    }
+                ],
                 initCDL008Data = (data: IItemData) => {
-                    if (!!CS00017_IS00082) {
-                        let v = CS00017_IS00082.data.value();
-
-                        if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                            setShared('inputCDL008', {
-                                selectedCodes: [data.value],
-                                baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
-                                isMultiple: false,
-                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
-                                isrestrictionOfReferenceRange: false,
-                                showNoSelection: !data.required,
-                                isShowBaseDate: false
-                            }, true);
-                        } else {
-                            setShared('inputCDL008', null);
-                        }
-                    } else if (location.href.indexOf('/view/cps/002') > -1) {
+                    if (location.href.indexOf('/view/cps/002') > -1) {
                         setShared('inputCDL008', {
-                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            selectedCodes: [ko.toJS(data.value)],
                             baseDate: ko.toJS((__viewContext || {
                                 viewModel: {
                                     currentEmployee: {
@@ -1321,10 +1396,41 @@ module nts.layout {
                             isMultiple: false,
                             selectedSystemType: 5,
                             isrestrictionOfReferenceRange: false,
-                            showNoSelection: !data.required
+                            showNoSelection: !data.required,
+                            isShowBaseDate: false
                         }, true);
-                    } else {
-                        setShared('inputCDL008', null);
+                    } else if (location.href.indexOf('/view/cps/001') > -1) {
+                        if (!!CS00017_IS00082) {
+                            let v = CS00017_IS00082.data.value();
+
+                            if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
+                                setShared('inputCDL008', null);
+                            }
+                        } else {
+                            if (__viewContext.viewModel.layout.mode() == 'layout') {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
+                                setShared('inputCDL008', null);
+                            }
+                        }
                     }
                 };
 
@@ -1333,6 +1439,11 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
 
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
@@ -1358,6 +1469,12 @@ module nts.layout {
                 CS00017_IS00082.data.value.subscribe(_date => {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
+
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
 
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
@@ -1385,6 +1502,12 @@ module nts.layout {
                     let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00085.data);
 
+                    // If input date out of range
+                    if (moment.utc(_date).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(_date).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
+
                     if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
                         return;
                     }
@@ -1407,83 +1530,112 @@ module nts.layout {
             }
 
             if (CS00017_IS00084) {
-                CS00017_IS00084.ctrl.on('click', () => {
-                    initCDL008Data(ko.toJS(CS00017_IS00084.data));
+                CS00017_IS00084.ctrl
+                    .data('safeClick', new Date().getTime())
+                    .on('click', () => {
+                        let timeClick = new Date().getTime(),
+                            safeClick = CS00017_IS00084.ctrl.data('safeClick');
 
-                    if (!!getShared('inputCDL008')) {
-                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                            // Check is cancel.
-                            if (getShared('CDL008Cancel')) {
-                                return;
-                            }
+                        // prevent multi click
+                        CS00017_IS00084.ctrl.data('safeClick', timeClick);
+                        if (timeClick - safeClick <= 500) {
+                            return;
+                        }
 
-                            //view all code of selected item 
-                            let output = getShared('outputCDL008');
-                            if (!_.isNil(output)) {
-                                CS00017_IS00084.data.value(output);
-                            }
-                        });
-                    }
-                });
+                        initCDL008Data(ko.toJS(CS00017_IS00084.data));
+
+                        if (!!getShared('inputCDL008')) {
+                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                // Check is cancel.
+                                if (getShared('CDL008Cancel')) {
+                                    return;
+                                }
+
+                                //view all code of selected item
+                                let output = getShared('outputCDL008');
+                                if (!_.isNil(output)) {
+                                    CS00017_IS00084.data.value(output);
+                                }
+                            });
+                        }
+                    });
             }
 
             if (CS00017_IS00085) {
-                CS00017_IS00085.ctrl.on('click', () => {
-                    initCDL008Data(ko.toJS(CS00017_IS00085.data));
+                CS00017_IS00085.ctrl
+                    .data('safeClick', new Date().getTime())
+                    .on('click', () => {
+                        let timeClick = new Date().getTime(),
+                            safeClick = CS00017_IS00085.ctrl.data('safeClick');
 
-                    if (!!getShared('inputCDL008')) {
-                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                            // Check is cancel.
-                            if (getShared('CDL008Cancel')) {
-                                return;
-                            }
+                        // prevent multi click
+                        CS00017_IS00085.ctrl.data('safeClick', timeClick);
+                        if (timeClick - safeClick <= 500) {
+                            return;
+                        }
 
-                            //view all code of selected item 
-                            let output = getShared('outputCDL008');
-                            if (!_.isNil(output)) {
-                                CS00017_IS00085.data.value(output);
-                            }
-                        });
-                    }
-                });
+                        initCDL008Data(ko.toJS(CS00017_IS00085.data));
+
+                        if (!!getShared('inputCDL008')) {
+                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                // Check is cancel.
+                                if (getShared('CDL008Cancel')) {
+                                    return;
+                                }
+
+                                //view all code of selected item
+                                let output = getShared('outputCDL008');
+                                if (!_.isNil(output)) {
+                                    CS00017_IS00085.data.value(output);
+                                }
+                            });
+                        }
+                    });
             }
 
             if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
                 CS00017_IS00084.data.value.subscribe(wc => {
-                    if (CS00020_IS00130) {
-                        let comboData = ko.toJS(CS00020_IS00130.data);
+                    _(workingCondInfo).each(ctgInfo => {
+                        
+                        let workTypeCd: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeCode),
+                            workTypeTime: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeTime);
+                        
+                        if (workTypeCd) {
+                            let comboData = ko.toJS(workTypeCd.data);
 
-                        fetch.get_cb_data({
-                            comboBoxType: comboData.item.referenceType,
-                            categoryId: comboData.categoryId,
-                            required: comboData.required,
-                            standardDate: undefined,
-                            typeCode: undefined,
-                            masterType: comboData.item.masterType,
-                            employeeId: undefined,
-                            cps002: true,
-                            workplaceId: CS00017_IS00084.data.value()
-                        }).done(data => {
-                            CS00020_IS00130.data.lstComboBoxValue(data);
-                        });;
-                    }
-                    if (CS00020_IS00131) {
-                        let comboData = ko.toJS(CS00020_IS00131.data);
+                            fetch.get_cb_data({
+                                comboBoxType: comboData.item.referenceType,
+                                categoryId: comboData.categoryId,
+                                required: comboData.required,
+                                standardDate: undefined,
+                                typeCode: undefined,
+                                masterType: comboData.item.masterType,
+                                employeeId: undefined,
+                                cps002: true,
+                                workplaceId: CS00017_IS00084.data.value()
+                            }).done(data => {
+                                workTypeCd.data.lstComboBoxValue(data);
+                            });;
+                        }
+                        if (workTypeTime) {
+                            let comboData = ko.toJS(workTypeTime.data);
 
-                        fetch.get_cb_data({
-                            comboBoxType: comboData.item.referenceType,
-                            categoryId: comboData.categoryId,
-                            required: comboData.required,
-                            standardDate: undefined,
-                            typeCode: undefined,
-                            masterType: comboData.item.masterType,
-                            employeeId: undefined,
-                            cps002: true,
-                            workplaceId: CS00017_IS00084.data.value()
-                        }).done(data => {
-                            CS00020_IS00131.data.lstComboBoxValue(data);
-                        });;
-                    }
+                            fetch.get_cb_data({
+                                comboBoxType: comboData.item.referenceType,
+                                categoryId: comboData.categoryId,
+                                required: comboData.required,
+                                standardDate: undefined,
+                                typeCode: undefined,
+                                masterType: comboData.item.masterType,
+                                employeeId: undefined,
+                                cps002: true,
+                                workplaceId: CS00017_IS00084.data.value()
+                            }).done(data => {
+                                workTypeTime.data.lstComboBoxValue(data);
+                            });;
+                        }
+                    });
+
                 });
             }
         }
@@ -1496,35 +1648,106 @@ module nts.layout {
                 CS00024_IS00280: IFindData = finder.find('CS00024', 'IS00280'),
                 CS00024_IS00281: IFindData = finder.find('CS00024', 'IS00281'),
                 CS00024_IS00282: IFindData = finder.find('CS00024', 'IS00282'),
-                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283');
+                CS00024_IS00283: IFindData = finder.find('CS00024', 'IS00283'),
+                CS00003_IS00020: IFindData = finder.find('CS00003', 'IS00020'),
+                CS00003_IS00021: IFindData = finder.find('CS00003', 'IS00021'),
+                CS00020_IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00020_IS00120: IFindData = finder.find('CS00020', 'IS00120'),
+                CS00020_IS00253: IFindData = finder.find('CS00020', 'IS00253');
 
-            if (CS00024_IS00279 &&
-                CS00024_IS00280 &&
-                CS00024_IS00281 &&
-                CS00024_IS00282 &&
-                CS00024_IS00283) {
+             if (CS00024_IS00279 &&
+                CS00024_IS00280) {
                 CS00024_IS00279.data.value.subscribe(x => {
                     let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
-                        grantTable = ko.toJS(CS00024_IS00280.data.value);
+                        grantTable = ko.toJS(CS00024_IS00280.data.value),
+                        hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
+                        startWork: string = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : null,
+                        endWork: string = CS00020_IS00120 ? ko.toJS(CS00020_IS00120.data.value) : null,
+                        conTime: number = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : null;
 
-                    if (!employeeId || !x) {
+                    if (!x || !grantTable) {
+                        if (CS00024_IS00281) {
+                            CS00024_IS00281.data.value('');
+                        }
+                        if (CS00024_IS00282) {
+                            CS00024_IS00282.data.value('');
+                        }
+                        if (CS00024_IS00283) {
+                            CS00024_IS00283.data.value('');
+                        }
                         return;
                     }
 
+                    // If input date out of range
+                    if (!moment.utc(x)._isValid || moment.utc(x).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
+                        return;
+                    }
+                    
+                    if (location.href.indexOf('/view/cps/002') > -1) {
+                        hireDate = __viewContext.viewModel.currentEmployee().hireDate();
+                        startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
+                        endWork = '9999/12/31';
+                        conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
+                    }
+                    
+                     let conTimePrimi = CS00020_IS00253 ? __viewContext.primitiveValueConstraints[CS00020_IS00253.data.constraint] : null;
+                    // Value is not match with primitive
+                    if ((conTime && isNaN(conTime) || (conTime && (conTime < conTimePrimi.min || conTime > conTimePrimi.max)))) {
+                        return;
+                    }
+
+                    // If input date out of range
+                    if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    // If input date out of range
+                    if (startWork && (!moment.utc(startWork)._isValid || moment.utc(startWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(startWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    if (endWork && (!moment.utc(endWork)._isValid || moment.utc(endWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(endWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
                     fetch.get_ro_data({
                         employeeId: employeeId,
-                        standardDate:  moment.utc(standardDate).format('YYYY/MM/DD'),
-                        grantTable: grantTable
+                        standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
+                        grantTable: grantTable,
+                        entryDate: moment.utc(hireDate).toDate(),
+                        startWorkCond: moment.utc(startWork).toDate(),
+                        endWorkCond: moment.utc(endWork).toDate(),
+                        contactTime: conTime
                     }).done(result => {
-                        CS00024_IS00281.data.value(result.nextTimeGrantDate);
-                        CS00024_IS00282.data.value(result.nextTimeGrantDays);
-                        CS00024_IS00283.data.value(result.nextTimeMaxTime);
+                        if (CS00024_IS00281) {
+                            CS00024_IS00281.data.value(result.nextTimeGrantDate);
+                        }
+                        if (CS00024_IS00282) {
+                            CS00024_IS00282.data.value(result.nextTimeGrantDays);
+                        }
+                        if (CS00024_IS00283) {
+                            CS00024_IS00283.data.value(result.nextTimeMaxTime);
+                        }
                     });
                 });
 
                 CS00024_IS00280.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
                 CS00024_IS00280.data.value.valueHasMutated();
+                
+                 if (CS00003_IS00020) {
+                    CS00003_IS00020.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00020_IS00119) {
+                    CS00020_IS00119.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
+                if (CS00020_IS00253) {
+                    CS00020_IS00253.data.value.subscribe(x => CS00024_IS00279.data.value.valueHasMutated());
+                }
             }
         }
 
@@ -1547,7 +1770,7 @@ module nts.layout {
                         v394 = ko.toJS($(CS00037_IS00394.id).val()),
                         v396 = ko.toJS($(CS00037_IS00396.id).val()),
                         v397 = ko.toJS($(CS00037_IS00397.id).val());
-        
+
                     // change require of control
                     if (v390 || v391 || v393 || v394 || v396 || v397) {
                         CS00037_IS00385.data.required(true);
@@ -1568,7 +1791,7 @@ module nts.layout {
                         CS00037_IS00396.data.required(false);
                         CS00037_IS00397.data.required(false);
                     }
-        
+
                     // validate again;
                     $(CS00037_IS00390.id).trigger('change');
                     $(CS00037_IS00391.id).trigger('change');
@@ -1576,30 +1799,30 @@ module nts.layout {
                     $(CS00037_IS00394.id).trigger('change');
                     $(CS00037_IS00396.id).trigger('change');
                     $(CS00037_IS00397.id).trigger('change');
-        
+
                 };
-        
-        
+
+
             $(CS00037_IS00390.id).on('change', () => {
                 validate();
             }).trigger('change');
-        
+
             $(CS00037_IS00391.id).on('change', () => {
                 validate();
             }).trigger('change');
-        
+
             $(CS00037_IS00393.id).on('change', () => {
                 validate();
             }).trigger('change');
-        
+
             $(CS00037_IS00394.id).on('change', () => {
                 validate();
             }).trigger('change');
-        
+
             $(CS00037_IS00396.id).on('change', () => {
                 validate();
             }).trigger('change');
-        
+
             $(CS00037_IS00397.id).on('change', () => {
                 validate();
             }).trigger('change');
@@ -1611,6 +1834,7 @@ module nts.layout {
                 specialLeaInfos: Array<ISpeacialLeaInfo> = [{
                     ctgCode: 'CS00025',
                     inpCode: 'IS00295',
+                    mana: 'IS00296',
                     comboboxCode: 'IS00297',
                     inpGrantDay: 'IS00298',
                     comboGrantTbl: 'IS00299',
@@ -1619,6 +1843,7 @@ module nts.layout {
                 }, {
                         ctgCode: 'CS00026',
                         inpCode: 'IS00302',
+                        mana: 'IS00303',
                         comboboxCode: 'IS00304',
                         inpGrantDay: 'IS00305',
                         comboGrantTbl: 'IS00306',
@@ -1627,6 +1852,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00027',
                         inpCode: 'IS00309',
+                        mana: 'IS00310',
                         comboboxCode: 'IS00311',
                         inpGrantDay: 'IS00312',
                         comboGrantTbl: 'IS00313',
@@ -1635,6 +1861,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00028',
                         inpCode: 'IS00316',
+                        mana: 'IS00317',
                         comboboxCode: 'IS00318',
                         inpGrantDay: 'IS00319',
                         comboGrantTbl: 'IS00320',
@@ -1643,6 +1870,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00029',
                         inpCode: 'IS00323',
+                        mana: 'IS00324',
                         comboboxCode: 'IS00325',
                         inpGrantDay: 'IS00326',
                         comboGrantTbl: 'IS00327',
@@ -1651,6 +1879,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00030',
                         inpCode: 'IS00330',
+                        mana: 'IS00331',
                         comboboxCode: 'IS00332',
                         inpGrantDay: 'IS00333',
                         comboGrantTbl: 'IS00334',
@@ -1659,6 +1888,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00031',
                         inpCode: 'IS00337',
+                        mana: 'IS00338',
                         comboboxCode: 'IS00339',
                         inpGrantDay: 'IS00340',
                         comboGrantTbl: 'IS00341',
@@ -1667,6 +1897,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00032',
                         inpCode: 'IS00344',
+                        mana: 'IS00345',
                         comboboxCode: 'IS00346',
                         inpGrantDay: 'IS00347',
                         comboGrantTbl: 'IS00348',
@@ -1675,6 +1906,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00033',
                         inpCode: 'IS00351',
+                        mana: 'IS00352',
                         comboboxCode: 'IS00353',
                         inpGrantDay: 'IS00354',
                         comboGrantTbl: 'IS00355',
@@ -1683,6 +1915,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00034',
                         inpCode: 'IS00358',
+                        mana: 'IS00359',
                         comboboxCode: 'IS00360',
                         inpGrantDay: 'IS00361',
                         comboGrantTbl: 'IS00362',
@@ -1691,6 +1924,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00049',
                         inpCode: 'IS00559',
+                        mana: 'IS00560',
                         comboboxCode: 'IS00561',
                         inpGrantDay: 'IS00562',
                         comboGrantTbl: 'IS00563',
@@ -1699,6 +1933,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00050',
                         inpCode: 'IS00566',
+                        mana: 'IS00567',
                         comboboxCode: 'IS00568',
                         inpGrantDay: 'IS00569',
                         comboGrantTbl: 'IS00570',
@@ -1707,6 +1942,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00051',
                         inpCode: 'IS00573',
+                        mana: 'IS00574',
                         comboboxCode: 'IS00575',
                         inpGrantDay: 'IS00576',
                         comboGrantTbl: 'IS00577',
@@ -1715,6 +1951,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00052',
                         inpCode: 'IS00580',
+                        mana: 'IS00581',
                         comboboxCode: 'IS00582',
                         inpGrantDay: 'IS00583',
                         comboGrantTbl: 'IS00584',
@@ -1723,6 +1960,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00053',
                         inpCode: 'IS00587',
+                        mana: 'IS00588',
                         comboboxCode: 'IS00589',
                         inpGrantDay: 'IS00590',
                         comboGrantTbl: 'IS00591',
@@ -1731,6 +1969,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00054',
                         inpCode: 'IS00594',
+                        mana: 'IS00595',
                         comboboxCode: 'IS00596',
                         inpGrantDay: 'IS00597',
                         comboGrantTbl: 'IS00598',
@@ -1739,6 +1978,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00055',
                         inpCode: 'IS00601',
+                        mana: 'IS00602',
                         comboboxCode: 'IS00603',
                         inpGrantDay: 'IS00604',
                         comboGrantTbl: 'IS00605',
@@ -1747,6 +1987,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00056',
                         inpCode: 'IS00608',
+                        mana: 'IS00609',
                         comboboxCode: 'IS00610',
                         inpGrantDay: 'IS00611',
                         comboGrantTbl: 'IS00612',
@@ -1755,6 +1996,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00057',
                         inpCode: 'IS00615',
+                        mana: 'IS00616',
                         comboboxCode: 'IS00617',
                         inpGrantDay: 'IS00618',
                         comboGrantTbl: 'IS00619',
@@ -1763,6 +2005,7 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00058',
                         inpCode: 'IS00622',
+                        mana: 'IS00623',
                         comboboxCode: 'IS00624',
                         inpGrantDay: 'IS00625',
                         comboGrantTbl: 'IS00626',
@@ -1775,8 +2018,11 @@ module nts.layout {
                     let inp: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpCode),
                         cbx: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboboxCode),
                         grantDay: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.inpGrantDay),
+                        manage: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.mana),
                         grantTbl: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.comboGrantTbl),
-                        result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result);
+                        result: IFindData = finder.find(specialLeaInfo.ctgCode, specialLeaInfo.result),
+                        CS00003_IS00020: IFindData = finder.find('CS00003', 'IS00020'),
+                        CS00024_IS00279: IFindData = finder.find('CS00024', 'IS00279');
 
                     if (inp && cbx) {
                         inp.data.value.subscribe(x => {
@@ -1786,40 +2032,85 @@ module nts.layout {
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd,
                                 grantDays = grantDay ? ko.toJS(grantDay.data.value) : null,
-                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value): null;
-                            
-                            // 
+                                grantTbls = grantTbl ? ko.toJS(grantTbl.data.value) : null,
+                                management = manage ? ko.toJS(manage.data.value) : null,
+                                hireDate: string = CS00003_IS00020 ? ko.toJS(CS00003_IS00020.data.value) : null,
+                                retireDates: string = null,
+                                yearRefDates: String = CS00024_IS00279 ? ko.toJS(CS00024_IS00279.data.value) : null;
 
-                            if (!sid || !x) {
+                            if (!x || !appSet || !management || management == '0') {
+                                if (result) {
+                                    result.data.value('');
+                                }
+                                return;
+                            }
+                            let consGrantDays = grantDay ? __viewContext.primitiveValueConstraints[grantDay.data.constraint] : null;
+                            // If input date out of range
+                            if (!moment.utc(x)._isValid || moment.utc(x).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0
+                                || (grantDays && isNaN(grantDays) || (grantDays && (grantDays < consGrantDays.min || grantDays > consGrantDays.max)))) {
                                 return;
                             }
                             
+                            if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
+                            }
+                            
+                            if (yearRefDates && (!moment.utc(yearRefDates)._isValid || moment.utc(yearRefDates).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(yearRefDates).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
+                            }
+
+                            if (location.href.indexOf('/view/cps/002') > -1) {
+                                hireDate = __viewContext.viewModel.currentEmployee().hireDate();
+                            }
                             fetch.get_sphd_nextGrantDate({
                                 sid: sid,
-                                grantDate:  moment.utc(grantDate).toDate(),
+                                grantDate: moment.utc(grantDate).toDate(),
                                 spLeaveCD: specialLeaveCD,
                                 appSet: appSet,
                                 grantDays: grantDays,
-                                grantTable: grantTbls
+                                grantTable: grantTbls,
+                                entryDate: moment.utc(hireDate).toDate(),
+                                yearRefDate: moment.utc(yearRefDates).toDate()
                             }).done(res => {
-                                let x = moment.utc(ko.toJS(res));
-                                if (x._isValid)
-                                    result.data.value(x.format('YYYY/MM/DD'));
-                                else
+                                if (!result) {
+                                    return;
+                                }
+
+                                if (res) {
+                                    let x = moment.utc(ko.toJS(res));
+                                    if (x._isValid)
+                                        result.data.value(x.format('YYYY/MM/DD'));
+                                    else
+                                        result.data.value('');
+                                } else {
                                     result.data.value('');
+                                }
                             });
                         });
 
                         cbx.data.value.subscribe(x => inp.data.value.valueHasMutated());
-                        if (grantDay){
-                            grantDay.data.value.subscribe(x => 
+                        if (manage) {
+                            manage.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+                        if (grantDay) {
+                            grantDay.data.value.subscribe(x =>
                                 inp.data.value.valueHasMutated()
                             );
                         }
                         if (grantTbl) {
                             grantTbl.data.value.subscribe(x => inp.data.value.valueHasMutated());
                         }
-                        
+                        if (CS00003_IS00020) {
+                            CS00003_IS00020.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+
+                        if (CS00024_IS00279) {
+                            CS00024_IS00279.data.value.subscribe(x => inp.data.value.valueHasMutated());
+                        }
+
                         inp.data.value.valueHasMutated();
                     }
                 };
@@ -1860,7 +2151,7 @@ module nts.layout {
                                     vl2 = ko.toJS(group[1].value),
                                     nnb = !_.isNumber(vl1) && !_.isNumber(vl2);
 
-                                setTimeout(() => {
+                                let tout = setTimeout(() => {
                                     if (hvl && nnb) {
                                         if (!ctrl1.is(':disabled') && !ctrl1.ntsError('hasError')) {
                                             ctrl1.ntsError('set', {
@@ -1881,6 +2172,7 @@ module nts.layout {
                                             ctrl2.parent().removeClass('error');
                                         }
                                     }
+                                    clearTimeout(tout);
                                 }, 50);
                             });
                         }
@@ -2192,6 +2484,10 @@ module nts.layout {
         employeeId: string;
         standardDate: Date;
         grantTable: string;
+        entryDate: Date;
+        startWorkCond: Date;
+        endWorkCond: Date;
+        contactTime: number;
     }
 
     interface IGroupControl {
@@ -2243,6 +2539,7 @@ module nts.layout {
     interface ISpeacialLeaInfo {
         ctgCode: string;
         inpCode: string;
+        mana: string;
         comboboxCode: string;
         inpGrantDay: string;
         comboGrantTbl: string;
@@ -2262,13 +2559,20 @@ module nts.layout {
         appSet: number;
         grantDays?: number;
         grantTable?: string;
+        entryDate: Date;
+        yearRefDate: Date;
     }
 
     interface StampCardEditing {
         method: EDIT_METHOD;
         digitsNumber: number;
     }
-
+    
+    interface IWorkingConditionInfo {
+        category: string;
+        workTypeCode: string;
+        workTypeTime: string;
+    }
     enum EDIT_METHOD {
         PreviousZero = 1,
         AfterZero = 2,

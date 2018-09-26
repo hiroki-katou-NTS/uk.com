@@ -34,8 +34,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -208,6 +208,15 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 			}
 			if (reserveLeaveMap.containsKey(key)){
 				monthlyConverter.withRsvLeave(reserveLeaveMap.get(key));
+			}
+			if (absenceLeaveMap.containsKey(key)){
+				monthlyConverter.withAbsenceLeave(absenceLeaveMap.get(key));
+			}
+			if (monDayoffMap.containsKey(key)){
+				monthlyConverter.withDayOff(monDayoffMap.get(key));
+			}
+			if (specialLeaveMap.containsKey(key)){
+				monthlyConverter.withSpecialLeave(specialLeaveMap.get(key));
 			}
 			
 			// 月別実績データ値リストに追加する
@@ -385,6 +394,21 @@ public class GetMonthlyRecordPubImpl implements GetMonthlyRecordPub {
 				if (reserveLeaveMap.containsKey(employeeId)){
 					if (reserveLeaveMap.get(employeeId).containsKey(yearMonth)){
 						monthlyConverter.withRsvLeave(reserveLeaveMap.get(employeeId).get(yearMonth));
+					}
+				}
+				if (absenceLeaveMap.containsKey(employeeId)){
+					if (absenceLeaveMap.get(employeeId).containsKey(yearMonth)){
+						monthlyConverter.withAbsenceLeave(absenceLeaveMap.get(employeeId).get(yearMonth));
+					}
+				}
+				if (monDayoffMap.containsKey(employeeId)){
+					if (monDayoffMap.get(employeeId).containsKey(yearMonth)){
+						monthlyConverter.withDayOff(monDayoffMap.get(employeeId).get(yearMonth));
+					}
+				}
+				if (specialLeaveMap.containsKey(employeeId)){
+					if (specialLeaveMap.get(employeeId).containsKey(yearMonth)){
+						monthlyConverter.withSpecialLeave(specialLeaveMap.get(employeeId).get(yearMonth));
 					}
 				}
 				

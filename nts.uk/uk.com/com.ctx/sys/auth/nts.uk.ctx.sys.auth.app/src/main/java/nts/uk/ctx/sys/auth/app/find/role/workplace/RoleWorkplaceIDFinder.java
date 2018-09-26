@@ -47,12 +47,11 @@ public class RoleWorkplaceIDFinder {
 	 * @param systemType the system type
 	 * @return the list
 	 */
-	public WorkplaceIdDto findListWokplaceId(Integer systemType) {
+	public WorkplaceIdDto findListWokplaceId(Integer systemType, GeneralDate referenceDate) {
 
 		String roleId = this.findRoleIdBySystemType(systemType);
 
 		Optional<Role> opRole = roleRepository.findByRoleId(roleId);
-		GeneralDate referenceDate = GeneralDate.today();
 		List<String> listWkpId = new ArrayList<>();
 		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
 

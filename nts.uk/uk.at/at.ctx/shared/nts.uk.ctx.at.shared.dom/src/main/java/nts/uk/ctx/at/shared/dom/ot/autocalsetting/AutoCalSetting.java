@@ -36,5 +36,9 @@ public class AutoCalSetting extends ValueObject {
 		this.upLimitORtSet = upLimitOtSet;
 		this.calAtr = calAtr;
 	}
+	
+	public static AutoCalSetting defaultValue(){
+		return new AutoCalSetting(TimeLimitUpperLimitSetting.NOUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);
+	}
 
 }

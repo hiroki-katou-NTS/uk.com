@@ -6,18 +6,24 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             { headerText: nts.uk.resource.getText('KMF004_148'), key: 'name', width: 320 }
         ]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
-            let self = this;
-            self.currentCodeList(nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS"));
+            let self = this,
+            dataScreenA = nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS");
+            self.currentCodeList(dataScreenA.currentCodeList);
+            self.selectedCode(dataScreenA.selectedCode)
             $("#data-items").focus();
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
+            let dfd = $.Deferred(),
+                param = {
+                    currentCode: self.selectedCode()
+                };
 
-            service.findForScreenJ().done(function(data) {
+            service.findForScreenJ(param).done(function(data) {
                 self.items(_.map(data, (item) => {
                     return new ItemModel(item);
                 }));

@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Class ClosureDetailDto.
@@ -132,7 +132,7 @@ public class ClosureDetailDto implements ClosureHistorySetMemento, ClosureSetMem
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
-	 * setClosureDate(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate)
+	 * setClosureDate(nts.uk.shr.com.time.calendar.date.ClosureDate)
 	 */
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {

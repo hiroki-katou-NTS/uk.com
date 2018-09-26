@@ -12,4 +12,5 @@ public class SendMailCommand {
 	private List<String> sendMailOption;
 	private ApplicationCommand_New application;
 	private String applicantID;
+	private boolean sendMailApplicaint;
 }

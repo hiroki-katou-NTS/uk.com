@@ -7,8 +7,8 @@ import javax.persistence.StoredProcedureQuery;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.procedure.ProcMonthlyData;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 実装：月別実績データストアドプロシージャ

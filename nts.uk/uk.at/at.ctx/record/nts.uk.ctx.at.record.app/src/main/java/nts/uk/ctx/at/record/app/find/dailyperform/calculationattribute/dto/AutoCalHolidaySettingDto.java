@@ -19,4 +19,11 @@ public class AutoCalHolidaySettingDto implements ItemConst {
 	/** 休出深夜時間: 自動計算設定 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE_NIGHT)
 	private AutoCalculationSettingDto lateNightTime;
+
+	@Override
+	protected AutoCalHolidaySettingDto clone() {
+		return new AutoCalHolidaySettingDto(holidayWorkTime == null ? null : holidayWorkTime.clone(),
+				lateNightTime == null ? null : lateNightTime.clone());
+	}
+	
 }

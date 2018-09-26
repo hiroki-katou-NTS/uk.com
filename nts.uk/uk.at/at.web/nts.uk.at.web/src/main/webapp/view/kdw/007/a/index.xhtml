@@ -107,7 +107,7 @@
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedErrorAlarm().remarkCancelErrorInput,
-										enable: true }"></div>
+										enable: selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().typeAtr() != 2  }"></div>
 									<div id="remark-no-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_106')}</div>
 									<div id="remarkColumnNo" data-bind="ntsComboBox: {
 										options: listRemarkColumnNo,
@@ -117,7 +117,7 @@
 										width: '150px',
 										optionsText: 'name',
 										selectFirstIfNull: true,
-										enable: selectedErrorAlarm().remarkCancelErrorInput() == 1,
+										enable: selectedErrorAlarm().remarkCancelErrorInput() == 1 &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().typeAtr() != 2 ,
 										columns: [
 											{ prop: 'name', length: 10 }
 										]}"></div>

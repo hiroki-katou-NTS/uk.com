@@ -710,12 +710,10 @@ module kcp.share.tree {
                 }
             });
             
-            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selecteds) => {
-                if (self.isMultiSelect) {
-                    self.selectedWorkplaceIds(selecteds);
-                } else {
-                    self.selectedWorkplaceIds(selecteds[0]);
-                }
+            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selectedId) => {
+                // multiple-case: selectedId is an array
+                // single-case: selectedId is a string
+                self.selectedWorkplaceIds(selectedId);
             });
 
             self.selectedWorkplaceIds.subscribe(ids => {
@@ -1008,12 +1006,10 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         </div>
 
         <div style="width: 420px">
-            <div style="width: 264px; display: inline-block;" data-bind="attr: {id: searchBoxId, tabindex: tabindex}">
+            <div style="width: 327px; display: inline-block;" data-bind="attr: {id: searchBoxId, tabindex: tabindex}">
             </div>
             <div style="display: inline-block; margin-left: 2px;">
                 <!-- ko if: isShowSelectButton -->
-                    <button
-                        data-bind="click: selectAll, attr: {tabindex: tabindex}">`+TreeComponentTextResource.KCP004_7+`</button>
                     <button
                         data-bind="click: selectSubParent, attr: {tabindex: tabindex}">`+TreeComponentTextResource.KCP004_8+`</button>
                 <!-- /ko -->

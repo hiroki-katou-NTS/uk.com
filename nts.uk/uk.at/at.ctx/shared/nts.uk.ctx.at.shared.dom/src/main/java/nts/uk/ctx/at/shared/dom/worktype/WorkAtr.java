@@ -31,4 +31,12 @@ public enum WorkAtr {
 	public boolean isAfterNoon() {
 		return this.equals(Afternoon);
 	}
+	
+	/**
+	 * 午後であるか判定する
+	 * @return 午後である
+	 */
+	public boolean isMorning() {
+		return this.equals(Monring);
+	}
 }

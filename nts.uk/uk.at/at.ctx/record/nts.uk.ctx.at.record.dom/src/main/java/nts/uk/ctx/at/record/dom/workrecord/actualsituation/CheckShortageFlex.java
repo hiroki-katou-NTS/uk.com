@@ -95,10 +95,10 @@ public class CheckShortageFlex {
 			return resultCheck.createCheckShortage(checkIndentityDayConfirm.checkIndentityDay(employeeId, approvalOpt.get().getDate()));
 		}
 		// TODO 対象月の承認が済んでいるかチェックする
-		boolean checkMonth = checkApprovalTargetMonth.checkApprovalTargetMonth(employeeId, date);
-		if (checkMonth)
-			return resultCheck.createCheckShortage(true);
-		return resultCheck.createCheckShortage(checkIndentityMonthConfirm.checkIndentityMonth(employeeId, date));
+		//boolean checkMonth = checkApprovalTargetMonth.checkApprovalTargetMonth(employeeId, date);
+		//if (checkMonth)
+		return resultCheck.createCheckShortage(true);
+		//return resultCheck.createCheckShortage(checkIndentityMonthConfirm.checkIndentityMonth(employeeId, date));
 	}
 	
 	/**

@@ -44,7 +44,7 @@
 				<tbody data-bind="foreach: arrMonth">
 					<tr>
 						<!-- E8_5 -->
-						<td class="bg-green"><span data-bind="text: month"></span> <span></span></td>
+						<td class="bg-green"><span data-bind="text: month() + '#{i18n.getText('KMF002_12')}'"></span> <span></span></td>
 						<!-- E8_6 -->
 						<td>
 							<div>
@@ -57,7 +57,8 @@
 																		option: {width: '90px',
 																				decimallength: 1,
 																				unitID: 'DAYS'},
-																		name:'#[KMF002_13]'}"></input>
+																		name: month() + '#{i18n.getText('KMF002_12')}' + '#{i18n.getText('KMF002_13')}'
+																		}"></input>
 							</div>	
 						</td>
 					</tr>

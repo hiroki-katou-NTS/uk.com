@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 
@@ -54,10 +55,9 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 		}
 		List<InterimRemain> lstBeforInterimDataAlls = interimRemainRepos.getDataBySidDates(inputData.getSid(), lstInterimDate);
 		interimDataMng.forEach((x, y) -> {
-			lstInterimDate.add(x);
 			//ドメインモデル「暫定残数管理データ」を取得する
 			List<InterimRemain> lstBeforInterimData = lstBeforInterimDataAlls.stream()
-					.filter(z -> z.getYmd() == x).collect(Collectors.toList());
+					.filter(z -> z.getYmd().equals(x)).collect(Collectors.toList());
 			List<InterimRemain> lstInterimData = y.getRecAbsData();
 			RegistryInterimResereLeaveDataInput dataInput = new RegistryInterimResereLeaveDataInput();
 			dataInput.setCid(inputData.getCid());
@@ -85,7 +85,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 			dataInput.setRemainType(RemainType.SUBHOLIDAY);
 			this.registryInterimResereLeave(dataInput);
 			//暫定休出データの登録
-			dataInput.setRemainType(RemainType.SUBHOLIDAY);
+			dataInput.setRemainType(RemainType.BREAK);
 			this.registryInterimResereLeave(dataInput);
 		});
 		
@@ -221,9 +221,7 @@ public class InterimRemainDataMngRegisterImpl implements InterimRemainDataMngReg
 				breakDayOffRepos.deleteInterimBreakMng(mngId);
 				break;
 			case SPECIAL:
-				earchData.getSpecialHolidayData().forEach(x -> {
-					specialHoliday.deleteSpecialHoliday(mngId);
-				});
+				specialHoliday.deleteSpecialHoliday(mngId);
 				break;
 			default:
 				break;

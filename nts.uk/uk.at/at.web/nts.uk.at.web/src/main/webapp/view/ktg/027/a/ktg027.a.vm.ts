@@ -50,9 +50,10 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
-
+            service.getListClosure().done((closureResultModel) => {
+                self.closureResultModel(closureResultModel);
+            });
             service.getOvertimeHours(self.targetMonth()).done((data) => {
-                self.closureResultModel(data.listclosureID);
                 self.displayEr(false);
                 self.selectedClosureID(data.closureID);
                 var inforOvertime = [];
@@ -95,12 +96,13 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                         return false;
                     }
                 });
-
+                nts.uk.ui.errors.clearAll();
                 dfd.resolve();
                 block.clear();
             }).fail(function(msg) {
                 self.displayEr(true);
                 self.msg(msg.errorMessage);
+                nts.uk.ui.errors.clearAll();
                 dfd.resolve();
                 block.clear();
             });
@@ -109,7 +111,6 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
             return dfd.promise();
         }
-    
         clickExtractionBtn() {
             $(".inputYM").trigger("validate");
             $('#inputYM').focus();
@@ -151,13 +152,12 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, formatById("Clock_Short_HM", total1), formatById("Clock_Short_HM", total2), formatById("Clock_Short_HM", total3), '', ''));
                     inforOvertime.push(self.inforOvertimeFooter())
                     self.inforOvertime(inforOvertime);
-                    if (!nts.uk.text.isNullOrEmpty(data.errorMessage))
-                        var MsgID = data.errorMessage;
-                    nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] });
                 }).fail(function(msg) {
                     self.displayEr(true);
                     self.msg(msg.errorMessage);
+                    nts.uk.ui.errors.clearAll();
                     dfd.resolve();
+                    nts.uk.ui.errors.clearAll();
                     block.clear();
                 }).always(() => {
                     block.clear();
