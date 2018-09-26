@@ -78,7 +78,7 @@ public interface WorkUpdateService {
 	 * @param workTypeCode
 	 * @param scheUpdate true: 予定勤務種類, false: 勤務種類
 	 */
-	public void updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate);
+	public WorkInfoOfDailyPerformance updateRecordWorkType(String employeeId, GeneralDate dateData, String workTypeCode, boolean scheUpdate, WorkInfoOfDailyPerformance dailyPerfor);
 	/**
 	 * 休出時間の反映
 	 * @param employeeId
