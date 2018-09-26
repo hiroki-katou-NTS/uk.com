@@ -131,10 +131,10 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			if (mapAttendanceItems.containsKey(id)) {
 				mapAttendanceItems.get(id).setFrameCategory(link.getFrameCategory().value);
 				mapAttendanceItems.get(id).setTypeOfAttendanceItem(link.getTypeOfAttendanceItem().value);
-			} else {
+			} /*else {
 				mapAttendanceItems.get(id).setFrameCategory(null);
 				mapAttendanceItems.get(id).setTypeOfAttendanceItem(null);
-			}
+			}*/
 		}
 
 		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {

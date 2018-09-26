@@ -273,7 +273,8 @@ module nts.uk.at.view.kmk002.a {
 
                 // Event on optionalItemAtr value changed
                 self.optionalItemAtr.subscribe(value => {
-
+                    
+                    value == 0 ?self.unit(''):self.unit(self.optionalItemDtoStash.unit);
                     // if value change because of select new optional item
                     // or new value == value in stash
                     // then do nothing
@@ -805,7 +806,7 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
-                self.unit(dto.unit);
+                dto.optionalItemAtr == 0 ?self.unit(''):self.unit(dto.unit);
                 self.calcResultRange.fromDto(dto.calcResultRange);
 
                 // reset apply formula

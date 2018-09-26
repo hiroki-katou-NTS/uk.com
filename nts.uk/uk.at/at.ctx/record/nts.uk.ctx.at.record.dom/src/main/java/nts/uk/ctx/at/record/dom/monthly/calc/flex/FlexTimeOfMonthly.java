@@ -265,6 +265,7 @@ public class FlexTimeOfMonthly {
 							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
 							attendanceTimeOfDailyMap, companySets, repositories);
 					resultWeeks.add(newWeek);
+					if (weekCalc.getErrorInfos().size() > 0) this.errorInfos.addAll(weekCalc.getErrorInfos());
 
 					ConcurrentStopwatches.stop("12222.4:週別実績の集計：");
 					
@@ -581,6 +582,9 @@ public class FlexTimeOfMonthly {
 				// 加算設定　取得　（不足時計算用）
 				val addSetForShortage = GetAddSet.get(
 						WorkingSystem.FLEX_TIME_WORK, PremiumAtr.WHEN_SHORTAGE, this.holidayAdditionMap);
+				if (addSetForShortage.getErrorInfo().isPresent()){
+					this.errorInfos.add(addSetForShortage.getErrorInfo().get());
+				}
 				
 				// フレックス不足の処理をする
 				val addedTimeForShortage = this.flexShortagePrinciple(
@@ -648,6 +652,9 @@ public class FlexTimeOfMonthly {
 			// 加算設定　取得　（割増用）
 			val addSetWhenPremium = GetAddSet.get(
 					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
+			if (addSetWhenPremium.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSetWhenPremium.getErrorInfo().get());
+			}
 			
 			// 加算する休暇時間を取得する
 			vacationAddTime = GetVacationAddTime.getTime(
@@ -659,6 +666,9 @@ public class FlexTimeOfMonthly {
 			// 加算設定　取得　（法定内のみ用）
 			val addSetWhenOnlyLegal = GetAddSet.get(
 					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
+			if (addSetWhenOnlyLegal.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSetWhenOnlyLegal.getErrorInfo().get());
+			}
 			
 			// 加算する休暇時間を取得する
 			vacationAddTime = GetVacationAddTime.getTime(
@@ -706,6 +716,9 @@ public class FlexTimeOfMonthly {
 			// 加算設定　取得　（割増用）
 			val addSetWhenPremium = GetAddSet.get(
 					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
+			if (addSetWhenPremium.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSetWhenPremium.getErrorInfo().get());
+			}
 			
 			// 加算する休暇時間を取得する
 			vacationAddMinutes = GetVacationAddTime.getTime(
@@ -717,6 +730,9 @@ public class FlexTimeOfMonthly {
 			// 加算設定　取得　（法定内のみ用）
 			val addSetWhenOnlyLegal = GetAddSet.get(
 					WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
+			if (addSetWhenOnlyLegal.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSetWhenOnlyLegal.getErrorInfo().get());
+			}
 			
 			// 加算する休暇時間を取得する
 			vacationAddMinutes = GetVacationAddTime.getTime(
@@ -844,6 +860,9 @@ public class FlexTimeOfMonthly {
 					// 加算設定　取得　（法定内のみ用）
 					val addSetWhenOnlyLegal = GetAddSet.get(
 							WorkingSystem.FLEX_TIME_WORK, PremiumAtr.ONLY_LEGAL, this.holidayAdditionMap);
+					if (addSetWhenOnlyLegal.getErrorInfo().isPresent()){
+						this.errorInfos.add(addSetWhenOnlyLegal.getErrorInfo().get());
+					}
 					
 					// 休暇加算時間を取得する
 					val vacationAddTime = GetVacationAddTime.getTime(
@@ -954,6 +973,9 @@ public class FlexTimeOfMonthly {
 				// 加算設定　取得　（不足時用）
 				val addSetWhenShortage = GetAddSet.get(
 						WorkingSystem.FLEX_TIME_WORK, PremiumAtr.WHEN_SHORTAGE, this.holidayAdditionMap);
+				if (addSetWhenShortage.getErrorInfo().isPresent()){
+					this.errorInfos.add(addSetWhenShortage.getErrorInfo().get());
+				}
 				
 				// 休暇加算時間を取得する
 				val vacationAddTime = GetVacationAddTime.getTime(
@@ -1039,6 +1061,9 @@ public class FlexTimeOfMonthly {
 				// 加算設定　取得　（不足時用）
 				val addSetWhenShortage = GetAddSet.get(
 						WorkingSystem.FLEX_TIME_WORK, PremiumAtr.WHEN_SHORTAGE, this.holidayAdditionMap);
+				if (addSetWhenShortage.getErrorInfo().isPresent()){
+					this.errorInfos.add(addSetWhenShortage.getErrorInfo().get());
+				}
 				
 				// 休暇加算時間を取得する
 				int vacationAddMinutes = GetVacationAddTime.getTime(
