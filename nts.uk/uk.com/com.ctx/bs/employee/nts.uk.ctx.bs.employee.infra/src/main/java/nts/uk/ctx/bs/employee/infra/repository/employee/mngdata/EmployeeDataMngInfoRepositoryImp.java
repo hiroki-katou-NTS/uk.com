@@ -112,7 +112,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 
 	private static final String COUNT_EMPL_BY_LSTCID_AND_BASE_DATE = String.join(" ",
-			"SELECT COUNT(dmi) FROM BsymtEmployeeDataMngInfo dmi", 
+			"SELECT COUNT(dmi.companyId) FROM BsymtEmployeeDataMngInfo dmi", 
 			"INNER JOIN BsymtAffCompanyHist ach",
 			"ON dmi.bsymtEmployeeDataMngInfoPk.sId = ach.bsymtAffCompanyHistPk.sId",
 			"WHERE dmi.companyId IN :lstCompID AND dmi.delStatus = 0 AND ach.destinationData = 0",

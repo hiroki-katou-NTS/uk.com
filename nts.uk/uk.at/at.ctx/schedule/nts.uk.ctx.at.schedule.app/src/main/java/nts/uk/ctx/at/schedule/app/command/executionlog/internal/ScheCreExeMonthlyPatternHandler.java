@@ -16,14 +16,12 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.CreateScheduleMasterCache
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
@@ -32,10 +30,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 
@@ -74,7 +69,8 @@ public class ScheCreExeMonthlyPatternHandler {
 			WorkCondItemDto workingConditionItem,
 			CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule,
-			DateRegistedEmpSche dateRegistedEmpSche) {
+			DateRegistedEmpSche dateRegistedEmpSche,
+			EmploymentInfoImported employmentInfo) {
 		
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
@@ -85,22 +81,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			return;
 		}
 
-		// EA No1684
-		List<EmploymentInfoImported> listEmploymentInfo = masterCache.getMapEmploymentStatus().get(workingConditionItem.getEmployeeId());
-		Optional<EmploymentInfoImported> optEmploymentInfo = Optional.empty();
-		if (listEmploymentInfo != null) {
-			optEmploymentInfo = listEmploymentInfo.stream()
-					.filter(employmentInfo -> employmentInfo.getStandardDate().equals(dateInPeriod)).findFirst();
-		}
-
-		if (!checkEmploymentStatus(optEmploymentInfo)) {
-			return;
-		}
-
-		// 在職、休職、休業
 		// ドメインモデル「勤務予定基本情報」を取得する
-//		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(workingConditionItem.getEmployeeId(),
-//				dateInPeriod);
 		// fix for response
 		Optional<BasicSchedule> basicScheOpt = listBasicSchedule.stream()
 				.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
@@ -126,7 +107,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			}
 
 			// アルゴリズム「スケジュール作成判定処理」を実行する
-			if (!this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, optEmploymentInfo, workingConditionItem,
+			if (!this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo, workingConditionItem,
 					masterCache)) {
 				return;
 			}
@@ -139,7 +120,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
 			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
-					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, optEmploymentInfo,
+					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo,
 							workingConditionItem, masterCache)) {
 				return;
 			}
@@ -256,19 +237,19 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * 
 	 * @param command
 	 */
-	private boolean checkEmploymentStatus(Optional<EmploymentInfoImported> optEmploymentInfo) {
-		// 退職、取得できない(退職 OR không lấy được)
-		if (!optEmploymentInfo.isPresent() || optEmploymentInfo.get().getEmploymentState() == 6) {// RETIREMENT
-			return false;
-		}
-
-		// 入社前
-		if (optEmploymentInfo.get().getEmploymentState() == 4) { // BEFORE_JOINING
-			return false;
-		}
-
-		return true;
-	}
+//	private boolean checkEmploymentStatus(Optional<EmploymentInfoImported> optEmploymentInfo) {
+//		// 退職、取得できない(退職 OR không lấy được)
+//		if (!optEmploymentInfo.isPresent() || optEmploymentInfo.get().getEmploymentState() == 6) {// RETIREMENT
+//			return false;
+//		}
+//
+//		// 入社前
+//		if (optEmploymentInfo.get().getEmploymentState() == 4) { // BEFORE_JOINING
+//			return false;
+//		}
+//
+//		return true;
+//	}
 
 	/**
 	 * check monthly pattern
@@ -308,7 +289,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			ScheduleCreatorExecutionCommand command,
 			GeneralDate dateInPeriod,
 			BasicSchedule basicSche,
-			Optional<EmploymentInfoImported> optEmploymentInfo,
+			EmploymentInfoImported employmentInfo,
 			WorkCondItemDto workingConditionItem,
 			CreateScheduleMasterCache masterCache) {
 		// 再作成対象区分を判定する
@@ -325,7 +306,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		// 休職休業者を再作成するか判定する
 		boolean valueIsReEmpOnLeaveOfAbsence = this.isReEmpOnLeaveOfAbsence(
 				command.getContent().getReCreateContent().getRebuildTargetDetailsAtr().getRecreateEmployeeOffWork(),
-				optEmploymentInfo.get().getEmploymentState());
+				employmentInfo.getEmploymentState());
 		if (!valueIsReEmpOnLeaveOfAbsence) {
 			return false;
 		}

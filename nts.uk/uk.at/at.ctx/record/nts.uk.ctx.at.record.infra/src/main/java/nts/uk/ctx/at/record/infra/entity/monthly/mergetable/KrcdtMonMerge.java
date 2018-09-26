@@ -5622,8 +5622,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.flexExcessTime),
 				new AttendanceTimeMonth(this.flexShortageTime),
 				FlexCarryforwardTime.of(
-						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(this.flexCarryforwardTime),
+						new AttendanceTimeMonth(this.flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(this.flexCarryforwardShortageTime)),
 				FlexTimeOfExcessOutsideTime.of(
 						EnumAdaptor.valueOf(this.excessFlexAtr, ExcessFlexAtr.class),
