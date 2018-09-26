@@ -11,19 +11,20 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
         startYearMonth:         KnockoutObservable<number> = ko.observable();
         endYearMonth:           KnockoutObservable<number> = ko.observable();
         startLastYearMonth:     KnockoutObservable<number> = ko.observable();
-        name:                   KnockoutObservable<string> = ko.observable('項目移送');
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
         selectedId:             KnockoutObservable<string> = ko.observable('');
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         insurrance:             KnockoutObservable<number> = ko.observable();
         hisId:                  KnockoutObservable<string> = ko.observable('');
         canDelete:              KnockoutObservable<boolean> = ko.observable('');
+        insuranceName:          KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
             self.startYearMonth();
             let params = getShared('QMM011_F_PARAMS_INPUT');
             let to = getText('QMM011_9');
             if (params) {
+                self.insuranceName(params.insuranceName);
                 self.insurrance(params.insurrance);
                 self.startYearMonth(params.startYearMonth);
                 self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));

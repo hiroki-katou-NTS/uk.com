@@ -218,7 +218,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 dataToPassScreenE = self.listOccAccIsHis()[0].startYearMonth;
             }
             setShared('QMM011_E_PARAMS_INPUT', {
-                startYearMonth: dataToPassScreenE
+                startYearMonth: dataToPassScreenE,
+                insuranceName: getText('QMM011_5')
             });
 
             modal("/view/qmm/011/e/index.xhtml").onClosed(function () {
@@ -335,6 +336,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
                 insurrance: INSURRANCE.ACCIDENT_INSURRANCE_RATE,
+                insuranceName: getText('QMM011_5'),
                 hisId: self.hisId(),
                 laststartYearMonth: laststartYearMonth,
                 canDelete: canDelete
