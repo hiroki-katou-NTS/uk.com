@@ -187,7 +187,7 @@
 										name: '#[CMF002_106]',
 										constraint: 'OutCndNumVal', 
 										value: searchNum, 
-										option: $vm.optionNum,
+										option: {decimallength: 2},
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_NORMAL" />
 
@@ -196,7 +196,7 @@
 										name: '#[CMF002_107]',
 										constraint: 'OutCndNumVal', 
 										value: searchNumStartVal, 
-										option: $vm.optionNum,
+										option: {decimallength: 2},
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
 										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD">#{i18n.getText('CMF002_407')}</span>
@@ -211,8 +211,7 @@
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_NORMAL"></div>
 
 										<!-- D6_C4_8 -->
-										<div tabindex="12" style="float: right;
- padding-right: 10px;" class="D6_C4_8"
+										<div tabindex="12" style="float: right; padding-right: 10px;" class="D6_C4_8"
 											data-bind="ntsDatePicker: {
 										name: '#[CMF002_106]',
 										value: searchDateStart, 
@@ -290,7 +289,7 @@
 										name: '#[CMF002_108]',
 										constraint: 'OutCndNumVal', 
 										value: searchNumEndVal, 
-										option: $vm.optionNum,
+										option: {decimallength: 2},
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
 										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD">#{i18n.getText('CMF002_407')}</span>
