@@ -973,7 +973,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
 
                 let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0) && checkDataCare;
-                if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items)) {
+                if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items) || self.flagCalculation) {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataParent).done((dataAfter) => {
                         // alert("done");
