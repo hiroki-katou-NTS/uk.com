@@ -62,6 +62,7 @@ module nts.uk.com.view.cmf002.y {
                             let temp: Array<ExternalOutLog> = [];
 							_.forOwn(sortByExternalOutLog, function(index) {
                                 temp.push(new ExternalOutLog(
+                                    index.processCount,
                                     index.errorContent,
                                     index.errorEmployee,
                                     index.errorTargetValue,
@@ -79,9 +80,10 @@ module nts.uk.com.view.cmf002.y {
                 });
 
                 this.columnsExternalOutLog = ko.observableArray([
-                    { headerText: getText('CMF002_337'), key: 'errorItem', width: 120 },
-                    { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120 },
-                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300 }
+                    { headerText: getText('CMF002_336'), key: 'processCount', width: 40, formatter: _.escape},
+                    { headerText: getText('CMF002_337'), key: 'errorItem', width: 80, formatter: _.escape },
+                    { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120, formatter: _.escape },
+                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300, formatter: _.escapes }
                 ]);
                 this.currentCode = ko.observableArray();
             }
@@ -137,7 +139,8 @@ module nts.uk.com.view.cmf002.y {
             processContent: string;
             customerrorContent: string;
 
-            constructor(errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string) {
+            constructor(processCount : number, errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string) {
+                this.processCount = processCount ? processCount : null;
                 this.errorContent = errorContent ? errorContent : null;
                 this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;

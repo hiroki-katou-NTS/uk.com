@@ -35,7 +35,7 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 			return;
 		}
 		List<String> header = this.getTextHeader(listNameIdHead);
-		String fileName = "エラーログ" + lstError.getNameSetting();
+		String fileName = "エラーログ" + lstError.getNameSetting() + ".csv";
 		List<List<String>> resultLogs = new ArrayList<>();
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 
