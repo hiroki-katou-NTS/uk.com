@@ -75,14 +75,12 @@ module kdl002.a.viewmodel {
             }
         }
         /**
-         * sort list by:
-         * 1. dispOrder
-         * 2. Code
+         * sort list by: Code
          */
         sortbyList(lstItem: Array<any>): Array<any>{
             let lwt : Array<any> = [];
             if (lstItem && !!lstItem.length) {
-                lwt = _.orderBy(lstItem, ['dispOrder', 'workTypeCode'], ['asc', 'asc']);
+                lwt = _.orderBy(lstItem, ['workTypeCode'], ['asc']);
             }
             return lwt;
         }
@@ -108,7 +106,10 @@ module kdl002.a.viewmodel {
                 let objectNew2 = self.findItem(self.currentCodeList());
                 if(objectNew2 != undefined && objectNew2 != null){
                     lstObj2.push({ "code": objectNew2.workTypeCode, "name":objectNew2.name});
-                }
+                }else{
+                   nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
+                   return;
+                }    
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstObj2);
             }
             nts.uk.ui.windows.close();
