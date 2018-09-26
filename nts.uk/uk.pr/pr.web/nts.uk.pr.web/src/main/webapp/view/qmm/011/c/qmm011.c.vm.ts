@@ -41,7 +41,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 if(data == HIS_ID_TEMP ){
                     self.isNewMode(MODE.NEW);
                 }
-                self.selectedEmpInsHis(self.getIndex(data));
+                self.selectedEmpInsHis(self.listOccAccIsHis()[self.getIndex(data)]);
                 self.setOccAccIsHis(self.selectedEmpInsHis());
                 self.getAccInsurPreRate();
             });
@@ -202,10 +202,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         getIndex(hisId: string) {
             let self = this;
-            let temp = _.findLast(self.listOccAccIsHis(), function (x) {
+            let temp = _.findIndex(self.listOccAccIsHis(), function(x) {
                 return x.hisId == hisId;
             });
-            if (temp) {
+            if (temp && temp != -1) {
                 return temp;
             }
             return 0;
@@ -275,7 +275,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             service.register(data).done(() => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.isNewMode(MODE.UPDATE);
-                    self.initScreen(null);
+                        self.initScreen(self.selectedEmpInsHisId());
                 });
             });
         }
@@ -327,7 +327,10 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
         openFscreen() {
             let self = this;
-            let laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0
+            let laststartYearMonth: number = 0;
+            if (self.listOccAccIsHis() && self.listOccAccIsHis().length != self.index() + 1) {
+                laststartYearMonth = self.listOccAccIsHis().length > 1 ? self.listOccAccIsHis()[self.index() + 1].startYearMonth : 0;
+            }
             let canDelete: boolean = false;
             if (self.listOccAccIsHis().length > 1 && self.hisId() == self.listOccAccIsHis()[FIRST].hisId) {
                 canDelete = true;
@@ -346,7 +349,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
                 if (params && params.methodEditing == 1) {
 
-                    self.initScreen(null);
+                    self.initScreen(self.selectedEmpInsHisId());
                     self.setOccAccIsHis(self.selectedEmpInsHis());
 
                 }

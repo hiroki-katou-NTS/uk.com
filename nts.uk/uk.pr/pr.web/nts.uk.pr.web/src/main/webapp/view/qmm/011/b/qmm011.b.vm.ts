@@ -133,7 +133,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             let temp = _.findIndex(self.listEmpInsHis(), function(x) {
                 return x.hisId == hisId;
             });
-            if (temp) {
+            if (temp && temp != -1) {
                 return temp;
             }
             return 0;
@@ -186,7 +186,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
                     self.isNewMode(MODE.UPDATE);
                     self.transferMethod(null);
-                    self.initScreen(null);
+                    self.initScreen(self.selectedEmpInsHisId());
                 });
             }).fail(function(res: any) {
                 if (res)
@@ -264,7 +264,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
                 insurrance: INSURRANCE.EMPLOYMENT_INSURRANCE_RATE,
-                insuranceName: getText('QMM011_4');
+                insuranceName: getText('QMM011_4'),
                 hisId: self.hisId(),
                 laststartYearMonth: laststartYearMonth,
                 canDelete: canDelete
