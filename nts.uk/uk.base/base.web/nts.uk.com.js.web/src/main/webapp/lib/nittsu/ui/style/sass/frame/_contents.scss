@@ -5,6 +5,11 @@
 }
 #master-wrapper {
 	height: 100vh;
+    div#contents-area {
+		position: relative;
+		padding: 10px;
+		overflow-y: auto; 
+    }
 }
 
 	
