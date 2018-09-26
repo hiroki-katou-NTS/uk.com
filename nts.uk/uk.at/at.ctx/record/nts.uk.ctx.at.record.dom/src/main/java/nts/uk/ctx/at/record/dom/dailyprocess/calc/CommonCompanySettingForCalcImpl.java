@@ -91,9 +91,10 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	}
 	
 	private Optional<EmployeeWtSetting> getEmployeeWTSetting(Optional<UsageUnitSetting> usageSetting, String compID){
-		if(usageSetting.isPresent() && usageSetting.get().isEmployee()){
-			return Optional.ofNullable(employeeWtSettingRepository.find(compID));
-		}
+		/** Comment by: employeeWtSettingRepository is disable */
+//		if(usageSetting.isPresent() && usageSetting.get().isEmployee()){
+//			return Optional.ofNullable(employeeWtSettingRepository.find(compID));
+//		}
 		return Optional.empty();
 	}
 
