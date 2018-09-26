@@ -430,7 +430,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		// サーバ外部出力ファイル項目ヘッダ
 		if (stdOutputCondSet != null) {
-			condSetName = (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE) ? stdOutputCondSet.getConditionSetName().v() : null;
+			condSetName = (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE) ? (stdOutputCondSet.getConditionSetCode().v() + " " + stdOutputCondSet.getConditionSetName().v()) : null;
 			drawHeader = stdOutputCondSet.getItemOutputName() == NotUseAtr.USE;
 			delimiter = stdOutputCondSet.getDelimiter();
 			stringFormat = stdOutputCondSet.getStringFormat();
