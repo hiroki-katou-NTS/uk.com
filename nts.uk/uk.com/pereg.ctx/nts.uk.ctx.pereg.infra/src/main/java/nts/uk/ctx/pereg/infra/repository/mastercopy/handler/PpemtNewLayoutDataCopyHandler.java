@@ -1,6 +1,8 @@
 package nts.uk.ctx.pereg.infra.repository.mastercopy.handler;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.EntityManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,8 @@ import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemClsPk;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDf;
 import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDfPk;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,6 +30,10 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 	private static final String QUERY_DATA_BY_COMPANYID = "SELECT l FROM PpemtNewLayout l WHERE l.companyId = :companyId";
 	private static final String GET_LAYOUT_ITEM = "SELECT l FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String GET_LAYOUT_ITEM_DF = "SELECT l FROM PpemtLayoutItemClsDf l WHERE l.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
+
+	private static final String GET_PER_INFO_CTG = "SELECT p FROM PpemtPerInfoCtg p WHERE p.cid = :companyId";
+	private static final String GET_PER_INFO_ITEM = "Select p FROM PpemtPerInfoItem p WHERE p.perInfoCtgId= :perInfoCtgId";
+
 	private static final String DELETE_DATA = "DELETE FROM PpemtNewLayout l WHERE l.companyId = :companyId";
 	private static final String DELETE_LAYOUT_ITEM = "DELETE FROM PpemtLayoutItemCls l WHERE l.ppemtLayoutItemClsPk.layoutId = :layoutId";
 	private static final String DELETE_LAYOUT_ITEM_DF = "DELETE FROM PpemtLayoutItemClsDf l WHERE l.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
@@ -92,6 +100,16 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 						.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 						.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
+				// get data PPEMT_PER_INFO_CTG CurrentCom
+				List<PpemtPerInfoCtg> perInfoCtgCurrentCom = this.entityManager
+						.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class).setParameter("companyId", companyId)
+						.getResultList();
+
+				// get data PPEMT_PER_INFO_CTG ZeroCom
+				List<PpemtPerInfoCtg> perInfoCtgCurrentZero = this.entityManager
+						.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class).setParameter("companyId", companyZeroId)
+						.getResultList();
+
 				// get data layout item cls df
 				List<PpemtLayoutItemClsDf> itemListDf = this.entityManager
 						.createQuery(GET_LAYOUT_ITEM_DF, PpemtLayoutItemClsDf.class)
@@ -102,21 +120,56 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 				this.entityManager.persist(newEntity);
 
 				// insert data layout item cls
-				itemList.forEach(i -> {
-					PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId, i.ppemtLayoutItemClsPk.dispOrder);
-					PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, i.categoryId, i.itemType);
-					this.entityManager.persist(item);
+				for (PpemtLayoutItemCls i : itemList) {
+					PpemtPerInfoCtg infoCtgComZero = perInfoCtgCurrentZero.stream()
+							.filter(e -> e.ppemtPerInfoCtgPK.perInfoCtgId.equals(i.categoryId)).findFirst()
+							.orElse(null);
 
-				});
+					if (infoCtgComZero != null) {
+						String categoryID = this.checkCategoryCd(perInfoCtgCurrentCom, infoCtgComZero);
 
-				// insert data layout item cls Df
+						if (categoryID != null) {
+							PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId,
+									i.ppemtLayoutItemClsPk.dispOrder);
+							PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, categoryID, i.itemType);
+							this.entityManager.persist(item);
 
-				itemListDf.forEach(i -> {
-					PpemtLayoutItemClsDfPk PK = new PpemtLayoutItemClsDfPk(layoutId,
-							i.ppemtLayoutItemClsDfPk.layoutDispOrder, i.ppemtLayoutItemClsDfPk.dispOrder);
-					PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(PK, i.itemDfID);
-					this.entityManager.persist(itemDf);
-				});
+							List<PpemtLayoutItemClsDf> itemListDfFilter = itemListDf.stream()
+									.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
+									.collect(Collectors.toList());
+
+							// get data PPEMT_PER_INFO_CTG currentCom
+							List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
+									.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+									.setParameter("perInfoCtgId", categoryID).getResultList();
+
+							// get data PPEMT_PER_INFO_CTG ZeroCom
+							List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
+									.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+									.setParameter("perInfoCtgId", i.categoryId).getResultList();
+
+							for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
+								PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream()
+										.filter(e -> e.ppemtPerInfoItemPK.perInfoItemDefId.equals(layoutItem.itemDfID))
+										.findFirst().orElse(null);
+
+								if (infoItemZero != null) {
+									String defineID = this.checkItemDfId(perInfoItemCurrentCom, infoItemZero);
+
+									if (defineID != null) {
+										PpemtLayoutItemClsDfPk layoutItemPK = new PpemtLayoutItemClsDfPk(layoutId,
+												layoutItem.ppemtLayoutItemClsDfPk.layoutDispOrder,
+												layoutItem.ppemtLayoutItemClsDfPk.dispOrder);
+										PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(layoutItemPK, defineID);
+										this.entityManager.persist(itemDf);
+									}
+								}
+							}
+
+						}
+					}
+
+				}
 
 			});
 			break;
@@ -129,7 +182,6 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 
 					// get layoutID
 					String layoutId = IdentifierUtil.randomUniqueId();
-
 					PpemtNewLayoutPk newPk = new PpemtNewLayoutPk(layoutId);
 					PpemtNewLayout newEntity = new PpemtNewLayout(newPk, companyId, entity.layoutCode,
 							entity.layoutName);
@@ -139,28 +191,77 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 							.createQuery(GET_LAYOUT_ITEM, PpemtLayoutItemCls.class)
 							.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
 
+					// get data PPEMT_PER_INFO_CTG CurrentCom
+					List<PpemtPerInfoCtg> perInfoCtgCurrentCom = this.entityManager
+							.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class).setParameter("companyId", companyId)
+							.getResultList();
+
+					// get data PPEMT_PER_INFO_CTG ZeroCom
+					List<PpemtPerInfoCtg> perInfoCtgCurrentZero = this.entityManager
+							.createQuery(GET_PER_INFO_CTG, PpemtPerInfoCtg.class)
+							.setParameter("companyId", companyZeroId).getResultList();
+
 					// get data layout item cls df
 					List<PpemtLayoutItemClsDf> itemListDf = this.entityManager
 							.createQuery(GET_LAYOUT_ITEM_DF, PpemtLayoutItemClsDf.class)
 							.setParameter("layoutId", entity.ppemtNewLayoutPk.layoutId).getResultList();
-					
+
 					// Insert new data
+
 					this.entityManager.persist(newEntity);
 
-					// set layout item cls and insert
-					itemList.forEach(i -> {
-						PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId, i.ppemtLayoutItemClsPk.dispOrder);
-						PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, i.categoryId, i.itemType);
-						this.entityManager.persist(item);
-					});
-					
-					// set data layout item cls Df and insert 
-					itemListDf.forEach(i -> {
-						PpemtLayoutItemClsDfPk PK = new PpemtLayoutItemClsDfPk(layoutId,
-								i.ppemtLayoutItemClsDfPk.layoutDispOrder, i.ppemtLayoutItemClsDfPk.dispOrder);
-						PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(PK, i.itemDfID);
-						this.entityManager.persist(itemDf);
-					});
+					// insert data layout item cls
+					for (PpemtLayoutItemCls i : itemList) {
+						PpemtPerInfoCtg infoCtgComZero = perInfoCtgCurrentZero.stream()
+								.filter(e -> e.ppemtPerInfoCtgPK.perInfoCtgId.equals(i.categoryId)).findFirst()
+								.orElse(null);
+
+						if (infoCtgComZero != null) {
+							String categoryID = this.checkCategoryCd(perInfoCtgCurrentCom, infoCtgComZero);
+
+							if (categoryID != null) {
+								PpemtLayoutItemClsPk PK = new PpemtLayoutItemClsPk(layoutId,
+										i.ppemtLayoutItemClsPk.dispOrder);
+								PpemtLayoutItemCls item = new PpemtLayoutItemCls(PK, categoryID, i.itemType);
+								this.entityManager.persist(item);
+
+								List<PpemtLayoutItemClsDf> itemListDfFilter = itemListDf.stream()
+										.filter(e -> e.ppemtLayoutItemClsDfPk.layoutDispOrder == i.ppemtLayoutItemClsPk.dispOrder)
+										.collect(Collectors.toList());
+
+								// get data PPEMT_PER_INFO_CTG currentCom
+								List<PpemtPerInfoItem> perInfoItemCurrentCom = this.entityManager
+										.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+										.setParameter("perInfoCtgId", categoryID).getResultList();
+
+								// get data PPEMT_PER_INFO_CTG ZeroCom
+								List<PpemtPerInfoItem> perInfoItemzeroCom = this.entityManager
+										.createQuery(GET_PER_INFO_ITEM, PpemtPerInfoItem.class)
+										.setParameter("perInfoCtgId", i.categoryId).getResultList();
+
+								for (PpemtLayoutItemClsDf layoutItem : itemListDfFilter) {
+									PpemtPerInfoItem infoItemZero = perInfoItemzeroCom.stream().filter(
+											e -> e.ppemtPerInfoItemPK.perInfoItemDefId.equals(layoutItem.itemDfID))
+											.findFirst().orElse(null);
+
+									if (infoItemZero != null) {
+										String defineID = this.checkItemDfId(perInfoItemCurrentCom, infoItemZero);
+
+										if (defineID != null) {
+											PpemtLayoutItemClsDfPk layoutItemPK = new PpemtLayoutItemClsDfPk(layoutId,
+													layoutItem.ppemtLayoutItemClsDfPk.layoutDispOrder,
+													layoutItem.ppemtLayoutItemClsDfPk.dispOrder);
+											PpemtLayoutItemClsDf itemDf = new PpemtLayoutItemClsDf(layoutItemPK,
+													defineID);
+											this.entityManager.persist(itemDf);
+										}
+									}
+								}
+
+							}
+						}
+
+					}					
 
 				});
 
@@ -172,6 +273,22 @@ public class PpemtNewLayoutDataCopyHandler extends DataCopyHandler {
 			break;
 
 		}
+
 	}
 
+	private String checkCategoryCd(List<PpemtPerInfoCtg> list, PpemtPerInfoCtg item) {
+		for (PpemtPerInfoCtg value : list) {
+			if (value.categoryCd.equals(item.categoryCd))
+				return value.ppemtPerInfoCtgPK.perInfoCtgId;
+		}
+		return null;
+	}
+
+	private String checkItemDfId(List<PpemtPerInfoItem> list, PpemtPerInfoItem item) {
+		for (PpemtPerInfoItem value : list) {
+			if (value.itemCd.equals(item.itemCd))
+				return value.ppemtPerInfoItemPK.perInfoItemDefId;
+		}
+		return null;
+	}
 }
