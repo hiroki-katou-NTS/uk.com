@@ -11,6 +11,10 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 public class SettingItemScreenDTO {
 
 	/**
+	 * 会社ID
+	 */
+	private String cid;
+	/**
 	 * NULL値置換
 	 */
 	private int nullValueReplace;
@@ -85,7 +89,7 @@ public class SettingItemScreenDTO {
 		String valueOfFixedValue = domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v()
 				: null;
 
-		return new SettingItemScreenDTO(domain.getNullValueReplace().value, valueOfNullValueReplace,
+		return new SettingItemScreenDTO(domain.getCid(), domain.getNullValueReplace().value, valueOfNullValueReplace,
 				domain.getCdEditting().value, domain.getFixedValue().value, domain.getCdEdittingMethod().value,
 				cdEditDigit, cdConvertCd, cdConvertName, domain.getSpaceEditting().value,
 				domain.getEffectDigitLength().value, startDigit, endDigit, valueOfFixedValue);
