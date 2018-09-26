@@ -31,6 +31,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkSc
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.ScreenIdentifier;
@@ -69,6 +73,12 @@ public class ScheBasicScheduleLogCorrectionHandler {
 	/** The sc employee adapter. */
 	@Inject
 	private SCEmployeeAdapter scEmployeeAdapter;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	/**
 	 * 修正ログ惱を作�する.
@@ -164,12 +174,25 @@ public class ScheBasicScheduleLogCorrectionHandler {
 	private DataCorrectionLog createWorkTypeCorrectionLog(EmployeeDto employeeDto, GeneralDate targetDate, String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, Optional<ScheduleItem> optScheduleItemWorkType) {
 		ScheduleItem workTypeItem = optScheduleItemWorkType.get(); // Supposely won't null
 		LoginUserContext userContext = AppContexts.user();
+		
+		Optional<WorkType> backupWorkType = Optional.empty();
+		Optional<WorkType> saveWorkType = Optional.empty();
+		if (StringUtils.isNotEmpty(backupBasicSchedule.getWorkTypeCode())) {
+			backupWorkType = workTypeRepository.findByPK(userContext.companyId(), backupBasicSchedule.getWorkTypeCode());
+		}
+		if (StringUtils.isNotEmpty(basicScheduleSaveCommand.getWorktypeCode())) {
+			saveWorkType = workTypeRepository.findByPK(userContext.companyId(), basicScheduleSaveCommand.getWorktypeCode());
+		}
+		
+		
 		DataCorrectionLog log = new DataCorrectionLog(operationId,
 				new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 				TargetDataType.SCHEDULE, 
 				new TargetDataKey(CalendarKeyType.DATE, targetDate, workTypeItem.scheduleItemName), 
 				CorrectionAttr.EDIT, 
-				ItemInfo.create(workTypeItem.scheduleItemId, workTypeItem.scheduleItemName, DataValueAttribute.STRING, backupBasicSchedule.getWorkTypeCode(), basicScheduleSaveCommand.getWorktypeCode()),
+				ItemInfo.create(workTypeItem.scheduleItemId, workTypeItem.scheduleItemName, DataValueAttribute.STRING, 
+						backupWorkType.isPresent() ? backupWorkType.get().getWorkTypeCode().v() + " " + backupWorkType.get().getName().v() : null, 
+						saveWorkType.isPresent() ? saveWorkType.get().getWorkTypeCode().v() + " " + saveWorkType.get().getName().v() : null),
 				workTypeItem.getDispOrder());
 		
 		return log;
@@ -190,12 +213,23 @@ public class ScheBasicScheduleLogCorrectionHandler {
 		ScheduleItem workTypeItem = optScheduleItemWorkTime.get(); // Supposely won't null
 		LoginUserContext userContext = AppContexts.user();
 		
+		Optional<WorkTimeSetting> backupWorkTimeSetting = Optional.empty();
+		Optional<WorkTimeSetting> saveWorkTimeSetting = Optional.empty();
+		if (StringUtils.isNotEmpty(backupBasicSchedule.getWorkTimeCode())) {
+			backupWorkTimeSetting = workTimeRepository.findByCode(userContext.companyId(), backupBasicSchedule.getWorkTimeCode());
+		}
+		if (StringUtils.isNotEmpty(basicScheduleSaveCommand.getWorktimeCode())) {
+			saveWorkTimeSetting = workTimeRepository.findByCode(userContext.companyId(), basicScheduleSaveCommand.getWorktimeCode());
+		}
+		
 		DataCorrectionLog log = new DataCorrectionLog(operationId,
 				new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 				TargetDataType.SCHEDULE, 
 				new TargetDataKey(CalendarKeyType.DATE, targetDate, workTypeItem.scheduleItemName), 
 				CorrectionAttr.EDIT, 
-				ItemInfo.create(workTypeItem.scheduleItemId, workTypeItem.scheduleItemName, DataValueAttribute.STRING, backupBasicSchedule.getWorkTimeCode(), basicScheduleSaveCommand.getWorktimeCode()),
+				ItemInfo.create(workTypeItem.scheduleItemId, workTypeItem.scheduleItemName, DataValueAttribute.STRING, 
+						backupWorkTimeSetting.isPresent() ? backupWorkTimeSetting.get().getWorktimeCode().v() + " " + backupWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : null, 
+						saveWorkTimeSetting.isPresent() ? saveWorkTimeSetting.get().getWorktimeCode().v() + " " + saveWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v() : null),
 				workTypeItem.getDispOrder());
 		
 		return log;
@@ -257,56 +291,56 @@ public class ScheBasicScheduleLogCorrectionHandler {
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optTotalWorkTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optTotalWorkTime.get().scheduleItemId, optTotalWorkTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getTotalLaborTime()),
+					ItemInfo.create(optTotalWorkTime.get().scheduleItemId, optTotalWorkTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getTotalLaborTime().v()),
 					optTotalWorkTime.get().getDispOrder());
 			logPreTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optPreTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optPreTime.get().scheduleItemId, optPreTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getPredetermineTime()),
+					ItemInfo.create(optPreTime.get().scheduleItemId, optPreTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getPredetermineTime().v()),
 					optPreTime.get().getDispOrder());
 			logWorkingTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optWorkingTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optWorkingTime.get().scheduleItemId, optWorkingTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getWorkingTime()),
+					ItemInfo.create(optWorkingTime.get().scheduleItemId, optWorkingTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getWorkingTime().v()),
 					optWorkingTime.get().getDispOrder());
 			logBreakTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optBreakTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optBreakTime.get().scheduleItemId, optBreakTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getBreakTime()),
+					ItemInfo.create(optBreakTime.get().scheduleItemId, optBreakTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getBreakTime().v()),
 					optBreakTime.get().getDispOrder());
 			logCareTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optCareTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optCareTime.get().scheduleItemId, optCareTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getCareTime()),
+					ItemInfo.create(optCareTime.get().scheduleItemId, optCareTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getCareTime().v()),
 					optCareTime.get().getDispOrder());
 			logChildTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optChildTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optChildTime.get().scheduleItemId, optChildTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getChildTime()),
+					ItemInfo.create(optChildTime.get().scheduleItemId, optChildTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getChildTime().v()),
 					optChildTime.get().getDispOrder());
 			logFlexTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optFlexTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optFlexTime.get().scheduleItemId, optFlexTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getFlexTime()),
+					ItemInfo.create(optFlexTime.get().scheduleItemId, optFlexTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getFlexTime().v()),
 					optFlexTime.get().getDispOrder());
 			logWeekdayTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optScheWeekdayTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optScheWeekdayTime.get().scheduleItemId, optScheWeekdayTime.get().scheduleItemName, DataValueAttribute.STRING, null, workScheTime.getWeekdayTime()),
+					ItemInfo.create(optScheWeekdayTime.get().scheduleItemId, optScheWeekdayTime.get().scheduleItemName, DataValueAttribute.TIME, null, workScheTime.getWeekdayTime().v()),
 					optScheWeekdayTime.get().getDispOrder());
 			lstLog.add(logTotalWorkTime);
 			lstLog.add(logPreTime);
@@ -324,56 +358,56 @@ public class ScheBasicScheduleLogCorrectionHandler {
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optTotalWorkTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optTotalWorkTime.get().scheduleItemId, optTotalWorkTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getTotalLaborTime(), null),
+					ItemInfo.create(optTotalWorkTime.get().scheduleItemId, optTotalWorkTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getTotalLaborTime().v(), null),
 					optTotalWorkTime.get().getDispOrder());
 			logPreTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optPreTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optPreTime.get().scheduleItemId, optPreTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getPredetermineTime(), null),
+					ItemInfo.create(optPreTime.get().scheduleItemId, optPreTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getPredetermineTime().v(), null),
 					optPreTime.get().getDispOrder());
 			logWorkingTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optWorkingTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optWorkingTime.get().scheduleItemId, optWorkingTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getWorkingTime(), null),
+					ItemInfo.create(optWorkingTime.get().scheduleItemId, optWorkingTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getWorkingTime().v(), null),
 					optWorkingTime.get().getDispOrder());
 			logBreakTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optBreakTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optBreakTime.get().scheduleItemId, optBreakTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getBreakTime(), null),
+					ItemInfo.create(optBreakTime.get().scheduleItemId, optBreakTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getBreakTime().v(), null),
 					optBreakTime.get().getDispOrder());
 			logCareTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optCareTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optCareTime.get().scheduleItemId, optCareTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getCareTime(), null),
+					ItemInfo.create(optCareTime.get().scheduleItemId, optCareTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getCareTime().v(), null),
 					optCareTime.get().getDispOrder());
 			logChildTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optChildTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optChildTime.get().scheduleItemId, optChildTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getChildTime(), null),
+					ItemInfo.create(optChildTime.get().scheduleItemId, optChildTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getChildTime().v(), null),
 					optChildTime.get().getDispOrder());
 			logFlexTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optFlexTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optFlexTime.get().scheduleItemId, optFlexTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getFlexTime(), null),
+					ItemInfo.create(optFlexTime.get().scheduleItemId, optFlexTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getFlexTime().v(), null),
 					optFlexTime.get().getDispOrder());
 			logWeekdayTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optScheWeekdayTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optScheWeekdayTime.get().scheduleItemId, optScheWeekdayTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getWeekdayTime(), null),
+					ItemInfo.create(optScheWeekdayTime.get().scheduleItemId, optScheWeekdayTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getWeekdayTime().v(), null),
 					optScheWeekdayTime.get().getDispOrder());
 			lstLog.add(logTotalWorkTime);
 			lstLog.add(logPreTime);
@@ -392,56 +426,56 @@ public class ScheBasicScheduleLogCorrectionHandler {
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optTotalWorkTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optTotalWorkTime.get().scheduleItemId, optTotalWorkTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getTotalLaborTime(), workScheTime.getTotalLaborTime()),
+					ItemInfo.create(optTotalWorkTime.get().scheduleItemId, optTotalWorkTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getTotalLaborTime().v(), workScheTime.getTotalLaborTime().v()),
 					optTotalWorkTime.get().getDispOrder());
 			logPreTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optPreTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optPreTime.get().scheduleItemId, optPreTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getPredetermineTime(), workScheTime.getPredetermineTime()),
+					ItemInfo.create(optPreTime.get().scheduleItemId, optPreTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getPredetermineTime().v(), workScheTime.getPredetermineTime().v()),
 					optPreTime.get().getDispOrder());
 			logWorkingTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optWorkingTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optWorkingTime.get().scheduleItemId, optWorkingTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getWorkingTime(), workScheTime.getWorkingTime()),
+					ItemInfo.create(optWorkingTime.get().scheduleItemId, optWorkingTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getWorkingTime().v(), workScheTime.getWorkingTime().v()),
 					optWorkingTime.get().getDispOrder());
 			logBreakTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optBreakTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optBreakTime.get().scheduleItemId, optBreakTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getBreakTime(), workScheTime.getBreakTime()),
+					ItemInfo.create(optBreakTime.get().scheduleItemId, optBreakTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getBreakTime().v(), workScheTime.getBreakTime().v()),
 					optBreakTime.get().getDispOrder());
 			logCareTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optCareTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optCareTime.get().scheduleItemId, optCareTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getCareTime(), workScheTime.getCareTime()),
+					ItemInfo.create(optCareTime.get().scheduleItemId, optCareTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getCareTime().v(), workScheTime.getCareTime().v()),
 					optCareTime.get().getDispOrder());
 			logChildTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optChildTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optChildTime.get().scheduleItemId, optChildTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getChildTime(), workScheTime.getChildTime()),
+					ItemInfo.create(optChildTime.get().scheduleItemId, optChildTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getChildTime().v(), workScheTime.getChildTime().v()),
 					optChildTime.get().getDispOrder());
 			logFlexTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optFlexTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optFlexTime.get().scheduleItemId, optFlexTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getFlexTime(), workScheTime.getFlexTime()),
+					ItemInfo.create(optFlexTime.get().scheduleItemId, optFlexTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getFlexTime().v(), workScheTime.getFlexTime().v()),
 					optFlexTime.get().getDispOrder());
 			logWeekdayTime = new DataCorrectionLog(operationId,
 					new UserInfo(userContext.userId(), employeeDto.getEmployeeId(), employeeDto.getEmployeeName()),
 					TargetDataType.SCHEDULE, 
 					new TargetDataKey(CalendarKeyType.DATE, targetDate, optScheWeekdayTime.get().scheduleItemName), 
 					CorrectionAttr.EDIT, 
-					ItemInfo.create(optScheWeekdayTime.get().scheduleItemId, optScheWeekdayTime.get().scheduleItemName, DataValueAttribute.STRING, oldWorkScheTime.getWeekdayTime(), workScheTime.getWeekdayTime()),
+					ItemInfo.create(optScheWeekdayTime.get().scheduleItemId, optScheWeekdayTime.get().scheduleItemName, DataValueAttribute.TIME, oldWorkScheTime.getWeekdayTime().v(), workScheTime.getWeekdayTime().v()),
 					optScheWeekdayTime.get().getDispOrder());
 			lstLog.add(logTotalWorkTime);
 			lstLog.add(logPreTime);
