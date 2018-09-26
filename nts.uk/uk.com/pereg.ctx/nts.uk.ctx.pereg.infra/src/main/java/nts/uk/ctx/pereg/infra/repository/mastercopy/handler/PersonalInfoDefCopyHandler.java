@@ -82,7 +82,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
         switch (copyMethod) {
             case REPLACE_ALL:
                 // Delete all old data
-                copyMasterData(sourceCid, targetCid, false);
+                copyMasterData(sourceCid, targetCid);
                 break;
             case ADD_NEW:
                 // Insert Data
@@ -175,7 +175,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
      * @param targetCid
      * @param isReplace
      */
-    public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+    public void copyMasterData(String sourceCid, String targetCid) {
         //Get data company zero
         List<PpemtPerInfoCtg> sPerInfoCtgEntities = findAllPerInfoCtgByCid(sourceCid);
         List<PpemtPerInfoCtgOrder> sPerInfoCtgOrderEntities = new ArrayList<>();
