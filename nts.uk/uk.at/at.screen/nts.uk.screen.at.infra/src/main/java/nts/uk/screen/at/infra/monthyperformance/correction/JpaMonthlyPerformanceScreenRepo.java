@@ -157,7 +157,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 				.stream()
 				.map(c -> new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(),
 						c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(), c.getDispNo(),
-						c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName()))
+						c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName(), c.getPrimitiveValue()))
 				.collect(Collectors.toList());
 	}
 
