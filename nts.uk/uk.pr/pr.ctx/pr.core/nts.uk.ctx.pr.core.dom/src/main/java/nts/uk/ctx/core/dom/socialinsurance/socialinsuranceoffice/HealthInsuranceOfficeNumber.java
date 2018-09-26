@@ -1,17 +1,20 @@
 package nts.uk.ctx.core.dom.socialinsurance.socialinsuranceoffice;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * 健康保険事業所番号
  */
-@IntegerRange(min = 0, max = 5)
-public class HealthInsuranceOfficeNumber extends IntegerPrimitiveValue<HealthInsuranceOfficeNumber> {
+@StringCharType(CharType.NUMERIC)
+@StringMaxLength(5)
+public class HealthInsuranceOfficeNumber extends StringPrimitiveValue<HealthInsuranceOfficeNumber> {
 
     private static final long serialVersionUID = 1L;
 
-    public HealthInsuranceOfficeNumber(Integer rawValue) {
+    public HealthInsuranceOfficeNumber(String rawValue) {
         super(rawValue);
     }
 }

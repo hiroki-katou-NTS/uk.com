@@ -254,7 +254,7 @@ public class QpbmtSocialInsuranceOffice extends UkJpaEntity implements Serializa
                 domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionOfficeCode().map(PrimitiveValueBase::v).orElse(null),
                 domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionCityCode().map(PrimitiveValueBase::v).orElse(null),
                 domain.getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionPrefectureNo().orElse(null),
-                domain.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().map(PrimitiveValueBase::v).orElse(null),
+                domain.getInsuranceMasterInformation().getHealthInsuranceOfficeNumber().map(PrimitiveValueBase::v).map(Integer::new).orElse(null),
                 domain.getInsuranceMasterInformation().getHealthInsuranceUnionOfficeNumber().map(PrimitiveValueBase::v).orElse(null),
                 domain.getInsuranceMasterInformation().getWelfarePensionFundNumber().map(PrimitiveValueBase::v).map(Integer::new).orElse(null),
                 domain.getInsuranceMasterInformation().getWelfarePensionOfficeNumber().map(PrimitiveValueBase::v).orElse(null)
