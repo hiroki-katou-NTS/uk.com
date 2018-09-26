@@ -222,9 +222,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));
             self.endYearMonth(self.convertMonthYearToString(emplInsurHis.endYearMonth));
-            year = self.startYearMonth().slice(0, 4);
-            month = self.startYearMonth().slice(5, 7);
-            self.monthlyCalendar( "(" + nts.uk.time.yearInJapanEmpire(year).toString() + month +"月)" );
+            self.monthlyCalendar("("+nts.uk.time.yearmonthInJapanEmpire(emplInsurHis.startYearMonth).toString().split(' ').join('')+ ")");
         }
         
         validate(){
@@ -277,7 +275,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 if(params && params.methodEditing == 0) {
                     self.initScreen(null);
                 }
-                
+
             });
         }
         
