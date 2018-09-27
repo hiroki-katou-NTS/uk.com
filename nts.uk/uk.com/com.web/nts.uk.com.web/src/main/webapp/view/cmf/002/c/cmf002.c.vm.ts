@@ -189,10 +189,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         settingNewMode() {
             let self = this;
             self.isNewMode(true);
-            self.selectedStandardOutputItemCode("");
             self.currentStandardOutputItem(new model.StandardOutputItem(null, null, self.conditionCode(), 0, null));
             self.itemType(0);
             self.categoryItems([]);
+            self.selectedStandardOutputItemCode("");
             self.setFocus();
             errors.clearAll();
         }

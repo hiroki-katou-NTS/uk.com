@@ -131,7 +131,7 @@
 						<table tabindex="5" id="fixed-table">
 							<colgroup>
 								<col width="20px" />
-								<col width="105px" />
+								<col width="auto" />
 								<col width="138px" />
 								<col width="214px" />
 								<col width="215px" />
@@ -148,8 +148,8 @@
 								<tr
 									data-bind="attr: { 'data-id': seriNum() }, click: function() {$vm.selectDetailItem(seriNum())}">
 									<td><span data-bind="text: seriNum()"></span></td>
-									<td><span
-										data-bind="text: $vm.getItemName(categoryItemNo())"></span></td>
+									<td style="width: auto">
+										<div class="limited-label" data-bind="text: $vm.getItemName(categoryItemNo())">${fileName}</div></td>
 									<td>
 										<div tabindex="6" class="D6_C3_1"
 											data-bind="ntsComboBox: {

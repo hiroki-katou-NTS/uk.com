@@ -482,7 +482,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         setErrorCompare(control1, control2) {
             let self = this;
             $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control2)
-                .ntsError('set', { messageId: 'Msg_1401', messageParams: [getText(self.getControlName(control1)), getText(self.getControlName(control2))] });
+                .ntsError('set', { messageId: 'Msg_1401', messageParams: [getText(self.getControlName(control2)), getText(self.getControlName(control1))] });
         }
 
         getControlName(control) {
@@ -686,7 +686,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (self.searchNumStartVal() > self.searchNumEndVal()) {
+                    if (parseFloat(self.searchNumStartVal()) > parseFloat(self.searchNumEndVal())) {
                         self.setErrorCompare("D6_C4_5", "D6_C4_6");
                         checkCompare = true;
                     }
