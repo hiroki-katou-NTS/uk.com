@@ -120,6 +120,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     item.subscribeCondBetween(item.conditionSymbol());
                     item.searchValueCd = ctgItem.searchValueCd;
                     item.switchView(OutCndDetailItemDto.getSwitchView(item.dataType, item.conditionSymbol()));
+                    item.formatSearchCodeList(item.joinCode);
                     item.clearData();
                 } else {
                     item.dataType = null;
@@ -170,8 +171,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
                 let listSearchCodeList = [];
                 if (item.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) return;
-                let listSearchCode = _.split(item.joinedSearchCodeList(), ',');
-                _.each(listSearchCode, searchCode => {
+                _.each(item.parsedValSearchCodeList, searchCode => {
                     let newSearchCode: SearchCodeListDto = new SearchCodeListDto(item.conditionSettingCd(), item.categoryId(),
                         item.categoryItemNo(), item.seriNum(), _.trim(searchCode), self.getItemName(item.categoryItemNo()));
                     listSearchCodeList.push(newSearchCode);
@@ -323,7 +323,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         searchTimeStartVal: KnockoutObservable<number>;
         listSearchCodeList: Array<SearchCodeListDto>;
         joinedSearchCodeList: KnockoutObservable<string>;
-
+        parsedValSearchCodeList: Array<any>;
+        joinCode: string;
         itemName: string;
         dataType: shareModel.ITEM_TYPE;
         searchValueCd: string;
@@ -466,6 +467,20 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     self.subClockStart.dispose();
                     self.subClockEnd.dispose();
                     break;
+            }
+        }
+
+        formatSearchCodeList(joinCode: string) {
+            let self = this;
+            if (self.dataType == shareModel.ITEM_TYPE.TIME || self.dataType == shareModel.ITEM_TYPE.INS_TIME) {
+                let parseCode = [];
+                let codes = joinCode.split(',');
+                _.each(codes, (code: string) => {
+                    parseCode.push(nts.uk.time.parseTime(code, true).format());
+                })
+                this.joinedSearchCodeList(parseCode.join(', '));
+            } else {
+                this.joinedSearchCodeList(self.joinCode);
             }
         }
 
@@ -732,6 +747,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         validateSearchCodeList(control) {
             let self = this;
             let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
+            let check: any;
+            this.parsedValSearchCodeList = [];
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
  
@@ -762,16 +779,20 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         }
                         break;
                     case shareModel.ITEM_TYPE.TIME:
-                        if (!self.timeValidator.validate(searchCode).isValid) {
+                        check = self.timeValidator.validate(searchCode)
+                        if (!check.isValid) {
                             self.setError(control, "Msg_760");
                             return false;
                         }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
                         break;
                     case shareModel.ITEM_TYPE.INS_TIME:
-                        if (!self.clockValidator.validate(searchCode).isValid) {
+                        check = self.clockValidator.validate(searchCode);
+                        if (!check.isValid) {
                             self.setError(control, "Msg_760");
                             return false;
                         }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
                         break;
                 }
             })
@@ -878,7 +899,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             dto.searchTime(app.searchTime);
             dto.searchTimeEndVal(app.searchTimeEndVal);
             dto.searchTimeStartVal(app.searchTimeStartVal);
-            dto.joinedSearchCodeList(app.joinedSearchCodeList);
+            dto.joinCode = app.joinedSearchCodeList;
             return dto;
         }
     }
