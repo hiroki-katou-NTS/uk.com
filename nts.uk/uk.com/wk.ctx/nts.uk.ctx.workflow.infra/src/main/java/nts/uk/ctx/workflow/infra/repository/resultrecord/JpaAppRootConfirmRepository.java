@@ -34,6 +34,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -82,7 +83,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	
 	private final String FIND_BY_EMP_DATE = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
-			" AND appRoot.ROOT_TYPE = 'rootType'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.RECORD_DATE = 'recordDate'";
 	
@@ -111,12 +112,19 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	
 	private final String FIND_BY_EMP_MONTH = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
-			" AND appRoot.ROOT_TYPE = 'rootType'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.YEARMONTH = yearMonth" +
 			" AND appRoot.CLOSURE_ID = closureID" +
 			" AND appRoot.CLOSURE_DAY = closureDay" +
 			" AND appRoot.LAST_DAY_FLG = lastDayFlg";
+	
+	private final String FIND_BY_EMP_PERIOD_MONTH = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.RECORD_DATE >= 'startDate'"+
+			" AND appRoot.RECORD_DATE <= 'endDate'";
 
 	@Override
 	public Optional<AppRootConfirm> findByID(String rootID) {
@@ -372,6 +380,30 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			query = query.replaceAll("closureID", closureID.toString());
 			query = query.replaceAll("closureDay", closureDate.getClosureDay().v().toString());
 			query = query.replaceAll("lastDayFlg", closureDate.getLastDayOfMonth() ? "1" : "0");
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<AppRootConfirm> findByEmpPeriodMonth(String companyID, String employeeID, DatePeriod period) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_PERIOD_MONTH;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
 			PreparedStatement pstatement = con.prepareStatement(query);
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));

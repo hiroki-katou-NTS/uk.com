@@ -20,6 +20,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
 import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
@@ -71,6 +72,9 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
 	private AppRootConfirmRepository appRootConfirmRepository;
+	
+	@Inject
+	private AppRootInstanceRepository appRootInstanceRepository;
 
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
@@ -362,6 +366,21 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			}
 		};
 		return result;
+	}
+
+	@Override
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
+		String companyID = AppContexts.user().employeeId();
+		// ドメインモデル「就業実績確認状態」を取得する
+		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
+		// ドメインモデル「中間データ」を取得する
+		AppRootInstance appRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, appRootConfirm.getRecordDate(), 
+				RecordRootType.CONFIRM_WORK_BY_MONTH).get();
+		// 中間データから承認ルートインスタンスに変換する
+		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+		// 承認ルート状況を取得する
+		return approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState))
+				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
 	}
 	
 }
