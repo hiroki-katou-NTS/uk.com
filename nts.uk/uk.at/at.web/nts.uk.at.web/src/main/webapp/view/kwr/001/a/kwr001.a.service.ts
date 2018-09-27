@@ -28,6 +28,6 @@ module nts.uk.at.view.kwr001.a {
             return nts.uk.request.exportFile(paths.exportExcel, data);
         }
     }
-}
+} 
 
 //# sourceMappingURL=http://localhost:8080/nts.uk.at.web/view/kwr/001/a/kwr001.a.vm.ts

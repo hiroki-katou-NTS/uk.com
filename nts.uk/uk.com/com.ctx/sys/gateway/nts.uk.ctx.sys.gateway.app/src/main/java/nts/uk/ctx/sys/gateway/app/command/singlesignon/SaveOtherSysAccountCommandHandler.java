@@ -16,6 +16,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 
 /**
  * The Class SaveOtherSysAccountCommandHandler.
@@ -54,6 +55,9 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 	 * @param dto the dto
 	 */
 	private void validate(SaveOtherSysAccountCommand dto) {
+		if (dto.getUseAtr() == UseAtr.NotUse) {
+			return;
+		}
 		
 		// check error domain
 		boolean isError = false;

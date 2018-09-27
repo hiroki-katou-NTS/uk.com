@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
 import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
@@ -62,8 +63,12 @@ public class EmployeeInfoFinder {
 		if (!lastEmployeeCode.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
-		return generateCode(lastEmployeeCode.get());
-
+		String result = generateCode(lastEmployeeCode.get());
+		Optional<EmployeeDataMngInfo> emp = employeeRepository.findByEmployeCD(result, companyId);
+		if (emp.isPresent()) {
+			throw new BusinessException("Msg_505");
+		}
+		return result;
 	}
 
 	public String generateCardNo(String startLetters) {
@@ -79,7 +84,12 @@ public class EmployeeInfoFinder {
 		if (!lastCardNo.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
-		return generateCode(lastCardNo.get());
+		String result =  generateCode(lastCardNo.get());
+		Optional<StampCard> cardNo = stampCardRepo.getByCardNoAndContractCode(result, contractCode);
+		if (cardNo.isPresent()) {
+			throw new BusinessException("Msg_505");
+		}
+		return result;
 	}
 	
 	public String initEmplCode() {

@@ -162,6 +162,19 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 			}
 		});
 	}
+
+	@Override
+	public void refreshIfRequired() {
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		
+		if (AppContexts.user().hasLoggedIn()) {
+			companyId = AppContexts.user().companyId();
+			languageId = AppContexts.user().language().basicLanguageId();
+		}
+		
+		this.refreshIfRequired(languageId, companyId);
+	}
 	
 	@RequiredArgsConstructor
 	private static class CompanyAndLanguage {

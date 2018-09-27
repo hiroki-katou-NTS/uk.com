@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
@@ -51,6 +53,8 @@ public class MonAggrEmployeeSettings {
 	private Optional<ShaFlexMonthActCalSet> shaFlexSetOpt;
 	/** 年休社員基本情報 */
 	private Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt;
+	/** 締め状態管理 */
+	private List<ClosureStatusManagement> closureStatusMngs;
 	
 	/** 集計開始日を締め開始日とする */
 	@Setter
@@ -70,6 +74,7 @@ public class MonAggrEmployeeSettings {
 		this.shaIrgSetOpt = Optional.empty();
 		this.shaFlexSetOpt = Optional.empty();
 		this.annualLeaveEmpBasicInfoOpt = Optional.empty();
+		this.closureStatusMngs = new ArrayList<>();
 		
 		this.noCheckStartDate = true;
 		this.errorInfos = new HashMap<>();
@@ -89,14 +94,13 @@ public class MonAggrEmployeeSettings {
 			DatePeriod period,
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
-		final String resourceId = "001";
-		
 		MonAggrEmployeeSettings domain = new MonAggrEmployeeSettings(employeeId);
-
+		List<String> employeeIds = new ArrayList<>(Arrays.asList(employeeId));
+		
 		// 社員
 		domain.employee = repositories.getEmpEmployee().findByEmpId(employeeId);
 		if (domain.employee == null){
-			domain.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1156")));
+			domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
 			return domain;
 		}
 		
@@ -158,6 +162,9 @@ public class MonAggrEmployeeSettings {
 		// 年休社員基本情報
 		domain.annualLeaveEmpBasicInfoOpt = repositories.getAnnLeaEmpBasicInfo().get(employeeId);
 		
+		// 締め処理状態
+		domain.closureStatusMngs = repositories.getClosureStatusMng().getByIdListAndDatePeriod(employeeIds, period);
+		
 		return domain;
 	}
 	
@@ -190,5 +197,18 @@ public class MonAggrEmployeeSettings {
 		val workplaceId = workplaceOpt.get().getWorkplaceId();
 		if (!this.workPlacesToRoot.containsKey(workplaceId)) return new ArrayList<>();
 		return this.workPlacesToRoot.get(workplaceId);
+	}
+	
+	/**
+	 * 処理する期間が締められているかチェックする
+	 * @param criteria 基準日
+	 * @return true：締められている、false：締められていない
+	 */
+	public boolean checkClosedMonth(GeneralDate criteria){
+		for (val closureStatusMng : this.closureStatusMngs){
+			if (!closureStatusMng.getPeriod().contains(criteria)) continue;
+			return true;
+		}
+		return false;
 	}
 }

@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -16,26 +14,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public class ClosureGetMonthDay {
 
-	/** The Constant ONE_HUNDRED_COUNT. */
-	public static final int ONE_HUNDRED_COUNT = 100;
-
-	/** The Constant TOTAL_MONTH_OF_YEAR. */
-	public static final int TOTAL_MONTH_OF_YEAR = 12;
-
 	/** The Constant NEXT_DAY_MONT. */
 	public static final int NEXT_DAY_MONTH = 1;
 
 	/** The Constant ZERO_DAY_MONT. */
 	public static final int ZERO_DAY_MONTH = 0;
 
-	/** The Constant FORMAT_DATE. */
-	public static final String FORMAT_DATE_STR = "yyyy/MM/dd";
-
 	/** The end month. */
-	private int month;
-
-	/** The format date. */
-	private SimpleDateFormat formatDate;
+	private YearMonth yearMonth;
 
 	/**
 	 * Next day.
@@ -44,11 +30,8 @@ public class ClosureGetMonthDay {
 	 *            the day
 	 * @return the date
 	 */
-	public Date nextDay(Date day) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		cal.add(Calendar.DAY_OF_MONTH, NEXT_DAY_MONTH);
-		return cal.getTime();
+	public GeneralDate nextDay(GeneralDate day) {
+		return day.nextValue(true);
 	}
 
 	/**
@@ -58,11 +41,8 @@ public class ClosureGetMonthDay {
 	 *            the day
 	 * @return the date
 	 */
-	public Date previousDay(Date day) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		cal.add(Calendar.DAY_OF_MONTH, -NEXT_DAY_MONTH);
-		return cal.getTime();
+	public GeneralDate previousDay(GeneralDate day) {
+		return day.nextValue(false);
 	}
 
 	/**
@@ -72,11 +52,8 @@ public class ClosureGetMonthDay {
 	 *            the day
 	 * @return the date
 	 */
-	public Date nextMonth(Date day) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		cal.add(Calendar.MONTH, NEXT_DAY_MONTH);
-		return cal.getTime();
+	public GeneralDate nextMonth(GeneralDate day) {
+		return day.addMonths(NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -86,11 +63,8 @@ public class ClosureGetMonthDay {
 	 *            the day
 	 * @return the date
 	 */
-	public Date previousMonth(Date day) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(day);
-		cal.add(Calendar.MONTH, -NEXT_DAY_MONTH);
-		return cal.getTime();
+	public GeneralDate previousMonth(GeneralDate day) {
+		return day.addMonths(-NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -100,14 +74,12 @@ public class ClosureGetMonthDay {
 	 *            the closure date
 	 * @return the date
 	 */
-	public Date toDay(int closureDate) {
+	public GeneralDate toDay(int closureDate) {
 		int date = closureDate;
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
 		if (closureDate == ZERO_DAY_MONTH) {
-			return this.toDate(year, month, NEXT_DAY_MONTH);
+			return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH);
 		}
-		return this.toDate(year, month, date);
+		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), date);
 	}
 
 	/**
@@ -115,10 +87,10 @@ public class ClosureGetMonthDay {
 	 *
 	 * @return the date
 	 */
-	public Date lastMonth() {
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
-		return this.previousDay(this.toDate(year, month + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+	public GeneralDate lastMonth() {
+		return this.previousDay(
+				GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+						.addMonths(NEXT_DAY_MONTH));
 	}
 
 	/**
@@ -126,11 +98,10 @@ public class ClosureGetMonthDay {
 	 *
 	 * @return the date
 	 */
-	public Date lastMonthNextMonth() {
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
+	public GeneralDate lastMonthNextMonth() {
 		return this.previousDay(
-				this.toDate(year, month + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+				GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+						.addMonths(NEXT_DAY_MONTH + NEXT_DAY_MONTH));
 	}
 
 	/**
@@ -138,11 +109,10 @@ public class ClosureGetMonthDay {
 	 *
 	 * @return the date
 	 */
-	public Date lastMonthNextMonthNext() {
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
-		return this.previousDay(this.toDate(year,
-				month + NEXT_DAY_MONTH + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+	public GeneralDate lastMonthNextMonthNext() {
+		return this.previousDay(
+				GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+						.addMonths(NEXT_DAY_MONTH + NEXT_DAY_MONTH + NEXT_DAY_MONTH));
 	}
 
 	/**
@@ -150,10 +120,8 @@ public class ClosureGetMonthDay {
 	 *
 	 * @return the date
 	 */
-	public Date beginMonth() {
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
-		return this.toDate(year, month, NEXT_DAY_MONTH);
+	public GeneralDate beginMonth() {
+		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -161,10 +129,9 @@ public class ClosureGetMonthDay {
 	 *
 	 * @return the date
 	 */
-	public Date beginMonthNextMonth() {
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
-		return this.toDate(year, month + NEXT_DAY_MONTH, NEXT_DAY_MONTH);
+	public GeneralDate beginMonthNextMonth() {
+		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+				.addMonths(NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -172,40 +139,9 @@ public class ClosureGetMonthDay {
 	 *
 	 * @return the date
 	 */
-	public Date beginMonthNextMonthNext() {
-		int year = this.month / ONE_HUNDRED_COUNT;
-		int month = this.month % ONE_HUNDRED_COUNT;
-		return this.toDate(year, month + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH);
-	}
-
-	/**
-	 * To date.
-	 *
-	 * @param year
-	 *            the year
-	 * @param month
-	 *            the month
-	 * @param day
-	 *            the day
-	 * @return the date
-	 */
-	public Date toDate(int year, int month, int day) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(year, month - NEXT_DAY_MONTH, day, ZERO_DAY_MONTH, ZERO_DAY_MONTH);
-		return cal.getTime();
-	}
-
-	/**
-	 * Gets the month day.
-	 *
-	 * @param date
-	 *            the date
-	 * @return the month day
-	 */
-	public int getMonthDay(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		return (cal.get(Calendar.MONTH) + NEXT_DAY_MONTH) % TOTAL_MONTH_OF_YEAR;
+	public GeneralDate beginMonthNextMonthNext() {
+		return GeneralDate.ymd(this.yearMonth.year(), this.yearMonth.month(), NEXT_DAY_MONTH)
+				.addMonths(NEXT_DAY_MONTH + NEXT_DAY_MONTH);
 	}
 
 	/**
@@ -216,35 +152,36 @@ public class ClosureGetMonthDay {
 	 * @return the day month
 	 */
 	public DatePeriod getDayMonth(ClosureDate input, int yearMonth) {
-
-		this.month = yearMonth;
-		Date today = this.toDay(input.getClosureDay().v());
+		this.yearMonth = YearMonth.of(yearMonth);
+		GeneralDate today = this.toDay(input.getClosureDay().v());
 
 		// check last month
 		if (input.getLastDayOfMonth()) {
-			return new DatePeriod(GeneralDate.legacyDate(this.beginMonth()),
-					GeneralDate.legacyDate((this.lastMonth())));
+			return new DatePeriod(this.beginMonth(), this.lastMonth());
 		}
 
 		// check equal month
-		if (this.getMonthDay(today) == this.getMonthDate(this.month)) {
-			return new DatePeriod(GeneralDate.legacyDate(this.nextDay(this.previousMonth(today))),
-					GeneralDate.legacyDate(today));
+		if (today.month() == this.yearMonth.month()) {
+			if (this.previousMonth(today).day() < today.day()) {
+				return new DatePeriod(this.previousMonth(today), today);
+			}
+
+			return new DatePeriod(this.nextDay(this.previousMonth(today)), today);
 		}
 
 		// previous month
-		this.month = this.month - NEXT_DAY_MONTH;
+		this.yearMonth = this.yearMonth.previousMonth();
 		today = this.toDay(input.getClosureDay().v());
 		GeneralDate startDate = null;
 
 		// check equal month
-		if (this.getMonthDay(this.nextDay(today)) == this.getMonthDate(this.month)) {
-			startDate = GeneralDate.legacyDate((this.nextDay(today)));
+		if (this.nextDay(today).month() == this.yearMonth.month()) {
+			startDate = this.nextDay(today);
 		} else {
-			startDate = GeneralDate.legacyDate(this.beginMonthNextMonth());
+			startDate = this.beginMonthNextMonth();
 		}
 
-		return new DatePeriod(startDate, GeneralDate.legacyDate(this.lastMonthNextMonth()));
+		return new DatePeriod(startDate, this.lastMonthNextMonth());
 	}
 
 	/**
@@ -257,9 +194,9 @@ public class ClosureGetMonthDay {
 	public DayMonthChange getDayMonthChange(ClosureDate input, ClosureDate inputChange,
 			int yearMonth) {
 		// set month
-		this.month = yearMonth;
+		this.yearMonth = YearMonth.of(yearMonth);
 		// get to day change
-		Date todayChange = this.toDay(inputChange.getClosureDay().v());
+		GeneralDate todayChange = this.toDay(inputChange.getClosureDay().v());
 
 		// data res
 		DayMonthChange change = new DayMonthChange();
@@ -268,10 +205,9 @@ public class ClosureGetMonthDay {
 
 		// check last month
 		if (input.getLastDayOfMonth() && inputChange.getLastDayOfMonth()) {
-			beforeClosureDate = new DatePeriod(GeneralDate.legacyDate(this.beginMonth()),
-					GeneralDate.legacyDate(this.lastMonth()));
-			afterClosureDate = new DatePeriod(GeneralDate.legacyDate(this.beginMonthNextMonth()),
-					GeneralDate.legacyDate(this.lastMonthNextMonth()));
+			beforeClosureDate = new DatePeriod(this.beginMonth(), this.lastMonth());
+			afterClosureDate = new DatePeriod(this.beginMonthNextMonth(),
+					this.lastMonthNextMonth());
 			change.setBeforeClosureDate(beforeClosureDate);
 			change.setAfterClosureDate(afterClosureDate);
 			return change;
@@ -279,27 +215,27 @@ public class ClosureGetMonthDay {
 
 		// check last month
 		if (input.getLastDayOfMonth()) {
-			GeneralDate beforeClosureStartDate = GeneralDate.legacyDate(this.beginMonth());
+			GeneralDate beforeClosureStartDate = this.beginMonth();
 			GeneralDate beforeClosureEndDate = null;
 			GeneralDate afterClosureStartDate = null;
 			GeneralDate afterClosureEndDate = null;
 			// check equal month
-			if (this.getMonthDay(todayChange) != this.getMonthDate(this.month)) {
-				beforeClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
-				afterClosureStartDate = GeneralDate.legacyDate(this.nextDay(this.lastMonth()));
+			if (todayChange.month() != this.yearMonth.month()) {
+				beforeClosureEndDate = this.lastMonth();
+				afterClosureStartDate = this.nextDay(this.lastMonth());
 				// next month
-				this.month = this.month + 1;
+				this.yearMonth = this.yearMonth.addMonths(1);
 				todayChange = this.toDay(inputChange.getClosureDay().v());
 				// re check equal month
-				if (this.getMonthDay(todayChange) != this.getMonthDate(this.month)) {
-					afterClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
+				if (todayChange.month() != this.yearMonth.month()) {
+					afterClosureEndDate = this.lastMonth();
 				} else {
-					afterClosureEndDate = GeneralDate.legacyDate(todayChange);
+					afterClosureEndDate = todayChange;
 				}
 			} else {
-				beforeClosureEndDate = GeneralDate.legacyDate(todayChange);
-				afterClosureStartDate = GeneralDate.legacyDate(this.nextDay(todayChange));
-				afterClosureEndDate = GeneralDate.legacyDate(this.nextMonth(todayChange));
+				beforeClosureEndDate = todayChange;
+				afterClosureStartDate = this.nextDay(todayChange);
+				afterClosureEndDate = this.nextMonth(todayChange);
 			}
 			beforeClosureDate = new DatePeriod(beforeClosureStartDate, beforeClosureEndDate);
 			afterClosureDate = new DatePeriod(afterClosureStartDate, afterClosureEndDate);
@@ -311,22 +247,18 @@ public class ClosureGetMonthDay {
 		// check last date
 		if (inputChange.getLastDayOfMonth()) {
 			// previous month
-			this.month = this.month - 1;
-			Date today = this.toDay(input.getClosureDay().v());
+			this.yearMonth = this.yearMonth.previousMonth();
+			GeneralDate today = this.toDay(input.getClosureDay().v());
 			// check equal month
-			if (this.getMonthDay(this.nextDay(today)) == this.getMonthDate(this.month)) {
-				beforeClosureDate = new DatePeriod(GeneralDate.legacyDate(this.nextDay(today)),
-						GeneralDate.legacyDate(this.lastMonth()));
-				afterClosureDate = new DatePeriod(
-						GeneralDate.legacyDate(this.beginMonthNextMonth()),
-						GeneralDate.legacyDate(this.lastMonthNextMonth()));
+			if (this.nextDay(today).month() == this.yearMonth.month()) {
+				beforeClosureDate = new DatePeriod(this.nextDay(today), this.lastMonth());
+				afterClosureDate = new DatePeriod(this.beginMonthNextMonth(),
+						this.lastMonthNextMonth());
 			} else {
-				beforeClosureDate = new DatePeriod(
-						GeneralDate.legacyDate(this.beginMonthNextMonth()),
-						GeneralDate.legacyDate(this.lastMonthNextMonth()));
-				afterClosureDate = new DatePeriod(
-						GeneralDate.legacyDate(this.beginMonthNextMonthNext()),
-						GeneralDate.legacyDate(this.lastMonthNextMonthNext()));
+				beforeClosureDate = new DatePeriod(this.beginMonthNextMonth(),
+						this.lastMonthNextMonth());
+				afterClosureDate = new DatePeriod(this.beginMonthNextMonthNext(),
+						this.lastMonthNextMonthNext());
 			}
 			change.setBeforeClosureDate(beforeClosureDate);
 			change.setAfterClosureDate(afterClosureDate);
@@ -336,51 +268,50 @@ public class ClosureGetMonthDay {
 		// change equal
 		if (input.getClosureDay().v() == inputChange.getClosureDay().v()) {
 			// previous month
-			this.month = this.month - NEXT_DAY_MONTH;
+			this.yearMonth = this.yearMonth.previousMonth();
 			todayChange = this.toDay(input.getClosureDay().v());
 			// check equal month
-			if (this.getMonthDay(nextDay(todayChange)) == this.getMonthDate(this.month)) {
-				beforeClosureDate = new DatePeriod(
-						GeneralDate.legacyDate(this.nextDay(todayChange)),
-						GeneralDate.legacyDate(this.nextMonth(todayChange)));
+			if (nextDay(todayChange).month() == this.yearMonth.month()) {
+				beforeClosureDate = new DatePeriod(this.nextDay(todayChange),
+						this.nextMonth(todayChange));
 
 				GeneralDate afterClosureEndDate = null;
 
 				// next next month
-				this.month = this.month + NEXT_DAY_MONTH + NEXT_DAY_MONTH;
+				this.yearMonth = this.yearMonth.addMonths(2);
 				todayChange = this.toDay(input.getClosureDay().v());
 				// check equal month
-				if (this.getMonthDay(todayChange) == this.getMonthDate(this.month)) {
-					afterClosureEndDate = GeneralDate.legacyDate(todayChange);
+				if (todayChange.month() == this.yearMonth.month()) {
+					afterClosureEndDate = todayChange;
 				} else {
-					afterClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
+					afterClosureEndDate = this.lastMonth();
 				}
-				afterClosureDate = new DatePeriod(
-						GeneralDate.legacyDate(this.nextDay(this.nextMonth(todayChange))),
+				afterClosureDate = new DatePeriod(this.nextDay(this.nextMonth(todayChange)),
 						afterClosureEndDate);
 			} else {
 				// next month
-				this.month = this.month + NEXT_DAY_MONTH;
+				this.yearMonth = this.yearMonth.nextMonth();
 				todayChange = this.toDay(input.getClosureDay().v());
-				GeneralDate beforeClosureStartDate = GeneralDate.legacyDate(this.beginMonth());
+				GeneralDate beforeClosureStartDate = this.beginMonth();
 				GeneralDate beforeClosureEndDate = null;
 				GeneralDate afterClosureStartDate = null;
 				GeneralDate afterClosureEndDate = null;
 				// check equal month
-				if (this.getMonthDay(todayChange) == this.getMonthDate(this.month)) {
-					beforeClosureEndDate = GeneralDate.legacyDate(todayChange);
-					afterClosureStartDate = GeneralDate.legacyDate(this.nextDay(todayChange));
+				if (todayChange.month() == this.yearMonth.month()) {
+					beforeClosureEndDate = todayChange;
+					afterClosureStartDate = this.nextDay(todayChange);
 				} else {
-					beforeClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
-					afterClosureStartDate = GeneralDate.legacyDate(this.nextDay(this.lastMonth()));
+					beforeClosureEndDate = this.lastMonth();
+					afterClosureStartDate = this.nextDay(this.lastMonth());
 				}
 				// next month
-				this.month = this.month + NEXT_DAY_MONTH;
+				this.yearMonth = this.yearMonth.nextMonth();
 				todayChange = this.toDay(input.getClosureDay().v());
-				if (this.getMonthDay(todayChange) == this.getMonthDate(this.month)) {
-					afterClosureEndDate = GeneralDate.legacyDate(todayChange);
+				// check equal month
+				if (todayChange.month() == this.yearMonth.month()) {
+					afterClosureEndDate = todayChange;
 				} else {
-					afterClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
+					afterClosureEndDate = this.lastMonth();
 				}
 				beforeClosureDate = new DatePeriod(beforeClosureStartDate, beforeClosureEndDate);
 				afterClosureDate = new DatePeriod(afterClosureStartDate, afterClosureEndDate);
@@ -388,42 +319,43 @@ public class ClosureGetMonthDay {
 		} else {
 
 			// previous month
-			this.month = this.month - NEXT_DAY_MONTH;
-			Date today = this.toDay(input.getClosureDay().v());
+			this.yearMonth = this.yearMonth.previousMonth();
+			GeneralDate today = this.toDay(input.getClosureDay().v());
 			todayChange = this.toDay(inputChange.getClosureDay().v());
 			GeneralDate beforeClosureStartDate = null;
 			GeneralDate beforeClosureEndDate = null;
 			GeneralDate afterClosureStartDate = null;
 			GeneralDate afterClosureEndDate = null;
 			// check equal month
-			if (this.getMonthDay(this.nextDay(today)) == this.getMonthDate(this.month)) {
-				beforeClosureStartDate = GeneralDate.legacyDate(this.nextDay(today));
+			if (this.nextDay(today).month() == this.yearMonth.month()) {
+				beforeClosureStartDate = this.nextDay(today);
 			} else {
-				beforeClosureStartDate = GeneralDate.legacyDate(this.beginMonth());
+				beforeClosureStartDate = this.beginMonth();
 			}
 
 			if (input.getClosureDay().v() > inputChange.getClosureDay().v()) {
-				this.month = this.month + NEXT_DAY_MONTH;
+				// Next month
+				this.yearMonth = this.yearMonth.nextMonth();
 				todayChange = this.toDay(inputChange.getClosureDay().v());
 			}
 			// check equal month
-			if (this.getMonthDay(todayChange) == this.getMonthDate(this.month)) {
-				beforeClosureEndDate = GeneralDate.legacyDate(todayChange);
-				afterClosureStartDate = GeneralDate.legacyDate(this.nextDay(todayChange));
+			if (todayChange.month() == this.yearMonth.month()) {
+				beforeClosureEndDate = todayChange;
+				afterClosureStartDate = this.nextDay(todayChange);
 			} else {
-				beforeClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
-				afterClosureStartDate = GeneralDate.legacyDate(this.nextDay(this.lastMonth()));
+				beforeClosureEndDate = this.lastMonth();
+				afterClosureStartDate = this.nextDay(this.lastMonth());
 			}
 
 			// next month
-			this.month = this.month + NEXT_DAY_MONTH;
+			this.yearMonth = this.yearMonth.nextMonth();
 			todayChange = this.toDay(inputChange.getClosureDay().v());
 
 			// check equal month
-			if (this.getMonthDay(todayChange) == this.getMonthDate(this.month)) {
-				afterClosureEndDate = GeneralDate.legacyDate(todayChange);
+			if (todayChange.month() == this.yearMonth.month()) {
+				afterClosureEndDate = todayChange;
 			} else {
-				afterClosureEndDate = GeneralDate.legacyDate(this.lastMonth());
+				afterClosureEndDate = this.lastMonth();
 			}
 			beforeClosureDate = new DatePeriod(beforeClosureStartDate, beforeClosureEndDate);
 			afterClosureDate = new DatePeriod(afterClosureStartDate, afterClosureEndDate);
@@ -433,26 +365,13 @@ public class ClosureGetMonthDay {
 		return change;
 	}
 
-	/**
-	 * Gets the month date.
-	 *
-	 * @param month
-	 *            the month
-	 * @return the month date
-	 */
-	private int getMonthDate(int month) {
-		return (month % ONE_HUNDRED_COUNT) % TOTAL_MONTH_OF_YEAR;
-	}
-
-	/**
-	 * Format date.
-	 *
-	 * @param date
-	 *            the date
-	 * @return the string
-	 */
-	public String formatDate(Date date) {
-		return this.formatDate.format(date);
-	}
+	// public static void main(String[] args) {
+	// ClosureGetMonthDay test = new ClosureGetMonthDay();
+	// ClosureDate input = new ClosureDate(28, false);
+	// int yearMonth = 201804;
+	// DatePeriod period = test.getDayMonth(input, yearMonth);
+	// System.out.println(period.start().toString() + " - " +
+	// period.end().toString());
+	// }
 
 }

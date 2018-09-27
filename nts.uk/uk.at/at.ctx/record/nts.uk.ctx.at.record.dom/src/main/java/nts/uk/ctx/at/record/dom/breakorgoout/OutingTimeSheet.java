@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -77,11 +78,44 @@ public class OutingTimeSheet extends DomainObject {
 																			  new ArrayList<>(),
 																			  new ArrayList<>(),
 																			  Optional.empty(),
+																			  WorkingBreakTimeAtr.NOTWORKING,
 																			  Finally.of(this.reasonForGoOut),
 																			  Finally.empty(),
 																			  Optional.empty(),
-																			  DeductionClassification.GO_OUT
+																			  DeductionClassification.GO_OUT,
+																			  Optional.empty()
 																			  );
 	}
 	
+	/**
+	 * 自信が計算できる状態か判定うる
+	 * @return 計算可能である
+	 */
+	public boolean isCalcState() {
+		return isCalcGoOut() && isCalcComeBack();
+	}
+	
+	/**
+	 * 外出時刻が計算できる状態になっているか判定する
+	 * (nullになっていないか)
+	 * @return 計算可能である。
+	 */
+	private boolean isCalcGoOut() {
+		if(this.getGoOut() != null && this.getGoOut().isPresent()) {
+			return this.getGoOut().get().isCalcStampState();
+		}
+		return false;
+	}
+	
+	/**
+	 * 戻り時刻が計算できる状態になっているか判定する
+	 * (null になっていないか)
+	 * @return　 計算可能である。
+	 */
+	private boolean isCalcComeBack() {
+		if(this.getComeBack() != null && this.getComeBack().isPresent()) {
+			return this.getGoOut().get().isCalcStampState();
+		}
+		return false;		
+	}
 }

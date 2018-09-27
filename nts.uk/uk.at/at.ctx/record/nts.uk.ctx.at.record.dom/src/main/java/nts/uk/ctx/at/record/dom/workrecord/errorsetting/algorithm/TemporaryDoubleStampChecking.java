@@ -18,49 +18,59 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 @Stateless
 public class TemporaryDoubleStampChecking {
 
-	public EmployeeDailyPerError temporaryDoubleStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance){
-		
+	public EmployeeDailyPerError temporaryDoubleStampChecking(String companyID, String employeeID,
+			GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+
 		EmployeeDailyPerError employeeDailyPerError = null;
-		
+
 		List<Integer> attendanceItemIDList = new ArrayList<>();
-		
-//		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository
-//				.findByKey(employeeID, processingDate);
-		
-		if (temporaryTimeOfDailyPerformance != null && !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+
+		// Optional<TemporaryTimeOfDailyPerformance>
+		// temporaryTimeOfDailyPerformance =
+		// this.temporaryTimeOfDailyPerformanceRepository
+		// .findByKey(employeeID, processingDate);
+
+		if (temporaryTimeOfDailyPerformance != null
+				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
 			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
-			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks){
-				if(timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()){
-					if(timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() >= 2){
-						if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
-							attendanceItemIDList.add(51);
-						} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
-							attendanceItemIDList.add(59);
-						} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
-							attendanceItemIDList.add(67);
-						}
-					}				
-				}
-				if(timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()){
-					if (timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() >= 2) {
-						if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
-							attendanceItemIDList.add(53);
-						} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
-							attendanceItemIDList.add(61);
-						} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
-							attendanceItemIDList.add(69);
+			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
+				if ((timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent())
+						|| (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())) {
+
+					if (timeLeavingWork.getAttendanceStamp() != null
+							&& timeLeavingWork.getAttendanceStamp().isPresent()) {
+						if (timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() >= 2) {
+							if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
+								attendanceItemIDList.add(51);
+							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
+								attendanceItemIDList.add(59);
+							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
+								attendanceItemIDList.add(67);
+							}
 						}
 					}
-				}				
+					if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
+						if (timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() >= 2) {
+							if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
+								attendanceItemIDList.add(53);
+							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
+								attendanceItemIDList.add(61);
+							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((3)))) {
+								attendanceItemIDList.add(69);
+							}
+						}
+					}
+				}
 			}
-			if(!attendanceItemIDList.isEmpty()){
-				employeeDailyPerError = new EmployeeDailyPerError(companyID,
-						employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"),
-						attendanceItemIDList);
+			if (!attendanceItemIDList.isEmpty()) {
+				employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
+						new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDList);
 			}
-//			if (!attendanceItemIDList.isEmpty()) {
-//				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"), attendanceItemIDList);
-//			}
+			// if (!attendanceItemIDList.isEmpty()) {
+			// this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID,
+			// employeeID, processingDate, new ErrorAlarmWorkRecordCode("S006"),
+			// attendanceItemIDList);
+			// }
 		}
 		return employeeDailyPerError;
 	}

@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -8,20 +9,21 @@ import nts.arc.time.GeneralDate;
  * @author sonnh1
  *
  */
+@AllArgsConstructor
 @Data
 public class BasicScheduleScreenDto {
 	private String employeeId;
 	private GeneralDate date;
 	private String workTypeCode;
 	private String workTimeCode;
-	private int confirmedAtr;
-	private int scheduleCnt;
-	private int scheduleStartClock;
-	private int scheduleEndClock;
-	private int bounceAtr;
+	private Integer confirmedAtr;
+	private Integer scheduleCnt;
+	private Integer scheduleStartClock;
+	private Integer scheduleEndClock;
+	private Integer bounceAtr;
 
 	public BasicScheduleScreenDto(String employeeId, GeneralDate date, String workTypeCode, String workTimeCode,
-			int confirmedAtr) {
+			Integer confirmedAtr) {
 		super();
 		this.employeeId = employeeId;
 		this.date = date;
@@ -30,8 +32,8 @@ public class BasicScheduleScreenDto {
 		this.confirmedAtr = confirmedAtr;
 	}
 
-	public BasicScheduleScreenDto(String employeeId, GeneralDate date, int scheduleCnt, int scheduleStartClock,
-			int scheduleEndClock, int bounceAtr) {
+	public BasicScheduleScreenDto(String employeeId, GeneralDate date, Integer scheduleCnt, Integer scheduleStartClock,
+			Integer scheduleEndClock, Integer bounceAtr) {
 		super();
 		this.employeeId = employeeId;
 		this.date = date;

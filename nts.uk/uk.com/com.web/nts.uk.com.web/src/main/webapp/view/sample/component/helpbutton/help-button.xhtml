@@ -27,8 +27,13 @@
 							<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'bottom center', enable: enable }">?</button>
 							<button data-bind="ntsHelpButton: {image: 'test-image2.jpg', position: 'right+200 top-50', enable: enable }">?</button>
 							<button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'] }, text: '？'">？</button>
+							<button data-bind="ntsHelpButton: {popUpId: 'pop-up-element', position : 'bottom center', enable: true}">?</button>
 						</div>
 						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
+						<div id="pop-up-element"> 
+							<h2 id="title-pop-up">Pop-up Element</h2>
+							<p> This pop-up element have a H2 tag and a P tag. You also can add other elements</p>
+						</div>
 						<br/>
 						<article class="cf">
 							<div class="tabs">
@@ -38,8 +43,17 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-									<pre><![CDATA[<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: enable }">?</button>
-									<button class="inline" data-bind="ntsHelpButton: { position: 'right center', textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'] }, text: '？'">？</button>]]></pre>
+									<pre><![CDATA[
+Image									
+<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+
+Text
+<button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>
+
+Pop-up Element (New)
+<button data-bind="ntsHelpButton: {popUpId: 'pop-up-element', position : 'bottom center', enable: true}">?</button>
+
+						]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -71,6 +85,15 @@
 												<td>
 													<b>Type:</b> string<br/>
 													textParams for a ID of text resource to show instead of image
+												</td>
+											</tr>
+											<tr>
+												<td>popUpId (optional)
+													<span class="label label-new"></span>
+												</td>
+												<td>
+													<b>Type:</b> string<br/>
+													ID of DIV tag which will be inserted to the help-button content 
 												</td>
 											</tr>
 											<tr>

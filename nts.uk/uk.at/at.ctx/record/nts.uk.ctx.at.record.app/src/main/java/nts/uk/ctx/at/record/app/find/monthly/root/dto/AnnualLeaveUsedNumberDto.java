@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -22,12 +23,12 @@ public class AnnualLeaveUsedNumberDto implements ItemConst {
 
 	/** 使用時間 */
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
-	private TimeAnnualLeaveUsedTimeDto usedTime;
+	private TimeUsedNumberDto usedTime;
 
 	public static AnnualLeaveUsedNumberDto from(AnnualLeaveUsedNumber domain) {
 		return domain == null ? null : new AnnualLeaveUsedNumberDto(
 												AnnualLeaveUsedDaysDto.from(domain.getUsedDays()),
-												TimeAnnualLeaveUsedTimeDto.from(domain.getUsedTime().orElse(null)));
+												TimeUsedNumberDto.from(domain.getUsedTime().orElse(null)));
 	}
 	
 	public AnnualLeaveUsedNumber toDomain() {

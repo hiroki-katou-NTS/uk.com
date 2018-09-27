@@ -18,4 +18,9 @@ public class OverTimeFrameTimeSheetDto {
 //	@AttendanceItemLayout(layout = "B")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer overtimeFrameNo;
+	
+	@Override
+	public OverTimeFrameTimeSheetDto clone() {
+		return new OverTimeFrameTimeSheetDto(timeSheet == null ? null : timeSheet.clone(), overtimeFrameNo);
+	}
 }

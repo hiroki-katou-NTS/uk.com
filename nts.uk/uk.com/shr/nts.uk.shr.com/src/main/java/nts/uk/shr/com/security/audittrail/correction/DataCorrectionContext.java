@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javax.enterprise.inject.spi.CDI;
 
+import lombok.Getter;
 import lombok.val;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;

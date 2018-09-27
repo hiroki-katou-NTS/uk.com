@@ -55,7 +55,9 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
 		this.ymd = ymd;
-		this.scheduleTimeSheets = scheduleTimeSheets; 
+		this.scheduleTimeSheets = scheduleTimeSheets;
+		//一時対応
+		this.dayOfWeek = DayOfWeek.MONDAY;
 	} 
 	
 	/**
@@ -128,5 +130,13 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.ymd = ymd;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
+	}
+	
+	/**
+	 * 計算ステータスの変更
+	 * @param state 計算ステータス
+	 */
+	public void changeCalcState(CalculationState state) {
+		this.calculationState = state;
 	}
 }

@@ -161,7 +161,7 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 300px" class="color-header" id="r2_9" data-bind = "text: text('KAF022_123')"></td>
+                    <td style="width: 300px" class="color-header" id="r2_9" data-bind = "text: text('KAF022_124')"></td>
                     <td style="width: 600px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR2_8,

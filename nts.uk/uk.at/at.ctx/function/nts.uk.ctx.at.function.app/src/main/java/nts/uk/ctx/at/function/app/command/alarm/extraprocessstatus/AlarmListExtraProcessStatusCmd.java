@@ -2,9 +2,13 @@ package nts.uk.ctx.at.function.app.command.alarm.extraprocessstatus;
 
 import java.util.Optional;
 
+import javax.persistence.EnumType;
+
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 
 @Value
 public class AlarmListExtraProcessStatusCmd {
@@ -24,6 +28,8 @@ public class AlarmListExtraProcessStatusCmd {
 	/**終了時刻*/
 	private Integer endTime;
 	
+	private int status;
+	
 	public static AlarmListExtraProcessStatus toDomain(AlarmListExtraProcessStatusCmd command) {
 		return new AlarmListExtraProcessStatus(
 				command.getExtraProcessStatusID(),
@@ -32,7 +38,8 @@ public class AlarmListExtraProcessStatusCmd {
 				command.getStartTime(),
 				command.getEmployeeID(),
 				command.getEndDate(),
-				command.getEndTime()
+				command.getEndTime(),
+				EnumAdaptor.valueOf(command.status, ExtractionState.class)  
 				);
 	}
 }

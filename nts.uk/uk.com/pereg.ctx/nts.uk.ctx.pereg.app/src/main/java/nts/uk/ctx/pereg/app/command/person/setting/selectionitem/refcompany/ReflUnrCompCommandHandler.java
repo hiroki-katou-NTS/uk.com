@@ -52,17 +52,17 @@ public class ReflUnrCompCommandHandler extends CommandHandler<ReflUnrCompCommand
 		ReflUnrCompCommand command = context.getCommand();
 		String selectionItemId = command.getSelectionItemId();
 
-		String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
+		String loginCompanyId = AppContexts.user().companyId();
 
-		SelectionHistory zeroCompanyHistory = this.selectionHistoryRepo.get(selectionItemId, zeroCompanyId).get();
+		SelectionHistory loginCompanyHistory = this.selectionHistoryRepo.get(selectionItemId, loginCompanyId).get();
 
-		List<String> zeroHistoryIds = zeroCompanyHistory.getDateHistoryItems().stream().map(x -> x.identifier())
+		List<String> loginHistoryIds = loginCompanyHistory.getDateHistoryItems().stream().map(x -> x.identifier())
 				.collect(Collectors.toList());
 
-		Map<String, List<Selection>> histIdSelectionMap = selectionRepo.getByHistIdList(zeroHistoryIds).stream()
+		Map<String, List<Selection>> histIdSelectionMap = selectionRepo.getByHistIdList(loginHistoryIds).stream()
 				.collect(Collectors.groupingBy(Selection::getHistId));
 
-		Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap = selectOrderRepo.getByHistIdList(zeroHistoryIds)
+		Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap = selectOrderRepo.getByHistIdList(loginHistoryIds)
 				.stream().collect(Collectors.groupingBy(SelectionItemOrder::getHistId));
 
 		List<String> companyIdList = companyRepo.acquireAllCompany();
@@ -72,7 +72,7 @@ public class ReflUnrCompCommandHandler extends CommandHandler<ReflUnrCompCommand
 		
 		companyIdList.forEach(companyId -> {
 			// insert
-			insertHistoryList(zeroCompanyHistory, companyId, histIdSelectionMap, histIdSelectionOrderMap);
+			insertHistoryList(loginCompanyHistory, companyId, histIdSelectionMap, histIdSelectionOrderMap);
 		});
 
 	}

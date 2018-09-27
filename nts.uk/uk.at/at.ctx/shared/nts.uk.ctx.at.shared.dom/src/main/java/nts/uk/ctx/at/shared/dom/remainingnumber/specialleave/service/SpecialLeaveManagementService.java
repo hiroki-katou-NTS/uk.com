@@ -16,18 +16,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface SpecialLeaveManagementService {
 	/**
 	 * RequestList273 期間内の特別休暇残を集計する
-	 * @param cid
-	 * @param sid
-	 * @param complileDate ・集計開始日 ・集計終了日
-	 * @param model ・モード（月次か、その他か） TRUE: 月次, FALSE: その他  
-	 * 月次モード：当月以降は日次のみ見るが、申請とスケは見ない
-	 * その他モード：当月以降は申請日次スケを見る
-	 * @param baseDate ・基準日
-	 * @param specialLeaveCode ・特別休暇コード
-	 * @param mngAtr true: 翌月管理データ取得区分がする, false: 翌月管理データ取得区分がしない。 
 	 * @return
 	 */
-	InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate, boolean mode, GeneralDate baseDate, int specialLeaveCode, boolean mngAtr);
+	InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param);
 	/**
 	 * 管理データを取得する
 	 * @param cid
@@ -44,8 +35,9 @@ public interface SpecialLeaveManagementService {
 	 * @param interimSpeHolidayData ・特別休暇暫定データ一覧
 	 * @return
 	 */
-	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, SpecialHolidayInterimMngData interimDataMng,
-			OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
+	InPeriodOfSpecialLeave subtractUseDaysFromMngData(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
+			List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
+			List<InterimRemain> lstInterimMng, OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
 
 	
 	/**
@@ -56,7 +48,7 @@ public interface SpecialLeaveManagementService {
 	 * @param mode
 	 * @return
 	 */
-	SpecialHolidayInterimMngData specialHolidayData(String cid, String sid, DatePeriod dateData, boolean mode);
+	SpecialHolidayInterimMngData specialHolidayData(SpecialHolidayDataParam param);
 	/**
 	 * 管理データと暫定データの相殺
 	 * @param cid
@@ -68,7 +60,7 @@ public interface SpecialLeaveManagementService {
 	 * @param accumulationMaxDays 蓄積上限日数
 	 * @return
 	 */
-	InPeriodOfSpecialLeave getOffsetDay(String cid, String sid, DatePeriod dateData, GeneralDate baseDate,
+	InPeriodOfSpecialLeave getOffsetDay(String cid, String sid, DatePeriod dateData, GeneralDate baseDate, int specialCode,
 			List<SpecialLeaveGrantRemainingData> lstGrantData, SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays);
 	/**
 	 * 残数情報をまとめる

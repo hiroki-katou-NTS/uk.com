@@ -192,7 +192,7 @@ public class ErrorAlarmWorkRecordDto {
 	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
 		// Create to DTO root
 		ErrorAlarmWorkRecordDto errorAlarmWorkRecordDto = new ErrorAlarmWorkRecordDto(domain.getCompanyId(),
-				domain.getCode().v(), domain.getName().v(), domain.getFixedAtr() ? 1 : 0, domain.getUseAtr() ? 1 : 0,
+				domain.getCode().v().substring(1), domain.getName().v(), domain.getFixedAtr() ? 1 : 0, domain.getUseAtr() ? 1 : 0,
 				domain.getRemarkCancelErrorInput().value, domain.getRemarkColumnNo(), domain.getTypeAtr().value,
 				conditionDomain != null ? conditionDomain.getDisplayMessage().v() : "",
 				domain.getMessage().getBoldAtr() ? 1 : 0, domain.getMessage().getMessageColor().v(),

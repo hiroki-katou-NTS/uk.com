@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -28,6 +29,7 @@ public interface AffJobTitleHistoryRepository {
 	Optional<AffJobTitleHistory> getListBySid(String cid, String sid);
 	
 	Optional<AffJobTitleHistory> getListBySidDesc(String cid, String sid);
+	
 
 	/**
 	 * ドメインモッ�「�務�位」を新規登録する
@@ -56,6 +58,8 @@ public interface AffJobTitleHistoryRepository {
 	
 	Optional<AffJobTitleHistory> getListByHidSid(String hid, String sid);
 	
+	List<AffJobTitleHistory> getListByListHidSid(List<String> hid, List<String> sid);
+	
 	/**
 	 * Search job title history.
 	 *
@@ -81,4 +85,25 @@ public interface AffJobTitleHistoryRepository {
 	 * @return
 	 */
 	List<AffJobTitleHistory> getByEmployeeListPeriod(List<String> employeeIds, DatePeriod period);
+	
+	/**
+	 * request list 515
+	 * @param employeeIds
+	 * @param period
+	 * @return
+	 * @author yennth
+	 */
+	Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate, String cid);
+	
+	Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate);
+	
+	@Value
+	public static class SingleHistoryItem {
+		
+		private final String employeeId;
+		private final String historyId;
+		private final DatePeriod period;
+		private final String jobTitleId;
+		private final String note;
+	}
 }

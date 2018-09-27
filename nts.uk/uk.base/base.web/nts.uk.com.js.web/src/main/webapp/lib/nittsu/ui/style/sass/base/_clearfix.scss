@@ -24,3 +24,10 @@
 .cf {
     *zoom: 1;
 }
+
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+input[type=text]::-ms-clear {
+    display: none;
+}

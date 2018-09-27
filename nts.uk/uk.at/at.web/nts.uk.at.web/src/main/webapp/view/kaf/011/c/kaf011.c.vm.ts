@@ -8,6 +8,10 @@ module nts.uk.at.view.kaf011.c.screenModel {
     import block = nts.uk.ui.block;
     import alError = nts.uk.ui.dialog.alertError;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import windows = nts.uk.ui.windows;
 
     export class ViewModel {
         prePostTypes = ko.observableArray([
@@ -47,7 +51,8 @@ module nts.uk.at.view.kaf011.c.screenModel {
         version: KnockoutObservable<number> = ko.observable(0);
 
         employeeID: KnockoutObservable<string> = ko.observable('');
-
+        
+        firstLoad: KnockoutObservable<boolean> = ko.observable(false);
 
 
         constructor() {
@@ -105,8 +110,6 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         showAppReason(): boolean {
             let self = this;
-
-
             return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
 
         }
@@ -145,22 +148,22 @@ module nts.uk.at.view.kaf011.c.screenModel {
             service.changeAbsDate(saveCmd).done((data) => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
                     if (data.autoSendMail) {
-                        appcommon.CommonProcess.displayMailResult(data);
+                        self.displayEmailResult(data);
                     } else {
-                        if (true) {
-                            appcommon.CommonProcess.openDialogKDL030(data.appID);
-                        } else {
-                            location.reload();
-                        }
+                        let command = { appID: data.appID };
+                        setShared("KDL030_PARAM", command);
+                        modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                            //phai de delay neu khong ham setShared se khong an
+                            _.delay(self.closeDialog(data.appID), 500, data.appID);
+                        });
                     }
-                    nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', data.appID);
-                    nts.uk.ui.windows.close();
+
                 });
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
                     if (error.messageId == 'Msg_198') {
-                        nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', 'Msg_198');
-                        nts.uk.ui.windows.close();
+                        setShared('KAF_011_C_PARAMS', 'Msg_198');
+                        windows.close();
                     }
 
                 });
@@ -169,6 +172,48 @@ module nts.uk.at.view.kaf011.c.screenModel {
                 block.clear();
             });
 
+        }
+
+        displayEmailResult(data) {
+            let autoSuccessMail = "", autoFailMail = "", self = this;
+            data.autoSuccessMail.forEach((value, index) => {
+                autoSuccessMail += value;
+                if (index != data.autoSuccessMail.length - 1) {
+                    autoSuccessMail += ",";
+                }
+            });
+            data.autoFailMail.forEach((value, index) => {
+                autoFailMail += value;
+                if (index != data.autoFailMail.length - 1) {
+                    autoFailMail += ",";
+                }
+            });
+            if (!nts.uk.util.isNullOrEmpty(autoSuccessMail) && !nts.uk.util.isNullOrEmpty(autoFailMail)) {
+                dialog({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                    dialog({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                        self.closeDialog(data.appID);
+
+                    });
+                });
+            } else if (!nts.uk.util.isNullOrEmpty(autoSuccessMail) && nts.uk.util.isNullOrEmpty(autoFailMail)) {
+                dialog({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                    self.closeDialog(data.appID);
+                });
+            } else if (nts.uk.util.isNullOrEmpty(autoSuccessMail) && !nts.uk.util.isNullOrEmpty(autoFailMail)) {
+                dialog({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                    self.closeDialog(data.appID);
+                });
+            } else {
+                self.closeDialog(data.appID);
+            }
+        }
+        closeDialog(appID) {
+            nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', appID);
+            windows.close();
+        }
+
+        closeBtn() {
+            windows.close();
         }
         getReason(): string {
             let appReason = '',
@@ -192,7 +237,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this,
-                param = nts.uk.ui.windows.getShared('KAF_011_PARAMS');
+                param = getShared('KAF_011_PARAMS');
 
 
             if (data) {
@@ -208,20 +253,13 @@ module nts.uk.at.view.kaf011.c.screenModel {
 
             if (param) {
                 self.prePostSelectedCode(param.prePostSelectedCode);
-                if (self.appTypeSet().displayAppReason() != 0) {
-                    self.reason(param.reason);
-                }
+                self.reason(param.reason);
                 self.absWk(new common.AppItems(param.absApp));
                 self.version(param.version);
-                if (param.appReasonSelectedID) {
-                    self.appReasonSelectedID(param.appReasonSelectedID);
-                }
+                self.appReasonSelectedID(param.appReasonSelectedID || '');
+
             }
             self.absWk().appDate('');
-        }
-
-        closeDialog() {
-            nts.uk.ui.windows.close();
         }
 
     }

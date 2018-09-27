@@ -13,11 +13,9 @@
 }
 #D1_4{
 	margin-left: 30px;
-	padding-top:10px; 
 }
 #D1_2  {
 	margin-left: 11.5%;
-	margin-top: 2%; 
 	display: inline-block;
 	width: 580px;
 }
@@ -25,7 +23,7 @@
 #D2_2{
 	margin-left: 80px;
 	width: 580px;
-	height: 500px;
+	height: 320px;
 	margin-top: 2px;
 
 }
@@ -34,15 +32,15 @@
 }
 #D31_32_button{
 	margin-left: 8%;
-	margin-top: 1%;
 }
 #D3_1{
 	margin-left: 25px;
+	margin-top: 2px;
 }
 #D3_2{
-	/* margin-left: 475px; */
+	margin-top: 2px;
 	float:right;
 }
 #D1_1 {
 	margin-left: 40px;
-	margin-top: 10px;}
+}

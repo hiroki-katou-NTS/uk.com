@@ -44,8 +44,8 @@ public class EmployeeDeleteFinder {
 				if (!person.isPresent()){
 					continue;
 				}
-				listResult.add(EmployeeToDeleteDto.fromDomain(employeeDataMngInfo.getEmployeeCode().v(), "",
-						person.get().getPersonNameGroup().getPersonName().getFullName().v().trim(),
+				listResult.add(EmployeeToDeleteDto.fromDomain(employeeDataMngInfo.getEmployeeCode().v()+" "+ person.get().getPersonNameGroup().getBusinessName().v().trim(), "",
+						person.get().getPersonNameGroup().getBusinessName().v().trim(),
 						employeeDataMngInfo.getEmployeeId().toString()));
 			}
 		} else {
@@ -63,7 +63,7 @@ public class EmployeeDeleteFinder {
 			Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
 
 			return EmployeeToDeleteDetailDto.fromDomain(empInfo.getEmployeeCode().v(),
-					person.getPersonNameGroup().getPersonName().getFullName().v(), empInfo.getRemoveReason().v(),
+					person.getPersonNameGroup().getBusinessName().v().trim(), empInfo.getRemoveReason().v(),
 					empInfo.getDeleteDateTemporary().toString("yyyy/MM/dd HH:mm:ss"));
 		} else {
 			return null;

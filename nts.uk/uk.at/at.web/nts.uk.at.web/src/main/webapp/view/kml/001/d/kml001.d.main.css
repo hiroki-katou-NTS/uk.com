@@ -51,7 +51,3 @@ body {
 	color: #999999;
 	border-color: #999999 !important;
 }
-.datepicker-container.datepicker-dropdown {
-	margin-top: -163px;
-    margin-left: 115px;
-}

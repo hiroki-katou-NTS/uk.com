@@ -27,6 +27,14 @@ public interface AbsenceFrameRepository {
 	Optional<AbsenceFrame> findAbsenceFrameByCode(String companyId, int frameNo);
 	
 	/**
+	 * 
+	 * @param companyId
+	 * @param frameNos
+	 * @return
+	 */
+	List<AbsenceFrame> findAbsenceFrameByListFrame(String companyId, List<Integer> frameNos);
+	
+	/**
 	 * Update the Absence Frame.
 	 *
 	 * @param absenceFrame the absence frame

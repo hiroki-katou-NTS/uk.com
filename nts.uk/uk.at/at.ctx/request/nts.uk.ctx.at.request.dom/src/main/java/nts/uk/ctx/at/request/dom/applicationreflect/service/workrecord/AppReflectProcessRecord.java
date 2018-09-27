@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 
 /**
  * 勤務実績に反映
@@ -11,9 +12,9 @@ public interface AppReflectProcessRecord {
 	/**
 	 * 事前チェック処理
 	 * @param info
-	 * @return
+	 * @return True: 反映する、False:　反映しない
 	 */
-	public boolean appReflectProcessRecord(AppReflectInfor info);
+	public boolean appReflectProcessRecord(Application_New appInfor, boolean chkRecord);
 	/**
 	 * 事前申請の処理(Xử lý xin trước) 　直行直帰
 	 * 事後申請の処理

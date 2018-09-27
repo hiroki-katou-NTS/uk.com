@@ -10,3 +10,15 @@ module nts.uk.at.view.kdw002.a {
             __viewContext.bind(screenModel);
     });
 }
+
+$(document).on('click', '[data-prevent-click="true"]', evt => {
+    $.blockUI({
+        message: null,
+        overlayCSS: { opacity: 0 },
+    });
+}).ajaxStop(() => {
+    setTimeout(() => {
+        $.unblockUI();
+    }, 500);
+});
+

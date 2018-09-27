@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk002.a {
         /**
          * Call service to get optional item detail
          */
-        export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
+        export function findOptionalItemDetail(itemNo: number): JQueryPromise<model.OptionalItemDto> {
             return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo);
         }
 
@@ -61,6 +61,7 @@ module nts.uk.at.view.kmk002.a {
                 empConditionAtr: number;
                 performanceAtr: number;
                 calcResultRange: CalcResultRangeDto;
+                unit: string;
                 formulas: Array<FormulaDto>;
             }
             /**

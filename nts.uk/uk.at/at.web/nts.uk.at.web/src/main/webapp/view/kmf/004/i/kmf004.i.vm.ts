@@ -21,7 +21,9 @@ module nts.uk.at.view.kmf004.i.viewmodel {
             {
                 headerText: getText('KMF004_73'), key: 'setting', width: 60,
                 //I2_6
-                template: '{{if ${setting} == "true"}} <i data-bind=\'ntsIcon: { no: 78 }\'></i>{{else }}  {{/if}}'
+                template: '{{if ${setting} == "true"}}<div style=\' height:100%;\'> <i  data-bind=\'ntsIcon: { no: 78 }\'></i> </div>{{else }}  {{/if}}',
+
+                columnCssClass:'nowrap'
             }
         ]);;
         currentFrameCd: KnockoutObservable<number> = ko.observable(null);
@@ -167,9 +169,9 @@ module nts.uk.at.view.kmf004.i.viewmodel {
     }
     export class SpecialHolidayEvent {
         companyId: KnockoutObservable<string> = ko.observable("");
-        specialHolidayEventNo: KnockoutObservable<number> = ko.observable(null);
+        specialHolidayEventNo: KnockoutObservable<number> = ko.observable();
         maxNumberDay: KnockoutObservable<number> = ko.observable(1);
-        fixedDayGrant: KnockoutObservable<number> = ko.observable(null);
+        fixedDayGrant: KnockoutObservable<number> = ko.observable("");
         makeInvitation: KnockoutObservable<boolean> = ko.observable(false);
         includeHolidays: KnockoutObservable<boolean> = ko.observable(false);
         ageLimit: KnockoutObservable<boolean> = ko.observable(false);
@@ -186,6 +188,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         employmentTxt: KnockoutObservable<string> = ko.observable("");
         classificationTxt: KnockoutObservable<string> = ko.observable("");
         createNew: KnockoutObservable<boolean> = ko.observable(true);
+        dayGrantUse: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data?) {
             let self = this;
             self.empList.subscribe((newData) => {
@@ -208,6 +211,22 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                     self.classificationTxt(_.map(datas, item => { return item }).join(' + '));
                 });
             });
+            
+            self.ageLimit.subscribe((value) => {
+                if (!value) {
+                    $("#lowerLimit").ntsError('clear');
+                    $("#higherLimit").ntsError('clear');
+                }
+            });
+            
+            self.maxNumberDay.subscribe((value) => {
+                if (value == 1) {
+                    self.dayGrantUse(true);
+                } else {
+                    $("#max_date").ntsError('clear');
+                    self.dayGrantUse(false);
+                }
+            });
 
             self.createNew(data ? false : true);
             if (__viewContext['viewModel']) {
@@ -217,11 +236,13 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                 self.newData(data);
             }
         }
+        
+        
         newData(data) {
             let self = this;
             self.companyId(data.companyId);
             self.maxNumberDay(data.maxNumberDay);
-            self.fixedDayGrant(data.fixedDayGrant);
+            self.fixedDayGrant(data.fixedDayGrant == null ? "" : data.fixedDayGrant);
             self.makeInvitation(data.makeInvitation == 0 ? false : true);
             self.includeHolidays(data.includeHolidays == 0 ? false : true);
             self.ageLimit(data.ageLimit == 0 ? false : true);
@@ -283,8 +304,8 @@ module nts.uk.at.view.kmf004.i.viewmodel {
 
     }
     export class AgeRange {
-        ageLowerLimit: KnockoutObservable<number> = ko.observable(null);
-        ageHigherLimit: KnockoutObservable<number> = ko.observable(null);
+        ageLowerLimit: KnockoutObservable<number> = ko.observable();
+        ageHigherLimit: KnockoutObservable<number> = ko.observable();
         constructor(data?) {
             if (data) {
                 this.ageLowerLimit(data.ageLowerLimit);

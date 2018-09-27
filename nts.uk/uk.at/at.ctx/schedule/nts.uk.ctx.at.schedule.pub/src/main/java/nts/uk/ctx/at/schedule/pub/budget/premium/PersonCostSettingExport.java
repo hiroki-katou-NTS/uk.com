@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 @NoArgsConstructor
@@ -24,5 +25,7 @@ public class PersonCostSettingExport {
 	 * 勤怠項目ID
 	 */
 	private List<Integer> attendanceItems;
+	
+	private DatePeriod period;
 
 }

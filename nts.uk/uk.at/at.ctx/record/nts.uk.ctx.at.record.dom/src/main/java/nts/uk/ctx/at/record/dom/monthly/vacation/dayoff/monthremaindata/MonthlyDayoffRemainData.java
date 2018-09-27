@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata;
 
 
+import javax.persistence.EnumType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;

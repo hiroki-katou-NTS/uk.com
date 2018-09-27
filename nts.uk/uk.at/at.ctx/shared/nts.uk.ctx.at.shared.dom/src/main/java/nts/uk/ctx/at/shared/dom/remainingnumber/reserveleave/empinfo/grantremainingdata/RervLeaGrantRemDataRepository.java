@@ -11,7 +11,7 @@ public interface RervLeaGrantRemDataRepository {
 	
 	List<ReserveLeaveGrantRemainingData> findNotExp(String employeeId, String cId);
 	
-	Optional<ReserveLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate, GeneralDate expiredDate);
+	List<ReserveLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate);
 	
 	Optional<ReserveLeaveGrantRemainingData> getById(String id);
 	
@@ -20,4 +20,7 @@ public interface RervLeaGrantRemDataRepository {
 	void update(ReserveLeaveGrantRemainingData data);
 	
 	void delete(String rsvLeaId);
+	
+	void deleteAfterDate(String employeeId, GeneralDate date);
+	
 }

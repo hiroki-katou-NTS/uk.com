@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 /**
  * @author hungnm
+ * 加給利用単位
  *
  */
 @Getter

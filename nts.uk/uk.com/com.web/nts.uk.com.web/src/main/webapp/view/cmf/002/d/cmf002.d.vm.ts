@@ -395,6 +395,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.CHARACTER:
                     self.subCharStart = self.searchCharStartVal.subscribe(value => {
                         this.clearError("D6_C4_3");
+                        this.checkError("D6_C4_3");
                     })
                     self.subCharEnd = self.searchCharEndVal.subscribe(value => {
                         this.clearError("D6_C4_3");
@@ -403,6 +404,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.NUMERIC:
                     self.subNumStart = self.searchNumStartVal.subscribe(value => {
                         this.clearError("D6_C4_6");
+                        this.checkError("D6_C4_6");
                     })
                     self.subNumEnd = self.searchNumEndVal.subscribe(value => {
                         this.clearError("D6_C4_6");
@@ -411,6 +413,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.DATE:
                     self.subDateStart = self.searchDateStart.subscribe(value => {
                         this.clearError("D6_C4_9");
+                        this.checkError("D6_C4_9");
                     })
                     self.subDateEnd = self.searchDateEnd.subscribe(value => {
                         this.clearError("D6_C4_9");
@@ -419,6 +422,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.TIME:
                     self.subTimeStart = self.searchTimeStartVal.subscribe(value => {
                         this.clearError("D6_C4_12");
+                        this.checkError("D6_C4_12");
                     })
                     self.subTimeEnd = self.searchTimeEndVal.subscribe(value => {
                         this.clearError("D6_C4_12");
@@ -427,6 +431,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.INS_TIME:
                     self.subClockStart = self.searchClockStartVal.subscribe(value => {
                         this.clearError("D6_C4_15");
+                        this.checkError("D6_C4_15");
                     })
                     self.subClockEnd = self.searchClockEndVal.subscribe(value => {
                         this.clearError("D6_C4_15");
@@ -482,7 +487,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         setErrorCompare(control1, control2) {
             let self = this;
             $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control2)
-                .ntsError('set', { messageId: 'Msg_1401', messageParams: [getText(self.getControlName(control1)), getText(self.getControlName(control2))] });
+                .ntsError('set', { messageId: 'Msg_1401', messageParams: [getText(self.getControlName(control2)), getText(self.getControlName(control1))] });
         }
 
         getControlName(control) {
@@ -609,11 +614,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (_.isNil(self.searchNumStartVal())) {
+                    if (_.isEmpty(self.searchNumStartVal())) {
                         self.setError("D6_C4_5", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchNumEndVal())) {
+                    if (_.isEmpty(self.searchNumEndVal())) {
                         self.setError("D6_C4_6", "Msg_656");
                         checkRequired = true;
                     }
@@ -652,7 +657,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     break;
                 case SWITCH_VIEW.INS_TIME_NORMAL:
                     if (_.isNil(self.searchClock())) {
-                        self.setError("D6_C4_1", "Msg_656");
+                        self.setError("D6_C4_13", "Msg_656");
                         checkRequired = true;
                     }
                     break;
@@ -686,7 +691,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (self.searchNumStartVal() > self.searchNumEndVal()) {
+                    if (parseFloat(self.searchNumStartVal()) > parseFloat(self.searchNumEndVal())) {
                         self.setErrorCompare("D6_C4_5", "D6_C4_6");
                         checkCompare = true;
                     }
@@ -729,7 +734,9 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
-                if(searchCode.length > 20){
+ 
+                // 対象の値の桁数が「検索コード」の桁数より大きい場合
+                if (!self.searchCdValidator.validate(searchCode).isValid) {
                     self.setError(control, "Msg_1346");
                     return false;
                 }
@@ -766,11 +773,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                             return false;
                         }
                         break;
-                }
-                // 対象の値の桁数が「検索コード」の桁数より大きい場合
-                if (!self.searchCdValidator.validate(searchCode).isValid) {
-                    self.setError(control, "Msg_1346");
-                    return false;
                 }
             })
         }
@@ -980,9 +982,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             cmd.searchNum = dto.searchNum();
             cmd.searchNumEndVal = dto.searchNumEndVal();
             cmd.searchNumStartVal = dto.searchNumStartVal();
-            cmd.searchChar = dto.searchChar();
-            cmd.searchCharEndVal = dto.searchCharEndVal();
-            cmd.searchCharStartVal = dto.searchCharStartVal();
+            if(dto.searchChar() != ""){
+                cmd.searchChar = dto.searchChar();
+            }
+            if(dto.searchCharEndVal() != ""){
+                cmd.searchCharEndVal = dto.searchCharEndVal();
+            }
+            if(dto.searchCharStartVal() != ""){
+                cmd.searchCharStartVal = dto.searchCharStartVal();
+            }
             if (dto.searchDate() != null) {
                 cmd.searchDate = moment.utc(dto.searchDate(), "YYYY/MM/DD")._d
             }

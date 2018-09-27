@@ -31,14 +31,25 @@ module nts.uk.at.view.kfp001.d {
                 let self = this;
                 $("#button-2D").focus();
                 let peopleCo = nts.uk.ui.windows.getShared("KFP001_DATAC_SELECT");
+                $(document).on('click', '[data-prevent-click="true"]', evt => {
+                    $.blockUI({
+                        message: null,
+                        overlayCSS: { opacity: 0 },
+                    });
+                }).ajaxStop(() => {
+                    setTimeout(() => {
+                        $.unblockUI();
+                    }, 500);
+                });
                 if (peopleCo != self.peopleNo()) {
                     self.peopleNo(peopleCo);
                 }
             }
 
             addData() {
-                nts.uk.ui.block.invisible();
+
                 let self = this;
+                nts.uk.ui.block.invisible();
 
                 let listEmployeeId = _.map(_.filter(self.listEmp(), (v) => _.includes(self.listSelect(), v.employeeCode)), (item) => {
                     return item.employeeId;
@@ -71,23 +82,24 @@ module nts.uk.at.view.kfp001.d {
                     peopleNo: self.peopleNo()
 
                 }
-                let resourceId = nts.uk.util.randomId().slice(0, 10);
-                    self.addErrorInforCommand({
-                        resourceId: resourceId,
-                        periodArrgLogId: self.executionId(),
-                        processDay: moment(self.startDate()).utc(),
-                        errorMess: 'Loi roi'
-                    })
+//                let resourceId = nts.uk.util.randomId().slice(0, 10);
+//                self.addErrorInforCommand({
+//                    resourceId: resourceId,
+//                    periodArrgLogId: self.executionId(),
+//                    processDay: moment(self.startDate()).utc(),
+//                    errorMess: 'Loi roi'
+//                })
 
-                   let addAggrPeriodCommand = {
-                        mode: self.mode(),
-                        aggrPeriodCommand: aggrPeriodDto,
-                        targetCommand: targetDto,
-                        executionCommand: executionDto,
-                        inforCommand: self.addErrorInforCommand()
-                    }
+                let addAggrPeriodCommand = {
+                    mode: self.mode(),
+                    aggrPeriodCommand: aggrPeriodDto,
+                    targetCommand: targetDto,
+                    executionCommand: executionDto
+//                    ,inforCommand: self.addErrorInforCommand()
+                }
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
+                    nts.uk.ui.block.invisible();
                     self.mode(1);
 
                     let exc = {
@@ -96,24 +108,29 @@ module nts.uk.at.view.kfp001.d {
                     }
                     let period = {
                         startDate: self.startDate(),
-                        endDate: self.endDate()      
+                        endDate: self.endDate()
                     }
                     nts.uk.ui.windows.setShared("KFP001_PERIOD", period);
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
                     nts.uk.ui.windows.setShared("KFP001_DATA_EXC", exc);
                     nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
-                    nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml');
+                    nts.uk.ui.block.invisible();
+                        nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml').onClosed(() => {
+                            nts.uk.ui.block.clear();
+                        });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    
                 })
 
 
             }
 
             opendScreenF() {
+                nts.uk.ui.block.invisible();
                 nts.uk.request.jump("/view/kfp/001/b/index.xhtml");
+                nts.uk.ui.block.clear();
             }
 
             prevC() {

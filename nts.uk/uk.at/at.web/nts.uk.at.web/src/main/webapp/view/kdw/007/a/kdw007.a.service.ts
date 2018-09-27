@@ -21,8 +21,8 @@ module nts.uk.at.view.kdw007.a.service {
         removeMonthlyCondition: "ctx/at/record/workrecord/erroralarm/monthly/remove"
     }
 
-    export function getAll() {
-        return nts.uk.request.ajax(paths.getAll);
+    export function getAll(showTypeAtr: number) {
+        return nts.uk.request.ajax(paths.getAll + "/" + showTypeAtr);
     }
 
     export function update(command) {

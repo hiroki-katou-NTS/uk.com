@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
 public class ParamGetAllAppAbsence {
 	private String startAppDate;
 	private String endAppDate;
@@ -13,4 +15,5 @@ public class ParamGetAllAppAbsence {
 	private String workTypeCode;
 	private int prePostAtr;
 	private String workTimeCode;
+	private String relationCD;
 }

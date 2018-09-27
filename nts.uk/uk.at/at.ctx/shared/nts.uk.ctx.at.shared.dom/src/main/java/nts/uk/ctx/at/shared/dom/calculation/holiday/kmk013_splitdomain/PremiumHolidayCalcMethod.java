@@ -44,6 +44,12 @@ public class PremiumHolidayCalcMethod extends DomainObject{
 		this.calculateActualOperation = calculateActualOperation;
 		this.advanceSet = advanceSet;
 	}
+
+	public PremiumHolidayCalcMethod(int calculateActualOperation, Optional<PremiumCalcMethodDetailOfHoliday> emptyItem) {
+		super();
+		this.calculateActualOperation = CalcurationByActualTimeAtr.valueOf(calculateActualOperation);
+		this.advanceSet = emptyItem;
+	}
 	
 }
 

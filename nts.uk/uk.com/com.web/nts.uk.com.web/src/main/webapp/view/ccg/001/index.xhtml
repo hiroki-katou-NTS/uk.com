@@ -35,8 +35,10 @@
 					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<note style="width:500px;">
-						<b>Update 2018/07/23</b> <br />
-						- Add lazyload for tab 2 <br /><br />
+						<b>Update 2018/09/14</b> <br />
+						- Add feature for synchronizing baseDate and period with parent screen<br /><br />
+						<b>Update 2018/08/07</b> <br />
+						- Add tabindex property<br /><br />
 						<b>Important note: </b> <br />
 						- $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel). <br />
 						- The component container must be placed right after content-area div and must not have custom style.
@@ -217,9 +219,9 @@ const ccg001ComponentOption: GroupOption = {
 	periodFormatYM: false,
 	
 	/** Required parameter */
-	baseDate: moment().toISOString(),
-	periodStartDate: moment().toISOString(),
-	periodEndDate: moment().toISOString(),
+	baseDate: baseDate,
+	periodStartDate: periodStartDate,
+	periodEndDate: periodEndDate,
 	inService: true,
 	leaveOfAbsence: true,
 	closed: true,
@@ -363,15 +365,27 @@ export interface Ccg001ReturnedData {
 										</tr>
 										<tr>
 											<td>baseDate<br/><i>(required if showBaseDate = true)</i></td>
-											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search reference date</td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; or string(ISO 8601 Formats)<br />
+											<b>Note:</b> Use KnockoutObservable for synchronized baseDate <br />
+											Search reference date</td>
+										</tr>
+										<tr>
+											<td>dateRangePickerValue<br/><i>(for dateRangePicker)</i></td>
+											<td><b>Type:</b> KnockoutObservable&lt;any&gt;<br />
+											<b>Note:</b> Use KnockoutObservable for synchronized baseDate <br />
+											DateRangePicker value</td>
 										</tr>
 										<tr>
 											<td>periodStartDate<br/><i>(required if showPeriod = true)</i></td>
-											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search start date</td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; or string(ISO 8601 Formats)<br />
+											<b>Note:</b> Use KnockoutObservable for synchronized periodStartDate <br />
+											Search start date</td>
 										</tr>
 										<tr>
 											<td>periodEndDate<br/><i>(required if showPeriod = true)</i></td>
-											<td><b>Type:</b> string(ISO 8601 Formats)<br /> Search end date</td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; or string(ISO 8601 Formats)<br />
+											<b>Note:</b> Use KnockoutObservable for synchronized periodEndDate <br />
+											Search end date</td>
 										</tr>
 										<tr>
 											<td>inService</td>
@@ -444,6 +458,10 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>isTab2Lazy<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/>Enable lazyload for tab2</td>
+										</tr>
+										<tr>
+											<td>tabindex<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br /><b>Default:</b> = 1<br/>Set tabindex for CCG001</td>
 										</tr>
 										<tr>
 											<td>returnDataFromCcg001</td>

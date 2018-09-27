@@ -13,7 +13,7 @@
 }
 .button {
 	margin-left: 2%;
-	padding-top: 20%;
+	padding-bottom: 20px;
 }
 
  #buttonE2_2{
@@ -22,10 +22,19 @@
 #butonE2_1{
 	padding-right: 200px;
 }
-#E2_1{
-	margin-left: 30px;
-}
+
 #E1_1{
 	margin-bottom: 15px;
 	margin-left: 15px;
 }
+#table{
+	height: 350px;
+}
+#E2_1{
+	margin-right: 200px;
+}
+.btn{
+	margin-bottom: 10px;
+	margin-left: 30px;
+}
+	

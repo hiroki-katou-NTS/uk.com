@@ -5,9 +5,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RsvLeaveGrantRemainHistRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.resvlea.empinfo.grantremainingdata.KrcdtReserveLeaveRemainHist;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 
@@ -42,6 +45,14 @@ public class JpaRsvLeaveGrantRemainHistRepository extends JpaRepository implemen
 			this.commandProxy().update(entity);
 		} else
 			this.commandProxy().insert(KrcdtReserveLeaveRemainHist.fromDomain(domain, cid));
+	}
+
+	@Override
+	public void delete(String employeeId, YearMonth ym, ClosureId closureId, ClosureDate closureDate) {
+		String sql = "DELETE FROM KrcdtReserveLeaveRemainHist a WHERE a.sid = :employeeId and a.yearMonth = :ym AND a.closureId = :closureId AND a.closeDay = :closeDay AND a.isLastDay = :isLastDay";
+		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym.v())
+				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);
 	}
 
 }

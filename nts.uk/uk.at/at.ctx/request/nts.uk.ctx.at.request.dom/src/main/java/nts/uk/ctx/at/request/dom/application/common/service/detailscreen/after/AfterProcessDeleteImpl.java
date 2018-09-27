@@ -1,22 +1,26 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessDeleteResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 /**
  * 
@@ -42,8 +46,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
 	@Override
-	public ProcessResult screenAfterDelete(String companyID,String appID, Long version) {
+	public ProcessDeleteResult screenAfterDelete(String companyID,String appID, Long version) {
 		boolean isProcessDone = true;
 		boolean isAutoSendMail = false;
 		List<String> autoSuccessMail = new ArrayList<>();
@@ -71,7 +78,24 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
 		}*/
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
+		
+		// 暫定データの登録
+		List<GeneralDate> lstDate = new ArrayList<>();
+		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+			GeneralDate startDate = application.getStartDate().get();
+			GeneralDate endDate = application.getEndDate().get();
+			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+				lstDate.add(loopDate);
+			}	
+		}
+		
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				companyID, 
+				application.getEmployeeID(), 
+				lstDate.isEmpty() ? Arrays.asList(application.getAppDate()) : lstDate);
+		return new ProcessDeleteResult(
+				new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,""),
+				appType);
 	}
 
 }

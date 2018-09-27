@@ -36,26 +36,28 @@
 				<div class="swap-list-updown-contaier">
 					<div id="swap-list"
 						data-bind="ntsSwapList: {
-						showSearchBox: { showLeft : true, showRight: true},
-						height: 300,
-						dataSource: allItems,
-						primaryKey: 'id',
-						placeHolder: '名称で検索・・・',
-						columns: ko.observableArray([{ headerText: 'コード', key: 'id', width: 0, hidden: true },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'itemName', width: 150 }]),
-						value: chooseItems,
-						searchCriterion: ['itemName'],
-						draggable: true,
-						multipleDrag: { left: false, right: false },
-						innerDrag: { left: false, right: true },
-						outerDrag: { left: false, right: false } 
-					}"></div>
+							showSearchBox: { showLeft : true, showRight: true},
+							height: 300,
+							dataSource: allItems,
+							primaryKey: 'id',
+							placeHolder: '名称で検索・・・',
+							columns: ko.observableArray([{ headerText: 'コード', key: 'id', width: 0, hidden: true },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'itemName', width: 180 }]),
+							value: chooseItems,
+							searchCriterion: ['itemName'],
+							draggable: true,
+							multipleDrag: { left: false, right: false },
+							innerDrag: { left: false, right: true },
+							outerDrag: { left: false, right: false },
+							enableRowNumbering: false 
+						}"></div>
 					<div id="swap-list-updown"
 						data-bind="ntsUpDown: {
-					targetSource: chooseItems,
-					primaryKey: 'id',
-					comId: '#swap-list',
-					type: 'swap',
-					swapTarget: 'right'}"></div>
+							targetSource: chooseItems,
+							primaryKey: 'id',
+							comId: '#swap-list',
+							type: 'swap',
+							swapTarget: 'right'
+						}"></div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">

@@ -15,7 +15,9 @@ module cps008.a.viewmodel {
     export class ViewModel {
         layouts: KnockoutObservableArray<ILayout> = ko.observableArray([]);
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: null, name: null }));
-
+        enaBtnSave : KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnCoppy : KnockoutObservable<boolean> = ko.observable(true);
+        enaBtnDel : KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this,
                 layout: Layout = self.layout(),
@@ -26,9 +28,11 @@ module cps008.a.viewmodel {
 
             layout.id.subscribe(id => {
                 if (id) {
-
                     // Gọi service tải dữ liệu ra layout
                     block();
+                    self.enaBtnSave(true);
+                    self.enaBtnCoppy(true);
+                    self.enaBtnDel(true);
                     service.getDetails(id).done((data: any) => {
                         if (data) {
                             layout.code(data.layoutCode);
@@ -43,6 +47,10 @@ module cps008.a.viewmodel {
                             unblock();
                         }
                     });
+                }else{
+                    self.enaBtnSave(false);
+                    self.enaBtnCoppy(false);
+                    self.enaBtnDel(false);
                 }
             });
         }
@@ -89,8 +97,10 @@ module cps008.a.viewmodel {
             let self = this,
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
-
             layout.id(undefined);
+            self.enaBtnSave(true);
+            self.enaBtnCoppy(false);
+            self.enaBtnDel(false);
             layout.code(null);
             layout.name(null);
             layout.classifications([]);

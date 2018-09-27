@@ -113,6 +113,9 @@ public class WorkTimeSettingFinder {
 
 	public static final int TWO_TIMEZONE = 2;
 
+	public static final int SHIFT_ONE = 1;
+	
+	public static final int SHIFT_TWO = 2;
 	/**
 	 * Find all.
 	 *
@@ -218,11 +221,15 @@ public class WorkTimeSettingFinder {
 				if (currentWorkTime == null || useTimezones.isEmpty()) {
 					continue;
 				} else {
-					TimezoneUse timezone1 = useTimezones.get(FIRST_ITEM);
+					TimezoneUse timezone1 = useTimezones.stream().filter(i -> {
+						return i.getWorkNo() == SHIFT_ONE;
+					}).findFirst().get();
 					TimezoneUse timezone2 = null;
 					// if have 2 timezone
 					if (useTimezones.size() >= TWO_TIMEZONE) {
-						timezone2 = useTimezones.get(TWO_ITEM);
+						timezone2 = useTimezones.stream().filter(i -> {
+							return i.getWorkNo() == SHIFT_TWO;
+						}).findFirst().get();
 					}
 					if (currentWorkTime.getWorkTimeDivision().getWorkTimeDailyAtr()
 							.equals(WorkTimeDailyAtr.REGULAR_WORK)) {

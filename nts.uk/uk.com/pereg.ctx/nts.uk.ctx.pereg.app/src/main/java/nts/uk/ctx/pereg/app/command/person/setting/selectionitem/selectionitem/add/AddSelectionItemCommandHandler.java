@@ -42,7 +42,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 		
 		// ドメインモデル「個人情報の選択項目」を追加登録する
 		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(contractCode, newId,
-				command.isShareChecked(), command.getSelectionItemName(), command.isCharacterType(),
+				command.getSelectionItemName(), command.isCharacterType(),
 				command.getCodeLength(), command.getNameLength(), command.getExtraCodeLength(),
 				command.getIntegrationCode(), command.getMemo());
 
@@ -59,16 +59,15 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 
 		this.selectionHistoryRepo.add(domainHist);
 		
-		if (!command.isShareChecked()) {
-			List<String> companyIdList = companyRepo.acquireAllCompany();
-			for (String cid : companyIdList) {
-				newHistId = IdentifierUtil.randomUniqueId();
-				domainHist = SelectionHistory.createHistorySelection(newHistId, newId,
-						cid, period);
+		List<String> companyIdList = companyRepo.acquireAllCompany();
+		for (String cid : companyIdList) {
+			newHistId = IdentifierUtil.randomUniqueId();
+			domainHist = SelectionHistory.createHistorySelection(newHistId, newId,
+					cid, period);
 
-				this.selectionHistoryRepo.add(domainHist);
-			}
+			this.selectionHistoryRepo.add(domainHist);
 		}
+		
 		return newId;
 	}
 	

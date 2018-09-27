@@ -4,6 +4,7 @@ module cps007.a.vm {
     import error = nts.uk.ui.dialog.alertError;
     import text = nts.uk.resource.getText;
     import lv = nts.layout.validate;
+    import warning = nts.uk.ui.dialog.caution;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -65,11 +66,21 @@ module cps007.a.vm {
             }
             // push data layout to webservice
             invisible();
-            service.saveData(command).done(() => {
+            service.saveData(command).done((data) => {
                 self.start();
-                info({ messageId: "Msg_15" }).then(function() {
-                    unblock();
-                });
+                if (data.length > 0) {
+                    let result = _.toString(data);
+                    warning({ messageId: "Msg_1350", messageParams: [result] }).then(() => {
+                        info({ messageId: "Msg_15" }).then(function() {
+                            unblock();
+                        });
+                    });  
+                } else {
+                    info({ messageId: "Msg_15" }).then(function() {
+                        unblock();
+                    });    
+                }
+                
             }).fail((mes) => {
                 unblock();
                 error({ messageId: mes.messageId, messageParams: mes.parameterIds });

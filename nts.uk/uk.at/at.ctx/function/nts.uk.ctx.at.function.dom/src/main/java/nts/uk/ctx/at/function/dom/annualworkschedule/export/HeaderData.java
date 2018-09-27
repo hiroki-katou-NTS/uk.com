@@ -28,4 +28,5 @@ public class HeaderData {
 	private OutputAgreementTime outputAgreementTime;
 	/** C2_3 or C2_5 */
 	private List<String> monthPeriodLabels;
+	private PrintFormat printFormat;
 }

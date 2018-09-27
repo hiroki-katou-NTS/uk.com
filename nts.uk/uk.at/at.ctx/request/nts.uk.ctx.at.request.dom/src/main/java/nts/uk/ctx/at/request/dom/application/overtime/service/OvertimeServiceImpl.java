@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
@@ -17,13 +19,18 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -49,6 +56,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
+	
+	@Inject
+	private AgreementTimeStatusAdapter agreementTimeStatusAdapter; 
+	
 	@Override
 	public int checkOvertimeAtr(String url) {
 		if(url == null){
@@ -195,6 +209,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
 		WorkTypeOvertime workTypeOvertime = new  WorkTypeOvertime();
 		SiftType siftType = new SiftType();
+		if(baseDate!=null){
+			AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
+			if(Strings.isNotBlank(achievementOutput.getWorkType().getWorkTypeCode())){
+				workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
+				workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
+				return workTypeAndSiftType;
+			}
+		}
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 		
@@ -206,11 +228,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeAndSiftType.setSiftType(siftTypes.get(0));
 			}
 		}else{
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			workTypeOvertime.setWorkTypeCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			if(workType.isPresent()){
-				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
-			}
+			WorkType workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString())
+					.orElseGet(()->{
+						return workTypeRepository.findByCompanyId(companyID).get(0);
+					});
+			workTypeOvertime.setWorkTypeCode(workType.getWorkTypeCode().toString());
+			workTypeOvertime.setWorkTypeName(workType.getName().toString());
 			workTypeAndSiftType.setWorkType(workTypeOvertime);
 			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
 					.orElseGet(()->{
@@ -221,5 +244,18 @@ public class OvertimeServiceImpl implements OvertimeService {
 			workTypeAndSiftType.setSiftType(siftType);
 		}
 		return workTypeAndSiftType;
+	}
+
+	@Override
+	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail) {
+		if(appOvertimeDetail.getLimitErrorTime().v() <= 0){
+			return null;
+		}
+		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
+				new AttendanceTimeMonth(appOvertimeDetail.getApplicationTime().v()+appOvertimeDetail.getActualTime().v()), 
+				appOvertimeDetail.getLimitAlarmTime(), 
+				appOvertimeDetail.getLimitErrorTime(), 
+				appOvertimeDetail.getExceptionLimitAlarmTime(), 
+				appOvertimeDetail.getExceptionLimitErrorTime()).value;
 	}
 }

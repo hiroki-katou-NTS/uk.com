@@ -5,8 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 1080, height: 825 };</script>
 			<com:scriptfile path="/view/ccg/common/model.js" />
@@ -62,10 +61,9 @@
 										</com:ko-if>
 										<!-- FlowMenu -->
 										<com:ko-if bind="isFlowMenu()">
-											<com:ko bind="topPagePart limited-label" tag="with">
+											<com:ko bind="topPagePart" tag="with">
 												<ui:include src="/view/ccg/common/flowmenu.xhtml" />
 											</com:ko>
-											
 										</com:ko-if>
 										<!-- Standard Widget-->
 										<com:ko-if bind="isStandardWidget()">

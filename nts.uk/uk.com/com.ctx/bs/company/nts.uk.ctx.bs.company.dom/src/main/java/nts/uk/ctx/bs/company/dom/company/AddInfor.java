@@ -11,7 +11,7 @@ import nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_1;
 import nts.uk.ctx.bs.company.dom.company.primitive.Add_Kana_2;
 import nts.uk.ctx.bs.company.dom.company.primitive.FaxNum;
 import nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum;
-import nts.uk.ctx.bs.company.dom.company.primitive.PostCd;
+import nts.uk.shr.com.primitive.PostCode;
 /**
  * 住所情報
  * @author yennth
@@ -33,7 +33,7 @@ public class AddInfor extends DomainObject{
 	/** 住所カナ２ **/
 	private Add_Kana_2 addKana_2;
 	/** 郵便番号 **/
-	private PostCd postCd;
+	private PostCode postCd;
 	/** 電話番号 **/
 	private PhoneNum phoneNum;
 	
@@ -46,7 +46,7 @@ public class AddInfor extends DomainObject{
 							!StringUtil.isNullOrEmpty(add_2, true) ? new Add_2(add_2) : new Add_2(""), 
 							!StringUtil.isNullOrEmpty(addKana_1, true) ? new Add_Kana_1(addKana_1) : new Add_Kana_1(""),
 							!StringUtil.isNullOrEmpty(addKana_2, true) ? new Add_Kana_2(addKana_2) : new Add_Kana_2(""), 
-							!StringUtil.isNullOrEmpty(postCd, true) ? new PostCd(postCd) : new PostCd(""),
+							!StringUtil.isNullOrEmpty(postCd, true) ? new PostCode(postCd) : new PostCode(""),
 							!StringUtil.isNullOrEmpty(phoneNum, true) ? new PhoneNum(phoneNum) : new PhoneNum(""));
 	}
 }

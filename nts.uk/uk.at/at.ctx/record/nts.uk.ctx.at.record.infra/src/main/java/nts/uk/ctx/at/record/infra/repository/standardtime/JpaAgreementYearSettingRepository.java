@@ -8,10 +8,13 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSettingPK;
+import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
 
 @Stateless
 public class JpaAgreementYearSettingRepository extends JpaRepository implements AgreementYearSettingRepository {
@@ -22,6 +25,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	private static final String DEL_BY_KEY;
 
 	private static final String IS_EXIST_DATA;
+	private static final String FIND_BY_ID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -51,12 +55,29 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
 		IS_EXIST_DATA = builderString.toString();
+		
+		// fix bug 100605
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementYearSetting a ");
+		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
+		builderString.append("ORDER BY a.kmkmtAgeementYearSettingPK.yearValue DESC ");
+		FIND_BY_ID = builderString.toString();
 	}
 
 	@Override
 	public List<AgreementYearSetting> find(String employeeId) {
 		return this.queryProxy().query(FIND, KmkmtAgeementYearSetting.class).setParameter("employeeId", employeeId)
 				.getList(f -> toDomain(f));
+	}
+	
+	@Override
+	public Optional<AgreementYearSetting> findByKey(String employeeId, int yearMonth) {
+		return this.queryProxy().query(FIND_BY_ID, KmkmtAgeementYearSetting.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearValue", yearMonth)
+				.getSingle(f -> toDomain(f));
 	}
 
 	@Override
@@ -80,6 +101,22 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		}
 
 	}
+	
+	// fix bug 100605
+		@Override
+		public void updateById(AgreementYearSetting agreementYearSetting, Integer yearMonthValueOld) {
+
+			Optional<KmkmtAgeementYearSetting> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgeementYearSetting.class)
+					.setParameter("employeeId", agreementYearSetting.getEmployeeId())
+					.setParameter("yearValue", yearMonthValueOld).getSingle();
+			
+			if (entity.isPresent()) {
+				KmkmtAgeementYearSetting data = entity.get();
+				this.delete(data.kmkmtAgeementYearSettingPK.employeeId, yearMonthValueOld);
+				this.add(agreementYearSetting);
+			}
+
+		}
 
 	@Override
 	public void delete(String employeeId, int yearValue) {

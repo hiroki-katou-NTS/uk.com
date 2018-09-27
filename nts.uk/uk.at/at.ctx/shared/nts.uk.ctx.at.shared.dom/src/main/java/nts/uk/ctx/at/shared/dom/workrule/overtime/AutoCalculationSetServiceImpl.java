@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.overtime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,13 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingRepository;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSetting;
@@ -56,7 +51,7 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 
 	@Override
 	public BaseAutoCalSetting getAutoCalculationSetting(String companyID, String employeeID, GeneralDate processingDate,
-			String workPlaceId, String jobTitleId) {
+			String workPlaceId, String jobTitleId, Optional<List<String>> workPlaceIds) {
 
 		BaseAutoCalSetting baseAutoCalSetting = new BaseAutoCalSetting();
 		// ドメインモデル「時間外の自動計算の利用単位設定」を取得する(get data domain 「時間外の自動計算の利用単位設定」)
@@ -73,14 +68,18 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 
 				if (wkpJobAutoCalSetting.isPresent()) {
 					baseAutoCalSetting = new BaseAutoCalSetting(wkpJobAutoCalSetting.get().getNormalOTTime(),
-							wkpJobAutoCalSetting.get().getFlexOTTime(), wkpJobAutoCalSetting.get().getRestTime());
+							wkpJobAutoCalSetting.get().getFlexOTTime(),
+							wkpJobAutoCalSetting.get().getRestTime(),
+							wkpJobAutoCalSetting.get().getLeaveEarly(),
+							wkpJobAutoCalSetting.get().getRaisingSalary(),
+							wkpJobAutoCalSetting.get().getDivergenceTime());
 				} else {
 					baseAutoCalSetting = this.getJobTitleCase(companyID, workPlaceId, jobTitleId, processingDate,
-							useUnitAutoCalSetting);
+							useUnitAutoCalSetting, workPlaceIds);
 				}
 			} else {
 				baseAutoCalSetting = this.getJobTitleCase(companyID, workPlaceId, jobTitleId, processingDate,
-						useUnitAutoCalSetting);
+						useUnitAutoCalSetting , workPlaceIds);
 			}
 
 		}
@@ -89,7 +88,7 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 	}
 
 	private BaseAutoCalSetting getJobTitleCase(String companyID, String workPlaceID, String jobTitleID,
-			GeneralDate processingDate, Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting) {
+			GeneralDate processingDate, Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting, Optional<List<String>> workPlaceIds) {
 
 		BaseAutoCalSetting baseAutoCalSetting = new BaseAutoCalSetting();
 
@@ -100,44 +99,60 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 
 			if (!jobAutoCalSetting.isPresent()) {
 				baseAutoCalSetting = this.getWorkPlaceCase(companyID, workPlaceID, processingDate,
-						useUnitAutoCalSetting);
+						useUnitAutoCalSetting, workPlaceIds);
 			} else {
 				baseAutoCalSetting = new BaseAutoCalSetting(jobAutoCalSetting.get().getNormalOTTime(),
-						jobAutoCalSetting.get().getFlexOTTime(), jobAutoCalSetting.get().getRestTime());
+						jobAutoCalSetting.get().getFlexOTTime(),
+						jobAutoCalSetting.get().getRestTime(),
+						jobAutoCalSetting.get().getLeaveEarly(),
+						jobAutoCalSetting.get().getRaisingSalary(),
+						jobAutoCalSetting.get().getDivergenceTime());
 			}
 		} else {
-			baseAutoCalSetting = this.getWorkPlaceCase(companyID, workPlaceID, processingDate, useUnitAutoCalSetting);
+			baseAutoCalSetting = this.getWorkPlaceCase(companyID, workPlaceID, processingDate, useUnitAutoCalSetting, workPlaceIds);
 		}
 
 		return baseAutoCalSetting;
 	}
 
 	private BaseAutoCalSetting getWorkPlaceCase(String companyID, String workPlaceID, GeneralDate processingDate,
-			Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting) {
+			Optional<UseUnitAutoCalSetting> useUnitAutoCalSetting, Optional<List<String>> workPlaceIds) {
 
 		BaseAutoCalSetting baseAutoCalSetting = new BaseAutoCalSetting();
 
 		// 職場の自動計算設定をする＝TRUE
 		if (useUnitAutoCalSetting.get().getUseWkpSet() == ApplyAtr.USE) {
 			Optional<WkpAutoCalSetting> wkpAutoCalSetting = this.getUpperLevelWorkPlaceSetting(companyID, workPlaceID,
-					processingDate);
+					processingDate, workPlaceIds);
 
 			if (wkpAutoCalSetting.isPresent()) {
 				baseAutoCalSetting = new BaseAutoCalSetting(wkpAutoCalSetting.get().getNormalOTTime(),
-						wkpAutoCalSetting.get().getFlexOTTime(), wkpAutoCalSetting.get().getRestTime());
+						wkpAutoCalSetting.get().getFlexOTTime(),
+						wkpAutoCalSetting.get().getRestTime(),
+						wkpAutoCalSetting.get().getLeaveEarly(),
+						wkpAutoCalSetting.get().getRaisingSalary(),
+						wkpAutoCalSetting.get().getDivergenceTime());
 			} else {
 				Optional<ComAutoCalSetting> comAutoCalSetting = this.comAutoCalSettingRepository
 						.getAllComAutoCalSetting(companyID);
 
 				baseAutoCalSetting = new BaseAutoCalSetting(comAutoCalSetting.get().getNormalOTTime(),
-						comAutoCalSetting.get().getFlexOTTime(), comAutoCalSetting.get().getRestTime());
+						comAutoCalSetting.get().getFlexOTTime(),
+						comAutoCalSetting.get().getRestTime(),
+						comAutoCalSetting.get().getLeaveEarly(),
+						comAutoCalSetting.get().getRaisingSalary(),
+						comAutoCalSetting.get().getDivergenceTime());
 			}
 		} else {
 			Optional<ComAutoCalSetting> comAutoCalSet = this.comAutoCalSettingRepository
 					.getAllComAutoCalSetting(companyID);
-
+			
 			baseAutoCalSetting = new BaseAutoCalSetting(comAutoCalSet.get().getNormalOTTime(),
-					comAutoCalSet.get().getFlexOTTime(), comAutoCalSet.get().getRestTime());
+					comAutoCalSet.get().getFlexOTTime(),
+					comAutoCalSet.get().getRestTime(),
+					comAutoCalSet.get().getLeaveEarly(),
+					comAutoCalSet.get().getRaisingSalary(),
+					comAutoCalSet.get().getDivergenceTime());
 		}
 
 		return baseAutoCalSetting;
@@ -152,18 +167,14 @@ public class AutoCalculationSetServiceImpl implements AutoCalculationSetService 
 	 * @return
 	 */
 	private Optional<WkpAutoCalSetting> getUpperLevelWorkPlaceSetting(String companyId, String workPlaceId,
-			GeneralDate processingDate) {
-		List<String> workPlaceIDList = this.sharedAffWorkPlaceHisAdapter.findParentWpkIdsByWkpId(companyId, workPlaceId,
-				processingDate);
-
+			GeneralDate processingDate, Optional<List<String>> workPlaceIds) {
+		
 		Optional<WkpAutoCalSetting> wkpAutoCalSetting = Optional.empty();
-		if (!workPlaceIDList.isEmpty()) {
-			for (String workPlaceID : workPlaceIDList) {
-
+		if (workPlaceIds.isPresent()) {
+			for (String workPlaceID : workPlaceIds.get()) {
 				wkpAutoCalSetting = this.wkpAutoCalSettingRepository.getWkpAutoCalSetting(companyId, workPlaceID);
-
 				if (wkpAutoCalSetting.isPresent()) {
-					return wkpAutoCalSetting;
+					break;
 				}
 			}
 		}

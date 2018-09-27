@@ -3,14 +3,13 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutForChildCare;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 @Data
@@ -55,7 +54,7 @@ public class GoOutForChildCareDto implements ItemConst {
 	}
 	
 	public GoOutForChildCare toDomain(){
-		return GoOutForChildCare.of(ConvertHelper.getEnum(attr, ChildCareAtr.class), 
+		return GoOutForChildCare.of(attr == ChildCareAtr.CARE.value ? ChildCareAtr.CARE : ChildCareAtr.CHILD_CARE, 
 				new AttendanceTimesMonth(times), 
 						new AttendanceTimeMonth(time));
 	}

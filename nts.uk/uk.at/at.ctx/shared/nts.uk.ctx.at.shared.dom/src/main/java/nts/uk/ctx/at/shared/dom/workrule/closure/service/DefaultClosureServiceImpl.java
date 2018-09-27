@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,11 +17,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.adapter.employment.AffPeriodEmpCodeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -29,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.Day;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -197,7 +201,7 @@ public class DefaultClosureServiceImpl implements ClosureService {
 
 		ClosureHistory closureHistory = optClosureHistory.get();
 
-		ClosureDay closureDay = closureHistory.getClosureDate().getClosureDay();
+		Day closureDay = closureHistory.getClosureDate().getClosureDay();
 
 		Boolean isLastDayOfMonth = closureHistory.getClosureDate().getLastDayOfMonth();
 
@@ -418,5 +422,37 @@ public class DefaultClosureServiceImpl implements ClosureService {
 				}
 				// 前・後期間のない月度の時 → 当月の期間を返す
 				return currentPeriod;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService#getClosureDataByEmployees(java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<Closure> getClosureDataByEmployees(List<String> employeeIds, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
+		//Imported「（就業）所属雇用履歴」を取得する
+		List<SharedSidPeriodDateEmploymentImport>  employmentHistList = this.shareEmploymentAdapter.getEmpHistBySidAndPeriod(employeeIds, new DatePeriod(baseDate, baseDate));
+		if(CollectionUtil.isEmpty(employmentHistList)) {
+			return Collections.emptyList();
+		}
+		
+		List<String> empCds = employmentHistList.stream()
+				.flatMap(listContainer -> listContainer.getAffPeriodEmpCodeExports().stream()
+						.map(AffPeriodEmpCodeImport::getEmploymentCode))
+				.collect(Collectors.toList());
+				
+		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
+		List<ClosureEmployment> closureEmploymentList= closureEmploymentRepo.findListEmployment(companyId, empCds);
+		
+		if(CollectionUtil.isEmpty(closureEmploymentList)) {
+			return Collections.emptyList();
+		}
+		
+		List<Integer> closureIds = closureEmploymentList.stream().map(item -> item.getClosureId()).collect(Collectors.toList());
+		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+		
+		List<Closure> closureList = closureRepository.findByListId(companyId, closureIds);
+		
+		return closureList;
 	}
 }

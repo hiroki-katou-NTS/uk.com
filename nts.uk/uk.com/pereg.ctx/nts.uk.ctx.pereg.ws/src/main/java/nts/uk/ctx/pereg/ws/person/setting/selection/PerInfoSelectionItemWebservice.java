@@ -126,6 +126,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	public void removeSelectionItem(RemoveSelectionItemCommand command) {
 		this.removeCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("checkUseSelectionItem/{selectedId}")
+	public Boolean checkUseSelectionItem(@PathParam("selectedId") String selectionItemId) {
+		return this.removeCommandHandler.checkSelectionItemId(selectionItemId);
+	}
 
 	// history:
 	@POST
@@ -214,9 +220,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	// Lanlt
 	@POST
-	@Path("findAllSelectionItem/{selectionItemClsAtr}")
-	public List<PerInfoSelectionItemDto> getAllelectionItem(@PathParam("selectionItemClsAtr")int selectionItemClsAtr) {
-		return this.finder.getAllSelectionItem(selectionItemClsAtr);
+	@Path("findAllSelectionItem")
+	public List<PerInfoSelectionItemDto> getAllelectionItem() {
+		return this.finder.getAllSelectionItem();
 	}
 
 	// update selection order

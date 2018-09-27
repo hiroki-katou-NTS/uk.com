@@ -216,7 +216,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			err = null;
 		}
 		PersonImport ps = psAdapter.getPersonInfo(empId);
-		EmployeeApproverOutput empInfor = new EmployeeApproverOutput(ps.getEmployeeCode(), ps.getEmployeeName());
+		EmployeeApproverOutput empInfor = new EmployeeApproverOutput(ps.getSID(), ps.getEmployeeCode(), ps.getEmployeeName());
 		EmployeeApproverAsApplicationOutput infor = new EmployeeApproverAsApplicationOutput(empInfor, mapAppType);
 		apptyle.setErr(err);
 		infor.getMapAppTypeAsApprover().put(apptyle, phaseInfors);

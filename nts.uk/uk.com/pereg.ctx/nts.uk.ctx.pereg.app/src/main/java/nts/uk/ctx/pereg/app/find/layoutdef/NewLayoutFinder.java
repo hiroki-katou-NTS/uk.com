@@ -26,6 +26,7 @@ public class NewLayoutFinder {
 
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
+	
 
 	public Boolean checkLayoutExist() {
 		Optional<NewLayout> layout = repo.getLayout();
@@ -37,7 +38,8 @@ public class NewLayoutFinder {
 			// Get list Classification Item by layoutID
 			List<LayoutPersonInfoClsDto> listItemCls = this.clsFinder.getListClsDto(m.getLayoutID());
 
-			return NewLayoutDto.fromDomain(m, listItemCls);
+			return NewLayoutDto.fromDomain(m, listItemCls,null);
 		});
 	}
+
 }

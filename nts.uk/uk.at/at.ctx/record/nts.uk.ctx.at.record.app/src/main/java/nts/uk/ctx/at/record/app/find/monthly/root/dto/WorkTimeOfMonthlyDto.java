@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
@@ -79,7 +79,7 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY, layout = LAYOUT_L)
 	private HolidayTimeOfMonthlyDto holidayTime;
 
-	public static WorkTimeOfMonthlyDto from(WorkTimeOfMonthly domain) {
+	public static WorkTimeOfMonthlyDto from(WorkTimeOfMonthlyVT domain) {
 		WorkTimeOfMonthlyDto dto = new WorkTimeOfMonthlyDto();
 		if (domain != null) {
 			dto.setMedical(ConvertHelper.mapTo(domain.getMedicalTime(), 
@@ -104,8 +104,8 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 		return dto;
 	}
 
-	public WorkTimeOfMonthly toDomain() {
-		return WorkTimeOfMonthly.of(BonusPayTimeOfMonthly.of(ConvertHelper.mapTo(bonus, c -> c.toDomain())),
+	public WorkTimeOfMonthlyVT toDomain() {
+		return WorkTimeOfMonthlyVT.of(BonusPayTimeOfMonthly.of(ConvertHelper.mapTo(bonus, c -> c.toDomain())),
 				goout == null ? new GoOutOfMonthly() : goout.toDomain(), premiumTime == null ? new PremiumTimeOfMonthly() : premiumTime.toDomain(),
 				breakTime == null ? new BreakTimeOfMonthly() : breakTime.toDomain(), 
 				holidayTime == null ? new HolidayTimeOfMonthly() : holidayTime.toDomain(),

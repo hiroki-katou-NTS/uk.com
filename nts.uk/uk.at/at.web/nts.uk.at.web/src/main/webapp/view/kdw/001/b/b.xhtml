@@ -30,41 +30,55 @@
 			 -->
 				<div
 					data-bind="ntsRadioBoxGroup: {
-	options: itemRecreateDevision,
-	optionsValue: 'id',
-	optionsText: 'name',
-	value: selectedRecreateDevision,
-	enable: recreateEnable
-	}"></div>
-
+					options: itemRecreateDevision,
+					optionsValue: 'id',
+					optionsText: 'name',
+					value: selectedRecreateDevision,
+					enable: recreateEnable
+					}">
+				</div>
 			</div>
-
-			<div id="cbArea1">
-				<div class="cbElement" id="calDivision"
-					data-bind="ntsCheckBox: { checked: calDivisionCheck, enable: enableAll  }">#{i18n.getText('KDW001_58')}</div>
-				<br></br>
-				<div class="cbElement" id="dateDivision"
-					data-bind="ntsCheckBox: { checked: dateDivisionCheck, enable: enableAll }">#{i18n.getText('KDW001_60')}</div>
-				<br></br>
-				<div class="cbElement" id="reflectEmbossing"
-					data-bind="ntsCheckBox: { checked: reflectEmbossingCheck, enable: enableAll }">#{i18n.getText('KDW001_62')}</div>
-				<br></br>
-				<div class="cbElement" id="masterInfor"
-					data-bind="ntsCheckBox: { checked: masterInforCheck, enable: enableAll }">#{i18n.getText('KDW001_59')}</div>
-			</div>
-
-			<div id="cbArea2">
-				<div class="cbElement" id="childCare"
-					data-bind="ntsCheckBox: { checked: childCareCheck, enable: enableAll }">#{i18n.getText('KDW001_61')}</div>
-				<br></br>
-				<div class="cbElement" id="closedReset"
-					data-bind="ntsCheckBox: { checked: closedResetCheck,enable: enableAll  }">#{i18n.getText('KDW001_63')}</div>
-				<br></br>
-				<div class="cbElement" id="workingTime"
-					data-bind="ntsCheckBox: { checked: workingTimeCheck, enable: enableAll }">#{i18n.getText('KDW001_71')}</div>
-				<br></br>
-				<div class="cbElement" id="transferTime"
-					data-bind="ntsCheckBox: { checked: transferTimeCheck, enable: enableAll }">#{i18n.getText('KDW001_72')}</div>
+			<div style="margin-left: 15px;" id="checkBoxArea">
+				<div>
+					<div class="checkbox_container">
+						<div id="calDivision"
+							data-bind="ntsCheckBox: { checked: calDivisionCheck, enable: enableAll  }">#{i18n.getText('KDW001_58')}</div>
+					</div>
+					<div class="checkbox_container">
+						<div id="childCare"
+							data-bind="ntsCheckBox: { checked: childCareCheck, enable: enableAll }">#{i18n.getText('KDW001_61')}</div>
+					</div>
+				</div>
+				<div>
+					<div class="checkbox_container">
+						<div id="dateDivision"
+							data-bind="ntsCheckBox: { checked: dateDivisionCheck, enable: enableAll }">#{i18n.getText('KDW001_60')}</div>
+					</div>
+					<div class="checkbox_container">
+						<div id="closedReset"
+							data-bind="ntsCheckBox: { checked: closedResetCheck,enable: enableAll  }">#{i18n.getText('KDW001_63')}</div>
+					</div>
+				</div>
+				<div>
+					<div class="checkbox_container">
+						<div id="reflectEmbossing"
+							data-bind="ntsCheckBox: { checked: reflectEmbossingCheck, enable: enableAll }">#{i18n.getText('KDW001_62')}</div>
+					</div>
+					<div class="checkbox_container">
+						<div id="workingTime"
+							data-bind="ntsCheckBox: { checked: workingTimeCheck, enable: enableAll }">#{i18n.getText('KDW001_71')}</div>
+					</div>
+				</div>
+				<div>
+					<div class="checkbox_container">
+						<div id="masterInfor"
+							data-bind="ntsCheckBox: { checked: masterInforCheck, enable: enableAll }">#{i18n.getText('KDW001_59')}</div>
+					</div>
+					<div class="checkbox_container">
+						<div id="transferTime"
+							data-bind="ntsCheckBox: { checked: transferTimeCheck, enable: enableAll }">#{i18n.getText('KDW001_72')}</div>
+					</div>
+				</div>
 			</div>
 		</div>
 

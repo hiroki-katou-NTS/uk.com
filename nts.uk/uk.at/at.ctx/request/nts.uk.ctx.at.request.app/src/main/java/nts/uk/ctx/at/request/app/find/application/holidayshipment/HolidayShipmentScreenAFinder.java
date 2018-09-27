@@ -14,12 +14,15 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.AbsenceLeaveAppDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp.RecruitmentAppDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
@@ -138,7 +141,7 @@ public class HolidayShipmentScreenAFinder {
 		// アルゴリズム「起動前共通処理（新規）」を実行する
 		HolidayShipmentDto result = commonProcessBeforeStart(APP_TYPE, companyID, employeeID, initDate,
 				appCommonSettingOutput);
-		
+
 		result.setEmployees(atEmpAdaptor.getByListSID(sIDs));
 
 		GeneralDate refDate = result.getRefDate();
@@ -152,7 +155,7 @@ public class HolidayShipmentScreenAFinder {
 
 		String wkTimeCD = getWkTimeCD(wkingItem);
 
-		result.setWkTimeCD(wkTimeCD);
+		setWkTimeInfo(result, wkTimeCD);
 
 		GeneralDate appDate, deadDate;
 
@@ -170,6 +173,27 @@ public class HolidayShipmentScreenAFinder {
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
 
 		return result;
+	}
+
+	private void setWkTimeInfo(HolidayShipmentDto result, String wkTimeCD) {
+
+		result.setWkTimeCD(wkTimeCD);
+		result.setWkTimeName(getWkTimeName(wkTimeCD));
+
+	}
+
+	private String getWkTimeName(String wkTimeCD) {
+		String companyId = AppContexts.user().companyId();
+
+		StringBuilder builder = new StringBuilder();
+		builder.append("");
+		if (!StringUtil.isNullOrEmpty(wkTimeCD, true)) {
+			this.wkTimeSetRepo.findByCode(companyId, wkTimeCD).ifPresent(x -> {
+				builder.append(x.getWorkTimeDisplayName().getWorkTimeName().v());
+			});
+		}
+
+		return builder.toString();
 	}
 
 	private Optional<WorkingConditionItem> getWorkingCondition(String companyID, String employeeID,
@@ -338,8 +362,7 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	public List<TimezoneUse> getTimeZones(String companyID, String wkTimeCode,
-			AttendanceHolidayAttr wkTypeAttendance) {
+	public List<TimezoneUse> getTimeZones(String companyID, String wkTimeCode, AttendanceHolidayAttr wkTypeAttendance) {
 
 		List<TimezoneUse> timeZones = new ArrayList<TimezoneUse>();
 
@@ -405,7 +428,7 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private AchievementOutput getAchievement(String companyID, String employeeID, GeneralDate appDate) {
+	public AchievementOutput getAchievement(String companyID, String employeeID, GeneralDate appDate) {
 		// アルゴリズム「実績取得」を実行する
 		if (appDate != null) {
 			return collectAchievement.getAchievement(companyID, employeeID, appDate);
@@ -440,7 +463,7 @@ public class HolidayShipmentScreenAFinder {
 							.stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 
 			// アルゴリズム「選択済の就業時間帯の取得」を実行する rec
-			setWkHourInfoForRecApp(companyID, recWkTimeCD, output);
+			setWkTimeInfoForRecApp(companyID, recWkTimeCD, output);
 
 			// アルゴリズム「選択済の就業時間帯の取得」を実行する abs
 			output.setAbsWkTypes(
@@ -448,22 +471,25 @@ public class HolidayShipmentScreenAFinder {
 							.map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList()));
 
 			// アルゴリズム「振休用勤務種類の取得」を実行する
-			setWkHourInfoForAbsApp(companyID, absWkTimeCD, output);
+			setWkTimeInfoForAbsApp(companyID, absWkTimeCD, output);
 
 		}
 
 	}
 
-	private void setWkHourInfoForAbsApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
-		HolidayShipmentAppDto absAppOutPut = output.getAbsApp();
-		setSelectedWkHourInfo(companyID, WkTimeCD, absAppOutPut);
+	private void setWkTimeInfoForAbsApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
+		AbsenceLeaveAppDto absAppOutPut = output.getAbsApp();
+		if (absAppOutPut != null) {
+			setSelectedWkTimeInfo(companyID, WkTimeCD, absAppOutPut);
+		}
 
 	}
 
-	private void setWkHourInfoForRecApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
-		HolidayShipmentAppDto recAppOutPut = output.getRecApp();
-		setSelectedWkHourInfo(companyID, WkTimeCD, recAppOutPut);
-
+	private void setWkTimeInfoForRecApp(String companyID, String WkTimeCD, HolidayShipmentDto output) {
+		RecruitmentAppDto recAppOutPut = output.getRecApp();
+		if (recAppOutPut != null) {
+			setSelectedWkTimeInfo(companyID, WkTimeCD, recAppOutPut);
+		}
 	}
 
 	private void setApprovalFunctionSetting(String employeeID, GeneralDate refDate, HolidayShipmentDto output,
@@ -509,31 +535,31 @@ public class HolidayShipmentScreenAFinder {
 
 	}
 
-	private void setSelectedWkHourInfo(String companyID, String wkTimeCode, HolidayShipmentAppDto appOut) {
+	private void setSelectedWkTimeInfo(String companyID, String wkTimeCode, HolidayShipmentAppDto recAppOutPut) {
 		// アルゴリズム「就業時間帯表示情報（単体）の取得」を実行する
-		boolean isTimeCdAndAppDtoNotNull = wkTimeCode != null && appOut != null;
-		if (isTimeCdAndAppDtoNotNull) {
+		if (wkTimeCode != null && recAppOutPut != null) {
 			boolean isGetHiddenItems = true;
-			setWkTimeZoneDisplayInfo(companyID, wkTimeCode, isGetHiddenItems, appOut);
+			setWkTimeZoneDisplayInfo(companyID, wkTimeCode, isGetHiddenItems, recAppOutPut);
 		}
 
 	}
 
 	private void setWkTimeZoneDisplayInfo(String companyID, String wkTimeCode, boolean isGetHiddenItems,
-			HolidayShipmentAppDto appOut) {
-		if (isGetHiddenItems) {
+			HolidayShipmentAppDto recAppOutPut) {
+		if (isGetHiddenItems && recAppOutPut != null) {
 			Optional<WorkTimeSetting> wkTimeOpt = this.wkTimeSetRepo.findByCode(companyID, wkTimeCode);
 
 			if (wkTimeOpt.isPresent()) {
 
-				appOut.updateFromWkTimeSet(wkTimeOpt.get());
+				recAppOutPut.updateFromWkTimeSet(wkTimeOpt.get());
 
 				wkTimeCode = wkTimeOpt.get().getWorktimeCode().v();
 
 				Optional<PredetemineTimeSetting> preTimeSetOpt = preTimeSetRepo.findByWorkTimeCode(companyID,
 						wkTimeCode);
 				if (preTimeSetOpt.isPresent()) {
-					appOut.updateFromPreTimeSet(preTimeSetOpt.get());
+					recAppOutPut.updateFromPreTimeSet(preTimeSetOpt.get());
+					recAppOutPut.setWorkTimeName(wkTimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v());
 				}
 			}
 		}

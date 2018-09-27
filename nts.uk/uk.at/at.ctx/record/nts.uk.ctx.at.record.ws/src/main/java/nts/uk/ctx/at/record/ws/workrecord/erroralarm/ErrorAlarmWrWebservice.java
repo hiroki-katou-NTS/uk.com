@@ -8,6 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.DeleteErAlCommandHandler;
@@ -34,9 +35,9 @@ public class ErrorAlarmWrWebservice {
 	private DeleteErAlCommandHandler deleteErAlCommandHandler;
 
 	@POST
-	@Path("getall")
-	public List<ErrorAlarmWorkRecordDto> getAll() {
-		return this.finder.getListErrorAlarmWorkRecord();
+	@Path("getall/{type}")
+	public List<ErrorAlarmWorkRecordDto> getAll(@PathParam(value = "type") int type) {
+		return this.finder.getListErrorAlarmWorkRecord(type);
 	}
 	
 	@POST

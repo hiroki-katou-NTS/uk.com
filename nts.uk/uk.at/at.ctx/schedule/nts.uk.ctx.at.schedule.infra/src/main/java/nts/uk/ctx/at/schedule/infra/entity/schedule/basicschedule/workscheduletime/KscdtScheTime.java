@@ -72,11 +72,23 @@ public class KscdtScheTime extends UkJpaEntity implements Serializable {
     @Column(name = "TOTAL_LABOR_TIME")
     private int totalLaborTime;
     
-    /** The child care time. */
+    /** The child time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CHILD_CARE_TIME")
-    private int childCareTime;
+    @Column(name = "CHILD_TIME")
+    private int childTime;
+
+    /** The care time. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CARE_TIME")
+    private int careTime;
+    
+    /** The flex time. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "FLEX_TIME")
+    private int flexTime;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscdtScheTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KscdtScheFeeTime> kscdtScheFeeTime;
@@ -147,7 +159,7 @@ public class KscdtScheTime extends UkJpaEntity implements Serializable {
 	}
 
 	public KscdtScheTime(KscdtScheTimePK kscdtScheTimePK, int breakTime, int workingTime, int weekdayTime,
-			int prescribedTime, int totalLaborTime, int childCareTime) {
+			int prescribedTime, int totalLaborTime, int childTime, int careTime, int flexTime) {
 		super();
 		this.kscdtScheTimePK = kscdtScheTimePK;
 		this.breakTime = breakTime;
@@ -155,7 +167,9 @@ public class KscdtScheTime extends UkJpaEntity implements Serializable {
 		this.weekdayTime = weekdayTime;
 		this.prescribedTime = prescribedTime;
 		this.totalLaborTime = totalLaborTime;
-		this.childCareTime = childCareTime;
+		this.childTime = childTime;
+		this.careTime = careTime;
+		this.flexTime = flexTime;
 	}
 	
 }

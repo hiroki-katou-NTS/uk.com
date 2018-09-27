@@ -1751,7 +1751,7 @@ module nts.uk.at.view.kmk003.a {
                 delFromEmTime: KnockoutObservable<boolean>;
 
                 constructor() {
-                    this.delFromEmTime = ko.observable(false);
+                    this.delFromEmTime = ko.observable(true);
                 }
 
                 updateData(data: EmTimezoneLateEarlyCommonSetDto) {
@@ -1766,7 +1766,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.delFromEmTime(false);
+                    this.delFromEmTime(true);
                 }
             }
 

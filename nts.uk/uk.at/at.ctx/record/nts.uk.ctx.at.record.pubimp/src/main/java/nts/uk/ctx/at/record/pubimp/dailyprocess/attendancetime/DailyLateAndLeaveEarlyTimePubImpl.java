@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.dailyprocess.attendancetime;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -41,20 +39,20 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 			if(nowDomain != null && nowDomain.getActualWorkingTimeOfDaily() != null && nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 				boolean kt = false;
 				LateLeaveEarlyManage lateLeaveEarlyManage = new LateLeaveEarlyManage(nowDomain.getYmd(), false, false, false, false);
-				List<LateTimeOfDaily> LateTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
-				List<LeaveEarlyTimeOfDaily> LeaveEarlyTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
-				for (LateTimeOfDaily LateTimeOfDaily : LateTimeOfDailys) {
-					if(!lateLeaveEarlyManage.isLate1() && LateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
+				List<LateTimeOfDaily> lateTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
+				List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+				for (LateTimeOfDaily lateTimeOfDaily : lateTimeOfDailys) {
+					if(lateTimeOfDaily.getWorkNo().v()==1 && lateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLate1(true);
-					}else if(lateLeaveEarlyManage.isLate1() && LateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
+					}else if(lateTimeOfDaily.getWorkNo().v()==2 && lateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLate2(true);
 					}
 					kt = true;
 				}
-				for (LeaveEarlyTimeOfDaily LeaveEarlyTimeOfDaily : LeaveEarlyTimeOfDailys) {
-					if(!lateLeaveEarlyManage.isLeaveEarly1() && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
+				for (LeaveEarlyTimeOfDaily LeaveEarlyTimeOfDaily : leaveEarlyTimeOfDailys) {
+					if(LeaveEarlyTimeOfDaily.getWorkNo().v()==1 && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLeaveEarly1(true);
-					}else if(lateLeaveEarlyManage.isLeaveEarly1() && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
+					}else if(LeaveEarlyTimeOfDaily.getWorkNo().v()==2 && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLeaveEarly2(true);
 					}
 					kt = true;
