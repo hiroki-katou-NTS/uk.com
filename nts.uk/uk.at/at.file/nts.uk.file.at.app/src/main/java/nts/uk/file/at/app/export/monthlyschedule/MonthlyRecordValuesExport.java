@@ -6,8 +6,8 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 月別実績データ値 (copied from nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport)

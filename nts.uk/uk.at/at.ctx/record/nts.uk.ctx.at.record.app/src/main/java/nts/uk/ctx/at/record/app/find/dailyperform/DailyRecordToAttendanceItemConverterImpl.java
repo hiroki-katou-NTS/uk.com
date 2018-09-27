@@ -93,7 +93,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withAffiliationInfo(domain.getAffiliationInfor());
 		this.withBusinessType(domain.getBusinessType().orElse(null));
 		if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
-			this.withEmployeeErrors(domain.getEmployeeError().get(0));
+			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
 		this.withBreakTime(domain.getBreakTime());
@@ -135,8 +135,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withEmployeeErrors(EmployeeDailyPerError domain) {
-		this.dailyRecord.withErrors(EmployeeDailyPerErrorDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain) {
+		this.dailyRecord.withErrors(domain.stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 		return this;
 	}
 

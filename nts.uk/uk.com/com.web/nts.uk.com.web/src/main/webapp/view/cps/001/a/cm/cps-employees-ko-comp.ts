@@ -299,7 +299,8 @@ module nts.custom.component {
                     id: params.employeeId || ko.observable(''),
                     name: ko.observable(''),
                     code: ko.observable(''),
-                    entire: ko.observable('')
+                    entire: ko.observable(''),
+                    hireDate: params.hireDate || ko.observable('')
                 },
                 department: {
                     code: ko.observable(''),
@@ -438,6 +439,7 @@ module nts.custom.component {
 
                             employee.code(emp.employeeCode);
                             employee.name(emp.employeeName);
+                            employee.hireDate(emp.hireDate);
 
                             department.code(emp.departmentCode);
                             department.name(emp.departmentName);
@@ -543,7 +545,8 @@ module nts.custom.component {
 
         employeeCode?: string;
         employeeName?: string;
-
+        hireDate?: string;
+        
         numberOfWork?: number;
         numberOfTempHist?: number;
 
@@ -554,6 +557,7 @@ module nts.custom.component {
 
         position?: string;
         contractCodeType?: string;
+        
     }
 
     enum FunctionNo {
