@@ -102,7 +102,7 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
 			List<Selection> selection = this.selectionRepo.getAllSelectionByCompanyId(
-					AppContexts.user().zeroCompanyIdInContract(), addItemCommand.getSingleItem().getSelectionItemId(),
+					AppContexts.user().companyId(), addItemCommand.getSingleItem().getSelectionItemId(),
 					GeneralDate.today());
 			if (selection == null || selection.size() == 0) {
 

@@ -118,7 +118,7 @@
 	<div class="setting_rows">
 		<div tabindex ="33" class="label_time_tab1" data-bind="ntsCheckBox: { enable: isTimezoneTwoEnabled,checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
 		<span>#{i18n.getText('KMK003_209')}</span>
-		<input tabindex ="34" data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="34" id="shiftTwoStart" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_163]',
 			value: timeZoneModelTwo.start,
 			constraint: 'TimeWithDayAttr',
@@ -131,7 +131,7 @@
 			immediate: false}" 
 		/>
 		<span>#{i18n.getText('KMK003_210')}</span>
-		<input tabindex ="35" data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="35" id="shiftTwoEnd" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_164]',
 			value: timeZoneModelTwo.end,
 			constraint: 'TimeWithDayAttr',
@@ -155,7 +155,7 @@
 				value: coreTimeSettingModel.timesheet,
 				enable: true }">
 			</div>
-			<input tabindex ="37" data-bind="ntsTimeWithDayEditor: {
+			<input id ="coreTimeStart" tabindex ="37" data-bind="ntsTimeWithDayEditor: {
 				name: '#[KMK003_163]',
 				value: coreTimeSettingModel.coreTimeSheet.startTime,
 				constraint: 'TimeWithDayAttr',
@@ -168,7 +168,7 @@
 				immediate: false}" 
 			/>
 		<label>#{i18n.getText('KMK003_160')}</label>
-		<input tabindex ="38" data-bind="ntsTimeWithDayEditor: {
+		<input id ="coreTimeEnd" tabindex ="38" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_164]',
 			value: coreTimeSettingModel.coreTimeSheet.endTime,
 			constraint: 'TimeWithDayAttr',

@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
+import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
@@ -37,6 +41,10 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	/** The role workplace ID finder. */
 	@Inject
 	private RoleWorkplaceIDFinder roleWorkplaceIDFinder;
+	
+	@Inject 
+	private GetWhetherLoginerCharge app;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -66,9 +74,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 */
 	@Override
 	// ロールIDから参�可能な職場リストを取得す�
-	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType) {
+	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate) {
 
-		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType);
+		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType, baseDate);
 
 		WorkplaceIdExport workplaceIdExport = new WorkplaceIdExport();
 		workplaceIdExport.setIsAllEmp(workplaceIdDto.getIsAllEmp());
@@ -141,48 +149,14 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 */
 	@Override
 	public RoleWhetherLoginPubExport getWhetherLoginerCharge() {
-		String employmentRoleID = AppContexts.user().roles().forAttendance();
-		String salaryRoleID = AppContexts.user().roles().forPayroll();
-		String humanResourceRoleID = AppContexts.user().roles().forPersonnel();
-		String officeHelperRoleID = AppContexts.user().roles().forOfficeHelper();
-		String personalInforRoleID = AppContexts.user().roles().forPersonalInfo();
-
-		RoleWhetherLoginPubExport outputRole = new RoleWhetherLoginPubExport();
-		Optional<Role> roleEmployment = roleRepo.findByRoleId(employmentRoleID);
-		if (roleEmployment.isPresent()) {
-			if (roleEmployment.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setEmployeeCharge(true);
-			}
-		}
-		Optional<Role> roleSalaryRole = roleRepo.findByRoleId(salaryRoleID);
-		if (roleSalaryRole.isPresent()) {
-			if (roleSalaryRole.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setSalaryProfessional(true);
-			}
-		}
-
-		Optional<Role> roleHumanResource = roleRepo.findByRoleId(humanResourceRoleID);
-		if (roleHumanResource.isPresent()) {
-			if (roleHumanResource.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setHumanResOfficer(true);
-			}
-		}
-
-		Optional<Role> roleOfficeHelper = roleRepo.findByRoleId(officeHelperRoleID);
-		if (roleOfficeHelper.isPresent()) {
-			if (roleOfficeHelper.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setOfficeHelperPersonne(true);
-			}
-		}
-
-		Optional<Role> rolePersonalInfor = roleRepo.findByRoleId(personalInforRoleID);
-		if (rolePersonalInfor.isPresent()) {
-			if (rolePersonalInfor.get().getAssignAtr().equals(RoleAtr.INCHARGE)) {
-				outputRole.setPersonalInformation(true);
-			}
-		}
-
-		return outputRole;
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge();
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
 	}
 
 	@Override
@@ -253,6 +227,21 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		return Optional
 				.of(new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
 						role.getName().v(), role.getAssignAtr().value));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#getCurrentLoginerRole()
+	 */
+	@Override
+	public RoleWhetherLoginPubExport getCurrentLoginerRole() {
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge();
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
 	}
 
 }

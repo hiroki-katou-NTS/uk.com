@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
@@ -51,24 +51,14 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
 		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
-		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getCid(), inputParam.getSid());
+		List<BreakDayOffDetail> lstDetailData = this.getConfirmDayOffDetail(inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().start());
 		//アルゴリズム「未使用の休出(確定)を取得する」を実行する
-		List<BreakDayOffDetail> lstBreakData = this.getConfirmBreakDetail(inputParam.getSid());
+		List<BreakDayOffDetail> lstBreakData = this.getConfirmBreakDetail(inputParam.getSid(), inputParam.getDateData().start());
 		if(!lstBreakData.isEmpty()) {
 			lstDetailData.addAll(lstBreakData);
 		}
 		//繰越数を計算する
 		CarryForwardDayTimes calcCarryForwardDays = this.calcCarryForwardDays(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
-		/*//3.未相殺の代休(暫定)を取得する
-		List<BreakDayOffDetail> lstInterimDayOffDetail = this.lstInterimDayOffDetail(inputParam);
-		if(!lstInterimDayOffDetail.isEmpty()) {
-			lstDetailData.addAll(lstInterimDayOffDetail);
-		}
-		//アルゴリズム「未使用の休出(暫定)を取得する」を実行する
-		List<BreakDayOffDetail> lstInterimBreakDetail = this.lstInterimBreakDetail(inputParam);
-		if(!lstInterimBreakDetail.isEmpty()) {
-			lstDetailData.addAll(lstInterimBreakDetail);
-		}*/
 		//3.未相殺の代休(暫定)を取得する
 		//アルゴリズム「未使用の休出(暫定)を取得する」を実行する
 		lstDetailData = this.lstInterimData(inputParam, lstDetailData);
@@ -84,6 +74,13 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		RemainUnDigestedDayTimes remainUnDigestedDayTimes = this.getRemainUnDigestedDayTimes(inputParam.getBaseDate(), lstDetailData, inputParam.getSid());
 		//発生数・使用数を計算する
 		RemainUnDigestedDayTimes getRemainOccurrenceUseDayTimes = this.getRemainOccurrenceUseDayTimes(lstDetailData, inputParam.getDateData());
+		List<DayOffError> lstError = new ArrayList<>();
+		if(remainUnDigestedDayTimes.getRemainDays() < 0) {
+			lstError.add(DayOffError.DAYERROR);
+		}
+		if(remainUnDigestedDayTimes.getRemainTimes() < 0) {
+			lstError.add(DayOffError.TIMEERROR);
+		}
 		BreakDayOffRemainMngOfInPeriod outputData = new BreakDayOffRemainMngOfInPeriod(lstDetailData, 
 				remainUnDigestedDayTimes.getRemainDays(),
 				remainUnDigestedDayTimes.getRemainTimes(),
@@ -94,15 +91,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				getRemainOccurrenceUseDayTimes.getUnDigestedDays(),
 				getRemainOccurrenceUseDayTimes.getUnDigestedTimes(),
 				calcCarryForwardDays.getCarryForwardDays(), 
-				calcCarryForwardDays.getCarryForwardTime());
+				calcCarryForwardDays.getCarryForwardTime(),
+				lstError);
 		return outputData;
 	}
 
 	@Override
-	public List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid) {
+	public List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid, GeneralDate startDate) {
 		List<BreakDayOffDetail> lstOutputData = new ArrayList<>();
 		//アルゴリズム「確定代休から未相殺の代休を取得する」を実行する
-		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(cid, sid);
+		List<CompensatoryDayOffManaData> lstDayOffConfirmData = this.lstConfirmDayOffData(cid, sid, startDate);
 		if(lstDayOffConfirmData.isEmpty()) {
 			return lstOutputData;
 		}
@@ -117,12 +115,18 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid) {
+	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid, GeneralDate startDate) {
 		//ドメインモデル「代休管理データ」
 		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySid(cid, sid);
-		
-		return lstDayOffConfirm.stream().filter(x -> x.getRemainDays().v() > 0 || x.getRemainTimes().v() > 0)
-				.collect(Collectors.toList());
+		List<CompensatoryDayOffManaData> output = new ArrayList<>();
+		for (CompensatoryDayOffManaData x : lstDayOffConfirm) {
+			if((x.getRemainDays().v() <= 0 && x.getRemainTimes().v() <= 0)
+					|| (x.getDayOffDate().getDayoffDate().isPresent() && x.getDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+				continue;
+			}
+			output.add(x);
+		}
+		return output;
 	}
 
 	@Override
@@ -156,10 +160,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<BreakDayOffDetail> getConfirmBreakDetail(String sid) {
+	public List<BreakDayOffDetail> getConfirmBreakDetail(String sid, GeneralDate startDate) {
 		List<BreakDayOffDetail> lstData = new ArrayList<>();
 		//アルゴリズム「確定休出から未使用の休出を取得する」を実行する
-		List<LeaveManagementData> lstConfirmBreakData = this.lstConfirmBreakData(sid);
+		List<LeaveManagementData> lstConfirmBreakData = this.lstConfirmBreakData(sid, startDate);
 		if(lstConfirmBreakData.isEmpty()) {
 			return lstData;
 		}
@@ -174,12 +178,19 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	}
 
 	@Override
-	public List<LeaveManagementData> lstConfirmBreakData(String sid) {
+	public List<LeaveManagementData> lstConfirmBreakData(String sid, GeneralDate startDate) {
 		//ドメインモデル「休出管理データ」
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySid(cid, sid);
-		return lstBreackConfirm.stream().filter(x -> x.getUnUsedDays().v() > 0 || x.getUnUsedTimes().v() > 0)
-				.collect(Collectors.toList());
+		List<LeaveManagementData> lstOutput = new ArrayList<>();
+		for (LeaveManagementData x : lstBreackConfirm) {
+			if((x.getUnUsedDays().v() <= 0 && x.getUnUsedTimes().v() <= 0)
+					|| (x.getComDayOffDate().getDayoffDate().isPresent() && x.getComDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+				continue;
+			}
+			lstOutput.add(x);
+		}
+		return lstOutput;
 	}
 
 	@Override
@@ -790,5 +801,21 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			
 		}
 		return lstOutputBreak;
+	}
+
+	@Override
+	public double getBreakDayOffMngRemain(String employeeID, GeneralDate date) {
+		String companyID = AppContexts.user().companyId();
+		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
+				companyID, 
+				employeeID, 
+				new DatePeriod(date, date.addYears(1)), 
+				false, 
+				date, 
+				false, 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Collections.emptyList());
+		return this.getBreakDayOffMngInPeriod(inputParam).getRemainDays();
 	}
 }

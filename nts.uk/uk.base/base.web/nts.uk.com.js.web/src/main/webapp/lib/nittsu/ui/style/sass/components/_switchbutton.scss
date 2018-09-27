@@ -46,6 +46,9 @@ button.nts-switch-button {
    		&:hover {
    			background-color: darken($button-normal-base-color, 15%);
    		}
+   		&.selected {
+   			background-color: #7b8;
+   		}
    	}
 }
 

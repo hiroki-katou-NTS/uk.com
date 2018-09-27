@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -102,13 +101,32 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		}
 		return dto;
 	}
+	
+	public static AnyItemOfMonthlyDto fromWith(List<AnyItemOfMonthly> domain, Map<Integer, OptionalItemAtr> master) {
+		AnyItemOfMonthlyDto dto = new AnyItemOfMonthlyDto();
+		if (domain != null && !domain.isEmpty()) {
+			dto.setClosureDate(ClosureDateDto.from(domain.get(0).getClosureDate()));
+			dto.setClosureID(domain.get(0).getClosureId() == null ? 1 : domain.get(0).getClosureId().value);
+			dto.setEmployeeId(domain.get(0).getEmployeeId());
+			dto.setYearMonth(domain.get(0).getYearMonth());
+			domain.stream().forEach(d -> {
+				dto.getValues().add(OptionalItemValueDto.from(d, getAttrFromMasterWith(master, d)));
+			});
+			dto.exsistData();
+		}
+		return dto;
+	}
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemOfMonthly c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getAnyItemId());
 		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.MONTHLY_PERFORMANCE){
+		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;
+	}
+	
+	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, AnyItemOfMonthly c) {
+		return master == null ? null : master.get(c.getAnyItemId());
 	}
 }

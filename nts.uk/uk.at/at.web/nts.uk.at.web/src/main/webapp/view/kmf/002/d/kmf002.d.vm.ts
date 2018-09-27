@@ -4,7 +4,7 @@ module nts.uk.at.view.kmf002.d {
     import blockUI = nts.uk.ui.block;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+    import CommonTableMonthDaySet = nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet;
     export module viewmodel {
 
         export class ScreenModel {
@@ -18,7 +18,7 @@ module nts.uk.at.view.kmf002.d {
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
 
-            commonTableMonthDaySet: KnockoutObservable<nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet>;
+            commonTableMonthDaySet: KnockoutObservable<CommonTableMonthDaySet>;
             enableSave: KnockoutObservable<boolean>;
             enableDelete: KnockoutObservable<boolean>;
 
@@ -45,7 +45,8 @@ module nts.uk.at.view.kmf002.d {
                     maxRows: 25
                 };
                 _self.employmentList = ko.observableArray<UnitModel>([]);
-                _self.commonTableMonthDaySet = ko.observable(new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet());
+                _self.commonTableMonthDaySet = ko.observable(new CommonTableMonthDaySet());
+                _self.commonTableMonthDaySet().fiscalYear(moment().format('YYYY'));
                 _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     if (!nts.uk.ui.errors.hasError()) {
@@ -124,11 +125,15 @@ module nts.uk.at.view.kmf002.d {
             private save(): void {
                 let _self = this;
                 if (!nts.uk.ui.errors.hasError()) {
+                    _self.enableSave(false);
+                    blockUI.invisible();
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
                         _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    });    
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.enableSave(true);
+                        });
+                    }).always(()=> blockUI.clear());    
                 }
             }
 
@@ -148,6 +153,10 @@ module nts.uk.at.view.kmf002.d {
 
             public getDataFromService(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    _self.setDefaultMonthDay();
+                    return;
+                }
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth()).done(function(data: any, data2: any) {
                     if (typeof data === "undefined") {

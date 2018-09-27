@@ -40,7 +40,8 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		WorkScheduleTimeZone timeZoneData = null;
 		if(workScheduleTimeZones.isEmpty()) {
 			if(timeDto.isUpdateStart() && timeDto.isUpdateEnd()) {
-				timeZoneData = new WorkScheduleTimeZone(1, new TimeWithDayAttr(timeDto.getStartTime()), new TimeWithDayAttr(timeDto.getEndTime()), BounceAtr.DIRECT_BOUNCE);
+				timeZoneData = new WorkScheduleTimeZone(1, new TimeWithDayAttr(timeDto.getStartTime() == null ? 0 : timeDto.getStartTime()),
+						new TimeWithDayAttr(timeDto.getEndTime()== null ? 0 : timeDto.getEndTime()), BounceAtr.DIRECT_BOUNCE);
 				List<WorkScheduleTimeZone> lstTimeZoneData = new ArrayList<>();
 				lstTimeZoneData.add(timeZoneData);
 				basicScheByDate.setWorkScheduleTimeZones(lstTimeZoneData);
@@ -71,21 +72,21 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		if(timeDto.getFrameNumber() == 1) {
 			if(timeDto.isUpdateStart()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 3, timeDto.getDateInfo(), timeDto.getEmployeeId());
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}
 			if(timeDto.isUpdateEnd()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 4, timeDto.getDateInfo(), timeDto.getEmployeeId());	
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}
 				
 		} else {
 			if(timeDto.isUpdateStart()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 5, timeDto.getDateInfo(), timeDto.getEmployeeId());
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}
 			if(timeDto.isUpdateEnd()) {
 				sateData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION, 6, timeDto.getDateInfo(), timeDto.getEmployeeId());	
-				workScheReposi.updateScheduleEditState(sateData);
+				workScheReposi.updateOrInsert(sateData);
 			}	
 		}
 		

@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfHistory;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.Krc
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -31,6 +33,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
 	private static final String FIND_BY_EMPLOYEE_DESC;
+	private static final String SEL_BUSINESS_TYPE;
 
 	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
 			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
@@ -46,6 +49,17 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		stringBuilder.append("WHERE k.sId = :sId ");
 		stringBuilder.append("AND k.startDate <= :baseDate and k.endDate >= :baseDate");
 		FIND_BY_BASE_DATE = stringBuilder.toString();
+		
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT h");
+		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
+		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
+		builderString
+				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" WHERE b.sId IN :lstSID");
+		builderString.append(" AND h.startDate <= :endYmd");
+		builderString.append(" AND h.endDate >= :startYmd");
+		SEL_BUSINESS_TYPE = stringBuilder.toString();
 
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");
@@ -176,4 +190,18 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 				.getList();
 		return entities;
 	}
+
+//	@Override
+//	public List<BusinessTypeOfEmployeeHistory> getListBusinessType(List<String> lstEmployee, Period dateRange) {
+//		List<BusinessTypeOfEmployeeHistory> data = this.queryProxy().query(SEL_BUSINESS_TYPE,KrcmtBusinessTypeOfHistory.class)
+//				.set
+//				List<String> businessTypes = new ArrayList<>();
+//				CollectionUtil.split(lstEmployee, 1000, subList -> {
+//					businessTypes.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, String.class)
+//							.setParameter("lstSID", subList).setParameter("startYmd", dateRange.getStartDate())
+//							.setParameter("endYmd", dateRange.getEndDate()).getList());
+//				});
+//				return businessTypes;
+//		return null;
+//	}
 }

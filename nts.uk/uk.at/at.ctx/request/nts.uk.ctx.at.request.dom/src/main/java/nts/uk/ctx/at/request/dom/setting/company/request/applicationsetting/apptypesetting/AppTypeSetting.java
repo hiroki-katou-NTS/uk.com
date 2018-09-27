@@ -51,15 +51,11 @@ public class AppTypeSetting extends DomainObject {
 	 */
 	private ApplicationType appType;
 	
-	/**
-	 * 申請理由表示
-	 */
-	private DisplayReason displayReason;
 	
 	public static AppTypeSetting toDomain(Integer displayInitialSegment, Integer canClassificationChange, 
 			Integer displayFixedReason, Integer sendMailWhenApproval, 
 			Integer sendMailWhenRegister, Integer displayAppReason, 
-			Integer appType, DisplayReason displayReason){
+			Integer appType){
 		return new AppTypeSetting(
 				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitialAtr.class), 
 				canClassificationChange == 1 ? true : false, 
@@ -67,8 +63,7 @@ public class AppTypeSetting extends DomainObject {
 				sendMailWhenApproval == 1 ? true : false, 
 				sendMailWhenRegister == 1 ? true : false, 
 				EnumAdaptor.valueOf(displayAppReason, DisplayAtr.class), 
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
-				displayReason);
+				EnumAdaptor.valueOf(appType, ApplicationType.class));
 	}
 	
 }

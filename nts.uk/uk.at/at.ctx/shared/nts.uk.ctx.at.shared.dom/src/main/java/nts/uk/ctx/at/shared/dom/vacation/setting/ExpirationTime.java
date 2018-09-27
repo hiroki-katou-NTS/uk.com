@@ -95,7 +95,8 @@ public enum ExpirationTime {
 
 	/** The description. */
 	public String description;
-
+	
+	public int addValue;
 	/** The Constant values. */
 	private final static ExpirationTime[] values = ExpirationTime.values();
 
@@ -111,6 +112,7 @@ public enum ExpirationTime {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
+		this.addValue = value - 2;
 	}
 
 	/**

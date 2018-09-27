@@ -5,9 +5,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaRemainHist;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 
@@ -55,6 +58,14 @@ public class JpaAnnualLeaveRemainHistRepository extends JpaRepository implements
 			this.commandProxy().update(entity);
 		} else
 			this.commandProxy().insert(KrcdtAnnLeaRemainHist.fromDomain(domain));
+	}
+
+	@Override
+	public void delete(String employeeId, YearMonth ym, ClosureId closureId, ClosureDate closureDate) {
+		String sql = "DELETE FROM KrcdtAnnLeaRemainHist a WHERE a.sid = :employeeId and a.yearMonth = :ym AND a.closureId = :closureId AND a.closeDay = :closeDay AND a.isLastDay = :isLastDay";
+		this.getEntityManager().createQuery(sql).setParameter("employeeId", employeeId).setParameter("ym", ym.v())
+				.setParameter("closureId", closureId.value).setParameter("closeDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);
 	}
 
 }

@@ -4,7 +4,7 @@ module nts.uk.at.view.kmk004.f {
         //        screenModel.startPage().done(function() {
         __viewContext.bind(screenModel);
         _.defer(() => {
-            $('#combo-box').find('input:first').focus();
+            $('#combo-box').focus();
         });
         //        });
     });

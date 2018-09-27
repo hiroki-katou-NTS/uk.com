@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -68,6 +69,10 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<BasicScheduleScreenDto> getByListSidAndDate(BasicScheduleScreenParams params) {
 		return this.bScheduleScreenRepo.getByListSidAndDate(params.employeeId, params.startDate, params.endDate);
+	}
+	
+	public List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(BasicScheduleScreenParams params) {
+		return this.bScheduleScreenRepo.getBasicScheduleWithJDBC(params.employeeId, params.startDate, params.endDate);
 	}
 
 	/**
@@ -150,6 +155,11 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<WorkEmpCombineScreenDto> getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
 		String companyId = AppContexts.user().companyId();
+		List<String> lstWorkTypeCode = params.getLstWorkTypeCode();
+				List<String> lstWorkTimeCode = params.getLstWorkTimeCode();
+		if(CollectionUtil.isEmpty(lstWorkTypeCode) || CollectionUtil.isEmpty(lstWorkTimeCode) ){
+			return Collections.emptyList();
+		}
 		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.getLstWorkTypeCode(),
 				params.getLstWorkTimeCode());
 	}
@@ -230,6 +240,13 @@ public class BasicScheduleScreenProcessor {
 		// TODO- ben man master KMK003 khong co phan dang ki sort order nen co le khong can
 		// アラームチェック条件を取得する
 		// da goi o phan khac lien quan den buildTreeShiftCondition
+	}
+	
+	/**
+	 * 
+	 */
+	public void checkStatusForScheduledWork(){
+		
 	}
 
 }

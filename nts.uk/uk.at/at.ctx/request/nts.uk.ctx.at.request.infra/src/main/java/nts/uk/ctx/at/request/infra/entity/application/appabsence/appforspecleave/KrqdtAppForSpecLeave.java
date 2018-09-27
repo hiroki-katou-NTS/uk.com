@@ -28,7 +28,6 @@ public class KrqdtAppForSpecLeave extends UkJpaEntity implements Serializable{
 	/**
      * 排他バージョン
      */
-    @Version
 	@Column(name="EXCLUS_VER")
 	public Long version;
     

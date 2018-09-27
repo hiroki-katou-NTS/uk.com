@@ -55,7 +55,7 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 		KscmtComWorkPairSetPK kscmtComWorkPairSetPk = new KscmtComWorkPairSetPK(domain.getCompanyId(),
 				domain.getGroupNo(), domain.getPatternNo(), domain.getPairNo());
 		return new KscmtComWorkPairSet(kscmtComWorkPairSetPk, domain.getWorkTypeCode().v(),
-				domain.getWorkTimeCode().v());
+				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v());
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 		KscmtWkpWorkPairSetPK kscmtWkpWorkPairSetPk = new KscmtWkpWorkPairSetPK(domain.getWorkplaceId(),
 				domain.getGroupNo(), domain.getPatternNo(), domain.getPairNo());
 		return new KscmtWkpWorkPairSet(kscmtWkpWorkPairSetPk, domain.getWorkTypeCode().v(),
-				domain.getWorkTimeCode().v());
+				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v());
 	}
 
 	/**

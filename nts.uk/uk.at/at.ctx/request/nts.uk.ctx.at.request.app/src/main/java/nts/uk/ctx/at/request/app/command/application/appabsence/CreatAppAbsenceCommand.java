@@ -11,10 +11,6 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SubTargetDigest
 @Data
 public class CreatAppAbsenceCommand {
 	/**
-	 * 会社ID
-	 */
-	private String companyID;
-	/**
 	 * 申請ID
 	 */
 	private String appID;
@@ -37,9 +33,14 @@ public class CreatAppAbsenceCommand {
 	 * 申請.申請者
 	 */
 	private String employeeID;
+	
+	/**
+	 * 定型理由
+	 */
+	private String appReasonID;
 
 	/**
-	 * 申請.申請理由 = 申請.申請定型理由 + \n + 申請.申請理由
+	 * 申請理由	
 	 */
 	private String applicationReason;
 	/**
@@ -109,4 +110,7 @@ public class CreatAppAbsenceCommand {
 	 * displayEndDateFlg
 	 */
 	private boolean displayEndDateFlg;
+	//specHoliday
+	private SpecHolidayCommand specHd;
+	
 }

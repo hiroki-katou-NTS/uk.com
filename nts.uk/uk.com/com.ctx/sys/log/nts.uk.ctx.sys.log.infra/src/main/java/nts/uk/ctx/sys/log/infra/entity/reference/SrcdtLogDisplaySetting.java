@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.log.infra.entity.reference;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.log.dom.reference.DataTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -71,9 +73,10 @@ public class SrcdtLogDisplaySetting extends UkJpaEntity implements Serializable 
 	}
 
 	public static SrcdtLogDisplaySetting toEntity(LogDisplaySetting domain) {
+		Optional<DataTypeEnum> optionalDataType = Optional.ofNullable(domain.getDataType());
 		return new SrcdtLogDisplaySetting(new SrcdtLogDisplaySettingPK(domain.getLogSetId()),
 				 domain.getCid(), domain.getCode().v(), domain.getName().v(), 
-				 domain.getDataType().code, domain.getRecordType().code, 
+				 optionalDataType.isPresent() ? domain.getDataType().code : null, domain.getRecordType().code, 
 				 domain.getLogSetOutputItems().stream().map(item -> SrcdtLogSetOutputItem.toEntity(item)).collect(Collectors.toList()));
 	}
 

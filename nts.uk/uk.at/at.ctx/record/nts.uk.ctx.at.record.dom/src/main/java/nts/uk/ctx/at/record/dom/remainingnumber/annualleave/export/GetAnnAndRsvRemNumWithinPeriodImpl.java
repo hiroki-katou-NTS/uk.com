@@ -20,14 +20,14 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.GetRsvLeaRem
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：期間中の年休積休残数を取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWithinPeriod {
@@ -50,8 +50,8 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 	public AggrResultOfAnnAndRsvLeave algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
 			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TempAnnualLeaveManagement>> tempAnnDataforOverWriteList,
-			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
+			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
+			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage, Optional<Boolean> noCheckStartDate,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave) {
 		
@@ -67,8 +67,8 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 	public AggrResultOfAnnAndRsvLeave algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
 			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TempAnnualLeaveManagement>> tempAnnDataforOverWriteList,
-			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
+			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
+			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage, Optional<Boolean> noCheckStartDate,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave,
 			Optional<MonAggrCompanySettings> companySets,

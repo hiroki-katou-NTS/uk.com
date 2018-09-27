@@ -90,6 +90,9 @@ module nts.uk.com.view.cas014.a {
             }
 
             register() {
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails = [];
 
                 _.each(data.details, (d: any) => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));

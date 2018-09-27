@@ -84,10 +84,17 @@ public class SpecialHolidayEventFinder {
 	}
 
 	private void addSpecialNos(String companyId, List<Integer> hasSettingNos) {
-		List<SpecialHoliday> sHs = sHRepo.findByCompanyId(companyId);
+		List<SpecialHoliday> sHs = sHRepo.findByCompanyIdWithTargetItem(companyId);
 		sHs.forEach(x -> {
 			if (x.getTargetItem() != null) {
-				hasSettingNos.addAll(x.getTargetItem().getFrameNo());
+				List<Integer> fNos = x.getTargetItem().getFrameNo();
+				if (!CollectionUtil.isEmpty(fNos)) {
+					fNos.forEach(no -> {
+						if (!hasSettingNos.contains(no)) {
+							hasSettingNos.add(no);
+						}
+					});
+				}
 			}
 		});
 
@@ -95,12 +102,15 @@ public class SpecialHolidayEventFinder {
 
 	private void addNursingNos(String companyId, List<Integer> hasSettingNos) {
 		List<NursingLeaveSetting> nurSettings = this.nurRepo.findByCompanyId(companyId);
-		nurSettings.forEach(x -> {
-			x.getSpecialHolidayFrame().ifPresent(value -> {
-				hasSettingNos.add(value);
+		if (nurSettings != null) {
+			nurSettings.forEach(x -> {
+				if (x.getSpecialHolidayFrame() != null) {
+					x.getSpecialHolidayFrame().ifPresent(value -> {
+						hasSettingNos.add(value);
+					});
+				}
 			});
-		});
-
+		}
 	}
 
 	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings,
@@ -125,6 +135,12 @@ public class SpecialHolidayEventFinder {
 			return SpecialHolidayEventDto.fromDomain(sHEventOpt.get());
 		}
 		return null;
+	}
+
+	public List<SpecialHolidayEventDto> findAll() {
+		String companyId = AppContexts.user().companyId();
+		return this.sHEventRepo.findByCompany(companyId).stream().map(x -> SpecialHolidayEventDto.fromDomain(x))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -71,7 +71,8 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
 		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
 		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
-		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
+		builderString
+				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
 		builderString.append(" WHERE b.sId IN :lstSID");
 		builderString.append(" AND h.startDate <= :endYmd");
 		builderString.append(" AND h.endDate >= :startYmd");
@@ -156,7 +157,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 				.stream()
 				.map(c -> new MonthlyAttendanceItemDto(c.getKrcmtMonAttendanceItemPK().getCid(),
 						c.getKrcmtMonAttendanceItemPK().getMAtdItemId(), c.getMAtdItemName(), c.getDispNo(),
-						c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName()))
+						c.getIsAllowChange(), c.getMAtdItemAtr(), c.getLineBreakPosName(), c.getPrimitiveValue()))
 				.collect(Collectors.toList());
 	}
 
@@ -168,7 +169,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 		builderString.append(" FROM KrcdtEditStateOfMothlyPer b");
 		builderString.append(" WHERE b.krcdtEditStateOfMothlyPerPK.employeeID IN :employeeIds");
 		builderString.append(" AND b.krcdtEditStateOfMothlyPerPK.attendanceItemID IN :attendanceItemIds");
-		builderString.append(" AND b.processDate = :processingDate");
+		builderString.append(" AND b.krcdtEditStateOfMothlyPerPK.processDate = :processingDate");
 
 		List<EditStateOfMonthlyPerformanceDto> list = new ArrayList<>();
 		CollectionUtil.split(employeeIds, 1000, (subList) -> {
@@ -176,13 +177,15 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 				list.addAll(this.queryProxy().query(builderString.toString(), KrcdtEditStateOfMothlyPer.class)
 						.setParameter("employeeIds", subList).setParameter("attendanceItemIds", attdItemIds)
 						.setParameter("processingDate", processingDate.v()).getList().stream()
-						.map(item -> new EditStateOfMonthlyPerformanceDto(
-								item.getKrcdtEditStateOfMothlyPerPK().employeeID,
+						.map(item -> new EditStateOfMonthlyPerformanceDto(item.krcdtEditStateOfMothlyPerPK.employeeID,
 								item.krcdtEditStateOfMothlyPerPK.attendanceItemID,
-								new DatePeriod(item.krcdtEditStateOfMothlyPerPK.startYmd,
-										item.krcdtEditStateOfMothlyPerPK.endYmd),
-								item.processDate, item.closureID,
-								new ClosureDateDto(item.getCloseDay(), item.getIsLastDay()), item.getStateOfEdit()))
+								new DatePeriod(item.startYmd, item.endYmd),
+								item.krcdtEditStateOfMothlyPerPK.processDate,
+								item.krcdtEditStateOfMothlyPerPK.closureID,
+								new ClosureDateDto(
+										item.krcdtEditStateOfMothlyPerPK.closeDay,
+										item.krcdtEditStateOfMothlyPerPK.isLastDay),
+								item.stateOfEdit))
 						.collect(Collectors.toList()));
 
 			});
@@ -192,23 +195,38 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 
 	@Override
 	public void insertOrUpdateEditStateOfMonthlyPer(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto) {
-		Optional<KrcdtEditStateOfMothlyPer> optKrcdtEditStateOfMothlyPer  = this.queryProxy().find(new KrcdtEditStateOfMothlyPerPK(editStateOfMonthlyPerformanceDto.getEmployeeId(), editStateOfMonthlyPerformanceDto.getAttendanceItemId(), editStateOfMonthlyPerformanceDto.getDatePeriod().start(), editStateOfMonthlyPerformanceDto.getDatePeriod().end()), KrcdtEditStateOfMothlyPer.class);
+		Optional<KrcdtEditStateOfMothlyPer> optKrcdtEditStateOfMothlyPer = this.queryProxy()
+				.find(new KrcdtEditStateOfMothlyPerPK(editStateOfMonthlyPerformanceDto.getEmployeeId(),
+						editStateOfMonthlyPerformanceDto.getProcessDate(),
+						editStateOfMonthlyPerformanceDto.getClosureID(),
+						editStateOfMonthlyPerformanceDto.getClosureDate().getCloseDay(),
+						editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(),
+						editStateOfMonthlyPerformanceDto.getAttendanceItemId()), KrcdtEditStateOfMothlyPer.class);
 		KrcdtEditStateOfMothlyPer newkrcdtEditStateOfMothlyPer = this.toEntity(editStateOfMonthlyPerformanceDto);
-		if(optKrcdtEditStateOfMothlyPer.isPresent()){
+		if (optKrcdtEditStateOfMothlyPer.isPresent()) {
 			KrcdtEditStateOfMothlyPer oldkrcdtEditStateOfMothlyPer = optKrcdtEditStateOfMothlyPer.get();
-			oldkrcdtEditStateOfMothlyPer.processDate = newkrcdtEditStateOfMothlyPer.processDate;
-			oldkrcdtEditStateOfMothlyPer.closureID = newkrcdtEditStateOfMothlyPer.closureID;
-			oldkrcdtEditStateOfMothlyPer.closeDay = newkrcdtEditStateOfMothlyPer.closeDay;
-			oldkrcdtEditStateOfMothlyPer.isLastDay = newkrcdtEditStateOfMothlyPer.isLastDay;
+			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.processDate = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.processDate;
+			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closureID = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closureID;
+			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closeDay = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.closeDay;
+			oldkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.isLastDay = newkrcdtEditStateOfMothlyPer.krcdtEditStateOfMothlyPerPK.isLastDay;
 			oldkrcdtEditStateOfMothlyPer.stateOfEdit = newkrcdtEditStateOfMothlyPer.stateOfEdit;
 			this.commandProxy().update(oldkrcdtEditStateOfMothlyPer);
-		}else{
+		} else {
 			this.commandProxy().insert(newkrcdtEditStateOfMothlyPer);
 		}
 	}
-	
-	private KrcdtEditStateOfMothlyPer toEntity(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto){
-		return new KrcdtEditStateOfMothlyPer(new KrcdtEditStateOfMothlyPerPK(editStateOfMonthlyPerformanceDto.getEmployeeId(), editStateOfMonthlyPerformanceDto.getAttendanceItemId(), editStateOfMonthlyPerformanceDto.getDatePeriod().start(), editStateOfMonthlyPerformanceDto.getDatePeriod().end()), editStateOfMonthlyPerformanceDto.getProcessDate(), editStateOfMonthlyPerformanceDto.getClosureID(), editStateOfMonthlyPerformanceDto.getClosureDate().getCloseDay(), editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(), editStateOfMonthlyPerformanceDto.getStateOfEdit());
+
+	private KrcdtEditStateOfMothlyPer toEntity(EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto) {
+		return new KrcdtEditStateOfMothlyPer(
+				new KrcdtEditStateOfMothlyPerPK(editStateOfMonthlyPerformanceDto.getEmployeeId(),
+						editStateOfMonthlyPerformanceDto.getProcessDate(),
+						editStateOfMonthlyPerformanceDto.getClosureID(),
+						editStateOfMonthlyPerformanceDto.getClosureDate().getCloseDay(),
+						editStateOfMonthlyPerformanceDto.getClosureDate().getLastDayOfMonth(),
+						editStateOfMonthlyPerformanceDto.getAttendanceItemId()),
+				editStateOfMonthlyPerformanceDto.getStateOfEdit(),
+				editStateOfMonthlyPerformanceDto.getDatePeriod().start(),
+				editStateOfMonthlyPerformanceDto.getDatePeriod().end());
 	}
-	
+
 }

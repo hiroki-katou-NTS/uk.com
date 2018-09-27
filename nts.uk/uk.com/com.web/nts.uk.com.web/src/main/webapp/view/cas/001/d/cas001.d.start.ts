@@ -6,95 +6,87 @@ module nts.uk.com.view.cas001.d {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext["viewModel"] = screenModel;
-        screenModel.start().done(() => {
-            InitIggrid();
-            $("#grid").igGrid("option", "dataSource", screenModel.categoryList());
-            __viewContext.bind(__viewContext["viewModel"]);
-            screenModel.categoryList.subscribe(data => {
-                if (data) {
-                    $("#grid").igGrid("option", "dataSource", data);
-                } else {
-                    $("#grid").igGrid("option", "dataSource", []);
-                }
-            });
+        __viewContext["viewModel"].start().done(function(data) {
+            initGrid();
+            __viewContext.bind(__viewContext['viewModel']);
+           $('#search > div:nth-child(1) > span > input').focus();
+        })
+    });
+}
+
+function initGrid() {
+    
+    $("#grid").ntsGrid({
+        width: '440px',
+        height: '338px',
+        dataSource: __viewContext["viewModel"].categoryList() || [],
+        primaryKey: 'categoryId',
+        rowVirtualization: true,
+        virtualization: true,
+        virtualizationMode: 'continuous',
+        enter: 'below',
+        columns: [
+            { headerText: '', key: 'categoryId', dataType: "string", width: "50px", height: "40px", hidden: true },
+            { headerText: text('CAS001_30'), key: "otherAuth", dataType: "boolean", width: "40px", height: "40px", ntsControl: 'Checkbox', showHeaderCheckbox: true },
+            { headerText: text('CAS001_31'), key: "selfAuth", dataType: "boolean", width: "40px", height: "40px", ntsControl: 'Checkbox1', showHeaderCheckbox: true},
+            { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "300px", height: "40px" }
+        ],
+        ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                      { name: 'Checkbox1', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }],
+        features: [
+            {
+                name: 'Selection',
+                mode: 'row',
+                multipleSelection: true,
+                rowSelectionChanged: selectionChanged.bind(this)
+            }, {
+                name: "Tooltips",
+                columnSettings: [
+                    { columnKey: "categoryName", allowTooltips: true }
+                ],
+                visibility: "overflow"
+            }
+        ]
+    });
+    
+    $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
+    $("#grid").setupSearchScroll("igGrid", true);
+
+  
+    
+    $(document).on("click", "#grid_selfAuth > span > div > label > input", function(evt, ui) {
+        let _this = $(this),
+            grid = $("#grid"),
+            checked: boolean = $("#grid_selfAuth > span > div > label > input:checked").val() == "on"? true: false,
+            categoryIdlst = _.map(grid.igGrid("option", "dataSource"), function(c) { return c.categoryId; });
+        _.each(categoryIdlst, (c) => {
+            setTimeout(function() {
+                grid.ntsGrid("updateRow", c, { selfAuth: checked });
+            }, 1);
+        });
+
+    });
+
+    $(document).on("click", "#grid_otherAuth > span > div > label > input", function(evt, ui) {
+        let _this = $(this), 
+            grid = $("#grid"), 
+            checked: boolean = $("#grid_otherAuth > span > div > label > input:checked").val() == "on"? true: false,
+            categoryIdlst = _.map(grid.igGrid("option", "dataSource"), function(c) { return c.categoryId; });
+        
+        _.each(categoryIdlst, function(c) {
+            setTimeout(function() {
+                grid.ntsGrid("updateRow", c, { otherAuth: checked });
+            }, 1);
         });
     });
 }
 
-function InitIggrid() {
-    let __viewContext: any = window["__viewContext"] || {};
-    $("#grid").igGrid({
-        columns: [
-            { headerText: "Id", key: "categoryId", dataType: "string", width: "100px", height: "40px", hidden: true },
-            {
-                headerText: text('CAS001_30')+"</br><input class='otherAuth' type='checkbox'  tabindex='2' ></input>",
-                key: 'otherAuth',width: "35px", height: "40px",
-                template: "<input style='width:30px, height:40px' class='checkRow otherAuth' type='checkbox'"
-                +" data-checked='${otherAuth}' data-id='${categoryId}' tabindex='4'/>"
-            },
-            {
-                headerText: text('CAS001_31')+"</br><input class='selfAuth' type='checkbox'  tabindex='3'></input>",
-                key: 'selfAuth',width: "35px", height: "40px",
-                template: "<input style='width:30px, height:40px'  class='checkRow selfAuth' type='checkbox'"
-                +" data-checked='${selfAuth}' data-id='${categoryId}' tabindex='4'/>"
-            },
-            { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "100px", height: "40px" }
-
-        ],
-        primaryKey: 'categoryId',
-        autoGenerateColumns: false,
-        dataSource: [],
-        width: "440px",
-        height: "270px",
-        features: [{
-            name: 'Selection',
-            mode: 'row',
-            activation: false,
+function selectionChanged(evt, ui) {
+        //console.log(evt.type);
+        var selectedRows = ui.selectedRows;
+        var arr = [];
+        for (var i = 0; i < selectedRows.length; i++) {
+            arr.push("" + selectedRows[i].id);
         }
-        ],
-        dataRendered: function(evt, ui) {
-            $("#grid").find("input[type=checkbox]").each(function() {
-                let $this = $(this);
-                $this.prop('checked', $this.data('checked'));
-            });
-        }
-    });
-    $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
-    
-    $(document).on("click", ".selfAuth:not(.checkRow)", function(evt, ui) {
-        let _this = $(this);
-        $("#grid").find(".checkRow.selfAuth").prop("checked", _this.prop("checked")).trigger("change");
-    });
-    
-    // khi giá trị checkbox của cột selfAuth thay đổi, giá trị selfAuth của row đó cũng thay đổi theo checkbox
-    $(document).on("change", ".selfAuth.checkRow", function(evt, ui) {
-        let _this = $(this),
-            id = _this.parents('tr').data('id'),
-            data: Array<any> = __viewContext["viewModel"].categoryList(),
-            item = _.find(data, x => x.categoryId == id);
-        if (item) {
-            item.selfAuth = _this.prop('checked');
-        } else {
-            item.selfAuth = _this.removeProp('checked');
-        }
-    });
-
-    $(document).on("click", ".otherAuth:not(.checkRow)", function(evt, ui) {
-        let _this = $(this);
-
-        $("#grid").find(".checkRow.otherAuth").prop("checked", _this.prop("checked")).trigger("change");
-    });
-    
-    // khi giá trị checkbox của cột otherAuth thay đổi, giá trị otherAuth của row đó cũng thay đổi theo checkbox đó
-    $(document).on("change", ".otherAuth.checkRow", function(evt, ui) {
-        let _this = $(this),
-            id = _this.parents('tr').data('id'),
-            data: Array<any> = __viewContext["viewModel"].categoryList(),
-            item = _.find(data, x => x.categoryId == id);
-        if (item) {
-            item.otherAuth = _this.prop('checked');
-        } else {
-            item.otherAuth = _this.removeProp('checked');
-        }
-    });
-}
+        __viewContext.selectedList(arr);
+ }; 

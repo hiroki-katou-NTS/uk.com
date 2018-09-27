@@ -33,16 +33,16 @@
 							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- I1_4 -->
-						<td><span data-bind="text : processingMonth "></span>月度</td>
+						<td><span data-bind="text : processingMonth "></span>月度
 						<!-- I1_5 -->
-						<td data-bind="text : nameClosure"></td>
+						<span style="padding-left: 20px;" data-bind="text : nameClosure"></span></td>
 					</tr>
-					<tr>
+					<tr >
 						<td>
 							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
 						</td>
 						<!-- I1_6 -->
-						<td colspan="2"><span data-bind="text: periodStartDate"></span>
+						<td id = "period-date" colspan="2"><span data-bind="text: periodStartDate"></span>
 							～ <span data-bind="text: periodEndDate"></span></td>
 					</tr>
 					<tr>
@@ -128,11 +128,11 @@
 													</com:ko-if>
 													<!-- 5 -->
 													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeAssignment == true">
-														<span>#{i18n.getText('KDW001_97')}</span><br />
+														<span>#{i18n.getText('KDW001_100')}</span><br />
 													</com:ko-if>
 													<!-- 6 -->
 													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resetTimeChildOrNurseCare == true">
-														<span>#{i18n.getText('KDW001_100')}</span><br />
+														<span>#{i18n.getText('KDW001_97')}</span><br />
 													</com:ko-if>
 													<!-- 7 -->
 													<com:ko-if bind="$data.dailyCreationSetInfo.partResetClassification.resettingWorkingHours == true">
@@ -154,11 +154,11 @@
 										
 									</td>
 									<!-- I2_16 -->
-									<td style="text-align: center;"><span class="hyperlink"
+									<td style="text-align: center;"><span class="hyperlink" tabindex = "1"
 										data-bind="click: $parent.openDialogG.bind($parent, $data) "><span
 											data-bind=" text: $parent.numberPerson"></span>人</span></td>
 									<!-- I2_17 -->
-									<td style="text-align: center;"><span class="hyperlink"
+									<td style="text-align: center;"><span class="hyperlink" tabindex = "2"
 										data-bind="click: $parent.openDialogH.bind($parent, $data) "><span
 											data-bind=" text: $data.numberPersonErr"></span>人</span></td>
 								</tr>
@@ -169,7 +169,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- I3_2 -->
-				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
+				<button class="large" tabindex = "3" id="close-dialog" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 
 		</ui:define>

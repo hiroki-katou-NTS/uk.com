@@ -100,7 +100,7 @@ module nts.uk.at.view.kmk012.a {
                 view: string;
                 
                 updateData(): void {
-                    this.view = this.id+": "+this.name;    
+                    this.view = this.id+": "+_.escape(this.name);    
                 }
             }
             

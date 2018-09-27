@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDa
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class RegisterDailyPerformanceInfoService {
 
@@ -74,6 +77,7 @@ public class RegisterDailyPerformanceInfoService {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
 			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,

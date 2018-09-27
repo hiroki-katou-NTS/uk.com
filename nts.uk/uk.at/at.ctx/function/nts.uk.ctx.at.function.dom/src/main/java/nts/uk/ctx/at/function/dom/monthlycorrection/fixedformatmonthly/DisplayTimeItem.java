@@ -11,7 +11,7 @@ import nts.arc.layer.dom.DomainObject;
  *
  */
 @Getter
-public class DisplayTimeItem extends DomainObject {
+public class DisplayTimeItem extends DomainObject  {
 	/**並び順*/
 	private int displayOrder;
 	/**表示する項目*/
@@ -26,5 +26,8 @@ public class DisplayTimeItem extends DomainObject {
 		this.columnWidthTable = Optional.ofNullable(columnWidthTable);
 	}
 	
+	public DisplayTimeItem clone() {
+		return new DisplayTimeItem(displayOrder,itemDaily,columnWidthTable.isPresent()?columnWidthTable.get():null);
+	}
 	
 }

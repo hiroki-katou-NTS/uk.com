@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author loivt
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class AppForSpecLeave {
 	/**
 	 * 申請ID

@@ -11,7 +11,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 620,
-					height : 840
+					height : 700
 				};
 			</script>
 			<com:scriptfile path="/lib/generic/cropper/cropper.js"
@@ -33,12 +33,19 @@
 			<div id="contents-area" class="cf coverBlock">
 				<div>#{i18n.getText('CPS002_96')}</div>
 				<div id="test"
-					data-bind="ntsImageEditor: {editable: true, width:600, height: 600, freeResize: false, resizeRatio: 0.75, accept: ['.gif', '.png', '.jpg', '.jpeg','.bmp'] }"></div>
+					data-bind="ntsImageEditor: {
+					editable: true,
+					width:600,
+					height: 450,
+					freeResize: false,
+					resizeRatio: 0.75,
+					accept: ['.gif', '.png', '.jpg', '.jpeg','.bmp'],
+					maxSize: 10 }"></div>
 
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: upload">#{i18n.getText('CPS002_98')}</button>
-				<button class="" data-bind="click: close">#{i18n.getText('CPS002_99')}</button>
+				<button class="proceed x-large" data-bind="click: upload" tabindex ="3">#{i18n.getText('CPS002_98')}</button>
+				<button class="" data-bind="click: close" tabindex ="4">#{i18n.getText('CPS002_99')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

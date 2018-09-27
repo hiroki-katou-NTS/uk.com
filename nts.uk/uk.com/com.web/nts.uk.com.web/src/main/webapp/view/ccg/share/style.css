@@ -147,12 +147,6 @@
 	overflow: hidden;
 }
 
-#hor-scroll-button-hide {
-	z-index: 997;
-	position: fixed;
-	display: table;
-}
-
 .ccg001-icon-btn-big {
 	width: 40px;
 	height: 35px;
@@ -218,9 +212,10 @@
 	margin-left: 10px;
 }
 .position-mid {
-	position: absolute;
+	position: fixed;
 	top: 50%;
 	transform: translate(0, -50%);
+	z-index: 997;
 }
 .ccg-tabpanel {
 	background-color: #F2F2F2;
@@ -242,10 +237,29 @@
 	vertical-align: bottom;
 }
 
+#ccg001-btn-search-drawer {
+	height: 250px;
+	transition: height 100ms ease-in-out;
+}
+
 #sidebar .sidebar-content #ccg001-btn-search-drawer {
 	border-left: 8px solid #2ECC71;	
 }
 
 #sidebar .sidebar-content #ccg001-btn-search-drawer:hover {
 	border-left-color: #2BBF6A;
+}
+.has-state.disabled .ccg001-btn {
+	background-color: #b0d3b5;
+	color: #888888;
+	cursor: default;
+}
+.has-state.disabled .ccg001-caret::after {
+	color: #b0d3b5;
+}
+.has-state.disabled .ccg-lbl-vertical, .has-state.disabled label {
+	cursor: default;
+}
+#ccgcomponent > div:first-child {
+    min-width: 475px;
 }

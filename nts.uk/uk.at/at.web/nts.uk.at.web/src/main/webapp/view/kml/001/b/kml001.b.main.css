@@ -27,7 +27,7 @@
 }
 #premium-set-tbl-b {
 	margin-top: 10px;
-	margin-left: 15px;
+	margin-left: 10px;
 }
 #premium-set-tbl-b tr, th, td{ 
 	border: 1px solid #999999
@@ -46,7 +46,7 @@
 	background-color: #EDFAC2;
 }
 #premium-set-tbl-b th:FIRST-CHILD {
-	width: 80px;
+	width: 90px;
 }
 #premium-set-tbl-b th:NTH-CHILD(2) {
 	width: 200px;

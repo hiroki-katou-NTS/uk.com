@@ -33,6 +33,8 @@ public interface PerInfoItemDefRepositoty {
 			boolean isSelfRef);
 
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
+	
+	Optional<PersonInfoItemDefinition> getPerInfoItemDefByCtgCdItemCdCid(String categoryCode, String itemCd , String cid , String contractCd);
 
 	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd);
 
@@ -145,5 +147,11 @@ public interface PerInfoItemDefRepositoty {
 	List<PersonInfoItemDefinition> getAllItemId(List<String> ctgIdLst, List<String> itemCodeLst);
 
 	void updateAbolitionItem(List<PersonInfoItemDefinition> itemLst);
+	
+	Map<String, List<PersonInfoItemDefinition>> getByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd);
+	
+	Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithAbolition(List<String> lstPerInfoCategoryId,
+			String contractCd);
 
 }

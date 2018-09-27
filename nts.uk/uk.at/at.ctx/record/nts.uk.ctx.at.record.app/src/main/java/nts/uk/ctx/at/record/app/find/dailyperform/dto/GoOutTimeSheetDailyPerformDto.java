@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,6 +55,19 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	/** 補正後時間帯: 外出時間帯 */
 	@AttendanceItemLayout(layout = LAYOUT_H, jpPropertyName = AFTER_CORRECTED, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<GoOutTimeDto> goOutTime;
+	
+	@Override
+	public GoOutTimeSheetDailyPerformDto clone(){
+		return new GoOutTimeSheetDailyPerformDto(
+						valicationUseTime == null ? null : valicationUseTime.clone(), 
+						totalTimeForDeduction == null ? null : totalTimeForDeduction.clone(), 
+						totalTimeForCalc == null ? null : totalTimeForCalc.clone(), 
+						coreTotalTimeForDeduction == null ? null : coreTotalTimeForDeduction.clone(),  
+						coreTotalTimeForCalc == null ? null : coreTotalTimeForCalc.clone(), 
+						times, 
+						attr, 
+						ConvertHelper.mapTo(goOutTime, c -> c.clone()));
+	}
 
 	public String enumText() {
 		switch (this.attr) {
@@ -90,10 +104,25 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 	}
 	
 	public OutingTimeOfDaily toDomain(){
-		return new OutingTimeOfDaily(times == null ? null : new BreakTimeGoOutTimes(times), 
-								ConvertHelper.getEnum(attr, GoOutReason.class), valicationUseTime == null ? null : valicationUseTime.toDomain(), 
-								totalTimeForCalc == null ? null : totalTimeForCalc.createDeductionTime(),
-								totalTimeForDeduction == null ? null : totalTimeForDeduction.createDeductionTime(), 
+		return new OutingTimeOfDaily(times == null ? new BreakTimeGoOutTimes(0) : new BreakTimeGoOutTimes(times), 
+								reason(), 
+								valicationUseTime == null ? ValicationUseDto.createEmpty() : valicationUseTime.toDomain(), 
+								totalTimeForCalc == null ? OutingTotalTimeDto.createEmpty() : totalTimeForCalc.createDeductionTime(),
+								totalTimeForDeduction == null ? OutingTotalTimeDto.createEmpty() : totalTimeForDeduction.createDeductionTime(), 
 								ConvertHelper.mapTo(goOutTime, c -> c.toDomain()));
+	}
+	
+	public GoOutReason reason() {
+		switch (attr) {
+		case 0:
+			return GoOutReason.SUPPORT;
+		case 1:
+			return GoOutReason.UNION;
+		case 2:
+			return GoOutReason.CHARGE;
+		case 3:
+		default:
+			return GoOutReason.OFFICAL;
+		}
 	}
 }

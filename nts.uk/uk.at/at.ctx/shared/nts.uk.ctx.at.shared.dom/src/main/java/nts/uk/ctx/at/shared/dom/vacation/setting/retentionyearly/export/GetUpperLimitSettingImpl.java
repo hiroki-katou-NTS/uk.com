@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
 
 /**
  * 実装：社員の保持年数を取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
@@ -80,6 +80,11 @@ public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
 			retentionYearlySetOpt = this.retentionYearlySetRepo.findByCompanyId(companyId);
 		}
 		if (retentionYearlySetOpt.isPresent()){
+			
+			// 管理区分を確認
+			if (retentionYearlySetOpt.get().getManagementCategory() == ManageDistinct.NO){
+				return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));
+			}
 			return retentionYearlySetOpt.get().getUpperLimitSetting();
 		}
 		return new UpperLimitSetting(new UpperLimitSetCreateMemento(0, 0));

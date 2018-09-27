@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +64,7 @@ public class ScheCreExeErrorLogHandler {
 		// check exist error
 		if (!this.checkExistErrorByKey(command, employeeId)) {
 			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId, paramMsg));
+			
 		}
 	}
 
@@ -84,6 +86,17 @@ public class ScheCreExeErrorLogHandler {
 			return false;
 		}
 		return true;
+	}
+	
+	public List<ScheduleErrorLog> getListError(ScheduleErrorLogGeterCommand command, String employeeId) {
+		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository.findByEmployeeId(command.getExecutionId(),
+				employeeId);
+
+		// check empty list log error
+		if (CollectionUtil.isEmpty(errorLogs)) {
+			return Collections.emptyList();
+		}
+		return errorLogs;
 	}
 
 	/**

@@ -1,6 +1,9 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'];
     
      /**
      * SearchBox Binding Handler
@@ -13,13 +16,13 @@ module nts.uk.ui.koExtentions {
         
         constructor(source: Array<any>, searchField: Array<string>, childField?: string) {
             this.childField = childField;    
-            this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);
+            this.source = _.isEmpty(source) ? [] : this.cloneDeep(source);
             this.searchField = searchField;
         }
         
         search(searchKey: string): Array<any>{
             let self = this;
-            if(nts.uk.util.isNullOrEmpty(this.source)){
+            if(_.isEmpty(this.source)){
                 return [];        
             }
             
@@ -39,7 +42,7 @@ module nts.uk.ui.koExtentions {
         }  
         
         setDataSource(source: Array<any>) {
-            this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);       
+            this.source = _.isEmpty(source) ? [] : this.cloneDeep(source);       
         }
         
         getDataSource() {
@@ -73,7 +76,7 @@ module nts.uk.ui.koExtentions {
         
         constructor(key: string, mode: string, source: Array<any>, searchField: Array<string>, childField?: string) {
             this.seachBox = new SearchBox(source, searchField, childField);;    
-            this.mode = nts.uk.util.isNullOrEmpty(mode) ? "highlight" : mode;
+            this.mode = _.isEmpty(mode) ? "highlight" : mode;
             this.key = key;
         }
         
@@ -82,18 +85,18 @@ module nts.uk.ui.koExtentions {
             
             let filtered = this.seachBox.search(searchKey);
             
-            if(!nts.uk.util.isNullOrEmpty(filtered)){
+            if(!_.isEmpty(filtered)){
                 let key = this.key;
                 if(this.mode === "highlight"){     
                     result.options = this.seachBox.getDataSource();
                     let index = 0;
-                    if (!nts.uk.util.isNullOrEmpty(selectedItems)) {
+                    if (!_.isEmpty(selectedItems)) {
                         let firstItemValue = $.isArray(selectedItems) 
                             ? selectedItems[0]["id"].toString(): selectedItems["id"].toString();
                         index = _.findIndex(filtered, function(item: any){
                             return item[key].toString() === firstItemValue;           
                         });   
-                        if(!nts.uk.util.isNullOrUndefined(index)){
+                        if(!_.isNil(index)){
                             index++;        
                         }                 
                     }  
@@ -105,7 +108,7 @@ module nts.uk.ui.koExtentions {
                     let selectItem = _.filter(filtered, function (itemFilterd: any){
                         return _.find(selectedItems, function (item: any){
                             let itemVal = itemFilterd[key];
-                            if(nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])){
+                            if(_.isNil(itemVal) || _.isNil(item["id"])){
                                return false;
                             }
                             return itemVal.toString() === item["id"].toString();        
@@ -127,6 +130,12 @@ module nts.uk.ui.koExtentions {
         }
     }
     
+    export interface SelectionChangingData {
+        selected: Array<any>;
+        searchMode: string;
+        options?: Array<any>;
+    }
+    
     class NtsSearchBoxBindingHandler implements KnockoutBindingHandler {
         /**
          * Init.
@@ -136,10 +145,12 @@ module nts.uk.ui.koExtentions {
             
             var data = ko.unwrap(valueAccessor());
             var fields = ko.unwrap(data.fields);
-            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+            
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
             var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
+            var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : defaultSearchText;
             var label = (data.label !== undefined) ? ko.unwrap(data.label) : "";
             var enable = ko.unwrap(data.enable);
             var selectedKey = null;
@@ -157,17 +168,16 @@ module nts.uk.ui.koExtentions {
             }
             
             var $container = $(element);
-            let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+            let tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
             $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
             $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");  
             $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>"); 
             
-            if(!nts.uk.util.isNullOrEmpty(label)){
+            if(!_.isEmpty(label)){
                 var $formLabel = $("<div>", { text: label });
                 $formLabel.prependTo($container);
-                (<any>ko).bindingHandlers["ntsFormLabel"].init($formLabel[0], function() {
-                    return {};　
-                }, allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers["ntsFormLabel"].init($formLabel[0], () => ({}), allBindingsAccessor, viewModel, bindingContext);
+                ko.bindingHandlers["ntsFormLabel"].update($formLabel[0], () => ({}), allBindingsAccessor, viewModel, bindingContext);
                 minusWidth += $formLabel.outerWidth(true);
             }
             
@@ -224,7 +234,7 @@ module nts.uk.ui.koExtentions {
                     
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
-                    if(nts.uk.util.isNullOrEmpty(result.options)){
+                    if(_.isEmpty(result.options)){
                         let mes = '';
                         if(searchMode === "highlight"){
                             mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -240,6 +250,8 @@ module nts.uk.ui.koExtentions {
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
                     
+                    component.trigger("searchfinishing", { selected: selectedProperties, searchMode: searchMode, options: result.options })
+                    
                     if (targetMode === 'igGrid') {  
                         component.ntsGridList("setSelected", selectedProperties);
                         if(searchMode === "filter"){
@@ -247,17 +259,18 @@ module nts.uk.ui.koExtentions {
                             component.attr("filtered", "true");   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
-                            let source = _.filter(data.items(), function (item: any){
-                                             return _.find(result.options, function (itemFilterd: any){
-                                            return itemFilterd[primaryKey] === item[primaryKey];        
-                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
-                                             return oldItem[primaryKey] === item[primaryKey];        
-                                            }) === undefined;            
-                            });
-                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+//                            let source = _.filter(data.items(), function (item: any){
+//                                             return _.find(result.options, function (itemFilterd: any){
+//                                            return itemFilterd[primaryKey] === item[primaryKey];        
+//                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+//                                             return oldItem[primaryKey] === item[primaryKey];        
+//                                            }) === undefined;            
+//                            });
+//                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+                            component.igGrid("option", "dataSource", _.cloneDeep(result.options));
                             component.igGrid("dataBind");  
                             
-//                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+//                            if(_.isEmpty(selectedProperties)){
                                 component.trigger("selectionchanged");        
 //                            }
                         } else {
@@ -281,7 +294,7 @@ module nts.uk.ui.koExtentions {
             
             var nextSearch = function() {
                 let searchKey = $input.val();
-                if(nts.uk.util.isNullOrEmpty(searchKey)) {
+                if(_.isEmpty(searchKey)) {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(() => { 
                         $input.focus(); 
 //                        $input.select();
@@ -341,7 +354,7 @@ module nts.uk.ui.koExtentions {
                             return ci[primaryKey] === i[primaryKey];
                         }) === undefined;            
                     });    
-                    if(!nts.uk.util.isNullOrEmpty(newItems)){
+                    if(!_.isEmpty(newItems)){
                         let gridSources = component.igGrid("option", "dataSource");
                         _.forEach(newItems, function (item){
                             gridSources.push(item);            

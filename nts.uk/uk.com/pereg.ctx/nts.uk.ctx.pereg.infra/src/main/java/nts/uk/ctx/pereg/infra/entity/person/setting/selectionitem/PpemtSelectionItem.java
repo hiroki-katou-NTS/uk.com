@@ -40,10 +40,6 @@ public class PpemtSelectionItem extends UkJpaEntity implements Serializable {
 	public String integrationCd;
 
 	@Basic(optional = false)
-	@Column(name = "SELECTION_ITEM_CLS_ATR")
-	public int selectionItemClsAtr;
-
-	@Basic(optional = false)
 	@Column(name = "SELECTION_CD_LENGTH")
 	public int codeLength;
 

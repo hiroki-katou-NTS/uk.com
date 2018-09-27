@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.command.addemployee;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,8 @@ import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 @Stateless
 public class AddEmployeeCommandHelper {
@@ -35,9 +38,17 @@ public class AddEmployeeCommandHelper {
 	@Inject
 	private PersonRepository personRepo;
 
-	public void addBasicData(AddEmployeeCommand command, String personId, String employeeId, String comHistId,
+	private static final String CS00003 ="CS00003";
+	private static final String IS00021 = "IS00021";
+	public void addBasicData(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId, String employeeId, String comHistId,
 			String companyId) {
-
+		// lấy data cho IS00021 - item ngày nghỉ việc
+		Optional<ItemsByCategory> affComHist = command.getInputs().stream().filter(c -> c.getCategoryCd().equals(CS00003)).findFirst();
+		
+		if (!affComHist.isPresent()){
+			affComHist = inputs.stream().filter(c -> c.getCategoryCd().equals(CS00003)).findFirst();
+		}
+		
 		// add newPerson
 
 		addNewPerson(personId, command.getEmployeeName());
@@ -47,8 +58,16 @@ public class AddEmployeeCommandHelper {
 		addEmployeeDataMngInfo(personId, employeeId, command.getEmployeeCode(), companyId);
 
 		// add AffCompanyHist
-
-		addAffCompanyHist(personId, employeeId, command.getHireDate(), companyId, comHistId);
+		GeneralDate entry = null;
+		if(affComHist.isPresent()) {
+			Optional<ItemValue>  entryDate = affComHist.get().getItems().stream().filter( c ->  c.itemCode().equals(IS00021) && c.value() != null).findFirst();
+			if(entryDate.isPresent()) {
+				entry = entryDate.get().value();
+			}
+		}
+		addAffCompanyHist(personId, employeeId, command.getHireDate(), entry, companyId, comHistId);
+		
+		
 
 	}
 
@@ -75,9 +94,9 @@ public class AddEmployeeCommandHelper {
 
 	}
 
-	private void addAffCompanyHist(String personId, String employeeId, GeneralDate hireDate, String companyId,
+	private void addAffCompanyHist(String personId, String employeeId, GeneralDate hireDate, GeneralDate entryDate, String companyId,
 			String comHistId) {
-		AffCompanyHist newComHist = AffCompanyHist.createNewEmployeeHist(personId, employeeId, comHistId, hireDate);
+		AffCompanyHist newComHist = AffCompanyHist.createNewEmployeeHist(personId, employeeId, comHistId, hireDate, entryDate);
 		this.companyHistRepo.add(newComHist);
 
 		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null, null);

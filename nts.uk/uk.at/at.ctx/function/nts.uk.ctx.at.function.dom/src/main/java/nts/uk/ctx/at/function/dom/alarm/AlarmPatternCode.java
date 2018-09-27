@@ -12,6 +12,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  */
 @StringMaxLength(2)
 @StringCharType(CharType.NUMERIC)
+@ZeroPaddedCode
 public class AlarmPatternCode extends CodePrimitiveValue<AlarmPatternCode>  {
 
 	/** The Constant serialVersionUID. */

@@ -1,14 +1,17 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 集計前の月別実績データ
@@ -19,9 +22,12 @@ public class MonthlyOldDatas {
 
 	/** 月別実績の勤怠時間 */
 	private Optional<AttendanceTimeOfMonthly> attendanceTime;
+	/** 月別実績の任意項目 */
+	private List<AnyItemOfMonthly> anyItemList;
 	
 	public MonthlyOldDatas(){
 		this.attendanceTime = Optional.empty();
+		this.anyItemList = new ArrayList<>();
 	}
 
 	/**
@@ -41,6 +47,10 @@ public class MonthlyOldDatas {
 		
 		// 月別実績の勤怠時間
 		result.attendanceTime = repositories.getAttendanceTimeOfMonthly().find(
+				employeeId, yearMonth, closureId, closureDate);
+		
+		// 月別実績の任意項目
+		result.anyItemList = repositories.getAnyItemOfMonthly().findByMonthlyAndClosure(
 				employeeId, yearMonth, closureId, closureDate);
 		
 		return result;
@@ -89,6 +99,9 @@ public class MonthlyOldDatas {
 		
 		// 月別実績の勤怠時間
 		result.attendanceTime = monthlyWork.getAttendanceTime();
+		
+		// 月別実績の任意項目
+		result.anyItemList = monthlyWork.getAnyItemList();
 		
 		return result;
 	}

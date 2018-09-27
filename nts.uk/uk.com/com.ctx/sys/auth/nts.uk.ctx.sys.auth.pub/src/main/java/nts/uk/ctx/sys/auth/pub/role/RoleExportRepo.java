@@ -29,9 +29,10 @@ public interface RoleExportRepo {
 	 * Find work place id by role id.
 	 *
 	 * @param systemType the system type
+	 * @param baseDate the base date
 	 * @return the workplace id export
 	 */
-	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType);
+	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate);
 	
  	/**
 	 * Find by id.
@@ -93,4 +94,12 @@ public interface RoleExportRepo {
 	 */
 	//	RequestList84  ロールを取得する
 	Optional<RoleExport> findByRoleId(String roleId);
+	
+	/**
+	 * Gets the current loginer role.
+	 *
+	 * @return the current loginer role
+	 */
+	//	RequestList525
+	RoleWhetherLoginPubExport  getCurrentLoginerRole();
 }

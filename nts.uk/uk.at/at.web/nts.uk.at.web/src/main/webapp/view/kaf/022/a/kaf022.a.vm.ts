@@ -55,18 +55,21 @@ module nts.uk.at.view.kmf022 {
                 switch (tab.id) {
                     case 'a':
                         self.currentTab('a');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelA && typeof view.viewmodelA.start == 'function') {
                             view.viewmodelA.start();
                         }
                         break;
                     case 'l':
                         self.currentTab('l');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelL && typeof view.viewmodelL.start == 'function') {
                             view.viewmodelL.start();
                         }
                         break;
                     case 'm':
                         self.currentTab('m');
+                        nts.uk.ui.errors.clearAll();
                         if (!!view.viewmodelM && typeof view.viewmodelM.start == 'function') {
                             view.viewmodelM.start();
                         }
@@ -1727,17 +1730,31 @@ module nts.uk.at.view.kmf022 {
 
             // open s dialog
             openSDialog(): void {
+                nts.uk.ui.block.grayout();
+                let self = this;
+                nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
+                    nts.uk.ui.block.clear();
+                })
+            }
+            
+            
+            openUDialog(): void {
                 let self = this;
                 nts.uk.ui.block.grayout();
-                //                nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
-                nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
-                    //                    let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                nts.uk.ui.windows.setShared('shareApptypeToUDialog', self.listDataA13());
+                nts.uk.ui.windows.sub.modal('/view/kaf/022/u/index.xhtml').onClosed(function(): any {
+                    self.listDataA13(nts.uk.ui.windows.getShared('shareApptypeToKAF022A'));
+                    let listAppType = __viewContext.enums.ApplicationType;
+                    let dataA13: Array<any> = [];
+                        _.forEach(self.listDataA13(), (appType) => {
+                            let obj: any = _.find(listAppType, ["value", parseInt(appType)]);
+                            if (obj) {
+                                dataA13.push(obj.name);
+                            }
+                        });
+                    self.textEditorA13_4(dataA13.join(" + "));
+                    nts.uk.ui.block.clear();
                 })
-                nts.uk.ui.block.clear();
-                //                    .always(() => {
-                //                    nts.uk.ui.errors.clearAll();
-                //                    
-                //                });
             }
 
             loadData(): void {
@@ -1859,9 +1876,11 @@ module nts.uk.at.view.kmf022 {
             initDataA7AndA8(allData: any): void {
                 let self = this;
                 let listAppType = __viewContext.enums.ApplicationType;
+                let listHdType = __viewContext.enums.HolidayAppType;
                 self.listDataA7([]);
                 self.listDataA8([])
                 let data = allData.appBf;
+                let dataA8_10 = allData.listDplReason;
                 if (data) {
                     _.forEach(listAppType, (appType: any) => {
                         let obj: any = _.find(data.beforeAfter, ['appType', appType.value]);
@@ -1872,14 +1891,27 @@ module nts.uk.at.view.kmf022 {
                             self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 1, 0, 0, 0, 0, 0));
                         }
                         let obj1: any = _.find(data.appType, ['appType', appType.value]);
-                        if (obj1 && obj1.appType != 3 && obj1.appType != 8 && obj1.appType != 11 && obj1.appType != 13 && obj1.appType != 14 && obj1.appType != 12) {
+                        if (obj1) {
                             self.listDataA8.push(new ItemA8(self.companyId(), appType.value, obj1.displayFixedReason, obj1.displayAppReason,
                                 obj1.sendMailWhenRegister, obj1.sendMailWhenApproval, obj1.displayInitialSegment,
-                                obj1.canClassificationChange, appType.name));
-                        } else if (obj1 == undefined || obj1 == null) {
-                            self.listDataA8.push(new ItemA8(self.companyId(), appType.value, 0, 0, 0, 0, 0, 0, appType.name));
+                                obj1.canClassificationChange, appType.name, 0));
+                        } else {
+                            self.listDataA8.push(new ItemA8(self.companyId(), appType.value, 0, 0, 0, 0, 0, 0, appType.name, 0));
                         }
                     });
+                }
+                if(dataA8_10){
+                    _.forEach(listHdType, (hdType: any)=>{
+                       let object: any = _.find(dataA8_10, ['typeOfLeaveApp', hdType.value]);
+                        // hd: domain DisplayReason
+                        if(object){
+                            self.listDataA8.push(new ItemA8(self.companyId(), hdType.value, object.displayFixedReason, object.displayAppReason,
+                                0, 0, 0,
+                                0, hdType.name, 1));
+                        }else{
+                            self.listDataA8.push(new ItemA8(self.companyId(), hdType.value, 0, 0, 0, 0, 0, 0, hdType.name, 1));
+                        } 
+                    });    
                 }
             }
             initDataA10(allData: any): void {
@@ -2247,8 +2279,9 @@ module nts.uk.at.view.kmf022 {
                 $('#a16_14').trigger("validate");
                 $('#a16_15').trigger("validate");
                 $('#a7_23').trigger("validate");
+                $('#a7_23_2').trigger("validate");
+                $('#a7_23_3').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
-                nts.uk.ui.block.invisible();
                 let self = this,
                     data: any = {},
                     dataA4 = [],
@@ -2485,7 +2518,7 @@ module nts.uk.at.view.kmf022 {
                 };
                 //g
                 data.otRestApp7 = {
-                    appType: 7,
+                    appType: 6,
                     bonusTimeDisplayAtr: self.selectedIdG10(),
                     divergenceReasonFormAtr: self.selectedIdG12(),
                     divergenceReasonInputAtr: self.selectedIdG14(),
@@ -2545,13 +2578,16 @@ module nts.uk.at.view.kmf022 {
                     showResult: self.selectedIdI4()
 
                 };
+                let dataA8 = _.filter(self.listDataA8(), function(o) { return !o.flg(); });
+                let dataA8_10 = _.filter(self.listDataA8(), function(o) { return o.flg(); });
                 data.appBf = {
                     beforeAfter: _.map(ko.toJS(self.listDataA7()), (x: any) => {
                         x.retrictPostAllowFutureFlg = x.retrictPostAllowFutureFlg ? 1 : 0;
                         x.retrictPreUseFlg = x.retrictPreUseFlg ? 1 : 0;
                         return x;
                     }),
-                    appType: _.map(ko.toJS(self.listDataA8()), (x: any) => {
+                    
+                    appType: _.map(ko.toJS(dataA8), (x: any) => {
                         x.displayFixedReason = x.displayFixedReason ? 1 : 0;
                         x.displayAppReason = x.displayAppReason ? 1 : 0;
                         x.sendMailWhenRegister = x.sendMailWhenRegister ? 1 : 0;
@@ -2560,6 +2596,14 @@ module nts.uk.at.view.kmf022 {
                         return x;
                     })
                 };
+                data.dplReasonCmd = {
+                    listCmd : 
+                        _.map(ko.toJS(dataA8_10), (x: any) => {
+                            x.displayFixedReason = x.displayFixedReason ? 1 : 0;
+                            x.displayAppReason = x.displayAppReason ? 1 : 0;
+                            return x;
+                        })
+                }
                 data.jobAssign = {
                     isConcurrently: self.selectedIdA14_3() ? 1 : 0
                 };
@@ -2578,9 +2622,9 @@ module nts.uk.at.view.kmf022 {
                 if (nts.uk.ui.errors.hasError() === false) {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            nts.uk.ui.block.invisible();
                             //Load data setting
                             self.loadData();
-
                         });
                     }).always(() => {
                         nts.uk.ui.block.clear();
@@ -2637,7 +2681,7 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             preOtTime: KnockoutObservable<number>;
             normalOtTime: KnockoutObservable<number>;
-            requiredA7_23: KnockoutObservable<boolean> = ko.observable(false);
+            requiredA7_23: KnockoutObservable<boolean>;
             constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
                 retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number, preOtTime: number, normalOtTime: number) {
                 this.companyId = ko.observable(companyId);
@@ -2650,6 +2694,7 @@ module nts.uk.at.view.kmf022 {
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
                 this.preOtTime = ko.observable(preOtTime);
                 this.normalOtTime = ko.observable(normalOtTime);
+                this.requiredA7_23 = ko.observable(retrictPreMethodFlg ? false : true);
                 this.retrictPreMethodFlg.subscribe((value) => {
                     if (value == 1) {
                         nts.uk.ui.errors.clearAll();
@@ -2659,7 +2704,7 @@ module nts.uk.at.view.kmf022 {
                         this.requiredA7_23(true);
                         $('#a7_23').trigger("validate");
                         $('#a7_23_2').trigger("validate");
-                        $('#a7_23_3').trigger("validate");
+                        $('#a7_23_3').trigger("validate");  
                     }
                 });
                 this.preOtTime.subscribe((value) => {
@@ -2680,9 +2725,13 @@ module nts.uk.at.view.kmf022 {
             displayInitialSegment: KnockoutObservable<number>;
             canClassificationChange: KnockoutObservable<boolean>;
             appTypeName: KnockoutObservable<string>;
+            // 1: is domain DisplayReason            
+            flg: KnockoutObservable<number>;
+            // disable or enable 
+            disableA8: KnockoutObservable<boolean> = ko.observable(true);
             constructor(companyId: string, appType: number, displayFixedReason: number, displayAppReason: number,
                 sendMailWhenRegister: number, sendMailWhenApproval: number, displayInitialSegment: number,
-                canClassificationChange: number, appTypeName: string) {
+                canClassificationChange: number, appTypeName: string, flg: number) {
                 this.companyId = ko.observable(companyId);
                 this.appType = ko.observable(appType);
                 this.displayFixedReason = ko.observable(displayFixedReason == 1 ? true : false);
@@ -2692,6 +2741,19 @@ module nts.uk.at.view.kmf022 {
                 this.displayInitialSegment = ko.observable(displayInitialSegment);
                 this.canClassificationChange = ko.observable(canClassificationChange == 1 ? true : false);
                 this.appTypeName = ko.observable(appTypeName);
+                this.flg = ko.observable(flg);
+                if(this.displayInitialSegment() == 2){
+                    this.disableA8(false);
+                    this.canClassificationChange(true); 
+                }
+                this.displayInitialSegment.subscribe((value) => {
+                    if(value == 2){
+                        this.disableA8(false); 
+                        this.canClassificationChange(true); 
+                    }else{
+                        this.disableA8(true);    
+                    }
+                })
             }
         }
         class ItemA15 {

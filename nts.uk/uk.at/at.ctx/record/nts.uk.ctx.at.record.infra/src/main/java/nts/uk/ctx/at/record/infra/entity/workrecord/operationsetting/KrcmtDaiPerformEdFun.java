@@ -108,6 +108,10 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
     @Column(name = "MANUAL_FIX_AUTO_SET_ATR")
     public int manualFixAutoSetAtr;
     
+    @Basic(optional = false)
+    @Column(name = "CHECK_ERR_REF_DISP")
+    public int checkErrRefDisp;
+    
     @Override
     protected Object getKey()
     {
@@ -125,7 +129,8 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 							        		this.ealyCalcUpdAtr, 
 							        		this.overtimeCalcUpdAtr, 
 							        		this.lawOverCalcUpdAtr, 
-							        		this.manualFixAutoSetAtr);
+							        		this.manualFixAutoSetAtr,
+							        		this.checkErrRefDisp);
     }
     public static KrcmtDaiPerformEdFun toEntity(DaiPerformanceFun domain) {
         return new KrcmtDaiPerformEdFun(new KrcmtDaiPerformEdFunPk(domain.getCid()), domain.getComment().toString(),
@@ -138,7 +143,8 @@ public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 						        		domain.getEalyCalcUpdAtr(), 
 						        		domain.getOvertimeCalcUpdAtr(), 
 						        		domain.getLawOverCalcUpdAtr(), 
-						        		domain.getManualFixAutoSetAtr());
+						        		domain.getManualFixAutoSetAtr(),
+						        		domain.getCheckErrRefDisp());
     }
 
 }

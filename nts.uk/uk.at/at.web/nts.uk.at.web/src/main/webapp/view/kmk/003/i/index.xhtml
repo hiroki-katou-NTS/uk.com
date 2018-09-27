@@ -87,7 +87,7 @@
 					<div class="dialog-block">
 						<div class="dialog-rows">
 							<span class="label">#{i18n.getText('KMK003_266')}</span>	
-							<input tabindex="4" class="input-warp" data-bind="ntsTimeEditor: {
+							<input tabindex="4" id="timeLateGraceTime" class="input-warp" data-bind="ntsTimeEditor: {
 									name: '#[KMK003_266]',		
 									value: lateGraceTime,
 									inputFormat: 'time',
@@ -100,7 +100,7 @@
 						</div>	
 						<div class="dialog-rows">
 							<span class="label">#{i18n.getText('KMK003_268')}</span>		
-							<input tabindex="6" class="input-warp" data-bind="ntsTimeEditor: {
+							<input tabindex="6" id="timeLeaveEarlyGraceTime" class="input-warp" data-bind="ntsTimeEditor: {
 									name: '#[KMK003_268]',		
 									value: leaveEarlyGraceTime,
 									inputFormat: 'time',

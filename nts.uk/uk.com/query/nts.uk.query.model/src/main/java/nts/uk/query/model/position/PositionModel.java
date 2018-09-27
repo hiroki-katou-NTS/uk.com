@@ -15,6 +15,9 @@ import lombok.Data;
 @Builder
 public class PositionModel {
 
+	/** The position id. */
+	private String positionId; // 職位ID
+
 	/** The position code. */
 	private String positionCode; // 職位コード
 	

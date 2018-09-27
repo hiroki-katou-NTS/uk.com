@@ -9,6 +9,7 @@ import lombok.Builder;
 /**
  * The Class RemainingNumberSetting.
  */
+// 残数設定
 @Builder
 public class RemainingNumberSetting {
 

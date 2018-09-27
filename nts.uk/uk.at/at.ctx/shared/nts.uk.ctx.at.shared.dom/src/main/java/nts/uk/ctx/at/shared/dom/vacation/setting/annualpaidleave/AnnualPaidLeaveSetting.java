@@ -11,9 +11,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
- * 年休設定
  * The Class AnnualVacationSetting.
  */
+// 年休設定
 @Getter
 @EqualsAndHashCode(callSuper = true, of = { "companyId" })
 public class AnnualPaidLeaveSetting extends AggregateRoot {

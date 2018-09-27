@@ -33,4 +33,8 @@ public class BreakDayOffRemainMngOfInPeriod {
 	private double carryForwardDays;
 	/**	繰越時間 */
 	private int carryForwardTimes;
+	/**
+	 * 代休エラー
+	 */
+	private List<DayOffError> lstError;
 }

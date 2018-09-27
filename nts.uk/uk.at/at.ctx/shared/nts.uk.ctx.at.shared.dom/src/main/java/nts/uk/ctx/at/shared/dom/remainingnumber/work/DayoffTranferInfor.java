@@ -53,7 +53,7 @@ public class DayoffTranferInfor {
 			afterData.setCreateAtr(beforeData.getCreateAtr());
 		}
 		//振替時間を設定する
-		afterData.setTranferTime(afterData.getTranferTime() + beforeData.getTranferTime());
+		afterData.setTranferTime(afterData.getTranferTime() + (beforeData.getTranferTime() == null ? 0 : beforeData.getTranferTime()));
 		//日数をチェックする
 		if(beforeData.getDays().isPresent()) {
 			double tmp = afterData.getDays().get() + (beforeData.getDays().isPresent() ? beforeData.getDays().get() : 0);

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -126,6 +127,18 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 		KrcstCalcResultRange entityRange = this.entity.getKrcstCalcResultRange();
 		calculationResultRange.saveToMemento(new JpaCalcResultRangeSetMemento(entityRange));
 		this.entity.setKrcstCalcResultRange(entityRange);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento#setUnit(nts.uk.
+	 * ctx.at.record.dom.optitem.UnitOfOptionalItem)
+	 */
+	@Override
+	public void setUnit(UnitOfOptionalItem unit) {
+		this.entity.setUnitOfOptionalItem(unit.v());
 	}
 
 }

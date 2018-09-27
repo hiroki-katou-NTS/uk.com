@@ -3,6 +3,14 @@
 module nts.uk.ui {
 
     export module windows {
+        
+        export var iframeNameCounter = 0;
+        
+        // this is used for "name" attr of iframe for sub window
+        function createIframeName(): string {
+            iframeNameCounter++;
+            return "window_" + iframeNameCounter;
+        }
 
         var MAIN_WINDOW_ID = 'MAIN_WINDOW';
 
@@ -175,10 +183,12 @@ module nts.uk.ui {
                     .appendTo($('body'))
                     .dialog(options);
 
-                this.$iframe = $('<iframe/>').css({
-                    width: '100%',
-                    height: '100%'
-                }).appendTo(this.$dialog);
+                this.$iframe = $('<iframe/>')
+                    .attr('name', createIframeName())
+                    .css({
+                        width: '100%',
+                        height: '100%'
+                    }).appendTo(this.$dialog);
 
                 this.setGlobal((<any>this.$iframe[0]).contentWindow);
             }
@@ -341,15 +351,59 @@ module nts.uk.ui {
                 if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
+                let $dialog = dialog(webAppId, path, true, options);
+
+                setTimeout(() => {
+                    $(window.top).on('resize', evt => resizeDialog(evt, $dialog)).trigger('resize');
+                }, 1000);
                 
-                return dialog(webAppId, path, true, options);
+                return $dialog;
             }
             export function modeless(path: string, options?: any)
             export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
                  if (typeof arguments[1] !== 'string') {
                     return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                return dialog(webAppId, path, false, options);
+                let $dialog = dialog(webAppId, path, false, options);
+
+                setTimeout(() => {
+                    $(window.top).on('resize', evt => resizeDialog(evt, $dialog)).trigger('resize');
+                }, 1000);
+                
+                return $dialog;
+            }
+            
+            function resizeDialog(evt: any, $subWindow) {
+                
+                console.log('resize dialog');
+                let $dialog = $subWindow.$dialog;
+                if (!$dialog) {
+                    return;
+                }
+
+                let width = $dialog.width(),
+                    height = $dialog.parent().outerHeight(),
+                    // because the height() function don't includes title's height
+                    $data = $($dialog).data('__size__');
+                
+                if (!$data || !$data.width || !$data.height) {
+                    $data = { width, height };
+                    $($dialog).data('__size__', $data);
+                }
+                
+                // resize width
+                if (evt.target.innerWidth <= $data.width) {
+                    $dialog.dialog('option', 'width', evt.target.innerWidth - 30);
+                } else {
+                    $dialog.dialog('option', 'width', $data.width);
+                }
+
+                // resize height    
+                if (evt.target.innerHeight <= $data.height) {
+                    $dialog.dialog('option', 'height', evt.target.innerHeight - 30);
+                } else {
+                    $dialog.dialog('option', 'height', $data.height);
+                }
             }
             
             function dialog(webAppId: nts.uk.request.WebAppId, path: string, modal: boolean, options?: any){

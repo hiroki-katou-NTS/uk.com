@@ -22,4 +22,7 @@ public class OutputItemDailyWorkScheduleCopyCommand {
 	
 	/** The name. */
 	private String name;
+	
+	/** The id. */
+	private int id;
 }

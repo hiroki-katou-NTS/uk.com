@@ -6,16 +6,22 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
+import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class DailyPerformanceAdapterImpl implements DailyPerformanceAdapter {
 
 	
 	@Inject
 	private ApprovalRootStatePub approvalRootStatePub;
+	
+	@Inject
+	private IntermediateDataPub intermediateDataPub;
 	
 	@Override
 	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,String companyID) {
@@ -26,6 +32,13 @@ public class DailyPerformanceAdapterImpl implements DailyPerformanceAdapter {
 		return approvalRootStatePub.getApprovalByListEmplAndListApprovalRecordDate(approvalRecordDates, employeeID, rootType).stream().map(item ->{
 			return new ApproveRootStatusForEmpImport(item.getEmployeeID(), item.getAppDate(), item.getApprovalStatus().value);
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean isDataExist(String approverID, DatePeriod period, Integer rootType) {
+		// TODO Auto-generated method stub
+		val x = intermediateDataPub.isDataExist(approverID, period, rootType);
+		return x;
 	}
 
 }

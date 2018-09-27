@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
 
 /**
  * 社員の保持年数を取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetUpperLimitSetting {
 

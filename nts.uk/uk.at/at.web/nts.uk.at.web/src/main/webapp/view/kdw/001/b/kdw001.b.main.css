@@ -8,13 +8,13 @@
 	height: 43px;
 	width: 111px;
 	margin-left: 20px;
-	margin-top: 40px;
+	margin-top: 1px;
 }
 
 #button36 {
 	width: 140px;
 	margin-left: 433px;
-	margin-top: 50px;
+	margin-top: 14px;
 }
 
 #area5 {
@@ -43,11 +43,17 @@
 }
 
 #area3, #area4 {
-	margin-bottom: 19px;
+	margin-bottom: 10px;
 }
 
 .cbElement {
 	margin-bottom: 7px;
+}
+
+#area2 #checkBoxArea .checkbox_container{
+	width: 250px;
+	height: 12px;
+	display:inline-block;
 }
 
 #cbArea2 {
@@ -63,9 +69,17 @@
 	float: left;
 }
 
+.cbArea {
+	margin-left: 34px;
+	margin-top: 12px;
+	display: inline-block;
+	float: left;
+}
+
+
 #area2 {
 	width: 543px;
-	height: 205px;
+	height: 150px;
 	margin-left: 55px;
 	margin-top:11px;
 }

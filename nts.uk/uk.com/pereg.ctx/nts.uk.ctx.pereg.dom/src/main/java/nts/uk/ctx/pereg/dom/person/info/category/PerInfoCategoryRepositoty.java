@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.dom.person.info.category;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
 
 public interface PerInfoCategoryRepositoty {
@@ -76,4 +77,6 @@ public interface PerInfoCategoryRepositoty {
 	String getCatId(String cId, String categoryCode);
 	
 	List<String> getAllCtgId(List<String> ctgCd, String companyId);
+	
+	List<DateRangeDto> dateRangeCode();
 }

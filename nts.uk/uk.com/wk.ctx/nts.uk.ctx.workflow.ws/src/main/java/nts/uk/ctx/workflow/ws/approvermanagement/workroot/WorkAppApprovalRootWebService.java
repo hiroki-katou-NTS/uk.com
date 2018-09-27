@@ -205,4 +205,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public void deleteHistoryByManagerSetting(HistoryCmm053Command command) {
 		this.deleteByManager.handle(command);
 	}
+	@POST
+	@Path("find-wpInfo-login")
+	public WorkplaceImport getWpInfoLogin(){
+		return comFinder.getWpInfoLogin();
+	}
 }

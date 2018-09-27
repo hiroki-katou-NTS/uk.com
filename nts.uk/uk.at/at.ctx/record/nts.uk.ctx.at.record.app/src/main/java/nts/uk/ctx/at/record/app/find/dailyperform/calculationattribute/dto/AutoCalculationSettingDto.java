@@ -23,4 +23,9 @@ public class AutoCalculationSettingDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = UPPER_LIMIT)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private int upperLimitSetting;
+
+	@Override
+	protected AutoCalculationSettingDto clone() {
+		return new AutoCalculationSettingDto(calculationAttr, upperLimitSetting);
+	}
 }

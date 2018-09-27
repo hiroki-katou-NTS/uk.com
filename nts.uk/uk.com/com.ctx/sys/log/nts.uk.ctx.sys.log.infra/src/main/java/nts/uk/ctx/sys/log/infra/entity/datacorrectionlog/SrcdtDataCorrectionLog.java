@@ -35,81 +35,78 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class SrcdtDataCorrectionLog extends UkJpaEntity {
 
 	@EmbeddedId
-	SrcdtDataCorrectionLogPk pk;
+	public SrcdtDataCorrectionLogPk pk;
 
 	@Column(name = "USER_NAME")
 	@Basic(optional = false)
-	String userName;
+	public String userName;
 
 	@Column(name = "SID")
 	@Basic(optional = false)
-	String employeeId;
-
-	@Column(name = "YMD_KEY")
-	GeneralDate ymdKey;
+	public String employeeId;
 
 	@Column(name = "YM_KEY")
-	Integer ymKey;
+	public Integer ymKey;
 
 	@Column(name = "Y_KEY")
-	Integer yKey;
+	public Integer yKey;
 
 	@Column(name = "STRING_KEY")
-	String stringKey;
+	public String stringKey;
 
 	@Column(name = "CORRECTION_ATTR")
 	@Basic(optional = false)
-	int correctionAttr;
+	public int correctionAttr;
 
 	@Column(name = "ITEM_NAME")
 	@Basic(optional = false)
-	String itemName;
+	public String itemName;
 
 	@Column(name = "RAW_VALUE_BEFORE_ID")
-	String rawValueBefore;
+	public String rawValueBefore;
 
 	@Column(name = "VIEW_VALUE_BEFORE")
-	String viewValueBefore;
+	public String viewValueBefore;
 
 	@Column(name = "RAW_VALUE_AFTER_ID")
-	String rawValueAfter;
+	public String rawValueAfter;
 
 	@Column(name = "VIEW_VALUE_AFTER")
-	String viewValueAfter;
+	public String viewValueAfter;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	SrcdtDecimalRawValue rawDecimalValueBefore;
+	public SrcdtDecimalRawValue rawDecimalValueBefore;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	SrcdtDecimalRawValue rawDecimalValueAfter;
+	public SrcdtDecimalRawValue rawDecimalValueAfter;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	SrcdtVarcharRawValue rawVarcharValueBefore;
+	public SrcdtVarcharRawValue rawVarcharValueBefore;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	SrcdtVarcharRawValue rawVarcharValueAfter;
+	public SrcdtVarcharRawValue rawVarcharValueAfter;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	SrcdtNvarcharRawValue rawNvarcharValueBefore;
+	public SrcdtNvarcharRawValue rawNvarcharValueBefore;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	SrcdtNvarcharRawValue rawNvarcharValueAfter;
+	public SrcdtNvarcharRawValue rawNvarcharValueAfter;
 
 	@Column(name = "VALUE_DATA_TYPE")
-	Integer valueType;
+	public Integer valueType;
 
 	@Column(name = "SHOW_ORDER")
 	@Basic(optional = false)
-	int showOrder;
+	public int showOrder;
 
 	@Column(name = "NOTE")
-	String note;
+	public String note;
 
 	@Override
 	protected Object getKey() {
@@ -122,8 +119,8 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 	 * @return domain DataCorrectionLog
 	 */
 	public DataCorrectionLog toDomainToView() {
-		GeneralDate ymd = this.ymdKey;
-		if (this.ymdKey == null) {
+		GeneralDate ymd = this.pk.ymdKey;
+		if (this.pk.ymdKey == null) {
 			if (this.ymKey != null) {
 				YearMonth ym = YearMonth.of(this.ymKey);
 				ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
@@ -141,22 +138,25 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		SrcdtDataCorrectionLog entityLog = new SrcdtDataCorrectionLog();
 		val correctedItem = dataLog.getCorrectedItem();
 		entityLog.pk = new SrcdtDataCorrectionLogPk(dataLog.getOperationId(), dataLog.getTargetUser().getUserId(),
-				dataLog.getTargetDataType().value, correctedItem.getId());
+				dataLog.getTargetDataType().value, correctedItem.getId(), dataLog.getTargetDataKey().getDateKey());
 		entityLog.userName = dataLog.getTargetUser().getUserName();
 		entityLog.employeeId = dataLog.getTargetUser().getEmployeeId();
-		val dateKey = dataLog.getTargetDataKey().getDateKey().orElse(null);
-		if (dateKey != null) {
-			entityLog.ymdKey = dateKey;
-			entityLog.ymKey = YearMonth.of(dateKey.year(), dateKey.month()).v();
-			entityLog.yKey = dateKey.year();
-		}
+		val dateKey = dataLog.getTargetDataKey().getDateKey();
+		entityLog.ymKey = YearMonth.of(dateKey.year(), dateKey.month()).v();
+		entityLog.yKey = dateKey.year();
 		entityLog.stringKey = dataLog.getTargetDataKey().getStringKey().orElse(null);
 		entityLog.correctionAttr = dataLog.getCorrectionAttr().value;
 		entityLog.itemName = correctedItem.getName();
-		entityLog.rawValueBefore = correctedItem.getValueBefore().getRawValue() != null ? String.valueOf(correctedItem.getValueBefore().getRawValue().getValue()) : null;
-		entityLog.viewValueBefore = correctedItem.getValueBefore().getRawValue() != null ? correctedItem.getValueBefore().getViewValue() : null;
-		entityLog.rawValueAfter =  correctedItem.getValueAfter().getRawValue() != null ? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
-		entityLog.viewValueAfter = correctedItem.getValueAfter().getRawValue() != null ? correctedItem.getValueAfter().getViewValue() : null;
+		entityLog.rawValueBefore = (correctedItem.getValueBefore().getRawValue() != null
+				&& correctedItem.getValueBefore().getRawValue().getValue() != null)
+						? String.valueOf(correctedItem.getValueBefore().getRawValue().getValue()) : null;
+		entityLog.viewValueBefore = correctedItem.getValueBefore().getViewValue() != null
+				? correctedItem.getValueBefore().getViewValue() : null;
+		entityLog.rawValueAfter = (correctedItem.getValueAfter().getRawValue() != null
+				&& correctedItem.getValueAfter().getRawValue().getValue() != null)
+						? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
+		entityLog.viewValueAfter = correctedItem.getValueAfter().getViewValue() != null
+				? correctedItem.getValueAfter().getViewValue() : null;
 		
 	    //entityLog.valueType = dataLog.getTargetDataType().value;
 		entityLog.showOrder = dataLog.getShowOrder();

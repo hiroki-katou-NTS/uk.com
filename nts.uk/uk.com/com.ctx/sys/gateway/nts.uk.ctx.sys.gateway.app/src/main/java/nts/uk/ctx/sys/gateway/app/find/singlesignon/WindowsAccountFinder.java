@@ -51,4 +51,15 @@ public class WindowsAccountFinder {
 
 	}
 
+	/**
+	 * Find already setting.
+	 *
+	 * @param userIds the user ids
+	 * @return the list
+	 */
+	public List<String> findAlreadySetting(List<String> userIds) {
+		return windowAccountRepository.findByListUserId(userIds).stream().map(WindowsAccount::getUserId)
+				.collect(Collectors.toList());
+	}
+
 }

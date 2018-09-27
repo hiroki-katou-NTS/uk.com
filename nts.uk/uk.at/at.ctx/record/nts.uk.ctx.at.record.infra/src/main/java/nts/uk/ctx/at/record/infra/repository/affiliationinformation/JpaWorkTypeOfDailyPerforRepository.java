@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformanc
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiWorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements WorkTypeOfDailyPerforRepository {
@@ -45,9 +47,18 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 
 	@Override
 	public void delete(String employeeId, GeneralDate processingDate) {
-		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
-				.setParameter("ymd", processingDate).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_WORKTYPE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + processingDate + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_KEY).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", processingDate).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -62,7 +73,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(insertTableSQL);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -91,9 +102,9 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' WHERE SID = '"
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' AND YMD = '" + workTypeOfDailyPerformance.getDate() + "'";
 			Statement statementU = con.createStatement();
-			statementU.executeUpdate(updateTableSQL);
+			statementU.executeUpdate(JDBCUtil.toInsertWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

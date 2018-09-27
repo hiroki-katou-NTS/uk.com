@@ -95,15 +95,14 @@ public class FlexInfoDisplayChange {
 		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex);
 		dataMonth.createRedConditionMessage(condition);
 		dataMonth.createNotForward("");
-		if (!condition.equals("0:00")) {
-			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
-		}
 
 		// TODO フレックス不足の相殺が実施できるかチェックする
 		CheckShortage checkShortage = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
-		boolean checkFlex = checkShortage.isCheckShortage();
+		boolean checkFlex = checkShortage.isCheckShortage() && employeeId.equals(AppContexts.user().employeeId());
 		//checkShortage.createRetiredFlag(checkShortage.isRetiredFlag());
-		
+		if (condition.equals("0:00") && !checkFlex) {
+			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
+		}
 		return dataMonth.createCanFlex(checkFlex).createShowFlex(showFlex()).createCalcFlex(calcFlex);
 	}
 

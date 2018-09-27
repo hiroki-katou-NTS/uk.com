@@ -14,10 +14,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.Attenda
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
@@ -53,14 +56,21 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 	/** 出勤率計算用日数を取得する */
 	@Inject
 	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
+	/** 日別実績の運用開始設定 */
+	@Inject
+	private OperationStartSetDailyPerformRepository operationStartSetRepo;
 	
 	/** 年休出勤率を計算する */
 	@Override
 	public Optional<CalYearOffWorkAttendRate> algorithm(String companyId, String employeeId,
 			GeneralDate grantDate, Optional<Integer> grantNum) {
 
+		Optional<OperationStartSetDailyPerform> operationStartSetOpt =
+				this.operationStartSetRepo.findByCid(new CompanyId(companyId));
+		
 		return this.algorithm(companyId, employeeId, grantDate, grantNum,
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+				operationStartSetOpt);
 	}
 	
 	/** 年休出勤率を計算する */
@@ -71,7 +81,8 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			Optional<EmployeeImport> employeeOpt,
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoParam,
 			Optional<GrantHdTblSet> grantHdTblSetParam,
-			Optional<List<LengthServiceTbl>> lengthServiceTblsParam) {
+			Optional<List<LengthServiceTbl>> lengthServiceTblsParam,
+			Optional<OperationStartSetDailyPerform> operationStartSetParam) {
 
 		// 年休設定　取得
 		AnnualPaidLeaveSetting annualLeaveSet = null;
@@ -136,7 +147,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 
 		// 年休付与計算用の日数を計算する
 		CalYearOffWorkAttendRate results = this.calcDays(companyId, employeeId, calcPeriod,
-				annualLeaveSet, empBasicInfo);
+				annualLeaveSet, empBasicInfo, operationStartSetParam);
 		
 		// 日数から出勤率を計算する
 		results.calcAttendanceRate();
@@ -227,6 +238,7 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 	 * @param calcPeriod 年休出勤率計算期間
 	 * @param annualPaidLeaveSet 年休設定
 	 * @param empBasicInfo 年休社員基本情報
+	 * @param operationStartSetOpt 日別実績の運用開始設定
 	 * @return 年休出勤率計算結果
 	 */
 	private CalYearOffWorkAttendRate calcDays(
@@ -234,7 +246,8 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			String employeeId,
 			AttendanceRateCalPeriod calcPeriod,
 			AnnualPaidLeaveSetting annualPaidLeaveSet,
-			AnnualLeaveEmpBasicInfo empBasicInfo){
+			AnnualLeaveEmpBasicInfo empBasicInfo,
+			Optional<OperationStartSetDailyPerform> operationStartSetOpt){
 
 		double prescribedDays = 0.0;
 		double workingDays = 0.0;
@@ -244,6 +257,19 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 		DatePeriod afterPeriod = calcPeriod.getAfterJoinCompany();
 		GeneralDate procDate = afterPeriod.start();
 
+		// 日別実績の運用開始日を使用するかチェックする
+		boolean isUseOperationStart = false;
+		if (operationStartSetOpt.isPresent()){
+			val operationStartOpt = operationStartSetOpt.get().getOperateStartDateDailyPerform();
+			if (operationStartOpt.isPresent()){
+				GeneralDate operationStart = operationStartOpt.get();
+				if (procDate.before(operationStart)){
+					procDate = operationStart;
+					isUseOperationStart = true;
+				}
+			}
+		}
+		
 		// 「年休月別残数データ」を取得
 		val remainNums = this.annLeaRemNumEachMonthRepo.findByClosurePeriod(employeeId, afterPeriod);
 		for (val remainNum : remainNums){
@@ -287,9 +313,13 @@ public class CalcAnnLeaAttendanceRateImpl implements CalcAnnLeaAttendanceRate {
 			deductedDays += shortageDays.getDeductedDays();
 		}
 		
-		// 導入前労働日数を労働日数に加算
-		if (empBasicInfo.getWorkingDayBeforeIntroduction().isPresent()){
-			workingDays += empBasicInfo.getWorkingDayBeforeIntroduction().get().v().doubleValue();
+		// 「運用開始日使用フラグ」をチェック
+		if (isUseOperationStart){
+			
+			// 導入前労働日数を労働日数に加算
+			if (empBasicInfo.getWorkingDayBeforeIntroduction().isPresent()){
+				workingDays += empBasicInfo.getWorkingDayBeforeIntroduction().get().v().doubleValue();
+			}
 		}
 		
 		// 年休社員基本情報．年間所定労働日数をチェック

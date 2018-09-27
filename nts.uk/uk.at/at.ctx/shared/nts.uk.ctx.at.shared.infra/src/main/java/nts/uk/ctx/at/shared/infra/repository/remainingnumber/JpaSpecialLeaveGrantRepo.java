@@ -48,21 +48,21 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public void add(SpecialLeaveGrantRemainingData data) {
-
-		this.commandProxy().insert(toEntity(data));
+		if (data != null)
+			this.commandProxy().insert(toEntity(data));
 	}
 
 	@Override
 	public void update(SpecialLeaveGrantRemainingData data) {
-
-		Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
-				KrcmtSpecialLeaveReam.class);
-		if (entityOpt.isPresent()) {
-			KrcmtSpecialLeaveReam entity = entityOpt.get();
-			updateDetail(entity, data);
-			this.commandProxy().update(entity);
+		if (data != null) {
+			Optional<KrcmtSpecialLeaveReam> entityOpt = this.queryProxy().find(data.getSpecialId(),
+					KrcmtSpecialLeaveReam.class);
+			if (entityOpt.isPresent()) {
+				KrcmtSpecialLeaveReam entity = entityOpt.get();
+				updateDetail(entity, data);
+				this.commandProxy().update(entity);
+			}
 		}
-
 	}
 
 	@Override
@@ -206,14 +206,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
-			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+			LeaveExpirationStatus expirationStatus, GeneralDate ymd) {
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
 				.query(GET_BY_PERIOD_STATUS, KrcmtSpecialLeaveReam.class)
 				.setParameter("employeeId", sid)
 				.setParameter("specialLeaCode", specialLeaveCode)
 				.setParameter("expStatus", expirationStatus.value)
-				.setParameter("grantDate", grantDate)
-				.setParameter("deadlineDate", deadlineDate)
+				.setParameter("grantDate", ymd)
+				.setParameter("deadlineDate", ymd)
 				.getList();
 
 		return entities.stream()

@@ -8,8 +8,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * @author dungdt
@@ -18,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @Getter
 @NoArgsConstructor
 public class EmployeeMonthlyPerError extends AggregateRoot{
+	
+	private int no;
 	
 	/**
 	 * エラー種類: 月別実績のエラー種類
@@ -71,5 +73,18 @@ public class EmployeeMonthlyPerError extends AggregateRoot{
 		this.yearlyReserved = Optional.ofNullable(yearlyReserved);
 	}
 	
-	
+	public EmployeeMonthlyPerError(int no, ErrorType errorType, YearMonth yearMonth, String employeeID, ClosureId closureId,
+			ClosureDate closureDate, Flex flex, AnnualLeaveError annualHoliday,
+			ReserveLeaveError yearlyReserved) {
+		super();
+		this.errorType = errorType;
+		this.yearMonth = yearMonth;
+		this.employeeID = employeeID;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
+		this.flex = Optional.ofNullable(flex);
+		this.annualHoliday = Optional.ofNullable(annualHoliday);
+		this.yearlyReserved = Optional.ofNullable(yearlyReserved);
+		this.no = no;
+	}
 }

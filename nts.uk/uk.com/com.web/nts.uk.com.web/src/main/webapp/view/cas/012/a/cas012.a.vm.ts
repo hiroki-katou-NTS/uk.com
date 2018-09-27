@@ -22,7 +22,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
 
         // Valid Period
         datePeriod: KnockoutObservable<any> = ko.observable({});
-    
+
         constructor() {
             var self = this;
             self.columns = ko.observableArray([
@@ -62,13 +62,17 @@ module nts.uk.com.view.cas012.a.viewmodel {
         private createSubscribe(): void {
             var self = this;
             self.selectedRoleType.subscribe((value) => {
+                block.invisible();
                 self.getData().done(() => {
                     self.selectRoleByIndex(0);
+                    block.clear();
                 });
             });
             self.selectedCompany.subscribe((value) => {
+                block.invisible();
                 self.getData().done(() => {
                     self.selectRoleByIndex(0);
+                    block.clear();
                 });
             });
             self.currentCode.subscribe((value) => {
@@ -143,9 +147,9 @@ module nts.uk.com.view.cas012.a.viewmodel {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(param.userID)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText("CAS012_24")] })
-                    block.clear();
-                
-            } else{
+                block.clear();
+
+            } else {
                 service.create(param).done((data: any) => {
                     if (nts.uk.text.isNullOrEmpty(param.userID)) {
                     }
@@ -158,7 +162,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 }).always(() => {
                     block.clear();
                 });
-                }
+            }
         }
 
         private updateRole(): void {

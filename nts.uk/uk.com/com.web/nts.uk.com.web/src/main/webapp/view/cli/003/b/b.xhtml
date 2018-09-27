@@ -9,13 +9,18 @@
 		<!-- b Screen -->
 		<div class="contentB">
 				<div id="title_b">
-				   <p>#{i18n.getText('CLI003_9')}</p>		
+				   <label style="width: 220px;">#{i18n.getText('CLI003_9')}</label>
+				  <com:ko-if bind="logTypeSelectedCode() === '6'">					
+				    <label style="margin-left: 25px;">#{i18n.getText('CLI003_65')}</label>						
+				</com:ko-if>		
 				</div>
+				
 				
 				<div tabindex="1" id="list-box_b" data-bind="ntsListBox: {
 						options: itemList,
 						optionsValue: 'code',
 						optionsText: 'name',
+						name:'#{i18n.getText('CLI003_10')}',
 						multiple: false,
 						value: logTypeSelectedCode,
 						enable: isEnable(),
@@ -25,10 +30,33 @@
 							{ key: 'name', length: 10 }
 							
 						]}">
+					
 		       </div>
+		       <com:ko-if bind="logTypeSelectedCode() === '6'">
+				<div>
+		                <label id="caret" class="caret-right" style="color: #97D155;font-size: 30px"></label>
+		       </div>
+		     
+		       <div tabindex="2" id="list-box_b1" data-bind="ntsListBox: {
+						options: dataTypeList,
+						optionsValue: 'code',
+						optionsText: 'name',
+						name:'#{i18n.getText('CLI003_10')}',
+						multiple: false,
+						value: dataTypeSelectedCode,
+						enable: isEnable(),
+						rows: 12,
+						required:true,
+						columns: [							
+							{ key: 'name', length: 10 }
+							
+						]}">
+		       </div>
+			   </com:ko-if>
+		       
 		     <!--    <span data-bind="text: selectedCode()"></span>	      -->     
 		       <div id="button_next_b">
-		             <button tabindex="2" class="x-large proceed" data-bind="click: nextScreenCD">#{i18n.getText('CLI003_13')}</button>		     
+		             <button tabindex="3" class="x-large proceed" data-bind="click: nextScreenCD">#{i18n.getText('CLI003_13')}</button>		     
 		       </div>		      
 	     </div> 
 	</ui:composition>

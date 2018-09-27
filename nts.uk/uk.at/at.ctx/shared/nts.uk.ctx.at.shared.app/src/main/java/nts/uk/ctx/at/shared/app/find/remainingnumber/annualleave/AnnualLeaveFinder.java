@@ -60,7 +60,9 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = query.getEmployeeId();
 		AnnualLeaveDto dto = new AnnualLeaveDto(employeeId);
-
+		
+		
+		
 		// 年休残数
 		List<AnnualLeaveGrantRemainingData> annualLeaveDataList = annLeaDataRepo.findNotExp(employeeId);
 		dto.setAnnualLeaveNumber(annLeaDomainService.calculateAnnLeaNumWithFormat(companyId, annualLeaveDataList));
@@ -68,7 +70,19 @@ public class AnnualLeaveFinder implements PeregFinder<AnnualLeaveDto> {
 
 		// 年休社員基本情報
 		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = annLeaBasicInfoRepo.get(employeeId);
+		
 		if (basicInfoOpt.isPresent()) {
+//			AnnualLeaveEmpBasicInfo basicInfo = basicInfoOpt.get();
+//			AnnLeaEmpBasicInfo annLeaInfo = new AnnLeaEmpBasicInfo(query.getEmployeeId(),
+//					basicInfo.getGrantRule().getNextGrantDate(),
+//					basicInfo.getGrantRule().getGrantTableCode().v(), null, null, null, null);
+//					
+//			YearHolidayInfoResult result = annLeaDomainService.getYearHolidayInfo(annLeaInfo);
+//			
+//			basicInfo.getGrantRule().setNextGrantDate(result.getNextGrantDate());
+//			basicInfo.getGrantRule().setNextGrantDay(result.getNextGrantDay());
+//			basicInfo.getGrantRule().setNextMaxTime(result.getNextMaxTime());
+			
 			dto.pullDataFromBasicInfo(basicInfoOpt.get());
 		}
 

@@ -48,6 +48,11 @@ public class DivergenceReferenceTimeUsageUnitSaveCommandHandler
 			DivergenceReferenceTimeUsageUnit domain = opt.get();
 			domain.setWorkTypeUseSet(command.isWorkTypeUseSet());
 			this.divergenceRepo.update(domain);
+		} else {
+			DivergenceReferenceTimeUsageUnit domain = new DivergenceReferenceTimeUsageUnit();
+			domain.setCId(companyId);
+			domain.setWorkTypeUseSet(command.isWorkTypeUseSet());
+			this.divergenceRepo.add(domain);
 		}
 	}
 

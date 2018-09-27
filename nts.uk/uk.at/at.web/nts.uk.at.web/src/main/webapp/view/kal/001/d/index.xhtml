@@ -43,7 +43,7 @@
 					<tr>
 						<td class="columnLeft"><label class ="labeLeft">#{i18n.getText('KAL001_33')}</label></td>
 						<td>
-							<label class="labeRight" data-bind="text: numberEmpSuccessStr"/>
+							<label class="labeRight" data-bind="text: numberEmpSuccess"/>
 							<label data-bind="text: strSlash"/>
 							<label data-bind="text: totalEmployees"/>
 							<label data-bind="text: strPersion"/>
@@ -53,14 +53,17 @@
 				</table>
 			</div>
 			<hr />
-			<center>
-				<com:ko-if bind="(dialogMode() == true)">
+			<div align="center">
+				<com:ko-if bind="dialogMode() == 2 ">
  						<button tabindex="1" id="D3_1" data-bind="click : interrupt" class="danger">#{i18n.getText('KAL001_36')}</button> 
  				</com:ko-if>
- 				<com:ko-if bind="(dialogMode() == false)">
-	 					<button tabindex="2" id="D3_2" data-bind="click : closePopup" >#{i18n.getText('KAL001_37')}</button> 
+ 				<com:ko-if bind="dialogMode() == 0 || dialogMode() == 3 ">
+	 					<button tabindex="2" id="D3_2" data-bind="click : confirmProcess" >#{i18n.getText('KAL001_37')}</button> 
 				</com:ko-if>
-			</center>
+				<com:ko-if bind="dialogMode() == 1 || dialogMode() == 3 ">
+	 					<button tabindex="3" id="D3_2" data-bind="click : closePopup" >#{i18n.getText('KAL001_40')}</button> 
+				</com:ko-if>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

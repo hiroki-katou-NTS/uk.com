@@ -38,10 +38,11 @@ public class AnnualLeaveProcess {
 	// 年休残数処理
 	public void annualHolidayProcess(AggrPeriodEachActualClosure period, String empId) {
 		AggrResultOfAnnAndRsvLeave output = remainHolidayCalculation.calculateRemainAnnualHoliday(period, empId);
-		remainHolidayUpdating.updateRemainAnnualLeave(output.getAnnualLeave().get(), period, empId);
+		if (output.getAnnualLeave().isPresent())
+			remainHolidayUpdating.updateRemainAnnualLeave(output.getAnnualLeave().get(), period, empId);
 		tmpAnnualLeaveDeleting.deleteTempAnnualLeaveData(empId, period.getPeriod());
-		rsvRemainAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(output.getReserveLeave().get(), period,
-				empId);
+		if (output.getReserveLeave().isPresent())
+			rsvRemainAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(output.getReserveLeave().get(), period, empId);
 		tmpRsvAnnualLeaveDeleting.deleteTempRsvAnnualLeaveData(empId, period.getPeriod());
 	}
 

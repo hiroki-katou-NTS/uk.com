@@ -28,5 +28,10 @@ public class TemporaryTimeFrameDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = TIME)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer temporaryTime;
+	
+	@Override
+	public TemporaryTimeFrameDto clone() {
+		return new TemporaryTimeFrameDto(no, temporaryNightTime, temporaryTime);
+	}
 
 }

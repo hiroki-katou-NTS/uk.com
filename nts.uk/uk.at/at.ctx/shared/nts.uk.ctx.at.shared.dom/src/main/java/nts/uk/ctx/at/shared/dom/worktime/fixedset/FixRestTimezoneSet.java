@@ -131,4 +131,5 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject {
 		}
 		return new AttendanceTime(returnValue);
 	}
+	
 }

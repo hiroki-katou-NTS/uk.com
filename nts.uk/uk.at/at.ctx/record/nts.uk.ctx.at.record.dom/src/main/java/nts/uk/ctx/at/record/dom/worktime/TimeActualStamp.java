@@ -18,7 +18,7 @@ public class TimeActualStamp {
 	
 	private Optional<WorkStamp> actualStamp;
 	
-	private Optional<WorkStamp> stamp = Optional.of(new WorkStamp());
+	private Optional<WorkStamp> stamp = Optional.empty();
 	
 	private Integer numberOfReflectionStamp;
 	
@@ -92,5 +92,17 @@ public class TimeActualStamp {
 		if(this.actualStamp.isPresent()) {
 			this.actualStamp.get().setStampFromPcLogOn(pcLogOnStamp);
 		}
+	}
+	
+	/**
+	 * 打刻(Stamp)が計算できる状態であるか判定する
+	 * (null になっていないか) 
+	 * @return 計算できる状態である
+	 */
+	public boolean isCalcStampState() {
+		if(this.getStamp() != null && this.getStamp().isPresent()) {
+			return true;
+		}
+		return false;
 	}
 }

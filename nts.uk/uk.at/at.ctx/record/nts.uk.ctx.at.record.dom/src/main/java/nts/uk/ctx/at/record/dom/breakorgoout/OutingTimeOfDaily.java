@@ -15,10 +15,18 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.FlexWithinWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutingTotalTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinOutingTotalTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
@@ -70,7 +78,7 @@ public class OutingTimeOfDaily {
 	 * @return
 	 */
 	public static OutingTimeOfDaily calcOutingTime(OutingTimeSheet outingOfDaily, CalculationRangeOfOneDay oneDay,boolean isCalculatable,Optional<FlexCalcSetting> flexCalcSet
-			,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+			,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting,ManageReGetClass recordClass) {
 		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(0);
 		//休暇使用時間
 		TimevacationUseTimeOfDaily useVacationTime = new TimevacationUseTimeOfDaily(new AttendanceTime(0),
@@ -93,7 +101,7 @@ public class OutingTimeOfDaily {
 		
 		if(isCalculatable) {
 			//回数
-			//goOutTimes = new BreakTimeGoOutTimes(1);
+			goOutTimes = calcGoOutTimes(recordClass);
 			//休暇使用時間
 			
 			//計上用合計時間
@@ -108,6 +116,46 @@ public class OutingTimeOfDaily {
 									 recordTotalTime, 
 									 dedTotalTime,
 									 correctedTimeSheet);
+	}
+	
+	public static BreakTimeGoOutTimes calcGoOutTimes(ManageReGetClass recordClass) {
+		
+		List<TimeSheetOfDeductionItem> list = new ArrayList<>();
+		//就業時間内時間帯
+		WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
+		for(WithinWorkTimeFrame withinWorkTimeFrame:withinWorkTimeSheet.getWithinWorkTimeFrame()) {
+			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+			//遅刻
+			if(withinWorkTimeFrame.getLateTimeSheet().isPresent()&&withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+				list.addAll(withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+			}
+			//早退
+			if(withinWorkTimeFrame.getLeaveEarlyTimeSheet().isPresent()&&withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+				list.addAll(withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+			}
+		}
+		//就業時間外時間帯
+		OutsideWorkTimeSheet outsideWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get();
+		//残業
+		if(outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()) {
+			for(OverTimeFrameTimeSheetForCalc overTimeFrameTimeSheetForCalc:outsideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets()) {
+				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+			}
+		}
+		//休出
+		if(outsideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()) {
+			for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
+				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Care));
+			}
+		}
+		
+		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
+		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list){
+			if(timeSheetOfDeductionItem.calcTotalTime(DeductionAtr.Deduction).greaterThan(0)) {
+				result.add(timeSheetOfDeductionItem);
+			}
+		}
+		return new BreakTimeGoOutTimes(result.size());
 	}
 	
 	/**

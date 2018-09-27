@@ -14,6 +14,7 @@
 				nts.uk.ctx.at.request.dom.application.ApproverReason
 				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
 				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
+				nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../../kdl/034/a/kdl034.a.vm.js" />
@@ -169,7 +170,7 @@
 								data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KAF000_23')}</button>
 						</div>
 					</div>
-					<div class="kaf000-function-div-cancel">
+					<div class="kaf000-function-div-cancel" data-bind="if: false">
 						<!-- B1_13 -->
 						<div class="controlButtonCell_kaf000"
 							data-bind="if: displayCancelButton">
