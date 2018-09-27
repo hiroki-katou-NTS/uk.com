@@ -35,7 +35,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         register() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            $('.nts-input').trigger("validate");
+            $('.tab-i .nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
