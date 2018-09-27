@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.BonusHealthInsuranceRate;
@@ -118,5 +119,17 @@ public class HealthInsuranceService {
 		healthInsuranceFeeRateHistoryRepository.remove(healthInsurance);
 		bonusHealthInsuranceRateRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		healthInsuranceMonthlyFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
+	}
+	
+	public boolean checkHealthInsuranceGradeFeeChange (String officeCode, BonusHealthInsuranceRate bonusHealthInsuranceRate,
+			HealthInsuranceMonthlyFee healthInsuranceMonthlyFee, YearMonthHistoryItem yearMonthItem){
+		// calculation
+		// アルゴリズム「月額健康保険料計算処理」を実行する
+		healthInsuranceMonthlyFee = calculationGradeFee(bonusHealthInsuranceRate, healthInsuranceMonthlyFee, yearMonthItem);
+		Optional<HealthInsuranceMonthlyFee> opt_oldHealthInsuranceMonthlyFee = healthInsuranceMonthlyFeeRepository.getHealthInsuranceMonthlyFeeById(bonusHealthInsuranceRate.getHistoryID());
+		if (!opt_oldHealthInsuranceMonthlyFee.isPresent()) return false;
+		HealthInsuranceMonthlyFee oldHealthInsuranceMonthlyFee = opt_oldHealthInsuranceMonthlyFee.get();
+		if (oldHealthInsuranceMonthlyFee.getHealthInsurancePerGradeFee().containsAll(healthInsuranceMonthlyFee.getHealthInsurancePerGradeFee())) return false;
+		return true;
 	}
 }

@@ -56,9 +56,31 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             // Update historyId for case clone previous data
             command.bonusHealthInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.healthInsuranceMonthlyFee.historyId = command.yearMonthHistoryItem.historyId;
+            if (self.isUpdateMode()) {
+                service.checkHealthInsuranceGradeFeeChange(command).done(function(data) {
+                    block.clear();
+                    if (data) {
+                        dialog.confirm({ messageId: "MsgQ_209" }).ifYes(function() {
+                            self.registerIfValid(command);
+                        });
+                    } else {
+                        self.registerIfValid(command);
+                    }
+                }).fail(function(err) {
+                    block.clear();
+                    dialog.alertError(err.message);
+                });
+            } else {
+                self.registerIfValid(command);
+            }
+
+        }
+
+        registerIfValid(command) {
+            let self = this;
             service.registerEmployeeHealthInsurance(command).done(function(data) {
                 block.clear();
-                dialog.info({ messageId: 'Msg_15' }).then(function(){
+                dialog.info({ messageId: 'Msg_15' }).then(function() {
                     $('#B2_7').focus();
                 });
                 self.isUpdateMode(true);
@@ -67,6 +89,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 dialog.alertError(err.message);
             });
         }
+
         printPDF() {
             // TODO
             console.log('TODO');
@@ -109,8 +132,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     block.clear();
                     // show add office screen if there are no office
                     if (data.length == 0) {
-                        if (self.jumpTopPageIfNoData){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml") ;
+                        if (self.jumpTopPageIfNoData) {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                         }
                         self.registerBusinessEstablishment();
                     } else {
@@ -126,8 +149,9 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                             let firstOffice = data[0].healthInsuranceFeeRateHistory
                             if (firstOffice.history.length > 0) self.selectedHealthInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
                             else self.selectedHealthInsurance(firstOffice.socialInsuranceCode);
+                        } else {
+                            self.changeBySelectedValue();
                         }
-                        self.changeBySelectedValue();
                     }
                 }
                 dfd.resolve();

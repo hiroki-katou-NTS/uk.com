@@ -1,20 +1,18 @@
-<div  class = "tab-c">
-	<div class="sidebar-content-header flex valign-center ">
+<div class="tab-c">
+	<div class="sidebar-content-header" style="min-width: 1000px;">
 		<!-- A2_3 厚生年金 -->
 		<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_7')}</span>
 		<!-- A2_1 -> A1_5 -->
-		<div class="flex">
-			<button id="A1_1" class="proceed" tabindex="1"
-				data-bind="click: register, enable: isSelectedHistory &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
-			<button id="A1_2" tabindex="1"
-				data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
-			<button id="A1_3" tabindex="1" 
-				data-bind="click: standardRemunerationMonthlyAmount, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
-			<button id="A1_4" tabindex="1"
-				data-bind="click: registerBusinessEstablishment, enable: true">#{i18n.getText('QMM008_4')}</button>
-			<button id="A1_5" tabindex="1"
-				data-bind="click: masterCorrectionLog, enable: false">#{i18n.getText('QMM008_5')}</button>
-		</div>
+		<button id="A1_1" class="proceed" tabindex="1"
+			data-bind="click: register, enable: isSelectedHistory &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
+		<button id="A1_2" tabindex="1"
+			data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
+		<button id="A1_3" tabindex="1"
+			data-bind="click: standardRemunerationMonthlyAmount, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
+		<button id="A1_4" tabindex="1"
+			data-bind="click: registerBusinessEstablishment, enable: true">#{i18n.getText('QMM008_4')}</button>
+		<button id="A1_5" tabindex="1"
+			data-bind="click: masterCorrectionLog, enable: false">#{i18n.getText('QMM008_5')}</button>
 	</div>
 	<div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
 		<!-- C1_1 厚生年金保険料率一覧 -->
@@ -58,7 +56,8 @@
 		<div class="fixed-flex-layout-right right-panel"
 			data-bind="with: employeeMonthlyInsuFee">
 			<!-- C2_1 期間 -> C2_5 終了年月  -->
-			<div data-bind="with: $vm.viewmodelC.selectedHistoryPeriod">
+			<div data-bind="with: $vm.viewmodelC.selectedHistoryPeriod"
+				style="min-width: 700px;">
 				<div style="width: 130px;" class="inline-element"
 					data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_12')}</div>
 				<div style="width: 65px;" class="inline-element"
@@ -71,7 +70,7 @@
 			</div>
 
 			<!-- C2_6  期間 -> C2_9 無  -->
-			<div style="width: 800px;">
+			<div style="min-width: 700px;">
 				<div style="margin-top: 15px; display: inline-block"
 					data-bind="with: $vm.viewmodelC.welfareInsuranceClassification">
 					<div style="width: 130px;" data-bind="ntsFormLabel: {}" id="C2_6">#{i18n.getText('QMM008_53')}</div>
@@ -100,18 +99,18 @@
 									required: true,
 									enable: $vm.viewmodelC.isSelectedHistory }"></div>
 				</div>
-				<button style="display: inline-block" tabindex = "7"
+				<button style="display: inline-block" tabindex="7"
 					data-bind="ntsHelpButton: {image: '../resource/QMM008_01.png', position: 'bottom left', enable: $vm.viewmodelC.isSelectedHistory}">?</button>
 			</div>
 			<hr></hr>
-			<div id="C2_16">#{i18n.getText('QMM008_56')}</div>
+			<div id="C2_16" style="min-width: 700px;">#{i18n.getText('QMM008_56')}</div>
 			<hr></hr>
 			<!-- C3 - Group -->
 			<div id="C3_container"
 				class="nts-fixed-header-container ui-iggrid nts-fixed-header">
 				<table id="C3">
 					<colgroup>
-						<col width="160px" />
+						<col width="170px" />
 						<col width="140px" />
 						<col width="140px" />
 						<col width="140px" />
@@ -283,7 +282,7 @@
 			</div>
 			<div
 				data-bind="if: $vm.viewmodelC.welfareInsuranceClassification().fundClassification() == 1">
-				<div style="margin-top: 10px;">#{i18n.getText('QMM008_57')}</div>
+				<div style="margin-top: 10px; min-width: 700px;">#{i18n.getText('QMM008_57')}</div>
 				<hr></hr>
 			</div>
 			<div
@@ -293,7 +292,7 @@
 				<table id="C4">
 					<colgroup>
 						<col width="80px" />
-						<col width="80px" />
+						<col width="90px" />
 						<col width="140px" />
 						<col width="140px" />
 						<col width="140px" />
@@ -319,15 +318,16 @@
 							<td>
 								<div>
 									<!-- C4_10 男子給与個人保険料率 -->
-									<input id="C2_10"
+									<input id="C4_10"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
 														decimallength: 3
 													}, 
+													name: '#[QMM008_79]',
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainBurdenRatio, 
  													constraint: 'InsuranceRate', 
- 													required: true, 
+ 													required: false, 
  													enable: false}" />
 								</div>
 								<div>#{i18n.getText('QMM008_28')}</div>
@@ -341,9 +341,10 @@
  														width: '60px',
 														decimallength: 3
 													},
+													name: '#[QMM008_80]',
  													value: salaryEmployeesPensionInsuranceRate().maleContributionRate().remainEmployeeContributionRatio, 
  													constraint: 'InsuranceRate', 
- 													required: true, 
+ 													required: false, 
  													enable: false}" />
 								</div>
 								<div>#{i18n.getText('QMM008_28')}</div>
@@ -605,13 +606,13 @@
 					</tbody>
 				</table>
 			</div>
-			<div style="margin-top: 10px;">#{i18n.getText('QMM008_58')}</div>
+			<div style="margin-top: 10px; min-width: 700px;">#{i18n.getText('QMM008_58')}</div>
 			<hr></hr>
 			<div id="C5_container"
 				class="nts-fixed-header-container ui-iggrid nts-fixed-header">
 				<table id="C5">
 					<colgroup>
-						<col width="160px" />
+						<col width="170px" />
 						<col width="140px" />
 						<col width="140px" />
 						<col width="140px" />
@@ -710,9 +711,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div style="margin-top: 10px;">#{i18n.getText('QMM008_183')}</div>
+			<div style="margin-top: 10px; min-width: 700px;">#{i18n.getText('QMM008_183')}</div>
 			<hr></hr>
-			<div style="margin-bottom: 30px;">
+			<div style="margin-bottom: 30px; min-width: 725px;">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_20')}</div>
 				<div style="display: inline-block"
 					data-bind="with: salaryEmployeesPensionInsuranceRate">

@@ -2,6 +2,7 @@ package nts.uk.ctx.core.infra.repository.socialinsurance.healthinsurance;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.core.dom.socialinsurance.AutoCalculationExecutionCls;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFee;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceMonthlyFeeRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsurancePerGradeFee;
@@ -75,8 +76,10 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
 	@Override
 	public void update(HealthInsuranceMonthlyFee domain) {
 		this.commandProxy().update(QpbmtHealthInsuranceMonthlyFee.toEntity(domain));
-		this.deleteHealthInsurancePerGradeByHistoryId(Arrays.asList(domain.getHistoryId()));
-		this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+		if (domain.getAutoCalculationCls() == AutoCalculationExecutionCls.AUTO){
+			this.deleteHealthInsurancePerGradeByHistoryId(Arrays.asList(domain.getHistoryId()));
+			this.commandProxy().insertAll(QpbmtHealthInsurancePerGradeFee.toEntity(domain));
+		}
 		
 	}
 

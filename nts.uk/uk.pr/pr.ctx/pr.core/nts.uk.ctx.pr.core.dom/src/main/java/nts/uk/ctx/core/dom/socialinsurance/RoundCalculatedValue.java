@@ -24,21 +24,21 @@ public class RoundCalculatedValue {
         switch (fractionCls) {
             // 切り捨て
             case TRUNCATION:
-                return new BigDecimal(calculation).setScale(scale, RoundingMode.DOWN);
+                return new BigDecimal(calculation).setScale(scale, RoundingMode.DOWN).setScale(ROUND_3_AFTER_DOT, RoundingMode.UP);
             // 切り上げ
             case ROUND_UP:
-                return new BigDecimal(calculation).setScale(scale, RoundingMode.UP);
+                return new BigDecimal(calculation).setScale(scale, RoundingMode.UP).setScale(ROUND_3_AFTER_DOT, RoundingMode.UP);
             // 四捨五入
             case ROUND_4_UP_5:
-                return new BigDecimal(calculation).setScale(scale, RoundingMode.HALF_UP);
+                return new BigDecimal(calculation).setScale(scale, RoundingMode.HALF_UP).setScale(ROUND_3_AFTER_DOT, RoundingMode.UP);
             // 五捨六入
             case ROUND_SUPER_5:
-                return new BigDecimal(calculation).setScale(scale, RoundingMode.HALF_DOWN);
+                return new BigDecimal(calculation).setScale(scale, RoundingMode.HALF_DOWN).setScale(ROUND_3_AFTER_DOT, RoundingMode.UP);
             // 五捨五超入
             case ROUND_5_UP_6:
-                return new BigDecimal(calculation + (ROUND_1_AFTER_DOT == scale ? 0.400 : 0.004)).setScale(scale, RoundingMode.DOWN);
+                return new BigDecimal(calculation + (ROUND_1_AFTER_DOT == scale ? 0.400 : 0.004)).setScale(scale, RoundingMode.DOWN).setScale(ROUND_3_AFTER_DOT, RoundingMode.UP);
             default:
-                return new BigDecimal(0);
+                return new BigDecimal(0).setScale(ROUND_3_AFTER_DOT, RoundingMode.UP);
         }
     }
 }

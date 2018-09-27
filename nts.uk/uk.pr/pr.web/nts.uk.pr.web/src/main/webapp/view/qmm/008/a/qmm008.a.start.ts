@@ -18,11 +18,13 @@ module nts.uk.pr.view.qmm008.a {
                 });
             });
             $(".tab-c-sidebar").click(function() {
+                viewmodelC.isSelectFirstOfficeAndHistory = true;
                 viewmodelC.startPage().done(function() {
                     $('#C1_5').focus();
                 });
             });
             $(".tab-i-sidebar").click(function() {
+//                viewmodelI.isSelectFirstOfficeAndHistory = true;
                 viewmodelI.startPage().done(function() {
                     $("#I1_5").focus();
                 });

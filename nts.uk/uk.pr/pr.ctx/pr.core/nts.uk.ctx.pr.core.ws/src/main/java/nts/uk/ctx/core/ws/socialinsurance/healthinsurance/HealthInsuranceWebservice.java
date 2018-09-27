@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.CheckHealthInsuranceGradeFeeChangeCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.DeleteHealthInsuranceCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.healthinsurance.UpdateHealthInsuranceFeeRateHistoryCommandHandler;
@@ -25,6 +26,9 @@ public class HealthInsuranceWebservice {
 
     @Inject
     private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
+    
+    @Inject
+    private CheckHealthInsuranceGradeFeeChangeCommandHandler checkHealthInsuranceGradeFeeChangeCommandHandler;
     
     @Inject
     private UpdateHealthInsuranceFeeRateHistoryCommandHandler updateHealthInsuranceCommandHandler;
@@ -46,19 +50,25 @@ public class HealthInsuranceWebservice {
 
     @POST
     @Path("register")
-    public void addHealthInsuranceFeeRateByCompanyId(HealthInsuranceCommand healthInsuranceCommand) {
+    public void addHealthInsuranceFeeRate(HealthInsuranceCommand healthInsuranceCommand) {
         this.registerHealthInsuranceCommandHandler.handle(healthInsuranceCommand);
+    }
+    
+    @POST
+    @Path("checkGradeFeeChange")
+    public Boolean checkGradeFeeChange(HealthInsuranceCommand healthInsuranceCommand) {
+        return this.checkHealthInsuranceGradeFeeChangeCommandHandler.handle(healthInsuranceCommand);
     }
 
     @POST
     @Path("editHistory")
-    public void updateHealthInsuranceFeeRateByCompanyId(HealthInsuranceCommand command) {
+    public void updateHealthInsuranceFeeRate(HealthInsuranceCommand command) {
     	updateHealthInsuranceCommandHandler.handle(command);
     }
     
     @POST
     @Path("deleteHistory")
-    public void deleteHealthInsuranceFeeRateByCompanyId(HealthInsuranceCommand command) {
+    public void deleteHealthInsuranceFeeRate(HealthInsuranceCommand command) {
     	deleteHealthInsuranceCommandHandler.handle(command);
     }
 }

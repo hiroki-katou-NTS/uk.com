@@ -46,6 +46,40 @@ public class HealthInsurancePerGradeFee extends DomainObject {
         this.employeeBurden       = new HealthInsuranceContributionFee(employeeHealthInsurancePremium, employeeNursingCare, employeeSpecInsurancePremium, employeeBasicInsurancePremium);
         this.insuredBurden        = new HealthInsuranceContributionFee(insuredHealthInsurancePremium, insuredNursingCare, insuredSpecInsurancePremium, insuredBasicInsurancePremium);
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((employeeBurden == null) ? 0 : employeeBurden.hashCode());
+		result = prime * result + healthInsuranceGrade;
+		result = prime * result + ((insuredBurden == null) ? 0 : insuredBurden.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HealthInsurancePerGradeFee other = (HealthInsurancePerGradeFee) obj;
+		if (employeeBurden == null) {
+			if (other.employeeBurden != null)
+				return false;
+		} else if (!employeeBurden.equals(other.employeeBurden))
+			return false;
+		if (healthInsuranceGrade != other.healthInsuranceGrade)
+			return false;
+		if (insuredBurden == null) {
+			if (other.insuredBurden != null)
+				return false;
+		} else if (!insuredBurden.equals(other.insuredBurden))
+			return false;
+		return true;
+	}
     
     
 }
