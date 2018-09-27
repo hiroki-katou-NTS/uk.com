@@ -722,6 +722,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "383px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -775,6 +776,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "383px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -862,6 +864,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "383px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -947,6 +950,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 helpButton.click(function() {
                     var container = helpButton.closest(".igscroll-touchscrollable");
                     var tooltip = helpButton.parent().find(".nts-help-button-image");
+                    $(".ui-iggrid-header.ui-widget-header").css("overflow", "visible");
+                    tooltip.css("width","350px");
                     if (tooltip.css("display") !== "none") {
                         container.addClass("default-overflow");
                         container.removeClass("overflow-show");
