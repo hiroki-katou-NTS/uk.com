@@ -82,7 +82,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
         switch (copyMethod) {
             case REPLACE_ALL:
                 // Delete all old data
-                copyMasterData(sourceCid, targetCid, false);
+                copyMasterData(sourceCid, targetCid);
                 break;
             case ADD_NEW:
                 // Insert Data
@@ -173,9 +173,8 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
      *
      * @param sourceCid
      * @param targetCid
-     * @param isReplace
      */
-    public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+    public void copyMasterData(String sourceCid, String targetCid) {
         //Get data company zero
         List<PpemtPerInfoCtg> sPerInfoCtgEntities = findAllPerInfoCtgByCid(sourceCid);
         List<PpemtPerInfoCtgOrder> sPerInfoCtgOrderEntities = new ArrayList<>();
@@ -291,11 +290,14 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
                 groupPersonalInfoItemByDefId = s3.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItem -> perInfoItem));
             Map<String, PpemtPerInfoItemOrder> groupPersonalInfoItemOrderByDefId = new HashMap<>();
             if (!CollectionUtil.isEmpty(s4))
-                groupPersonalInfoItemOrderByDefId = s4.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItem -> perInfoItem));
-
+                groupPersonalInfoItemOrderByDefId = s4.stream().collect(Collectors.toMap(o -> o.ppemtPerInfoItemPK.perInfoItemDefId, perInfoItemOrder -> perInfoItemOrder));
+            Map<String, PpemtDateRangeItem> groupDateRangeItemByDefId = new HashMap<>();
+            if (!CollectionUtil.isEmpty(s5))
+                groupDateRangeItemByDefId = s5.stream().collect(Collectors.toMap(o -> o.startDateItemId, dateRangeItem -> dateRangeItem));
 
             final List<PpemtPerInfoItem> s33 = new ArrayList<>();
             final List<PpemtPerInfoItemOrder> s44 = new ArrayList<>();
+            final List<PpemtDateRangeItem> s55 = new ArrayList<>();
 
             Set<String> sourcePersonalInfoItemDefId = s3.stream()
                     .map(ppemtPerInfoItem -> ppemtPerInfoItem.ppemtPerInfoItemPK.perInfoItemDefId)
@@ -310,10 +312,16 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
 
 
                 PpemtPerInfoItemOrder perInfoItemOrderEntity = groupPersonalInfoItemOrderByDefId.get(defId);
-                if(perInfoItemOrderEntity == null) continue;
+                if (perInfoItemOrderEntity == null) continue;
                 PpemtPerInfoItemOrder cloneObject2 = SerializationUtils.clone(perInfoItemOrderEntity);
                 cloneObject2.ppemtPerInfoItemPK.perInfoItemDefId = newDefId;
                 s44.add(cloneObject2);
+
+                PpemtDateRangeItem dateRangeItemEntity = groupDateRangeItemByDefId.get(defId);
+                if (dateRangeItemEntity == null) continue;
+                PpemtDateRangeItem cloneObject3 = SerializationUtils.clone(dateRangeItemEntity);
+                cloneObject3.startDateItemId = newDefId;
+                s55.add(cloneObject3);
             }
 
             // insert new
@@ -321,8 +329,7 @@ public class PersonalInfoDefCopyHandler extends DataCopyHandler {
             this.commandProxy.insertAll(s2);
             this.commandProxy.insertAll(s33);
             this.commandProxy.insertAll(s44);
-            this.commandProxy.insertAll(s5);
-
+            this.commandProxy.insertAll(s55);
         } else {//取得できた場合（会社ID　＝　Input．会社IDの個人情報定義）//Lấy được
             //group by personal info category Id
             Map<String, PpemtPerInfoCtg> sgroupPersonalInfoCatByCatCd = new HashMap<>();

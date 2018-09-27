@@ -232,7 +232,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
 					request.getEndDate());
-			ClosureDate closureDate = new ClosureDate(0, false);
+			ClosureDate closureDate = new ClosureDate(1, false);
 			if (optionalClosure.isPresent()) {
 				Closure closure = optionalClosure.get();
 

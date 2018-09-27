@@ -33,7 +33,7 @@ public class AggrPeriodEachActualClosure {
 	public AggrPeriodEachActualClosure(){
 		
 		this.closureId = ClosureId.RegularEmployee;
-		this.closureDate = new ClosureDate(0, true);
+		this.closureDate = new ClosureDate(1, true);
 		this.yearMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.originalClosurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());

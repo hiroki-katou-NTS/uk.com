@@ -1,6 +1,15 @@
-div {
-	padding-bottom: 10px;
-}
+
 td {
 	padding: 5px;
+}
+table tr td {
+	border:1px solid;
+}
+h1{
+	    color: #00B050;
+    font-size: 25px;
+}
+h2{
+	color: #00B050;
+    font-size: 22px;
 }

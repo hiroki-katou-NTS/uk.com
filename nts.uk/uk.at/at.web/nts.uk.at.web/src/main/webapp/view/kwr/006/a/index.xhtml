@@ -22,9 +22,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click: exportExcel">#{i18n.getText('KWR006_5')}</button>
+				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click: exportExcel, enable: enableExport">#{i18n.getText('KWR006_5')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: exportPdf">#{i18n.getText('KWR006_6')}</button>
+				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: exportPdf, enable: enableExport">#{i18n.getText('KWR006_6')}</button>
 			</div>
 			
 			<div id="contents-area" style="display: none" data-bind="visible: true">
@@ -95,6 +95,7 @@
 											visibleItemsCount: 10,
 											value: monthlyWorkScheduleConditionModel.selectedCode,
 											optionsText: 'name',
+											required: true,
 											columns: [
 												{ prop: 'code', length: 2 },
 												{ prop: 'name', length: 6 },
