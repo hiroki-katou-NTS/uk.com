@@ -1,8 +1,8 @@
 <div>
-		<div class="sidebar-content-header flex valign-center header-content">
+		<div class="sidebar-content-header flex">
 					<span class="title">#{i18n.getText('QMM011_4')}</span>
 
-					<div style="margin-left: 100px">
+					<div style="margin-left: 100px; margin-top: 10px;">
 						<div>
 							<!-- A1_1-->
 							<button class="proceed" id="A1_1" tabindex="1"
@@ -63,7 +63,7 @@
 				<div id ="B2_6" class="set-row">
 					<hr />
 				</div>
-				<table id="3_1" style="margin-top: 20px;">
+				<table id="B3_1" style="margin-top: 20px;">
 					<colgroup>
 					<col width="120px" />
 					<col width="150px"/>
@@ -74,23 +74,23 @@
 					<thead>
 							<tr>
 								<th class="bg-green" style="border: 1px solid #CCC"></th>
-								<th class="bg-green">#{i18n.getText('QMM011_11')}</th>
-								<th class="bg-green">#{i18n.getText('QMM011_12')}</th>
-								<th class="bg-green">#{i18n.getText('QMM011_13')}</th>
-								<th class="bg-green">#{i18n.getText('QMM011_12')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_11')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_12')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_13')}</th>
+								<th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_12')}</th>
 							</tr>
 					</thead>
 					<tbody data-bind="foreach: listEmpInsurPreRate()">
 						<tr >
-							<td class="bg-green" style="border: 1px solid #CCC">
+							<td class="bg-green" style="border: 1px solid #CCC;text-align: left;padding-left: 1px">
 								<div data-bind="if: empPreRateId === 2">
-									<span class = "label" id= "B3_6">#{i18n.getText('QMM011_14')}</span>
+									<span class = "label" id= "B3_6" >#{i18n.getText('QMM011_14')}</span>
 								</div>
 								<div data-bind="if: empPreRateId === 1">
-									<span class = "label" id= "B3_15">#{i18n.getText('QMM011_16')}</span>
+									<span class = "label" id= "B3_15" >#{i18n.getText('QMM011_16')}</span>
 								</div>
 								<div data-bind="if: empPreRateId === 0">
-									<span class = "label" id= "B3_24">#{i18n.getText('QMM011_17')}</span>
+									<span class = "label" id= "B3_24" >#{i18n.getText('QMM011_17')}</span>
 								</div>
 							</td>
 							<td >
@@ -109,6 +109,7 @@
 							<td>
 								<div class = "B3_9"
 										data-bind="		attr: {tabindex: $parent.setTabIndex(empPreRateId,2)},
+										                style: {textAlign: 'left'},
 														ntsComboBox: {
 																name: '#{i18n.getText('QMM011_12')}',
 																value: perFracClass,
@@ -139,6 +140,7 @@
 							<td>
 								<div id = "B3_13" 
 										data-bind=" attr: {tabindex: $parent.setTabIndex(empPreRateId,4)},
+										            style: {textAlign: 'left'},
 													ntsComboBox: {
 																value: busiOwFracClass, 
 																name:'#{i18n.getText('QMM011_12')}',

@@ -17,8 +17,8 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
         constructor() {
             let self = this;
             let params = getShared('QMM011_E_PARAMS_INPUT');
+            self.insuranceName(params.insuranceName);
             if (params && params.startYearMonth) {
-                self.insuranceName(params.insuranceName);
                 self.startLastYearMonth(params.startYearMonth);
                 self.startYearMonth(Number(self.startLastYearMonth()));
                 self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM011_48', [self.convertMonthYearToString(self.startYearMonth())]));

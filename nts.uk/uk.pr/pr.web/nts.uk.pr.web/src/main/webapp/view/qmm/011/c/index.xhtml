@@ -2,17 +2,17 @@
 
    <div>
         <div
-                class="sidebar-content-header flex valign-center header-content">
+                class="sidebar-content-header flex">
             <span class="title">#{i18n.getText('QMM011_5')}</span>
 
-            <div style="margin-left: 100px">
+            <div style="margin-left: 100px; margin-top: 10px;">
                 <div>
                     <!-- A1_1-->
                     <button class="proceed" id="A1_1" tabindex="1"
                             data-bind="click: register,enable: !enableRegis()">#{i18n.getText('QMM011_1')}</button>
                     <!-- A1_2 -->
                     <button id="A1_2" tabindex="2"
-                            data-bind="click: openDscreen">#{i18n.getText('QMM011_2')}</button>
+                            data-bind="click: openDscreen,enable: !enableRegis() ">#{i18n.getText('QMM011_2')}</button>
                     <!-- A1_3-->
                     <button id="A1_3" tabindex="3"
                             data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
@@ -79,8 +79,8 @@
                         <tr>
                             <th class="bg-green" style="border: 1px solid #CCC"></th>
                             <th class="bg-green" style="border: 1px solid #CCC"></th>
-                            <th class="bg-green">#{i18n.getText('QMM011_13')}</th>
-                            <th class="bg-green">#{i18n.getText('QMM011_12')}</th>
+                            <th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_13')}</th>
+                            <th class="bg-green" style="border: 1px solid #CCC">#{i18n.getText('QMM011_12')}</th>
                         </tr>
                         </thead>
                         <tbody data-bind="foreach: listAccInsurPreRate()">
@@ -90,7 +90,7 @@
                             <span id = "C3_4" class= "label" data-bind="text: occAccInsurBusNo"></span>
 
                             </td>
-                            <td id = "C3_5" class="bg-green" style="border: 1px solid #CCC" data-bind="text: name"></td>
+                            <td id = "C3_5" class="bg-green" style="border: 1px solid #CCC;text-align: left;padding-left: 20px" data-bind="text: name"></td>
 
                             <td>
 
@@ -111,8 +111,8 @@
                             </td>
                             <td>
                                 <div id = "C3_8"
-                                     data-bind="ntsComboBox: {
-
+                                     data-bind="style: {textAlign: 'left'},
+                                                    ntsComboBox: {
 																value: fracClass,
 																name:'#{i18n.getText('QMM011_12')}',
 																options: $parent.listPerFracClass,
