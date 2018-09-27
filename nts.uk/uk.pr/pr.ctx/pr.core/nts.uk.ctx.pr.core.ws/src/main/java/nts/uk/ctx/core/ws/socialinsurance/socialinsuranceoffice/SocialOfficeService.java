@@ -15,6 +15,7 @@ import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSoc
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.FindSocialOfficeFinder;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.UpdateSocialOfficeCommand;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.UpdateSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.CreateOfficeDto;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.CusSociaInsuOfficeDto;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.DataResponseDto;
 import nts.uk.ctx.core.app.command.socialinsurance.socialinsuranceoffice.dto.SociaInsuOfficeDto;
@@ -68,7 +69,7 @@ public class SocialOfficeService {
 	
 	@POST
 	@Path("/create")
-	public List<String> createSociaInsuOffice(CreateSocialOfficeCommand createSocialOfficeCommand) {
+	public CreateOfficeDto createSociaInsuOffice(CreateSocialOfficeCommand createSocialOfficeCommand) {
 		return createSocialOfficeCommandHandler.handle(createSocialOfficeCommand);
 	}
 	

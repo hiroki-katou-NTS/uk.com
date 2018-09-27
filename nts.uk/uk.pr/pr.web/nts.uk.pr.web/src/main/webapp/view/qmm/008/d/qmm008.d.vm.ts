@@ -97,13 +97,16 @@ module nts.uk.pr.view.qmm008.d {
                 self.detail().welfarePensionPrefectureNo(self.selectedNoD38);
                 if(self.currentCode() == null) {
                     nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
-                        if(response[0] == 'Msg_3') {
+                        if(response.msg == 'Msg_3') {
                             nts.uk.ui.dialog.error({ messageId: "Msg_3" }).then(function() {
                             });
                         } else {
-                            self.items.push(new SocialOfficeOverView(response[0], response[1]));
+                            self.items([]);
+                            for (let i = 0; i < response.dataOffice.length; i++) {
+                                self.items.push(new SocialOfficeOverView(response.dataOffice[i].code, response.dataOffice[i].name));
+                            }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                self.currentCode(response[0]);
+                                self.currentCode(response.code);
                                 self.isEnableCode(false);           
                             });
                         }
@@ -155,27 +158,30 @@ module nts.uk.pr.view.qmm008.d {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                              for (let i = 0; i < self.items().length; i++) {
                                  if(self.items()[i].code == response[0]) {
-                                     delete self.items()[i];
+                                     //delete self.items()[i];
+                                     self.items(self.items().filter(x => x.code !== response[0]));
                                      self.items.valueHasMutated();
-                                     if(self.items().length == 1) {
-                                        self.detail(new SocialOfficeDetail());
-                                     } else if(i == self.items().length -1 ) {
-                                         let parameter = i-1 ;
-                                     } else {
-                                         let parameter = i+1 ;
+                                     if(self.items().length == 0) {
+                                         self.create();
+                                     } else if(self.items().length == i) {
+                                         let parameter = i - 1;
+                                      } else {
+                                         let parameter = i ;
+                                         
                                      }
-                                     nts.uk.pr.view.qmm008.d.service.findByCode(self.items()[parameter].code).done(function(response) {
-                                         self.detail(new SocialOfficeDetail(response));
-                                         let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
-                                         if(response.healthInsurancePrefectureNo)
-                                         self.selectedNoD35(selectedNo35.no);
-                                         let selectedNo38 = _.find(self.itemList(), { no: response.welfarePensionPrefectureNo });
-                                         if(response.welfarePensionPrefectureNo)
-                                         self.selectedNoD38(selectedNo38.no);
-                                         self.currentCode(self.items()[parameter].code);
-                                         self.isEnableCode(false);
-                                     });
-                                     
+                                     if(!self.isEnableCode()) {
+                                         nts.uk.pr.view.qmm008.d.service.findByCode(self.items()[parameter].code).done(function(response) {
+                                             self.detail(new SocialOfficeDetail(response));
+                                             let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
+                                             if (response.healthInsurancePrefectureNo)
+                                                 self.selectedNoD35(selectedNo35.no);
+                                             let selectedNo38 = _.find(self.itemList(), { no: response.welfarePensionPrefectureNo });
+                                             if (response.welfarePensionPrefectureNo)
+                                                 self.selectedNoD38(selectedNo38.no);
+                                             self.currentCode(self.items()[parameter].code);
+                                             self.isEnableCode(false);
+                                         });
+                                     }
                                  }
                              }
                         });
