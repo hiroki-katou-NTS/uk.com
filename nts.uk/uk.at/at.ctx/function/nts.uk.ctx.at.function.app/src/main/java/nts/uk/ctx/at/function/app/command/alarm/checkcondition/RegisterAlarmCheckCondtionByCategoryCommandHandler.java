@@ -256,10 +256,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								x.getCategory(), x.getCode(), 
 								x.getNo(), x.getOt36(), x.getExcessNum(), x.getMessageDisp())
 				).collect(Collectors.toList());
-				boolean check = useList.contains(1);
-				if(!check && listOt.isEmpty()){
-					throw new BusinessException("Msg_832"); 
-				}
+//				boolean check = useList.contains(1);
+//				if(!check && listOt.isEmpty()){
+//					throw new BusinessException("Msg_832"); 
+//				}
 				if(listOt.size() > 10){
 					throw new BusinessException("Msg_1242"); 
 				}
@@ -407,10 +407,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				listError = command.getCondAgree36().getListCondError();
 				listOt = command.getCondAgree36().getListCondOt();
 				List<Integer> useList = listError.stream().map(x -> x.getUseAtr()).collect(Collectors.toList());
-				boolean check = useList.contains(1);
-				if(!check && listOt.isEmpty()){
-					throw new BusinessException("Msg_832"); 
-				}
+//				boolean check = useList.contains(1);
+//				if(!check && listOt.isEmpty()){
+//					throw new BusinessException("Msg_832"); 
+//				}
 				if(listOt.size() > 10){
 					throw new BusinessException("Msg_1242"); 
 				}

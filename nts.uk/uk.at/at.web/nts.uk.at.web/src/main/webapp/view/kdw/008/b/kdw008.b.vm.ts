@@ -160,10 +160,10 @@ module nts.uk.at.view.kdw008.b {
             initSelectedSheetNoHasMutated() {
                 let self = this;
                 if(self.checkInitSheetNo){
+                    self.checkInitSheetNo = false;
                     self.selectedSheetNo.valueHasMutated();
                     return;    
                 }
-                self.checkInitSheetNo = false;
                 if (self.selectedSheetNo() == 1) {
                     self.selectedSheetNo.valueHasMutated();
                 } else {

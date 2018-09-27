@@ -63,7 +63,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -95,6 +94,7 @@ import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
 import nts.uk.file.at.infra.schedule.RowPageTracker;
 import nts.uk.file.at.infra.schedule.daily.WorkScheOutputConstants;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -296,7 +296,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			}
 			
 			// Rename sheet
-			sheet.setName(WorkScheOutputConstants.SHEET_FILE_NAME);
+			sheet.setName(WorkScheOutputConstants.SHEET_NAME_MONTHLY);
 			
 			// Move to first position
 			sheet.moveTo(0);
@@ -319,9 +319,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
 			else {
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
 			}
 
 		} catch (Exception e) {

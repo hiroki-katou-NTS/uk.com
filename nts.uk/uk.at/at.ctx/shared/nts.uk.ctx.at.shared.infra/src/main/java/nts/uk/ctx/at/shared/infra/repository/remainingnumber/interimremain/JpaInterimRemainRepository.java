@@ -90,7 +90,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.remainAtr = domain.getRemainAtr().value;
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override

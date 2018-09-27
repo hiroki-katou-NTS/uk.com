@@ -17,7 +17,7 @@ module nts.uk.ui.mgrid {
         _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = () => _mafollicle[_currentPage][_currentSheet], 
         _cstifle = () => _mafollicle[SheetDef][_currentSheet].columns, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth,
         _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers,
-        _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {},
+        _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240,
         _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
     
     export class MGrid {
@@ -61,6 +61,9 @@ module nts.uk.ui.mgrid {
             self.compreOptions();
             if (self.enter) {
                 _$grid.data("enterDirect", self.enter);
+            }
+            if (!_.isNil(self.subWidth)) {
+                _remainWidth = parseFloat(self.subWidth);
             }
             _$grid.mGrid({});
         }
@@ -175,7 +178,7 @@ module nts.uk.ui.mgrid {
                     self.summaries.height = SUM_HEIGHT + "px";
                     
                     _.forEach(summaries.columnSettings, s => {
-                        let sum = { calculator: s.summaryCalculator };
+                        let sum = { calculator: s.summaryCalculator, formatter: s.formatter };
                         if (s.summaryCalculator === "Time") {
                             sum[_currentPage] = moment.duration("0:00");
                         } else if (s.summaryCalculator === "Number") {
@@ -305,6 +308,10 @@ module nts.uk.ui.mgrid {
             _mafollicle[SheetDef][_currentSheet].controlMap = controlMap;
             _mafollicle[SheetDef][_currentSheet].painters = painters;
             _mafollicle[SheetDef][_currentSheet].maxWidth = _maxFreeWidth;
+            if (!_.isNil(self.maxRows) && self.maxRows >= 31) {
+                artifactOptions.noBlocRangee = self.maxRows;
+                artifactOptions.noGrappeBloc = 2;
+            } 
             v.construe(self.$container, bodyWrappers, artifactOptions);
             _bodyWrappers = bodyWrappers;
             let dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrapper[0];
@@ -364,7 +371,9 @@ module nts.uk.ui.mgrid {
                         $td.textContent = ti.momentToString(sum[_currentPage]);
                         sum[_currentSheet] = $td;
                     } else if (sum.calculator === "Number") {
-                        $td.textContent = sum[_currentPage];
+                        if (sum.formatter === "Currency") {
+                            $td.textContent = ti.asCurrency(sum[_currentPage]);
+                        } else $td.textContent = sum[_currentPage];
                         sum[_currentSheet] = $td;
                     } else {
                         $td.textContent = sum.calculator;
@@ -388,11 +397,11 @@ module nts.uk.ui.mgrid {
             let freeAdjuster = new kt.ColumnAdjuster([ _maxFixedWidth, freeWrapperWidth ], self.headerHeight, sizeUi, self.float);
             kt._adjuster = freeAdjuster;
             freeAdjuster.handle();
-            su.binding(self.$container, self.autoFitWindow);
+            su.binding(self.$container, self.autoFitWindow, self.minRows, self.maxRows);
             lch.checkUp(self.$container);
             
             self.$container.appendChild($frag);
-            kt.screenLargeur();
+            kt.screenLargeur(self.minRows, self.maxRows);
             console.log(performance.now() - start);
         }
     }
@@ -603,7 +612,7 @@ module nts.uk.ui.mgrid {
                 }
             }
             
-            if (!_cloud) _cloud = new aho.Cloud(containers, options);
+            if (!_cloud) _cloud = new aho.Platrer(containers, options);
             let res = single ? _cloud.renderSideRows(true) : _cloud.renderRows(true);
             if (!res) return;
             let start = res.start, end = res.end, cursor;
@@ -674,7 +683,7 @@ module nts.uk.ui.mgrid {
         /**
          * Peel struct.
          */
-        function peelStruct(columns: Array<any>, level: any, currentLevel: number) {
+        function peelStruct(columns: Array<any>, level: any, currentLevel: number, parent: any) {
             let colspan = 0, noGroup = 0;
             
             _.forEach(columns, function(col: any) {
@@ -683,7 +692,7 @@ module nts.uk.ui.mgrid {
                 if (!_.isNil(col.group)) {
                     colCount = col.group.length;
                     noGroup++;
-                    let ret: any = peelStruct(col.group, level, currentLevel + 1);
+                    let ret: any = peelStruct(col.group, level, currentLevel + 1, col.headerText);
                     if (!util.isNullOrUndefined(ret)) {
                         colCount += ret;
                     }
@@ -698,7 +707,7 @@ module nts.uk.ui.mgrid {
                 colspan += colCount;
                 
                 if (col.constraint) {
-                    let validator = new hpl.ColumnFieldValidator(col.headerText, col.constraint.primitiveValue, col.constraint);
+                    let validator = new hpl.ColumnFieldValidator(parent, col.headerText, col.constraint.primitiveValue, col.constraint);
                     _validators[col.key] = validator;
                 }
                 
@@ -1504,7 +1513,7 @@ module nts.uk.ui.mgrid {
         export const BOTTOM_SPACE = "bottom-space";
         export const NULL = null;
         
-        export class Cloud {
+        export class Platrer {
             $fixedContainer: HTMLElement;
             $container: HTMLElement;
             options: any;
@@ -1528,8 +1537,8 @@ module nts.uk.ui.mgrid {
                 this.$container = containers[1];
                 this.options = options;
                 this.primaryKey = options.primaryKey;
-                this.rowsOfBlock = options.rowsOfBlock || 30;
-                this.blocksOfCluster = options.blocksOfCluster || 3;
+                this.rowsOfBlock = options.noBlocRangee || 30;
+                this.blocksOfCluster = options.noGrappeBloc || 3;
                 this.rowHeight = parseInt(BODY_ROW_HEIGHT);
                 this.blockHeight = this.rowsOfBlock * this.rowHeight;
                 this.clusterHeight = this.blockHeight * this.blocksOfCluster;
@@ -1616,7 +1625,7 @@ module nts.uk.ui.mgrid {
                     }
                 } 
                 
-                let bottomSpace = v.extra(BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                let bottomSpace = v.extra(BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT + 2 : self.bottomOffset);
                 tbody.appendChild(bottomSpace);
                 containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                 
@@ -1732,7 +1741,7 @@ module nts.uk.ui.mgrid {
                     }
                 } 
                 
-                let bottomSpace = v.extra(BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                let bottomSpace = v.extra(BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT + 2 : self.bottomOffset);
                 tbody.appendChild(bottomSpace);
                 containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                 
@@ -2480,21 +2489,30 @@ module nts.uk.ui.mgrid {
         /**
          * ScreenLargeur.
          */
-        export function screenLargeur() {
+        export function screenLargeur(noRowsMin: any, noRowsMax: any) {
             if (!_headerWrappers || _headerWrappers.length === 0) return;
             let width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
             let pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
             let sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
             if (_headerWrappers.length > 1) {
-                width = window.innerWidth - 240 - _maxFixedWidth;
+                width = window.innerWidth - _remainWidth - _maxFixedWidth;
                 _flexFitWidth = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[1].style.maxWidth));
-                btmw = _maxFixedWidth + _flexFitWidth;
+                btmw = _maxFixedWidth + _flexFitWidth + 2;
                 _headerWrappers[1].style.width = width + "px";
                 _bodyWrappers[1].style.width = (width + ti.getScrollWidth()) + "px";
                 height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
+                if (!_.isNil(noRowsMin) && !_.isNil(noRowsMax)) {
+                    noRowsMin = parseFloat(noRowsMin);
+                    noRowsMax = parseFloat(noRowsMax);
+                    let size = _dataSource.length,
+                        no = Math.min(Math.max(size, noRowsMin), noRowsMax);
+                    height = no * BODY_ROW_HEIGHT + 19;
+                }
                 let vari = height - parseFloat(_bodyWrappers[0].style.height);
                 if (_sumWrappers && _sumWrappers.length > 1) {
                     _sumWrappers[1].style.width = width + "px";
+                    height += SUM_HEIGHT;
+                    vari += SUM_HEIGHT;
                     _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
                     _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari) + "px";
                 }
@@ -2516,15 +2534,24 @@ module nts.uk.ui.mgrid {
                 return;
             }
             
-            width = window.innerWidth - 240;
+            width = window.innerWidth - _remainWidth;
             btmw = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[0].style.maxWidth));
             _flexFitWidth = btmw;
             _headerWrappers[0].style.width = width + "px";
             _bodyWrappers[0].style.width = (width + ti.getScrollWidth()) + "px";
             height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
+            if (!_.isNil(noRowsMin) && !_.isNil(noRowsMax)) {
+                noRowsMin = parseFloat(noRowsMin);
+                noRowsMax = parseFloat(noRowsMax);
+                let size = _dataSource.length,
+                    no = Math.min(Math.max(size, noRowsMin), noRowsMax);
+                height = no * BODY_ROW_HEIGHT + 19;
+            }
             let vari = height - parseFloat(_bodyWrappers[0].style.height);
             if (_sumWrappers && _sumWrappers.length > 0) {
                 _sumWrappers[0].style.width = width + "px";
+                height += SUM_HEIGHT;
+                vari += SUM_HEIGHT;
                 _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
             }
             if (pageDiv) {
@@ -3189,7 +3216,7 @@ module nts.uk.ui.mgrid {
         /**
          * Binding.
          */
-        export function binding($grid: HTMLElement, fitWindow: any) {
+        export function binding($grid: HTMLElement, fitWindow: any, noRowsMin: any, noRowsMax: any) {
             
             $grid.addXEventListener(ssk.MOUSE_DOWN, evt => {
                 let $tCell = evt.target;
@@ -3412,7 +3439,7 @@ module nts.uk.ui.mgrid {
             
             if (fitWindow) {
                 window.addXEventListener(ssk.RESIZE, evt => {
-                    kt.screenLargeur();
+                    kt.screenLargeur(noRowsMin, noRowsMax);
                 });
             }
         }
@@ -3561,7 +3588,7 @@ module nts.uk.ui.mgrid {
                         sum[_currentPage] = total;
                         sumDone = true;
                     }
-                    sum[sheet].textContent = sum[_currentPage];
+                    sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                 }
                 
                 if (zeroHidden && ti.isZero(origVal)
@@ -3765,7 +3792,9 @@ module nts.uk.ui.mgrid {
                 before = parseFloat(rData[key]);
                 total = sum[_currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
                 sum[_currentPage] = total;
-                if (sum[sht]) sum[sht].textContent = sum[_currentPage];
+                if (sum[sht]) {
+                    sum[sht].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
+                }
             }
             
             if (_zeroHidden && ti.isZero(origVal)
@@ -3858,7 +3887,7 @@ module nts.uk.ui.mgrid {
                     } else if (valueType === "Currency") { 
                         let currencyOpts: any = new ui.option.CurrencyEditorOption();
                         currencyOpts.grouplength = constraint.groupLength | 3;
-                        currencyOpts.decimallength = constraint.decimalLength | 2;
+                        currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                         currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                         let groupSeparator = constraint.groupSeparator || ",";
                         let rawValue = text.replaceAll(value, groupSeparator, "");
@@ -4490,7 +4519,7 @@ module nts.uk.ui.mgrid {
                 sum = _summaries[k];
                 if (!sum[_currentSheet]) return;
                 if (sum.calculator === "Number") {
-                    sum[_currentSheet].textContent = sum[_currentPage]; 
+                    sum[_currentSheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage]; 
                 } else if (sum.calculator === "Time") {
                     sum[_currentSheet].textContent = ti.momentToString(sum[_currentPage]);
                 }
@@ -4678,7 +4707,7 @@ module nts.uk.ui.mgrid {
                 $header.style.maxWidth = _maxFreeWidth + "px";
                 let bw = (_maxFreeWidth + ti.getScrollWidth()) + "px";
                 _bodyWrappers[1].style.maxWidth = bw;
-                let btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth()) + "px";
+                let btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth() + 2) + "px";
                 if (sumWrap) {
                     sumWrap.style.maxWidth = _maxFreeWidth + "px";
                     sumWrap.style.width = $header.style.width;
@@ -4745,7 +4774,7 @@ module nts.uk.ui.mgrid {
                         $td.textContent = ti.momentToString(sum[_currentPage]);
                         sum[_currentSheet] = $td;
                     } else if (sum.calculator === "Number") {
-                        $td.textContent = sum[_currentPage];
+                        $td.textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                         sum[_currentSheet] = $td;
                     } else {
                         $td.textContent = sum.calculator;
@@ -4768,7 +4797,7 @@ module nts.uk.ui.mgrid {
             $header.style.maxWidth = _maxFreeWidth + "px";
             let bw = (_maxFreeWidth + ti.getScrollWidth()) + "px";
             _bodyWrappers[1].style.maxWidth = bw;
-            let btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth()) + "px";
+            let btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth() + 2) + "px";
             if (sumWrap) {
                 sumWrap.style.maxWidth = _maxFreeWidth + "px";
                 sumWrap.style.width = $header.style.width;
@@ -4903,6 +4932,11 @@ module nts.uk.ui.mgrid {
             $checkBox.setAttribute("type", "checkbox");
             $checkBox.addXEventListener("change", function(evt) {
                 let checked = $checkBox.checked || evt.checked ? true : false;
+                if (checked) {
+                    $checkBox.setAttribute("checked", "checked");
+                } else {
+                    $checkBox.removeAttribute("checked");
+                }
                 setChecked(checked, null, evt.resetValue);
             });
             $checkBoxLabel.appendChild($checkBox);
@@ -5607,10 +5641,12 @@ module nts.uk.ui.mgrid {
         let H_M_MAX: number = 60;
         
         export class ColumnFieldValidator {
+            parentName: string;
             name: string;
             primitiveValue: string;
             options: any;
-            constructor(name: string, primitiveValue: string, options: any) {
+            constructor(parentName: string, name: string, primitiveValue: string, options: any) {
+                this.parentName = parentName;
                 this.name = name;
                 this.primitiveValue = primitiveValue;
                 this.options = options;
@@ -5626,12 +5662,12 @@ module nts.uk.ui.mgrid {
                     case "Integer":
                     case "Decimal":
                     case "HalfInt":
-                        return new NumberValidator(this.name, valueType, this.primitiveValue, this.options) 
+                        return new NumberValidator(this.name, valueType, this.primitiveValue, this.options, this.parentName) 
                                .validate(value);
                     case "Currency":
                         let opts: any = new ui.option.CurrencyEditorOption();
                         opts.grouplength = this.options.groupLength | 3;
-                        opts.decimallength = this.options.decimalLength | 2;
+                        opts.decimallength = _.isNil(this.options.decimalLength) ? 0 : this.options.decimalLength;
                         opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
                         return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                 .validate(value);
@@ -5667,11 +5703,13 @@ module nts.uk.ui.mgrid {
         }
         
         class NumberValidator {
+            parentName: string;
             name: string;
             displayType: string;
             primitiveValue: string;
             options: any;
-            constructor(name: string, displayType: string, primitiveValue?: string, options?: any) {
+            constructor(name: string, displayType: string, primitiveValue?: string, options?: any, parentName?: any) {
+                this.parentName = parentName;
                 this.name = name;
                 this.displayType = displayType;
                 this.primitiveValue = primitiveValue;
@@ -5711,6 +5749,11 @@ module nts.uk.ui.mgrid {
                 
                 let min = 0, max = 999999999;
                 let value = parseFloat(text);
+                
+                if (self.options.values && !_.some(self.options.values, v => v === value)) {
+                    result.fail(resource.getMessage("Msg_1443", [ self.parentName ]), "Msg_1443");
+                    return result;
+                }
                 if (!util.isNullOrUndefined(self.options.min)) {
                     min = self.options.min;
                     if (value < min) isValid = false;
@@ -6572,6 +6615,19 @@ module nts.uk.ui.mgrid {
                 roundMin = Math.round(minute),
                 minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
             return hour + ":" + minuteStr;
+         }
+         
+         /**
+          * As currency.
+          */
+         export function asCurrency(value) {
+            let currencyOpts: any = new ui.option.CurrencyEditorOption();
+            currencyOpts.grouplength = 3;
+            currencyOpts.decimallength = 0;
+            currencyOpts.currencyformat = "JPY";
+            let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+            if (!isNaN(value)) return formatter.format(value);
+            return value;
          }
          
          /**
