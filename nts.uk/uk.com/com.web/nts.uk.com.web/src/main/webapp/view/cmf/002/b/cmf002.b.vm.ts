@@ -41,7 +41,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
             self.startPage();
-            self.initScreen(null);
             block.clear();
             self.selectedConditionSettingCode.subscribe((data) => {
                 if (data) {
@@ -357,6 +356,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if(data && data.length > 0) {
                     self.listCategory(data);
                 }
+                self.initScreen(null);
                 dfd.resolve(self);
             }).fail((error) => {
                 dialog.alertError(error);
