@@ -58,7 +58,7 @@ th {
 
 
 #clf-component div.caret-background:after {
-    color: #cff1a5 !important;
+    /*color: #cff1a5 !important;*/
 }
 
 .form_label {
