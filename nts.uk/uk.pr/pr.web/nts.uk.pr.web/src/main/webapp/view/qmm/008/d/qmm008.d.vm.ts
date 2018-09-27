@@ -50,7 +50,7 @@ module nts.uk.pr.view.qmm008.d {
                 });
 
                 this.columns2 = ko.observableArray([
-                    { headerText: text('QMM008_110'), key: 'code', width: 100 },
+                    { headerText: text('QMM008_110'), key: 'code', width: 120 },
                     { headerText: text('QMM008_111'), key: 'name', width: 200 }
                 ]);
 
