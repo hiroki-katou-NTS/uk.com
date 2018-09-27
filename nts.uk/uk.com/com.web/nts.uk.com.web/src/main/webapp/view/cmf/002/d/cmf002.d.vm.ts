@@ -395,6 +395,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.CHARACTER:
                     self.subCharStart = self.searchCharStartVal.subscribe(value => {
                         this.clearError("D6_C4_3");
+                        this.checkError("D6_C4_3");
                     })
                     self.subCharEnd = self.searchCharEndVal.subscribe(value => {
                         this.clearError("D6_C4_3");
@@ -403,6 +404,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.NUMERIC:
                     self.subNumStart = self.searchNumStartVal.subscribe(value => {
                         this.clearError("D6_C4_6");
+                        this.checkError("D6_C4_6");
                     })
                     self.subNumEnd = self.searchNumEndVal.subscribe(value => {
                         this.clearError("D6_C4_6");
@@ -411,6 +413,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.DATE:
                     self.subDateStart = self.searchDateStart.subscribe(value => {
                         this.clearError("D6_C4_9");
+                        this.checkError("D6_C4_9");
                     })
                     self.subDateEnd = self.searchDateEnd.subscribe(value => {
                         this.clearError("D6_C4_9");
@@ -419,6 +422,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.TIME:
                     self.subTimeStart = self.searchTimeStartVal.subscribe(value => {
                         this.clearError("D6_C4_12");
+                        this.checkError("D6_C4_12");
                     })
                     self.subTimeEnd = self.searchTimeEndVal.subscribe(value => {
                         this.clearError("D6_C4_12");
@@ -427,6 +431,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.INS_TIME:
                     self.subClockStart = self.searchClockStartVal.subscribe(value => {
                         this.clearError("D6_C4_15");
+                        this.checkError("D6_C4_15");
                     })
                     self.subClockEnd = self.searchClockEndVal.subscribe(value => {
                         this.clearError("D6_C4_15");
