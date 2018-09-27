@@ -21,6 +21,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         listCategory:                   KnockoutObservableArray<Category> = ko.observableArray([]);
         categoryName:                   KnockoutObservable<string>       = ko.observable('');
         outItemCd:                      KnockoutObservable<string>       = ko.observable('');
+        roleAuthority: any;
         conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
             cId: '',
             conditionSetCode: '',
@@ -228,8 +229,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         openVScreen(){
             let self = this;
             setShared('CMF002_V_PARAMS', {
-                    categoryId :self.conditionSetData().categoryId() || ''});
-            
+                categoryId :self.conditionSetData().categoryId() || '',
+                roleAuthority: self.roleAuthority
+            });
+ 
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
