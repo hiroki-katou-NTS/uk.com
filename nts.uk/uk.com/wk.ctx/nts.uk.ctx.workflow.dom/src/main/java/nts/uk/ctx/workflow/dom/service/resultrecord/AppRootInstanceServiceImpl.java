@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
@@ -45,7 +45,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@Stateless
+@RequestScoped
 public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	
 	@Inject
