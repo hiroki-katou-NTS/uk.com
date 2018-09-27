@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 
 /**
  * The Class OtherSysAccFinder.
@@ -38,6 +41,17 @@ public class OtherSysAccFinder {
 		}
 		
 		return otherSysAccFinderDto;
+	}
+
+	/**
+	 * Find already setting.
+	 *
+	 * @param userIds the user ids
+	 * @return the list
+	 */
+	public List<String> findAlreadySetting(List<String> userIds) {
+		return otherSysAccountRepository.findAllOtherSysAccount(userIds).stream().map(OtherSysAccount::getUserId)
+				.collect(Collectors.toList());
 	}
 	
 }

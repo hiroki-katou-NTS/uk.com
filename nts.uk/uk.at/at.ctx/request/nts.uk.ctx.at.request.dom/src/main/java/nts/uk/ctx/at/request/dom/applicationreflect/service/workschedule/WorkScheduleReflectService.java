@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectInformationResult;
 
 /**
  * 勤務予定に反映
@@ -14,14 +13,5 @@ public interface WorkScheduleReflectService {
 	 * @param executionTupe
 	 * @return
 	 */
-	public boolean workscheReflect(ReflectScheDto reflectParam);
-	/**
-	 * 事前チェック処理
-	 * @param employeeId
-	 * @param baseDate
-	 * @param isReflect
-	 * @return
-	 */
-	public boolean checkBeforeReflected(Application_New application);
-
+	public ReflectInformationResult workscheReflect(ReflectScheDto reflectParam);
 }

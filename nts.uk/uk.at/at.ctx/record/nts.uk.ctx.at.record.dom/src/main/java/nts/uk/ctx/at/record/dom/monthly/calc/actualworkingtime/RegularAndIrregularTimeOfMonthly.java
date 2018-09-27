@@ -37,9 +37,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -254,6 +254,7 @@ public class RegularAndIrregularTimeOfMonthly {
 							weekStart, this.weekPremiumTimeOfPrevMonth,
 							attendanceTimeOfDailyMap, companySets, repositories);
 					resultWeeks.add(newWeek);
+					if (weekCalc.getErrorInfos().size() > 0) this.errorInfos.addAll(weekCalc.getErrorInfos());
 
 					ConcurrentStopwatches.stop("12222.4:週別実績の集計：");
 					
@@ -271,8 +272,7 @@ public class RegularAndIrregularTimeOfMonthly {
 						ConcurrentStopwatches.start("12222.5:時間外超過の集計：");
 						
 						// 時間外超過の集計
-						newWeek.getExcessOutside().aggregate(
-								companySets.getOutsideOverTimeSet(), weekCalc, companySets);
+						newWeek.getExcessOutside().aggregate(weekCalc, companySets);
 						
 						ConcurrentStopwatches.stop("12222.5:時間外超過の集計：");
 						ConcurrentStopwatches.start("12222.6:逆時系列割り当て：");
@@ -411,6 +411,9 @@ public class RegularAndIrregularTimeOfMonthly {
 		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByDefo.getHolidayAdditionMap());
 		}
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		// 前月の最終週の週割増時間を求める
 		val weekPremiumTime = TargetPrmTimeWeekOfPrevMonLast.askPremiumTimeWeek(
@@ -458,6 +461,9 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 			// 加算設定　取得　（割増用）
 			val addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByReg.getHolidayAdditionMap());
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
 			
 			// 「割増を求める」がtrueの時
 			val aggregateTimeSet = settingsByReg.getRegularAggrSet().getAggregateTimeSet();
@@ -475,6 +481,9 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 			// 加算設定　取得　（割増用）
 			val addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByDefo.getHolidayAdditionMap());
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
 			
 			// 変形労働勤務の月単位の時間を集計する
 			this.aggregateTimePerMonthOfIrregular(companyId, employeeId,

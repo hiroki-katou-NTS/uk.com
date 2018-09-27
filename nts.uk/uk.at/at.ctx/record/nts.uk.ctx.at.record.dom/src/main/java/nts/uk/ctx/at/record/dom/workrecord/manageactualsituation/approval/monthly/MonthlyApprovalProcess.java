@@ -36,9 +36,9 @@ public class MonthlyApprovalProcess {
 	 * @param closureDate: 締め日
 	 * @return 承認が済んでいる
 	 */
-	public ApprovalStatus monthlyApprovalCheck(String cId, String employeeId, Integer processDateYM, Integer closureId, GeneralDate closureDate){
+	public ApprovalStatus monthlyApprovalCheck(String cId, String employeeId, Integer processDateYM, Integer closureId, GeneralDate closureDate,Optional<ApprovalProcess> approvalProcOp,List<SharedAffJobTitleHisImport> listShareAff){
 		//社員が対象月の承認処理を利用できるかチェックする
-		if(!canUseMonthlyApprovalCheck(cId, employeeId, closureDate)){
+		if(!canUseMonthlyApprovalCheck(cId, employeeId, closureDate,approvalProcOp,listShareAff)){
 			//利用できない場合
 			return ApprovalStatus.UNAPPROVAL;
 		}
@@ -57,21 +57,32 @@ public class MonthlyApprovalProcess {
 	 * @param baseDate: 基準日：年月日
 	 * @return
 	 */
-	public boolean canUseMonthlyApprovalCheck(String cId, String employeeId, GeneralDate baseDate){
+	public boolean canUseMonthlyApprovalCheck(String cId, String employeeId, GeneralDate baseDate,Optional<ApprovalProcess> approvalProcOp,List<SharedAffJobTitleHisImport> listShareAff){
 		//対応するドメインモデル「承認処理の利用設定」を取得する
-		 Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(cId);
+		 //Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(cId);
 		 if(!approvalProcOp.isPresent())
 			 return false;
 		 //「月の承認者確認を利用する」をチェックする
 		 if(approvalProcOp.get().getUseMonthBossChk() == 0)
 			 return false;
 		 //Imported「（就業）所属職位履歴」を取得する
-		 Optional<SharedAffJobTitleHisImport> jobTitleHasData = this.affJobTitleAdapter.findAffJobTitleHis(employeeId, baseDate);
+		 boolean checkSharedAffJobTitleHisImport = false;
+		 boolean checkEqualsJobTitleId = false;
+		 for(SharedAffJobTitleHisImport sharedAffJobTitleHisImport :listShareAff) {
+			 if(sharedAffJobTitleHisImport.getEmployeeId().equals(employeeId)) {
+				 checkSharedAffJobTitleHisImport = true;
+				 if(approvalProcOp.get().getJobTitleId().equals(sharedAffJobTitleHisImport.getJobTitleId())) {
+					 checkEqualsJobTitleId = true;
+				 }
+				 break;
+			 }
+		 }
+		 //Optional<SharedAffJobTitleHisImport> jobTitleHasData = this.affJobTitleAdapter.findAffJobTitleHis(employeeId, baseDate);
 		 //承認処理が必要な職位かチェックする
-		 if(!jobTitleHasData.isPresent())
+		 if(!checkSharedAffJobTitleHisImport)
 			 return false;
 		 //パラメータ「社員の職位ID」がドメインモデル「承認処理の利用設定．承認処理が必要な職位」に該当するかチェックする
-		 if(approvalProcOp.get().getJobTitleId().equals(jobTitleHasData.get().getJobTitleId())){
+		 if(checkEqualsJobTitleId){
 			 return true;
 		 }
 		return false;

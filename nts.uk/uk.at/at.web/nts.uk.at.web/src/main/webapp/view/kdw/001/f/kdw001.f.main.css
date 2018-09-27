@@ -44,3 +44,7 @@ span {
 	height: 23px;
 	margin: 4px;
 }
+
+#single-list_scrollContainer {
+	height: 264px !important;
+}

@@ -31,11 +31,35 @@ module cps002.g.vm {
 
         ]);
 
+        employeeCodeType2: KnockoutObservable<number>;
+        cardNumberType2: KnockoutObservable<number>;
         currentUserSetting: KnockoutObservable<UserSetting> = ko.observable(new UserSetting());
+        requiredCode: KnockoutObservable<boolean> = ko.observable(false);
+        requiredCard: KnockoutObservable<boolean> = ko.observable(false);
+        checkStart: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
-
-
+            var self = this;
+            self.employeeCodeType2 = ko.observable(2);
+            self.cardNumberType2 = ko.observable(3);
+            self.employeeCodeType2.subscribe((data) => {
+                if (data == 1) {
+                    self.requiredCode(true);
+                    $('#employeeCode').focus();
+                } else if (self.checkStart()) {
+                    self.requiredCode(false);
+                    $('#employeeCode').ntsError('clear');
+                }
+            });
+            self.cardNumberType2.subscribe((data) => {
+                if (data == 1) {
+                    self.requiredCard(true);
+                    $('#cardNumber').focus();
+                } else if (self.checkStart()) {
+                    self.requiredCard(false);
+                    $('#cardNumber').ntsError('clear');
+                }
+            });
         }
         start(): JQueryPromise<any> {
             let self = this,
@@ -43,9 +67,15 @@ module cps002.g.vm {
             service.getUserSetting().done((result: IUserSetting) => {
                 if (result) {
                     self.currentUserSetting(new UserSetting(result));
+                    self.employeeCodeType2(result.employeeCodeType);
+                    self.cardNumberType2(result.cardNumberType);
                 }
-
+                self.checkStart(true);
                 dfd.resolve();
+            });
+            delete __viewContext.primitiveValueConstraints.EmployeeCode.formatOption;
+            service.getStamCardEdit().done(data => {
+                __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
             });
 
             return dfd.promise();
@@ -58,10 +88,10 @@ module cps002.g.vm {
 
             let command = {
                 employeeId: "-1",
-                empCodeValType: uSet.employeeCodeType(),
-                cardNoValType: uSet.cardNumberType(),
-                empCodeLetter: uSet.employeeCodeType() != 1 ? "" : uSet.employeeCodeLetter(),
-                cardNoLetter: uSet.cardNumberType() != 1 ? "" : uSet.cardNumberLetter(),
+                empCodeValType: self.employeeCodeType2(),
+                cardNoValType: self.cardNumberType2(),
+                empCodeLetter: self.employeeCodeType2() != 1 ? "" : uSet.employeeCodeLetter(),
+                cardNoLetter: self.cardNumberType2() != 1 ? "" : uSet.cardNumberLetter(),
                 recentRegType: uSet.recentRegistrationType()
             };
             service.setUserSetting(command).done(function() {
@@ -81,7 +111,7 @@ module cps002.g.vm {
         recentRegistrationType: KnockoutObservable<number> = ko.observable(1);
         employeeCodeType: KnockoutObservable<number> = ko.observable(2);
         employeeCodeLetter: KnockoutObservable<string> = ko.observable("");
-        cardNumberType: KnockoutObservable<number> = ko.observable(5);
+        cardNumberType: KnockoutObservable<number> = ko.observable(3);
         cardNumberLetter: KnockoutObservable<string> = ko.observable("");
         constructor(param?: IUserSetting) {
             if (param) {

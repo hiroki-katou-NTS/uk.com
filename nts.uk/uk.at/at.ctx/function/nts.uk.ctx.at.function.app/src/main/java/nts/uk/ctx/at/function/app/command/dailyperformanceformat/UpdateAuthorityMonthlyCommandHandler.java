@@ -50,7 +50,7 @@ public class UpdateAuthorityMonthlyCommandHandler extends CommandHandler<UpdateA
 				.filter(item -> !attendanceItemIdsInDB.contains(item)).collect(Collectors.toList());
 
 		if (!attendanceItemIdRemove.isEmpty()) {
-			this.authorityFormatMonthlyRepository.deleteExistData(attendanceItemIdRemove);
+			this.authorityFormatMonthlyRepository.deleteExistData(companyId,command.getDailyPerformanceFormatCode(), attendanceItemIdRemove);
 		}
 
 		// List Data Update from UI compare DB (exist in DB)

@@ -22,7 +22,7 @@ public class DeleteMonthlyConCmdHandler extends CommandHandler<String> {
 	
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
-		String erCode = context.getCommand();
+		String erCode = "U" + context.getCommand();
 		this.monthlyCorrectConditionRepository.deleteMonthlyCorrectExtractCondition(erCode);
 	}
 }

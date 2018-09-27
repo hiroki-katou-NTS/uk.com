@@ -22,17 +22,13 @@ public class JpaAdTimeAndAnyItemRepository extends JpaRepository implements AdTi
 
 	@Override
 	public void storeAd(String employeeId, GeneralDate ymd) {
-		//
+		//PROCEDURE_DAILY_DATA プログラム名
 		StoredProcedureQuery stQuery = this.getEntityManager().createStoredProcedureQuery("PROCEDURE_DAILY_DATA");
 		//プロシージャ側に定義されているパラメータ名を定義
-		stQuery.registerStoredProcedureParameter("CId", String.class, ParameterMode.IN)
-			   .registerStoredProcedureParameter("SId", String.class, ParameterMode.IN)
-			   .registerStoredProcedureParameter("Ymd", Date.class, ParameterMode.IN)
+		stQuery.registerStoredProcedureParameter("CId", String.class, ParameterMode.IN)//第一引数
+			   .registerStoredProcedureParameter("SId", String.class, ParameterMode.IN)//第二引数
+			   .registerStoredProcedureParameter("Ymd", Date.class, ParameterMode.IN)//第三引数
 			   .setParameter("CId", AppContexts.user().companyId().toString()).setParameter("SId", employeeId.toString()).setParameter("Ymd", ymd.date());
-//		stQuery.registerStoredProcedureParameter("CId", String.class, ParameterMode.IN)
-//		   .registerStoredProcedureParameter("SId", String.class, ParameterMode.IN)
-//		   .registerStoredProcedureParameter("Ymd", GeneralDate.class, ParameterMode.IN)
-//		   .setParameter("CId", AppContexts.user().companyCode().toString()).setParameter("SId", employeeId.toString()).setParameter("Ymd", ymd);
 //		//実行
 		stQuery.execute();
 		

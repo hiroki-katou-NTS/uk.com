@@ -629,11 +629,16 @@ public class LayoutFinder {
 					.filter(column -> column.getPerInfoItemDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getValue())
-						&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getValue())) {
-					MappingFactory.matchOptionalItemData(recordId, classItemList, dataItems);
-					break;
+				Object startDate = startDateOpt.get().getValue();
+				Object endDate = endDateOpt.get().getValue();
+				if(startDate != null && endDate != null) {
+					if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getValue())
+							&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getValue())) {
+						MappingFactory.matchOptionalItemData(recordId, classItemList, dataItems);
+						break;
+					}
 				}
+
 			}
 
 		}
@@ -647,6 +652,7 @@ public class LayoutFinder {
 				items.add(LayoutPersonInfoValueDto.cloneFromItemDef(perInfoCategory, itemDef));
 			}
 			classItem.setPersonInfoCategoryCD(perInfoCategory.getCategoryCode().v());
+			classItem.setCtgType(perInfoCategory.getCategoryType().value);
 			classItem.setListItemDf(null);
 			classItem.setItems(items);
 		}

@@ -21,13 +21,15 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureCompleteSt
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureInfor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -37,7 +39,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 
 @Stateless
-public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<Integer, MonthlyClosureResponse> {
+public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<CheckCommand, MonthlyClosureResponse> {
 
 	@Inject
 	private MonthlyClosureUpdateLogRepository monthlyClosureRepo;
@@ -51,63 +53,96 @@ public class CheckMonthlyClosureCommandHandler extends CommandHandlerWithResult<
 	@Inject
 	private ClosureRepository closureRepo;
 
+	@Inject
+	private MonthlyClosureUpdatePersonLogRepository closureUpdatePersonLogRepo;
+
 	@Override
-	protected MonthlyClosureResponse handle(CommandHandlerContext<Integer> context) {
+	protected MonthlyClosureResponse handle(CommandHandlerContext<CheckCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		int closureId = context.getCommand();
-		switch (checkExecutionStatus(companyId)) {
+		int closureId = context.getCommand().getClosureId();
+		OutputParam checkStatus = checkExecutionStatus(companyId);
+
+		Optional<Closure> optClosure = closureRepo.findById(companyId, closureId);
+		Closure closure = optClosure.get();
+		ClosureDate closureDate = closure.getClosureHistories().get(0).getClosureDate();
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId,
+				closure.getClosureMonth().getProcessingYm());
+
+		List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closurePeriod, closureId)).stream()
+				.map(item -> item.getEmployeeId()).collect(Collectors.toList());
+
+		GeneralDateTime executionDT = GeneralDateTime.now();
+		GeneralDateTime executionEnd = context.getCommand().getScreenParams().getEndDT();
+
+		switch (checkStatus.getStatus()) {
 		case 0:// not executable
 			throw new BusinessException("Msg_1104");
 		case 1:// executable
-			if (checkExecutableClosure(context.getCommand())) {
+			if (checkExecutableClosure(closureId)) {
 				// 締め情報の取得
-				Optional<Closure> optClosure = closureRepo.findById(companyId, closureId);
-				Closure closure = optClosure.get();
-				ClosureDate closureDate = closure.getClosureHistories().get(0).getClosureDate();
-				DatePeriod closurePeriod = closureService.getClosurePeriod(closureId,
-						closure.getClosureMonth().getProcessingYm());
 
-				List<String> listEmpId = employeeSearch.search(createQueryToFilterEmployees(closurePeriod, closureId)).stream()
-						.map(item -> item.getEmployeeId()).collect(Collectors.toList());
-
-				GeneralDateTime executionDT = GeneralDateTime.now();
 				MonthlyClosureUpdateLog log = new MonthlyClosureUpdateLog(IdentifierUtil.randomUniqueId(), companyId,
 						MonthlyClosureExecutionStatus.RUNNING.value, MonthlyClosureCompleteStatus.INCOMPLETE.value,
 						executionDT, closurePeriod, employeeId, closure.getClosureMonth().getProcessingYm(), closureId,
 						closureDate);
 				monthlyClosureRepo.add(log);
 				MonthlyClosureResponse result = new MonthlyClosureResponse(log.getId(), listEmpId, closureId,
-						executionDT, closure.getClosureMonth().getProcessingYm().v(), closureDate.getClosureDay().v(),
-						closureDate.getLastDayOfMonth(), closurePeriod.start(), closurePeriod.end());
+						executionDT, executionEnd, closure.getClosureMonth().getProcessingYm().v(),
+						closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth(), closurePeriod.start(),
+						closurePeriod.end(),1);
 				return result;
 			} else {
 				throw new BusinessException("Msg_1105");
 			}
 		default: // running => open dialog F
-			return null;
+
+			MonthlyClosureUpdateLog log = checkStatus.getOutputLog().get();
+
+			MonthlyClosureResponse result = context.getCommand().getScreenParams();
+
+			if (result.getMonthlyClosureUpdateLogId() == log.getId()) {
+				MonthlyClosureResponse resultClosurtLog = new MonthlyClosureResponse(log.getId(), listEmpId, closureId,
+						executionDT, executionEnd, closure.getClosureMonth().getProcessingYm().v(),
+						closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth(), closurePeriod.start(),
+						closurePeriod.end(),2);
+				return resultClosurtLog;
+			} else {
+				MonthlyClosureUpdatePersonLog resultLog = new MonthlyClosureUpdatePersonLog(employeeId, log.getId(),
+						MonthlyClosureCompleteStatus.INCOMPLETE.value, MonthlyClosureExecutionStatus.RUNNING.value);
+
+				List<String> listEmployeeId = closureUpdatePersonLogRepo
+						.getAll(resultLog.getMonthlyClosureUpdateLogId()).stream().map(item -> item.getEmployeeId())
+						.collect(Collectors.toList());
+				MonthlyClosureResponse resultCloLog = new MonthlyClosureResponse(
+						resultLog.getMonthlyClosureUpdateLogId(), listEmployeeId, closureId, executionDT, null,
+						closure.getClosureMonth().getProcessingYm().v(), closureDate.getClosureDay().v(),
+						closureDate.getLastDayOfMonth(), closurePeriod.start(), closurePeriod.end(),2);
+				return resultCloLog;
+			}
+
 		}
 
 	}
 
 	// 実行状況を確認する
-	private int checkExecutionStatus(String companyId) {
+	private OutputParam checkExecutionStatus(String companyId) {
 		List<MonthlyClosureUpdateLog> list = monthlyClosureRepo.getAll(companyId).stream()
 				.filter(item -> item.getExecutionStatus() == MonthlyClosureExecutionStatus.RUNNING
 						|| item.getExecutionStatus() == MonthlyClosureExecutionStatus.COMPLETED_NOT_CONFIRMED)
 				.collect(Collectors.toList());
 		if (list.isEmpty())
 			// return executable
-			return 1;
+			return new OutputParam(1, Optional.empty());
 		String empId = AppContexts.user().employeeId();
 		for (MonthlyClosureUpdateLog log : list) {
 			if (log.getExecuteEmployeeId().equals(empId)) {
 				// return running
-				return 2;
+				return new OutputParam(2, Optional.of(log));
 			}
 		}
 		// return not executable
-		return 0;
+		return new OutputParam(0, Optional.empty());
 	}
 
 	// 実行可能な締めかチェックする

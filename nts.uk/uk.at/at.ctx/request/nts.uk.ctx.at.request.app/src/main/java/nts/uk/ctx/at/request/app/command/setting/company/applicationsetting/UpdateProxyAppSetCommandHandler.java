@@ -25,13 +25,11 @@ public class UpdateProxyAppSetCommandHandler extends CommandHandler<ProxyAppSetC
 	protected void handle(CommandHandlerContext<ProxyAppSetCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		ProxyAppSetCommand data = context.getCommand();
-		if(!data.getAppType().isEmpty()){
-			proxyRep.delete(companyId);
-			for(Integer item : data.getAppType()){
-				ProxyAppSet proxy = ProxyAppSet.createFromJavaType(companyId, item);
-				proxy.validate();
-				proxyRep.insert(proxy);
-			}
+		proxyRep.delete(companyId);
+		for(Integer item : data.getAppType()){
+			ProxyAppSet proxy = ProxyAppSet.createFromJavaType(companyId, item);
+			proxy.validate();
+			proxyRep.insert(proxy);
 		}
 	}
 }

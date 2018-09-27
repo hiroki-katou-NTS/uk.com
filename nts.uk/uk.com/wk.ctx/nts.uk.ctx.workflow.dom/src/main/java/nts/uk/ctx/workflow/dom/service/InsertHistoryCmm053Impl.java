@@ -14,6 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -22,6 +23,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
+import nts.uk.ctx.workflow.dom.resultrecord.service.AppRootInstanceContent;
+import nts.uk.ctx.workflow.dom.resultrecord.service.CreateDailyApprover;
 
 /**
  * @author sang.nv
@@ -40,6 +44,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 	private ApprovalBranchRepository repoBranch;
 	@Inject
 	private UpdateHistoryCmm053Service updateHistory;
+	@Inject
+	private CreateDailyApprover createDailyApprover;
 
 	/**
 	 * Add history
@@ -118,6 +124,20 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			// ドメインモデル「就業承認ルート」と紐付きドメインモデル「分岐」「承認ルート」をINSERTする(INSERT
 			// domain「就業承認ルート」và domain 「分岐」「承認ルート」 liên kết)
 			this.addHistoryByListPersonApprovalRoot(companyId, departmentApproverId, dailyApproverId, insertPersonApproval);
+			//履歴の開始日とシステム日付をチェックする
+			GeneralDate systemDate = GeneralDate.today();
+			if(startDate.beforeOrEquals(systemDate)){
+				//指定社員の中間データを作成する（日別）
+				AppRootInstanceContent result =  createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
+				if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
+					throw new BusinessException(result.getErrorMsgID());
+				}
+				//指定社員の中間データを作成する（月別）
+				result = createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
+				if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
+					throw new BusinessException(result.getErrorMsgID());
+				}
+			}
 		}
 	}
 

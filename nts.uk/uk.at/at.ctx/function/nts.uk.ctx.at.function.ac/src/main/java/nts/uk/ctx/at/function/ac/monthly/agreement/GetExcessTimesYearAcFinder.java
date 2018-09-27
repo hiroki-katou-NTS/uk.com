@@ -18,7 +18,7 @@ public class GetExcessTimesYearAcFinder implements GetExcessTimesYearAdapter {
 
 	@Override
 	public int algorithm(String employeeId, Year year) {
-		return getExcessTimesYearPub.algorithm(employeeId, year);
+		return getExcessTimesYearPub.algorithm(employeeId, year).getExcessTimes();
 	}
 
 }

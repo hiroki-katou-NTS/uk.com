@@ -17,11 +17,10 @@ module cps002.e.vm {
             let self = this, textValue = "";
             self.cardNoMode = getShared("empCodeMode");
 
-
             if (self.cardNoMode) {
-                $("#txtCardNo").focus();
+                $("#cardNumber").focus();
             } else {
-                $("#txtEmployeeCode").focus();
+                $("#employeeCode").focus();
             }
             if (textValue) {
                 self.generateEmCode(textValue);
@@ -30,6 +29,16 @@ module cps002.e.vm {
                 });
                 self.displayGenerateEmCode(displayEmCode.join("").toString());
             }
+        }
+        start(): JQueryPromise<any>{
+            let self = this,
+                dfd = $.Deferred();
+            delete __viewContext.primitiveValueConstraints.EmployeeCode.formatOption; 
+            setTimeout(dfd.resolve(),100);
+            setTimeout(function(c){
+                $("#employeeCode").focus();    
+            },100);
+            return dfd.promise();
         }
 
         getCode() {
@@ -55,7 +64,6 @@ module cps002.e.vm {
             let self = this;
             service.getCardNo(self.txtCardNo()).done(function(emCode) {
                 self.generateEmCode(emCode);
-
             }).fail(function() {
                 alertError({ messageId: "Msg_505" });
             });

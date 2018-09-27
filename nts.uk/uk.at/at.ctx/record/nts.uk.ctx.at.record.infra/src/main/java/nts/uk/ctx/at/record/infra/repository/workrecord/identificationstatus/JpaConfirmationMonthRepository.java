@@ -29,6 +29,12 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "WHERE a.krcdtConfirmationMonthPK.companyID = :companyId "
 			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
+	
+	private static final String FIND_BY_SOME_PROPERTY = "SELECT a FROM KrcdtConfirmationMonth a "
+			+ "WHERE a.krcdtConfirmationMonthPK.employeeId IN :employeeIds "
+			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM "
+			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId ";
 	@Override
 	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, Day closureDay, YearMonth processYM) {
 		return this.queryProxy().find(new KrcdtConfirmationMonthPK(companyID, employeeID,
@@ -45,7 +51,7 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 
 	@Override
 	public void delete(String companyId, String employeeId, int closureId, int closureDay, int processYM) {
-		this.getEntityManager().createNamedQuery(DELETE_BY_PARENT_PK, KrcdtConfirmationMonth.class)
+		this.getEntityManager().createQuery(DELETE_BY_PARENT_PK, KrcdtConfirmationMonth.class)
 				.setParameter("companyID", companyId).setParameter("employeeId", employeeId)
 				.setParameter("closureId", closureId)
 				.setParameter("closureDay", closureDay)
@@ -57,6 +63,15 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 		return this.queryProxy().query(FIND_BY_SID_YM, KrcdtConfirmationMonth.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("employeeId", employeeId)
 				.setParameter("processYM", processYM).getList(x -> x.toDomain());
+	}
+
+	@Override
+	public List<ConfirmationMonth> findBySomeProperty(List<String> employeeIds, int processYM, int closureDay,
+			int closureId) {
+		return this.queryProxy().query(FIND_BY_SOME_PROPERTY, KrcdtConfirmationMonth.class)
+				.setParameter("employeeIds", employeeIds).setParameter("processYM", processYM)
+				.setParameter("closureDay", closureDay).setParameter("closureId", closureId)
+				.getList(x -> x.toDomain());
 	}
 
 }

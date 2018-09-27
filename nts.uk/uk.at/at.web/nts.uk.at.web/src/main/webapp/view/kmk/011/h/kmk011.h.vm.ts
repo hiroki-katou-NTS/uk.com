@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk011.h {
 
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import blockUI = nts.uk.ui.block;
 
     import DivergenceReferenceTimeUsageUnitDto = nts.uk.at.view.kmk011.h.model.DivergenceReferenceTimeUsageUnit;
     export module viewmodel {
@@ -23,12 +24,14 @@ module nts.uk.at.view.kmk011.h {
             }
 
             private closeSaveDialog(): JQueryPromise<any> {
+                blockUI.grayout();
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 var workTypeUseSet = _self.convertBoolToNum(_self.selectWorkTypeCheck())
                 var data = new DivergenceReferenceTimeUsageUnitDto(workTypeUseSet);
 
                 service.save(data).done(() => {
+                    blockUI.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         dfd.resolve();
                         nts.uk.ui.windows.close();

@@ -68,10 +68,10 @@ public class WorkCondItemDto {
 		this.scheduleManagementAtr = workingConditionItem.getScheduleManagementAtr();
 		this.workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
 		this.workCategory = workingConditionItem.getWorkCategory();
-		this.autoStampSetAtr = workingConditionItem.getAutoIntervalSetAtr();
+		this.autoStampSetAtr = workingConditionItem.getAutoStampSetAtr();
 		this.autoIntervalSetAtr = workingConditionItem.getAutoIntervalSetAtr();
 		this.employeeId = workingConditionItem.getEmployeeId();
-		this.vacationAddedTimeAtr = workingConditionItem.getAutoIntervalSetAtr();
+		this.vacationAddedTimeAtr = workingConditionItem.getVacationAddedTimeAtr();
 		this.contractTime = workingConditionItem.getContractTime();
 		this.laborSystem = workingConditionItem.getLaborSystem();
 		this.holidayAddTimeSet = workingConditionItem.getHolidayAddTimeSet();

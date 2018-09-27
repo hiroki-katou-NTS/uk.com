@@ -60,6 +60,7 @@
         var stringValue = text.replaceAll(value.toString().trim(), groupSeperator, '');
         var isMinus = stringValue.charAt(0) === '-';
         var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+				isMinus = parseFloat(stringValue) < 0;
         if (groupLength > 0) {
             var x = values[0].split('').reverse().join('');
             for (var i = 0; i < x.length;) {

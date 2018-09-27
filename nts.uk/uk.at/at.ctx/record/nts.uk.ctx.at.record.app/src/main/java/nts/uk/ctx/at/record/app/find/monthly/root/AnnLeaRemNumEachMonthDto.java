@@ -10,11 +10,11 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveAttdRateDaysDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveGrantDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.HalfDayAnnualLeaveDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.TimeAnnualLeaveUsedTimeDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
@@ -87,11 +87,11 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/** 上限残時間 */
 	@AttendanceItemLayout(jpPropertyName = UPPER_LIMIT + REMAIN, layout = LAYOUT_H)
-	private TimeAnnualLeaveUsedTimeDto maxRemainingTime;
+	private TimeUsedNumberDto maxRemainingTime;
 
 	/** 実上限残時間 */
 	@AttendanceItemLayout(jpPropertyName = REAL + UPPER_LIMIT + REMAIN, layout = LAYOUT_I)
-	private TimeAnnualLeaveUsedTimeDto realMaxRemainingTime;
+	private TimeUsedNumberDto realMaxRemainingTime;
 
 	/** 年休出勤率日数 */
 	@AttendanceItemLayout(jpPropertyName = ATTENDANCE + RATE, layout = LAYOUT_J)
@@ -121,8 +121,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			dto.setHalfDayAnnualLeave(HalfDayAnnualLeaveDto.from(domain.getHalfDayAnnualLeave().orElse(null)));
 			dto.setRealHalfDayAnnualLeave(HalfDayAnnualLeaveDto.from(domain.getRealHalfDayAnnualLeave().orElse(null)));
 			dto.setAnnualLeaveGrant(AnnualLeaveGrantDto.from(domain.getAnnualLeaveGrant().orElse(null)));
-			dto.setMaxRemainingTime(TimeAnnualLeaveUsedTimeDto.from(domain.getMaxRemainingTime().orElse(null)));
-			dto.setRealMaxRemainingTime(TimeAnnualLeaveUsedTimeDto.from(domain.getRealMaxRemainingTime().orElse(null)));
+			dto.setMaxRemainingTime(TimeUsedNumberDto.from(domain.getMaxRemainingTime().orElse(null)));
+			dto.setRealMaxRemainingTime(TimeUsedNumberDto.from(domain.getRealMaxRemainingTime().orElse(null)));
 			dto.setAttendanceRateDays(AnnualLeaveAttdRateDaysDto.from(domain.getAttendanceRateDays()));
 			dto.setGrantAtr(domain.isGrantAtr());
 			dto.exsistData();
@@ -151,7 +151,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		}
 		return AnnLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				annualLeave == null ? new AnnualLeave() : annualLeave.toDomain(), 
 				realAnnualLeave == null ? new RealAnnualLeave() : realAnnualLeave.toRealDomain(),
 				Optional.of(halfDayAnnualLeave == null ? new HalfDayAnnualLeave() : halfDayAnnualLeave.toDomain()), 

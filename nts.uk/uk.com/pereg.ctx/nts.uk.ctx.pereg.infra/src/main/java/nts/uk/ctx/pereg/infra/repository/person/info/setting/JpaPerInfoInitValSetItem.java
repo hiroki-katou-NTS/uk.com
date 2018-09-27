@@ -42,8 +42,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			// 16, 17
 			+ " CM.numericItemMin, CM.numericItemMax, "
 			// 18, 19
-			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType"
+			+ " CM.stringItemType, CM.stringItemLength, CM.stringItemDataType,"
 			// 20,21,22
+			+ " CM.numericItemAmountAtr, CM.numericItemMinusAtr"
+			// 23, 24
 			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
 			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " INNER JOIN  PpemtPerInfoItem ITEM"
 			+ " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
@@ -67,7 +69,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoItemOrder po "
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
-			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd  ORDER BY po.disporder";
+			+ " WHERE  b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd  ORDER BY po.disporder";
 	// SONNLB
 
 	private static final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -207,6 +209,13 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			domain.setStringItemDataType(Integer.valueOf(entity[22].toString()));
 		}
 
+		if (entity[23] != null) {
+			domain.setNumberItemAmount(Integer.valueOf(entity[23].toString()));
+		}
+		
+		if (entity[24] != null) {
+			domain.setNumberItemMinus(Integer.valueOf(entity[24].toString()));
+		}
 		return domain;
 
 	}
@@ -247,12 +256,18 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 						switch (init.getSaveDataType()) {
 						case STRING:
 							c.setStringValue(init.getStringValue().v());
+							c.setDateValue(null);
+							c.setIntValue(null);
 							break;
 						case NUMBERIC:
 							c.setIntValue(init.getIntValue() == null? null: init.getIntValue().v());
+							c.setDateValue(null);
+							c.setStringValue(null);
 							break;
 						case DATE:
 							c.setDateValue(init.getDateValue());
+							c.setIntValue(null);
+							c.setStringValue(null);
 							break;
 						}
 					}

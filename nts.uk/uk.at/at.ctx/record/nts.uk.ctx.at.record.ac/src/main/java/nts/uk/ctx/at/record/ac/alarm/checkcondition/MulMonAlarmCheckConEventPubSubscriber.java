@@ -212,47 +212,45 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 		int conditionAtr = atdItemCon.getConditionAtr();
 		if (conditionType == ConditionType.FIXED_VALUE.value 
 				|| conditionType == ConditionType.ATTENDANCE_ITEM.value ) {
-			if (compareOperator > SingleValueCompareType.LESS_OR_EQUAL.value) {
-				if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
-					atdItemConDomain.setCompareRange(compareOperator,
-							(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()),
-							(V) new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()));
-				} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
-					atdItemConDomain.setCompareRange(compareOperator,
-							(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()),
-							(V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
-				} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
-					atdItemConDomain.setCompareRange(compareOperator,
-							(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()),
-							(V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
-				} else if (conditionAtr == ConditionAtr.TIMES.value) {
-					atdItemConDomain.setCompareRange(compareOperator,
-							(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()),
-							(V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
-				}
-			} else {
-				if (conditionType == ConditionType.FIXED_VALUE.value) {
+				if (compareOperator > SingleValueCompareType.GREATER_THAN.value) {
+
 					if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
-						atdItemConDomain.setCompareSingleValue(compareOperator,conditionType,
-								(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()));
+						atdItemConDomain.setCompareRange(compareOperator,
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedAmountValue(0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()) : (V) new CheckedAmountValue(0));
 					} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
-						atdItemConDomain.setCompareSingleValue(compareOperator,
-								conditionType,
-								(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()));
+						atdItemConDomain.setCompareRange(compareOperator,
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimeDuration(0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()) : (V) new CheckedTimeDuration(0));
 					} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
-						atdItemConDomain.setCompareSingleValue(compareOperator,
-								conditionType,
-								(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()));
+						atdItemConDomain.setCompareRange(compareOperator,
+						atdItemCon.getCompareStartValue() != null ? (V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()) : (V) new TimeWithDayAttr(0),
+						atdItemCon.getCompareEndValue() != null ? (V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()) : (V) new TimeWithDayAttr(0));
 					} else if (conditionAtr == ConditionAtr.TIMES.value) {
-						atdItemConDomain.setCompareSingleValue(compareOperator,
-								conditionType,
-								(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
+						atdItemConDomain.setCompareRange(compareOperator,
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimesValue(0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()) : (V) new CheckedTimesValue(0));
 					}
 				} else {
-					atdItemConDomain.setCompareSingleValue(compareOperator,
-							conditionType, (V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
+					if (conditionType == ConditionType.FIXED_VALUE.value) {
+						if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
+							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
+									atdItemCon.getCompareStartValue() != null ? (V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedAmountValue(0));
+						} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
+							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
+							atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimeDuration(0));
+						} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
+							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
+									atdItemCon.getCompareStartValue() != null ? (V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()) : (V) new TimeWithDayAttr(0));
+						} else if (conditionAtr == ConditionAtr.TIMES.value) {
+							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
+									atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimesValue(0));
+						}
+					} else {
+						atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
+								(V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
+					}
 				}
-			}
 		} else {
 			atdItemConDomain.setInputCheck(atdItemCon.getInputCheckCondition().intValue());
 		}

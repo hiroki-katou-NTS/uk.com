@@ -19,7 +19,7 @@ module nts.uk.ui.koExtentions {
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var HEADER_HEIGHT = 27;
-            var CHECKBOX_WIDTH = 70;
+            var CHECKBOX_WIDTH = 40;
             var SEARCH_AREA_HEIGHT = 45;
             var BUTTON_SEARCH_WIDTH = 70;
             var INPUT_SEARCH_PADDING = 65;
@@ -44,7 +44,7 @@ module nts.uk.ui.koExtentions {
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
-            var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+            var enableRowNumbering = false;
             var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
             let beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
@@ -127,8 +127,8 @@ module nts.uk.ui.koExtentions {
                     
                     $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
-                    initSearchArea($searchRightContainer, data.searchMode, data.rightSearchBoxText || defaultSearchText);
-                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                    initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
+                    $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH  - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                 }
                 
                 $searchArea.height(SEARCH_AREA_HEIGHT);
@@ -147,7 +147,7 @@ module nts.uk.ui.koExtentions {
 
             var features = [{ name: 'Selection', multipleSelection: true },
 //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
           
             $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
             $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
@@ -175,7 +175,7 @@ module nts.uk.ui.koExtentions {
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .withDataSource(data.value())
                                 .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 
-                                .setSearchMode(data.searchMode || "highlight")
+                                .setSearchMode("highlight")
                                 .setColumns(rightColumns())  
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
@@ -184,6 +184,7 @@ module nts.uk.ui.koExtentions {
                                 .build());
             
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
+            
             
             $grid1.igGrid({
                 width: leftGridWidth + CHECKBOX_WIDTH, 
@@ -613,6 +614,7 @@ module nts.uk.ui.koExtentions {
         
         resetOriginalDataSource() {
             this.originalDataSource = _.cloneDeep(this.dataSource);
+            this.$listControl.data("dataSource", this.originalDataSource);
         }
         
         search(): SearchResult {
@@ -668,12 +670,14 @@ module nts.uk.ui.koExtentions {
             });
         }
         
-        private proceedSearch() {
+        proceedSearch() {
             if (this.searchMode === "filter") {
                 var results: SearchResult = this.search();
                 if (results === null) return;
                 this.bindData(results.data);
                 this.$listControl.trigger("listfilterred");
+                this.$listControl.data("filter", true);
+                return results.data;
             } else {
                 this.highlightSearch();
             }
@@ -685,6 +689,8 @@ module nts.uk.ui.koExtentions {
                     this.resetOriginalDataSource();
                 }
                 this.bindData(this.originalDataSource);
+                this.$searchBox.val('');
+                this.$listControl.data("filter", false);
             }
         }
         
@@ -712,14 +718,17 @@ module nts.uk.ui.koExtentions {
                 var gotoEnd = source.splice(0, selected[0].index + 1);
                 source = source.concat(gotoEnd);
             }
-            var iggridColumns = _.map(this.columns, c => {
+            /*var iggridColumns = _.map(this.columns, c => {
                 c["key"] = c.key === undefined ? c.prop : c.key;
                 c["dataType"] = 'string';
                 return c;
-            });
+            });*/
+            var searchCriterion = this.searchCriterion;
+            
             var searchedValues = _.find(source, function(val) {
-                return _.find(iggridColumns, function(x) {
-                    return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                return _.find(searchCriterion, function(x) {
+                    //return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
+                    return val[x].toString().indexOf(value) >= 0;
                 }) !== undefined;
             });
             
@@ -848,28 +857,47 @@ module nts.uk.ui.koExtentions {
             this.swapParts[0].setDataSource(firstSource);
             this.swapParts[1].setDataSource(secondSource);
             value(secondSource);
+            
+            let searchResult;
+            if (this.swapParts[forward ? 0 : 1].$listControl.data("filter")) {
+                searchResult = this.swapParts[forward ? 0 : 1].proceedSearch();
+            }
+            if (this.swapParts[forward ? 1 : 0].$listControl.data("filter")) {
+                this.swapParts[forward ? 1 : 0].proceedSearch();
+            }
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
             afterMove(forward, oldSource, _.cloneDeep(forward ? secondSource : firstSource))
             
             if (forward){
-                var selectIndex = firstSource.length === 0 ? -1 
-                    : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index); 
+                let arr = searchResult ? searchResult : firstSource;
+                var selectIndex = arr.length === 0 ? -1 
+                    : (arr.length - 1 < firstSelected.index ? arr.length - 1 : firstSelected.index); 
             } else {
-                var selectIndex = secondSource.length === 0 ? -1  
-                    : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);    
+                let arr = searchResult ? searchResult : secondSource;
+                var selectIndex = arr.length === 0 ? -1  
+                    : (arr.length - 1 < firstSelected.index ? arr.length - 1 : firstSelected.index);    
             }
             
             setTimeout(function() {
                 $source.igGrid("virtualScrollTo", selectIndex);
                 $dest.igGrid("virtualScrollTo", destList.length - 1);
                 
-                if(selectIndex >= 0){
-                    $source.igGridSelection("selectRowById", forward ? firstSource[selectIndex][primaryKey] : secondSource[selectIndex][primaryKey]);    
-                } 
-                if(!forward){
-                    $dest.ntsGridList("setSelected", selectedIds);    
-                }
+//                if(selectIndex >= 0){
+//                    let selectId;
+//                    if (searchResult) {
+//                        selectId = searchResult[selectIndex][primaryKey];
+//                    } else if (forward) {
+//                        selectId = firstSource[selectIndex][primaryKey];
+//                    } else {
+//                        selectId = secondSource[selectIndex][primaryKey];
+//                    }
+//                    
+//                    $source.igGridSelection("selectRowById", selectId);    
+//                } 
+//                if(!forward){
+//                    $dest.ntsGridList("setSelected", selectedIds);    
+//                }
             }, 10);
         }
     }
@@ -1015,4 +1043,13 @@ module nts.uk.ui.koExtentions {
             this.secondList = second;        
         }
     }
+    
+    $.fn.swapList = function(method, param) {
+        switch(method) {
+            case "dataSource":
+                let id = $(this).attr("id") + "-grid" + (param + 1);
+                let dataSource = $("#" + id).data("dataSource"); 
+                return dataSource ? dataSource : [];
+        }
+    };
 }

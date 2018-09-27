@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdp003.c.main.css" />
+			<com:scriptfile path="kdp003.c.service.js" />
+			<com:scriptfile path="kdp003.c.vm.js" />
+			<com:scriptfile path="kdp003.c.start.js" />
+		</ui:define>
+		
+		<ui:define name="content">
+			<div id="functions-area" style="display: none" data-bind="visible: true">
+				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../003/a/index.xhtml' }">#{i18n.getText('KDP003_37')}</a>
+				<button  tabindex="2" class="proceed" id="format-button"
+					data-bind="click: exportExcel, enable: $root.errors.isEmpty">#{i18n.getText('KDP003_38')}</button>
+			</div>
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+				<div>
+						<table  id="kdp003-grid"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

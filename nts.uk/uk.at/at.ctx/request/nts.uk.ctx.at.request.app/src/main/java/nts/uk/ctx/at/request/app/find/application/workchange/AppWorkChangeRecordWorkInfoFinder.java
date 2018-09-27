@@ -51,10 +51,10 @@ public class AppWorkChangeRecordWorkInfoFinder {
 				workTypeName,
 				recordInfo.getWorkTimeCode(), 
 				workTimeName, 
-				recordInfo.getAttendanceStampTimeFirst() == null ? 0 : recordInfo.getAttendanceStampTimeFirst(),
-				recordInfo.getLeaveStampTimeFirst() == null ? 0 : recordInfo.getLeaveStampTimeFirst(), 
-				recordInfo.getAttendanceStampTimeSecond() == null ? 0 : recordInfo.getAttendanceStampTimeSecond(), 
-				recordInfo.getLeaveStampTimeSecond() == null ? 0 : recordInfo.getLeaveStampTimeSecond(), 
+				recordInfo.getAttendanceStampTimeFirst(),
+				recordInfo.getLeaveStampTimeFirst() , 
+				recordInfo.getAttendanceStampTimeSecond() , 
+				recordInfo.getLeaveStampTimeSecond(), 
 				0, 
 				0);
 		//Test data

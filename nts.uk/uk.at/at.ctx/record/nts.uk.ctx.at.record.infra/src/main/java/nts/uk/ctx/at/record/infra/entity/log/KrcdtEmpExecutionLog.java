@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -47,7 +48,7 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	public int executedMenu;
 	
 	@Column(name = "EXECUTED_DATE")
-	public GeneralDate executedDate;
+	public GeneralDateTime executedDate;
 
 	@Column(name = "EXECUTED_STATUS")
 	public Integer executedStatus;

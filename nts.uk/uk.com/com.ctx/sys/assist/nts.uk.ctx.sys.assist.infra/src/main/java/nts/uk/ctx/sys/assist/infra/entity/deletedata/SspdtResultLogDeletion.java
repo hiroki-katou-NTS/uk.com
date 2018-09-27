@@ -26,12 +26,6 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 	@EmbeddedId
     public SspdtResultLogDeletionPK sspdtResultLogDeletionPK;
 
-	/** The deletion Id. */
-	/** データ削除処理ID */
-	@Basic(optional = false)
-	@Column(name = "DEL_ID")
-	public String delId;
-
 	/** The company Id. */
 	/** 会社ID */
 	@Basic(optional = false)
@@ -74,12 +68,12 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 	}
 
 	public ResultLogDeletion toDomain() {
-		return ResultLogDeletion.createFromJavatype(this.sspdtResultLogDeletionPK.seqId, this.delId, this.companyID, this.logTime,
+		return ResultLogDeletion.createFromJavatype(this.sspdtResultLogDeletionPK.seqId, this.sspdtResultLogDeletionPK.delId, this.companyID, this.logTime,
 				this.processingContent, this.errorContent, this.errorEmployeeId, this.errorDate);
 	}
 
 	public static SspdtResultLogDeletion toEntity(ResultLogDeletion resultLog) {
-		return new SspdtResultLogDeletion(new SspdtResultLogDeletionPK(resultLog.getSeqId()), resultLog.getDelId(), 
+		return new SspdtResultLogDeletion(new SspdtResultLogDeletionPK(resultLog.getDelId(), resultLog.getSeqId()), 
 				resultLog.getCompanyId(), resultLog.getLogTime(), resultLog.getProcessingContent().v(), resultLog.getErrorContent().v(),
 				resultLog.getErrorEmployeeId(), resultLog.getErrorDate());
 	}

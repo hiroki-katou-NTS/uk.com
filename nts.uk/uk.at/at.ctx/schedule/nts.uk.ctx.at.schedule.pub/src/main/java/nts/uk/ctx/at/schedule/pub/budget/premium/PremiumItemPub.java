@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.pub.budget.premium;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -22,5 +23,7 @@ public interface PremiumItemPub {
 	 * @return
 	 */
 	public List<PersonCostSettingExport> getPersonCostSetting(String companyID,GeneralDate date);
+	
+	public List<PersonCostSettingExport> getPersonCostSetting(String companyID, DatePeriod period);
 	
 }

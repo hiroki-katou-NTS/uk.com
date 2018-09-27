@@ -18,9 +18,11 @@ import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
+import nts.uk.ctx.sys.auth.pub.user.getuser.GetUserPublish;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PasswordMessageImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
@@ -41,6 +43,9 @@ public class UserAdapterImpl implements UserAdapter {
 	@Inject
 	private ChangeUserPasswordPublisher changeUserPasswordPublisher;
 
+	@Inject
+	private GetUserPublish getUserPublish ;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -257,5 +262,19 @@ public class UserAdapterImpl implements UserAdapter {
 			return this.covertToImportDomainNew(user);
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<UserDto> getUser(List<String> userIds) {
+		return this.getUserPublish.getUser(userIds).stream().map(item -> {
+		     UserDto dto = new UserDto();
+		     dto.setUserId(item.getUserId());
+		     dto.setLoginId(item.getLoginId());
+		     dto.setUserName(item.getUserName().get());
+		     dto.setAssociatedPersonID(item.getAssociatedPersonID().get());
+		     dto.setMailAddress(item.getMailAddress().get());
+		     dto.setPassword(item.getPassword());
+		     return dto;
+		    }).collect(Collectors.toList());
 	}
 }

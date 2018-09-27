@@ -137,6 +137,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         //起動する
         initScreen() {
             let self = this;
+            if (!self.selectedItem()) {
+                return;
+            }
             _.defer(() => {nts.uk.ui.errors.clearAll()});
             self.settingManager().employeeId(self.selectedItem());
             service.getSettingManager(self.selectedItem()).done(result => {

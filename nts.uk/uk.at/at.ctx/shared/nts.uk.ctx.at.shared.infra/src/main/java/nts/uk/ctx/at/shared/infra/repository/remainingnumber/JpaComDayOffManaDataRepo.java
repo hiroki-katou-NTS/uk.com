@@ -14,18 +14,24 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOffManaDataRepository {
 
 	private static final String GET_BYSID = "SELECT a FROM KrcmtComDayoffMaData a WHERE a.sID = :employeeId AND a.cID = :cid";
+	
+	private String GET_BY_SID_DATE = GET_BYSID + " AND a.dayOff < :dayOff";
 
 	private static final String GET_BY_REDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0");
 
 	private static final String GET_BYSID_WITHREDAY = String.join(" ", GET_BYSID, " AND a.remainDays > 0 OR "
-					+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
-					+ "INNER JOIN KrcmtLeaveManaData b ON c.krcmtLeaveDayOffManaPK.leaveID = b.leaveID WHERE b.sID = :employeeId AND b.cID = :cid AND b.subHDAtr = 0 )");
+			+ " a.comDayOffID IN  (SELECT c.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana c "
+			+ "INNER JOIN KrcmtLeaveManaData b ON c.krcmtLeaveDayOffManaPK.leaveID = b.leaveID WHERE b.sID = :employeeId AND b.cID = :cid AND b.subHDAtr = 0 )");
+
+	private static final String QUERY_BY_SID_HOLIDAY = "SELECT c FROM KrcmtComDayoffMaData c"
+			+ " WHERE c.sID = :employeeId" + " AND c.unknownDate = :unknownDate" + " AND c.dayOff >= :startDate";
 
 	private static final String GET_BYCOMDAYOFFID = String.join(" ", GET_BYSID,
 			" AND a.comDayOffID IN (SELECT b.krcmtLeaveDayOffManaPK.comDayOffID FROM KrcmtLeaveDayOffMana b WHERE b.krcmtLeaveDayOffManaPK.leaveID = :leaveID)");
@@ -34,9 +40,20 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	private static final String GET_BY_LISTID = " SELECT c FROM KrcmtComDayoffMaData c WHERE c.comDayOffID IN :comDayOffIDs";
 
-	private static final String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c" + " WHERE c.dayOff >= :startDate"
-			+ " AND c.dayOff <= :endDate" + " AND c.sID = :sid";
+	private static final String GET_BY_DAYOFFDATE_PERIOD = "SELECT c FROM KrcmtComDayoffMaData c"
+			+ " WHERE c.dayOff >= :startDate" + " AND c.dayOff <= :endDate" + " AND c.sID = :sid";
 
+	@Override
+	public List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd) {
+		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_SID_DATE, KrcmtComDayoffMaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("cid", cid)
+				.setParameter("dayOff", ymd)
+				.getList();
+
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidWithReDay(String cid, String sid) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BYSID_WITHREDAY, KrcmtComDayoffMaData.class)
@@ -188,11 +205,13 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 
 	@Override
 	public Optional<CompensatoryDayOffManaData> getBycomdayOffId(String comDayOffId) {
-		KrcmtComDayoffMaData entity = this.getEntityManager().find(KrcmtComDayoffMaData.class, comDayOffId);
-		if (entity == null)
-			return Optional.empty();
-		else
-			return Optional.ofNullable(toDomain(entity));
+
+		String QUERY_BY_ID = "SELECT s FROM KrcmtComDayoffMaData s WHERE s.comDayOffID = :comDayOffID";
+		Optional<KrcmtComDayoffMaData> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtComDayoffMaData.class).setParameter("comDayOffID", comDayOffId).getSingle();
+		if (entity.isPresent()) {
+			return Optional.ofNullable(toDomain(entity.get()));
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -202,11 +221,27 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		this.commandProxy().update(comDayOff);
 	}
 
+	@Override
 	public List<CompensatoryDayOffManaData> getByDayOffDatePeriod(String sid, DatePeriod dateData) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_DAYOFFDATE_PERIOD, KrcmtComDayoffMaData.class)
 				.setParameter("sid", sid).setParameter("startDate", dateData.start())
 				.setParameter("endDate", dateData.end()).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<CompensatoryDayOffManaData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff) {
+		List<KrcmtComDayoffMaData> listLeaveData = this.queryProxy()
+				.query(QUERY_BY_SID_HOLIDAY, KrcmtComDayoffMaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("unknownDate", unknownDate)
+				.setParameter("startDate", dayOff.start()).getList();
+		return listLeaveData.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteById(List<String> comDayOffID) {
+		this.commandProxy().removeAll(KrcmtComDayoffMaData.class, comDayOffID);
 	}
 
 }

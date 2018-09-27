@@ -51,7 +51,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
 	
-	private static final String GET_LIST_SID_BY_LIST_WKPID_DATEPERIOD = "SELECT awit.sid FROM BsymtAffiWorkplaceHistItem awit"
+	private static final String GET_LIST_SID_BY_LIST_WKPID_DATEPERIOD = "SELECT DISTINCT awit.sid FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
 	

@@ -18,7 +18,7 @@ public class TargetDataKey {
 
 	/** 年月日 */
 	@Getter
-	private final Optional<GeneralDate> dateKey;
+	private final GeneralDate dateKey;
 	
 	/** 文字列KEY */
 	@Getter
@@ -26,7 +26,7 @@ public class TargetDataKey {
 	
 	public TargetDataKey(CalendarKeyType calendarKeyType, GeneralDate dateKey, String stringKey) {
 		this.calendarKeyType = calendarKeyType;
-		this.dateKey = Optional.ofNullable(dateKey);
+		this.dateKey = dateKey;
 		this.stringKey = Optional.ofNullable(stringKey);
 	}
 	
@@ -53,7 +53,17 @@ public class TargetDataKey {
 	}
 	
 	public static TargetDataKey of(GeneralDate dateKey, String stringKey) {
-		return new TargetDataKey(CalendarKeyType.NONE, dateKey, stringKey);
+		return new TargetDataKey(CalendarKeyType.DATE, dateKey, stringKey);
+	}
+	
+	public static TargetDataKey of(YearMonth yearMonthKey, String stringKey) {
+		return new TargetDataKey(CalendarKeyType.YEARMONTH, 
+				GeneralDate.ymd(yearMonthKey.year(), yearMonthKey.month(), 1), stringKey);
+	}
+	
+	public static TargetDataKey of(int yearKey, String stringKey) {
+		return new TargetDataKey(CalendarKeyType.YEAR, 
+				GeneralDate.ymd(yearKey, 1, 1), stringKey);
 	}
 	
 	

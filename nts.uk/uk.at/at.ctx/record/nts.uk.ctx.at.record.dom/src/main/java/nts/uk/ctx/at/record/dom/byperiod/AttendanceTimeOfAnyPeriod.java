@@ -19,7 +19,7 @@ public class AttendanceTimeOfAnyPeriod extends AggregateRoot {
 	private final AnyAggrFrameCode anyAggrFrameCode;
 
 	/** 月の集計 */
-	private MonthlyCalculationByPeriod monthlyaggregation;
+	private MonthlyCalculationByPeriod monthlyAggregation;
 	/** 時間外超過 */
 	private ExcessOutsideByPeriod excessOutside;
 	/** 36協定時間 */
@@ -42,7 +42,7 @@ public class AttendanceTimeOfAnyPeriod extends AggregateRoot {
 		this.employeeId = employeeId;
 		this.anyAggrFrameCode = anyAggrFrameCode;
 		
-		this.monthlyaggregation = new MonthlyCalculationByPeriod();
+		this.monthlyAggregation = new MonthlyCalculationByPeriod();
 		this.excessOutside = new ExcessOutsideByPeriod();
 		this.agreementTime = new AgreementTimeByPeriod();
 		this.verticalTotal = new VerticalTotalOfMonthly();
@@ -73,7 +73,7 @@ public class AttendanceTimeOfAnyPeriod extends AggregateRoot {
 			AnyItemByPeriod anyItem){
 		
 		AttendanceTimeOfAnyPeriod domain = new AttendanceTimeOfAnyPeriod(employeeId, anyAggrFrameCode);
-		domain.monthlyaggregation = monthlyAggregation;
+		domain.monthlyAggregation = monthlyAggregation;
 		domain.excessOutside = excessOutside;
 		domain.agreementTime = agreementTime;
 		domain.verticalTotal = verticalTotal;

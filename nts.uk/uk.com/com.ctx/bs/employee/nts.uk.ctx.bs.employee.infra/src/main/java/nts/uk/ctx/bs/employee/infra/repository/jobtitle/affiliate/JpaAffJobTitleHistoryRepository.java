@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +11,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
@@ -39,10 +44,16 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	private static final String GET_BY_HID_SID = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.hisId = :hisId";
 	
+	private static final String GET_BY_LIST_HID_SID = "select h from BsymtAffJobTitleHist h"
+			+ " where h.sid IN :sids and h.hisId IN :hisIds";
+	
 	private static final String GET_BY_EMPIDS_PERIOD = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid IN :lstSid and h.strDate <= :endDate and h.endDate >= :startDate"
 			+ " ORDER BY h.sid, h.strDate";
 	
+	private static final String GET_BY_DATE = "select h from BsymtAffJobTitleHist h"
+			+ " where h.strDate <= :date and h.endDate >= :date "
+			+ " AND h.cid = :cid ";
 	/**
 	 * Convert from domain to entity
 	 * @param employeeId
@@ -197,6 +208,29 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 		return Optional.empty();
 	}
 	
+	@Override
+	public List<AffJobTitleHistory> getListByListHidSid(List<String> hids, List<String> sids) {
+		if(hids.isEmpty() || sids.isEmpty())
+			return Collections.emptyList();
+		
+		List<BsymtAffJobTitleHist> optHist = this.queryProxy()
+				.query(GET_BY_LIST_HID_SID, BsymtAffJobTitleHist.class)
+				.setParameter("hisIds", hids).setParameter("sids", sids).getList();
+		List<AffJobTitleHistory> listAffJobTitleHistory = new ArrayList<>();
+		for(String sid :sids ) {
+			List<BsymtAffJobTitleHist> listBsymtAffJobTitleHist = new ArrayList<>();
+			for(BsymtAffJobTitleHist bsymtAffJobTitleHist :optHist ) {
+				if(sid.equals(bsymtAffJobTitleHist.getSid())) {
+					listBsymtAffJobTitleHist.add(bsymtAffJobTitleHist);
+				}
+			}
+			if(!listBsymtAffJobTitleHist.isEmpty()) {
+				listAffJobTitleHistory.add(toAffJobTitleHist(listBsymtAffJobTitleHist));
+			}
+		}
+		return listAffJobTitleHistory;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -251,9 +285,17 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	
 	@Override
 	public List<AffJobTitleHistory> getByEmployeeListPeriod(List<String> employeeIds, DatePeriod period) {
-		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = this.queryProxy()
-				.query(GET_BY_EMPIDS_PERIOD, BsymtAffJobTitleHist.class).setParameter("lstSid", employeeIds)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+		
+		List<BsymtAffJobTitleHist> entities = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
+			List<BsymtAffJobTitleHist> subEntities = this.queryProxy()
+					.query(GET_BY_EMPIDS_PERIOD, BsymtAffJobTitleHist.class).setParameter("lstSid", subIds)
+					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList();
+			
+			entities.addAll(subEntities);
+		});
+		
+		Map<String, List<BsymtAffJobTitleHist>> entitiesByEmployee = entities.stream()
 				.collect(Collectors.groupingBy(x -> x.sid));
 
 		String companyId = AppContexts.user().companyId();
@@ -273,5 +315,49 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 						new DatePeriod(ent.strDate, ent.endDate)))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	@SneakyThrows
+	public Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate) {
+
+		PreparedStatement statement = this.connection().prepareStatement(
+				"select * from BSYMT_AFF_JOB_HIST h"
+				+ " inner join BSYMT_AFF_JOB_HIST_ITEM i"
+				+ " on h.HIST_ID = i.HIST_ID"
+				+ " where h.SID = ?"
+				+ " and h.START_DATE <= ?"
+				+ " and h.END_DATE >= ?");
+		
+		statement.setString(1, employeeId);
+		statement.setDate(2, Date.valueOf(baseDate.localDate()));
+		statement.setDate(3, Date.valueOf(baseDate.localDate()));
+		
+		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+			return new SingleHistoryItem(
+					rec.getString("SID"),
+					rec.getString("HIST_ID"),
+					new DatePeriod(
+							rec.getGeneralDate("START_DATE"),
+							rec.getGeneralDate("END_DATE")),
+					rec.getString("JOB_TITLE_ID"),
+					rec.getString("NOTE")
+					);
+		});
+	}
+
+	// request list 515
+	@Override
+	public Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate, String cid) {
+		List<BsymtAffJobTitleHist> listEntity =  this.queryProxy().query(GET_BY_DATE, BsymtAffJobTitleHist.class)
+								.setParameter("date", baseDate)
+								.setParameter("cid", cid)
+								.getList();
+		if (!listEntity.isEmpty()) {
+			return Optional.of(toAffJobTitleHist(listEntity));
+		}
+		return Optional.empty();
+	}
+
+
 
 }

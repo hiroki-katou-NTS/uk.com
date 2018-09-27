@@ -28,6 +28,14 @@ public interface SpecialHolidayFrameRepository {
 	Optional<SpecialHolidayFrame> findHolidayFrameByCode(String companyId, int frameNo);
 	
 	/**
+	 * 
+	 * @param companyId
+	 * @param frameNos
+	 * @return
+	 */
+	List<SpecialHolidayFrame> findHolidayFrameByListFrame(String companyId, List<Integer> frameNos);
+	
+	/**
 	 * Update the Special Holiday Frame.
 	 *
 	 * @param specialHolidayFrame the Special Holiday Frame

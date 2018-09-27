@@ -41,53 +41,32 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 	private GrantRemainRegisterType registerType;
 	// 明細
 	private SpecialLeaveNumberInfo details;
-
+	
 	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId, String cid, String employeeId,
 			int specialLeaveCode, GeneralDate grantDate, GeneralDate deadlineDate, int expirationStatus,
 			int registerType, BigDecimal dayNumberOfGrant, Integer timeOfGrant, BigDecimal dayNumberOfUse,
 			Integer timeOfUse, BigDecimal useSavingDays, BigDecimal numberOverdays, Integer timeOver,
-			BigDecimal dayNumberOfRemain, Integer timeOfRemain) {
-		if (grantDate == null && deadlineDate == null && dayNumberOfGrant == null && timeOfGrant == null
-				&& dayNumberOfUse == null && timeOfUse == null && useSavingDays == null && numberOverdays == null
-				&& timeOver == null && dayNumberOfRemain == null && timeOfRemain == null)
-			return null;
-		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+			BigDecimal dayNumberOfRemain, Integer timeOfRemain , String grantDateItemName , String deadlineDateItemName) {
 
-		if (dayNumberOfGrant != null || dayNumberOfUse != null || dayNumberOfRemain != null) {
-			if (deadlineDate == null && grantDate == null) {
-				throw new BusinessException("Msg_925", "付与日, 期限日");
-			}
-		}
-
-		if (grantDate != null && deadlineDate != null) {
-			// 付与日＞使用期限の場合はエラー #Msg_1023
-			if (grantDate.compareTo(deadlineDate) > 0) {
-				throw new BusinessException("Msg_1023");
-			}
-		}
-
-		if (grantDate == null && deadlineDate != null) {
-			throw new BusinessException("Msg_925", "付与日");
-		}
-		if (deadlineDate == null && grantDate != null) {
-			throw new BusinessException("Msg_925", "期限日");
-		}
-
-		domain.specialId = specialId;
-		domain.cId = cid;
-		domain.employeeId = employeeId;
-		domain.specialLeaveCode = new SpecialVacationCD(specialLeaveCode);
-		domain.grantDate = grantDate;
-		domain.deadlineDate = deadlineDate;
-		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-
-		domain.details = new SpecialLeaveNumberInfo(dayNumberOfGrant, timeOfGrant, dayNumberOfUse, timeOfUse,
-				useSavingDays, numberOverdays, timeOver, dayNumberOfRemain, timeOfRemain);
-
-		return domain;
+		boolean check = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays,
+				dayNumberOfRemain , grantDateItemName , deadlineDateItemName);
+		if (check) {
+			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+			domain.specialId = specialId;
+			domain.cId = cid;
+			domain.employeeId = employeeId;
+			domain.specialLeaveCode = new SpecialVacationCD(specialLeaveCode);
+			domain.grantDate = grantDate;
+			domain.deadlineDate = deadlineDate;
+			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
+			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+			domain.details = new SpecialLeaveNumberInfo(dayNumberOfGrant, timeOfGrant, dayNumberOfUse, timeOfUse,
+					useSavingDays, numberOverdays, timeOver, dayNumberOfRemain, timeOfRemain);
+			return domain;
+		} 
+		return null;
 	}
-
+	
 	public static SpecialLeaveGrantRemainingData createFromJavaType(String specialId, String cid, String employeeId,
 			int specialLeaveCode, GeneralDate grantDate, GeneralDate deadlineDate, int expirationStatus,
 			int registerType, double dayNumberOfGrant, Integer timeOfGrant, double dayNumberOfUse, Integer timeOfUse,
@@ -109,4 +88,43 @@ public class SpecialLeaveGrantRemainingData extends AggregateRoot {
 		return domain;
 	}
 
+	
+
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
+			BigDecimal dayNumberOfRemain , String grantDateItemName ,String deadlineDateItemName) {
+		boolean isNull = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays, dayNumberOfRemain);
+		if (dayNumberOfGrant != null || dayNumberOfUse != null || dayNumberOfRemain != null) {
+			if (deadlineDate == null || grantDate == null) {
+				if (grantDate == null) {
+					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
+				}
+				if (deadlineDate == null) {
+					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
+				}
+			}
+		}
+		if (grantDate == null && deadlineDate != null) {
+			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
+		}
+		if (deadlineDate == null && grantDate != null) {
+			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
+		}
+		if (grantDate != null && deadlineDate != null) {
+			// 付与日＞使用期限の場合はエラー #Msg_1023
+			if (grantDate.compareTo(deadlineDate) > 0) {
+				throw new BusinessException("Msg_1023");
+			}
+		}
+		return isNull;
+	}
+	
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
+			BigDecimal dayNumberOfRemain) {
+		if (grantDate == null && deadlineDate == null && dayNumberOfGrant == null && dayNumberOfUse == null
+				&& numberOverdays == null && dayNumberOfRemain == null)
+			return false;
+		return true;
+	} 
 }

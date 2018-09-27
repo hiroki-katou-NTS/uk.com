@@ -43,9 +43,9 @@
 
 				<button class="goout" id="A_BTN_JUMP"
 					data-bind="click:OpenCPS017, enable: checkCreate()==false"
-					tabindex="6">#{i18n.getText('CPS016_23')}</button>
+					tabindex="5">#{i18n.getText('CPS016_23')}</button>
 
-				<button tabindex="5" id="A_BTN_CPS016_4"
+				<button tabindex="6" id="A_BTN_CPS016_4"
 					data-bind="click: closeDialog, visible: isDialog ">#{i18n.getText('CPS016_4')}</button>
 
 			</div>
@@ -56,9 +56,9 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
 						<div style="float: left">
-							<div style="width: 395px"
+							<div style="width: 395px" tabindex="7"
 								data-bind="ntsSearchBox: {       
-   									searchMode: 'filter',       
+   									searchMode: 'highlight',       
    									targetKey: 'selectionItemId',        
    									comId: 'single-list',       
    									items: listItems,        
@@ -69,15 +69,14 @@
    									fields: ['selectionItemName'],        
    									mode: 'igGrid'       
    									}" />
-							<table id="single-list"
+							<table id="single-list" tabindex="8"
 								data-bind="ntsGridList: {
 									height: 490,
 									options: listItems,
 									primaryKey: 'selectionItemId',
-									showNumbering:false,
 									columns: [
 						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 340 }
+						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 340, formatter: _.escape }
 						            ],
 									multiple: false,
 									value: perInfoSelectionItem().selectionItemId}">
@@ -90,7 +89,7 @@
 						<div class="row">
 							<div class="coll"
 								data-bind="ntsFormLabel: {  constraint: 'SelectionItemName',required: true }">#{i18n.getText('CPS016_8')}</div>
-							<input id='selectionItemName' style="width: 320px;"
+							<input id='selectionItemName' tabindex="9" style="width: 320px;"
 								data-bind="ntsTextEditor: {
 									name: '#[CPS016_10]',
 									value: selectionItemName,
@@ -103,7 +102,7 @@
 
 						<div class="row" >
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_11')}</div>
-							<div class="cf"
+							<div class="cf" tabindex="10"
 								data-bind="ntsSwitchButton: {
 											options: $parents[0].rulesFirst,
 											optionsValue: 'id',
@@ -116,7 +115,7 @@
 						<div class="row">
 							<div class="coll"
 								data-bind="ntsFormLabel: {constraint: 'SelectionCodeLength', required: true }">#{i18n.getText('CPS016_13')}</div>
-							<input style="width: 20px;"
+							<input style="width: 20px;" tabindex="11"
 								data-bind="ntsNumberEditor :{
 									name: '#[CPS016_14]',
 									value: codeLength,
@@ -130,7 +129,7 @@
 						<div class="row" >
 							<div class="coll"
 								data-bind="ntsFormLabel: {constraint: 'SelectionNameLength', required: true }">#{i18n.getText('CPS016_15')}</div>
-							<input style="width: 20px;"
+							<input style="width: 20px;" tabindex="12"
 								data-bind="ntsNumberEditor : {
 									name: '#[CPS016_15]',
 									value: nameLength,
@@ -144,7 +143,7 @@
 						<div class="row">
 							<div class="coll"
 								data-bind="ntsFormLabel: {constraint: 'SelectionExternalCDLength', required: true }">#{i18n.getText('CPS016_17')}</div>
-							<input style="width: 20px;"
+							<input style="width: 20px;" tabindex="13"
 								data-bind="ntsNumberEditor : {
 									name: '#[CPS016_18]',
 									value: extraCodeLength,
@@ -156,15 +155,9 @@
 						</div>
 
 						<div class="row">
-							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_24')}</div>
-							<div
-								data-bind="ntsCheckBox: { checked: shareChecked , enable: $parents[0].checkCreate }">グループ会社で共有する</div>
-						</div>
-
-						<div class="row">
 							<div class="coll"
 								data-bind="ntsFormLabel: {constraint: 'IntegrationCode',  required: false }">#{i18n.getText('CPS016_19')}</div>
-							<input style="width: 20px;"
+							<input style="width: 20px;" tabindex="14"
 								data-bind="ntsTextEditor: {
 									name: '#[CPS016_20]',
 									value: integrationCode,
@@ -180,7 +173,7 @@
 								data-bind="ntsFormLabel: {constraint: 'Memo', required: false }">
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
-							<textarea style="width: 330px; height: 80px;"
+							<textarea style="width: 330px; height: 80px;" tabindex="15"
 								data-bind="ntsMultilineEditor: { name: '#[CPS016_22]',value: memo , constraint: 'Memo',required: false}" />
 						</div>
 					</div>

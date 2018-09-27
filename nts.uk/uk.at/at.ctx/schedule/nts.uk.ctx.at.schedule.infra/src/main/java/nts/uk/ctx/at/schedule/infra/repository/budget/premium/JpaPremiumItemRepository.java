@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItem;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
@@ -71,10 +76,26 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public List<PremiumItem> findAllIsUse (String companyID) {
-		return this.queryProxy().query(FIND_ALL_IS_USE, KmnmtPremiumItem.class)
-				.setParameter("CID", companyID)
-				.setParameter("useAtr", UseAttribute.Use.value)
-				.getList(x -> convertToDomain(x));
+//		return this.queryProxy().query(FIND_ALL_IS_USE, KmnmtPremiumItem.class)
+//				.setParameter("CID", companyID)
+//				.setParameter("useAtr", UseAttribute.Use.value)
+//				.getList(x -> convertToDomain(x));
+		
+		try {val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?");
+			statement.setString(1, companyID);
+			statement.setInt(2, UseAttribute.Use.value);
+			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KmnmtPremiumItem();
+				entity.kmnmpPremiumItemPK = new KmnmpPremiumItemPK();
+				entity.kmnmpPremiumItemPK.companyID = companyID;
+				entity.kmnmpPremiumItemPK.displayNumber = rec.getInt("PREMIUM_NO");
+				entity.useAtr = UseAttribute.Use.value;
+				entity.name = rec.getString("PREMIUM_NAME");
+				return entity;
+			}).stream().map(e -> convertToDomain(e)).collect(Collectors.toList());
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**

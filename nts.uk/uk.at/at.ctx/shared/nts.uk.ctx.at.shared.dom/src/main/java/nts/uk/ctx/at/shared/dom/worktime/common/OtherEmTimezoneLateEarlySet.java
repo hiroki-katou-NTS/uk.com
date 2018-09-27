@@ -60,4 +60,19 @@ public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject {
 		memento.setRecordTimeRoundingSet(this.recordTimeRoundingSet);
 		memento.setLateEarlyAtr(this.lateEarlyAtr);
 	}
+	
+	/**
+	 * 丸め設定を取得する
+	 * 引数によって、控除か計上のどちらの丸めを取得したか判断する
+	 * @param isDeduction　控除である
+	 * @return　丸め設定
+	 */
+	public TimeRoundingSetting getRoundingSetByDedAtr(boolean isDeduction) {
+		if(isDeduction) {
+			return delTimeRoundingSet;
+		}
+		else {
+			return recordTimeRoundingSet;
+		}
+	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
  * 打刻漏れ
@@ -49,41 +51,62 @@ public class LackOfStampingAlgorithm {
 				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) {
-					if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
-							&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
-							&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
+					if (timeLeavingWork.getLeaveStamp() != null 
+							&& timeLeavingWork.getLeaveStamp().isPresent()
 							&& timeLeavingWork.getAttendanceStamp() != null
-							&& timeLeavingWork.getAttendanceStamp().isPresent()
-							&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
-							&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()) {
-						WorkStamp leavingStamp = timeLeavingWork.getLeaveStamp().get().getStamp().get();
-						WorkStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().get().getStamp().get();
-						if (leavingStamp != null && attendanceStamp == null) {
+							&& timeLeavingWork.getAttendanceStamp().isPresent()) {
+						Optional<WorkStamp> leavingStamp = timeLeavingWork.getLeaveStamp().get().getStamp();
+						Optional<WorkStamp> attendanceStamp = timeLeavingWork.getAttendanceStamp().get().getStamp();
+						if (leavingStamp.isPresent() && !attendanceStamp.isPresent()) {
 							if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(31);
 							} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(41);
 							}
-						} else if (leavingStamp == null && attendanceStamp != null) {
+						} else if (!leavingStamp.isPresent() && attendanceStamp.isPresent()) {
 							if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(34);
 							} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(44);
 							}
-						} else if (leavingStamp == null && attendanceStamp == null) {
+						} else if (!leavingStamp.isPresent() && !attendanceStamp.isPresent()) {
 							if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(31);
 								attendanceItemIDList.add(34);
 							} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(41);
 								attendanceItemIDList.add(44);
+							}
+						} else if (leavingStamp.isPresent() && attendanceStamp.isPresent()){
+							TimeWithDayAttr leavingTimeWithDay = leavingStamp.get().getTimeWithDay();
+							TimeWithDayAttr attendanceTimeWithDay = attendanceStamp.get().getTimeWithDay();
+							if (leavingTimeWithDay != null && attendanceTimeWithDay == null) {
+								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+									attendanceItemIDList.add(31);
+								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+									attendanceItemIDList.add(41);
+								}
+							} else if (leavingTimeWithDay == null && attendanceTimeWithDay != null) {
+								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+									attendanceItemIDList.add(34);
+								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+									attendanceItemIDList.add(44);
+								}
+							} else if (leavingTimeWithDay == null && attendanceTimeWithDay == null) {
+								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+									attendanceItemIDList.add(31);
+									attendanceItemIDList.add(34);
+								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+									attendanceItemIDList.add(41);
+									attendanceItemIDList.add(44);
+								}
 							}
 						}
 					}
 				}
 				if (!attendanceItemIDList.isEmpty()) {
-					employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID,
-							processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+					employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
+							new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
 				}
 			}
 		}

@@ -20,7 +20,7 @@
 		</div>
 		<div class="mg-bot-10">
 			<button data-bind="click: createNewLine">#{i18n.getText('KAL003_203')}</button>
-			<button data-bind="click: deleteLine">#{i18n.getText('KAL003_204')}</button>
+			<button data-bind="click: deleteLine, enable : checkUseAtr">#{i18n.getText('KAL003_204')}</button>
 		</div>
 		<table id="fixed-table-agreement-hour">
 			<colgroup>
@@ -31,10 +31,10 @@
 			</colgroup>
 			<thead>
 				<tr>
-					<th class="ui-widget-header">#{i18n.getText('KAL003_205')}</th>
-					<th class="ui-widget-header">#{i18n.getText('KAL003_206')}</th>
-					<th class="ui-widget-header">#{i18n.getText('KAL003_207')}</th>
-					<th class="ui-widget-header">#{i18n.getText('KAL003_208')}</th>
+					<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('KAL003_205')}</th>
+					<th class="ui-widget-header" >#{i18n.getText('KAL003_206')}</th>
+					<th class="ui-widget-header" >#{i18n.getText('KAL003_207')}</th>
+					<th class="ui-widget-header" >#{i18n.getText('KAL003_208')}</th>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: listAgreementHour()">

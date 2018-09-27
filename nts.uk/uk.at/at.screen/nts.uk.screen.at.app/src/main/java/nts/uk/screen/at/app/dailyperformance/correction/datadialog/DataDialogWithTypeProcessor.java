@@ -184,10 +184,10 @@ public class DataDialogWithTypeProcessor {
 			if (param.getItemId() != null && param.getItemId() == 28 && !param.getSelectCode().equals("")) {
 				AffEmploymentHistoryDto aff = repo.getAffEmploymentHistory(companyId, param.getEmployeeId(),
 						new DateRange(null, param.getDate()));
-				return this.getDutyType(companyId, param.getValueOld(), aff == null ? "" : aff.getEmploymentCode())
+				return this.getDutyType(companyId, param.getSelectCode(), aff == null ? "" : aff.getEmploymentCode())
 						.getCodeNames();
 			} else {
-				this.getDutyTypeAll(companyId);
+				return this.getDutyTypeAll(companyId).getCodeNames();
 			}
 		case 2:
 			// KDL001
@@ -215,7 +215,7 @@ public class DataDialogWithTypeProcessor {
 		}
 	}
 
-	public Map<Integer, Map<String, String>> getAllCodeName(List<Integer> types, String companyId) {
+	public Map<Integer, Map<String, CodeName>> getAllCodeName(List<Integer> types, String companyId, GeneralDate date) {
 		return types.stream().collect(Collectors.toMap(type -> type, type -> {
 			switch (type) {
 			case 1:
@@ -231,14 +231,14 @@ public class DataDialogWithTypeProcessor {
 				// KDL032
 				return new HashMap<>();
 			case 5:
-				// CDL008
-				return new HashMap<>();
+				// CDL008 WPL
+				return toMapID(this.getWorkPlace(companyId, date).getCodeNames());
 			case 6:
 				// KCP002
 				return toMap(this.getClassification(companyId).getCodeNames());
 			case 7:
-				// KCP003
-				return new HashMap<>();
+				// KCP003 POS
+				return toMapID(this.getPossition(companyId, date).getCodeNames());
 			case 8:
 				// KCP001
 				return toMap(this.getEmployment(companyId).getCodeNames());
@@ -248,11 +248,16 @@ public class DataDialogWithTypeProcessor {
 		}));
 	}
 
-	private Map<String, String> toMap(List<CodeName> codeNames) {
+	private Map<String, CodeName> toMap(List<CodeName> codeNames) {
 		return codeNames.stream().filter(distinctByKey(x -> x.getCode()))
-				.collect(Collectors.toMap(x -> x.getCode(), x -> x.getName()));
+				.collect(Collectors.toMap(x -> x.getCode(), x -> x));
 	}
 
+	private Map<String, CodeName> toMapID(List<CodeName> codeNames) {
+		return codeNames.stream().filter(distinctByKey(x -> x.getId()))
+				.collect(Collectors.toMap(x -> x.getId(), x -> x));
+	}
+	
 	public Optional<CodeName> getCodeNameWithId(int type, GeneralDate date, String id) {
 		String companyId = AppContexts.user().companyId();
 		if (type == TypeLink.POSSITION.value) {

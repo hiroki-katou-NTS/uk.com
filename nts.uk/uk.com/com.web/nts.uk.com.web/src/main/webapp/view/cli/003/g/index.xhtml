@@ -79,11 +79,24 @@
 							<tr>
 								<td><div id="G3_7" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_37')}</div></td>
 								<td>
-									<div id="G3_8" tabindex="9" data-bind="ntsComboBox: {
+									<div id="G3_8_1" tabindex="9" data-bind="ntsComboBox: {
 									options: dataTypeList,
 									optionsValue: 'code',
 									visibleItemsCount: 10,
 									value: dataType,
+									optionsText: 'name',
+									editable: false,
+									enable: enableDataType,
+									required: true,
+									columns: [	
+										{ prop: 'name', length: 10 },
+									]}"></div>
+									
+									<div id="G3_8_2" tabindex="9" data-bind="ntsComboBox: {
+									options: dataTypeListEmpty,
+									optionsValue: 'code',
+									visibleItemsCount: 10,
+									value: dataTypeEmpty,
 									optionsText: 'name',
 									editable: false,
 									enable: enableDataType,

@@ -6,6 +6,8 @@ module nts.uk.at.view.kmk011.f {
     import CreateHistoryCommand = nts.uk.at.view.kmk011.f.model.CreateComHistoryCommand;
     import CreateWkTypeHistoryCommand = nts.uk.at.view.kmk011.f.model.CreateWkTypeHistoryCommand;
     
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             //date range
@@ -50,11 +52,13 @@ module nts.uk.at.view.kmk011.f {
             }
             
             public execution() : JQueryPromise<any> {
+                blockUI.grayout();
                 let _self = this;
                 var dfd = $.Deferred<any>();
                 
                 // prevent if have any error
                 if(_self.hasError()){
+                    blockUI.clear();
                     return;    
                 }
                 
@@ -71,9 +75,11 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                 nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
+                            }).always(() => {
+                                blockUI.clear();    
                             });
-                        } else {1
+                        } else {
                             var data = new CreateHistoryCommand(null,moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), 1);
                             service.saveComHist(data).done(() => {
                                  nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -81,7 +87,9 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});  
+                            }).always(() => {
+                                blockUI.clear();    
                             });
                         }
                         break;
@@ -96,7 +104,9 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
+                            }).always(() => {
+                                blockUI.clear();    
                             });
                         } else {
                             let data1 = new CreateWkTypeHistoryCommand(workTypeCode, null, moment(_self.startDate()).format('YYYY/MM/DD'), moment(_self.endDate()).format('YYYY/MM/DD'), 1);
@@ -106,7 +116,9 @@ module nts.uk.at.view.kmk011.f {
                                     nts.uk.ui.windows.close();
                                  });
                             }).fail((res: any) => {
-                                  _self.showMessageError(res);  
+                                nts.uk.ui.dialog.alertError({ messageId: res.errors[0].messageId});
+                            }).always(() => {
+                                blockUI.clear();    
                             });
                         }
                         break;      

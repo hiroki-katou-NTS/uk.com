@@ -14,11 +14,12 @@
 			<div id="wkp-list"></div>
 		</div>
 		<div id="right-content" data-bind="with: selectedSetting">
-			<div class="row">
+			<div class="row" style = "margin-top: 20px; margin-bottom: 10px;">
 			    <div data-bind="visible: !!$vmm.selectVer27(),ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/></div>
 			    <span data-bind="visible: !!$vmm.selectVer27(), text: wkpName"></span>
 		   </div>
-			<div class="row">
+		   <!-- update ver38 theo bug 97952 -->
+			<!-- <div class="row">
 				<div data-bind="ntsFormLabel: {}" style="margin: 10px 0 10px 0;">#{i18n.getText('KAF022_282')}</div>
 				<div class="cf"
 					data-bind="ntsSwitchButton: {
@@ -28,7 +29,7 @@
 							value: selectionFlg,
 							enable: true
 						}"></div>
-			</div>
+			</div> -->
 			<table id="fixed-table-wkp-setting">
 				<colgroup>
 					<col width="140px" />
@@ -43,7 +44,7 @@
 						<th class="color-header">#{i18n.getText('KAF022_19')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_283')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_284')}</th>
-						<th class="color-header">#{i18n.getText('KAF022_285')}</th>
+						<th class="color-header" data-bind="text: $vmm.textKAF022_285"></th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: approvalFunctionSettingDtoLst">

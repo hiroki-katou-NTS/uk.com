@@ -16,6 +16,20 @@ public class JpaResultLogDeletionRepository extends JpaRepository implements Res
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtResultLogDeletion f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.sspdtResultLogDeletionPK.delId = :delId ";
+	
+	private static final String GET_MAX = "SELECT MAX(f.sspdtResultLogDeletionPK.seqId) "
+			+ " FROM SspdtResultLogDeletion f WHERE f.sspdtResultLogDeletionPK.delId = :delId ";
+	 
+	@Override
+	public int getMaxSeqId(String delId) {
+		 Object max = this.queryProxy().query(GET_MAX, Object.class)
+					.setParameter("delId", delId).getSingleOrNull();
+		 if(max == null) {
+			 return 0;
+		 }else {
+			 return (int)max;
+		 }
+	 }
 
 	@Override
 	public List<ResultLogDeletion> getAllResultLogDeletion() {

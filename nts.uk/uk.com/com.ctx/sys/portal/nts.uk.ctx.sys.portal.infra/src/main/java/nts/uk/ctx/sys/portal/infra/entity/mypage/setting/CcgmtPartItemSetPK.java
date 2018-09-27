@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class CcgmtPartItemSetPK implements Serializable {
-	
+
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 

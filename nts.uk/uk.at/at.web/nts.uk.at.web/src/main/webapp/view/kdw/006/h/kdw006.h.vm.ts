@@ -18,7 +18,16 @@ module nts.uk.at.view.kdw006.h.viewmodel {
             this.currentCodeList = ko.observableArray([]);
             
             let listAppType = __viewContext.enums.ApplicationType;
-            _.forEach(listAppType, (obj) => {
+            let inviData = [5, 8, 9, 10, 11, 12, 13, 14, 16, 17];
+            let listAppType2 = _.filter(listAppType, function (item) {  return item.value == 0 || item.value == 1
+            || item.value == 2
+                || item.value == 3
+                || item.value == 4
+                || item.value == 6
+                || item.value == 7
+                || item.value == 15;});
+            
+            _.forEach(listAppType2, (obj) => {
                 self.items.push(new ItemModel(obj.value, obj.name));
             });
         }

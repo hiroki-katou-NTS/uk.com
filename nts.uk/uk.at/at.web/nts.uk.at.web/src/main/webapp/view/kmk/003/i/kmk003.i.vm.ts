@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk003.i {
                 _self.dataObject = null;
                 _self.isFlow = ko.observable(null);
                 
-                _self.delFromEmTime = ko.observable(false);
+                _self.delFromEmTime = ko.observable(true);
                 _self.lateStampExactlyTimeIsLateEarly = ko.observable(false);
                 _self.leaveEarlyStampExactlyTimeIsLateEarly = ko.observable(false);
                 _self.lateGraceTime = ko.observable(0);

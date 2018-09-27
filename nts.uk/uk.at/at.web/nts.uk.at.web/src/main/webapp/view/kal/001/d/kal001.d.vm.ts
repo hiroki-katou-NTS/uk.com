@@ -8,7 +8,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
 
     export class ScreenModel {
         // dialog mode
-        dialogMode: KnockoutObservable<boolean>;
+        dialogMode: KnockoutObservable<number>;
         isInterrupt: KnockoutObservable<boolean>;
         isExtracting: KnockoutObservable<boolean>;
         extractingFlg: KnockoutObservable<boolean>;
@@ -25,8 +25,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // D1_12
         timeStartStr: KnockoutObservable<string>;
 
-        numberEmpSuccess: number;
-        numberEmpSuccessStr: KnockoutObservable<string>;
+        numberEmpSuccess: KnockoutObservable<number>;
         totalEmployees: KnockoutObservable<number>;
         employeeErrors: KnockoutObservableArray<String>;
         strPersion: KnockoutObservable<String> = ko.observable("人");
@@ -40,6 +39,8 @@ module nts.uk.com.view.kal001.d.viewmodel {
         selectedEmpployee: Array<UnitModel>;
         listAlarmExtraValueWkReDto: KnockoutObservableArray<AlarmExtraValueWkReDto>;
         countLoop: number = 0;
+        taskId : KnockoutObservable<string> = ko.observable("");
+        processExtraId : KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -48,10 +49,9 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.timeEnd = ko.observable("");
             self.timeProcess = ko.observable("");
             self.timeStartStr = ko.observable("");
-            self.numberEmpSuccessStr = ko.observable("0");
             self.totalEmployees = params.totalEmpProcess;
-            self.numberEmpSuccess = 0;
-            self.dialogMode = ko.observable(true);
+            self.numberEmpSuccess = ko.observable(0);
+            self.dialogMode = ko.observable(AlarmExtraStatus.PROCESSING);
             
             self.timeStartStr = ko.observable(moment(new Date()).format("YYYY/MM/DD H:mm"));
 
@@ -63,20 +63,45 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.isInterrupt = ko.observable(false);
             self.extractingFlg = ko.observable(false);
             self.isExtracting = ko.observable(false);
-
+            self.processExtraId = ko.observable("");
             //process alam list 
             //code process screen A
+            let start = performance.now();
             block.invisible();
             service.isExtracting().done((isExtracting: boolean) => {
                 if (isExtracting) {
                     self.extractingFlg = ko.observable(isExtracting);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });
-                    self.setFinished();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_993" }).then(function() {
+                        nts.uk.ui.windows.close();
+                    });
                     block.clear();
                     return;
                 }
                 service.extractStarting().done((statusId: string) => {
-                    self.handGetInforLoop(statusId);
+                    console.log("time service 2  : "+(performance.now() -start).toString());
+                    self.processExtraId(statusId);
+                    service.extractAlarm(self.taskId, self.numberEmpSuccess, statusId, self.listSelectedEmpployee, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                        console.log("time service 3  : "+(performance.now() -start).toString());
+                        let status =  dataExtractAlarm.extracting == true ? AlarmExtraStatus.END_ABNORMAL : AlarmExtraStatus.END_NORMAL;
+                        // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
+                        let extraParams = {
+                            processStatusId: statusId,
+                            status: status
+                        };
+                        service.extractFinished(extraParams);
+                        if(dataExtractAlarm.extracting) {
+                           self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
+                        } 
+                        if (!dataExtractAlarm.nullData) {
+                            self.listAlarmExtraValueWkReDto = dataExtractAlarm.extractedAlarmData;
+                        }
+                        self.dialogMode(status);
+                        self.setFinished();
+                    }).fail((errorExtractAlarm)=>{
+                        alertError(errorExtractAlarm);
+                    }).always(()=>{
+                        block.clear();    
+                    });
                 }).fail((errorExtractAlarm) => {
                     block.clear();
                     alertError(errorExtractAlarm);
@@ -95,69 +120,29 @@ module nts.uk.com.view.kal001.d.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process 
-            
-            self.interval = setInterval(() => self.countTime(), 1000);
+            self.interval = setInterval(self.countTime, 1000, self);
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();
         }
         
-         public countTime(): void {
-            let self = this;
-                
+         public countTime(self): void {
             // F2_1_2 set time over 
-            self.timeNow = new Date();
-            let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+            let timeNow = new Date();
+            let over = (timeNow.getSeconds()+timeNow.getMinutes()*60+ timeNow.getHours()*60*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60*60); 
             let time = new Date(null);
             time.setSeconds(over); // setting value for SECONDS here
             let result = time.toISOString().substr(11, 8);
             self.timeProcess(result);
         }
-        
-        public handGetInforLoop(statusId : string): void {
-            let self = this;
-            let item = self.listSelectedEmpployee[self.countLoop]; 
-            self.selectedEmpployee = ko.observableArray<UnitModel>([]);
-            self.selectedEmpployee.push(item);
-            self.getInformationExtracyAlarm(self.selectedEmpployee(), statusId, item, self.countLoop);
-        }
-        
-        public getInformationExtracyAlarm(selectedEmpployeeList: Array<UnitModel>, statusId: string, empObject: UnitModel, countLoop: number): void {
-            let self = this;
-            // Count employee
-            self.numberEmpSuccess = self.numberEmpSuccess + 1;
-            self.numberEmpSuccessStr(self.numberEmpSuccess);
-            // Get information
-            service.extractAlarm(selectedEmpployeeList, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto) => {
-                service.extractFinished(statusId);
-                if (dataExtractAlarm.extracting) {
-                    self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
-                }
-                if (!dataExtractAlarm.nullData) {
-                    _.forEach(dataExtractAlarm.extractedAlarmData, function(item: AlarmExtraValueWkReDto) {
-                        self.listAlarmExtraValueWkReDto.push(item);
-                    });
-                }
-
-            }).fail((errorExtractAlarm) => {
-                self.employeeErrors.push(empObject.id);
-
-            }).always(() => {
-                if (countLoop == self.totalEmployees - 1) {
-                    self.setFinished();
-                } else if (!self.isInterrupt()) {
-                    self.countLoop++;
-                    self.handGetInforLoop(statusId);
-                }
-            });
-            
-        }
+ 
         // process when click button interrupt
         public interrupt(): void {
             let self = this;
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_835" })
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
-                    self.isInterrupt=ko.observable(true);
+                    nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                    self.dialogMode(AlarmExtraStatus.INTERRUPT);
                     self.setFinished();
                 })
                 .ifNo(() => {
@@ -168,25 +153,25 @@ module nts.uk.com.view.kal001.d.viewmodel {
         // set time now
         public setFinished(): void {
             let self = this;
-            if (self.numberEmpSuccess == self.totalEmployees) {
+            if (self.numberEmpSuccess() == self.totalEmployees) {
                 self.displayStrFinish(true);
             }
             window.clearInterval(self.interval);
             self.timeEnd(moment(new Date()).format("YYYY/MM/DD H:mm"));
-            self.dialogMode(false);
-
         }
-
-        //  process when click button closePopup 
-        closePopup() {
+        //  Process when click button Confirm process 
+        confirmProcess() {
             let self = this;
-            
             let params = {
                 extractingFlg : self.extractingFlg(),
                 isExtracting : self.isExtracting(),
-                listAlarmExtraValueWkReDto : self.listAlarmExtraValueWkReDto()
+                listAlarmExtraValueWkReDto : self.listAlarmExtraValueWkReDto
             };
             nts.uk.ui.windows.setShared("KAL001_D_PARAMS",params);
+            close();
+        }
+        //  process when click button closePopup 
+        closePopup() {
             close();
         }
     }
@@ -334,7 +319,12 @@ module nts.uk.com.view.kal001.d.viewmodel {
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
-
+    export enum AlarmExtraStatus {
+        END_NORMAL = 0,   /**正常終了*/
+        END_ABNORMAL = 1, /**異常終了*/
+        PROCESSING = 2,   /**処理中*/
+        INTERRUPT = 3,    /**中断*/
+    }
 }
 
 

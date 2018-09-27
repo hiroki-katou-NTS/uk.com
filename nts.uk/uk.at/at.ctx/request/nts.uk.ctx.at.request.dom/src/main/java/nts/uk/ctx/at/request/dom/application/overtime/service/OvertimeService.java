@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
@@ -49,4 +50,11 @@ public interface OvertimeService {
 	
 	
 	void CreateOvertime(AppOverTime domain, Application_New newApp);
+	
+	/**
+	 * 起動時の36協定時間の状態を取得する
+	 * @param appOvertimeDetail
+	 * @return
+	 */
+	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail);
 }

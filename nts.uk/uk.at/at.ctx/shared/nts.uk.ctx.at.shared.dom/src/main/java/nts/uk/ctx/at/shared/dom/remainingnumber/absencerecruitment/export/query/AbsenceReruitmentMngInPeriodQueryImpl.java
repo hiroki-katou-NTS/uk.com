@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,9 +48,9 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
 		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
-		List<AbsRecDetailPara> lstAbsRec = this.getAbsOfUnOffset(paramInput.getCid(), paramInput.getSid());		
+		List<AbsRecDetailPara> lstAbsRec = this.getAbsOfUnOffset(paramInput.getCid(), paramInput.getSid(), paramInput.getDateData().start());		
 		//アルゴリズム「未使用の振出(確定)を取得する」を実行する
-		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec);
+		lstAbsRec = this.getUnUseDaysConfirmRec(paramInput.getCid(), paramInput.getSid(), lstAbsRec, paramInput.getDateData().start());
 		//繰越数を計算する
 		double carryForwardDays = this.calcCarryForwardDays(paramInput.getDateData().start(), lstAbsRec);		
 		//アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
@@ -57,7 +58,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		lstAbsRec = this.lstInterimInfor(paramInput, lstAbsRec);
 		//「振出振休明細」をソートする 
 		lstAbsRec = lstAbsRec.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? 
-				a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().isPresent() ? b.getYmdData().getDayoffDate().get() : GeneralDate.max())
+				a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().isPresent() ? b.getYmdData().getDayoffDate().get() 
+						: GeneralDate.max())
 				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
 		//アルゴリズム「時系列順で相殺する」を実行する
 		lstAbsRec = this.offsetSortTimes(lstAbsRec);		
@@ -67,20 +69,25 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		AbsDaysRemain remainUnDigestedDays = this.getRemainUnDigestedDays(lstAbsRec, paramInput.getBaseDate());
 		//発生数・使用数を計算する
 		AbsDaysRemain occurrenceUseDays= this.getOccurrenceUseDays(lstAbsRec, paramInput.getDateData());
+		List<PauseError> lstError = new ArrayList<>();
+		if(remainUnDigestedDays.getRemainDays() < 0) {
+			lstError.add(PauseError.PAUSEREMAINNUMBER);
+		}
 		AbsRecRemainMngOfInPeriod outputData = new AbsRecRemainMngOfInPeriod(lstAbsRec,
 				remainUnDigestedDays.getRemainDays(), 
 				remainUnDigestedDays.getUnDigestedDays(),
 				occurrenceUseDays.getRemainDays(),
 				occurrenceUseDays.getUnDigestedDays(),
-				carryForwardDays);
+				carryForwardDays,
+				lstError);
 		return outputData;
 	}
 
 	@Override
-	public List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid) {
+	public List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid, GeneralDate ymd) {
 		List<AbsRecDetailPara> lstOutput = new ArrayList<>();
 		//アルゴリズム「確定振休から未相殺の振休を取得する」を実行する
-		List<SubstitutionOfHDManagementData> lstUnOffsetDays = this.getAbsOfUnOffsetFromConfirm(cid, sid);
+		List<SubstitutionOfHDManagementData> lstUnOffsetDays = this.getAbsOfUnOffsetFromConfirm(cid, sid, ymd);
 		if(lstUnOffsetDays.isEmpty()) {
 			return lstOutput;
 		}
@@ -95,10 +102,18 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 		return lstOutput;
 	}
 	@Override
-	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid) {
+	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid, GeneralDate ymd) {
 		// ドメインモデル「振休管理データ」
-		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBysiD(cid, sid);		
-		return lstAbsConfirmData.stream().filter(x -> x.getRemainDays().v() > 0).collect(Collectors.toList());
+		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBysiD(cid, sid);
+		List<SubstitutionOfHDManagementData> lstOutput = new ArrayList<>();
+		for (SubstitutionOfHDManagementData x : lstAbsConfirmData) {
+			if(x.getRemainDays().v() <= 0 
+					||(x.getHolidayDate().getDayoffDate().isPresent() && x.getHolidayDate().getDayoffDate().get().afterOrEquals(ymd))) {
+				continue;
+			}
+			lstOutput.add(x);
+		}
+		return lstOutput;
 	}	
 
 	@Override
@@ -127,7 +142,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	}
 
 	@Override
-	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail) {
+	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd) {
 		//2-1.確定振出から未使用の振出を取得する
 		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCod(cid, sid, DigestionAtr.UNUSED.value)
 				.stream().filter(x -> x.getUnUsedDays().v() > 0)
@@ -136,7 +151,10 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			return lstDataDetail;
 		}
 		for (PayoutManagementData confirmRecData : lstConfirmRec) {
-			
+			if(confirmRecData.getPayoutDate().getDayoffDate().isPresent()
+					&& confirmRecData.getPayoutDate().getDayoffDate().get().afterOrEquals(ymd)) {
+				continue;
+			}
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
 			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
 			double unUseDays = confirmRecData.getUnUsedDays().v();
@@ -676,6 +694,22 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 			lstOutputOfRec.add(outputData);
 		}
 		return lstOutputOfRec;
+	}
+
+	@Override
+	public double getAbsRecMngRemain(String employeeID, GeneralDate date) {
+		String companyID = AppContexts.user().companyId();
+		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
+				companyID, 
+				employeeID, 
+				new DatePeriod(date, date.addYears(1)), 
+				date, 
+				false, 
+				false, 
+				Collections.emptyList(), 
+				Collections.emptyList(), 
+				Collections.emptyList());
+		return this.getAbsRecMngInPeriod(paramInput).getRemainDays();
 	}
 	
 }

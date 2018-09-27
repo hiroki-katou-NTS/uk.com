@@ -17,7 +17,8 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 @AllArgsConstructor
 public class LogBasicInfoDto {
 
-
+	/** parentKey */
+	private String parentKey;
 	/** operationId */
 	private String operationId;
 	/** userName login */
@@ -53,11 +54,12 @@ public class LogBasicInfoDto {
 	//log login
 	private String methodName;
 	private String loginStatus;
+	
 	public static LogBasicInfoDto fromDomain(LogBasicInformation domain) {
-		return new LogBasicInfoDto(
+		
+		return new LogBasicInfoDto("",
 				domain.getOperationId(),domain.getUserInfo().getUserName(),null,null,null,null,null,null,
-				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:ss"),null,null,null,null,null,null,null,null);
+				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:mm:ss"),null,null,null,null,null,null,null,null);
 	}
-
 
 }

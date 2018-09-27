@@ -129,26 +129,32 @@ module nts.uk.at.view.kdl009.a {
             }
             
             bindTimeData(data: any) {
-                var self = this;
-                var issueDate = "";
-                var holidayDate = "";
-                var expirationDate = "";
-                var occurrenceDays1 = "";
-                var occurrenceDays2 = "";
-                var isHalfDay = false;
-                self.dataItems.removeAll();
+                let self = this;
                 
+                self.dataItems.removeAll();
+                                
                 if(data.recAbsHistoryOutput.length > 0) {
                     _.each(data.recAbsHistoryOutput, function (item) {
+                        let isHalfDay = false;
+                        let issueDate = "";
+                        let holidayDateTop = "";
+                        let holidayDateBot = "";
+                        let expirationDate = "";
+                        let occurrenceDays1 = "";
+                        let occurrenceDays2Top = "";
+                        let occurrenceDays2Bot = "";
                         if(item.recHisData != null) {
-                            if(item.recHisData.recDate.unknownDate) {
-                                issueDate = nts.uk.resource.getText("KDL009_11");
+                            if(!item.recHisData.recDate.unknownDate) {
+                                if(item.recHisData.dataAtr == 3) {
+                                    issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
+                                } else {
+                                    issueDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
+                                }
                             } else {
-                                issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
+                                issueDate = nts.uk.resource.getText("KDL009_11");
                             }
                             
                             if(item.recHisData.occurrenceDays == 0.5) {
-                                isHalfDay = true;
                                 occurrenceDays1 = nts.uk.resource.getText("KDL009_14", [item.recHisData.occurrenceDays]);
                             }
                             
@@ -161,18 +167,34 @@ module nts.uk.at.view.kdl009.a {
                         
                         if(item.absHisData != null) {
                             if(item.absHisData.absDate.unknownDate) {
-                                holidayDate = nts.uk.resource.getText("KDL009_11");
+                                holidayDateTop = nts.uk.resource.getText("KDL009_11");
                             } else {
-                                holidayDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])]);
+                                if(item.absHisData.createAtr == 3) {
+                                    holidayDateTop = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])]);
+                                } else {
+                                    holidayDateTop = nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate]);
+                                }
                             }
                             
                             if(item.absHisData.requeiredDays == 0.5) {
-                                isHalfDay = true;
-                                occurrenceDays2 = nts.uk.resource.getText("KDL009_14", [item.absHisData.requeiredDays]);
+                                occurrenceDays2Top = nts.uk.resource.getText("KDL009_14", [item.absHisData.requeiredDays]);
+                            }
+                            
+                            if(holidayDateTop === nts.uk.resource.getText("KDL009_11")) {
+                                holidayDateTop = "";
+                                occurrenceDays2Top = "";
                             }
                         }
                         
-                        var temp = new DataItems(issueDate, holidayDate, expirationDate, occurrenceDays1, occurrenceDays2, isHalfDay);
+                        if(item.recHisData.dataAtr == 1) {
+                            if(holidayDateTop === "" && occurrenceDays2Top === "") {
+                                isHalfDay = false;
+                            } else {
+                                isHalfDay = true;
+                            }                            
+                        }
+                        
+                        let temp = new DataItems(issueDate, holidayDateTop, holidayDateBot, expirationDate, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
                         self.dataItems.push(temp);
                     });                    
@@ -234,18 +256,23 @@ module nts.uk.at.view.kdl009.a {
         
         class DataItems {
             issueDate: string;
-            holidayDate: string;
+            holidayDateTop: string;
+            holidayDateBot: string;
             expirationDate: string;
             occurrenceDays1: string;
-            occurrenceDays2: string;
+            occurrenceDays2Top: string;
+            occurrenceDays2Bot: string;
             isHalfDay: boolean;
     
-            constructor(issueDate: string, holidayDate: string, expirationDate: string, occurrenceDays1: string, occurrenceDays2: string, isHalfDay: boolean) {
+            constructor(issueDate: string, holidayDateTop: string, holidayDateBot: string, expirationDate: string, occurrenceDays1: string, 
+                    occurrenceDays2Top: string, occurrenceDays2Bot: string, isHalfDay: boolean) {
                 this.issueDate = issueDate;
-                this.holidayDate = holidayDate;
+                this.holidayDateTop = holidayDateTop;
+                this.holidayDateBot = holidayDateBot;
                 this.expirationDate = expirationDate;
                 this.occurrenceDays1 = occurrenceDays1;
-                this.occurrenceDays2 = occurrenceDays2;
+                this.occurrenceDays2Top = occurrenceDays2Top;
+                this.occurrenceDays2Bot = occurrenceDays2Bot;
                 this.isHalfDay = isHalfDay;
             }
         }

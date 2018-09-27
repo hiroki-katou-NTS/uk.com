@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class EmployeeSearchDto {
 	/**
 	 * employeeID
 	 */
-	private String id;
+	public String id;
 	/**
 	 * employeeCode
 	 */

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 //乖離基準時間利用単位
 @Getter
 @Setter
+@NoArgsConstructor
 public class DivergenceReferenceTimeUsageUnit extends AggregateRoot {
 
 	/** The c id. */

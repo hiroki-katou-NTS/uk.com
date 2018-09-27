@@ -35,14 +35,14 @@ module nts.uk.com.view.ccg025.a.component {
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 180 }
+                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 180, formatter: _.escape }
                     ]);
                 } else {
                     self.currentCode = ko.observable("");
                     self.columns = ko.observableArray([
                         { headerText: getText("CCG025_3"), prop: 'roleId', width: 100, hidden: true },
                         { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 233 }
+                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 233, formatter: _.escape }
                     ]);
                 }
 

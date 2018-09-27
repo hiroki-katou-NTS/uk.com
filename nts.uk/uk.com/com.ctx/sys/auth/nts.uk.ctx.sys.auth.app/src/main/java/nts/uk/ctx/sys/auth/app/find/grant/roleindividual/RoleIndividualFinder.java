@@ -67,18 +67,22 @@ public class RoleIndividualFinder {
 		// Build RoleIndividualGrantDto
 		List<RoleIndividualGrantDto> listRoleIndividualGrantDto = new ArrayList<>();
 		for (RoleIndividualGrant roleIndividualGrant: listRoleIndividualGrant) {
-			// Filter get User
- 			User user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();
+			// Filter get Users
+ 			Optional<User> user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst();
+		
+ 			if(user.isPresent()){
+ 			if(user.get().getUserName().isPresent())
+ 			userName = user.get().getUserName().get().v();  
  			
- 			if(user.getUserName().isPresent())
- 			userName = user.getUserName().get().v();
- 			
-			String loginID = user.getLoginID().v();
-			// Filter get Person
-			if(user.getAssociatedPersonID().isPresent()){
-				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID().get())).findFirst();
+			String loginID = user.get().getLoginID().v();
+			// Filter get Person 
+			if(user.get().getAssociatedPersonID().isPresent()){
+				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.get().getAssociatedPersonID().get())).findFirst();
 				if (optPerson.isPresent())
 					userName = optPerson.get().getPersonName();
+				else{
+					userName = "";
+				}
 			}
 			// Add to list
 			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
@@ -92,6 +96,7 @@ public class RoleIndividualFinder {
 					roleIndividualGrant.getValidPeriod().end());
 			listRoleIndividualGrantDto.add(dto);
 		}
+ 			}
 		listRoleIndividualGrantDto.sort((obj1,obj2)->{return obj1.getLoginID().compareTo(obj2.getLoginID());});
 		return new RoleIndividualDto(COMPANY_ID_SYSADMIN, listRoleIndividualGrantDto);
 
@@ -202,5 +207,5 @@ public class RoleIndividualFinder {
 		}
 
 	}
-	
+
 }

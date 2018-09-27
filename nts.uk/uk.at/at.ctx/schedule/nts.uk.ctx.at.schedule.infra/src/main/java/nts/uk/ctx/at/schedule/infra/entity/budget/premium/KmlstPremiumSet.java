@@ -6,9 +6,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
@@ -35,21 +37,18 @@ public class KmlstPremiumSet extends UkJpaEntity{
 	public Integer premiumRate;
 	
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
 		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID")
 	})
 	private KmlmtPersonCostCalculation kmlmtPersonCostCalculation;
 	
-	@ManyToOne
-	@PrimaryKeyJoinColumns(value = {
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
-    })
+	@OneToOne(targetEntity = KmnmtPremiumItem.class, mappedBy = "kmlstPremiumSet")
+	@JoinTable(name = "KMNMT_PREMIUM_ITEM")
 	public KmnmtPremiumItem kmnmtPremiumItem;
 	
-	@OneToMany(targetEntity = KmldtPremiumAttendance.class, cascade = CascadeType.ALL, mappedBy = "kmlstPremiumSet", orphanRemoval = true)
+	@OneToMany(targetEntity = KmldtPremiumAttendance.class, cascade = CascadeType.ALL, mappedBy = "kmlstPremiumSet", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KMLDT_PREMIUM_ATTENDANCE")
 	public List<KmldtPremiumAttendance> kmldtPremiumAttendances;
 	

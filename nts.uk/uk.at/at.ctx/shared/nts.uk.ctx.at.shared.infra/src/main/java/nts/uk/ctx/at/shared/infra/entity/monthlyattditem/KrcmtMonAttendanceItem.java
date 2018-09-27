@@ -6,8 +6,8 @@
 package nts.uk.ctx.at.shared.infra.entity.monthlyattditem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -56,9 +57,9 @@ public class KrcmtMonAttendanceItem extends UkJpaEntity implements Serializable 
 	/**
 	 * Instantiates a new krcmt mon attendance item.
 	 */
-	
+	@Basic(optional = true)
 	@Column(name = "PRIMITIVE_VALUE")
-	public BigDecimal primitiveValue;
+	public Integer primitiveValue;
 	
 	public KrcmtMonAttendanceItem() {
 		super();
@@ -71,6 +72,17 @@ public class KrcmtMonAttendanceItem extends UkJpaEntity implements Serializable 
 	 */
 	public KrcmtMonAttendanceItem(KrcmtMonAttendanceItemPK krcmtMonAttendanceItemPK) {
 		this.krcmtMonAttendanceItemPK = krcmtMonAttendanceItemPK;
+	}
+	
+	public KrcmtMonAttendanceItem(MonthlyAttendanceItem domain) {
+		this.krcmtMonAttendanceItemPK = new KrcmtMonAttendanceItemPK(domain.getCompanyId(),
+				domain.getAttendanceItemId());
+		this.mAtdItemName = domain.getAttendanceName().v();
+		this.mAtdItemAtr = domain.getMonthlyAttendanceAtr().value;
+		this.dispNo = domain.getDisplayNumber();
+		this.isAllowChange = domain.getUserCanUpdateAtr().value;
+		this.lineBreakPosName = domain.getNameLineFeedPosition();
+		this.primitiveValue = domain.getPrimitiveValue().map(x -> x.value).orElse(null);
 	}
 
 	/*

@@ -172,6 +172,8 @@ public class TotalTimesFromDailyRecord {
 			results.put(totalCountNo, new TotalTimesResult());
 		}
 		
+		val dailyConverter = attendanceItemConverter.createDailyConverter();
+		
 		// 「期間」を取得
 		GeneralDate procDate = period.start();
 		for ( ; procDate.beforeOrEquals(period.end()); procDate = procDate.addDays(1)){
@@ -190,10 +192,6 @@ public class TotalTimesFromDailyRecord {
 			// 就業時間帯を確認する
 			String workTimeCd = "";
 			if (workInfo.getWorkTimeCode() != null) workTimeCd = workInfo.getWorkTimeCode().v();
-			
-			// 「日別実績の勤怠時間」を取得
-			if (!this.attendanceTimeOfDailyMap.containsKey(procDate)) continue;
-			val attendanceTimeOfDaily = this.attendanceTimeOfDailyMap.get(procDate);
 			
 			for (val totalTimes : totalTimesList){
 				if (totalTimes.getUseAtr() == UseAtr.NotUse) continue;
@@ -258,9 +256,12 @@ public class TotalTimesFromDailyRecord {
 				if (!isTargetAttendance) continue;
 				
 				if (totalTimes.getTotalCondition().getAtdItemId() != null){
+
+					// 「日別実績の勤怠時間」を取得
+					if (!this.attendanceTimeOfDailyMap.containsKey(procDate)) continue;
+					val attendanceTimeOfDaily = this.attendanceTimeOfDailyMap.get(procDate);
 					
 					// 日別実績を回数集計用のクラスに変換
-					val dailyConverter = attendanceItemConverter.createDailyConverter();
 					val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
 					
 					// 勤務時間の判断
@@ -268,6 +269,7 @@ public class TotalTimesFromDailyRecord {
 					if (!itemValOpt.isPresent()) continue;
 					if (!itemValOpt.get().getValueType().isInteger()) continue;
 					Integer itemVal = itemValOpt.get().value();
+					if (itemVal == null) itemVal = 0;
 					boolean isTargetValue = true;
 					if (totalCondition.getLowerLimitSettingAtr() == UseAtr.Use){
 						// 下限未満なら、集計しない

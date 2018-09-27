@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1200,
-					height : 810
+					height : 650
 				};
 			</script>
 
@@ -56,7 +56,7 @@
 								<!-- C2_2 -->
 								<div style="width: 250px"
 									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
-											items: outputItemList, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+											items: outputItemList, selected: selectedCodeC2_3, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<!-- C2_3 -->
 								<table tabindex="6" id="multi-list"
 									data-bind="ntsGridList: {
@@ -65,7 +65,7 @@
 										optionsValue: 'code', 
 										columns: columns,
 										multiple: false,
-										value: currentCodeList
+										value: selectedCodeC2_3
 									}"></table>
 							</div>
 						</td>
@@ -121,20 +121,14 @@
 											columns: columns,
 											value: currentCodeListSwap,
 											searchMode: 'filter',
-											searchCriterion: ['code'],
+											searchCriterion: ['code', 'name'],
 											draggable: true,
 											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
 											innerDrag: { left: false, right: true },
 											outerDrag: { left: true, right: true },
-											afterMoveRight: () => {
-												const sorted = _.sortBy(currentCodeListSwap(), item => parseInt(item.code));
-												currentCodeListSwap(sorted);
-											},
-											afterMoveLeft: () => {
-												const sorted = _.sortBy(items(), item => parseInt(item.code));
-												items(sorted);
-											} 
+											afterMoveLeft: sortItems,
+											itemsLimit: { right: 39 }
 										}"></div>
 										<!--Updown Button-->
 										<div id="up-down"

@@ -75,11 +75,7 @@ module nts.uk.at.view.kmk010.c {
              */
            private saveOutsideOTBRDItem(): void {
                var self = this;
-               for (var model of self.lstOutsideOTBRDItemModel) {
-                    if(model.name().trim().length <= 0){
-                        model.name(model.name().trim());
-                    }  
-               }
+              
                if (self.validateDomainSave()) {
                    return;
                }

@@ -127,7 +127,6 @@ module nts.uk.at.view.kmk003.j {
              */
             private bindingData(dataObject: any) {
                 let _self = this;
-                
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {                                   
                     return;
                 }
@@ -154,20 +153,20 @@ module nts.uk.at.view.kmk003.j {
                 _self.turnBackFontRearSection(dataObject.turnBackFontRearSection);
                 // Add worktime mode param 
                 if (_self.isFlow()) {
-                    _self.stampGoWorkFlowStart(dataObject.stampGoWorkFlowStart);
-                    _self.stampGoWorkFlowEnd(dataObject.stampGoWorkFlowEnd);
-                    _self.stampTwoTimeReflect(dataObject.stampTwoTimeReflect);
-                    _self.stampLeavingWorkFlowStart(dataObject.stampLeavingWorkFlowStart);
-                    _self.stampLeavingWorkFlowEnd(dataObject.stampLeavingWorkFlowEnd);
+                    _self.stampGoWorkFlowStart(!isNaN(dataObject.stampGoWorkFlowStart) ? dataObject.stampGoWorkFlowStart : 0);
+                    _self.stampGoWorkFlowEnd(!isNaN(dataObject.stampGoWorkFlowEnd) ? dataObject.stampGoWorkFlowEnd : 0);
+                    _self.stampTwoTimeReflect(!isNaN(dataObject.stampTwoTimeReflect) ? dataObject.stampTwoTimeReflect : 0);
+                    _self.stampLeavingWorkFlowStart(!isNaN(dataObject.stampLeavingWorkFlowStart) ? dataObject.stampLeavingWorkFlowStart : 0);
+                    _self.stampLeavingWorkFlowEnd(!isNaN(dataObject.stampLeavingWorkFlowEnd) ? dataObject.stampLeavingWorkFlowEnd : 0);
                 } else {
-                    _self.stampGoWork1Start(dataObject.stampGoWork1Start);
-                    _self.stampGoWork1End(dataObject.stampGoWork1End);
-                    _self.stampGoWork2Start(dataObject.stampGoWork2Start);
-                    _self.stampGoWork2End(dataObject.stampGoWork2End);
-                    _self.stampLeavingWork1Start(dataObject.stampLeavingWork1Start);
-                    _self.stampLeavingWork1End(dataObject.stampLeavingWork1End);
-                    _self.stampLeavingWork2Start(dataObject.stampLeavingWork2Start);
-                    _self.stampLeavingWork2End(dataObject.stampLeavingWork2End);
+                    _self.stampGoWork1Start(!isNaN(dataObject.stampGoWork1Start) ? dataObject.stampGoWork1Start : 0);
+                    _self.stampGoWork1End(!isNaN(dataObject.stampGoWork1End) ? dataObject.stampGoWork1End : 0);
+                    _self.stampGoWork2Start(!isNaN(dataObject.stampGoWork2Start) ? dataObject.stampGoWork2Start : 0);
+                    _self.stampGoWork2End(!isNaN(dataObject.stampGoWork2End) ? dataObject.stampGoWork2End : 0);
+                    _self.stampLeavingWork1Start(!isNaN(dataObject.stampLeavingWork1Start) ? dataObject.stampLeavingWork1Start : 0);
+                    _self.stampLeavingWork1End(!isNaN(dataObject.stampLeavingWork1End) ? dataObject.stampLeavingWork1End : 0);
+                    _self.stampLeavingWork2Start(!isNaN(dataObject.stampLeavingWork2Start) ? dataObject.stampLeavingWork2Start : 0);
+                    _self.stampLeavingWork2End(!isNaN(dataObject.stampLeavingWork2End) ? dataObject.stampLeavingWork2End : 0);
                 }
             }   
             
@@ -181,6 +180,7 @@ module nts.uk.at.view.kmk003.j {
                 if (_self.isFlow()) {
                     _self.validTimeRange("stampGoWorkFlowStart", "stampGoWorkFlowEnd", _self.stampGoWorkFlowStart(), _self.stampGoWorkFlowEnd(), "KMK003_270");
                     _self.validTimeRange("stampLeavingWorkFlowStart", "stampLeavingWorkFlowEnd", _self.stampLeavingWorkFlowStart(), _self.stampLeavingWorkFlowEnd(), "KMK003_273");
+                    $("#stampTwoTimeReflect").ntsEditor('validate');
                 } else {
                     _self.validTimeRange("stampGoWork1Start", "stampGoWork1End", _self.stampGoWork1Start(), _self.stampGoWork1End(), "KMK003_271");
                     _self.validTimeRange("stampGoWork2Start", "stampGoWork2End", _self.stampGoWork2Start(), _self.stampGoWork2End(), "KMK003_272");

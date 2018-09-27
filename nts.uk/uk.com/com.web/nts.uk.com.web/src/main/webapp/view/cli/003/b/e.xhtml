@@ -8,46 +8,52 @@
 	<ui:composition>
 		<div id="ScreenEId" class="ScreenE">
 			<div id="E1_1">#{i18n.getText('CLI003_24')}</div>
+			<div id="table">
 			<!-- E1_1 -->
-			<table class="ScreenE">
-				<tr>
-					<td><div id="E1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_10')}</div></td>
-					<td><span id="E1_3" data-bind="text: logTypeSelectedName"/></td>
-				</tr>
-				<com:ko-if bind="(isDisplayTarget() == true)">
+				<table class="ScreenE">
 					<tr>
-						<td><div id="E1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_15')}</div></td>
-						<td><div id="E1_5" data-bind="text: dateCtoE" ></div></td>
+						<td><div id="E1_2" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_10')}</div></td>
+						<td><span id="E1_3" data-bind="text: logTypeSelectedName"/></td>
+					</tr>
+					<com:ko-if bind="logTypeSelectedCode() === '6'">
+						<tr>
+							<td><div id="E1_12" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_67')}</div></td>
+							<td><span id="E1_13" data-bind="text: tarGetDataTypeSelectedName"/></td>
+						</tr>
+					</com:ko-if>
+					<com:ko-if bind="(isDisplayTarget() == true)">
+						<tr>
+							<td><div id="E1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_15')}</div></td>
+							<td><div id="E1_5" data-bind="text: dateCtoE" ></div></td>
+						</tr>
+						<tr>
+							<td><div id="E1_6" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_16')}</div></td>
+							<td><div id="E1_7" data-bind="text: targetNumber" ></div></td>
+						</tr>
+					</com:ko-if>
+					<tr>
+						<td><div id="E1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_22')}</div></td>
+						<td><div id="E1_9" data-bind="text: dateOperator"/>
+						</td>
+
 					</tr>
 					<tr>
-						<td><div id="E1_6" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_16')}</div></td>
-						<td><div id="E1_7" data-bind="text: targetNumber" ></div></td>
-					</tr>
-				</com:ko-if>
-				<tr>
-					<td><div id="E1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_22')}</div></td>
-					<td><div id="E1_9" data-bind="text: dateOperator"/>
-					</td>
-
-				</tr>
-				<tr>
-					<td><div id="E1_10" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_23')}</div></td>
-					<td><div id="E1_11" data-bind="text: operatorNumber"/></td>
-
-				</tr>
-			</table>
-			<div class="button">
-				<table>
-					<tr>
-						<td id="butonE2_1"><button id="E2_1" class="large"
-								data-bind="click: backScreenD" tabindex="-1">#{i18n.getText('CLI003_20')}</button></td>
-						<td id="buttonE2_2"><button id="E2_2" class="x-large proceed"
-								data-bind="click: nextScreenI" tabindex="-1">#{i18n.getText('CLI003_8')}</button></td>
-						<td><button id="E2_3" class="x-large proceed"
-								data-bind="click: nextScreenF" tabindex="-1">#{i18n.getText('CLI003_25')}</button></td>
+						<td><div id="E1_10" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_23')}</div></td>
+						<td><div id="E1_11" data-bind="text: operatorNumber"/></td>
 
 					</tr>
 				</table>
+			</div>
+			<div class="btn">
+
+						<button id="E2_1" class="large"
+								data-bind="click: backScreenD" tabindex="-1">#{i18n.getText('CLI003_20')}</button>
+						<button id="E2_2" class="x-large proceed"
+								data-bind="click: nextScreenI" tabindex="-1">#{i18n.getText('CLI003_8')}</button>
+						<button id="E2_3" class="x-large proceed"
+								data-bind="click: nextScreenF" tabindex="-1">#{i18n.getText('CLI003_25')}</button>
+
+
 			</div>
 		</div>
 	</ui:composition>

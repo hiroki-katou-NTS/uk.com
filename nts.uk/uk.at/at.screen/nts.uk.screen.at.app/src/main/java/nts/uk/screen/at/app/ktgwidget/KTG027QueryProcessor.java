@@ -127,12 +127,12 @@ public class KTG027QueryProcessor {
 		WorkplaceInfoImport workplaceInfoImport = authWorkPlaceAdapter.getWorkplaceListId(referenceDate, employeeID, false);
 		List<String> listWorkPlaceID = workplaceInfoImport.getLstWorkPlaceID();
 		Integer employeeRange = workplaceInfoImport.getEmployeeRange(); 
-		if (listWorkPlaceID.isEmpty()) {
+		if (listWorkPlaceID == null ) {
 			throw new BusinessException("Msg_1135");
 		}
 		// (lấy employeement ứng với closing)
 		List<ClosureEmployment> listClosureEmployment = closureEmploymentRepo.findByClosureId(companyID, closureID);
-		if (listClosureEmployment.isEmpty()) {
+		if (listClosureEmployment == null || listClosureEmployment.isEmpty()) {
 			throw new BusinessException("Msg_1136");
 		}
 		
@@ -144,8 +144,7 @@ public class KTG027QueryProcessor {
 		
 		//List<String> listEmpID = empEmployeeAdapter.getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
 		List<String> listEmpID = getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
-
-		if (listEmpID.isEmpty()) {
+		if (listEmpID == null || listEmpID.isEmpty() ) {
 			throw new BusinessException("Msg_1137");
 		}
 		

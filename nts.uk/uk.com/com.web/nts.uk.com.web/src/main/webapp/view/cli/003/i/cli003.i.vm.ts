@@ -8,25 +8,33 @@ module nts.uk.com.view.cli003.i {
         export class ScreenModel {
             listCode: KnockoutObservableArray<model.LogDisplaySetting>;
             recordType: KnockoutObservable<string>;
-
+            tarGetDataType: KnockoutObservable<string>;
+         
             constructor() {
                 let self = this;
-                self.recordType = ko.observable(getShared('recordType').toString());        
+                self.recordType = ko.observable(getShared('recordType').toString());
+                self.tarGetDataType = ko.observable(getShared('tarGetDataType').toString());        
                 console.log(self.recordType());
+                console.log(self.tarGetDataType());
                 self.listCode = ko.observableArray([]);
-                self.currentCode = ko.observable("");
+                self.currentCode = ko.observable(null);
                 self.columns = ko.observableArray([
                     { headerText: getText("CLI003_11"), prop: 'code', width: 100 },
                     { headerText: getText("CLI003_12"), prop: 'name', width: 233 }
                 ]);
                 self.getListLogDisplaySettingByRecordType();
+                nts.uk.ui.windows.setShared("selectCancel", false);
             }
 
             /** Get list log by recordType */
             private getListLogDisplaySettingByRecordType() {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getLogDisplaySettingByRecordType(self.recordType()).done(function(data: any) {
+                let paramInputLog={
+                    recordType:self.recordType(),
+                    targetDataType:self.tarGetDataType()
+                    }
+                service.getLogDisplaySettingByRecordType(paramInputLog).done(function(data: any) {
                     console.log(data);
                     if (data && data.length > 0) {
                         data = _.orderBy(data, ['code'], ['asc', 'asc']);
@@ -63,11 +71,15 @@ module nts.uk.com.view.cli003.i {
             decision() {
                 let self = this;
                 nts.uk.ui.windows.setShared("datacli003", self.currentCode());
-                nts.uk.ui.windows.close();
+                if(self.currentCode()){
+                      nts.uk.ui.windows.close();
+                    }
+              
             }
 
             /** btn cancel*/
             cancel() {
+                nts.uk.ui.windows.setShared("selectCancel", true);
                 nts.uk.ui.windows.close();
             }
 

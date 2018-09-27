@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
+import nts.uk.ctx.at.record.app.find.monthly.MonthlyGetNameAttendance;
 import nts.uk.ctx.at.record.app.find.monthlyattditem.MonthlyAttendanceItemFinder;
 
 /**
@@ -27,6 +28,9 @@ public class MonthlyAttdItemWs extends WebService {
 	/** The finder. */
 	@Inject
 	private MonthlyAttendanceItemFinder finder;
+	
+	@Inject
+	private MonthlyGetNameAttendance monthlyGetNameAttendance;
 
 	/**
 	 * Find by any item.
@@ -43,7 +47,7 @@ public class MonthlyAttdItemWs extends WebService {
 	@POST
 	@Path("findall")
 	public List<AttdItemDto> findAll() {
-		return this.finder.findAll();
+		return this.monthlyGetNameAttendance.getListAttendanceItemName();
 	}
 	
 	@POST

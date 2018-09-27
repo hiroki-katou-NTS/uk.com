@@ -19,4 +19,6 @@ public class AnnualWorkScheduleExportQuery {
 	private String setItemsOutputCd;
 	/** A6_2 改頁選択 */
 	private int breakPage;
+	/** A10_2 36協定対象外者選択肢 */
+	private int excludeEmp;
 }

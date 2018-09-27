@@ -66,4 +66,11 @@ public interface OptionalItemSetMemento {
 	 * @param calculationResultRange the new calculation result range
 	 */
 	void setCalculationResultRange(CalcResultRange calculationResultRange);
+
+	/**
+	 * Sets the unit.
+	 *
+	 * @param unit the new unit
+	 */
+	void setUnit(UnitOfOptionalItem unit);
 }

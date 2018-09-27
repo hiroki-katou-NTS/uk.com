@@ -20,7 +20,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private WorkUpdateService workTimeUpdate;
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
-		/*ReflectedStateRecord state;
+		ReflectedStateRecord state = ReflectedStateRecord.CANCELED;
 		if(para.getExecutiontype() == ExecutionType.RETURN) {
 			return true;
 		}
@@ -32,7 +32,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		}
 		if(state == ReflectedStateRecord.WAITREFLECTION) {
 			return true;
-		}*/
+		}
 		return false;
 	}
 	

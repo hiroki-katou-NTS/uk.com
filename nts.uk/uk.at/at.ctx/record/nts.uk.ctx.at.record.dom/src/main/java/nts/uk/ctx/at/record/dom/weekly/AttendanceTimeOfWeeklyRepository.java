@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /*
  * リポジトリ：週別実績の勤怠時間
@@ -27,13 +27,15 @@ public interface AttendanceTimeOfWeeklyRepository {
 			ClosureId closureId, ClosureDate closureDate, int weekNo);
 
 	/**
-	 * 検索　（締めID）
+	 * 検索　（締め）
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
+	 * @param closureDate 締め日付
 	 * @return 週別実績の勤怠時間　（開始日順）
 	 */
-	List<AttendanceTimeOfWeekly> findByClosureId(String employeeId, YearMonth yearMonth, ClosureId closureId);
+	List<AttendanceTimeOfWeekly> findByClosure(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate);
 	
 	/**
 	 * 検索　（年月）
@@ -44,14 +46,15 @@ public interface AttendanceTimeOfWeeklyRepository {
 	List<AttendanceTimeOfWeekly> findByYearMonth(String employeeId, YearMonth yearMonth);
 
 	/**
-	 * 検索　（社員IDリストと締めID）
+	 * 検索　（社員IDリストと締め）
 	 * @param employeeIds 社員IDリスト
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
+	 * @param closureDate 締め日付
 	 * @return 週別実績の勤怠時間　（開始日順）
 	 */
 	List<AttendanceTimeOfWeekly> findBySids(List<String> employeeIds, YearMonth yearMonth,
-			ClosureId closureId);
+			ClosureId closureId, ClosureDate closureDate);
 
 	/**
 	 * 検索　（社員IDリストと年月リスト）
@@ -87,12 +90,13 @@ public interface AttendanceTimeOfWeeklyRepository {
 			int weekNo);
 
 	/**
-	 * 削除　（締めID）
+	 * 削除　（締め）
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
+	 * @param closureDate 締め日付
 	 */
-	void removeByClosureId(String employeeId, YearMonth yearMonth, ClosureId closureId);
+	void removeByClosure(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 	
 	/**
 	 * 削除　（年月）

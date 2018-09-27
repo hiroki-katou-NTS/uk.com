@@ -43,8 +43,8 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KfnmtDailyPerformanceDisplay a ");
-		builderString.append(
-				"WHERE a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("WHERE a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append("AND a.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ");
 		IS_EXIST_DATA = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -57,6 +57,7 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 	@Override
 	public void add(AuthorityFormatInitialDisplay authorityFormatInitialDisplay) {
 		this.commandProxy().insert(toEntity(authorityFormatInitialDisplay));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -72,9 +73,11 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 	}
 
 	@Override
-	public boolean checkExistData(DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+	public boolean checkExistData(String companyId,DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(IS_EXIST_DATA, long.class)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getSingle().get() > 0;
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
+				.setParameter("companyId", companyId)
+				.getSingle().get() > 0;
 	}
 
 	@Override

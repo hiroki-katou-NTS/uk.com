@@ -75,13 +75,35 @@ module a7 {
             self.backUpOfFlexNotUse=null;
 
             self.isCheckFollowTimeForFlex = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
-//            self.isCheckFollowTimeForFlex.subscribe(function() {
-//                self.refreshColumnSet();
-//            });
+            self.isCheckFollowTimeForFlex.subscribe(function(v) {
+                if (!v) {
+                    $('#nts-fix-table-a7-flex-notuse-2').find('.nts-input').ntsError('clear');
+                }
+                else {
+                    $('#nts-fix-table-a7-flex-notuse-2').find('.nts-editor').each((index, element) => {
+                        if (!element.id) {
+                            element.id = nts.uk.util.randomId();
+                        }
+
+                        $('#' + element.id).ntsEditor('validate');
+                    })
+                }
+            });
             self.isCheckFollowTimeForFlow = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet;;
-//            self.isCheckFollowTimeForFlow.subscribe(function() {
-//                self.refreshColumnSet();
-//            });
+            self.isCheckFollowTimeForFlow.subscribe(function(v) {
+                if (!v) {
+                    $('#nts-fix-table-a7-flow-notuse-2').find('.nts-input').ntsError('clear');
+                }
+                else {
+                    $('#nts-fix-table-a7-flow-notuse-2').find('.nts-editor').each((index, element) => {
+                        if (!element.id) {
+                            element.id = nts.uk.util.randomId();
+                        }
+
+                        $('#' + element.id).ntsEditor('validate');
+                    })
+                }
+            });
             self.dataSourceForFixed = ko.observableArray([]);
             /////////////
             self.fixTableOptionForFixed = {
@@ -214,16 +236,16 @@ module a7 {
 
             self.isFlowUse = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.USE && self.isFlow();
-            });
+            }).extend({ rateLimit: 200 });
             self.isFlowNotUse = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.NOTUSE && self.isFlow();
-            });
+            }).extend({ rateLimit: 200 });
             self.isFlexUse = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.USE && self.isFlex();
-            });
+            }).extend({ rateLimit: 200 });
             self.isFlexNotUse = ko.computed(function() {
                 return self.useFixedRestTime() == UseDivision.NOTUSE && self.isFlex();
-            });
+            }).extend({ rateLimit: 200 });
             
             self.useFixedRestTime.subscribe((v) => {
                 self.clearTabError();
@@ -241,6 +263,7 @@ module a7 {
                 }
                 if (self.mainSettingModel.workTimeSetting.isFlow()) {
                     if (v == UseDivision.NOTUSE && self.backUpOfFlowNotUse) {
+                        $('#nts-fix-table-a7-flow-use').find('.nts-input').ntsError('clear');
                         self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.updateData(self.backUpOfFlowNotUse);
                     }
                     else {
@@ -563,12 +586,12 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',constraint: 'AttendanceTime', inputFormat: 'time',mode: 'time',enable: true}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',constraint: 'AttendanceTime', inputFormat: 'time',mode: 'time',enable: true ,required: true}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',constraint: 'AttendanceTime',inputFormat: 'time',mode: 'time',enable: true}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',constraint: 'AttendanceTime',inputFormat: 'time',mode: 'time',enable: true ,required: true}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTimeForFlex()
                 }
@@ -581,12 +604,12 @@ module a7 {
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_174"), key: "column1", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',constraint: 'AttendanceTime', inputFormat: 'time',mode: 'time',enable: true}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_174]',constraint: 'AttendanceTime', inputFormat: 'time',mode: 'time',enable: true ,required: true}" />`,
                     cssClassName: 'column-time-editor'
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"), key: "column2", defaultValue: ko.observable(0), width: 107,
-                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',constraint: 'AttendanceTime',inputFormat: 'time',mode: 'time',enable: true}" />`,
+                    template: `<input data-bind="ntsTimeEditor: {name:'#[KMK003_176]',constraint: 'AttendanceTime',inputFormat: 'time',mode: 'time',enable: true ,required: true}" />`,
                     cssClassName: 'column-time-editor',
                     enable: self.isCheckFollowTimeForFlow()
                 }
@@ -635,15 +658,33 @@ module a7 {
                     if (screenModel.mainSettingModel.workTimeSetting.isFlex()) {
                         screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(screenModel.useFixedRestTime() == UseDivision.USE);
                         if (v) {
-                            screenModel.dataSourceForFlexNotUse1.valueHasMutated();
-                            screenModel.dataSourceForFlexNotUse2.valueHasMutated();
+                            if (!screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet()) {
+                                screenModel.dataSourceForFlexNotUse1.valueHasMutated();
+                                screenModel.dataSourceForFlexNotUse2([{
+                                    column1: ko.observable(0),
+                                    column2: ko.observable(0)
+                                }]);
+                            }
+                            else {
+                                screenModel.dataSourceForFlexNotUse1.valueHasMutated();
+                                screenModel.dataSourceForFlexNotUse2.valueHasMutated();
+                            }
                         }
                     }
                     if (screenModel.mainSettingModel.workTimeSetting.isFlow()) {
                         screenModel.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixRestTime(screenModel.useFixedRestTime() == UseDivision.USE);
                         if (v) {
-                            screenModel.dataSourceForFlowNotUse1.valueHasMutated();
-                            screenModel.dataSourceForFlowNotUse2.valueHasMutated();
+                            if (!screenModel.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet()) {
+                                screenModel.dataSourceForFlowNotUse1.valueHasMutated();
+                                screenModel.dataSourceForFlowNotUse2([{
+                                    column1: ko.observable(0),
+                                    column2: ko.observable(0)
+                                }]);
+                            }
+                            else {
+                                screenModel.dataSourceForFlowNotUse1.valueHasMutated();
+                                screenModel.dataSourceForFlowNotUse2.valueHasMutated();
+                            }
                         }
                     }
                 });

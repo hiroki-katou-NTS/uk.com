@@ -24,7 +24,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="mail_setting_register" class="proceed" tabindex="2"
-					style="margin-left: 45px" data-bind="click: registerMailSetting">#{i18n.getText('CMM050_3')}</button>
+					style="margin-left: 45px" data-bind="click: registerMailSetting , enable: $root.errors.isEmpty ">#{i18n.getText('CMM050_3')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="right-content">

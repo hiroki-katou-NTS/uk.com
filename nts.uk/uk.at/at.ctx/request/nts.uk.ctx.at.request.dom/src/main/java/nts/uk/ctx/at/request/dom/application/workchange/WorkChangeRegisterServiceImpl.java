@@ -1,16 +1,23 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 
 @Stateless
 @Transactional
@@ -30,6 +37,12 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepository;
+	
+	@Inject 
+	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@Override
 	public ProcessResult registerData(AppWorkChange workChange, Application_New app) {
@@ -43,6 +56,18 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		
 		// アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
 		registerService.newScreenRegisterAtApproveInfoReflect(app.getEmployeeID(), app);
+		
+		// 暫定データの登録
+		GeneralDate startDateParam = app.getStartDate().orElse(app.getAppDate());
+		GeneralDate endDateParam = app.getEndDate().orElse(app.getAppDate());
+		List<GeneralDate> listDate = new ArrayList<>();
+		for(GeneralDate loopDate = startDateParam; loopDate.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)){
+			listDate.add(loopDate);
+		}
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				app.getCompanyID(), 
+				app.getEmployeeID(), 
+				listDate);
 		
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
 		return newAfterRegister.processAfterRegister(app);
@@ -80,6 +105,16 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 			// エラーメッセージ(Msg_582)
 			// エラーリストにセットする
 			throw new BusinessException("Msg_582");
+		}
+	}
+
+	@Override
+	public boolean isTimeRequired(String workTypeCD) {
+		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCD);
+		if(setupType==SetupType.REQUIRED){
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
@@ -17,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeavesManaData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -134,6 +137,26 @@ public class LeaveManagementService {
 
 		return response;
 
+	}
+	public Boolean checkDeadlineCompensatoryLeaveCom(String employeeID, Closure closing,
+			CompensatoryLeaveComSetting compensatoryLeaveComSetting){
+		if(closing ==null){
+			return false;
+		}
+//		Optional<ClosureDate> closingDate = closing.getClosureDateOfCurrentMonth();
+		if (compensatoryLeaveComSetting.getCompensatoryAcquisitionUse() != null) {
+			int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+			// if (closingDate.isPresent()) {
+			GeneralDate today = GeneralDate.today();
+			Integer numberHolidaysNotUse = leaveManaDataRepository.getDeadlineCompensatoryLeaveCom(employeeID, today,
+					deadlCheckMonth);
+			if (numberHolidaysNotUse >= 1) {
+				return true;
+				// }
+
+			}
+		}
+		return false;
 	}
 
 }

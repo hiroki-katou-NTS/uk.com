@@ -45,22 +45,37 @@ public class CalculateAttendanceRecordFinder {
 
 		if (calculateAttendanceRecord != null) {
 			List<Integer> listAddedId = calculateAttendanceRecord.getAddedItem();
-			List<AttendanceRecordItemDto> listAttendanceAdded = new ArrayList<>();
 
 			List<Integer> listSubtracted = calculateAttendanceRecord.getSubtractedItem();
-			List<AttendanceRecordItemDto> listAttendanceSubtracted = new ArrayList<>();
+
+			List<AttendanceRecordItemDto> listAttendanceAdd = new ArrayList<>();
+			List<AttendanceRecordItemDto> listAttendanceSub = new ArrayList<>();
 
 			if (listAddedId != null && !listAddedId.isEmpty()) {
-				listAttendanceAdded = findAttendanceItemsById(listAddedId, attendanceRecordKey.getExportAtr());
+				List<AttendanceRecordItemDto> listAttendanceAdded = findAttendanceItemsById(listAddedId,
+						attendanceRecordKey.getExportAtr());
+				for (Integer item : listAddedId) {
+					for (AttendanceRecordItemDto e : listAttendanceAdded) {
+						if (e.getAttendanceItemId() == item)
+							listAttendanceAdd.add(e);
+					}
+				}
 			}
 			if (listSubtracted != null && !listSubtracted.isEmpty()) {
-				listAttendanceSubtracted = findAttendanceItemsById(listSubtracted, attendanceRecordKey.getExportAtr());
+				List<AttendanceRecordItemDto> listAttendanceSubtracted = findAttendanceItemsById(listSubtracted,
+						attendanceRecordKey.getExportAtr());
+				for (Integer item : listSubtracted) {
+					for (AttendanceRecordItemDto e : listAttendanceSubtracted) {
+						if (e.getAttendanceItemId() == item)
+							listAttendanceSub.add(e);
+					}
+				}
 			}
 			int attribute = calculateAttendanceRecord.getAttribute() != null
 					? calculateAttendanceRecord.getAttribute().value : 0;
+
 			CalculateAttendanceRecordDto calculateAttendanceRecordDto = new CalculateAttendanceRecordDto(
-					calculateAttendanceRecord.getName().toString(), listAttendanceAdded, listAttendanceSubtracted,
-					attribute);
+					calculateAttendanceRecord.getName().toString(), listAttendanceAdd, listAttendanceSub, attribute);
 
 			return calculateAttendanceRecordDto;
 		}

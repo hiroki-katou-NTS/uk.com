@@ -24,17 +24,20 @@ public class ErrorAlarmWorkRecordFinder {
 	@Inject
 	private ErrorAlarmWorkRecordRepository repository;
 
-	public List<ErrorAlarmWorkRecordDto> getListErrorAlarmWorkRecord() {
-		List<ErrorAlarmWorkRecord> lstErrorAlarm = repository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
-		List<ErrorAlarmCondition> lstCondition = repository.getListErrorAlarmCondition(AppContexts.user().companyId());
-		List<ErrorAlarmWorkRecordDto> lstDto = lstErrorAlarm.stream().map(eral -> {
-			for (ErrorAlarmCondition errorAlarmCondition : lstCondition) {
-				if(errorAlarmCondition.getErrorAlarmCheckID().equals(eral.getErrorAlarmCheckID())){
-					return ErrorAlarmWorkRecordDto.fromDomain(eral, errorAlarmCondition);
-				}
-			}
-			return null;
-		}).collect(Collectors.toList());
+	/**
+	 * 
+	 * @param type = 0 => user setting, type = 1 => system setting
+	 * @return
+	 */
+	public List<ErrorAlarmWorkRecordDto> getListErrorAlarmWorkRecord(int type) {
+		List<ErrorAlarmWorkRecord> lstErrorAlarm = repository
+				.getListErrorAlarmWorkRecord(AppContexts.user().companyId(), type);
+		if (type == 1) {
+			lstErrorAlarm = lstErrorAlarm.stream().filter(eral -> eral.getCode().v().startsWith("S")).collect(Collectors.toList());
+		}
+		List<ErrorAlarmWorkRecordDto> lstDto = lstErrorAlarm.stream()
+				.map(eral -> ErrorAlarmWorkRecordDto.fromDomain(eral, eral.getErrorAlarmCondition()))
+				.collect(Collectors.toList());
 		return lstDto;
 	}
 

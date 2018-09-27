@@ -77,10 +77,10 @@ public class AppWorkChangeSet extends AggregateRoot {
 		return new AppWorkChangeSet(cid, excludeHoliday, 
 				EnumAdaptor.valueOf(workChangeTimeAtr, UseAtr.class), displayResultAtr,
 				EnumAdaptor.valueOf(initDisplayWorktime, InitDisplayWorktimeAtr.class),
-				StringUtil.isNullOrEmpty(commentContent1, true) ? null : new CommentContent(commentContent1), 
+				commentContent1 == null ? null : new CommentContent(commentContent1), 
 				EnumAdaptor.valueOf(commentFontWeight1, FontWeightFlg.class),
 				new CommentFontColor(commentFontColor1), 
-				StringUtil.isNullOrEmpty(commentContent2, true) ? null : new CommentContent(commentContent2),
+				commentContent2 == null ? null : new CommentContent(commentContent2),
 				EnumAdaptor.valueOf(commentFontWeight2, FontWeightFlg.class), new CommentFontColor(commentFontColor2));
 	}
 

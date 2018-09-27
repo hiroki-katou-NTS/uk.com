@@ -19,3 +19,11 @@
 	margin-left: 28px;
 	width: 300px;
 }
+
+#swap-list col[data-role='rs'] {
+	width: 38px !important;
+}
+
+#swap-list .ui-icon-triangle-1-e {
+	margin-top: 1px;
+}

@@ -76,10 +76,8 @@ module nts.uk.pr.view.kmf001.l {
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 let command = self.toJsObject();
-                
-                nts.uk.ui.block.grayout();
-                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
@@ -138,6 +136,8 @@ module nts.uk.pr.view.kmf001.l {
                 // 管理しない
                 if (self.nursingSetting().selectedManageNursing() == 0 && self.backupNursingSetting()) {
                     self.backupNursingSetting().selectedManageNursing(self.nursingSetting().selectedManageNursing());
+                    self.backupNursingSetting().nursingLeaveSpecialHoliday(self.nursingSetting().nursingLeaveSpecialHoliday());
+                    self.backupNursingSetting().nursingLeaveWorkAbsence(self.nursingSetting().nursingLeaveWorkAbsence());
                     command.nursingSetting = self.convertObjectCmd(self.backupNursingSetting, 0);
                 }
                 // 管理する
@@ -147,6 +147,8 @@ module nts.uk.pr.view.kmf001.l {
                 // 管理しない
                 if (self.childNursingSetting().selectedManageNursing() == 0 && self.backupChildNursingSetting()) {
                     self.backupChildNursingSetting().selectedManageNursing(self.childNursingSetting().selectedManageNursing());
+                    self.backupChildNursingSetting().nursingLeaveSpecialHoliday(self.childNursingSetting().nursingLeaveSpecialHoliday());
+                    self.backupChildNursingSetting().nursingLeaveWorkAbsence(self.childNursingSetting().nursingLeaveWorkAbsence());
                     command.childNursingSetting = self.convertObjectCmd(self.backupChildNursingSetting, 1);
                 }
                 // 管理する
@@ -204,10 +206,12 @@ module nts.uk.pr.view.kmf001.l {
                     return false;
                 }
                 if (self.nursingSetting().selectedManageNursing() == 1 && self.childNursingSetting().selectedManageNursing() == 1 ) {
-                    if (self.nursingSetting().nursingLeaveSpecialHoliday() == self.childNursingSetting().nursingLeaveSpecialHoliday()) {
+                    if (self.nursingSetting().nursingLeaveSpecialHoliday() == self.childNursingSetting().nursingLeaveSpecialHoliday()
+                        && self.nursingSetting().nursingLeaveSpecialHoliday() != 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1366", message: message("Msg_1366")});
                         return false;
-                    } else if (self.nursingSetting().nursingLeaveWorkAbsence() == self.childNursingSetting().nursingLeaveWorkAbsence()) {
+                    } else if (self.nursingSetting().nursingLeaveWorkAbsence() == self.childNursingSetting().nursingLeaveWorkAbsence()
+                        && self.nursingSetting().nursingLeaveWorkAbsence() != 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_1367", message: message("Msg_1367")});
                         return false;
                     }
@@ -228,7 +232,7 @@ module nts.uk.pr.view.kmf001.l {
                         return false;
                     }
                     if (self.childNursingSetting().nursingNumberPerson() < 10) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_136", messageParams: [10]});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1369", messageParams: [10]});
                         return false;
                     }
                 }

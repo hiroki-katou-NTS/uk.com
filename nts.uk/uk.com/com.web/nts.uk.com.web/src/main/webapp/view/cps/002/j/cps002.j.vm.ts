@@ -22,10 +22,10 @@ module cps002.j.vm {
             self.cardNoMode = getShared("cardNoMode");
 
 
-            if (self.cardNoMode) {
-                $("#txtCardNo").focus();
+             if (self.cardNoMode) {
+                $("#cardNumber").focus();
             } else {
-                $("#txtEmployeeCode").focus();
+                $("#employeeCode").focus();
             }
             if (textValue) {
                 self.generateEmCode(textValue);
@@ -44,6 +44,7 @@ module cps002.j.vm {
             let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
                 self.stampCardEditing(data);
+                $("#cardNumber").focus();
                 dfd.resolve(data);
             });
 

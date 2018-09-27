@@ -334,8 +334,14 @@ public class HolidayWorkTimeSheet{
 			return Optional.of(eachWorkTimeSet.get().getSubHolTimeSet());
 		}
 		else {
-			if(eachCompanyTimeSet.isPresent())
-				return Optional.of(eachCompanyTimeSet.get().getTransferSetting());
+			if(eachCompanyTimeSet.isPresent()) {
+				if(eachCompanyTimeSet.get().getTransferSetting().isUseDivision()) {
+					return Optional.of(eachCompanyTimeSet.get().getTransferSetting());
+				}
+				else {
+					return Optional.empty();
+				}
+			}
 		}
 		return Optional.empty();
 	}
