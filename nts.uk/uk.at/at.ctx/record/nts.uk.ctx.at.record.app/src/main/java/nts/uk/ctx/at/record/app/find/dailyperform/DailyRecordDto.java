@@ -69,7 +69,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
 	// @AttendanceItemLayout(layout = "D", jpPropertyName = "社員の日別実績エラー一覧")
-	private EmployeeDailyPerErrorDto errors;
+	private List<EmployeeDailyPerErrorDto> errors = new ArrayList<>();
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@AttendanceItemLayout(layout = DAILY_OUTING_TIME_CODE, jpPropertyName = DAILY_OUTING_TIME_NAME, isOptional = true)
@@ -153,7 +153,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain.getAffiliationInfor()));
 			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
 			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
-				dto.setErrors(EmployeeDailyPerErrorDto.getDto(domain.getEmployeeError().get(0)));
+				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 			}
 			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(o)));
 			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(b)).collect(Collectors.toList()));
@@ -202,7 +202,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 	
-	public DailyRecordDto withErrors(EmployeeDailyPerErrorDto errors) {
+	public DailyRecordDto withErrors(List<EmployeeDailyPerErrorDto> errors) {
 		this.errors = errors;
 		return this;
 	}
@@ -397,7 +397,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
 				this.businessType.map(b -> b.toDomain(employeeId, date)),
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
-				this.errors == null ? new ArrayList<>() : Arrays.asList(this.errors.toDomain(employeeId, date)),
+				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
@@ -428,7 +428,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setCalcAttr(calcAttr == null ? null : calcAttr.clone());
 		dto.setAffiliationInfo(affiliationInfo == null ? null : affiliationInfo.clone());
 		dto.setBusinessType(businessType.map(b -> b.clone()));
-		dto.setErrors(errors == null ? null : errors.clone());
+		dto.setErrors(errors == null ? null : errors.stream().map(x -> x.clone()).collect(Collectors.toList()));
 		dto.setOutingTime(outingTime.map(o -> o.clone()));
 		dto.setBreakTime(breakTime.stream().map(b -> b.clone()).collect(Collectors.toList()));
 		dto.setAttendanceTime(attendanceTime.map(a -> a.clone()));

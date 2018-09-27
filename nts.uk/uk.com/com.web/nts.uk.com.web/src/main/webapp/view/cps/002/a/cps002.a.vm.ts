@@ -57,6 +57,7 @@ module cps002.a.vm {
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
         enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
+        wrkPlaceStartDate: KnockoutObservable<string> = ko.observable("");
 
         ccgcomponent: any = {
             /** Common properties */
@@ -340,6 +341,7 @@ module cps002.a.vm {
 
                         service.getLayoutByCreateType(command).done((data: ILayout) => {
                             self.listItemCls(data.itemsClassification || []);
+                            self.wrkPlaceStartDate(data.wrkPlaceStartDate);
                             if (self.listItemCls().length > 0) {
                                 new vc(self.listItemCls());
                             }
@@ -1036,6 +1038,7 @@ module cps002.a.vm {
         itemsClassification?: Array<any>;
         classificationItems?: Array<any>;
         standardDate?: string;
+        wrkPlaceStartDate? :string;
     }
 
     class EmpRegHistory {

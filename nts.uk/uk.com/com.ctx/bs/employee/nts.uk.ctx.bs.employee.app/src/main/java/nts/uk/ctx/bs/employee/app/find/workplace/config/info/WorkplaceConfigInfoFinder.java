@@ -83,7 +83,7 @@ public class WorkplaceConfigInfoFinder {
 		// Check if is restrictionOfReferenceRange.
 		List<String> workplaceIdsCanReference = new ArrayList<>();
 		if (object.getRestrictionOfReferenceRange()) {
-			workplaceIdsCanReference = this.syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType())
+			workplaceIdsCanReference = this.syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType(), object.getBaseDate())
 					.getListWorkplaceIds();
 		}
 		

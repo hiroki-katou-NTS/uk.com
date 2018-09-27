@@ -89,7 +89,6 @@ module nts.custombinding {
                 }
 
                 if (!element) {
-                    console.log('disposed');
                     clearInterval(inter);
                 }
             }, 100);
@@ -1099,6 +1098,16 @@ module nts.custombinding {
                                 }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
+                        <!-- ko if: location.href.indexOf('cps/007') > -1 || location.href.indexOf('cps/008') > -1 -->
+                        <div style="width: 200px;" class="ui-igcombo-wrapper ui-igCombo-disabled ui-state-disabled ntsControl">
+                            <div class="ui-igcombo ui-widget ui-state-default ui-corner-all ui-unselectable" unselectable="on" style="overflow: hidden; position: relative;">
+                                <div class="ui-igcombo-button ui-state-default ui-unselectable ui-igcombo-button-ltr ui-corner-right" style="float: none; width: 100%; border: 0px; padding: 0px; position: absolute; box-sizing: border-box; background-color: transparent;">
+                                    <div class="ui-igcombo-buttonicon" style="right: 0px; font-size: 0.85rem; top: 0px; bottom: 0px; display: block; background-color: rgb(236, 236, 236); width: 30px; text-align: center; line-height: 30px; margin: 0px; border-left: 1px solid rgb(204, 204, 204);">▼</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: location.href.indexOf('cps/001') > -1 || location.href.indexOf('cps/002') > -1 -->
                         <div data-bind="ntsComboBox: {
                                     width: '200px',
                                     name: itemName,
@@ -1123,6 +1132,7 @@ module nts.custombinding {
                                     'data-required': required,
                                     'data-defv': defValue
                                 }, hasFocus: hasFocus", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
+                        <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
                             <div data-bind="ntsRadioBoxGroup: {
@@ -1620,6 +1630,7 @@ module nts.custombinding {
                                 }
                                 break;
                             case ITEM_SINGLE_TYPE.NUMERIC:
+                            case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                 constraint.charType = 'Numeric';
                                 if (dts.decimalPart == 0) {
                                     constraint.valueType = "Integer";
@@ -1661,9 +1672,6 @@ module nts.custombinding {
                                 break;
                             case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
                                 constraint.valueType = "RELATE_CATEGORY";
-                                break;
-                            case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
-                                constraint.valueType = "NUMBERIC_BUTTON";
                                 break;
                             case ITEM_SINGLE_TYPE.READONLY_BUTTON:
                                 constraint.valueType = "READONLY_BUTTON";
@@ -1943,7 +1951,11 @@ module nts.custombinding {
                                         def.value(undefined);
                                         switch (def.item.referenceType) {
                                             case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                def.textValue(`${cbv}　${text('CPS001_107')}`);
+                                                if (cbv.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
+                                                    def.textValue(text('CPS001_107'));
+                                                } else {
+                                                    def.textValue(`${cbv}　${text('CPS001_107')}`);
+                                                }
                                                 break;
                                             case ITEM_SELECT_TYPE.CODE_NAME:
                                             case ITEM_SELECT_TYPE.ENUM:
@@ -2259,6 +2271,7 @@ module nts.custombinding {
                                         [
                                             ITEM_SINGLE_TYPE.STRING,
                                             ITEM_SINGLE_TYPE.NUMERIC,
+                                            ITEM_SINGLE_TYPE.NUMBERIC_BUTTON,
                                             ITEM_SINGLE_TYPE.TIME,
                                             ITEM_SINGLE_TYPE.TIMEPOINT
                                         ].indexOf((x.item || {}).dataTypeValue) > -1 &&

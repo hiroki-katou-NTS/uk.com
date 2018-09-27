@@ -2,10 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.workrule.closure;
+package nts.uk.shr.com.time.calendar.date;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.shr.com.time.calendar.Day;
 
 /**
  * The Class ClosureDate.
@@ -16,7 +17,7 @@ public class ClosureDate extends DomainObject {
 
 	/** The closure day. */
 	// 日
-	private ClosureDay closureDay;
+	private Day closureDay;
 
 	/** The last day of month. */
 	// 末日とする
@@ -31,7 +32,7 @@ public class ClosureDate extends DomainObject {
 	 *            the last day of month
 	 */
 	public ClosureDate(Integer closureDay, Boolean lastDayOfMonth) {
-		this.closureDay = new ClosureDay(closureDay);
+		this.closureDay = new Day(lastDayOfMonth ? 1 : closureDay);
 		this.lastDayOfMonth = lastDayOfMonth;
 	}
 }

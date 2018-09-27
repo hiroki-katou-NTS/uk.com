@@ -119,7 +119,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             self.isError(true);
                             
                             // resize windows
-                            var windowSize = nts.uk.ui.windows.getSelf();
+                            let windowSize = nts.uk.ui.windows.getSelf();
                             windowSize.$dialog.dialog('option', {
                                 width: 750,
                                 height: 700
