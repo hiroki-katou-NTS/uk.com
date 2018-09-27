@@ -141,6 +141,7 @@ div#list-box_b1 {
 }
 .ui-iggrid-header.ui-widget-header{
 	overflow :visible;
+	text-overflow : ellipsis;
 }
 
  .default-overflow{

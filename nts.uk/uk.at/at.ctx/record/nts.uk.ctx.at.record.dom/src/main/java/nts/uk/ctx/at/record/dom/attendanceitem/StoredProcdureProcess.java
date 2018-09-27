@@ -2,9 +2,12 @@ package nts.uk.ctx.at.record.dom.attendanceitem;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -18,4 +21,10 @@ public interface StoredProcdureProcess {
 	
 	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate);
+	
+	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime);
+	
+	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime, List<AnyItemOfMonthly> monthlyOptionalItems);
 }
