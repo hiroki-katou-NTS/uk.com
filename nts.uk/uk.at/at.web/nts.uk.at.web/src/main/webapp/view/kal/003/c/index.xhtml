@@ -127,13 +127,7 @@
 					 						value: currentAtdItemCondition.compareEndValue,
 											enable: currentAtdItemCondition.compareOperator() > 5,
 											required: currentAtdItemCondition.conditionType() == 0,
-											constraint: 'CheckedTimesValue',
-											option: new nts.uk.ui.option.NumberEditorOption({
-                											grouplength: 3,
-                											decimallength: 0,
-                											placeholder: ''
-            												})
-										}" />
+											constraint: 'CheckedTimesValue'}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 3">
 							<input id="startValue" class="value-input need-check"
@@ -141,7 +135,13 @@
 								data-bind="ntsNumberEditor: {name: '#[KAL003_44]', 
 								value: currentAtdItemCondition.compareStartValue, 
 								required: true, 
-								constraint: 'CheckedAmountValue'}" />
+								constraint: 'CheckedAmountValue',
+								option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: '', 
+                											width : '95'
+            												})}" />
 							<input id="endValue" class="value-input need-check"
 								style="width: 80px ! important"
 								data-bind="ntsNumberEditor: {
@@ -153,9 +153,9 @@
 										option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
-            												})
-									}" />
+                											placeholder: '', 
+                											width : '95'
+            												})}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 4">
 							<input id="startValue" class="value-input need-check"
