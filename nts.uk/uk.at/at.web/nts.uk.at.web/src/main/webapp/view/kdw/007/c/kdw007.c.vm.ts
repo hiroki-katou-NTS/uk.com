@@ -85,7 +85,10 @@ module nts.uk.at.view.kdw007.c.viewmodel {
             let self = this,
             listItems = [];
             _.forEach(lstItems, (item) => {
-                listItems.push({ id: item.attendanceItemId, code: item.attendanceItemDisplayNumber, name: item.attendanceItemName, operator: listType == 1 ? '+' : '-', displayOrder: item.attendanceItemDisplayNumber });
+                let operator = "";
+                if (listType == 1) operator = "+";
+                if (listType == 2) operator = "-"
+                listItems.push(new ItemValue(item.attendanceItemId, operator, item.attendanceItemDisplayNumber, item.attendanceItemName));
             });
             if (listType == 0) { // list All items
                 self.lstAllItems(listItems);
@@ -109,9 +112,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
                     return baseItem.code === parseInt(item);
                 });
                 if (targetItem) {
-                    self.lstAddSubItems.push(
-                        { id: targetItem.id, code: targetItem.code, name: targetItem.name, operator: '+' }
-                    );
+                    self.lstAddSubItems.push(new ItemValue(targetItem.id, "+", targetItem.code, targetItem.name));
                     self.lstAllItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
             });
@@ -126,9 +127,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
                     return baseItem.code === parseInt(item);
                 });
                 if (targetItem) {
-                    self.lstAddSubItems.push(
-                        { id: targetItem.id, code: targetItem.code, name: targetItem.name, operator: '-' }
-                    );
+                    self.lstAddSubItems.push(new ItemValue(targetItem.id, "-", targetItem.code, targetItem.name));
                     self.lstAllItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
             });
@@ -143,9 +142,7 @@ module nts.uk.at.view.kdw007.c.viewmodel {
                     return baseItem.code === parseInt(item);
                 });
                 if (targetItem) {
-                    self.lstAllItems.push(
-                        { code: targetItem.code, name: targetItem.name }
-                    );
+                    self.lstAllItems.push(new ItemValue(targetItem.id, "", targetItem.code, targetItem.name));
                     self.lstAddSubItems.remove((itemBase) => { return itemBase.code === parseInt(item) });
                 }
             });
@@ -155,9 +152,9 @@ module nts.uk.at.view.kdw007.c.viewmodel {
 
         sortGridList() {
             let self = this;
-            let lstAllItemsSorted = _.orderBy(self.lstAllItems(), ['displayOrder'], ['asc']);
+            let lstAllItemsSorted = _.orderBy(self.lstAllItems(), ['code'], ['asc']);
             self.lstAllItems(lstAllItemsSorted);
-            let lstAddSubItemsSorted = _.orderBy(self.lstAddSubItems(), ['operator', 'displayOrder'], ['asc', 'asc']);
+            let lstAddSubItemsSorted = _.orderBy(self.lstAddSubItems(), ['operator', 'code'], ['asc', 'asc']);
             self.lstAddSubItems(lstAddSubItemsSorted);
         }
 
@@ -183,6 +180,20 @@ module nts.uk.at.view.kdw007.c.viewmodel {
     enum ATTR {
         DAILY = 0,
         MONTHLY = 1
+    }
+    
+    class ItemValue {
+        id: number;
+        operator: string;
+        code: number;// aka display number
+        name: string; 
+        
+        constructor(id: number, operator: string, displayNumber: number, name: string) {
+            this.id = id;
+            this.operator = operator;
+            this.code = displayNumber;
+            this.name = name;
+        }
     }
 
 }
