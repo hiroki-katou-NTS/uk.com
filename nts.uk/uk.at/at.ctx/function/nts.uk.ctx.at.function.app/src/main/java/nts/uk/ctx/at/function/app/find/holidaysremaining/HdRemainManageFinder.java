@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.adapter.role.RoleExportRepoAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleExportRpAdapter;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
@@ -43,7 +43,7 @@ public class HdRemainManageFinder {
 	@Inject
 	private VariousVacationControlService variousVacationControlService;
 	@Inject
-	private RoleExportRepoAdapter roleExportRepoAdapter;
+	private RoleExportRpAdapter roleExportRepoAdapter;
 
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()

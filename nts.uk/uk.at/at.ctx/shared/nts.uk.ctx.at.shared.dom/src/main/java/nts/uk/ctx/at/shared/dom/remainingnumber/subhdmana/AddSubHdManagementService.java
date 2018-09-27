@@ -137,8 +137,8 @@ public class AddSubHdManagementService {
 		} else {
 			if (subHdManagementData.getCheckedHoliday()) {
 				errorList.addAll(this.checkHoliday(subHdManagementData.getDateHoliday(), closureDate, closureId));
-				if (errorList.contains("Msg_745")) {
-					errorList.set(errorList.indexOf("Msg_745"), "Msg_745_1");
+				if (errorList.contains("Msg_1439")) {
+					errorList.set(errorList.indexOf("Msg_1439"), "Msg_1439");
 				}
 			}
 			// ドメインモデル「休出管理データ」を読み込む
@@ -213,7 +213,7 @@ public class AddSubHdManagementService {
 		}
 		// 休出（年月日）と締め日をチェックする
 		if (closureDate.isPresent() && holidayDate != null && !closureDate.get().after(holidayDate)) {
-			errorList.add("Msg_745");
+			errorList.add("Msg_1439");
 			return errorList;
 		}
 		return errorList;
@@ -240,7 +240,7 @@ public class AddSubHdManagementService {
 		}
 		// 代休（年月日）と締め日をチェックする
 		if (closureDate.isPresent() && subHolidayDate != null && !closureDate.get().after(subHolidayDate)) {
-			errorList.add("Msg_746");
+			errorList.add("Msg_1440");
 		}
 
 		// 休出（年月日）と代休（年月日）をチェックする
@@ -253,11 +253,11 @@ public class AddSubHdManagementService {
 		if (checkSplit && splitDate.isPresent()) {
 			// 代休（年月日）と分割消化.代休（年月日）をチェックする
 			if (subHolidayDate != null && subHolidayDate.compareTo(splitDate.get()) == 0) {
-				errorList.add("Msg_744");
+				errorList.add("Msg_1441");
 			}
 			// 分割消化.代休（年月日）と締め日をチェックする
 			if (!closureDate.get().after(splitDate.get())) {
-				errorList.add("Msg_746_1");
+				errorList.add("Msg_1442");
 			}
 			// 分割消化.休出（年月日）と代休（年月日）をチェックする
 			if (checkHoliday) {
