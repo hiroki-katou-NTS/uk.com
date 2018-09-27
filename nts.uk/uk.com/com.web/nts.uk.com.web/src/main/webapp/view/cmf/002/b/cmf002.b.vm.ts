@@ -40,7 +40,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let self = this;
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
-            self.getListCategory();
+            self.startPage();
             self.initScreen(null);
             block.clear();
             self.selectedConditionSettingCode.subscribe((data) => {
@@ -139,16 +139,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }
         }
         
-        getListCategory(){
-            let self = this;
-            if (!self.roleAuthority) {
-                self.listCategory(null);
-                return;
-            }
-            service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
-                self.listCategory(data);             
-            });
-        }
         
         getCategoryName(cateId){
             let self = this;
@@ -349,6 +339,33 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     dialog.alertError(res);
             });
       
+        }
+        
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            
+            if (!self.roleAuthority) {
+                self.listCategory(null);
+                return;
+            }
+            let dfd = $.Deferred();
+            block.invisible();
+            $.when(
+                service.getCategory(self.roleAuthority)
+            ).done((
+                data: Array<Category>)=> {
+                if(data && data.length > 0) {
+                    self.listCategory(data);
+                }
+                dfd.resolve(self);
+            }).fail((error) => {
+                dialog.alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+
+            return dfd.promise();
         }
         
     }
