@@ -1314,7 +1314,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.conditionType() === 0) {
                         // If is compare with a fixed value
                         let rawValue = self.compareStartValue();
-                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+                        let textDisplayLeftCompare = rawValue == null ? "" : (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
                         self.displayLeftCompare(textDisplayLeftCompare);
                         self.displayRightCompare("");
                     } else {
@@ -1421,8 +1421,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, false) ? param.compareStartValue : null);
-            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, false) ? param.compareEndValue : null);
+            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, true) ? param.compareStartValue : null);
+            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, true) ? param.compareEndValue : null);
             self.compareOperator(param ? param.compareOperator : 0);
             self.setTextDisplay();
         }
