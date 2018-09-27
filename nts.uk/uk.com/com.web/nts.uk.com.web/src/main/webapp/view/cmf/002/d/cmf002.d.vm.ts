@@ -608,17 +608,17 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_NORMAL:
-                    if (_.isNil(self.searchNum())) {
+                    if (_.isEmpty(self.searchNum())) {
                         self.setError("D6_C4_4", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (_.isNil(self.searchNumStartVal())) {
+                    if (_.isEmpty(self.searchNumStartVal())) {
                         self.setError("D6_C4_5", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchNumEndVal())) {
+                    if (_.isEmpty(self.searchNumEndVal())) {
                         self.setError("D6_C4_6", "Msg_656");
                         checkRequired = true;
                     }
@@ -734,7 +734,9 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
-                if(searchCode.length > 20){
+ 
+                // 対象の値の桁数が「検索コード」の桁数より大きい場合
+                if (!self.searchCdValidator.validate(searchCode).isValid) {
                     self.setError(control, "Msg_1346");
                     return false;
                 }
@@ -771,11 +773,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                             return false;
                         }
                         break;
-                }
-                // 対象の値の桁数が「検索コード」の桁数より大きい場合
-                if (!self.searchCdValidator.validate(searchCode).isValid) {
-                    self.setError(control, "Msg_1346");
-                    return false;
                 }
             })
         }
