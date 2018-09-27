@@ -186,15 +186,18 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         }
 
         // 新規登録を実行する
+        createNew(){
+            let self = this;
+            self.selectedStandardOutputItemCode("");
+        }
         settingNewMode() {
             let self = this;
             self.isNewMode(true);
             self.currentStandardOutputItem(new model.StandardOutputItem(null, null, self.conditionCode(), 0, null));
             self.itemType(0);
-            self.categoryItems([]);
-            self.selectedStandardOutputItemCode("");
+            self.categoryItems([]);   
             self.setFocus();
-            errors.clearAll();
+            setTimeout(function() { errors.clearAll(); }, 50);    
         }
 
         isActiveSymbolAnd() {
@@ -289,6 +292,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 }
             }
             categoryItems = _.sortBy(categoryItems, function (item) { return parseInt(item.displayOrder); });
+            if (categoryItems.length > 0) {
+                $('#C10_1').ntsError('clear');
+            }
             self.categoryItems(categoryItems);
         }
 
@@ -428,9 +434,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         info({ messageId: "Msg_16" }).then(() => {
                             self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                                 if (self.listStandardOutputItem().length == 0) {
-                                    self.selectedStandardOutputItemCode(null);
-                                    self.isNewMode(true);                                 
-                                    self.setFocus();
+                                    self.selectedStandardOutputItemCode("");
                                 } else {
                                     if (index == self.listStandardOutputItem().length) {
                                         self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
@@ -438,8 +442,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                         self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
                                     }
                                 }
-                                self.isUpdateExecution(true);
-                                errors.clearAll();
+                                self.isUpdateExecution(true);                       
                             });
                         });
                     }).fail(function(error) {

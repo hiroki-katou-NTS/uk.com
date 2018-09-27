@@ -316,7 +316,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String settingName = "";
 		if (stdOutputCondSet != null)
 			settingName = stdOutputCondSet.getConditionSetName().v();
-		String fileName = exOutSetting.getConditionSetCd() + settingName + processingId;
+		String fileName = exOutSetting.getConditionSetCd() + settingName + GeneralDateTime.now().toString("yyyyMMddHHmmss");
 
 		Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(processingId);
 		if (!exOutOpMngOptional.isPresent()) {
