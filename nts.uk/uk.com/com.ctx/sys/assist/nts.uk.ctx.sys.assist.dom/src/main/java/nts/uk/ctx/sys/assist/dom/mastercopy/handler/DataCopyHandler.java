@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.StringUtils;
@@ -104,6 +105,12 @@ public class DataCopyHandler {
                     // ignore data existed
                     for (int i = 0; i < sourceSize; i++) {
                         Object[] dataAttr = (Object[]) sourceObjects.get(i);
+                        // =1 key
+                        if (keyCheck == 0 && !CollectionUtil.isEmpty(oldDatas)) {
+                            sourceObjects.remove(i);
+                            sourceSize--;
+                            break;
+                        }
                         for (int j = 0; j < oldDatas.size(); j++) {
                             Object[] targetAttr = (Object[]) oldDatas.get(j);
                             // compare keys and remove
