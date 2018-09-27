@@ -21,6 +21,7 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue 
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedNumberMonthsValue
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay
                 <!-- monthly -->
                 nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MinMaxInteger
@@ -626,7 +627,7 @@
                                         </td>
                                         <td class="pad_left_5px">
                                             <!-- B1-2, B1-3-->
-                                            <div id="cbxTypeCheckWorkRecordcategory7" class="combo-box" data-bind="ntsComboBox: {
+                                            <div tabindex ="1" id="cbxTypeCheckWorkRecordcategory7" class="combo-box" data-bind="ntsComboBox: {
                                               name:'#[KAL003_27]',
                                               options: $parent.listEnumRoleType,
                                               optionsValue: 'value',
@@ -649,7 +650,7 @@
                                             <td class="pad_left_5px">
                                             <div id = "checkCondition"> 
                                                 <com:ko bind="haveTypeVacation() === true" tag="if" >
-                                                    <div class="combo-box" data-bind="ntsComboBox: {
+                                                    <div tabindex ="2" class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listTypeCheckVacation,
                                                 optionsValue: 'value',
@@ -664,7 +665,7 @@
                                                     </div>
                                                 </com:ko>
                                                 <com:ko bind="haveComboboxFrame() === true" tag="if">
-                                                    <div style="margin-left: 15px;"  class="combo-box" data-bind="ntsComboBox: {
+                                                    <div tabindex ="3" style="margin-left: 15px;"  class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listSpecialholidayframe,
                                                 optionsValue: 'specialHdFrameNo',
@@ -685,7 +686,7 @@
                                                 <com:ko bind="haveSelect() === true" tag="if">
                                                 	<br />
                                                     <!-- bind select -->
-                                                        <button  id="btnSettingBA2_2" style = " margin-bottom: -2px" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
+                                                        <button  tabindex ="4" id="btnSettingBA2_2" style = " margin-bottom: -2px" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                         <input id="display-target-item" style = "margin-right : 70px"  
                                                         class="display-list-label nts-input "
                                                          data-bind="ntsTextEditor: {
@@ -696,7 +697,7 @@
                                                 </com:ko>
                                                 <com:ko bind="haveCombobox() === true" tag="if">
                                                     <!-- bind combo -->
-                                                    <div style="margin-top: 3px;" class="combo-box" data-bind="ntsComboBox: {
+                                                    <div tabindex ="5" style="margin-top: 3px;" class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: function(){
                                                 	if($data.typeCheckItem() !== 1 &amp;&amp; $data.typeCheckItem() !== 2){
@@ -722,7 +723,7 @@
                                                     <!-- bind input -->
                                                     <span data-bind="text : textLabel"></span>
                                                     <com:ko bind="inputs" tag="foreach">
-                                                        <input style="width: 50px;" data-bind="ntsNumberEditor: {
+                                                        <input tabindex ="6" style="width: 50px;" data-bind="ntsNumberEditor: {
                                                         name :inputName,
                                                         value: value ,
                                                         option : 
@@ -742,13 +743,13 @@
                                                 <com:ko bind="haveInput() === 1 || haveInput() === 2" tag="if">
                                                     <!-- bind input -->
                                                     <span  data-bind="text : textLabel"></span>
-                                                    <input style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_88]',constraint: 'MinMaxTime', value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}" />
+                                                    <input tabindex ="6" style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_88]',constraint: 'MinMaxTime', value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}" />
                                                 </com:ko>
                                                 <com:ko bind="haveInput() === 3" tag="if">
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 93px;margin-left: 15px;" data-bind="ntsNumberEditor: {name : inputName ,value: value,
+                                                            <input tabindex ="6" style="width: 93px;margin-left: 15px;" data-bind="ntsNumberEditor: {name : inputName ,value: value,
                                                             option : 
 	                                                        	new nts.uk.ui.option.NumberEditorOption({
 																grouplength: 9,
@@ -765,14 +766,75 @@
                                                     <span data-bind="text : textLabel"></span>
                                                 </com:ko>
                                                 
-                                                <com:ko bind="haveInput() === 4 || haveInput() === 5 ||haveInput() === 6 ||haveInput() === 7 " tag="if">
+                                                <com:ko bind="haveInput() === 4" tag="if">
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 75px;" data-bind="ntsNumberEditor: {name : inputName ,  value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
+                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            data-bind="ntsTimeEditor: {name : inputName ,  value: value ,
+                                                            required: required,mode : 'time',inputFormat: 'time',
+                                                            constraint: 'CheckedTimeDuration',enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {name : inputName , value: value ,required: required,mode : 'time',inputFormat: 'time',constraint: 'MinMaxTime',enable : enable}, attr: { id: inputId}" />
+                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            data-bind="ntsTimeEditor: {name : inputName , value: value ,
+                                                            required: required,mode : 'time',inputFormat: 'time',
+                                                            constraint: 'CheckedTimeDuration',enable : enable}, attr: { id: inputId}" />
+                                                        </com:ko>
+                                                    </com:ko>
+                                                    <span  data-bind="text : textLabel"></span>
+                                                </com:ko>
+                                                <com:ko bind="haveInput() === 5" tag="if">
+                                                    <!-- bind input -->
+                                                    <com:ko bind="inputs" tag="foreach">
+                                                        <com:ko bind="typeInput() === 0" tag="if">
+                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            data-bind="ntsNumberEditor: {name : inputName ,  
+                                                            value: value ,required: required,enable : enable, 
+                                                            constraint: 'CheckedTimesValueDay'}, attr: { id: inputId}" />
+                                                        </com:ko>
+                                                        <com:ko bind="typeInput() === 1" tag="if">
+                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            data-bind="ntsNumberEditor: {name : inputName , 
+                                                            value: value ,required: required,mode : 'time',
+                                                            inputFormat: 'time',constraint: 'CheckedTimesValueDay',enable : enable}, attr: { id: inputId}" />
+                                                        </com:ko>
+                                                    </com:ko>
+                                                    <span  data-bind="text : textLabel"></span>
+                                                </com:ko>
+                                                <com:ko bind="haveInput() === 6" tag="if">
+                                                    <!-- bind input -->
+                                                    <com:ko bind="inputs" tag="foreach">
+                                                        <com:ko bind="typeInput() === 0" tag="if">
+                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            data-bind="ntsNumberEditor: {name : inputName ,  
+                                                            value: value ,required: required,enable : enable, 
+                                                            constraint: 'CheckedTimesValue'}, attr: { id: inputId}" />
+                                                        </com:ko>
+                                                        <com:ko bind="typeInput() === 1" tag="if">
+                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            data-bind="ntsNumberEditor: {name : inputName , value: value ,
+                                                            required: required,mode : 'time',inputFormat: 'time',
+                                                            constraint: 'CheckedTimesValue',enable : enable}, attr: { id: inputId}" />
+                                                        </com:ko>
+                                                    </com:ko>
+                                                    <span  data-bind="text : textLabel"></span>
+                                                </com:ko>
+                                                <com:ko bind="haveInput() === 7" tag="if">
+                                                    <!-- bind input -->
+                                                    <com:ko bind="inputs" tag="foreach">
+                                                        <com:ko bind="typeInput() === 0" tag="if">
+                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            data-bind="ntsNumberEditor: {name : inputName ,  
+                                                            value: value ,required: required,enable : enable, 
+                                                            constraint: 'CheckedAmountValue'}, attr: { id: inputId}" />
+                                                        </com:ko>
+                                                        <com:ko bind="typeInput() === 1" tag="if">
+                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            data-bind="ntsNumberEditor: {name : inputName , 
+                                                            value: value ,required: required,mode : 'time',
+                                                            inputFormat: 'time',constraint: 'CheckedAmountValue',
+                                                            enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
                                                     <span  data-bind="text : textLabel"></span>
