@@ -889,7 +889,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 											itemValue.setValueType(ValueType.TIME.value);
 											break;
 										case NUMBER:
-											itemValue.setValueType(ValueType.COUNT.value);
+											itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
 											break;
 										case AMOUNT:
 											itemValue.setValueType(ValueType.AMOUNT.value);
@@ -1101,7 +1101,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								itemValue.setValueType(ValueType.TIME.value);
 								break;
 							case NUMBER:
-								itemValue.setValueType(ValueType.COUNT.value);
+								itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
 								break;
 							case AMOUNT:
 								itemValue.setValueType(ValueType.AMOUNT.value);
