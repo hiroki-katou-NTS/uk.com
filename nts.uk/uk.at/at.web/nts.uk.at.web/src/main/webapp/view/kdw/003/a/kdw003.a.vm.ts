@@ -4108,17 +4108,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.noOfHolidaysOld())) {
+                    //if (Number(val) != Number(self.noOfHolidaysOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.absentDeductionTimeOld())) {
+                    //if (Number(val) != Number(self.absentDeductionTimeOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
         };
