@@ -41,6 +41,18 @@ public class WwfdtAppRootConfirm extends UkJpaEntity {
 	@Column(name="ROOT_TYPE")
 	private Integer rootType;
 	
+	@Column(name="YEARMONTH")
+	private Integer yearMonth;
+	
+	@Column(name="CLOSURE_ID")
+	private Integer closureID;
+	
+	@Column(name="CLOSURE_DAY")
+	private Integer closureDay;
+	
+	@Column(name="LAST_DAY_FLG")
+	private Integer lastDayFlg;
+	
 	@OneToMany(targetEntity=WwfdtAppPhaseConfirm.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootConfirm", orphanRemoval = true)
 	@JoinTable(name = "WWFDT_APP_PHASE_CONFIRM")
 	public List<WwfdtAppPhaseConfirm> listWwfdtAppPhaseConfirm;

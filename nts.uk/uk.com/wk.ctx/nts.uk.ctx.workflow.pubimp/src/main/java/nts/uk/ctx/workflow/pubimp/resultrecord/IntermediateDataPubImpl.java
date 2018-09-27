@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -280,7 +281,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		String rootID = IdentifierUtil.randomUniqueId();
 		
 		AppRootConfirm newDomain = new AppRootConfirm(rootID, companyID, employeeID, date,
-				EnumAdaptor.valueOf(rootType, RecordRootType.class), Collections.emptyList());
+				EnumAdaptor.valueOf(rootType, RecordRootType.class), Collections.emptyList(),
+				Optional.empty(), Optional.empty(), Optional.empty());
 		
 		this.appRootConfirmRepository.insert(newDomain);
 	}

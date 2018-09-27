@@ -19,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
@@ -32,6 +33,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppPhaseConfirmPK;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 /**
  * 
  * @author Doan Duy Hung
@@ -51,6 +53,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER) phaseJoin " +
 			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
+			"appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, "+
 			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+   
 			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
 			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
@@ -196,6 +199,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 				appRootConfirm.getEmployeeID(), 
 				appRootConfirm.getRecordDate(), 
 				appRootConfirm.getRootType().value, 
+				appRootConfirm.getYearMonth().map(x -> x.v()).orElse(null),
+				appRootConfirm.getClosureID().orElse(null),
+				appRootConfirm.getClosureDate().map(x -> x.getClosureDay().v()).orElse(null),
+				appRootConfirm.getClosureDate().map(x -> x.getLastDayOfMonth()?1:0).orElse(null),
 				appRootConfirm.getListAppPhase().stream()
 					.map(x -> new WwfdtAppPhaseConfirm(
 							new WwfdpAppPhaseConfirmPK(
@@ -225,6 +232,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					GeneralDate recordDate = x.getValue().get(0).getRecordDate();
 					RecordRootType rootType = EnumAdaptor.valueOf(x.getValue().get(0).getRootType(), RecordRootType.class);
 					String employeeID = x.getValue().get(0).getEmployeeID();
+					Integer yearMonth = x.getValue().get(0).getYearMonth();
+					Integer closureID = x.getValue().get(0).getClosureID();
+					Integer closureDay = x.getValue().get(0).getClosureDay();
+					Integer lastDayFlg = x.getValue().get(0).getLastDayFlg();
 					List<AppPhaseConfirm> listAppPhase = new ArrayList<>();
 					Optional<FullJoinAppRootConfirm> isEmptyConfirm = x.getValue().stream().filter(y1 -> y1.getPhaseOrder()==null).findAny();
 					if(!isEmptyConfirm.isPresent()){
@@ -244,7 +255,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 							return new AppPhaseConfirm(phaseOrder, appPhaseAtr, listAppFrame);
 						}).collect(Collectors.toList());
 					}
-					return new AppRootConfirm(rootID, companyID, employeeID, recordDate, rootType, listAppPhase);
+					return new AppRootConfirm(rootID, companyID, employeeID, recordDate, rootType, listAppPhase,
+							yearMonth == null ? Optional.empty() : Optional.of(new YearMonth(yearMonth)),
+							closureID == null ? Optional.empty() : Optional.of(closureID),
+							closureDay == null ?  Optional.empty() : Optional.of(new ClosureDate(closureDay, lastDayFlg == 1)));
 				}).collect(Collectors.toList());
 	}
 	
@@ -258,6 +272,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 						rs.getString("EMPLOYEE_ID"), 
 						GeneralDate.fromString(rs.getString("RECORD_DATE"), "yyyy-MM-dd HH:mm:ss"), 
 						Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
+						Strings.isNotBlank(rs.getString("YEARMONTH")) ? Integer.valueOf(rs.getString("YEARMONTH")) : null, 
+						Strings.isNotBlank(rs.getString("CLOSURE_ID")) ? Integer.valueOf(rs.getString("CLOSURE_ID")) : null, 
+						Strings.isNotBlank(rs.getString("CLOSURE_DAY")) ? Integer.valueOf(rs.getString("CLOSURE_DAY")) : null, 
+						Strings.isNotBlank(rs.getString("LAST_DAY_FLG")) ? Integer.valueOf(rs.getString("LAST_DAY_FLG")) : null, 
 						Strings.isNotBlank(rs.getString("PHASE_ORDER")) ? Integer.valueOf(rs.getString("PHASE_ORDER")) : null, 
 						Strings.isNotBlank(rs.getString("APP_PHASE_ATR")) ? Integer.valueOf(rs.getString("APP_PHASE_ATR")) : null, 
 						Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
@@ -303,7 +321,8 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	public void createNewStatus(String companyID, String employeeID, GeneralDate date, RecordRootType rootType) {
 		String rootID = UUID.randomUUID().toString();
-		AppRootConfirm appRootInstanceNew = new AppRootConfirm(rootID, companyID, employeeID, date, rootType, Collections.emptyList());
+		AppRootConfirm appRootInstanceNew = new AppRootConfirm(rootID, companyID, employeeID, date, rootType, 
+				Collections.emptyList(), Optional.empty(), Optional.empty(), Optional.empty());
 		this.insert(appRootInstanceNew);
 	}
 
