@@ -144,7 +144,10 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
             self.setFocusItem(FOCUS_TYPE.DEL_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
             self.selectedConvertDetail.valueHasMutated();
-
+            if (self.codeConvertCurrent().listCdConvertDetail().length == 0) {
+                self.btnAddCdConvertDetails();
+                self.selectedConvertDetail(0);
+            }
             block.clear();
              $('#fixed-table').focus();
         } // END Remove table>tbody>tr
