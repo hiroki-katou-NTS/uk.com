@@ -1034,10 +1034,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public AffEmploymentHistoryDto getAffEmploymentHistory(String companyId, String employeeId, DateRange dateRange) {
+	public AffEmploymentHistoryDto getAffEmploymentHistory(String companyId, String employeeId, GeneralDate date) {
 		List<BsymtEmploymentHistItem> entity = this.queryProxy()
 				.query(SEL_EMPLOYMENT_HISTORY, BsymtEmploymentHistItem.class).setParameter("empId", employeeId)
-				.setParameter("baseDate", dateRange.getEndDate())
+				.setParameter("baseDate", date)
 				.setParameter("companyId", companyId).getList();
 		return entity.isEmpty() ? null : new AffEmploymentHistoryDto(entity.get(0).empCode, employeeId);
 	}

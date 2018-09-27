@@ -1112,10 +1112,9 @@ public class DailyPerformanceCorrectionProcessor {
 		else return true;
 	}
 	
-	public String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
-		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
-		return employmentCode;
+	public String getEmploymentCode(String companyId, GeneralDate date, String sId) {
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, date);
+		return employment == null ? "" : employment.getEmploymentCode();
 	}
 
 	public List<DailyPerformanceAuthorityDto> getAuthority(DailyPerformanceCorrectionDto screenDto) {
@@ -1673,7 +1672,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto){
 		
 		if (dateRange != null){
-			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			return dateRange;
 		}
 
@@ -1683,7 +1682,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
 			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
-			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			return dateRange;
 		} else {
 
@@ -1692,7 +1691,7 @@ public class DailyPerformanceCorrectionProcessor {
 				dateRefer = objectShare.getEndDate();
 			}
             
-			screenDto.setEmploymentCode( getEmploymentCode(companyId, new DateRange(null, dateRefer), sId));
+			screenDto.setEmploymentCode( getEmploymentCode(companyId, dateRefer, sId));
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, screenDto.getEmploymentCode());
 
