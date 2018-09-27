@@ -10,5 +10,4 @@ module nts.uk.com.view.cmf002.b {
         let screenModel = new viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
         });
-    });
 }
