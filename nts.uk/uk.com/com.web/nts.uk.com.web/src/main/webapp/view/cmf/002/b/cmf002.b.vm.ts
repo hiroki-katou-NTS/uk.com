@@ -21,6 +21,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         listCategory:                   KnockoutObservableArray<Category> = ko.observableArray([]);
         categoryName:                   KnockoutObservable<string>       = ko.observable('');
         outItemCd:                      KnockoutObservable<string>       = ko.observable('');
+        roleAuthority: any;
         conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
             cId: '',
             conditionSetCode: '',
@@ -39,7 +40,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let self = this;
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
-            self.getListCategory();
+            self.startPage();
             self.initScreen(null);
             block.clear();
             self.selectedConditionSettingCode.subscribe((data) => {
@@ -138,16 +139,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }
         }
         
-        getListCategory(){
-            let self = this;
-            if (!self.roleAuthority) {
-                self.listCategory(null);
-                return;
-            }
-            service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
-                self.listCategory(data);             
-            });
-        }
         
         getCategoryName(cateId){
             let self = this;
@@ -238,8 +229,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         openVScreen(){
             let self = this;
             setShared('CMF002_V_PARAMS', {
-                    categoryId :self.conditionSetData().categoryId() || ''});
-            
+                categoryId :self.conditionSetData().categoryId() || '',
+                roleAuthority: self.roleAuthority
+            });
+ 
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
@@ -346,6 +339,33 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     dialog.alertError(res);
             });
       
+        }
+        
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            
+            if (!self.roleAuthority) {
+                self.listCategory(null);
+                return;
+            }
+            let dfd = $.Deferred();
+            block.invisible();
+            $.when(
+                service.getCategory(self.roleAuthority)
+            ).done((
+                data: Array<Category>)=> {
+                if(data && data.length > 0) {
+                    self.listCategory(data);
+                }
+                dfd.resolve(self);
+            }).fail((error) => {
+                dialog.alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+
+            return dfd.promise();
         }
         
     }

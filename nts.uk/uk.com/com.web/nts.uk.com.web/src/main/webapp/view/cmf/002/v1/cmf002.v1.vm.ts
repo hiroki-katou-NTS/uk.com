@@ -18,10 +18,12 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
             var self = this;
             self.selectedCategoryCode = ko.observable(new Category('', 0, '', 0, 0, 0, 0, 0, '', '', 0, true));
             
-            let category = getShared("CMF002_V_PARAMS");
-            if (category.categoryId !== '') {
-                self.currentCode(category.categoryId);
-            }
+            let params = getShared("CMF002_V_PARAMS");
+            if (params.categoryId !== '') {
+                self.currentCode(params.categoryId);
+            }        
+            self.roleAuthority = params.roleAuthority;
+            
             self.currentCode.subscribe( categoryId => {
                 let getCategoryId = _.find(self.listCategoryItem(), function(x) { return x.categoryId == categoryId; });
                 self.selectedCategoryCode(getCategoryId);
@@ -33,7 +35,6 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
             var dfd = $.Deferred();
             block.invisible();
 
-            self.roleAuthority = getShared("CMF002B_PARAMS");
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 if (data && data.length) {
                     let sortCategory = _.sortBy(data, ['categoryId']);

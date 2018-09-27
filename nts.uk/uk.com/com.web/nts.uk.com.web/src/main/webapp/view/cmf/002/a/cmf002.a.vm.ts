@@ -48,7 +48,7 @@ module nts.uk.com.view.cmf002.a.viewmodel {
          */
         settingScreen(): void {
             let self = this;
-            jump("/view/cmf/002/b/index.xhtml", self.roleAuthority);
+            jump("/view/cmf/002/b/index.xhtml", {roleAuthority: self.roleAuthority});
         }
 
         /**
