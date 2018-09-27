@@ -928,7 +928,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var header = ui.element.find("th[role='columnheader']");
                 ui.element.parent().addClass("default-overflow");
                 ui.element.parent().css("overflow-x","");
-                let screenModel = new viewmodel.ScreenModel();
+
                 let helpButton = $('<button>', {
                     text: getText('?'),
                     'data-bind': 'ntsHelpButton: { textId: "CLI003_68", textParams: ["{#CLI003_68}"], position: "right center" }'
@@ -963,7 +963,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         container.css("overflow-x","auto");
                         $("#igGridLog").data("icon-showed", null);
                     }
-                })
+                });
                 //  binding new viewmodel for only button help
                 ko.applyBindings({}, helpButton[0]);
             });
