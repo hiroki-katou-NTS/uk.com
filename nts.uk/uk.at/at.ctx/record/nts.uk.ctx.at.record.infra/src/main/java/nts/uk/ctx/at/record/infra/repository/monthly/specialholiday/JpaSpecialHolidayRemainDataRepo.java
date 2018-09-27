@@ -29,8 +29,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.UseNumber;
 import nts.uk.ctx.at.record.infra.entity.monthly.specialholiday.KrcdtMonSpRemain;
 import nts.uk.ctx.at.record.infra.entity.monthly.specialholiday.KrcdtMonSpRemainPK;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless

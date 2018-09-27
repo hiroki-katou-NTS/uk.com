@@ -1408,7 +1408,7 @@ module nts.layout {
                                 selectedCodes: [ko.toJS(data.value)],
                                 baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
                                 isMultiple: false,
-                                selectedSystemType: 5,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                                 isrestrictionOfReferenceRange: false,
                                 showNoSelection: !data.required,
                                 isShowBaseDate: false

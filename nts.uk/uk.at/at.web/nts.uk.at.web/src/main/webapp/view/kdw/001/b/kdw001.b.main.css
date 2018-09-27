@@ -52,7 +52,7 @@
 
 #area2 #checkBoxArea .checkbox_container{
 	width: 250px;
-	height: 25px;
+	height: 12px;
 	display:inline-block;
 }
 
@@ -79,7 +79,7 @@
 
 #area2 {
 	width: 543px;
-	height: 177px;
+	height: 150px;
 	margin-left: 55px;
 	margin-top:11px;
 }

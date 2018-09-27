@@ -973,7 +973,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
 
                 let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0) && checkDataCare;
-                if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items)) {
+                if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items) || self.flagCalculation) {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataParent).done((dataAfter) => {
                         // alert("done");
@@ -1601,7 +1601,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (_.isEmpty(data.lstEmployee) && _.isEmpty(data.lstControlDisplayItem.lstHeader)) {
                          self.destroyGrid();
                          self.processFlex(data, false);
-                         self.hasEmployee = false;
+                         //self.hasEmployee = false;
 //                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
 //                            return;
 //                        });
@@ -2332,12 +2332,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         destroyGrid() {
-            $("#dpGrid").mGrid("destroy");
-            //            $("#dpGrid").empty();
-            //            $("#dpGrid").remove();
-            //            $(".nts-grid-sheet-buttons").remove();
-            //            $('<table id="dpGrid"></table>').appendTo('#gid');
-            $("#dpGrid").off();
+            if ($("#dpGrid").hasClass("mgrid")) {
+                $("#dpGrid").mGrid("destroy");
+                $("#dpGrid").removeClass("mgrid");
+                $("#dpGrid").off();
+            }
         }
 
         setColorWeekend() {

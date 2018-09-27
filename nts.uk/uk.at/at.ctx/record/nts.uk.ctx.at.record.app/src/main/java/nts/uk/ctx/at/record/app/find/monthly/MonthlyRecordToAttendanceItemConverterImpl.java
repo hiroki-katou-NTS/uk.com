@@ -32,8 +32,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAtt
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public class MonthlyRecordToAttendanceItemConverterImpl implements MonthlyRecordToAttendanceItemConverter {
 
