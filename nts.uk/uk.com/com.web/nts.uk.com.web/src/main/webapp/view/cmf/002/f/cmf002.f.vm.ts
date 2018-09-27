@@ -44,6 +44,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             block.invisible();
             service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
                 if (data && data.length) {
+                    _.sortBy(data, [function(o) { return o.outputItemCode; }]);
                     self.outputItemList(data);
                 }
             })
@@ -126,6 +127,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                         info({ messageId: "Msg_15" });
                         service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
                             if (data && data.length) {
+                                _.sortBy(data, [function(o) { return o.outputItemCode; }]);
                                 self.outputItemList(data);
                             }
                         })
@@ -133,7 +135,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                     }).always(function() {
                         block.clear();
                     });
-                } else {
+                    } else {
                     alertError({ messageId: 'MAX 999 dang QA' });
                     block.clear();
                 }
