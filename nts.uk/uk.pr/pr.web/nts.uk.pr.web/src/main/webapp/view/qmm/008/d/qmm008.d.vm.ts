@@ -110,6 +110,7 @@ module nts.uk.pr.view.qmm008.d {
                 self.detail().welfarePensionPrefectureNo(self.selectedNoD38);
                 self.isEnableBtnDelete(true);
 
+                nts.uk.ui.errors.clearAll();
                 $('.nts-input').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return
@@ -155,6 +156,7 @@ module nts.uk.pr.view.qmm008.d {
              */
             private create(): void {
                 let self = this;
+                nts.uk.ui.errors.clearAll();
                 self.detail(new SocialOfficeDetail());
                 self.isEnableCode(true);
                 self.currentCode(null);
