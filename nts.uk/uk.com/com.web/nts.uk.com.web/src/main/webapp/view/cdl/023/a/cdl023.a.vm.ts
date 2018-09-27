@@ -99,7 +99,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             
             // if not override, remove items is saved setting.
             _.remove(self.lstSelected(), function(obj) {               
-                return _.find(self.itemListSetting, (item) => { return item.id == obj; } ) != undefined;
+                return _.find(self.itemListSetting, (item) => { return item == obj; } ) != undefined;
             });
             return self.lstSelected();
         }
@@ -162,6 +162,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL008Cancel';
                     
                     // set data share
+                    shareData.selectedSystemType=2;
                     shareData.baseDate = self.baseDate;
                     shareData.selectedCodes = self.lstSelected();
                     break;

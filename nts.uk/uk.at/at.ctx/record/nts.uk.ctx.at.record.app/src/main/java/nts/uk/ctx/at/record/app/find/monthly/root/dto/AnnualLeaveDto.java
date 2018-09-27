@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -54,7 +55,7 @@ public class AnnualLeaveDto implements ItemConst {
 						remainingNumber == null ? new AnnualLeaveRemainingNumber()  : remainingNumber.toDomain(), 
 						remainingNumberBeforeGrant == null ? new AnnualLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(), 
 						Optional.ofNullable(remainingNumberAfterGrant == null ? null : remainingNumberAfterGrant.toDomain()),
-						undigestedNumber == null ? null : undigestedNumber.toDomain());
+						undigestedNumber == null ? new AnnualLeaveUndigestedNumber() : undigestedNumber.toDomain());
 	}
 	
 	public static AnnualLeaveDto from(RealAnnualLeave domain){

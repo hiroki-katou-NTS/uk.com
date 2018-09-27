@@ -230,19 +230,34 @@ module nts.uk.at.view.kdl003.a {
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTypeCodes)) {
                     service.findWorkTypeByCodes(self.callerParameter.workTypeCodes)
                         .done(function(workTypeList: Array<WorkType>) {
-                            self.listWorkType(workTypeList);
+                            let workTypes = self.sortbyList(_.uniqBy(workTypeList, 'workTypeCode'));
+                            self.listWorkType(workTypes);
                             dfd.resolve();
                         });
                 } else {
                     // Find all work type.
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
-                            self.listWorkType(workTypeList);
+                            let workTypes = self.sortbyList(_.uniqBy(workTypeList, 'workTypeCode'));
+                            self.listWorkType(workTypes);
                             dfd.resolve();
                         });
                 }
                 return dfd.promise();
             }
+            
+            /**
+         * sort list by:
+         * 1. dispOrder
+         * 2. Code
+         */
+        sortbyList(lstItem: Array<any>): Array<any>{
+            let lwt : Array<any> = [];
+            if (lstItem && !!lstItem.length) {
+                lwt = _.orderBy(lstItem, ['dispOrder', 'workTypeCode'], ['asc', 'asc']);
+            }
+            return lwt;
+        }
 
             /**
              * Get Time By Selected Code 

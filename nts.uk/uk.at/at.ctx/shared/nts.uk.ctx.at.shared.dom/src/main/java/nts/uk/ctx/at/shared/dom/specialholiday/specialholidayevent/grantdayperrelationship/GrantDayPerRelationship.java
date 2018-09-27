@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +22,6 @@ public class GrantDayPerRelationship extends AggregateRoot {
 
 	/* 忌引とする */
 	private UseAtr makeInvitation;
-
+	/**続柄に対する上限日数*/
+	private List<GrantDayRelationship> lstGrandDayRelaShip;
 }

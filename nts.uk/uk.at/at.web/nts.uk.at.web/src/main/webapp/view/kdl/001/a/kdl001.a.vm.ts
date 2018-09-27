@@ -15,6 +15,7 @@ module nts.uk.at.view.kdl001.a {
             endTime: KnockoutObservable<number>;
             isEnableSwitchButton: KnockoutObservable<boolean> = ko.observable(false);
             gridHeight: number = 260;
+            initialWorkTimeCodes: Array<String>;
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
@@ -41,6 +42,7 @@ module nts.uk.at.view.kdl001.a {
                 self.endTimeOption = ko.observable(1);
                 self.endTime = ko.observable('');
                 self.selectAbleItemList = ko.observableArray([]);
+                self.initialWorkTimeCodes = ko.observableArray([]);
             }
 
             startPage(): JQueryPromise<any> {
@@ -79,13 +81,16 @@ module nts.uk.at.view.kdl001.a {
                 if (!nts.uk.util.isNullOrEmpty(data)) {
                     self.selectAbleItemList(self.selectAbleItemList().concat(_.map(data, item => { return new WorkTimeSet(item) })));
                 }
+                
+                // Set initial work time list.
+                self.initialWorkTimeCodes = _.map(self.selectAbleItemList(), function(item) { return item.code })
             }
 
             search() {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
-                    codelist: _.map(self.selectAbleItemList(), function(item) { return item.code }),
+                    codelist: self.initialWorkTimeCodes,
                     startTime: nts.uk.util.isNullOrEmpty(self.startTime()) ? null : self.startTime(),
                     endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? null : self.endTime()
                 }
@@ -151,9 +156,9 @@ module nts.uk.at.view.kdl001.a {
             }
 
             getSelectedTimeItems(codes) {
-                let self = this,
-                    timeItems = _.filter(self.selectAbleItemList(), item => { return codes.indexOf(item.code) > -1 }),
-                    mappedItems = _.map(timeItems, item => { return new TimeItem(item) })
+                let self = this;
+                var timeItems = _.filter(self.selectAbleItemList(), item => { return codes.indexOf(item.code) > -1 });
+                var mappedItems = _.map(timeItems, item => { return new TimeItem(item) });
                 return mappedItems;
             }
 

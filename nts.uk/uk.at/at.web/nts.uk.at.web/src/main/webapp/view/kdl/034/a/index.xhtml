@@ -57,7 +57,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button tabindex = "3" class="x-large proceed"
-					data-bind="click: submitAndCloseDialog">#{i18n.getText('KDL034_15')}</button>
+					data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KDL034_15')}</button>
 				<button tabindex = "4" data-bind="click: closeDialog">#{i18n.getText('KDL034_16')}</button>
 			</div>
 		</ui:define>

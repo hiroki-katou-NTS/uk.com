@@ -81,6 +81,7 @@ module nts.uk.at.view.kmk002.a {
             applyFormula: KnockoutObservable<string>;
             selectedFormulaAbove: number;
             selectedFormulaBelow: number;
+            unit: KnockoutObservable<string>;
 
             // Switch button data source
             usageClsDatasource: KnockoutObservableArray<any>;
@@ -89,7 +90,7 @@ module nts.uk.at.view.kmk002.a {
             atrDataSource: EnumConstantDto[];
 
             // function
-            getOptItemNoAbove: () => Array<string>;
+            getOptItemNoAbove: () => Array<number>;
 
             // flag
             hasChanged: boolean;
@@ -98,6 +99,7 @@ module nts.uk.at.view.kmk002.a {
             isTimeSelected: KnockoutObservable<boolean>;
             isNumberSelected: KnockoutObservable<boolean>;
             isAmountSelected: KnockoutObservable<boolean>;
+            enableUnit: KnockoutComputed<boolean>;
             isCheckedFromChild = false;
 
             // stash
@@ -106,7 +108,7 @@ module nts.uk.at.view.kmk002.a {
             optionalItemDtoStash: OptionalItemDto;
 
             constructor() {
-                this.optionalItemNo = ko.observable('');
+                this.optionalItemNo = ko.observable(null);
                 this.optionalItemName = ko.observable('');
                 this.optionalItemAtr = ko.observable(null);
                 this.usageAtr = ko.observable(0);
@@ -117,6 +119,7 @@ module nts.uk.at.view.kmk002.a {
                 this.applyFormula = ko.observable('');
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
+                this.unit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -125,6 +128,9 @@ module nts.uk.at.view.kmk002.a {
                 this.isTimeSelected = ko.observable(false);
                 this.isAmountSelected = ko.observable(false);
                 this.isNumberSelected = ko.observable(false);
+                this.enableUnit = ko.computed(() => {
+                    return this.isNumberSelected() || this.isAmountSelected();
+                });
 
                 // init datasource
                 this.initDatasource();
@@ -242,14 +248,12 @@ module nts.uk.at.view.kmk002.a {
                     // or new value == value in stash
                     // then do nothing
                     if (self.hasChanged || value == self.performanceAtrStash) {
-                        Formula.performanceAtr = value; // param for screen C
                         return;
                     }
 
                     // if has formulas
                     if (self.isFormulaSet()) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_506' }).ifYes(() => {
-                            Formula.performanceAtr = value; // param for screen C
 
                             // remove all formulas
                             self.removeAllFormulas();
@@ -269,7 +273,8 @@ module nts.uk.at.view.kmk002.a {
 
                 // Event on optionalItemAtr value changed
                 self.optionalItemAtr.subscribe(value => {
-
+                    
+                    value == 0 ?self.unit(''):self.unit(self.optionalItemDtoStash.unit);
                     // if value change because of select new optional item
                     // or new value == value in stash
                     // then do nothing
@@ -297,6 +302,7 @@ module nts.uk.at.view.kmk002.a {
                             self.optionalItemAtr(self.optionalItemAtrStash);
                         });
                     } else {
+                        self.checkSelectedAtr();
                         // save new value to stash
                         self.optionalItemAtrStash = value;
                     }
@@ -480,7 +486,7 @@ module nts.uk.at.view.kmk002.a {
                     OptionalItem.selectedFormulas([]);
                 }
 
-                let f = new Formula();
+                let f = new Formula(self.performanceAtr);
 
                 // bind function
                 f.reCheckAll = self.reCheckAll.bind(self);
@@ -777,7 +783,8 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calcResultRange = self.calcResultRange.toDto();
+                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
+                dto.unit = self.enableUnit() ? self.unit() : self.optionalItemDtoStash.unit;
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                 return dto;
@@ -799,6 +806,7 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
+                dto.optionalItemAtr == 0 ?self.unit(''):self.unit(dto.unit);
                 self.calcResultRange.fromDto(dto.calcResultRange);
 
                 // reset apply formula
@@ -823,7 +831,7 @@ module nts.uk.at.view.kmk002.a {
              */
             public clearAll(): void {
                 let self = this;
-                self.optionalItemNo('');
+                self.optionalItemNo(null);
                 self.optionalItemName('');
                 self.optionalItemAtr(0);
                 self.usageAtr(0);
@@ -840,7 +848,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 let mapped: Array<Formula> = list.map(item => {
-                    let formula = new Formula();
+                    let formula = new Formula(self.performanceAtr);
 
                     // bind function
                     formula.reCheckAll = self.reCheckAll.bind(self);
@@ -1062,17 +1070,33 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Convert view model to dto
              */
-            public toDto(): CalcResultRangeDto {
+            public toDto(calcResultRangeStash: CalcResultRangeDto): CalcResultRangeDto {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
                 dto.lowerCheck = self.lowerCheck();
-                dto.numberUpper = self.numberUpper();
-                dto.numberLower = self.numberLower();
-                dto.amountUpper = self.amountUpper();
-                dto.amountLower = self.amountLower();
-                dto.timeUpper = self.timeUpper();
-                dto.timeLower = self.timeLower();
+
+                if (self.upperCheck()) {
+                    dto.numberUpper = self.numberUpper();
+                    dto.amountUpper = self.amountUpper();
+                    dto.timeUpper = self.timeUpper();
+                } else {
+                    // get stored data from stash
+                    dto.numberUpper = calcResultRangeStash.numberUpper;
+                    dto.amountUpper = calcResultRangeStash.amountUpper;
+                    dto.timeUpper = calcResultRangeStash.timeUpper;
+                }
+
+                if (self.lowerCheck()) {
+                    dto.numberLower = self.numberLower();
+                    dto.amountLower = self.amountLower();
+                    dto.timeLower = self.timeLower();
+                } else {
+                    // get stored data from stash
+                    dto.numberLower = calcResultRangeStash.numberLower;
+                    dto.amountLower = calcResultRangeStash.amountLower;
+                    dto.timeLower = calcResultRangeStash.timeLower;
+                }
                 return dto;
             }
         }
@@ -1082,7 +1106,7 @@ module nts.uk.at.view.kmk002.a {
          */
         class OptionalItemHeader {
             columns: any;
-            selectedCode: KnockoutObservable<string>;
+            selectedCode: KnockoutObservable<number>;
             optionalItemHeaders: KnockoutObservableArray<OptionalItemHeaderDto>;
             optionalItem: OptionalItem;
             hasSelected: KnockoutObservable<boolean>;
@@ -1093,10 +1117,10 @@ module nts.uk.at.view.kmk002.a {
                 self.optionalItem = new OptionalItem();
                 self.hasSelected = ko.observable(true);
 
-                self.selectedCode = ko.observable('');
+                self.selectedCode = ko.observable(null);
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 40 },
-                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100 },
+                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100, formatter: _.escape },
                     {
                         headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 75,
                         formatter: atr => {
@@ -1147,7 +1171,7 @@ module nts.uk.at.view.kmk002.a {
 
                     // init selected code subscribe
                     self.selectedCode.subscribe(itemNo => {
-                        if (itemNo) {
+                        if (itemNo && itemNo != 0) {
                             self.hasSelected(true);
                             self.loadOptionalItemDetail(itemNo);
                             // clear error.
@@ -1219,6 +1243,12 @@ module nts.uk.at.view.kmk002.a {
                     return true;
                 }
 
+                const lastItem = _.last(self.optionalItem.calcFormulas());
+                if (lastItem && self.optionalItem.optionalItemAtr() != lastItem.formulaAtr()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1408' });
+                    return false;
+                }
+
                 // validate required formulaName & required setting formula
                 self.optionalItem.validateListFormula();
 
@@ -1271,11 +1301,9 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Load optional item detail.
              */
-            private loadOptionalItemDetail(itemNo: string): JQueryPromise<void> {
+            private loadOptionalItemDetail(itemNo: number): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-
-                Formula.performanceAtr = self.optionalItem.performanceAtr(); // param for c screen
 
                 // wait for selected event done then block ui.
                 _.defer(() => nts.uk.ui.block.invisible());
@@ -1307,11 +1335,12 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Get list optional item above of selected optional item.
              */
-            private getOptItemNoAbove(): Array<string> {
+            private getOptItemNoAbove(): Array<number> {
                 let self = this;
-                let selectedNo = parseInt(self.selectedCode());
+                let selectedNo = self.selectedCode();
                 return self.optionalItemHeaders()
-                    .filter(item => parseInt(item.itemNo) < selectedNo)
+                    .filter(item => item.performanceAtr == self.optionalItem.performanceAtr()
+                        && item.itemNo < selectedNo)
                     .map(item => item.itemNo);
             }
         }
@@ -1329,7 +1358,7 @@ module nts.uk.at.view.kmk002.a {
             settingResult: KnockoutObservable<string>;
 
             // param for c screen
-            static performanceAtr: number;
+            performanceAtr: KnockoutObservable<number>;
 
             // Calculation setting
             calcAtr: KnockoutObservable<number>;
@@ -1358,7 +1387,7 @@ module nts.uk.at.view.kmk002.a {
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
-            getOptItemNoAbove: () => Array<string>;
+            getOptItemNoAbove: () => Array<number>;
             getSelectableFormulas: (orderNo: number) => Array<FormulaDto>;
 
             // Enums datasource
@@ -1380,9 +1409,10 @@ module nts.uk.at.view.kmk002.a {
             timeMonthlyUnitStash: number;
             timeDailyUnitStash: number;
 
-            constructor() {
+            constructor(performanceAtr: KnockoutObservable<number>) {
                 this.formulaId = nts.uk.util.randomId();
-                this.optionalItemNo = '';
+                this.optionalItemNo = null;
+                this.performanceAtr = performanceAtr;
                 this.formulaName = ko.observable('');
                 this.formulaAtr = ko.observable(0);
                 this.symbolValue = '';
@@ -1718,8 +1748,8 @@ module nts.uk.at.view.kmk002.a {
                 let dto = self.toDto();
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
-                param.performanceAtr = Formula.performanceAtr;
-                param.formulaAtr = dto.formulaAtr;
+                param.performanceAtr = self.performanceAtr();
+                param.formulaAtr = self.formulaAtr();
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = dto.itemSelection;
@@ -1990,7 +2020,7 @@ module nts.uk.at.view.kmk002.a {
             formulaAtrName: string;
             formulaName: string;
             itemSelection: ItemSelectionDto;
-            selectableOptItemNos: Array<string>;
+            selectableOptItemNos: Array<number>;
         }
         export interface ParamToD {
             formulaId: string;

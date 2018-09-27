@@ -30,5 +30,9 @@ public class MPItemParent {
 	private GeneralDate startDate;
 	
 	private GeneralDate endDate;
+	
+	private List<MPItemCheckBox> dataCheckSign;
+	
+	private List<MPItemCheckBox> dataCheckApproval;
 
 }

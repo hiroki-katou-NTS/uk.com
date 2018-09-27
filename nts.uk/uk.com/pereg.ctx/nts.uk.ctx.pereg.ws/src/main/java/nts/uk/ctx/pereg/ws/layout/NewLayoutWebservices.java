@@ -1,5 +1,7 @@
 package nts.uk.ctx.pereg.ws.layout;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,8 +31,8 @@ public class NewLayoutWebservices extends WebService {
 
 	@POST
 	@Path("save")
-	public void saveNewLayout(NewLayoutCommand command) {
-		this.commandHandler.handle(command);
+	public List<String> saveNewLayout(NewLayoutCommand command) {
+		return commandHandler.handle(command);
 	}
 
 	@POST

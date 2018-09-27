@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
-//import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -122,8 +122,8 @@ public class ComboBoxRetrieveFactory {
 	@Inject
 	private YearHolidayRepository yearHolidayRepo;
 	
-//	@Inject
-//	private YearServicePerRepository yearServiceRepo;
+	@Inject
+	private GrantDateTblRepository gdTblRepository;
 	
 	private static final Map<String, Class<?>> enumMap;
 	static {
@@ -165,7 +165,7 @@ public class ComboBoxRetrieveFactory {
 	private static final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode) {
+			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, String workplaceId) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -187,7 +187,7 @@ public class ComboBoxRetrieveFactory {
 			refCd = masterRefTypeDto.getMasterType();
 			break;
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, null, isRequired, perEmplType, isDataType6, categoryCode);
+		return getComboBox(RefType, refCd, standardDate, employeeId, workplaceId, isRequired, perEmplType, isDataType6, categoryCode);
 	}
 
 	/**
@@ -345,13 +345,13 @@ public class ComboBoxRetrieveFactory {
 					.map(grantTable -> new ComboBoxObject(grantTable.getYearHolidayCode().v(),
 							grantTable.getYearHolidayName().v()))
 					.collect(Collectors.toList());
-//		case "M00017":
-//			Integer specialHolidayCode = convertFromCategoryCode(categoryCode);
-//			if (specialHolidayCode == null ) return new ArrayList<>();
-//			return yearServiceRepo.findAllPer(companyId, specialHolidayCode).stream()
-//					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getYearServiceCode().v(),
-//							yearServicePer.getYearServiceName().v()))
-//					.collect(Collectors.toList());
+		case "M00017":
+			Integer specialHolidayCode = convertFromCategoryCode(categoryCode);
+			if (specialHolidayCode == null ) return new ArrayList<>();
+			return gdTblRepository.findBySphdCd(companyId, specialHolidayCode).stream()
+					.map(yearServicePer -> new ComboBoxObject(yearServicePer.getGrantDateCode().v(),
+							yearServicePer.getGrantDateName().v()))
+					.collect(Collectors.toList());
 		default:
 			break;
 		}
@@ -364,7 +364,7 @@ public class ComboBoxRetrieveFactory {
 				perEmplType);
 		List<ComboBoxObject> lstComboBoxValue = new ArrayList<>();
 		for (SelectionInitDto selection : selectionList) {
-			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), selection.getSelectionName()));
+			lstComboBoxValue.add(new ComboBoxObject(selection.getSelectionId(), String.join(" ", selection.getSelectionCode(), selection.getSelectionName())));
 		}
 
 		return lstComboBoxValue;

@@ -136,3 +136,6 @@ table#table tr td.title {
 .pad_line{
 	padding-bottom: 10px;
 }
+.sidebar-content{
+	min-height: 660px;
+}

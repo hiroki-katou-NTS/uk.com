@@ -55,8 +55,13 @@ public class RemainAnnualLeaveUpdating {
 	 */
 	public void updateRemainAnnualLeave(AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
-		updateRemainAnnualLeaveNumber(output, period, empId);
-		updateMaxAnnualLeaveNumber(output, period, empId);
+		deleteDataAfterCurrentMonth(period, empId);
+//		if (output != null) {
+			updateRemainAnnualLeaveNumber(output, period, empId);
+			updateMaxAnnualLeaveNumber(output, period, empId);
+//		} else {
+//			return;
+//		}
 	}
 
 	/**
@@ -132,36 +137,24 @@ public class RemainAnnualLeaveUpdating {
 	private void updateAnnualLeaveRemainProcess(AnnualLeaveInfo info) {
 		List<AnnualLeaveGrantRemainingData> listData = info.getGrantRemainingNumberList();
 		for (AnnualLeaveGrantRemainingData data : listData) {
-			Optional<AnnualLeaveGrantRemainingData> optDomain = annLeaveRemainRepo.find(data.getEmployeeId(),
-					data.getGrantDate(), data.getDeadline());
-			if (optDomain.isPresent()) {
-				AnnualLeaveGrantRemainingData domain = optDomain.get();
-				AnnualLeaveGrantRemainingData updateDomain = AnnualLeaveGrantRemainingData.createFromJavaType(
-						domain.getAnnLeavID(), domain.getCid(), domain.getEmployeeId(), domain.getGrantDate(),
-						domain.getDeadline(), data.getExpirationStatus().value, data.getRegisterType().value,
-						data.getDetails().getGrantNumber().getDays().v(),
-						data.getDetails().getGrantNumber().getMinutes().isPresent()
-								? data.getDetails().getGrantNumber().getMinutes().get().v() : null,
-						data.getDetails().getUsedNumber().getDays().v(),
-						data.getDetails().getUsedNumber().getMinutes().isPresent()
-								? data.getDetails().getUsedNumber().getMinutes().get().v() : null,
-						data.getDetails().getUsedNumber().getStowageDays().isPresent()
-								? data.getDetails().getUsedNumber().getStowageDays().get().v() : null,
-						data.getDetails().getRemainingNumber().getDays().v(),
-						data.getDetails().getRemainingNumber().getMinutes().isPresent()
-								? data.getDetails().getRemainingNumber().getMinutes().get().v() : null,
-						data.getDetails().getUsedPercent().v().doubleValue(),
-						data.getAnnualLeaveConditionInfo().isPresent()
-								? data.getAnnualLeaveConditionInfo().get().getPrescribedDays().v() : null,
-						data.getAnnualLeaveConditionInfo().isPresent()
-								? data.getAnnualLeaveConditionInfo().get().getDeductedDays().v() : null,
-						data.getAnnualLeaveConditionInfo().isPresent()
-								? data.getAnnualLeaveConditionInfo().get().getWorkingDays().v() : null);
-				annLeaveRemainRepo.update(updateDomain);
-			} else {
+			List<AnnualLeaveGrantRemainingData> lstDomain = annLeaveRemainRepo.find(data.getEmployeeId(),
+					data.getGrantDate());
+			boolean found = false;
+			for (AnnualLeaveGrantRemainingData d : lstDomain) {
+				if (d.getAnnLeavID().equals(data.getAnnLeavID())) {
+					// update
+					annLeaveRemainRepo.update(data);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				// insert
 				AnnualLeaveGrantRemainingData addDomain = AnnualLeaveGrantRemainingData.createFromJavaType(
-						IdentifierUtil.randomUniqueId(), data.getCid(), data.getEmployeeId(), data.getGrantDate(),
-						data.getDeadline(), data.getExpirationStatus().value, data.getRegisterType().value,
+						(data.getAnnLeavID() != null && !data.getAnnLeavID().isEmpty()) ? data.getAnnLeavID()
+								: IdentifierUtil.randomUniqueId(),
+						data.getCid(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
+						data.getExpirationStatus().value, data.getRegisterType().value,
 						data.getDetails().getGrantNumber().getDays().v(),
 						data.getDetails().getGrantNumber().getMinutes().isPresent()
 								? data.getDetails().getGrantNumber().getMinutes().get().v() : null,
@@ -195,5 +188,14 @@ public class RemainAnnualLeaveUpdating {
 				annLeaveTimeRemainHistRepo.addOrUpdate(hist);
 			}
 		}
+	}
+
+	/**
+	 * 当月以降の年休付与残数データを削除
+	 */
+	private void deleteDataAfterCurrentMonth(AggrPeriodEachActualClosure period, String empId) {
+		annLeaveRemainRepo.deleteAfterDate(empId, period.getPeriod().start());
+		annLeaveRemainHistRepo.delete(empId, period.getYearMonth(), period.getClosureId(), period.getClosureDate());
+		annLeaveTimeRemainHistRepo.deleteAfterDate(empId, period.getPeriod().start());
 	}
 }

@@ -196,7 +196,8 @@ module nts.uk.ui.koExtentions {
                      mode: self.timeMode, 
                      enable: allBindData.enable, 
                      disabled: allBindData.disabled,
-                     option: { width: "70" } };    
+                     option: { width: "70" },
+                     constraint: 'TimeClockWithSeconds' };    
         }
     }
 

@@ -15,9 +15,8 @@ public class EmployeePubAlarmAdapterImpl implements EmployeePubAlarmAdapter {
 	private EmployeePublisher employeePublisher;
 
 	@Override
-	public List<String> getListEmployeeId(String workplaceId) {
-		GeneralDate referenceDate = GeneralDate.today();
-		return employeePublisher.getListEmployeeId(workplaceId, referenceDate);
+	public List<String> getListEmployeeId(String workplaceId, GeneralDate executeDate) {
+		return employeePublisher.getListEmployeeId(workplaceId, executeDate);
 	}
 
 }

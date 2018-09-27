@@ -361,6 +361,7 @@ module a3 {
                      defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input class="time-edior-column" data-bind="ntsTimeEditor: {
+                            name: '#[KMK003_174]',
                             constraint: 'AttendanceTime',
                             mode: 'time',
                             inputFormat: 'time',

@@ -20,13 +20,13 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid);
+	List<AbsRecDetailPara> getAbsOfUnOffset(String cid, String sid, GeneralDate ymd);
 	/**
 	 * 1-1.確定振休から未相殺の振休を取得する
 	 * @param sid
 	 * @return
 	 */
-	List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid);
+	List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid, GeneralDate ymd);
 	/**
 	 * 1-3.暫定振出と紐付けをしない確定振休を取得する
 	 * @param confirmAbsData
@@ -38,7 +38,7 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail);
+	List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd);
 	/**
 	 * 繰越数を計算する
 	 * @param startDate 集計開始日
@@ -104,4 +104,12 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	List<AbsRecDetailPara> lstInterimInfor(AbsRecMngInPeriodParamInput paramInput, List<AbsRecDetailPara> lstAbsRec);
+	
+	/**
+	 * [No.506]振休残数を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	double getAbsRecMngRemain(String employeeID, GeneralDate date);
 }

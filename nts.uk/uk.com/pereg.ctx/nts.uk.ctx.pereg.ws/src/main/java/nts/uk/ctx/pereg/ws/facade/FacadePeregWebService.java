@@ -21,12 +21,12 @@ public class FacadePeregWebService extends WebService {
 	@POST
 	@Path("delete")
 	public void delete(PeregDeleteCommand deleteCommand) {
-		this.commandFacade.delete(deleteCommand);
+		this.commandFacade.deleteHandler(deleteCommand);
 	}
 	
 	@POST
 	@Path("register")
 	public Object register(PeregInputContainer inputContainer) {
-		return commandFacade.register(inputContainer);
+		return commandFacade.registerHandler(inputContainer);
 	}
 }

@@ -151,8 +151,8 @@ module nts.uk.at.view.ksc001.b {
              * save to client service PersonalSchedule
             */
             private savePersonalSchedule(data: PersonalSchedule): void {
-                var self = this;
-                var user: any = __viewContext.user;
+                let self = this,
+                    user: any = __viewContext.user;
                 self.savePersonalScheduleByEmployeeId(user.employeeId, data);
             }
 
@@ -167,8 +167,8 @@ module nts.uk.at.view.ksc001.b {
              * find by client service PersonalSchedule
             */
             private findPersonalSchedule(): JQueryPromise<PersonalSchedule> {
-                var self = this;
-                var user: any = __viewContext.user;
+                let self = this,
+                    user: any = __viewContext.user;
                 return nts.uk.characteristics.restore("PersonalSchedule_" + user.employeeId);
             }
             /**
@@ -187,7 +187,7 @@ module nts.uk.at.view.ksc001.b {
              * function next two page wizard by on click button 
              */
             private nextTwo(): JQueryPromise<void> {
-                var index = $('#wizard').ntsWizard("getCurrentStep");
+                let index = $('#wizard').ntsWizard("getCurrentStep");
                 index = index + 2;
                 return $('#wizard').ntsWizard("goto", index);
             }
@@ -195,7 +195,7 @@ module nts.uk.at.view.ksc001.b {
             * function previous wizard by on click button 
             */
             private previousTwo(): JQueryPromise<void> {
-                var index = $('#wizard').ntsWizard("getCurrentStep");
+                let index = $('#wizard').ntsWizard("getCurrentStep");
                 index = index - 2;
                 return $('#wizard').ntsWizard("goto", index);
             }
@@ -249,9 +249,11 @@ module nts.uk.at.view.ksc001.b {
 
                     /** Return data */
                     returnDataFromCcg001: function(data: any) {
+                        const mappedEmployeeList = _.map(data.listEmployee, employeeSearch => {return {code: employeeSearch.employeeCode,
+                                                name: employeeSearch.employeeName,
+                                                workplaceName: employeeSearch.workplaceName}});
+                        self.employeeList(mappedEmployeeList);
                         self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
-
                     }
                 }
             }
@@ -259,8 +261,8 @@ module nts.uk.at.view.ksc001.b {
            * start page data 
            */
             public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
+                let self = this,
+                    dfd = $.Deferred();
                 // block ui
                 nts.uk.ui.block.invisible();
 
@@ -280,22 +282,23 @@ module nts.uk.at.view.ksc001.b {
             * apply ccg001 search data to kcp005
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
-                var self = this;
+                let self = this,
+                    employeeSearchs: UnitModel[] = [],
+                    listSelectedEmpCode: any = [];
                 self.employeeList([]);
-                var employeeSearchs: UnitModel[] = [];
                 self.selectedEmployeeCode([]);
-                for (var employeeSearch of dataList) {
-                    var employee: UnitModel = {
+                _.each(dataList, (employeeSearch) =>{
+                    employeeSearchs.push({
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
-                    };
-                    employeeSearchs.push(employee);
-                    self.selectedEmployeeCode.push(employee.code);
-                }
+                    });
+                    listSelectedEmpCode.push(employeeSearch.employeeCode);
+                });
 
                 // update employee list by ccg001 search 
                 self.employeeList(employeeSearchs);
+                self.selectedEmployeeCode(listSelectedEmpCode);
 
                 // update kc005
                 self.lstPersonComponentOption = {
@@ -673,7 +676,7 @@ module nts.uk.at.view.ksc001.b {
              * function createPersonalSchedule to client by check month max
              */
             private createByCheckMaxMonth(): void {
-                var self = this;
+                let self = this;
                 _.defer(() => {
                     nts.uk.ui.block.invisible();
                     service.checkMonthMax(self.toDate(self.periodDate().startDate)).done(checkMax => {
@@ -694,7 +697,7 @@ module nts.uk.at.view.ksc001.b {
              * function createPersonalSchedule to client
              */
             private createPersonalSchedule(): void {
-                var self = this;
+                let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_569' }).ifYes(function() {
                     // C1_5 is check
                     if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
@@ -717,7 +720,7 @@ module nts.uk.at.view.ksc001.b {
              * save PersonalSchedule data
              */
             private savePersonalScheduleData(): void {
-                var self = this;
+                let self = this;
                 self.savePersonalSchedule(self.toPersonalScheduleData());
                 service.addScheduleExecutionLog(self.collectionData()).done(function(data) {
                     nts.uk.ui.block.clear();
@@ -733,8 +736,8 @@ module nts.uk.at.view.ksc001.b {
              * open dialog KDL023
              */
             private showDialogKDL023(): void {
-                var self = this;
-                var data: PersonalSchedule = new PersonalSchedule();
+                let self = this,
+                    data: PersonalSchedule = new PersonalSchedule();
                 self.findPersonalSchedule().done(function(dataInfo) {
                     if (dataInfo && dataInfo != null) {
                         data = dataInfo;
@@ -751,8 +754,8 @@ module nts.uk.at.view.ksc001.b {
              * convert data personal schedule to refelctionSetting
              */
             private convertPersonalScheduleToReflectionSetting(data: PersonalSchedule): ReflectionSetting {
-                var self = this;
-                var dto: ReflectionSetting = {
+                let self = this,
+                    dto: ReflectionSetting = {
                     calendarStartDate: self.periodDate().startDate,
                     calendarEndDate: self.periodDate().endDate,
                     selectedPatternCd: data.patternCode,
@@ -769,9 +772,9 @@ module nts.uk.at.view.ksc001.b {
             * find employee id in selected
             */
             public findEmployeeIdByCode(employeeCode: string): string {
-                var self = this;
-                var employeeId = '';
-                for (var employee of self.selectedEmployee()) {
+                let self = this,
+                    employeeId = '';
+                for (let employee of self.selectedEmployee()) {
                     if (employee.employeeCode === employeeCode) {
                         employeeId = employee.employeeId;
                     }
@@ -782,10 +785,10 @@ module nts.uk.at.view.ksc001.b {
              * find employee id in selection employee code
              */
             public findEmployeeIdsByCode(employeeCodes: string[]): string[] {
-                var self = this;
-                var employeeIds: string[] = [];
-                for (var employeeCode of employeeCodes) {
-                    var employeeId = self.findEmployeeIdByCode(employeeCode);
+                let self = this,
+                    employeeIds: string[] = [];
+                for (let employeeCode of employeeCodes) {
+                    let employeeId = self.findEmployeeIdByCode(employeeCode);
                     if (employeeId && !(employeeId === '')) {
                         employeeIds.push(employeeId);
                     }
@@ -796,9 +799,9 @@ module nts.uk.at.view.ksc001.b {
              * collection data => command save
              */
             private collectionData(): ScheduleExecutionLogSaveDto {
-                var self = this;
-                var data: PersonalSchedule = self.toPersonalScheduleData();
-                var dto: ScheduleExecutionLogSaveDto = {
+                var self = this,
+                    data: PersonalSchedule = self.toPersonalScheduleData(),
+                    dto: ScheduleExecutionLogSaveDto = {
                     periodStartDate: self.toDate(self.periodDate().startDate),
                     periodEndDate: self.toDate(self.periodDate().endDate),
                     implementAtr: data.implementAtr,
@@ -828,7 +831,7 @@ module nts.uk.at.view.ksc001.b {
              * convert work type setting
              */
             private convertWorktypeSetting(use: number, worktypeCode: string): DayOffSetting {
-                var data: DayOffSetting = {
+                let data: DayOffSetting = {
                     useClassification: use == UseAtr.USE,
                     workTypeCode: worktypeCode
                 };
@@ -973,7 +976,7 @@ module nts.uk.at.view.ksc001.b {
             holidayWorkType: string;
 
             constructor() {
-                var self = this;
+                let self = this;
 
                 self.employeeId = '';
                 self.implementAtr = ImplementAtr.GENERALLY_CREATED;

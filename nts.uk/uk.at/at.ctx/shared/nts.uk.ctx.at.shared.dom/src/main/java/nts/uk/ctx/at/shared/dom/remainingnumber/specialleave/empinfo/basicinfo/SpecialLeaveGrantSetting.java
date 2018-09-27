@@ -24,7 +24,7 @@ public class SpecialLeaveGrantSetting {
 	
 	public SpecialLeaveGrantSetting(GeneralDate grantDate, Integer grantDays, String grantTbl){
 		this.grantDate = grantDate;
-		this.grantDays = Optional.ofNullable(new GrantNumber(grantDays));
+		this.grantDays = Optional.ofNullable(grantDays == null ? null : new GrantNumber(grantDays));
 		this.grantTable = Optional.ofNullable(new PerServiceLengthTableCD(grantTbl));
 	}
 	

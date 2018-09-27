@@ -28,17 +28,17 @@ public class SrcdtDecimalRawValue extends UkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
-	String id;
+	public String id;
 	
 	@Column(name = "VALUE")
 	@Basic(optional = false)
-	BigDecimal value;
+	public BigDecimal value;
 
 	@OneToOne(mappedBy = "rawDecimalValueBefore")
-	SrcdtDataCorrectionLog beforeLog;
+	public SrcdtDataCorrectionLog beforeLog;
 
 	@OneToOne(mappedBy = "rawDecimalValueAfter")
-	SrcdtDataCorrectionLog afterLog;
+	public SrcdtDataCorrectionLog afterLog;
 
 	@Override
 	protected Object getKey() {

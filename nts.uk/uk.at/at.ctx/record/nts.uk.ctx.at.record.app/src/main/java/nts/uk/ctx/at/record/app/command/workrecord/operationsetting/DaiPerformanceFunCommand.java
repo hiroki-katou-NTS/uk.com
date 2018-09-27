@@ -76,4 +76,10 @@ public class DaiPerformanceFunCommand {
 	 * 自動で設定した内容は手修正にする
 	 */
 	private boolean manualFixAutoSetAtr;
+	
+    /**
+     * 抽出時にエラーがある場合はエラー参照ダイアログを表示する
+     * 
+     */
+    private boolean checkErrRefDisp;
 }

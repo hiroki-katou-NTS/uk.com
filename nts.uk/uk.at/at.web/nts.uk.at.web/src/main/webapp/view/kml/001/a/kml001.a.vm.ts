@@ -77,7 +77,7 @@ module nts.uk.at.view.kml001.a {
                             nts.uk.ui.block.clear();    
                             self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                                 if(value!=null) {
-                                    nts.uk.ui.block.invisible();
+                                    //nts.uk.ui.block.invisible();
                                     let historyID = _.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, self.textKML001_40, 1)[0]; }).historyID();
                                     servicebase.findByHistoryID(historyID).done(data => {
                                         self.currentPersonCost(vmbase.ProcessHandler.createPersonCostCalFromValue(data, self.premiumItems()));   
@@ -99,6 +99,8 @@ module nts.uk.at.view.kml001.a {
                                         });   
                                     }).fail(res => {
                                             
+                                    }).always(() => {
+                                        nts.uk.ui.block.clear();
                                     });
                                     self.isInsert(false);
                                     $("#memo").focus(); 
@@ -276,6 +278,7 @@ module nts.uk.at.view.kml001.a {
                 var self = this;
                 let currentIndex = _.findIndex(self.personCostList(), function(item){return item.historyID() == self.currentPersonCost().historyID()});
                 let index = currentIndex?currentIndex:0;
+                let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
                 nts.uk.ui.windows.setShared('isInsert', self.isInsert());
                 nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     nts.uk.ui.block.invisible();
@@ -311,10 +314,19 @@ module nts.uk.at.view.kml001.a {
                                     self.currentPersonCost().premiumSets.removeAll();
                                     self.premiumItems().forEach(function(item){
                                         if(item.useAtr()) {
-                                            self.currentPersonCost().premiumSets.push(
-                                                new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
+                                            let currentIndexSet = _.find(oldPremiumSets, function(o) { return o.displayNumber() == item.displayNumber(); });
+                                            if(nts.uk.util.isNullOrUndefined(currentIndexSet)){
+                                                self.currentPersonCost().premiumSets.push(
+                                                    new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
+                                            } else {
+                                                self.currentPersonCost().premiumSets.push(currentIndexSet);    
+                                            }
                                         }
                                     });    
+                                    self.currentPersonCost().premiumSets.valueHasMutated();
+                                    self.currentPersonCost().premiumSets().forEach((item, index) => {
+                                        self.createViewAttendanceItems(item.attendanceItems(), index);        
+                                    });
                                     $("#startDateInput").focus();
                                 } else {
                                     self.personCostList.removeAll();

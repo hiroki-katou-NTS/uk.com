@@ -42,16 +42,8 @@
 	margin-left: 15px !important;
 }
 
-.contents-header {
-	margin-left: 145px !important;
-}
-
-.contents-header td {
-	border: 1px solid #CCC;
-	text-align: left;
-	height: 15px;
-	padding: 0px 0px;
-	font-weight: bold;
+.contents-table {
+	margin-left: 145px;
 }
 
 thead {

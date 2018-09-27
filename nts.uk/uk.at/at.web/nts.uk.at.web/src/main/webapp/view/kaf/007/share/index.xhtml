@@ -35,7 +35,7 @@
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_8')}</div>
 			<!--A3_1 事前/事後-->
 			<div data-bind="if: $parent.screenModeNew" class="mode-style">
-				<div class="cf"
+				<div id="pre-post" class="cf"
 					data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
 						                { prePostCode: 0, prePostName: '#{i18n.getText('KAF007_9')}' },
@@ -44,7 +44,10 @@
 								optionsValue: 'prePostCode',
 								optionsText: 'prePostName',
 								value:  application().prePostAtr,
-								enable: $parent.prePostEnable}">
+								enable: $parent.prePostEnable,
+								required:true,
+								name:'#{i18n.getText('KAF007_8')}'
+								}">
 				</div>
 			</div>
 			<div data-bind="if: !$parent.screenModeNew()" class="mode-style">
@@ -63,7 +66,7 @@
 														enable: true }"></div>
 
 				<div id="daterangepicker"
-					data-bind="ntsDateRangePicker: {startName:'#{i18n.getText('KAF007_62')}',endName: '#{i18n.getText('KAF007_63')}', value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
+					data-bind="ntsDateRangePicker: {startName:'#{i18n.getText('KAF007_12')}',endName: '#{i18n.getText('KAF007_12')}', value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
 
 
 				<div id="singleDate"
@@ -105,8 +108,10 @@
 				</div>
 				<div class="cell valign-center">
 					<!--A6_5 勤務就業選択-->
+					<!-- <button id="workSelect-kaf007"
+						data-bind=" click: $vm.openKDL003Click.bind($vm)">#{i18n.getText('KAF007_24')}</button> -->
 					<button id="workSelect-kaf007"
-						data-bind="enable: $parent.workChangeAtr, click: $parent.openKDL003Click">#{i18n.getText('KAF007_24')}</button>
+						data-bind=" click: $parent.openKDL003Click">#{i18n.getText('KAF007_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<!--A6_2 勤務種類名-->
@@ -135,14 +140,14 @@
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart1, 
-															enable: $parent.editable, 
+															enable: $parent.editable() &amp;&amp; $parent.requiredCheckTime() , 
 															readonly: false,
-															required: $parent.isWorkChange }" />
+															required: $parent.requiredCheckTime }" />
 
 					</div>
 				</div>
 				<div class="cell valign-center row-width-inputTime"
-					style="width: auto !important;">
+					style="margin-left: 10px; width: auto !important; display: inline-block;">
 					<div class="row-cell-margin">
 						<!--A7_2 ~-->
 						<label class="valign-center link-label-kaf007">#{i18n.getText('KAF007_14')}</label>
@@ -152,9 +157,9 @@
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr', 
 															value: workChange().workTimeEnd1, 
-															enable: $parent.editable, 
+															enable: $parent.editable() &amp;&amp; $parent.requiredCheckTime() , 
 															readonly: false,
-															required: $parent.isWorkChange }" />
+															required: $parent.requiredCheckTime }" />
 						<label
 							data-bind="text: $parent.appChangeSetting().commentContent2
 					,css: { 'bold': $parent.appChangeSetting().commentFontWeight2  }
@@ -345,7 +350,7 @@
 		</div>
 		<!--A12 申請理由（ラベル）-->
 		<div class="valign-center control-group-kaf007"
-			data-bind="if: $parent.displayAppReasonContentFlg">
+			data-bind="if: $parent.showReasonText()">
 			<!--A12 申請理由（ラベル）-->
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF007_27')}</div>
 			<!--A12_1 申請理由-->
@@ -359,13 +364,13 @@
 									                   	},
 			                   						required : false, 
 			                   						name: '#[KAF007_29]',
-			                   						enable: $parent.editable}" />
+			                   						enable: $parent.displayAppReasonContentFlg }" />
 			</div>
 		</div>
 	</div>
 	<!--RIGHT CONTENT -->
 	<div class="right-contents-kaf007"
-		data-bind="visible: application().prePostAtr() == 1">
+		data-bind="visible: $parent.showRightContent()  ">
 		<div class="panel panel-gray-bg panel-kaf007 panel-frame"
 			data-bind="with: $parent.recordWorkInfo">
 			<!--A30_1 実績の内容(ラベル)-->

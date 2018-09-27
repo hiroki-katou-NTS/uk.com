@@ -110,6 +110,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   *zoom: 1;
 }
 
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
+}
+
 /* line 1, ../sass/base/_menu.scss */
 #header #menu-header {
   background-color: #fff;
@@ -972,7 +980,7 @@ div.popup-panel {
 #func-notifier-errors {
   position: absolute;
   display: none;
-  z-index: 1000;
+  z-index: 1000005;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -1034,17 +1042,17 @@ div.label {
   white-space: pre-wrap;
 }
 
+/* line 234, ../sass/components/_commons.scss */
 *.unselectable {
-   -moz-user-select: -moz-none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-
-   /*
-     Introduced in IE 10.
-     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-   */
-   -ms-user-select: none;
-   user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  /*
+    Introduced in IE 10.
+    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /*****************************
@@ -1523,6 +1531,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /* line 24, ../sass/base/_clearfix.scss */
 .cf {
   *zoom: 1;
+}
+
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
 }
 
 /* line 15, ../sass/components/_button.scss */
@@ -2237,6 +2253,14 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   *zoom: 1;
 }
 
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
+}
+
 /* line 6, ../sass/components/_switchbutton.scss */
 button.nts-switch-button {
   font-size: 14px;
@@ -2272,18 +2296,22 @@ button.nts-switch-button[disabled] {
 button.nts-switch-button[disabled]:hover {
   background-color: #d9d9d9;
 }
+/* line 49, ../sass/components/_switchbutton.scss */
+button.nts-switch-button[disabled].selected {
+  background-color: #7b8;
+}
 
-/* line 52, ../sass/components/_switchbutton.scss */
+/* line 55, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper {
   display: inline-block;
   padding: 0;
 }
-/* line 56, ../sass/components/_switchbutton.scss */
+/* line 59, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper:focus {
   box-shadow: 0 0 1px 1px #0096f2;
   border-radius: 2px;
 }
-/* line 62, ../sass/components/_switchbutton.scss */
+/* line 65, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper.error button {
   border-color: #ff6666;
 }
@@ -2752,8 +2780,14 @@ button.nts-switch-button[disabled]:hover {
   display: none;
 }
 
+/* line 18, ../sass/components/_gridlist.scss */
 .ui-iggrid table .row-disable {
   background-color: #CCC;
+}
+
+/* line 22, ../sass/components/_gridlist.scss */
+.ui-iggrid .nts-gridlist tbody td {
+  white-space: pre;
 }
 
 /* line 1, ../sass/components/_tabpanel.scss */
@@ -2862,6 +2896,23 @@ button.nts-switch-button[disabled]:hover {
   list-style-type: none;
 }
 
+/* line 19, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-dropindicator .ui-icon {
+  float: none !important;
+  top: 0;
+  margin-top: -1px;
+}
+
+/* line 25, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-dropindicator .ui-icon-arrowthick-1-e {
+  margin-top: -5px;
+}
+
+/* line 29, ../sass/components/_treedrag.scss */
+.ui-igtree .ui-igtree-dropindicator p {
+  vertical-align: middle;
+}
+
 /* line 77, ../sass/components/_ignitecommons.scss */
 .ui-iggrid-table {
   /* for IE */
@@ -2944,6 +2995,10 @@ button.nts-switch-button[disabled]:hover {
 .nts-treegridview .ui-icon-triangle-1-e {
   display: none;
 }
+/* line 24, ../sass/components/_treegridview.scss */
+.nts-treegridview .ui-igtreegrid-expandcell {
+  margin-top: -10px !important;
+}
 
 /* line 2, ../sass/components/_combobox.scss */
 #contents-area input.ui-igcombo-field {
@@ -3015,7 +3070,7 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
   margin-right: 5px;
   margin: .1em 0;
-  /* 繧｢繧､繧ｳ繝ｳ縺梧ｱｺ縺ｾ繧九∪縺ｧ髱櫁｡ｨ遉ｺ縺ｫ縺励※縺翫￥ */
+  /* アイコンが決まるまで非表示にしておく */
   display: none;
 }
 /* line 36, ../sass/components/_dialog.scss */
@@ -3138,26 +3193,26 @@ button.nts-switch-button[disabled]:hover {
   overflow: hidden;
   /* Accessibility */
 }
-/* line 23, ../sass/components/_wizard.scss */
+/* line 24, ../sass/components/_wizard.scss */
 .nts-wizard a {
   outline: 0;
 }
-/* line 25, ../sass/components/_wizard.scss */
+/* line 26, ../sass/components/_wizard.scss */
 .nts-wizard ul {
   list-style: none !important;
   padding: 0;
   margin: 5px;
 }
-/* line 31, ../sass/components/_wizard.scss */
+/* line 32, ../sass/components/_wizard.scss */
 .nts-wizard ul > li {
   display: block;
   padding: 0;
 }
-/* line 36, ../sass/components/_wizard.scss */
+/* line 37, ../sass/components/_wizard.scss */
 .nts-wizard .header {
   margin: 5px 5px 5px 8px;
 }
-/* line 39, ../sass/components/_wizard.scss */
+/* line 40, ../sass/components/_wizard.scss */
 .nts-wizard .header .image {
   position: absolute;
   width: 60px;
@@ -3167,7 +3222,7 @@ button.nts-switch-button[disabled]:hover {
   border: 3px solid #fff;
   z-index: 3;
 }
-/* line 49, ../sass/components/_wizard.scss */
+/* line 50, ../sass/components/_wizard.scss */
 .nts-wizard .header .content {
   display: block;
   margin: 8px 0 5px 0;
@@ -3185,21 +3240,21 @@ button.nts-switch-button[disabled]:hover {
   padding: 1em 1em 1em 3em;
   box-sizing: border-box;
 }
-/* line 66, ../sass/components/_wizard.scss */
+/* line 67, ../sass/components/_wizard.scss */
 .nts-wizard > .steps {
   position: relative;
   display: block;
   width: 100%;
 }
-/* line 71, ../sass/components/_wizard.scss */
+/* line 72, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .number {
   font-size: 1.429em;
 }
-/* line 73, ../sass/components/_wizard.scss */
+/* line 74, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li {
   width: 25%;
 }
-/* line 75, ../sass/components/_wizard.scss */
+/* line 76, ../sass/components/_wizard.scss */
 .nts-wizard > .steps a,
 .nts-wizard > .steps a:hover,
 .nts-wizard > .steps a:active {
@@ -3217,28 +3272,28 @@ button.nts-switch-button[disabled]:hover {
   word-wrap: break-word;
   cursor: default;
 }
-/* line 90, ../sass/components/_wizard.scss */
+/* line 91, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .disabled a,
 .nts-wizard > .steps .disabled a:hover,
 .nts-wizard > .steps .disabled a:active {
   color: #fff;
 }
-/* line 96, ../sass/components/_wizard.scss */
+/* line 97, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .current a,
 .nts-wizard > .steps .current a:hover,
 .nts-wizard > .steps .current a:active {
   color: #000;
   background: #fff;
 }
-/* line 103, ../sass/components/_wizard.scss */
+/* line 104, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .begin a div {
   margin-left: 20px;
 }
-/* line 119, ../sass/components/_wizard.scss */
+/* line 120, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .nts-steps {
   float: left;
 }
-/* line 123, ../sass/components/_wizard.scss */
+/* line 124, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end > a, .nts-wizard > .steps > ul > .end > a:hover, .nts-wizard > .steps > ul > .end > a:active {
   display: table;
   background-color: #E2F79F;
@@ -3251,19 +3306,19 @@ button.nts-switch-button[disabled]:hover {
   width: -webkit-calc(100% - 25px);
   width: -moz-calc(100% - 25px);
 }
-/* line 135, ../sass/components/_wizard.scss */
+/* line 136, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end > a > div, .nts-wizard > .steps > ul > .end > a:hover > div, .nts-wizard > .steps > ul > .end > a:active > div {
   display: table-cell;
   padding: 0;
   vertical-align: middle;
 }
-/* line 137, ../sass/components/_wizard.scss */
+/* line 138, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end.current a, .nts-wizard > .steps > ul > .end.current a:hover, .nts-wizard > .steps > ul > .end.current a:active {
   color: #fff;
   background: #4FCE3A;
   box-shadow: 0 0 0 1px #fff inset;
 }
-/* line 146, ../sass/components/_wizard.scss */
+/* line 147, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle {
   height: 100%;
   float: left;
@@ -3273,7 +3328,7 @@ button.nts-switch-button[disabled]:hover {
   padding-left: 33px;
   position: absolute;
 }
-/* line 155, ../sass/components/_wizard.scss */
+/* line 156, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-vertical-line {
   background-color: #4D4D4D;
   width: 5px;
@@ -3281,7 +3336,7 @@ button.nts-switch-button[disabled]:hover {
   height: 100%;
   border-left: 2px solid white;
 }
-/* line 162, ../sass/components/_wizard.scss */
+/* line 163, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > .nts-point {
   width: 18px;
   height: 18px;
@@ -3293,7 +3348,7 @@ button.nts-switch-button[disabled]:hover {
   left: -5px;
   box-sizing: border-box;
 }
-/* line 173, ../sass/components/_wizard.scss */
+/* line 174, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
   width: -webkit-calc(100% - 62px);
   width: -moz-calc(100% - 62px);
@@ -3303,24 +3358,24 @@ button.nts-switch-button[disabled]:hover {
   z-index: 1;
   top: 7px;
 }
-/* line 182, ../sass/components/_wizard.scss */
+/* line 183, ../sass/components/_wizard.scss */
 .nts-wizard > .steps a > div {
   padding: 1em 1em;
 }
-/* line 185, ../sass/components/_wizard.scss */
+/* line 186, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > div {
   position: absolute;
 }
-/* line 188, ../sass/components/_wizard.scss */
+/* line 189, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > div {
   position: absolute;
 }
-/* line 191, ../sass/components/_wizard.scss */
+/* line 192, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge {
   top: 35%;
   width: 100%;
 }
-/* line 195, ../sass/components/_wizard.scss */
+/* line 196, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end > .nts-steps {
   width: 0px;
   height: 0px;
@@ -3330,48 +3385,48 @@ button.nts-switch-button[disabled]:hover {
   position: absolute;
   left: 27px;
 }
-/* line 204, ../sass/components/_wizard.scss */
+/* line 205, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .current > .nts-steps > .nts-bridge > .nts-point {
   background: #4d4d4d;
   border: 3px solid #4d4d4d;
 }
-/* line 208, ../sass/components/_wizard.scss */
+/* line 209, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .first {
   z-index: 1;
 }
-/* line 211, ../sass/components/_wizard.scss */
+/* line 212, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .begin.current > .nts-steps {
   border: 3px solid white;
 }
-/* line 216, ../sass/components/_wizard.scss */
+/* line 217, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .steps {
   float: left;
   width: 30%;
   height: 100%;
   background-color: #a0a0a0;
 }
-/* line 221, ../sass/components/_wizard.scss */
+/* line 223, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .steps > ul > li {
   width: 100%;
   height: 100%;
   position: relative;
 }
-/* line 229, ../sass/components/_wizard.scss */
+/* line 231, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li,
 .nts-wizard > .actions > ul > li {
   float: left;
 }
-/* line 234, ../sass/components/_wizard.scss */
+/* line 236, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .current-info {
   position: absolute;
   left: -999em;
 }
-/* line 239, ../sass/components/_wizard.scss */
+/* line 241, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .title {
   position: absolute;
   left: -999em;
 }
-/* line 244, ../sass/components/_wizard.scss */
+/* line 246, ../sass/components/_wizard.scss */
 .nts-wizard > .content {
   background: #eee;
   display: block;
@@ -3384,14 +3439,14 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 257, ../sass/components/_wizard.scss */
+/* line 259, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .content {
   display: inline;
   float: left;
   margin: 0 2.5% 0.5em 2.5%;
   width: 65%;
 }
-/* line 264, ../sass/components/_wizard.scss */
+/* line 266, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body {
   display: block !important;
   visibility: hidden;
@@ -3401,38 +3456,38 @@ button.nts-switch-button[disabled]:hover {
   height: 95%;
   padding: 2.5%;
 }
-/* line 274, ../sass/components/_wizard.scss */
+/* line 276, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .current {
   visibility: visible;
 }
-/* line 278, ../sass/components/_wizard.scss */
+/* line 280, ../sass/components/_wizard.scss */
 .nts-wizard > .actions {
   position: relative;
   display: block;
   text-align: right;
   width: 100%;
 }
-/* line 285, ../sass/components/_wizard.scss */
+/* line 287, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions {
   display: inline;
   float: right;
   margin: 0 2.5%;
   width: 95%;
 }
-/* line 292, ../sass/components/_wizard.scss */
+/* line 294, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul {
   display: inline-block;
   text-align: right;
 }
-/* line 297, ../sass/components/_wizard.scss */
+/* line 299, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul > li {
   margin: 0 0.5em;
 }
-/* line 301, ../sass/components/_wizard.scss */
+/* line 303, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions > ul > li {
   margin: 0 0 0 1em;
 }
-/* line 305, ../sass/components/_wizard.scss */
+/* line 307, ../sass/components/_wizard.scss */
 .nts-wizard > .actions a,
 .nts-wizard > .actions a:hover,
 .nts-wizard > .actions a:active {
@@ -3445,28 +3500,28 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 318, ../sass/components/_wizard.scss */
+/* line 320, ../sass/components/_wizard.scss */
 .nts-wizard > .actions .disabled a,
 .nts-wizard > .actions .disabled a:hover,
 .nts-wizard > .actions .disabled a:active {
   background: #eee;
   color: #aaa;
 }
-/* line 332, ../sass/components/_wizard.scss */
+/* line 334, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue .header .content {
   background: #ABEBF5;
 }
-/* line 334, ../sass/components/_wizard.scss */
+/* line 336, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end > a,
 .nts-wizard.theme-blue > .steps > ul > .end > a:hover,
 .nts-wizard.theme-blue > .steps > ul > .end > a:active {
   background-color: #ABEBF5;
 }
-/* line 338, ../sass/components/_wizard.scss */
+/* line 340, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end.current a, .nts-wizard.theme-blue > .steps > ul > .end.current a:hover, .nts-wizard.theme-blue > .steps > ul > .end.current a:active {
   background-color: #37B0F0;
 }
-/* line 342, ../sass/components/_wizard.scss */
+/* line 344, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .actions a:active {
   background: #ABEBF5;
 }
@@ -3541,8 +3596,9 @@ button.nts-switch-button[disabled]:hover {
 /* line 1, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper {
   margin-bottom: 15px;
+  white-space: nowrap;
 }
-/* line 4, ../sass/components/_searchbox.scss */
+/* line 5, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper input.ntsSearchBox {
   box-sizing: border-box;
   border: 1px solid #999;
@@ -3555,23 +3611,24 @@ button.nts-switch-button[disabled]:hover {
   vertical-align: top;
   transition: width 0.4s ease-in-out;
 }
-/* line 17, ../sass/components/_searchbox.scss */
+/* line 18, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper input.ntsSearchBox:focus {
   box-shadow: 0 0 1px 1px #0096f2;
   outline: none;
 }
-/* line 22, ../sass/components/_searchbox.scss */
+/* line 23, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper button.search-btn,
 .nts-searchbbox-wrapper button.clear-btn {
   vertical-align: top;
   margin-left: 5px;
   min-width: 65px;
+  padding: 3px;
 }
-/* line 29, ../sass/components/_searchbox.scss */
+/* line 31, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
 }
-/* line 32, ../sass/components/_searchbox.scss */
+/* line 34, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div {
   vertical-align: middle !important;
 }
@@ -4037,7 +4094,7 @@ button.nts-switch-button[disabled]:hover {
   box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   z-index: 990;
-	white-space: pre-line;
+  white-space: pre-line;
 }
 
 /* line 1, ../sass/components/_images.scss */
@@ -4417,81 +4474,89 @@ button.nts-switch-button[disabled]:hover {
   padding: 0px;
 }
 
-/* line 18, ../sass/components/_extable.scss */
+/* line 15, ../sass/components/_extable.scss */
 .extable div.edited, .extable td.edited {
   background-color: #FAD7A0;
 }
 
+/* line 18, ../sass/components/_extable.scss */
 .extable div.target-edited, .extable td.target-edited {
-	background-color: #94B7FE;
+  background-color: #94B7FE;
 }
 
+/* line 21, ../sass/components/_extable.scss */
 .extable div.other-edited, .extable td.other-edited {
-	background-color: #CEE6FF;
+  background-color: #CEE6FF;
 }
 
+/* line 24, ../sass/components/_extable.scss */
 .extable div.xdet, .extable td.xdet {
   background-color: #D2B4DE;
 }
 
-/* line 21, ../sass/components/_extable.scss */
+/* line 27, ../sass/components/_extable.scss */
 .extable div.xhidden, .extable td.xhidden {
   background-color: #CCC;
 }
 
-/* line 24, ../sass/components/_extable.scss */
+/* line 30, ../sass/components/_extable.scss */
 .extable div.xseal, .extable td.xseal {
   background-color: #CCC;
 }
 
+/* line 33, ../sass/components/_extable.scss */
 .extable div.bg-weekdays, .extable td.bg-weekdays, .xheader td.bg-weekdays {
-    background-color: #D9D9D9;
+  background-color: #D9D9D9;
 }
 
-.extable div.bg-schedule-specific-date, .extable td.bg-schedule-specific-date, 
+/* line 36, ../sass/components/_extable.scss */
+.extable div.bg-schedule-specific-date, .extable td.bg-schedule-specific-date,
 .xheader td.bg-schedule-specific-date {
-    background-color: #ffc0cb;
+  background-color: #ffc0cb;
 }
 
+/* line 40, ../sass/components/_extable.scss */
 .extable div.bg-schedule-sunday, .extable td.bg-schedule-sunday, .xheader td.bg-schedule-sunday {
-    background-color: #fabf8f;
+  background-color: #fabf8f;
 }
 
+/* line 43, ../sass/components/_extable.scss */
 .extable div.bg-schedule-saturday, .extable td.bg-schedule-saturday, .xheader td.bg-schedule-saturday {
-    background-color: #8bd8ff;
+  background-color: #8bd8ff;
 }
 
+/* line 46, ../sass/components/_extable.scss */
 .extable div.bg-schedule-that-day, .extable td.bg-schedule-that-day, .xheader td.bg-schedule-that-day {
-    background-color: #ffff00;
+  background-color: #ffff00;
 }
 
-/* line 27, ../sass/components/_extable.scss */
+/* line 49, ../sass/components/_extable.scss */
 .extable div.highlight, .extable td.highlight, .xheader td.highlight {
   background-color: #FFFFCC;
 }
 
-/* line 30, ../sass/components/_extable.scss */
+/* line 52, ../sass/components/_extable.scss */
 .extable td.ex-round-go {
   cursor: pointer;
 }
 
-/* line 33, ../sass/components/_extable.scss */
+/* line 55, ../sass/components/_extable.scss */
 .extable div.x-cell-selected, .extable td.x-cell-selected {
   background-color: #3498DB;
   color: #FFF;
 }
 
-/* line 37, ../sass/components/_extable.scss */
+/* line 59, ../sass/components/_extable.scss */
 .extable tr.x-row-selected {
   background-color: #AED6F1;
 }
 
-/* line 40, ../sass/components/_extable.scss */
+/* line 62, ../sass/components/_extable.scss */
 .extable td.x-error, .extable div.x-error {
   border: solid 1px #FF6666 !important;
 }
 
-/* line 43, ../sass/components/_extable.scss */
+/* line 65, ../sass/components/_extable.scss */
 .extable td .column-icon {
   position: absolute;
   left: 6px;
@@ -4499,27 +4564,27 @@ button.nts-switch-button[disabled]:hover {
   margin-top: -8px;
 }
 
-/* line 49, ../sass/components/_extable.scss */
+/* line 71, ../sass/components/_extable.scss */
 .ex-editor input::-ms-clear {
   display: none;
 }
 
-/* line 52, ../sass/components/_extable.scss */
+/* line 74, ../sass/components/_extable.scss */
 .extable-crud {
   padding-bottom: 4px;
 }
 
-/* line 55, ../sass/components/_extable.scss */
+/* line 77, ../sass/components/_extable.scss */
 .extable-delete-rows {
   margin-left: 4px;
 }
 
-/* line 58, ../sass/components/_extable.scss */
+/* line 80, ../sass/components/_extable.scss */
 div .ex-area-line.x-stay {
   cursor: default !important;
 }
 
-/* line 62, ../sass/components/_extable.scss */
+/* line 84, ../sass/components/_extable.scss */
 .top-right-tooltip:before {
   width: 0;
   height: 0;
@@ -4534,7 +4599,7 @@ div .ex-area-line.x-stay {
   left: -14px;
 }
 
-/* line 75, ../sass/components/_extable.scss */
+/* line 97, ../sass/components/_extable.scss */
 .top-right-tooltip {
   background-color: #CACA1E;
   box-shadow: 2px 2px 2px #95A5A6;
@@ -4545,7 +4610,7 @@ div .ex-area-line.x-stay {
   padding-top: 4px;
 }
 
-/* line 85, ../sass/components/_extable.scss */
+/* line 107, ../sass/components/_extable.scss */
 .x-context-menu {
   position: absolute;
   display: inline-block;
@@ -4558,7 +4623,7 @@ div .ex-area-line.x-stay {
   z-index: 120050;
 }
 
-/* line 96, ../sass/components/_extable.scss */
+/* line 118, ../sass/components/_extable.scss */
 .x-context-menu:after {
   content: '';
   display: block;
@@ -4573,7 +4638,7 @@ div .ex-area-line.x-stay {
   z-index: 1;
 }
 
-/* line 110, ../sass/components/_extable.scss */
+/* line 132, ../sass/components/_extable.scss */
 .x-context-menu li {
   position: relative;
   display: block;
@@ -4584,19 +4649,19 @@ div .ex-area-line.x-stay {
   z-index: 2;
 }
 
-/* line 119, ../sass/components/_extable.scss */
+/* line 141, ../sass/components/_extable.scss */
 .x-context-menu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
 
-/* line 122, ../sass/components/_extable.scss */
+/* line 144, ../sass/components/_extable.scss */
 .x-context-menu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
 
-/* line 127, ../sass/components/_extable.scss */
+/* line 149, ../sass/components/_extable.scss */
 .x-context-menu li .menu-icon {
   position: absolute;
   left: 7px;
@@ -4604,7 +4669,7 @@ div .ex-area-line.x-stay {
   margin-top: -8px;
 }
 
-/* line 133, ../sass/components/_extable.scss */
+/* line 155, ../sass/components/_extable.scss */
 .x-context-menu .partition {
   height: 0;
   border-top: 1px solid #ccc;
@@ -4612,7 +4677,7 @@ div .ex-area-line.x-stay {
   margin: 5px 0;
 }
 
-/* line 140, ../sass/components/_extable.scss */
+/* line 162, ../sass/components/_extable.scss */
 .x-popup-panel {
   position: absolute;
   display: block;
@@ -4624,7 +4689,7 @@ div .ex-area-line.x-stay {
   padding: 5px;
 }
 
-/* line 151, ../sass/components/_extable.scss */
+/* line 173, ../sass/components/_extable.scss */
 .x-link {
   display: inline-block;
   color: #0D86D1;
@@ -4637,6 +4702,7 @@ div .ex-area-line.x-stay {
   width: 100%;
 }
 
+/* line 185, ../sass/components/_extable.scss */
 .x-cell-overflow {
   position: absolute;
   display: inline-block;
@@ -4647,233 +4713,6 @@ div .ex-area-line.x-stay {
   -webkit-box-shadow: 1px 1px 5px 1px #888;
   -moz-box-shadow: 1px 1px 5px 1px #888;
   box-shadow: 1px 1px 5px 1px #888;
-}
-
-/*****************************
-  MGrid
-*****************************/
-.mgrid :not(.mgrid-header) table tr td { 
-    font-size: 14px;
-    font-family: "DroidSansMono", "Meiryo";
-}
-
-.mgrid {
-	position: relative;
-}
-.mgrid table th, .mgrid table td {
-	border: 1px solid #AAB7B8;
-}
-.mgrid .mgrid-header td {
-	color: #000;
-	background-color: #CFF1A5;
-	font-weight: bold;
-}
-
-.mgrid .mcell {
-}
-
-.mgrid td.mcell.currency-symbol:before {
-  content: '\00a5';
-  top: 6px;
-  color: #999;
-  padding-right: 4px;
-}
-
-.mgrid .medit-container.currency-symbol:before {
-  position: absolute;
-  content: '\00a5';
-  top: 3px;
-  left: 4px;
-  color: #999;
-  background-color: #fff;
-  padding-right: 4px;
-}
-
-.mgrid table {
-	position: relative;
-	table-layout: fixed;
-	width: 100%;
-	border-collapse: separate;
-	user-select: none;
-	-ms-user-select: none;
-	-webkit-user-select: none;
-}
-
-.mgrid .mgrid-fixed-line, .mgrid .mgrid-line {
-	position: absolute;
-	cursor: ew-resize;
-	width: 4px;
-	z-index: 2;
-	margin-left: -3px;
-}
-
-.mgrid .nts-button {
-	height: 24px;
-}
-.mgrid .link-button {
-	background-color: inherit;
-	color: #0066CC;
-	line-height: 26px;
-}
-
-.mgrid table tr td.ui-state-hover {
-	background-color: #F5F5DC;
-  	color: #000;
-}
-
-.mgrid table tr td.mgrid-disable {
-	background-color: #CCC;
-	color: #333;
-}
-
-.mgrid table tr td.mgrid-calc {
-	background-color: #F69164;
-}
-
-.mgrid table tr td.mgrid-reflect {
-	background-color: #BFEA60;
-}
-
-.mgrid table tr td.mgrid-manual-edit-other {
-	background-color: #CEE6FF;
-}
-
-.mgrid table tr td.mgrid-manual-edit-target {
-	background-color: #94B7FE;
-}
-
-.mgrid table tr td.mgrid-alarm {
-	background-color: #F6F636;
-}
-
-.mgrid table tr td.mgrid-error {
-	background-color: #FD4D4D;
-}
-
-.mgrid table tr td.cell-selected:not(.nts-control) {
-	background-color: #007fff;
-}
-
-.mgrid table tr td.cell-selected:not(.ui-state-hover) {
-	color: #fff;
-}
-
-.mcombo-wrapper {
-	position: relative;
-	display: inline-block;
-	overflow: visible;
-	height: 25px;
-}
-
-.mcombo {
-	height: 100%;
-    border: 1px solid #c5c5c5;
-    border-radius: 3px;
-}
-
-.mcombo-button {
-    float: right;
-    position: relative;
-    height: 100%;
-    min-width: 16px;
-    min-height: 16px;
-    cursor: pointer;
-    padding: 0 5px;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-    border-width: 0 0 0 1px;
-}
-
-.mcombo-button:hover {
-	background-color: #efebeb;
-}
-
-.mcombo-buttonicon {
-    position: absolute;
-    top: 50%; 
-    margin-top: -8px;
-}
-
-.mcombo-value {
-	height: 100%;
-	padding-left: 2px;
-	padding-top: 3px;
-}
-
-.mcombo-dropdown {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 0px;
-    overflow: hidden;
-    transition: height 160ms ease-in-out;
-    border-top: 0;
-    z-index: 100000;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    border: 1px solid #c5c5c5;
-    border-radius: 3px;
-}
-
-.mcombo-list {
-	position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.mcombo-listitemholder {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    overflow-x: hidden;
-}
-
-.mcombo-listitemholder .mcombo-listitem {
-    position: relative;
-    padding: 3px;
-    border: 0;
-    cursor: default;
-    white-space: nowrap;
-    background-image: none;
-}
-
-.mcombo-listitemholder .mcombo-listitem.selecteditem {
-	background-color: #007fff;
-	color: #fff;
-}
-
-.mcombo-listitemholder .mcombo-listitem:not(.selecteditem):hover {
-	background-color: #efebeb;
-}
-
-.medit-container {
-    position: relative;
-    width: 99%;
-    border: 1px solid #AAB7B8;
-    background-color: #fff;
-}
-
-.medit-container .medit {
-    height: 90%;
-    width: 96%;
-    outline: none;
-    border: none;
-	text-align: right;
-	margin: 0% 2%;
-}
-
-.medit-container .medit {
-    font-family: "Meiryo UI"
-}
-
-.medit-container .medit::-ms-clear {
-  display: none;
-}
-
-.mgrid table tr td.nts-control {
-	padding: 0px !important;
 }
 
 /*****************************
@@ -4896,6 +4735,7 @@ div .ex-area-line.x-stay {
   border: solid 1px #b85;
   padding: 5px;
   z-index: 120100;
+  word-break: break-all;
 }
 
 /* line 1, ../sass/components/_legendbutton.scss */
@@ -5077,6 +4917,472 @@ div .ex-area-line.x-stay {
   display: none;
 }
 
+/* line 1, ../sass/components/_mgrid.scss */
+.mgrid :not(.mgrid-header) table tr td {
+  font-size: 14px;
+  font-family: "DroidSansMono", "Meiryo";
+}
+
+/* line 6, ../sass/components/_mgrid.scss */
+.mgrid {
+  position: relative;
+}
+
+/* line 9, ../sass/components/_mgrid.scss */
+.mgrid table th, .mgrid table td {
+  border: 1px solid #AAB7B8;
+}
+
+/* line 12, ../sass/components/_mgrid.scss */
+.mgrid .mgrid-header td {
+  color: #000;
+  background-color: #CFF1A5;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* line 22, ../sass/components/_mgrid.scss */
+.mgrid td.mcell.currency-symbol:before {
+  content: '\00a5';
+  top: 6px;
+  color: #999;
+  padding-right: 4px;
+}
+
+/* line 29, ../sass/components/_mgrid.scss */
+.mgrid .medit-container.currency-symbol:before {
+  position: absolute;
+  content: '\00a5';
+  top: 3px;
+  left: 4px;
+  color: #999;
+  background-color: #fff;
+  padding-right: 4px;
+}
+
+/* line 39, ../sass/components/_mgrid.scss */
+.mgrid table {
+  position: relative;
+  table-layout: fixed;
+  width: 100%;
+  /**border-collapse: separate;**/
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+/* line 49, ../sass/components/_mgrid.scss */
+.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
+  background: #fff;
+}
+
+/* line 53, ../sass/components/_mgrid.scss */
+.mgrid .mgrid-fixed-line, .mgrid .mgrid-line {
+  position: absolute;
+  cursor: ew-resize;
+  width: 4px;
+  z-index: 2;
+  margin-left: -3px;
+}
+
+/* line 61, ../sass/components/_mgrid.scss */
+.mgrid .mbutton {
+  height: 24px;
+}
+
+/* line 64, ../sass/components/_mgrid.scss */
+.mgrid .mlink-button {
+  background-color: inherit;
+  color: #0066CC;
+  line-height: 26px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* line 72, ../sass/components/_mgrid.scss */
+.mgrid table tr td.ui-state-hover {
+  background-color: #F5F5DC;
+  color: #000;
+}
+
+/* line 77, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-disable {
+  background-color: #CCC;
+  color: #333;
+}
+
+/* line 82, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-calc {
+  background-color: #F69164;
+}
+
+/* line 86, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-reflect {
+  background-color: #BFEA60;
+}
+
+/* line 90, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-manual-edit-other {
+  background-color: #CEE6FF;
+}
+
+/* line 94, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-manual-edit-target {
+  background-color: #94B7FE;
+}
+
+/* line 98, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-alarm {
+  background-color: #F6F636;
+}
+
+/* line 102, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-error {
+  background-color: #FD4D4D;
+}
+
+/* line 106, ../sass/components/_mgrid.scss */
+.mgrid table tr td.cell-selected:not(.nts-control) {
+  background-color: #007fff;
+}
+
+/* line 110, ../sass/components/_mgrid.scss */
+.mgrid table tr td.cell-selected:not(.ui-state-hover) {
+  color: #fff;
+}
+
+/* line 114, ../sass/components/_mgrid.scss */
+.mcombo-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+  height: 26px;
+}
+
+/* line 121, ../sass/components/_mgrid.scss */
+.mcombo {
+  height: 95%;
+  border: 1px solid #c5c5c5;
+  border-radius: 3px;
+  background: white;
+}
+
+/* line 128, ../sass/components/_mgrid.scss */
+.mcombo-button {
+  float: right;
+  position: relative;
+  height: 100%;
+  min-width: 16px;
+  min-height: 16px;
+  cursor: pointer;
+  padding: 0 5px;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border-width: 0 0 0 1px;
+}
+
+/* line 142, ../sass/components/_mgrid.scss */
+.mcombo-button:hover {
+  background-color: #efebeb;
+}
+
+/* line 146, ../sass/components/_mgrid.scss */
+.mcombo-buttonicon {
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+}
+
+/* line 152, ../sass/components/_mgrid.scss */
+.mcombo-value {
+  height: 90%;
+  padding-left: 2px;
+  padding-top: 2px;
+}
+
+/* line 158, ../sass/components/_mgrid.scss */
+.mcombo-dropdown {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 0px;
+  overflow: hidden;
+  transition: height 160ms ease-in-out;
+  border-top: 0;
+  z-index: 100000;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #c5c5c5;
+  border-radius: 3px;
+}
+
+/* line 174, ../sass/components/_mgrid.scss */
+.mcombo-list {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* line 180, ../sass/components/_mgrid.scss */
+.mcombo-listitemholder {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-x: hidden;
+}
+
+/* line 187, ../sass/components/_mgrid.scss */
+.mcombo-listitemholder .mcombo-listitem {
+  position: relative;
+  padding: 3px;
+  border: 0;
+  cursor: default;
+  white-space: nowrap;
+  background-image: none;
+}
+
+/* line 196, ../sass/components/_mgrid.scss */
+.mcombo-listitemholder .mcombo-listitem.selecteditem {
+  background-color: #007fff;
+  color: #fff;
+}
+
+/* line 201, ../sass/components/_mgrid.scss */
+.mcombo-listitemholder .mcombo-listitem:not(.selecteditem):hover {
+  background-color: #efebeb;
+}
+
+/* line 205, ../sass/components/_mgrid.scss */
+.mcombo-state-active {
+  border-color: #0096f2;
+}
+
+/* line 209, ../sass/components/_mgrid.scss */
+.mcombo-item {
+  width: 100%;
+  height: 20px;
+  font-size: 0px;
+  white-space: nowrap;
+}
+
+/* line 216, ../sass/components/_mgrid.scss */
+.mcombo-item-column {
+  display: inline-block;
+  height: 20px;
+  overflow: hidden;
+}
+
+/* line 222, ../sass/components/_mgrid.scss */
+.medit-container {
+  position: relative;
+  width: 99%;
+  border: 1px solid #AAB7B8;
+  background-color: #fff;
+}
+
+/* line 229, ../sass/components/_mgrid.scss */
+.medit-container .medit {
+  height: 90%;
+  width: 96%;
+  outline: none;
+  border: none;
+  text-align: right;
+  margin: 0% 2%;
+}
+
+/* line 238, ../sass/components/_mgrid.scss */
+.medit-container .medit {
+  font-family: "Meiryo UI";
+}
+
+/* line 242, ../sass/components/_mgrid.scss */
+.medit-container .medit::-ms-clear {
+  display: none;
+}
+
+/* line 246, ../sass/components/_mgrid.scss */
+.mgrid table tr td.nts-control {
+  padding: 0px !important;
+}
+
+/* line 250, ../sass/components/_mgrid.scss */
+.mgrid table tr td.merror {
+  border: 1px double #ff6666;
+}
+
+/* line 254, ../sass/components/_mgrid.scss */
+.mgrid .mgrid-fixed-summaries tr td,
+.mgrid .mgrid-free-summaries tr td {
+  border-width: 0px 0px 0px 1px;
+  border-color: #AAB7B8;
+  color: #454545;
+  overflow: hidden;
+  /**position: relative;**/
+  padding: 0px 2px;
+  font-family: "Meiryo" !important;
+  font-size: .9em !important;
+  text-align: center;
+}
+
+/* line 267, ../sass/components/_mgrid.scss */
+.mgrid .mgrid-fixed-summaries tr td:hover,
+.mgrid .mgrid-free-summaries tr td:hover {
+  background-color: #C5F1F7;
+  border-right-width: 1px;
+  color: #000;
+}
+
+/* line 274, ../sass/components/_mgrid.scss */
+.mgrid-pagerecordlabel {
+  float: left;
+  line-height: 1.9em;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+/* line 281, ../sass/components/_mgrid.scss */
+.mgrid-paging-nav {
+  float: right;
+  position: relative;
+  top: 10px;
+  padding-right: 5px;
+}
+
+/* line 288, ../sass/components/_mgrid.scss */
+.mgrid-firstpage {
+  width: 26px;
+  padding-left: 5px;
+  display: inline-block;
+  line-height: 1.5em;
+  margin-right: 8px;
+  vertical-align: top;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* line 299, ../sass/components/_mgrid.scss */
+.mgrid-lastpage {
+  width: 26px;
+  padding-right: 5px;
+  display: inline-block;
+  line-height: 1.5em;
+  margin-left: 8px;
+  vertical-align: top;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* line 310, ../sass/components/_mgrid.scss */
+.mgrid-firstpage:hover, .mgrid-lastpage:hover {
+  border-color: #ccc;
+  background-color: #ededed;
+}
+
+/* line 315, ../sass/components/_mgrid.scss */
+.mgrid-page-buttonlist {
+  text-decoration: none;
+  line-height: 1.4em;
+  display: inline-block;
+}
+
+/* line 321, ../sass/components/_mgrid.scss */
+.mgrid-page-button {
+  text-decoration: none;
+  line-height: 1.4em;
+  cursor: pointer;
+  float: left;
+  width: 20px;
+  text-align: center;
+  margin: 0.1em;
+  border-radius: 3px;
+}
+
+/* line 332, ../sass/components/_mgrid.scss */
+.mgrid-page-button:not(.ui-state-active):hover {
+  border-color: #ccc;
+  background-color: #ededed;
+}
+
+/* line 337, ../sass/components/_mgrid.scss */
+.mgrid-pageimg.ui-icon-arrowstop-1-e {
+  margin-left: 10px;
+}
+
+/* line 341, ../sass/components/_mgrid.scss */
+.mgrid-sheet-nav {
+  float: left;
+  position: relative;
+  padding-right: 5px;
+  overflow: hidden;
+  height: 30px;
+  width: 95%;
+  top: -30px;
+  left: 20px;
+}
+
+/* line 352, ../sass/components/_mgrid.scss */
+.mgrid-sheet-buttonlist {
+  text-decoration: none;
+  line-height: 1.8em;
+  display: inline;
+  float: left;
+}
+
+/* line 359, ../sass/components/_mgrid.scss */
+.mgrid-sheet-button {
+  text-decoration: none;
+  line-height: 1.8em;
+  cursor: pointer;
+  float: left;
+  text-align: center;
+  margin: 0.1em;
+  padding-right: 8px;
+  padding-left: 8px;
+  border-radius: 3px;
+}
+
+/* line 371, ../sass/components/_mgrid.scss */
+.mgrid-sheet-button:not(.ui-state-active):hover {
+  border-color: #ccc;
+  background-color: #ededed;
+}
+
+/* line 376, ../sass/components/_mgrid.scss */
+.mgrid-sheet-scrollbar {
+  width: 20px;
+  height: 30px;
+}
+
+/* line 381, ../sass/components/_mgrid.scss */
+.mgrid-sheet-scrollbar li {
+  line-height: 15px;
+  font-size: 0.5rem;
+  text-align: center;
+  top: -3px;
+  cursor: default;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+/* line 392, ../sass/components/_mgrid.scss */
+.mgrid-sheet-scrollbar:not(.ui-state-disabled) li:hover {
+  background-color: #ccc;
+}
+
+/* line 396, ../sass/components/_mgrid.scss */
+.mgrid-sheet-scrollbar:not(.disable) li:active {
+  color: white;
+  background-color: gray;
+}
+
+/* line 401, ../sass/components/_mgrid.scss */
+.mgrid-sheet-scrollbar.disable li {
+  color: #aaa;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -5102,30 +5408,31 @@ div .ex-area-line.x-stay {
   text-align: center;
   padding-top: 8px;
   white-space: nowrap;
+  background-color: #fff;
+  z-index: 1000001;
 }
 
 /* line 1, ../sass/frame/_contents.scss */
-#contents-area {
+#master-wrapper {
+  height: 100vh;
+}
+/* line 3, ../sass/frame/_contents.scss */
+#master-wrapper div#contents-area {
   position: relative;
   padding: 10px;
   overflow-y: auto;
 }
 
-/* line 6, ../sass/frame/_contents.scss */
-#master-wrapper {
-  height: 100vh;
-}
-
-/* line 11, ../sass/frame/_contents.scss */
+/* line 10, ../sass/frame/_contents.scss */
 .fixed-flex-layout {
   display: flex;
 }
-/* line 14, ../sass/frame/_contents.scss */
+/* line 13, ../sass/frame/_contents.scss */
 .fixed-flex-layout > .fixed-flex-layout-left {
   margin-right: 30px;
   /* specify width each screens */
 }
-/* line 20, ../sass/frame/_contents.scss */
+/* line 19, ../sass/frame/_contents.scss */
 .fixed-flex-layout > .fixed-flex-layout-right {
   flex: 1;
 }
@@ -5247,9 +5554,9 @@ div .ex-area-line.x-stay {
   line-height: 50px;
 }
 
-/* line 102, ../sass/frame/_sidebar.scss */
-.sidebar-content{
-    overflow: auto;
+/* line 101, ../sass/frame/_sidebar.scss */
+.sidebar-content {
+  overflow: auto;
 }
 
 /* line 1, ../sass/components/_monthdays.scss */
@@ -5408,26 +5715,26 @@ div .ex-area-line.x-stay {
 }
 
 /* line 1, ../sass/components/_datetime.scss */
-.component-container{
-    display: inline-block;
+.component-container {
+  display: inline-block;
 }
 
 /* line 4, ../sass/components/_datetime.scss */
-.time-container{
-    margin-left: 5px;
+.time-container {
+  margin-left: 5px;
 }
 
 /* line 7, ../sass/components/_datetime.scss */
-.datetimepairrange-component{
-   	display: inline-block;
+.datetimepairrange-component {
+  display: inline-block;
 }
 
-/* line 51, ../sass/base.scss */
+/* line 53, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 55, ../sass/base.scss */
+/* line 57, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

@@ -22,7 +22,7 @@ public class DeleteErAlCommandHandler extends CommandHandler<String> {
 
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
-		String erCode = context.getCommand();
+		String erCode = "U" + context.getCommand();
 		this.repository.removeErrorAlarmWorkRecord(erCode);
 	}
 }

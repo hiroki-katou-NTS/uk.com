@@ -29,10 +29,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPeriodCreateData{
 	@Inject
 	private InterimRemainOffDateCreateData createDataService;
-	@Inject
-	private ComSubstVacationRepository subRepos;
-	@Inject
-	private CompensLeaveComSetRepository leaveSetRepos;
+
 	@Inject
 	private EmpSubstVacationRepository empSubsRepos;
 	@Inject
@@ -41,12 +38,12 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 	private ShareEmploymentAdapter employmentService;
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainDataMng(
-			InterimRemainCreateDataInputPara inputParam) {
+			InterimRemainCreateDataInputPara inputParam, CompanyHolidayMngSetting comHolidaySetting) {
 		Map<GeneralDate, DailyInterimRemainMngData> dataOutput = new HashMap<>();
-		//雇用履歴と休暇管理設定を取得する
+		/*//雇用履歴と休暇管理設定を取得する
 		Optional<ComSubstVacation> comSetting = subRepos.findById(inputParam.getCid());
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
-		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);
+		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting, leaveComSetting);*/
 		//アルゴリズム「社員ID（List）と指定期間から社員の雇用履歴を取得」を実行する
 		List<String> lstEmployee = new ArrayList<>();
 		lstEmployee.add(inputParam.getSid());
@@ -123,7 +120,8 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		}
 		//対象日の申請を抽出する
 		List<AppRemainCreateInfor> appData = inputInfor.getAppData().stream()
-				.filter(y -> y.getSid().equals(inputInfor.getSid()) && y.getAppDate().equals(baseDate))
+				.filter(y -> y.getSid().equals(inputInfor.getSid()) && (y.getAppDate().equals(baseDate)
+						|| (y.getStartDate().isPresent() && y.getEndDate().isPresent() && y.getStartDate().get().beforeOrEquals(baseDate) && y.getEndDate().get().afterOrEquals(baseDate))))
 				.collect(Collectors.toList());
 		detailData.setAppData(appData);
 		//対象日の予定を抽出する

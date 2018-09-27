@@ -70,6 +70,18 @@ public class WindowAccountWs extends WebService{
 	public List<WindowsAccountFinderDto> findListWindowAccByUserId(WindowsAccountFinderDto windownAccountFinderDto) {
 		return this.windowAccountFinder.findWindowAccountByUserId(windownAccountFinderDto.getUserId());
 	}
+
+	/**
+	 * Find already setting.
+	 *
+	 * @param userIds the user ids
+	 * @return the list
+	 */
+	@POST
+	@Path("find/window/alreadysetting")
+	public List<String> findAlreadySetting(List<String> userIds) {
+		return this.windowAccountFinder.findAlreadySetting(userIds);
+	}
 	
 	/**
 	 * Save window account.

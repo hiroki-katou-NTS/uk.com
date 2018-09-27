@@ -68,7 +68,7 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 
 		// remove all of data has removed in list attendanceId from UI
 		if (!attendanceItemIdRemove.isEmpty()) {
-			this.authorityFormatDailyRepository.deleteExistData(attendanceItemIdRemove);
+			this.authorityFormatDailyRepository.deleteExistData(companyId,command.getDailyPerformanceFormatCode(),command.getSheetNo(),attendanceItemIdRemove);
 		}
 
 		// List Data Update from UI compare DB (exist in DB)

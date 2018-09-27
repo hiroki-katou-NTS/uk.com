@@ -33,7 +33,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " AND si.selectionItemPk.selectionItemId <> :selectionItemId";
 	
 	private static final String SELECT_ALL_BY_PERSON_TYPE = "SELECT si FROM PpemtSelectionItem si"
-			+ " WHERE si.selectionItemClsAtr =:selectionItemClsAtr AND si.contractCd = :contractCode"
+			+ " WHERE si.contractCd = :contractCode"
 			+ " ORDER BY si.selectionItemName ";
 	private static final String SELECT_BY_HIST_ID = SELECT_ALL
 			+ " INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
@@ -82,7 +82,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	private PerInfoSelectionItem toDomain(PpemtSelectionItem entity) {
 		return PerInfoSelectionItem.createFromJavaType(entity.contractCd, entity.selectionItemPk.selectionItemId,
-				entity.selectionItemClsAtr, entity.selectionItemName, entity.characterTypeAtr, entity.codeLength,
+				entity.selectionItemName, entity.characterTypeAtr, entity.codeLength,
 				entity.nameLength, entity.extCodeLength, entity.integrationCd, entity.memo);
 	}
 
@@ -114,7 +114,6 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 		entity.selectionItemPk = key;
 		entity.contractCd = domain.getContractCode();
-		entity.selectionItemClsAtr = domain.getClassification().value;
 		entity.selectionItemName = domain.getSelectionItemName().v();
 
 		entity.characterTypeAtr = domain.getFormatSelection().getCharacterType().value;
@@ -136,9 +135,9 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	// Lanlt
 	@Override
-	public List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr, String contractCode) {
+	public List<PerInfoSelectionItem> getAllSelection(String contractCode) {
 		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
-				.setParameter("selectionItemClsAtr", selectionItemClsAtr).setParameter("contractCode", contractCode)
+				.setParameter("contractCode", contractCode)
 				.getList(c -> toDomain(c));
 	}
 	// Lanlt

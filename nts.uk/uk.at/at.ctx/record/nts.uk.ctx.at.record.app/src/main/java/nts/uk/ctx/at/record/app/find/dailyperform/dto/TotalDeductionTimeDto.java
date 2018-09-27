@@ -31,6 +31,13 @@ public class TotalDeductionTimeDto implements ItemConst {
 						CalcAttachTimeDto.toTimeWithCal(domain.getWithinStatutoryTotalTime()),
 						CalcAttachTimeDto.toTimeWithCal(domain.getTotalTime()));
 	}
+
+	@Override
+	public TotalDeductionTimeDto clone() {
+		return new TotalDeductionTimeDto(excessOfStatutoryTotalTime == null ? null : excessOfStatutoryTotalTime.clone(),
+										withinStatutoryTotalTime == null ? null : withinStatutoryTotalTime.clone(),
+										totalTime == null ? null : totalTime.clone());
+	}
 	
 	public DeductionTotalTime createDeductionTime() {
 		return DeductionTotalTime.of(

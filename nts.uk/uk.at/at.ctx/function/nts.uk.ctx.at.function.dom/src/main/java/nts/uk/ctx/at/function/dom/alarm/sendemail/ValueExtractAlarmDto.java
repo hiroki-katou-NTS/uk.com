@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 /**
  * 
  * @author thuongtv
@@ -8,6 +10,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ValueExtractAlarmDto {
 	private String guid;
 	private String workplaceID;

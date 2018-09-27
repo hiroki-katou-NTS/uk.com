@@ -29,14 +29,17 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PeriodDateAndEmployment;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
+import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -47,6 +50,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	
 	@Inject
 	private ApprovalRootStatePub approvalRootStatePub;
+	
+	@Inject
+	private IntermediateDataPub intermediateDataPub;
 	
 	@Override
 	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs, String companyID) {
@@ -239,18 +245,11 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
 			String employeeID, String companyID, Integer rootType) {
-		List<ApproveRootStatusForEmpImPort> approveRootStatusForEmpImPorts = new ArrayList<>();
-		List<ApproveRootStatusForEmpExport> approverRootStatus = this.approvalRootStatePub.getApprovalByEmplAndDate(startDate, endDate, employeeID, companyID, rootType);
-		if(CollectionUtil.isEmpty(approverRootStatus)){
-			return approveRootStatusForEmpImPorts;
-		}
-		for(ApproveRootStatusForEmpExport approve : approverRootStatus){
-			ApproveRootStatusForEmpImPort  approveRootStatusForEmp = new ApproveRootStatusForEmpImPort(approve.getEmployeeID(),
-					approve.getAppDate(),
-					EnumAdaptor.valueOf(approve.getApprovalStatus().value,ApprovalStatusForEmployeeImport.class));
-			approveRootStatusForEmpImPorts.add(approveRootStatusForEmp);
-		}
-		return approveRootStatusForEmpImPorts;
+		return intermediateDataPub.getAppRootStatusByEmpPeriod(employeeID, new DatePeriod(startDate, endDate), rootType)
+				.stream().map(x -> new ApproveRootStatusForEmpImPort(
+						x.getEmployeeID(), 
+						x.getDate(), 
+						EnumAdaptor.valueOf(x.getDailyConfirmAtr(),ApprovalStatusForEmployeeImport.class))).collect(Collectors.toList());
 	}
 	@Override
 	public List<String> getApproverFromPhase(String appID) {

@@ -38,16 +38,16 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 		RequestSetting requestSetting = requestSettingRepository.findByCompany(companyID).get();
 		baseDateFlg = requestSetting.getApplicationSetting().getRecordDate();
 		if(baseDateFlg.equals(RecordDate.SYSTEM_DATE)){
-			approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID, isCreate);
 			baseDate = GeneralDate.today();
+			approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, baseDate, appID, isCreate);
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 		}
 		if(appDate == null){
 			baseDate = GeneralDate.today();
 			return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 		}
-		approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, appID, isCreate);
 		baseDate = appDate;
+		approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, baseDate, appID, isCreate);
 		return new ApprovalRootPattern(baseDate, approvalRootContentImport);
 	}
 

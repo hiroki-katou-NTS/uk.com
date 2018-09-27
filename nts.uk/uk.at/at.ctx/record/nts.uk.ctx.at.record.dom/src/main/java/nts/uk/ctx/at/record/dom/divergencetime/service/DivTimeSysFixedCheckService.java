@@ -235,10 +235,10 @@ public class DivTimeSysFixedCheckService {
 			GeneralDate tarD, List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
 			List<DivergenceTime> divTimeErAlMs, MasterShareContainer shareContainer){
-		Stopwatches.start("ERAL-Divergence");
+		
 		List<EmployeeDailyPerError> result = divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, null, 
 				tl, erAls, divTimeErAlMs, shareContainer);
-		Stopwatches.stop("ERAL-Divergence");
+		
 		return result;
 	}
 	
@@ -369,7 +369,6 @@ public class DivTimeSysFixedCheckService {
 		shareDivRefTime(isWHis, hisItem.identifier(), divCheckNos, bsCode, shareContainer);
 		shareDivMesTime(isWHis, comId, divCheckNos, bsCode, shareContainer);
 		erAls.stream().sorted((e1, e2) -> e1.getCode().compareTo(e2.getCode())).forEach(erAl -> {
-			Stopwatches.start("ERAL-DIVE-INSIDE");
 			int numberIn = getNumber(erAl.getCode().v()),
 				divNo = getNo(numberIn);
 			boolean isAlarm = numberIn % 2 == 0;
@@ -393,7 +392,6 @@ public class DivTimeSysFixedCheckService {
     				});
     			});
             }
-			Stopwatches.stop("ERAL-DIVE-INSIDE");
 		});
 		//TODO: comment
 //		shareContainer.share("LAST_TIME_CHECK_NO", divCheckNos);
@@ -506,12 +504,7 @@ public class DivTimeSysFixedCheckService {
 			return divTimeErAlMs;
 		}
 		return shareContainer.getShared(join(DIVERGENCE_TIME_KEY, SEPERATOR, comId), 
-				() -> {
-					return diverTimeRepo.getDivTimeListByNo(comId, divCheckNos).stream()
-								.filter(div -> div.isDivergenceTimeUse())
-								.sorted((c1, c2) -> Integer.compare(c1.getDivergenceTimeNo(), c2.getDivergenceTimeNo()))
-								.collect(Collectors.toList());
-				});
+				() -> diverTimeRepo.getUsedDivTimeListByNoV2(comId, divCheckNos));
 	}
 
 	/** ドメインモデル「乖離基準時間利用単位」を取得する */
@@ -641,11 +634,11 @@ public class DivTimeSysFixedCheckService {
 	}
 
 	private boolean isReasonSelected(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {
-		return divTime.getDivResonCode() != null && !divTime.getDivResonCode().v().isEmpty();
+		return divTime.getDivResonCode() != null && divTime.getDivResonCode().isPresent() && !divTime.getDivResonCode().get().v().isEmpty();
 	}
 
 	private boolean isReasonInputed(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {
-		return divTime.getDivReason() != null && !divTime.getDivReason().v().isEmpty();
+		return divTime.getDivReason() != null && divTime.getDivReason().isPresent() && !divTime.getDivReason().get().v().isEmpty();
 	}
 	
 	private InternalCheckStatus evaluateReasonOnNoError(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {

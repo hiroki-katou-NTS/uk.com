@@ -147,7 +147,7 @@ module nts.custom.component {
             
             .header-info .person-info .row>div.info>* {
                 display: inline-block;
-                max-width: 215px;
+                max-width: 200px;
                 text-overflow: ellipsis;
                 height: 30px;
                 overflow: hidden;
@@ -194,7 +194,7 @@ module nts.custom.component {
                                 columns: [
                                     { headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
                                     { headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
-                                    { headerText: text('CPS001_10'), key: 'employeeName', width: 125, hidden: false }
+                                    { headerText: '', key: 'employeeName', width: 125, hidden: false }
                                 ],
                                 primaryKey: 'employeeId',
                                 value: employeeId,
@@ -205,7 +205,7 @@ module nts.custom.component {
             <div class="right-area">
                 <div class='header-info'>
                     <div class="avatar-group">
-                        <div class="active-panel" data-bind="click: action.avatar">
+                        <div class="active-panel" data-bind="click: function() { if(!employee.id()) { return; } action.avatar(); }">
                             <img data-bind="attr: { src: person.avatar }" class="avatar" tabindex="13" />
                         </div>
                     </div>
@@ -247,14 +247,16 @@ module nts.custom.component {
                             <div class="column">
                                 <button class="btn btn-location" type="button" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             click: action.location,
                                             text: text('CPS001_20'),
                                             style: { 
                                                 visibility: auth.allowMapBrowse() ? 'visible' : 'hidden' 
                                             }" 
-                                        tabindex="16"></button>
+                                        tabindex="14"></button>
                                 <button class="btn btn-details" type="button" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             click: action.ebook,
                                             text: text('CPS001_19'),   
                                             style: { 
@@ -263,8 +265,9 @@ module nts.custom.component {
                                         tabindex="15"></button>
                             </div>
                             <div class="column">
-                                <button class="btn btn-print" type="button" tabindex="14" 
+                                <button class="btn btn-print" type="button" tabindex="16" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             text: text('CPS001_17'),
                                             style: { 
                                                 visibility: auth.allowPrintRef() ? 'visible' : 'hidden' 
@@ -296,7 +299,8 @@ module nts.custom.component {
                     id: params.employeeId || ko.observable(''),
                     name: ko.observable(''),
                     code: ko.observable(''),
-                    entire: ko.observable('')
+                    entire: ko.observable(''),
+                    hireDate: params.hireDate || ko.observable('')
                 },
                 department: {
                     code: ko.observable(''),
@@ -309,10 +313,12 @@ module nts.custom.component {
                 action: {
                     ebook: () => {
                         let auth = params.auth,
-                            id = ko.toJS(params.person.id);
+                            pid = ko.toJS(params.person.id),
+                            sid = ko.toJS(params.employee.id);
 
                         setShared("CPS001F_PARAMS", {
-                            pid: id
+                            pid: pid,
+                            sid: sid
                         });
 
                         modal('../f/index.xhtml').onClosed(() => { });
@@ -388,73 +394,94 @@ module nts.custom.component {
                     department = params.department,
                     constract = params.constract;
 
-                fetch.employee(id).done((emp: IData) => {
-                    if (emp) {
-                        
-                        if (!params.auth.allowAvatarRef()) {
-                            person.avatar(DEF_AVATAR);
-                        } else {
-                            fetch.avartar(id).done(avatar => {
-                                person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
-                            }).fail(msg => person.avatar(DEF_AVATAR));
-                        }
+                if (!!id) {
+                    fetch.employee(id).done((emp: IData) => {
+                        if (emp) {
 
-                        person.id(emp.pid);
+                            if (!params.auth.allowAvatarRef()) {
+                                person.avatar(DEF_AVATAR);
+                            } else {
+                                fetch.avartar(id).done(avatar => {
+                                    person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
+                                }).fail(msg => person.avatar(DEF_AVATAR));
+                            }
 
-                        if (!emp.gender) {
-                            person.gender('');
-                        } else {
-                            person.gender(`(${emp.gender})`);
-                        }
+                            person.id(emp.pid);
 
-                        if (!emp.birthday) {
-                            person.age('');
-                        } else {
-                            let now = moment.utc(),
-                                birthDay = moment.utc(emp.birthday, "YYYY/MM/DD").toDate(),
-                                duration = moment.duration(now.diff(birthDay));
+                            if (!emp.gender) {
+                                person.gender('');
+                            } else {
+                                person.gender(`(${emp.gender})`);
+                            }
 
-                            if (!birthDay) {
+                            if (!emp.birthday) {
                                 person.age('');
                             } else {
-                                person.age((duration.years() + text('CPS001_66')));
+                                let now = moment.utc(),
+                                    birthDay = moment.utc(emp.birthday, "YYYY/MM/DD").toDate(),
+                                    duration = moment.duration(now.diff(birthDay));
+
+                                if (!birthDay) {
+                                    person.age('');
+                                } else {
+                                    person.age((duration.years() + text('CPS001_66')));
+                                }
                             }
-                        }
 
-                        if (emp.numberOfWork > -1 && emp.numberOfTempHist > -1) {
-                            let days = emp.numberOfWork - emp.numberOfTempHist,
-                                duration = moment.duration(days, "days");
+                            if (emp.numberOfWork > -1 && emp.numberOfTempHist > -1) {
+                                let days = emp.numberOfWork - emp.numberOfTempHist,
+                                    duration = moment.duration(days, "days");
 
-                            employee.entire(`${duration.years()}${text('CPS001_67')}${duration.months()}${text('CPS001_88')}`);
+                                employee.entire(`${duration.years()}${text('CPS001_67')}${duration.months()}${text('CPS001_88')}`);
+                            } else {
+                                employee.entire('');
+                            }
+
+                            employee.code(emp.employeeCode);
+                            employee.name(emp.employeeName);
+                            employee.hireDate(emp.hireDate);
+
+                            department.code(emp.departmentCode);
+                            department.name(emp.departmentName);
+
+                            constract.position(emp.position);
+                            constract.contractType(emp.contractCodeType);
                         } else {
+                            person.id('');
+                            person.age('');
+                            person.gender('');
+                            person.avatar(DEF_AVATAR);
+
+
+                            employee.code('');
+                            employee.name('');
                             employee.entire('');
+
+                            department.code('');
+                            department.name('');
+
+                            constract.position('');
+                            constract.contractType('');
                         }
-
-                        employee.code(emp.employeeCode);
-                        employee.name(emp.employeeName);
-
-                        department.code(emp.departmentCode);
-                        department.name(emp.departmentName);
-
-                        constract.position(emp.position);
-                        constract.contractType(emp.contractCodeType);
-                    } else {
-                        person.id('');
-                        person.age('');
-                        person.gender('');
+                    });
+                } else {
+                    person.id('');
+                    person.age('');
+                    person.gender('');
+                    person.avatar(DEF_AVATAR);
 
 
-                        employee.code('');
-                        employee.name('');
-                        employee.entire('');
+                    employee.code('');
+                    employee.name('');
+                    employee.entire('');
 
-                        department.code('');
-                        department.name('');
+                    department.code('');
+                    department.name('');
 
-                        constract.position('');
-                        constract.contractType('');
-                    }
-                });
+                    constract.position('');
+                    constract.contractType('');
+                    __viewContext.viewModel.unblock();
+                }
             });
 
             params.employeeIds.subscribe(ids => {
@@ -518,7 +545,8 @@ module nts.custom.component {
 
         employeeCode?: string;
         employeeName?: string;
-
+        hireDate?: string;
+        
         numberOfWork?: number;
         numberOfTempHist?: number;
 
@@ -529,6 +557,7 @@ module nts.custom.component {
 
         position?: string;
         contractCodeType?: string;
+        
     }
 
     enum FunctionNo {

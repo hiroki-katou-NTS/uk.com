@@ -40,7 +40,7 @@ public class PersonFinder {
 		Optional<Person> person = personRepo.getByPersonId(pid);
 
 		if (person.isPresent()) {
-			return  EmployeeToDeleteDto.fromDomain(person.get().getPersonNameGroup().getPersonName().getFullName().v());
+			return  EmployeeToDeleteDto.fromDomain(person.get().getPersonNameGroup().getBusinessName().v());
 		} else {
 			return null;
 		}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements EmployeeDailyPerErrorRepository {
@@ -31,12 +33,14 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 
 	private static final String REMOVE_DATA;
-	
+
 	private static final String REMOVE_DATA_ATTENDANCE_ITEM;
-	
+
 	private static final String CHECK_EXIST_CODE_BY_LIST_DATE;
-	
+
 	private static final String CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE;
+
+	private static final String REMOVE_BY_CID_SID_DATE_ERRORCODE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -71,13 +75,13 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("WHERE a.employeeId = :employeeId ");
 		builderString.append("AND a.processingDate = :start ");
 		REMOVE_DATA = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KrcdtErAttendanceItem a ");
 		builderString.append("WHERE a.krcdtErAttendanceItemPK.iD = :iD ");
 		REMOVE_DATA_ATTENDANCE_ITEM = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
@@ -85,7 +89,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("AND a.companyID = :companyID ");
 		builderString.append("AND a.processingDate IN :processingDates ");
 		CHECK_EXIST_CODE_BY_LIST_DATE = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
@@ -93,45 +97,52 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("AND a.processingDate = :processingDate ");
 		CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.companyID = :companyID ");
+		builderString.append("AND a.employeeId = :employeeId ");
+		builderString.append("AND a.processingDate = :processingDate ");
+		builderString.append("AND a.errorCode = :errorCode ");
+		REMOVE_BY_CID_SID_DATE_ERRORCODE = builderString.toString();
+
 	}
 
 	@Override
 	public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
-//		this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
-//		this.getEntityManager().flush();
+		// this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+		// this.getEntityManager().flush();
 		String id = IdentifierUtil.randomUniqueId();
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
-			String errorAlarmMessage = employeeDailyPerformanceError.getErrorAlarmMessage().isPresent() ? "'" + employeeDailyPerformanceError.getErrorAlarmMessage().get().v() + "'" : null;
+			String errorAlarmMessage = employeeDailyPerformanceError.getErrorAlarmMessage().isPresent()
+					? "'" + employeeDailyPerformanceError.getErrorAlarmMessage().get().v() + "'" : null;
 			String insertTableSQL = "INSERT INTO KRCDT_SYAIN_DP_ER_LIST ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID , ERROR_CANCELABLE , ERROR_MESSAGE ) "
-					+ "VALUES( '" + id + "' , '"
-					+ employeeDailyPerformanceError.getErrorAlarmWorkRecordCode().v() + "' , '"
-					+ employeeDailyPerformanceError.getEmployeeID() + "' , '"
-					+ employeeDailyPerformanceError.getDate() + "' , '"
-					+ employeeDailyPerformanceError.getCompanyID() + "' , "
-					+ employeeDailyPerformanceError.getErrorCancelAble() + " , "
-					+ errorAlarmMessage + " )";
-			statementI.executeUpdate(insertTableSQL);
-			
-			for (Integer attendanceItemId : employeeDailyPerformanceError.getAttendanceItemList()){
+					+ "VALUES( '" + id + "' , '" + employeeDailyPerformanceError.getErrorAlarmWorkRecordCode().v()
+					+ "' , '" + employeeDailyPerformanceError.getEmployeeID() + "' , '"
+					+ employeeDailyPerformanceError.getDate() + "' , '" + employeeDailyPerformanceError.getCompanyID()
+					+ "' , " + employeeDailyPerformanceError.getErrorCancelAble() + " , " + errorAlarmMessage + " )";
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
+
+			for (Integer attendanceItemId : employeeDailyPerformanceError.getAttendanceItemList()) {
 				String insertAttendanceItem = "INSERT INTO KRCDT_ER_ATTENDANCE_ITEM ( ID , ATTENDANCE_ITEM_ID ) "
-						+ "VALUES( '" + id + "' , "
-						+ attendanceItemId + " )";			
-				statementI.executeUpdate(insertAttendanceItem);
-			}			
+						+ "VALUES( '" + id + "' , " + attendanceItemId + " )";
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertAttendanceItem));
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public void insert(List<EmployeeDailyPerError> errors) {
 		if (errors.isEmpty()) {
 			return;
 		}
-		this.commandProxy().insertAll(errors.stream().map(e -> KrcdtSyainDpErList.toEntity(e)).collect(Collectors.toList()));
-//		this.getEntityManager().flush();
+		this.commandProxy()
+				.insertAll(errors.stream().map(e -> KrcdtSyainDpErList.toEntity(e)).collect(Collectors.toList()));
+		// this.getEntityManager().flush();
 	}
 
 	@Override
@@ -173,10 +184,9 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD, KrcdtSyainDpErList.class)
 				.setParameter("employeeId", employeeId).setParameter("start", datePeriod.start())
 				.setParameter("end", datePeriod.end()).getList().stream()
-				.collect(Collectors.groupingBy(
-						c -> c.employeeId + c.processingDate.toString()))
-				.entrySet().stream().map(c -> c.getValue().stream().map(item -> item.toDomain())
-						.collect(Collectors.toList())).flatMap(List::stream).collect(Collectors.toList());
+				.collect(Collectors.groupingBy(c -> c.employeeId + c.processingDate.toString())).entrySet().stream()
+				.map(c -> c.getValue().stream().map(item -> item.toDomain()).collect(Collectors.toList()))
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	@Override
@@ -190,34 +200,42 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
 				.setParameter("employeeId", employeeID).setParameter("end", processingDate.end())
 				.setParameter("start", processingDate.start()).getList().stream()
-				.collect(Collectors.groupingBy(
-						c -> c.employeeId + c.processingDate.toString()))
-				.entrySet().stream().map(c -> c.getValue().stream().map(item -> item.toDomain())
-						.collect(Collectors.toList())).flatMap(List::stream).collect(Collectors.toList());
+				.collect(Collectors.groupingBy(c -> c.employeeId + c.processingDate.toString())).entrySet().stream()
+				.map(c -> c.getValue().stream().map(item -> item.toDomain()).collect(Collectors.toList()))
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	@Override
 	public void removeParam(String sid, GeneralDate date) {
-		List<KrcdtSyainDpErList> result = findEntities(sid, date);
-		if(!result.isEmpty()){
-			commandProxy().removeAll(result);
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_SYAIN_DP_ER_LIST Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
+//   	List<KrcdtSyainDpErList> result = findEntities(sid, date);
+// 		if (!result.isEmpty()) {
+// 		commandProxy().removeAll(result);
+// 		}
 	}
-	
+
 	@Override
 	public void removeParam(Map<String, List<GeneralDate>> param) {
 		List<KrcdtSyainDpErList> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a");
 		query.append(" WHERE a.employeeId IN :employeeId");
 		query.append(" AND a.processingDate IN :date");
-		TypedQueryWrapper<KrcdtSyainDpErList> tQuery=  this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		TypedQueryWrapper<KrcdtSyainDpErList> tQuery = this.queryProxy().query(query.toString(),
+				KrcdtSyainDpErList.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream().filter(c -> p.get(c.employeeId).contains(c.processingDate))
 					.collect(Collectors.toList()));
 		});
-		if(!result.isEmpty()){
+		if (!result.isEmpty()) {
 			commandProxy().removeAll(result);
 		}
 	}
@@ -230,40 +248,60 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("WHERE a.employeeId = :employeeId ");
 		builderString.append("AND a.companyID = :companyId ");
 		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
-				.setParameter("employeeId", employeeID).setParameter("companyId", companyID)
-				.getList(x -> x.toDomain());
+				.setParameter("employeeId", employeeID).setParameter("companyId", companyID).getList(x -> x.toDomain());
 	}
 
 	@Override
 	public boolean checkExistRecordErrorListDate(String companyID, String employeeID, List<GeneralDate> lstDate) {
 		return this.queryProxy().query(CHECK_EXIST_CODE_BY_LIST_DATE, long.class).setParameter("employeeId", employeeID)
-				.setParameter("companyID", companyID)
-				.setParameter("processingDates", lstDate).getSingle().get() > 0;
+				.setParameter("companyID", companyID).setParameter("processingDates", lstDate).getSingle().get() > 0;
 	}
 
 	@Override
 	public boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate) {
-		return this.queryProxy().query(CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE, long.class).setParameter("employeeId", employeeID)
-				.setParameter("processingDate", processingDate).getSingle().get() > 0;
+		return this.queryProxy().query(CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE, long.class)
+				.setParameter("employeeId", employeeID).setParameter("processingDate", processingDate).getSingle()
+				.get() > 0;
 	}
 
 	@Override
 	public boolean checkExistErrorByDate(String companyId, String employeeId, GeneralDate date) {
-		/*StringBuilder builderString = new StringBuilder();
+
+		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.companyID = :companyId ");
-		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :date ");
-		Optional<KrcdtSyainDpErList> entyti = this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+		builderString.append("WHERE a.employeeId = :employeeId ");
+		builderString.append("AND a.companyID = :companyId ");
+		builderString.append("AND a.processingDate = :date ");
+		Optional<KrcdtSyainDpErList> entyti = this.queryProxy()
+				.query(builderString.toString(), KrcdtSyainDpErList.class).setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId).setParameter("date", date).getSingle();
+
+		return entyti.isPresent() ? true : false;
+	}
+
+	@Override
+	public void removeByCidSidDateAndCode(String companyID, String employeeID, GeneralDate date, String errorCode) {
+		this.getEntityManager().createQuery(REMOVE_BY_CID_SID_DATE_ERRORCODE).setParameter("companyID", companyID)
+				.setParameter("employeeId", employeeID).setParameter("processingDate", date)
+				.setParameter("errorCode", errorCode).executeUpdate();
+		this.getEntityManager().flush();
+	}
+
+	private static final String CHECK_ERROR_BY_DATE = "SELECT a FROM KrcdtSyainDpErList a "
+			+ "WHERE a.employeeId = :employeeId "
+			+ "AND a.companyID = :companyId "
+			+ "AND a.processingDate >= :strDate "
+			+ "AND a.processingDate <= :endDate ";
+	
+	@Override
+	public boolean checkErrorByPeriodDate(String companyId, String employeeId, GeneralDate strDate, GeneralDate endDate) {
+		return this.queryProxy().query(CHECK_ERROR_BY_DATE, KrcdtSyainDpErList.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
-				.setParameter("date", date).getSingle();
-		
-		return entyti.isPresent()?true:false;
-		*/
-		return false;
+				.setParameter("strDate", strDate)
+				.setParameter("endDate", endDate)
+				.getList().size() > 0;
 	}
-	
 
 }

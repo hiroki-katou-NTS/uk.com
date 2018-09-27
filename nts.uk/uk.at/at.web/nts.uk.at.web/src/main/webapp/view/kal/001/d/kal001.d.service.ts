@@ -11,15 +11,22 @@ module nts.uk.at.view.kal001.d.service {
         }
         
         
-        export function extractAlarm(listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
+        export function extractAlarm(taskId :any ,numberEmpSuccess: any, statusId:string ,listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
             
             let def = $.Deferred();
             
             nts.uk.request.ajax("at", paths.extractAlarm, command).done(function(task){
+                taskId(task.id);
                 nts.uk.deferred.repeat(conf => conf.task(() => {
                     return nts.uk.request.asyncTask.getInfo(task.id).done(function(res: any) {
+                        let taskData = res.taskDatas;
+                        _.forEach(taskData, itemCount => {
+                            if (itemCount.key === "empCount") {
+                                numberEmpSuccess(itemCount.valueAsNumber);
+                            }
+                        });
                         if(res.succeeded){
                             let data = {};
                             let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });
@@ -29,7 +36,8 @@ module nts.uk.at.view.kal001.d.service {
                                     data["extracting"] = item.valueAsBoolean;
                                 } else if(item.key === "nullData"){
                                     data["nullData"] = item.valueAsBoolean;
-                                } else {
+                                }else if(item.key === "empCount"){
+                                }else {
                                     dataX.push(JSON.parse(item.valueAsString));     
                                 }
                             });
@@ -40,6 +48,15 @@ module nts.uk.at.view.kal001.d.service {
                         }
                     });
                 }).while(infor => {
+                    if (infor.status == "REQUESTED_CANCEL") {
+                        // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
+                        let status = AlarmExtraStatus.INTERRUPT;
+                        let extraParams = {
+                            processStatusId: statusId,
+                            status: status
+                        };
+                        service.extractFinished(extraParams);
+                    }
                     return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
                 }).pause(1000));
             });
@@ -55,9 +72,9 @@ module nts.uk.at.view.kal001.d.service {
             return nts.uk.request.ajax("at", paths.extractStarting);
         }
         
-        export function extractFinished(statusId): JQueryPromise<void>{
+        export function extractFinished(extraParam): JQueryPromise<void>{
             
-            return nts.uk.request.ajax("at", paths.extractFinished, { processStatusId: statusId });
+            return nts.uk.request.ajax("at", paths.extractFinished, extraParam);
         }
     
      export interface CheckConditionTimeDto{
@@ -161,5 +178,10 @@ module nts.uk.at.view.kal001.d.service {
             extracting: boolean;
             nullData: boolean;
         }
-    
+        export enum AlarmExtraStatus {
+            END_NORMAL = 0,   /**正常終了*/
+            END_ABNORMAL = 1, /**異常終了*/
+            PROCESSING = 2,   /**処理中*/
+            INTERRUPT = 3,    /**中断*/
+        }
 }

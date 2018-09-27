@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -255,6 +256,12 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		if(currentPhase.getPhaseOrder()==1){
 			return true;
 		}
+		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.findFirst().get();
+		if(lowestPhase.getPhaseOrder()==currentPhase.getPhaseOrder()){
+			return true;
+		}
 		
 		// ループ中のフェーズの番号-１から、降順にループする
 		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
@@ -269,7 +276,7 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 
 	@Override
 	public ApprovalStatusOutput judmentApprovalStatusNodataDatabaseAcess(String companyID,
-			ApprovalPhaseState approvalPhaseState, String employeeID, List<Agent> agents) {
+			ApprovalPhaseState approvalPhaseState, String employeeID, List<String> agents) {
 		Boolean approvalFlag = false;
 		ApprovalBehaviorAtr approvalAtr = ApprovalBehaviorAtr.UNAPPROVED;
 		Boolean approvableFlag = false;
@@ -326,6 +333,53 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		return new ApprovalStatusOutput(approvalFlag, approvalAtr, approvableFlag, subExpFlag);
 	}
 
-	
-
+	@Override
+	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID) {
+		String companyID = AppContexts.user().companyId();
+		String employeeID = approverID;
+		// 承認できるフラグ
+		Boolean authorFlag = false;
+		// 指定する社員の承認区分
+		ApprovalBehaviorAtr approvalAtr = ApprovalBehaviorAtr.UNAPPROVED;
+		// 代行期限切れフラグ
+		Boolean expirationAgentFlag = false; 
+		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
+		// 過去フェーズフラグ = false
+		Boolean pastPhaseFlag = false;
+		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
+		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+			// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する
+			List<String> approvers = this.getApproverFromPhase(approvalPhaseState);
+			if(CollectionUtil.isEmpty(approvers)){
+				continue;
+			}
+			// ループ中の承認フェーズが承認中のフェーズかチェックする
+			Boolean judgmentResult = this.judgmentLoopApprovalPhase(approvalRootState, approvalPhaseState, pastPhaseFlag);
+			if(judgmentResult){
+				// アルゴリズム「承認状況の判断」を実行する
+				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
+				authorFlag = approvalStatusOutput.getApprovableFlag();
+				approvalAtr = approvalStatusOutput.getApprovalAtr();
+				expirationAgentFlag = approvalStatusOutput.getSubExpFlag(); 
+				// ループ中の承認フェーズの承認枠がすべて「未承認」
+				Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED).findAny();
+				if(opApprovalFrame.isPresent()){
+					pastPhaseFlag = true;
+				}
+			} else {
+				// 過去フェーズフラグをチェックする
+				if(pastPhaseFlag.equals(Boolean.FALSE)){
+					continue;
+				}
+				// アルゴリズム「承認状況の判断」を実行する
+				ApprovalStatusOutput approvalStatusOutput = this.judmentApprovalStatus(companyID, approvalPhaseState, employeeID);
+				authorFlag = false;
+				approvalAtr = approvalStatusOutput.getApprovalAtr();
+			}
+			if(authorFlag.equals(Boolean.TRUE)){
+				break;
+			}
+		}
+		return new ApproverPersonOutput(authorFlag, approvalAtr, expirationAgentFlag);
+	}
 }

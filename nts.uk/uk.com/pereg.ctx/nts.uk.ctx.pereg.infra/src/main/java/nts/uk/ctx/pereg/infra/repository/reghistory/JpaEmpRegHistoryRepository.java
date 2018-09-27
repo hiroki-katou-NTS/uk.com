@@ -10,6 +10,7 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.pereg.dom.reghistory.LastEmRegHistory;
 import nts.uk.ctx.pereg.infra.entity.reghistory.PpedtEmployeeRegistrationHistory;
 import nts.uk.ctx.pereg.infra.entity.reghistory.PpedtEmployeeRegistrationHistoryPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
@@ -79,7 +80,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 			EmpRegHistory comHist = optCompHist.get();
 
-			if (!comHist.getLastRegEmployeeID().equals(result.getLastRegEmployeeID())) {
+			if (!comHist.getLastRegEmployeeID().equals(AppContexts.user().employeeId())) {
 
 				result.setLastRegEmployeeOfCompanyID(comHist.getLastRegEmployeeID());
 				result.setLastRegEmployeeOfCompanyCd(comHist.getLastRegEmployeeCd());

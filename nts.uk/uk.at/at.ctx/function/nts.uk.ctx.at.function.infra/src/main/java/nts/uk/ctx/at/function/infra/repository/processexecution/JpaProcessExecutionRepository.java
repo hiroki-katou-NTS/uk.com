@@ -50,6 +50,7 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		oldData.execItemName = updateData.execItemName;
 		oldData.execScope = setScope(oldData.execScope, updateData.execScope);
 		oldData.execSetting = setSetting(oldData.execSetting, updateData.execSetting);
+		oldData.processExecType =updateData.processExecType;
 		this.commandProxy().update(oldData);
 		
 	}
@@ -81,13 +82,15 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.midJoinEmployee = update.midJoinEmployee;
 		old.reflectResultCls = update.reflectResultCls;
 		old.monthlyAggCls = update.monthlyAggCls;
-		old.indvAlarmCls = update.indvAlarmCls;
-		old.indvMailPrin = update.indvMailPrin;
-		old.indvMailMng = update.indvMailMng;
-		old.wkpAlarmCls = update.wkpAlarmCls;
-		old.wkpMailMng = update.wkpMailMng;
 		old.recreateTypeChangePerson = update.recreateTypeChangePerson;
 		old.recreateTransfers = update.recreateTransfers;
+		old.appRouteUpdateAtr = update.appRouteUpdateAtr;
+		old.createNewEmp = update.createNewEmp;
+		old.appRouteUpdateAtrMon = update.appRouteUpdateAtrMon;
+		old.alarmAtr = update.alarmAtr;
+		old.alarmCode = update.alarmCode;
+		old.mailPrincipal = update.mailPrincipal;
+		old.mailAdministrator = update.mailAdministrator;
 		return old;
 	}
 }

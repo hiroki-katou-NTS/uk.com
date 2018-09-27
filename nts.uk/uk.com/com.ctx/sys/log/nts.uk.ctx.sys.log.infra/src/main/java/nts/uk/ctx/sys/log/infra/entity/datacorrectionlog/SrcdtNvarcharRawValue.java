@@ -25,17 +25,17 @@ public class SrcdtNvarcharRawValue extends UkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
-	String id;
+	public String id;
 
 	@Column(name = "VALUE")
 	@Basic(optional = false)
-	String value;
+	public String value;
 
 	@OneToOne(mappedBy = "rawNvarcharValueBefore")
-	SrcdtDataCorrectionLog beforeLog;
+	public SrcdtDataCorrectionLog beforeLog;
 
 	@OneToOne(mappedBy = "rawNvarcharValueAfter")
-	SrcdtDataCorrectionLog afterLog;
+	public SrcdtDataCorrectionLog afterLog;
 
 	@Override
 	protected Object getKey() {

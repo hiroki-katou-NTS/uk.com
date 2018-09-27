@@ -11,23 +11,23 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
+import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAlarmExtraction;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
@@ -40,8 +40,8 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSettin
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionScopeItemRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
-import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -50,9 +50,6 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 	@Inject
 	private ProcessExecutionRepository procExecRepo;
 
-	@Inject
-	private ProcessExecutionLogRepository procExecLogRepo;
-	
 	@Inject
 	private LastExecDateTimeRepository lastDateTimeRepo;
 	
@@ -79,10 +76,11 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				new ProcessExecutionScope(EnumAdaptor.valueOf(command.getExecScopeCls(), ExecutionScopeClassification.class),
 						command.getRefDate(),
 						workplaceIdList);
-		IndividualAlarmExtraction indvAlarm = new IndividualAlarmExtraction(command.isIndvAlarmCls(),
-				command.isIndvMailPrin(),
-				command.isIndvMailMng());
-		WorkplaceAlarmExtraction wkpAlarm = new WorkplaceAlarmExtraction(command.isWkpAlarmCls(), command.isWkpMailMng());
+		
+		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()),
+				command.getMailPrincipal(),
+				command.getMailAdministrator()
+				);
 		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
 										/*command.getCreationPeriod() == null ? null : */new CreationPeriod(command.getCreationPeriod()),
@@ -99,14 +97,22 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 										,new TargetGroupClassification(command.isRecreateTypeChangePerson(), command.isMidJoinEmployee(), command.isRecreateTransfers()));
 
 		ProcessExecutionSetting execSetting = 
-				new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls());
+				new ProcessExecutionSetting(alarmExtraction, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls(),
+						new AppRouteUpdateDaily(
+								EnumAdaptor.valueOf(command.isAppRouteUpdateAtr()?1:0, NotUseAtr.class),
+								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)
+								),
+						EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class)
+						);
 		
 		ProcessExecution procExec =
 				new ProcessExecution(companyId,
 						new ExecutionCode(command.getExecItemCd()),
-						new ExecutionName(command.getExecItemName()), execScope, execSetting);
+						new ExecutionName(command.getExecItemName()), execScope, execSetting,
+						EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class));
 		
-		procExec.validate();
+		
+		procExec.validateVer2();
 		if (command.isNewMode()) {
 			//新規登録処理
 			Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, command.getExecItemCd());

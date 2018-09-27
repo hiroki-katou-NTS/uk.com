@@ -36,7 +36,11 @@ public class Kcp010WebService extends WebService {
 	@POST
 	@Path("getLoginWkp")
 	public Kcp010WorkplaceSearchData getWorkplaceBySid() {
-		return this.finder.findBySid(AppContexts.user().employeeId(), GeneralDate.today()).get();
+		if(this.finder.findBySid(AppContexts.user().employeeId(), GeneralDate.today()).isPresent()) {
+			return this.finder.findBySid(AppContexts.user().employeeId(), GeneralDate.today()).get();
+		} else {
+			return null;
+		}
 	}
 	
 	@POST

@@ -49,8 +49,11 @@ public class ProcessExecutionLog extends AggregateRoot {
 		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CALCULATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.INDV_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.WKP_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		//this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.INDV_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		//this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.WKP_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 	}
 	
 	public void setExecItemCd(ExecutionCode execItemCd) {

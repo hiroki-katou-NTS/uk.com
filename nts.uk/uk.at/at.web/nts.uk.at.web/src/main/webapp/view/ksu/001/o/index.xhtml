@@ -19,18 +19,12 @@
 		</div>
 		<div id="group-button">
 			<!-- <button tabindex="37">#{i18n.getText('KSU001_69')}</button>
-			<button tabindex="38">#{i18n.getText('KSU001_70')}</button> -->
+			<button tabindex="38">#{i18n.getText('KSU001_70')}</button>  -->
 			<button tabindex="40" id="image100" data-bind="click: openDialogO1"></button>
 		</div>
 	</div>
 	<div id="set-work-time">
-		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
-		<!-- <input tabindex="31" id="time-edit1"
-			data-bind="ntsTimeEditor: {
-							name: '#{i18n.getText('KSU001_73')}',
-							value: time1,
-			 				inputFormat: 'time',
-			 				mode: 'time'}" /> -->
+		<div data-bind="ntsFormLabel: {enable: isEnableButton}">#{i18n.getText('KSU001_65')}</div>
 		<input tabindex="31" id="time-edit1"
 			data-bind="ntsTimeWithDayEditor: {
 			name: '#{i18n.getText('KSU001_73')}',
@@ -38,7 +32,8 @@
 			constraint: 'TimeWithDayAttr',
 			inputFormat: 'time',
 			mode: 'time',
-			option: {timeWithDay: false}
+			option: {timeWithDay: false},
+			enable: isEnableButton
 			}" />
 
 		<span>#{i18n.getText('KSU001_66')}</span> 
@@ -50,10 +45,11 @@
 			constraint: 'TimeWithDayAttr',
 			inputFormat: 'time',
 			mode: 'time',
-			option: {timeWithDay: false}
+			option: {timeWithDay: false},
+			enable: isEnableButton
 			}" />
-		<button tabindex="33" data-bind="click:search" class="reserved">#{i18n.getText('KSU001_67')}</button>
-		<button tabindex="34" data-bind="click:clear">#{i18n.getText('KSU001_68')}</button>
+		<button tabindex="33" data-bind="click:search, enable: isEnableButton" class="reserved">#{i18n.getText('KSU001_67')}</button>
+		<button tabindex="34" data-bind="click:clear, enable: isEnableClearSearchButton">#{i18n.getText('KSU001_68')}</button>
 		<div tabindex="35" id="combo-box2"
 			data-bind="ntsComboBox: {
 										options: listWorkTimeComboBox,
@@ -62,7 +58,7 @@
 										value: selectedWorkTimeCode,
 										optionsText: 'labelDisplay', 
 										editable:  false,
-										enable: true,
+										enable: isEnableButton,
 										columns: [
 											{ prop: 'workTimeCode', length: 3 },
 											{ prop: 'symbolName', length: 1 },
@@ -72,11 +68,12 @@
 											{ prop: 'note', length: 20 }]}">
 		</div>
 
-		<!-- <div tabindex="36" id="switch-o" class="cf1"
+		 <!-- <div tabindex="36" id="switch-o" class="cf1"
 			data-bind="ntsSwitchButton: {
 											options: roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',
+											enable: isEnableButton,
 											value: selectedRuleCode}">
 		</div>  -->
 	</div>

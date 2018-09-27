@@ -28,7 +28,7 @@ public class EmployeeBasicInfoExport {
 	// 社員ID
 	private String employeeId;
 
-	/** The p name. */
+	/** tên biên là personName nhưng giá trị là của bussinessName (Do update tài lài chuyển từ pName -> BussinessName) */
 	// 個人名
 	private String pName;
 

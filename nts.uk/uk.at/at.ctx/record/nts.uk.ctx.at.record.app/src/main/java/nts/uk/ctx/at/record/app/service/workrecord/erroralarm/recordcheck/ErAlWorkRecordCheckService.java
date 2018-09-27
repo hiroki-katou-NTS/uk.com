@@ -276,12 +276,14 @@ public class ErAlWorkRecordCheckService {
 
 	/** 大塚用連続休暇チェック */
 	public ContinuousHolidayCheckResult checkContinuousHolidays(String employeeId, DatePeriod range) {
-		Optional<ContinuousHolCheckSet> settingOp = checkSetting.find(AppContexts.user().companyId());
 		ContinuousHolidayCheckResult r = new ContinuousHolidayCheckResult();
-		settingOp.ifPresent(setting -> {
+		
+		checkSetting.findSpecial(AppContexts.user().companyId()).ifPresent(setting -> {
 			if(setting.isUseAtr()){
 				Map<GeneralDate, Integer> result = new HashMap<>();
+				
 				processCheckContinuous(range.start(), range, result, setting, employeeId, null, 0, true);
+				
 				r.message(setting.getDisplayMessege().v());
 				r.setErrorDate(result);
 			}
@@ -345,7 +347,7 @@ public class ErAlWorkRecordCheckService {
 
 	private Integer getValue(ItemValue value) {
 		if (value.value() == null) {
-			return 0;
+			return null;
 		}
 		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
 				: (Integer) value.value();

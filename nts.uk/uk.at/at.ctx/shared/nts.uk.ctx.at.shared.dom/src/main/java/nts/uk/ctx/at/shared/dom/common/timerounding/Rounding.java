@@ -70,4 +70,24 @@ public enum Rounding {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 自身の逆丸めを取得する
+	 * @return 逆丸め設定
+	 */
+	public Rounding getReverseRounding() {
+		switch(this) {
+		//切り捨て
+		case ROUNDING_DOWN:
+			return ROUNDING_UP;
+		//未満切り捨て
+		case ROUNDING_DOWN_OVER:
+			return ROUNDING_DOWN_OVER;
+		//切り上げ
+		case ROUNDING_UP:
+			return ROUNDING_DOWN;
+		default:
+			throw new RuntimeException("Unknown rounding setting:"+ this);
+		}
+	}
 }

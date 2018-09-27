@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author loivt
  *	続柄理由
  */
-@StringMaxLength(40)
+@StringMaxLength(20)
 public class RelationshipReasonPrimitive extends StringPrimitiveValue<RelationshipReasonPrimitive>{
 	
 	private static final long serialVersionUID = 1L;

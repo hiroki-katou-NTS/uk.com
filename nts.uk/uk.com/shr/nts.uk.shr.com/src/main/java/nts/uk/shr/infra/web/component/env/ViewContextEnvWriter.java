@@ -37,6 +37,8 @@ public class ViewContextEnvWriter {
 		rw.write("__viewContext.env.products.attendance = " + bool(system.isInstalled(ProductType.ATTENDANCE)) + ";");
 		rw.write("__viewContext.env.products.payroll = " + bool(system.isInstalled(ProductType.PAYROLL)) + ";");
 		rw.write("__viewContext.env.products.personnel = " + bool(system.isInstalled(ProductType.PERSONNEL)) + ";");
+		
+		rw.write("__viewContext.env.pathToManual = '" + system.getPathToManual() + "';");
 	}
 	
 	private static String bool(boolean bool) {

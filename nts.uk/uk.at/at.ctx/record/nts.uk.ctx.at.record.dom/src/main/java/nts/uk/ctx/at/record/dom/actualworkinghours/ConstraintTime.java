@@ -19,4 +19,7 @@ public class ConstraintTime {
 	//総拘束時間
 	private AttendanceTime totalConstraintTime;
 
+	public static ConstraintTime defaultValue(){
+		return new ConstraintTime(AttendanceTime.ZERO, AttendanceTime.ZERO);
+	}
 }

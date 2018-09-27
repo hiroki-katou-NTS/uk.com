@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
  * RequestList No91 
@@ -37,15 +38,22 @@ public class ScheduleTimePubExport {
 	//休憩時間
 	AttendanceTime breakTime;
 	
-	//育児介護時間
-	AttendanceTime childCareTime;
+	//育児時間
+	AttendanceTime childTime;
+	
+	//介護時間
+	AttendanceTime careTime;
+	
+	//フレックス時間
+	AttendanceTimeOfExistMinus flexTime;
 	
 	//人件費時間
 	List<AttendanceTime> personalExpenceTime;
 
 	private ScheduleTimePubExport(String employeeid, GeneralDate ymd, AttendanceTime totalWorkTime,
 			AttendanceTime preTime, AttendanceTime actualWorkTime, AttendanceTime weekDayTime, AttendanceTime breakTime,
-			AttendanceTime childCareTime, List<AttendanceTime> personalExpenceTime) {
+			AttendanceTime childTime, AttendanceTime careTime, AttendanceTimeOfExistMinus flexTime,
+			List<AttendanceTime> personalExpenceTime) {
 		super();
 		this.employeeid = employeeid;
 		this.ymd = ymd;
@@ -54,16 +62,19 @@ public class ScheduleTimePubExport {
 		this.actualWorkTime = actualWorkTime;
 		this.weekDayTime = weekDayTime;
 		this.breakTime = breakTime;
-		this.childCareTime = childCareTime;
+		this.childTime = childTime;
+		this.careTime = careTime;
+		this.flexTime = flexTime;
 		this.personalExpenceTime = personalExpenceTime;
 	}
 	
 	public static ScheduleTimePubExport of(String employeeid, GeneralDate ymd, AttendanceTime totalWorkTime,
 			AttendanceTime preTime, AttendanceTime actualWorkTime, AttendanceTime weekDayTime, AttendanceTime breakTime,
-			AttendanceTime childCareTime, List<AttendanceTime> personalExpenceTime) {
+			AttendanceTime childTime, AttendanceTime careTime ,
+			AttendanceTimeOfExistMinus flexTime,List<AttendanceTime> personalExpenceTime) {
 		return new ScheduleTimePubExport( employeeid,  ymd,  totalWorkTime,
 				 preTime,  actualWorkTime,  weekDayTime,  breakTime,
-				 childCareTime, personalExpenceTime);
+				 childTime, careTime , flexTime,personalExpenceTime);
 	}
 	
 	public static ScheduleTimePubExport empty() {
@@ -73,8 +84,10 @@ public class ScheduleTimePubExport {
 				 new AttendanceTime(0), 
 				 new AttendanceTime(0), 
 				 new AttendanceTime(0), 
+				 new AttendanceTime(0),
+				 new AttendanceTime(0),
 				 new AttendanceTime(0), 
-				 new AttendanceTime(0), 
+				 new AttendanceTimeOfExistMinus(0),
 				 Collections.emptyList());
 	}
 }

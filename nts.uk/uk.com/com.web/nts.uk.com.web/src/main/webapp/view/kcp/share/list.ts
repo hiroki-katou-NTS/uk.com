@@ -259,6 +259,7 @@ module kcp.share.list {
         searchBoxId: string;
         disableSelection : boolean;
         componentOption: ComponentOption;
+        triggerReload: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -275,6 +276,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            this.triggerReload = false;
             disableSelection = false;
         }
 
@@ -284,8 +286,14 @@ module kcp.share.list {
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var self = this;
+
+            // reload ntsGrid if has been loaded on parent screen
+            if ($input.children().length != 0) {
+                self.triggerReload = true;
+                data.selectedCode.valueHasMutated();
+            }
+
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
-            ko.cleanNode($input[0]);
 
             // clear subscriptions
             if (data.subscriptions) {
@@ -306,7 +314,9 @@ module kcp.share.list {
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && data.isMultipleUse;
+            // 複数使用区分　＝　単独使用 : show baseDate
+            // 複数使用区分　＝　複数使用 : hide baseDate
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
@@ -320,10 +330,8 @@ module kcp.share.list {
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
-                let selectedClosureId = _.isNil(data.selectedClosureId) ?
-                    null : _.isFunction(data.selectedClosureId) ?
-                        data.selectedClosureId() : data.selectedClosureId;
-                self.selectedClosureId(selectedClosureId);
+                self.selectedClosureId = _.isFunction(data.selectedClosureId) ?
+                    data.selectedClosureId : ko.observable(data.selectedClosureId);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
@@ -368,13 +376,22 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
-                self.initSelectedValue();
-                gridList.ntsGridList("setSelectedValue", []);
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
                 _.defer(() => {
+                    // clear search box before update datasource
+                    searchBox.find('.clear-btn').click();
+
+                    // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
                     searchBox.ntsSearchBox("setDataSource", self.itemList());
-                    gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+
+                    // select all items in multi mode
+                    if (!_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                        const selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                        self.selectedCodes(selectedValues);
+                        gridList.ntsGridList("setSelectedValue", []);
+                        gridList.ntsGridList("setSelectedValue", selectedValues);
+                    }
                 });
             }
         }
@@ -388,7 +405,9 @@ module kcp.share.list {
                 // Set default value when init component.
                 self.initSelectedValue();
                 
-                const options;
+                let options;
+                // fix bug constructor of value of knockoutObservableArray != Array.
+                const selectedCodes = self.isMultipleSelect ? [].slice.call(self.selectedCodes()) : self.selectedCodes();
                 
                 if (self.disableSelection) {
                     let selectionDisables = _.map(self.itemList(), 'code');
@@ -410,7 +429,7 @@ module kcp.share.list {
                         primaryKey: self.targetKey,
                         columns: self.listComponentColumn,
                         multiple: self.isMultipleSelect,
-                        value: self.selectedCodes(),
+                        value: selectedCodes,
                         name: self.getItemNameForList(),
                         rows: self.maxRows,
                     };
@@ -421,7 +440,7 @@ module kcp.share.list {
                     targetKey: self.targetKey,
                     comId: self.componentGridId,
                     items: self.itemList(),
-                    selected: self.selectedCodes(),
+                    selected: selectedCodes,
                     selectedKey: self.targetKey,
                     fields: ['name', 'code'],
                     mode: 'igGrid'
@@ -457,6 +476,20 @@ module kcp.share.list {
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
                 self.selectedCodes(selectedIds);
             });
+            gridList.on('selectChange', evt => {
+                // scroll to top if select all
+                if (self.itemList().length == self.selectedCodes().length) {
+                    gridList.igGrid("virtualScrollTo", '0px');
+                }
+            });
+
+            self.selectedCodes.subscribe(() => {
+                if (self.triggerReload) {
+                    self.reload();
+                    self.triggerReload = false;
+                }
+            });
+
         }
 
         private initEmployeeSubscription(data: ComponentOption): void {
@@ -598,64 +631,68 @@ module kcp.share.list {
             if (data.isShowWorkPlaceName) {
                 fields.push('workplaceName');
             }
-            var webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
-            _.defer(() => {
-                $input.load(webserviceLocator, function() {
-                    $input.find('table').attr('id', self.componentGridId);
-                    ko.applyBindings(self, $input[0]);
-                    $input.find('.base-date-editor').find('.nts-input').width(133);
 
-                    self.loadNtsGridList();
+            const startComponent = () => {
+                $input.html(LIST_COMPONENT_HTML);
+                $input.find('table').attr('id', self.componentGridId);
+                ko.cleanNode($input[0]);
+                ko.applyBindings(self, $input[0]);
+                $input.find('.base-date-editor').find('.nts-input').width(133);
 
-                    // ReloadNtsGridList when itemList changed
-                    self.itemList.subscribe(newList => {
-                        self.setOptionalContent();
-                        self.initNoSelectRow();
-                        self.reloadNtsGridList();
-                        self.createGlobalVarDataList(newList, $input);
-                    });
+                self.loadNtsGridList();
 
-                    if (data.listType == ListType.EMPLOYMENT) {
-                        self.selectedClosureId.subscribe(id => {
-                            self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
-                            self.reloadEmployment(id);
-                        });
-                    }
-                    dfd.resolve();
+                // ReloadNtsGridList when itemList changed
+                self.itemList.subscribe(newList => {
+                    self.setOptionalContent();
+                    self.initNoSelectRow();
+                    self.reloadNtsGridList();
+                    self.createGlobalVarDataList(newList, $input);
                 });
-            });
-            
-            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
-                self.addIconToAlreadyCol();
-            });
-            
-            // defined function get data list.
-            self.createGlobalVarDataList(dataList, $input);
-            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return window['dataList' + this.attr('id').replace(/-/gi, '')];
-            }
-            
-            // defined function focus
-            $.fn.focusComponent = function() {
-                if (self.hasBaseDate) {
-                    $input.find('.base-date-editor').first().focus();
-                } else {
-                    $input.find(".ntsSearchBox").focus();
+
+                if (data.listType == ListType.EMPLOYMENT) {
+                    self.selectedClosureId.subscribe(id => {
+                        self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
+                        self.reloadEmployment(id);
+                    });
                 }
-            }
-            $.fn.reloadJobtitleDataList = self.reload;
-            $.fn.isNoSelectRowSelected = function() {
-                if (self.isMultipleSelect) {
+                $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
+                    self.addIconToAlreadyCol();
+                });
+
+                // defined function get data list.
+                self.createGlobalVarDataList(dataList, $input);
+                $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                    return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                }
+
+                // defined function focus
+                $.fn.focusComponent = function() {
+                    if (self.hasBaseDate) {
+                        $input.find('.base-date-editor').first().focus();
+                    } else {
+                        $input.find(".ntsSearchBox").focus();
+                    }
+                }
+                $.fn.reloadJobtitleDataList = self.reload;
+                $.fn.isNoSelectRowSelected = function() {
+                    if (self.isMultipleSelect) {
+                        return false;
+                    }
+                    var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
+                    if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
+                        return true;
+                    }
                     return false;
                 }
-                var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
-                if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
-                    return true;
-                }
-                return false;
+                dfd.resolve();
+            };
+
+            if (_.isNil(ko.dataFor(document.body))) {
+                nts.uk.ui.viewModelApplied.add(startComponent);
+            } else {
+                startComponent();
             }
+            
             return dfd.promise();
         }
 
@@ -1047,6 +1084,69 @@ module kcp.share.list {
         }
         
     }
+
+    export class ListComponentTextResource {
+        static KCP003_2 = nts.uk.resource.getText('KCP003_2');
+        static KCP003_3 = nts.uk.resource.getText('KCP003_3');
+        static KCP004_7 = nts.uk.resource.getText('KCP004_7');
+        static CCG001_28  = nts.uk.resource.getText('CCG001_28');
+    }
+
+var LIST_COMPONENT_HTML = `<style type="text/css">
+#nts-component-list table tr td {
+    white-space: nowrap;
+}
+
+.float-left {
+    float: left;
+}
+</style>
+    <div style="border-radius: 5px;"
+        data-bind="style: {width: gridStyle.totalComponentSize + 'px',
+                height: gridStyle.totalHeight + 'px',
+                padding: hasPadding ? '20px' : '0px'},
+                css: {'caret-right caret-background bg-green': !isDialog},
+                attr: {id: componentWrapperId}">
+        <!-- ko if: !isDialog -->
+            <i class="icon icon-searchbox"></i>
+        <!-- /ko -->
+        <!-- ko if: hasBaseDate -->
+            <div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">`+ListComponentTextResource.KCP003_2+`</div>
+            <div class="base-date-editor" style="margin-left: 20px;"
+                data-bind="attr: {tabindex: tabIndex.baseDateInput}, ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
+            <button
+                data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload"
+                style="width: 100px">`+ListComponentTextResource.KCP003_3+`</button>
+        <!-- /ko -->
+        <!-- Upgrade: Search By closureId-->
+        <!-- ko if: isDisplayClosureSelection -->
+            <div style="margin-bottom: 10px">
+                <div data-bind="ntsFormLabel: {required: true}"
+                    style="float: left; margin-left: 10px; margin-right: 15px;">`+ListComponentTextResource.CCG001_28+`</div>
+                <div id="combo-box" style="min-width: 160px;"
+                    data-bind="ntsComboBox: {
+                                        options: closureList,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 5,
+                                        value: selectedClosureId,
+                                        optionsText: 'name',
+                                        enable: true,
+                                        columns: [
+                                            { prop: 'name', length: 4 },
+                                        ]}"></div>
+            </div>
+        <!-- /ko -->
+        <!-- End of Upgrade -->
+        <div id="com-kcp-searchbox" style="width: 100%">
+        <div data-bind="attr: {id: searchBoxId}" style="display: inline-block"></div>
+        <!-- ko if: isHasButtonSelectAll -->
+            <button
+                data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll"
+                style="margin-left: 4px; display: inline-block">`+ListComponentTextResource.KCP004_7+`</button>
+        <!-- /ko -->
+        </div>
+        <table id="grid-list-all-kcp"></table>
+    </div>`;
 }
 
 /**

@@ -12,7 +12,10 @@ module nts.uk.at.view.kdw002.a {
             
             //name
             getNameDaily  :"screen/at/correctionofdailyperformance/getNamedailyAttItem",
-            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
+            
+            getDailyAttItem: "at/shared/scherec/attitem/getDailyAttItem",
+            getMontlyAttItem: "at/shared/scherec/attitem/getMonthlyAttItem"
         }
         export function getListDailyAttdItem(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getListDailyAttdItem);
@@ -40,6 +43,12 @@ module nts.uk.at.view.kdw002.a {
         }
         export function getNameMonthly(listID : any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getNameMonthly,listID);
+        }
+        export function getDailyAttdItem(roleID: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getDailyAttItem);
+        }
+        export function getMonthlyAttdItem(roleID: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getMontlyAttItem);
         }
     }
 }

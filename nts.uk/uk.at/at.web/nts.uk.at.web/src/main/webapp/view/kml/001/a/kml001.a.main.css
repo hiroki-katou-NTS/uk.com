@@ -61,7 +61,7 @@ input, textarea {
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
-	width: 810px;
+	width: 860px;
 	height: 360px;
 }
 #premium-set-tbl {
@@ -98,16 +98,16 @@ input, textarea {
 }
 #premium-set-tbl th:FIRST-CHILD, 
 #premium-set-tbl td:FIRST-CHILD {
-	min-width: 220px;
-	max-width: 220px;
+	min-width: 270px;
+	max-width: 270px;
 }
 #premium-set-tbl th:NTH-CHILD(2), 
 #premium-set-tbl td:NTH-CHILD(2) {
-	width: 80px;
+	width: 100px;
 }
 #premium-set-tbl th:LAST-CHILD, 
 #premium-set-tbl td:LAST-CHILD {
-	width: 500px;
+	width: 480px;
 }
 .notUse {
 	display: none;
@@ -160,9 +160,9 @@ input, textarea {
 #contents-area input.ui-igcombo-field {
 	padding-left: 10px;
 }
-.ui-igcombo-listitemholder .ui-igcombo-listitem {
+ .ui-igcombo-listitemholder .ui-igcombo-listitem {
 	padding-left: 10px;
-}
+} 
 #combo-box {
 	width: 132px;
 }

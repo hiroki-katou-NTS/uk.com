@@ -3,12 +3,13 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
     import getShare = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
     import alertError = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
-        listWorkType: KnockoutObservableArray<any>;
-        listWorkTime: KnockoutObservableArray<any>;
-        selectedWorkTypeCode: KnockoutObservable<string>;
-        selectedWorkTimeCode: KnockoutObservable<string>;
+        listWorkType: KnockoutObservableArray<any> = ko.observableArray(getShare("listWorkType"));
+        listWorkTime: KnockoutObservableArray<any> = ko.observableArray(getShare("listWorkTime"));
+        selectedWorkTypeCode: KnockoutObservable<string> = ko.observable(getShare("selectedWorkTypeCode"));
+        selectedWorkTimeCode: KnockoutObservable<string> = ko.observable(getShare("selectedWorkTimeCode"));
         time1: KnockoutObservable<string> = ko.observable('');
         time2: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any>;
@@ -17,32 +18,41 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
-        listTimeZoneForSearch : any[];
+        listTimeZoneForSearch : any[] = getShare("listTimeZoneForSearch");
+        isEnableButton: KnockoutObservable<boolean> = ko.observable(getShare("isEnableButton"));
+        listCheckNeededOfWorkTime : any[] = getShare("listCheckNeededOfWorkTime");
+        nashi: string = getText("KSU001_98");
         
         constructor() {
             let self = this;
             
-            self.listWorkType = ko.observableArray(getShare("listWorkType"));
-            self.listWorkTime = ko.observableArray(getShare("listWorkTime"));
-            self.listTimeZoneForSearch = getShare("listTimeZoneForSearch");
-            
             self.roundingRules = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText("KSU001_71") },
-                { code: '2', name: nts.uk.resource.getText("KSU001_72") }
+                { code: '1', name: getText("KSU001_71") },
+                { code: '2', name: getText("KSU001_72") }
             ]);
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
-            self.selectedWorkTypeCode = ko.observable(getShare("selectedWorkTypeCode"));
-            self.selectedWorkTimeCode = ko.observable(getShare("selectedWorkTimeCode"));
 
             self.columnsWorkTime = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'workTimeCode', width: 70 },
-                { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbolName', width: 70 },
-                { headerText: nts.uk.resource.getText("KSU001_1404"), key: 'name', width: 110 },
-                { headerText: nts.uk.resource.getText("KSU001_1406"), key: 'timeZone1', width: 160 },
-                { headerText: nts.uk.resource.getText("KSU001_1407"), key: 'timeZone2', width: 160 },
-                { headerText: nts.uk.resource.getText("KSU001_1408"), key: 'note', width: 160 },
+                { headerText: getText("KSU001_1402"), key: 'workTimeCode', width: 70 },
+                { headerText: getText("KSU001_1403"), key: 'symbolName', width: 70 },
+                { headerText: getText("KSU001_1404"), key: 'name', width: 110 },
+                { headerText: getText("KSU001_1406"), key: 'timeZone1', width: 160 },
+                { headerText: getText("KSU001_1407"), key: 'timeZone2', width: 160 },
+                { headerText: getText("KSU001_1408"), key: 'note', width: 160 },
                 { headerText: 'data-id', key: 'codeName', width: 160, hidden: true }
             ]);
+            
+            self.selectedWorkTypeCode.subscribe((newValue) => {
+                let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
+                // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
+                if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
+                    self.isEnableButton(false);
+                    self.isEnableClearSearchButton(false);
+                    self.selectedWorkTimeCode(self.nashi);
+                } else {
+                    self.isEnableButton(true);
+                }
+            });
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
@@ -143,7 +153,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 self.clear();
                 return;
             }
-            if (self.time2() !== '' && self.time1() > self.time2()) {
+            if (!((self.time1() == '' && self.time2() !== '') || (self.time1() !== '' && self.time2() == '')) && self.time1() > self.time2()) {
                 alertError({ messageId: "Msg_54" });
                 self.clear();
                 return;
@@ -184,6 +194,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             self.time2('');
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
+            nts.uk.ui.errors.clearAll();
         }
     }
 }

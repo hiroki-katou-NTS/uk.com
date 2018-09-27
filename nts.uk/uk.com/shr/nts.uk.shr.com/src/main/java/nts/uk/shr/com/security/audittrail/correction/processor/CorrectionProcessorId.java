@@ -13,8 +13,11 @@ public enum CorrectionProcessorId {
 	
 	DAILY(1),
 	
-	SCHEDULE(2)
+	SCHEDULE(2),
+
+	PEREG_REGISTER(3),
 	
+	MONTHLY(4)
 	;
 	public final int value;
 	

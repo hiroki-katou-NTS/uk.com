@@ -5,23 +5,23 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * @author hungnm
+ * @author hungnm - 年休残数
  *
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class YearHolidaySettingDto {
 
-	private String companyId;
+	private boolean manageYearOff;
 
-	private boolean manageAtr;
+	private boolean manageTimeOff;
 
-	//private boolean permitAtr;
-
-	// Enum
-	// 0 : 先入れ先出し
-	// 1 : 後入れ先出し
-	private Integer priorityAtr;
+	private Double annualLeaveRemain;
+	
+	private Integer timeRemain;
+	
 }

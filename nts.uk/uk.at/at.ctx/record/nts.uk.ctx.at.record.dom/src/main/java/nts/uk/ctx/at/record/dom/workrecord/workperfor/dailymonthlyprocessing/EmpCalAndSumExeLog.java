@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.CalAndAggClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
@@ -40,7 +41,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 	private ExecutedMenu executedMenu;
 	
 	/** 実行日 */
-	private GeneralDate executionDate;
+	private GeneralDateTime executionDate;
 	
 	/** 実行状況 */
 	private Optional<ExeStateOfCalAndSum> executionStatus;
@@ -69,7 +70,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 //	}
 	
 	public EmpCalAndSumExeLog(String empCalAndSumExecLogID, String companyID, YearMonth processingMonth,
-			ExecutedMenu executedMenu, GeneralDate executionDate, ExeStateOfCalAndSum executionStatus,
+			ExecutedMenu executedMenu, GeneralDateTime executionDate, ExeStateOfCalAndSum executionStatus,
 			String employeeID, int closureID, String caseSpecExeContentID,CalAndAggClassification executionClassification) {
 		super();
 		this.empCalAndSumExecLogID = empCalAndSumExecLogID;
@@ -89,7 +90,7 @@ public class EmpCalAndSumExeLog extends AggregateRoot {
 			String companyID,
 			YearMonth processingMonth,
 			int executedMenu,
-			GeneralDate executionDate,
+			GeneralDateTime executionDate,
 			Integer executionStatus,
 			String employeeID,
 			int closureID,

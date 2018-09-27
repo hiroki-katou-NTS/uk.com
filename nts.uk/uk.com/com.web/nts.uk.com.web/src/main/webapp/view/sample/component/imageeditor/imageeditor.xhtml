@@ -25,7 +25,7 @@
 						<h1>Image Editor</h1>
 						<div class="cf">
 							<div style="float: left;">
-								<div id="test" data-bind="ntsImageEditor: {editable: true, accept: ['.bmp', '.png', '.jpg', '.jpeg'] }"></div>
+								<div id="test" data-bind="ntsImageEditor: {editable: true, accept: ['.bmp', '.png', '.jpg', '.jpeg'], maxSize: 10 }"></div>
 							</div>
 							<div style="float: left; padding-left: 50px;">
 								<button data-bind="click: upload">Upload File</button><br/>
@@ -46,7 +46,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="test" data-bind="ntsImageEditor: {editable: true, accept: ['.bmp', '.png', '.jpg', '.jpeg'] }"></div>]]></pre>
+<pre><![CDATA[<div id="test" data-bind="ntsImageEditor: {editable: true, accept: ['.bmp', '.png', '.jpg', '.jpeg'] }, maxSize: 10"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -116,6 +116,13 @@
 													<b>Type:</b> String<br/>
 													msg id for error when select unknow type.
 													Default: "Msg_77"
+												</td>
+											</tr>
+											<tr>
+												<td>maxSize(Optional)</td>
+												<td>
+													<b>Type:</b> number<br/>
+													Max size of image can be uploaded. If it's not set, this component will not check. 
 												</td>
 											</tr>
 										</tbody>

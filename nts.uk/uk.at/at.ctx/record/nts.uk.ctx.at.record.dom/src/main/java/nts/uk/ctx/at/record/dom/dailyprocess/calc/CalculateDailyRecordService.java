@@ -14,11 +14,40 @@ public interface CalculateDailyRecordService {
 	 * 勤務情報を取得して計算
 	 * @param integrationOfDaily 日別実績(Work) 
 	 * @param companyCommonSetting 会社共通のマスタ管理クラス
+	 * @param managePerPersonDailySet 
 	 * @param yesterDayInfo 前日の勤務情報
 	 * @param tomorrowDayInfo 翌日の勤務情報
 	 * @return 日別実績(Work)
 	 */
-	public IntegrationOfDaily calculate(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting
-			,Optional<WorkInfoOfDailyPerformance> yesterDayInfo
+	default public IntegrationOfDaily calculate(
+			IntegrationOfDaily integrationOfDaily,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet managePerPersonDailySet,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo,
+			Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
+		return this.calculate(
+				CalculateOption.asDefault(),
+				integrationOfDaily,
+				companyCommonSetting,
+				managePerPersonDailySet,
+				yesterDayInfo,
+				tomorrowDayInfo);
+	}
+
+	/**
+	 * 勤務情報を取得して計算
+	 * @param integrationOfDaily 日別実績(Work) 
+	 * @param companyCommonSetting 会社共通のマスタ管理クラス
+	 * @param yesterDayInfo 前日の勤務情報
+	 * @param tomorrowDayInfo 翌日の勤務情報
+	 * @return 日別実績(Work)
+	 */
+	public IntegrationOfDaily calculate(
+			CalculateOption option,
+			IntegrationOfDaily integrationOfDaily,
+			ManagePerCompanySet companyCommonSetting,
+			ManagePerPersonDailySet managePerPersonDailySet,
+			Optional<WorkInfoOfDailyPerformance> yesterDayInfo
 			,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo);
+
 }

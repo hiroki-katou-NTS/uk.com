@@ -14,6 +14,9 @@
 				<com:stylefile path="../../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../../catalog/catalog.js" />
+		    <com:ValidatorScript>
+		     nts.uk.shr.com.time.TimeClockWithSeconds
+		    </com:ValidatorScript>
             </ui:define>
             
             <ui:define name="content">
@@ -28,7 +31,14 @@
 							<div data-name="DateTimePair Editor" data-bind="ntsDateTimePairEditor: {value: value, required: required, enable: enable, readonly: readonly}" />
 							binding: <span data-bind="text: value"></span>	
 							<h2>Date Time Range Editor</h2>
-							<div data-name="DateTimePairRange Editor" data-bind="ntsDateTimePairRangeEditor: {value: ko.observable({start: start, end: end}), required: required, enable: enable, readonly: readonly}" />
+							<div data-name="DateTimePairRange Editor" data-bind="ntsDateTimePairRangeEditor: {
+											value: ko.observable({start: start, end: end}), 
+											required: required, 
+											enable: enable, 
+											readonly: readonly,
+											name: '日の名前',
+											startName: '開始日の名前',
+											endName: '終了日の名前'}" />
 							binding start: <span data-bind="text: start"></span>				
 							binding end: <span data-bind="text: end"></span>	
 						</div>	
@@ -55,6 +65,13 @@
 											</tr>
 										</thead>
 										<tbody>
+											<tr>
+												<td>TODO:</td>
+												<td>should add <com:ValidatorScript>
+														     nts.uk.shr.com.time.AttendanceClock
+													    	</com:ValidatorScript> to header
+												</td>
+											</tr>
 											<tr>
 												<td>value</td>
 												<td>
@@ -132,10 +149,24 @@
 												</td>
 											</tr>
 											<tr>
-												<td>name</td>
+												<td>name (new)</td>
 												<td>
 													<b>Type:</b> string<br/>
 													name for date range picker
+												</td>
+											</tr>
+											<tr>
+												<td>startName (new)</td>
+												<td>
+													<b>Type:</b> string<br/>
+													name of start date
+												</td>
+											</tr>
+											<tr>
+												<td>endName (new)</td>
+												<td>
+													<b>Type:</b> string<br/>
+													name of end date
 												</td>
 											</tr>
 											<tr>

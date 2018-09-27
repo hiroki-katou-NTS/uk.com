@@ -218,8 +218,8 @@ module nts.uk.at.view.kmk004.c {
             private setEmploymentName(code: string): void {
                 let self = this;
                 let list = $('#list-employment').getDataList();
-                if (list && code && code.length > 0) {
-                    let empt = _.find(list, item => item.code == code);
+                let empt = _.find(list, item => item.code == code);
+                if (empt) {
                     self.employmentName(empt.name);
                     self.employmentCode(empt.code);
                     return;
@@ -265,14 +265,14 @@ module nts.uk.at.view.kmk004.c {
                 
                 let saveCommand: EmploymentWorktimeSettingDtoSaveCommand = new EmploymentWorktimeSettingDtoSaveCommand();
                 saveCommand.updateData(self.selectedEmploymentCode(), self.worktimeVM.worktimeSetting);
-                
+                nts.uk.ui.block.grayout();
                 service.saveEmploymentSetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     self.addAlreadySettingEmloyment(self.selectedEmploymentCode());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
-                });
+                }).always(() => nts.uk.ui.block.clear());
             }
             
             /**
@@ -286,6 +286,7 @@ module nts.uk.at.view.kmk004.c {
                 let emplCode = self.selectedEmploymentCode();
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = { year: self.worktimeVM.worktimeSetting.normalSetting().year(), employmentCode: emplCode }
+                    nts.uk.ui.block.grayout();
                     service.removeEmploymentSetting(command).done((res) => {
                     
                         // new mode.
@@ -310,6 +311,7 @@ module nts.uk.at.view.kmk004.c {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
                         self.clearError();
+                        nts.uk.ui.block.clear();
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();

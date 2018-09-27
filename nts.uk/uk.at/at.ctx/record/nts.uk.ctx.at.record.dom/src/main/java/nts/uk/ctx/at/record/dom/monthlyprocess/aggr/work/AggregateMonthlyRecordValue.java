@@ -15,20 +15,24 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemain;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
-/*
+/**
  * 戻り値：ドメインサービス：月別実績を集計する．集計処理
+ * @author shuichi_ishida
  */
 @Getter
 public class AggregateMonthlyRecordValue {
@@ -42,6 +46,7 @@ public class AggregateMonthlyRecordValue {
 	@Setter
 	private Optional<AffiliationInfoOfMonthly> affiliationInfo;
 	/** 月別実績の任意項目 */
+	@Setter
 	private List<AnyItemOfMonthly> anyItemList;
 	/** 管理時間の36協定時間 */
 	@Setter
@@ -54,6 +59,12 @@ public class AggregateMonthlyRecordValue {
 	private List<AbsenceLeaveRemainData> absenceLeaveRemainList;
 	/** 代休月別残数データ */
 	private List<MonthlyDayoffRemainData> monthlyDayoffRemainList;
+	/** 特別休暇月別残数データ */
+	private List<SpecialHolidayRemainData> specialLeaveRemainList;
+	/** 介護休暇月別残数データ */
+	private Optional<MonCareHdRemain> monCareHdRemain;
+	/** 子の看護休暇月別残数データ */
+	private Optional<MonChildHdRemain> monChildHdRemain;
 	
 	/** 年休積立年休の集計結果 */
 	@Setter
@@ -80,6 +91,9 @@ public class AggregateMonthlyRecordValue {
 		this.rsvLeaRemNumEachMonthList = new ArrayList<>();
 		this.absenceLeaveRemainList = new ArrayList<>();
 		this.monthlyDayoffRemainList = new ArrayList<>();
+		this.specialLeaveRemainList = new ArrayList<>();
+		this.monCareHdRemain = Optional.empty();
+		this.monChildHdRemain = Optional.empty();
 		
 		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 		this.errorInfos = new HashMap<>();
@@ -200,8 +214,11 @@ public class AggregateMonthlyRecordValue {
 		MonthlyDayoffRemainData monthlyDayoffRemain = null;
 		if (this.monthlyDayoffRemainList.size() > 0) monthlyDayoffRemain = this.monthlyDayoffRemainList.get(0);
 		result.setMonthlyDayoffRemain(Optional.ofNullable(monthlyDayoffRemain));
+		result.getSpecialLeaveRemainList().addAll(this.specialLeaveRemainList);
 		result.getAttendanceTimeOfWeekList().addAll(this.attendanceTimeWeeks);
 		result.getEmployeeMonthlyPerErrorList().addAll(this.perErrors);
+		result.setCare(this.monCareHdRemain);
+		result.setChildCare(this.monChildHdRemain);
 		return result;
 	}
 }

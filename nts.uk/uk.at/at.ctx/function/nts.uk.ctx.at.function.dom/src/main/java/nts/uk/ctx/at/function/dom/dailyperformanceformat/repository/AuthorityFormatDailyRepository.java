@@ -19,5 +19,6 @@ public interface AuthorityFormatDailyRepository {
 	
 	void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 	
-	void deleteExistData(List<Integer> attendanceItemIds);
+	void deleteExistData(String companyId, String dailyPerformanceFormatCode,
+			BigDecimal sheetNo,List<Integer> attendanceItemIds);
 }

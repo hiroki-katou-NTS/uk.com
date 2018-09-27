@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -56,10 +55,21 @@ public class DivergenceTimeOfMonthlyDto implements ItemConst {
 	public AggregateDivergenceTime toDomain() {
 		return AggregateDivergenceTime.of(no, toAttendanceTimeMonth(divergenceTime), 
 				toAttendanceTimeMonth(deductionTime), toAttendanceTimeMonth(divergenceTimeAfterDeduction),
-				ConvertHelper.getEnum(divergenceAtr, DivergenceAtrOfMonthly.class));
+				divergenceAtr());
 	}
 
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
 		return new AttendanceTimeMonth(time);
+	}
+	
+	public DivergenceAtrOfMonthly divergenceAtr(){
+		switch (divergenceAtr) {
+		case 0:
+			return DivergenceAtrOfMonthly.NORMAL;
+		case 1:
+			return DivergenceAtrOfMonthly.ALARM;
+		default:
+			return DivergenceAtrOfMonthly.ERROR;
+		}
 	}
 }

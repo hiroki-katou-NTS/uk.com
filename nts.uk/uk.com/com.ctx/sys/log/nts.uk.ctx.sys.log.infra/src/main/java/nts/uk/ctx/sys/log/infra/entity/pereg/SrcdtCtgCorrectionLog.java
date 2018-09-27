@@ -29,6 +29,10 @@ public class SrcdtCtgCorrectionLog extends UkJpaEntity {
 	@Basic(optional = false)
 	public String perCorrectionLogID;
 
+	@Column(name = "CATEGORY_ID")
+	@Basic(optional = true)
+	public String categoryID;
+
 	@Column(name = "CATEGORY_NAME")
 	@Basic(optional = false)
 	public String categoryName;

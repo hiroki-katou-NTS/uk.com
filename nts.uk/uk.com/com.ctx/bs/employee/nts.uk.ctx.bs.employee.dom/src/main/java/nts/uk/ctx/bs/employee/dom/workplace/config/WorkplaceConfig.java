@@ -30,6 +30,7 @@ public class WorkplaceConfig extends AggregateRoot
 
 	/** The wkp config history. */
 	// 履歴
+	@Getter
 	private List<WorkplaceConfigHistory> wkpConfigHistory;
 
 	/**

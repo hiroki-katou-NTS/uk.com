@@ -116,8 +116,8 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 		List<AnnualLeaveUsageImported> lstHolidayRemainData = new ArrayList<>();
 		algorithm.forEach(item -> {
 			AnnualLeaveUsageImported HolidayRemainData = new AnnualLeaveUsageImported(item.getYearMonth(),
-					item.getUsedDays().v(), item.getUsedTime().get().v(), item.getRemainingDays().v(),
-					item.getRemainingTime().get().v());
+					item.getUsedDays().v(), item.getUsedTime().map(i -> i.v()).orElse(null), item.getRemainingDays().v(),
+					item.getRemainingTime().map(i -> i.v()).orElse(null));
 			lstHolidayRemainData.add(HolidayRemainData);
 		});
 		return lstHolidayRemainData;

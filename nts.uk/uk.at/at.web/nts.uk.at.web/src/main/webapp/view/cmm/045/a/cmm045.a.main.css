@@ -64,3 +64,17 @@
 .dateRange{
 	float: left;
 }
+#grid1 > tbody > tr > td {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#grid2 > tbody > tr > td {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#A4_4_2{
+	display: inline-block;
+	margin-left: 30px;
+	vertical-align: middle;
+	margin-top: -24px !important;
+}
