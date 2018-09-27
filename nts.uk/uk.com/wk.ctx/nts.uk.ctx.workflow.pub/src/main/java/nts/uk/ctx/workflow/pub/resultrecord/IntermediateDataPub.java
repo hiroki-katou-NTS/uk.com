@@ -191,4 +191,17 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsMonth(List<EmpPerformMonthParam> empPerformMonthParamLst);
+	
+	/**
+	 * RequestList 534
+	 * [No.534](中間データ版)承認状況を取得する （月別）
+	 * @param approverID
+	 * @param yearMonth
+	 * @param closureID
+	 * @param closureDate
+	 * @param baseDate
+	 * @return
+	 */
+	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate);
 }

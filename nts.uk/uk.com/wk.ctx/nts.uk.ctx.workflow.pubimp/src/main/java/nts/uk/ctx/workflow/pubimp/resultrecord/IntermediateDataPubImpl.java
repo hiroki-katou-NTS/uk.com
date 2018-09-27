@@ -10,10 +10,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
@@ -30,8 +33,10 @@ import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootConfirmService;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstancePeriod;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstanceService;
 import nts.uk.ctx.workflow.dom.service.resultrecord.ApprovalEmpStatus;
+import nts.uk.ctx.workflow.dom.service.resultrecord.ApprovalPersonInstance;
 import nts.uk.ctx.workflow.dom.service.resultrecord.ApproverEmployee;
 import nts.uk.ctx.workflow.dom.service.resultrecord.ApproverToApprove;
+import nts.uk.ctx.workflow.dom.service.resultrecord.RouteSituation;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproveDoneExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverEmpExport;
@@ -410,6 +415,43 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			appRootStatusLst.addAll(approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState)));
 		});
 		return appRootStatusLst.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate) {
+		DatePeriod period = new DatePeriod(baseDate, baseDate);
+		// 承認者(承認代行を含め)と期間から承認ルート中間データを取得する
+		ApprovalPersonInstance approvalPersonInstance = appRootInstanceService.getApproverAndAgent(approverID, 
+				period, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		List<String> agentLst = approvalPersonInstance.getAgentRoute().stream().map(x -> x.getAgentID().orElse(null))
+				.filter(x -> Strings.isNotBlank(x)).collect(Collectors.toList());
+		// output「基準社員の承認対象者」を初期化する
+		ApprovalEmpStatus approvalEmpStatus = new ApprovalEmpStatus(approverID, new ArrayList<>());
+		// 取得した「承認者としての承認ルート」．承認ルートの詳細の件数をチェックする
+		List<RouteSituation> approverRouteLst = new ArrayList<>();
+		if(!CollectionUtil.isEmpty(approvalPersonInstance.getApproverRoute())){
+			// 承認者としてのルート状況を取得する
+			approverRouteLst = appRootInstanceService.getApproverRouteSituation(period, approvalPersonInstance.getApproverRoute(), agentLst, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		}
+		// 取得した「代行者としての承認ルート」．承認ルートの詳細の件数をチェックする
+		List<RouteSituation> agentRouteLst = new ArrayList<>();
+		if(!CollectionUtil.isEmpty(approvalPersonInstance.getAgentRoute())){
+			// 代行者としてのルート状況を取得する
+			agentRouteLst = appRootInstanceService.getAgentRouteSituation(period, approvalPersonInstance.getAgentRoute(), agentLst, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		}
+		// outputの整合
+		List<RouteSituation> mergeLst = appRootInstanceService.mergeRouteSituationLst(approverRouteLst, agentRouteLst);
+		// 「ルート状況」リスト整合処理後をoutput「基準社員の承認対象者」に追加する
+		approvalEmpStatus.getRouteSituationLst().addAll(mergeLst);
+		return new AppEmpStatusExport(
+				approvalEmpStatus.getEmployeeID(), 
+				approvalEmpStatus.getRouteSituationLst().stream().map(x -> new RouteSituationExport(
+						x.getDate(), 
+						x.getEmployeeID(), 
+						x.getApproverEmpState().value, 
+						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
+				.collect(Collectors.toList()));
 	}
 	
 }

@@ -137,7 +137,7 @@ public interface AppRootInstanceService {
 	 * @param agentLst
 	 * @return
 	 */
-	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst);
+	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType);
 	
 	/**
 	 * 代行者としてのルート状況を取得する
@@ -146,7 +146,7 @@ public interface AppRootInstanceService {
 	 * @param agentLst
 	 * @return
 	 */
-	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst);
+	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType);
 	
 	/**
 	 * outputの整合

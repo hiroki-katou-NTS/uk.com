@@ -519,13 +519,13 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		List<RouteSituation> approverRouteLst = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(approvalPersonInstance.getApproverRoute())){
 			// 承認者としてのルート状況を取得する
-			approverRouteLst = this.getApproverRouteSituation(period, approvalPersonInstance.getApproverRoute(), agentLst);
+			approverRouteLst = this.getApproverRouteSituation(period, approvalPersonInstance.getApproverRoute(), agentLst, rootType);
 		}
 		// 取得した「代行者としての承認ルート」．承認ルートの詳細の件数をチェックする
 		List<RouteSituation> agentRouteLst = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(approvalPersonInstance.getAgentRoute())){
 			// 代行者としてのルート状況を取得する
-			agentRouteLst = this.getAgentRouteSituation(period, approvalPersonInstance.getAgentRoute(), agentLst);
+			agentRouteLst = this.getAgentRouteSituation(period, approvalPersonInstance.getAgentRoute(), agentLst, rootType);
 		}
 		// outputの整合
 		List<RouteSituation> mergeLst = this.mergeRouteSituationLst(approverRouteLst, agentRouteLst);
@@ -535,7 +535,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	}
 
 	@Override
-	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst) {
+	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
 		// 取得した対象者(List)の先頭から最後へループ
@@ -549,7 +549,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					continue;
 				}
 				// 対象日の就業実績確認状態を取得する
-				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, rootType);
 				// 中間データから承認ルートインスタンスに変換する
 				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 				// 基準社員を元にルート状況を取得する
@@ -562,7 +562,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	}
 
 	@Override
-	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst) {
+	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<RouteSituation> routeSituationLst = new ArrayList<>();
 		// 取得した対象者(List)の先頭から最後へループ
@@ -579,7 +579,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				if((approvalRouteDetails.getStartDate().isPresent()&&approvalRouteDetails.getStartDate().get().beforeOrEquals(loopDate)) ||
 						(approvalRouteDetails.getEndDate().isPresent()&&approvalRouteDetails.getEndDate().get().afterOrEquals(loopDate))){
 					// 対象日の就業実績確認状態を取得する
-					AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, RecordRootType.CONFIRM_WORK_BY_DAY);
+					AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), loopDate, rootType);
 					// 中間データから承認ルートインスタンスに変換する
 					ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 					// 基準社員を元にルート状況を取得する
