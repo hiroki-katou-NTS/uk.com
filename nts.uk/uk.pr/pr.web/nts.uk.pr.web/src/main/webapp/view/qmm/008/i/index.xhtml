@@ -38,7 +38,7 @@
 				<div>
 					<div class="sidebar-content-header flex valign-center ">
 						<!-- A2_3 厚生年金 -->
-						<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_7')}</span>
+						<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_193')}</span>
 						<!-- A2_1 -> A1_5 -->
 						<div class="flex">
 							<button id="A1_1" class="proceed" tabindex="1"
@@ -95,18 +95,22 @@
 							</div>
 						</div>
 						<!-- Right Panel-->
-						<div class="fixed-flex-layout-right right-panel" data-bind="with: contributionRate">
+						<div class="fixed-flex-layout-right right-panel"
+							data-bind="with: contributionRate">
 							<div data-bind="with: $vm.selectedHistoryPeriod">
 								<!-- I2_1 期間 -->
 								<div data-bind="ntsFormLabel: {}" class="inline-element">#{i18n.getText('QMM008_12')}</div>
 								<!-- I2_2 開始年月 -->
-								<div id="I2_2" class="inline-element" data-bind="text: displayStart"></div>
+								<div id="I2_2" class="inline-element"
+									data-bind="text: displayStart"></div>
 								<!-- I2_3 開始年月和暦 -->
-								<div id="I2_3" class="inline-element" data-bind="text: displayStartJM"></div>
+								<div id="I2_3" class="inline-element"
+									data-bind="text: displayStartJM"></div>
 								<!-- I2_4 ~ -->
 								<div class="inline-element">#{i18n.getText('QMM008_11')}</div>
 								<!-- I2_5 終了年月 -->
-								<div id="I2_5" class="inline-element" data-bind="text: displayEnd"></div>
+								<div id="I2_5" class="inline-element"
+									data-bind="text: displayEnd"></div>
 							</div>
 							<div style="margin-top: 15px; display: inline-block">
 								<!-- I2_6 自動計算 -->
@@ -124,7 +128,7 @@
 									enable: $vm.isSelectedHistory }"></div>
 								</div>
 								<!-- I2_10 自動計算区分説明-->
-							<button style="display: inline-block"
+								<button style="display: inline-block"
 									data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left', enable: true}">?</button>
 							</div>
 
@@ -139,7 +143,7 @@
 								<!-- I2_14 事業主負担率 -->
 								<div data-bind="ntsFormLabel: {}" class="inline-element">#{i18n.getText('QMM008_60')}</div>
 								<!-- I2_15 事業主負担率 -->
-								<div data-bind="" style="display: inline-block" >
+								<div data-bind="" style="display: inline-block">
 									<input id="I2_15" tabindex="28"
 										data-bind="ntsNumberEditor: {
  													option: {
@@ -151,10 +155,10 @@
  													constraint: 'InsuranceRate', 
  													required: true, 
  													enable: $vm.isSelectedHistory}" />
- 													<span  class="label" style="display: inline-block;">#{i18n.getText('QMM008_28')}</span >
+									<span class="label" style="display: inline-block;">#{i18n.getText('QMM008_28')}</span>
 								</div>
 								<!-- I2_16 /1000 -->
-								
+
 							</div>
 						</div>
 					</div>
