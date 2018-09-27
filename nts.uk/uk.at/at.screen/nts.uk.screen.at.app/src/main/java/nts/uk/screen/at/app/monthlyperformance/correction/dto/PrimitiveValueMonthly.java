@@ -55,23 +55,23 @@ public enum PrimitiveValueMonthly {
 	
 	DayNumberOfGrant(42, "特別休暇残数用付与日数", "DayNumberOfGrant"),
 	
-	SPECIAL_HOLIDAY_USE_NUM(43, "特別休暇使用回数", "SPECIAL_HOLIDAY_USE_NUM"),// not found
+	SPECIAL_HOLIDAY_USE_NUM(43, "特別休暇使用回数", "UsedTimes"),// not found
 	
 	SpecialTimeOfUse(44, "特別休暇使用時間", "TimeOfUse"),
 	
 	SpecialDayNumberOfUse(45, "特別休暇使用日数", "DayNumberOfUse"),
 	
-	SUBSTITUTE_HOLIDAY_DAYS(46, "代休日数", "SUBSTITUTE_HOLIDAY_DAYS"),// not found
+	SUBSTITUTE_HOLIDAY_DAYS(46, "代休日数", "ReserveLeaveUsedDayNumber"),// not found
 	
-	SUBSTITUTE_HOLIDAY_REMAINING_DAYS(47, "代休残日数", "SUBSTITUTE_HOLIDAY_REMAINING_DAYS"), // not found
+	SUBSTITUTE_HOLIDAY_REMAINING_DAYS(47, "代休残日数", "ReserveLeaveRemainingDayNumber"), // not found
 	
-	SUBSTITUTE_HOLIDAY_TIME(48, "代休時間", "SUBSTITUTE_HOLIDAY_TIME"),// not found
+	SUBSTITUTE_HOLIDAY_TIME(48, "代休時間", "UsedMinutes"),// not found
 	
-	SUBSTITUTE_HOLIDAY_REMAINING_TIME(49, "代休残時間", "SUBSTITUTE_HOLIDAY_REMAINING_TIME"), // not found
+	SUBSTITUTE_HOLIDAY_REMAINING_TIME(49, "代休残時間", "RemainingMinutes"), // not found
 	
-	PAUSE_REMAINING_DAYS(50, "振休残日数", "PAUSE_REMAINING_DAYS"),// not found
+	PAUSE_REMAINING_DAYS(50, "振休残日数", "ReserveLeaveRemainingDayNumber"),// not found
 	
-	TimeWithDayAttr(51, "振休日数", "NotFound");// not found
+	PAUSE_USED_DAYS(51, "振休日数", "ReserveLeaveUsedDayNumber");// not found
 	
 	public final int value;
 	

@@ -296,7 +296,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			}
 			
 			// Rename sheet
-			sheet.setName(WorkScheOutputConstants.SHEET_FILE_NAME);
+			sheet.setName(WorkScheOutputConstants.SHEET_NAME_MONTHLY);
 			
 			// Move to first position
 			sheet.moveTo(0);
@@ -319,9 +319,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL)
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".xlsx"));
 			else {
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.FILE_NAME_MONTHLY + "_" + currentFormattedDate + ".pdf"));
 			}
 
 		} catch (Exception e) {

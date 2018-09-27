@@ -2,83 +2,72 @@ module nts.uk.at.view.kdw008.a {
     export module viewmodel {
         import getText = nts.uk.resource.getText;
         import confirm = nts.uk.ui.dialog.confirm;
+        import block = nts.uk.ui.block;
         export class ScreenModel {
-
+            checkInitSheetNo: boolean;
             //isDaily
-            newMode: KnockoutObservable<boolean>;
             isUpdate: KnockoutObservable<boolean>;
             isRemove: KnockoutObservable<boolean>;
             showCode: KnockoutObservable<boolean>;
-
             checked: KnockoutObservable<boolean>;
 
             currentDailyFormatCode: KnockoutObservable<string>;
-            currentDailyFormatName: KnockoutObservable<string>;
-
-            currentBusinessType: KnockoutObservable<AuthorityDetailModel>;
-
-
-
-            // list businessType
-            businessTypeList: KnockoutObservableArray<BusinessTypeModel>;
-            columns1: KnockoutObservableArray<NtsGridListColumn>;
-            selectedCode: KnockoutObservable<any>;
+            currentDailyFormatName: KnockoutObservable<string>;
             //combobox select sheetNo
             sheetNoList: KnockoutObservableArray<SheetNoModel>;
-            itemNameCbb2: KnockoutObservable<string>;
-            currentCodeCbb2: KnockoutObservable<number>;
             selectedSheetNo: KnockoutObservable<number>;
-
-            //swap list tab 2
-            monthlyDetailList: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto>;
-            columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            columns4: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            columns5: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            currentCodeListSwapMonthly: KnockoutObservableArray<any>;
-            authorityFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
-            monthlyDataSource: KnockoutObservableArray<AttendanceItemModel>;
-
-            //swap list tab 1
-            currentCodeListSwap2: KnockoutObservableArray<any>;
-            authorityFormatDailyValue: KnockoutObservableArray<AttendanceItemModel>;
-            columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectedSheetName: KnockoutObservable<string>;
-            dailyDataSource: KnockoutObservableArray<AttendanceItemModel>;
 
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
             //is daily
             isDaily: KnockoutObservable<boolean>;
-
-            columnsCommom: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-
-            //monthly
-            listMonthlyAttdItem: KnockoutObservableArray<any>;
-            listMonthlyAttdItemFullData: KnockoutObservableArray<any>;
-            valuesMonthly: KnockoutObservableArray<any>;
-
-            listMonPfmCorrectionFormat: KnockoutObservableArray<any>;
-            valuesMonthlyTab3: KnockoutObservableArray<any>;
             enableSheetNo: KnockoutObservable<boolean>;
-
             isSetFormatToDefault: KnockoutObservable<boolean>;
-
-            //data commom
-            listDataCommom: KnockoutObservableArray<any>;
-            primaryKey: string;
-
             sideBar: KnockoutObservable<number>;
+
+            columnsFormatCodde: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            formatCodeItems: KnockoutObservableArray<FormatCode>;
+            selectedCode: KnockoutObservable<any>;
+
+            //swap list tab 1
+            columns1: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            dailyAttItems: KnockoutObservableArray<AttendanceItemDto>;
+            authorityFormatDailyValue: KnockoutObservableArray<AttendanceItemDto>;
+            dailyDataSource: KnockoutObservableArray<AttendanceItemDto>;
+
+            //swap list tab 2
+            columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            monthlyAttItems: KnockoutObservableArray<AttendanceItemDto>;
+            authorityFormatMonthlyValue: KnockoutObservableArray<AttendanceItemDto>;
+            monthlyDataSource: KnockoutObservableArray<AttendanceItemDto>;
+
+            //swap list tab 3
+            columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            monthCorrectionFormatList: KnockoutObservableArray<MonPfmCorrectionFormatDto>;
+            monthCorrectionFormat: KnockoutObservable<MonPfmCorrectionFormatDto>;
+            monthCorrectionValue: KnockoutObservableArray<AttendanceItemDto>;
+            monthCorrectionDataSource: KnockoutObservableArray<AttendanceItemDto>;
+
             constructor(dataShare: any) {
+                let self = this;
+                self.checkInitSheetNo = false;
 
-                var self = this;
-                //monthly
-                self.listMonthlyAttdItem = ko.observableArray([]);
-                self.listMonthlyAttdItemFullData = ko.observableArray([]);
-                self.valuesMonthly = ko.observableArray([]);
+                self.formatCodeItems = ko.observableArray([]);
+                self.columnsFormatCodde = ko.observableArray([
+                    { headerText: getText('KDW008_7'), key: 'formatCode', width: 90 },
+                    { headerText: getText('KDW008_8'), key: 'formatName', width: 120, formatter: _.escape }
+                ]);
 
-                self.listMonPfmCorrectionFormat = ko.observableArray([]);
-                self.valuesMonthlyTab3 = ko.observableArray([]);
+                self.dailyAttItems = ko.observableArray([]);
+                self.monthlyAttItems = ko.observableArray([]);
+
+                self.monthCorrectionFormatList = ko.observableArray([]);
+                self.monthCorrectionFormat = ko.observable({});
+                self.monthCorrectionValue = ko.observableArray([]);
+                self.monthCorrectionDataSource = ko.observableArray([]);
+
                 self.enableSheetNo = ko.observable(false);
 
                 self.isSetFormatToDefault = ko.observable(false);
@@ -89,7 +78,6 @@ module nts.uk.at.view.kdw008.a {
                     self.sideBar(2);
                 }
 
-                self.newMode = ko.observable(false);
                 self.isUpdate = ko.observable(true);
                 self.isRemove = ko.observable(true);
                 self.showCode = ko.observable(false);
@@ -99,63 +87,31 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatCode = ko.observable('');
                 self.currentDailyFormatName = ko.observable('');
 
-
-                //data commom
-                self.listDataCommom = ko.observableArray([]);
-                self.primaryKey = '';
-
-                if (self.isDaily()) {
-                    self.columnsCommom = ko.observableArray([
-                        { headerText: getText('KDW008_7'), key: 'dailyPerformanceFormatCode', width: 90 },
-                        { headerText: getText('KDW008_8'), key: 'dailyPerformanceFormatName', width: 120, formatter: _.escape }
-                    ]);
-                    self.primaryKey = "dailyPerformanceFormatCode";
-                } else {
-                    self.columnsCommom = ko.observableArray([
-                        { headerText: getText('KDW008_7'), key: 'monthlyPfmFormatCode', width: 90 },
-                        { headerText: getText('KDW008_8'), key: 'monPfmCorrectionFormatName', width: 120, formatter: _.escape }
-                    ]);
-                    self.primaryKey = "monthlyPfmFormatCode";
-                }
-
                 self.selectedSheetName = ko.observable('');
-
-                self.businessTypeList = ko.observableArray([]);
-                self.currentBusinessType = ko.observable(new AuthorityDetailModel(null));
 
                 this.selectedCode = ko.observable();
 
-                self.columns3 = ko.observableArray([
+                self.columns1 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
-                ]);
-                self.columns4 = ko.observableArray([
-                    { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
-                    { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100 , formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
                 ]);
 
-                self.columns5 = ko.observableArray([
+                self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140 , formatter: _.escape}
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 140, formatter: _.escape }
                 ]);
 
                 //swap list 2
-                self.monthlyDetailList = ko.observableArray([]);
                 self.authorityFormatMonthlyValue = ko.observableArray([]);
                 self.monthlyDataSource = ko.observableArray([]);
-                var monthlySwapList = [];
-                self.currentCodeListSwapMonthly = ko.observableArray(monthlySwapList);
-                this.currentCodeListSwapMonthly.subscribe(function(value) {
-                    console.log(value);
-                });
+
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
                     { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily()) },
@@ -178,6 +134,7 @@ module nts.uk.at.view.kdw008.a {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
+                    block.invisible();
                     if (value == 1) {
                         self.enableSheetNo(false);
                     } else {
@@ -185,87 +142,42 @@ module nts.uk.at.view.kdw008.a {
                     }
                     if (self.isDaily()) {
                         nts.uk.ui.errors.clearAll();
-                        self.getDetail(self.selectedCode());
+                        self.getDailyDetail(self.currentDailyFormatCode(), value).done(() => {
+                            block.clear();
+                        })
                     } else {
-                        let empSelect = _.find(self.listMonPfmCorrectionFormat(), format => {
-                            return format.monthlyPfmFormatCode == self.selectedCode();
-                        });
-
-                        if (empSelect) {
-
-                            self.isSetFormatToDefault(empSelect.setFormatToDefault);
-
-
-                            self.checked(!empSelect.setFormatToDefault);
-                            self.currentDailyFormatCode(empSelect.monthlyPfmFormatCode);
-                            self.currentDailyFormatName(empSelect.monPfmCorrectionFormatName);
-                            let index = _.findIndex(empSelect.displayItem.listSheetCorrectedMonthly, function(o) { return o.sheetNo == value; });
-                            self.valuesMonthlyTab3([]);
-                            self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
-                            if (index >= 0) {
-                                self.selectedSheetName(_.filter(empSelect.displayItem.listSheetCorrectedMonthly, function(o) { return o.sheetNo == value; })[0].sheetName);
-                                let monthlyAttdAutMonthly = _.sortBy(empSelect.displayItem
-                                    .listSheetCorrectedMonthly[index]
-                                    .listDisplayTimeItem, ['displayOrder']);
-                                var attendanceItemModelMonthly = _.map(monthlyAttdAutMonthly, item => {
-                                    var obj = {
-                                        attendanceItemId: item.itemDaily,
-                                        attendanceItemName: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemName,
-                                        attendanceItemDisplayNumber: _.filter(self.listMonthlyAttdItemFullData(), function(o) { return item.itemDaily == o.attendanceItemId; })[0].attendanceItemDisplayNumber,
-                                        columnWidth: item.columnWidthTable
-                                    };
-                                    return new AttendanceItemModel(obj);
-                                });
-
-                                self.valuesMonthlyTab3(attendanceItemModelMonthly);
-                            } else {
-                                self.selectedSheetName("");
-                                self.valuesMonthlyTab3([]);
-                            }
-                        } else {
-                            self.selectedSheetName("");
-                            self.valuesMonthlyTab3([]);
-                            self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
-                        }
+                        self.getMonthCorrectionDetail(value);
+                        block.clear();
                     }
-                    nts.uk.ui.errors.clearAll();
                 });
-                //swaplist 1
-                var x = [];
-                this.currentCodeListSwap2 = ko.observableArray(x);
-                this.currentCodeListSwap2.subscribe(function(value) {
-                    console.log(value);
-                });
+
                 self.authorityFormatDailyValue = ko.observableArray([]);
                 self.dailyDataSource = ko.observableArray([]);
 
                 self.selectedCode.subscribe(newValue => {
-                    let CodeMonthly = _.cloneDeep(newValue);
+                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                    block.invisible();
                     self.isUpdate(true);
-                    self.showCode(false);
-                    if (nts.uk.text.isNullOrEmpty(CodeMonthly)) return;
+                    self.showCode(false); 
+                    self.isRemove(true);                   
                     _.defer(() => { $("#currentName").focus(); });
+
+                    let formatSelect: FormatCode = _.find(self.formatCodeItems(), (item: FormatCode) => {
+                        return item.formatCode == newValue;
+                    });
+                    self.currentDailyFormatCode(formatSelect.formatCode)
+                    self.currentDailyFormatName(formatSelect.formatName);
+                    self.isSetFormatToDefault(!formatSelect.isSetDefault);
+                    self.checked(formatSelect.isSetDefault);
+
                     if (self.isDaily()) {
-                        let empSelect = _.find(self.listDataCommom(), bus => {
-                            return bus.dailyPerformanceFormatCode == CodeMonthly;
+                        self.getMonthlyDetail(newValue).done(() => {
+                            self.initSelectedSheetNoHasMutated();
                         });
-                        if (empSelect) {
-                            self.currentDailyFormatCode(empSelect.dailyPerformanceFormatCode);
-                            self.currentDailyFormatName(empSelect.dailyPerformanceFormatName);
-                        }
-                        self.isRemove(true);
-                        nts.uk.ui.errors.clearAll();
-//                        self.initSelectedSheetNoHasMutated();
-                        // self.getDetail(self.currentDailyFormatCode(), 1);
                     } else {
-//                        self.initSelectedSheetNoHasMutated();
-                        self.isRemove(true);
-                        nts.uk.ui.errors.clearAll();
-                        //                            self.getDetail(self.currentDailyFormatCode(), 1);
+                        self.getMonPfmCorrectionFormat(self.currentDailyFormatCode());
+                        self.initSelectedSheetNoHasMutated();
                     }
-
-
-                    //                    self.selectedTab('tab-1');
                 });
 
             }
@@ -277,126 +189,269 @@ module nts.uk.at.view.kdw008.a {
 
             initSelectedSheetNoHasMutated() {
                 let self = this;
+                if (self.checkInitSheetNo) {
+                    self.checkInitSheetNo = false;
+                    self.selectedSheetNo.valueHasMutated();
+                    return;
+                }
                 if (self.selectedSheetNo() == 1) {
                     self.selectedSheetNo.valueHasMutated();
                 } else {
                     self.selectedSheetNo(1);
                 }
             }
-            
+
+            initSelectedCodeHasMutated(code) {
+                let self = this;
+                self.checkInitSheetNo = true;
+                if (self.selectedCode() == code) {
+                    self.selectedCode.valueHasMutated();
+                } else {
+                    self.selectedCode(code);
+                }
+            }
+
             startPage(): JQueryPromise<any> {
                 let self = this;
+                return self.loadData();
+            }
+
+            loadData(): JQueryPromise<any> {
+                let self = this;
                 let dfd = $.Deferred();
+                block.invisible();
+                let oldIndex = this.getOldIndex();
                 if (self.isDaily()) {
-                    let dfdGetBusinessType = self.getBusinessType();
-                    let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
-                    $.when(dfdGetBusinessType, dfdGetListMonthlyAttdItem).done(function(dfdGetBusinessTypeData, dfdGetListMonthlyAttdItemData) {
-                        self.listDataCommom(self.businessTypeList());
-                        dfd.resolve();
-                    });
-                } else {
-                    let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
-                    let dfdListMonPfmCorrectionFormat = self.getListMonPfmCorrectionFormat();
-                    $.when(dfdGetListMonthlyAttdItem, dfdListMonPfmCorrectionFormat)
-                        .done(function(dfdGetListMonthlyAttdItemData, dfdListMonPfmCorrectionFormatData) {
-                            if (self.listMonPfmCorrectionFormat().length > 0) {
-                                self.selectedCode(self.listMonPfmCorrectionFormat()[0].monthlyPfmFormatCode);
-                                self.selectedCode.valueHasMutated();
+                    service.getListAuthorityDailyFormatCode().done((data) => {
+                        let dtdGetDailyAttItem = self.getDailyAttItem();
+                        let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
+                        $.when(dtdGetDailyAttItem, dtdGetMonthlyAttItem).done(() => {
+                            if (data && data.length > 0) {
+                                self.formatCodeItems(FormatCode.fromDaily(data));
+                                let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
+                                self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
                             } else {
                                 self.setNewMode();
                             }
-                            dfd.resolve();
-                        });
+                        }).always(() => {
+                            block.clear();
+                        })
+                        dfd.resolve();
+                    })
+                } else {
+                    service.getListMonPfmCorrectionFormat().done((data) => {
+                        let dtdGetMonthlyAttItem = self.getMonthlyAttItem();
+                        $.when(dtdGetMonthlyAttItem).done(() => {
+                            if (data && data.length > 0) {
+                                self.formatCodeItems(FormatCode.fromMonthly(data));
+                                self.monthCorrectionFormatList(MonPfmCorrectionFormatDto.fromApp(data));
+                                let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
+                                self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
+                            } else {
+                                self.setNewMode();
+                            }
+                        }).always(() => {
+                            block.clear();
+                        })
+                        dfd.resolve();
+                    })
                 }
-                dfd.resolve();
                 return dfd.promise();
             }
 
-            getListMonthlyAttdItem() {
-
+            getIndex(oldIndex: number) {
                 let self = this;
-                let dfd = $.Deferred();
-                new service.Service().getListMonthlyAttdItem().done(function(data) {
-                    self.listMonthlyAttdItem(_.sortBy(data, ["attendanceItemDisplayNumber"]));
-                    self.listMonthlyAttdItemFullData(_.cloneDeep(_.sortBy(data, ["attendanceItemDisplayNumber"])));
-                    dfd.resolve();
+                let index = _.findIndex(self.formatCodeItems(), item => {
+                    return item.formatCode == self.currentDailyFormatCode();
                 });
-                return dfd.promise();
-            }
-
-            getBusinessType() {
-                let self = this;
-                let dfd = $.Deferred();
-                nts.uk.ui.block.grayout();
-                self.businessTypeList([]);
-                new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
-                    if (data && data.length > 0) {
-                        self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
-                        self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
-                        self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                        // self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
-                    } else {
-                        self.setNewMode();
+                if (index < 0) {
+                    if (self.formatCodeItems().length == 1) {
+                        return 0;
                     }
-                    self.listDataCommom(self.businessTypeList());
-                    nts.uk.ui.block.clear();
-                    dfd.resolve();
-                });
+                    if (oldIndex >= self.formatCodeItems().length - 1) {
+                        return self.formatCodeItems().length - 1
+                    }
+                    return oldIndex;
+                }
+                return index;
+            }
 
+            getOldIndex() {
+                let self = this;
+                let index = _.findIndex(self.formatCodeItems(), item => {
+                    return item.formatCode == self.currentDailyFormatCode();
+                });
+                if (index < 0) {
+                    index = 0
+                }
+                return index;
+            }
+
+            getDailyAttItem(): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                service.getDailyAttItem().done(data => {
+                    if (data) {
+                        self.dailyAttItems(AttendanceItemDto.fromApp(data));
+                    }
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject(err);
+                })
                 return dfd.promise();
             }
 
-            //monthly
-            getListMonPfmCorrectionFormat() {
-                let self = this;
-                let dfd = $.Deferred();
-                new service.Service().getListMonPfmCorrectionFormat().done(function(data) {
+            getDailyDetail(code: string, sheetNo: string): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                service.getDailyDetail(code, self.selectedSheetNo()).done(data => {
+                    self.authorityFormatDailyValue.removeAll();
+                    self.dailyDataSource.removeAll();
+                    self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
 
-                    self.listMonPfmCorrectionFormat(_.sortBy(data, ["monthlyPfmFormatCode"]));
-                    self.listDataCommom(self.listMonPfmCorrectionFormat());
+                    if (data) {
+                        self.selectedSheetName(data.sheetName);
+                        self.authorityFormatDailyValue(self.mapAttItemFormatDetail(self.dailyAttItems(), data.dailyAttendanceAuthorityDetailDtos));
+                    }
                     dfd.resolve();
-                });
+                }).fail(err => {
+                    dfd.reject(err);
+                })
                 return dfd.promise();
             }
 
-            getMonPfmCorrectionFormat(monthlyPfmFormatCode) {
-                let self = this;
-                let dfd = $.Deferred();
-                new service.Service().getMonPfmCorrectionFormat(monthlyPfmFormatCode).done(function(data) {
+            getMonthlyAttItem(): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                service.getMonthlyAttItem().done(data => {
+                    if (data) {
+                        self.monthlyAttItems(AttendanceItemDto.fromApp(data));
+                    }
                     dfd.resolve();
-                });
+                }).fail(err => {
+                    dfd.reject(err);
+                })
                 return dfd.promise();
+            }
+
+            getMonthlyDetail(code: string): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
+                service.getMonthlyDetail(code).done(data => {
+                    self.authorityFormatMonthlyValue.removeAll();
+                    self.monthlyDataSource.removeAll();
+                    self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
+
+                    if (data) {
+                        self.authorityFormatMonthlyValue(self.mapAttItemFormatDetail(self.monthlyAttItems(), data));
+                    }
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject(err);
+                })
+                return dfd.promise();
+            }
+
+            mapAttItemFormatDetail(attItems: Array<AttendanceItemDto>, details): Array<AttendanceItemDto> {
+                details = DailyAttendanceAuthorityDetailDto.fromApp(details);
+                let attItemDetail: Array<AttendanceItemDto> = [];
+                attItemDetail = _.map(details, function(item: DailyAttendanceAuthorityDetailDto) {
+                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
+                    dto.attendanceItemId = item.attendanceItemId;
+                    dto.columnWidth = item.columnWidth;
+                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
+                        return att.attendanceItemId == item.attendanceItemId;
+                    })
+                    if (attItem) {
+                        dto.attendanceItemName = attItem.attendanceItemName;
+                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                    }
+                    return dto;
+                })
+                return attItemDetail;
+            }
+
+
+            getMonPfmCorrectionFormat(formatCode){
+                let self = this;
+                let monthItem: MonPfmCorrectionFormatDto = _.find(self.monthCorrectionFormatList(), (item: MonPfmCorrectionFormatDto) => {
+                    return item.monthlyPfmFormatCode == formatCode;
+                })
+                self.monthCorrectionFormat(monthItem);
+            }
+
+            getMonthCorrectionDetail(sheetNo: string) {
+                let self = this;
+                self.selectedSheetName(null);
+                self.monthCorrectionValue.removeAll();
+                self.monthCorrectionDataSource.removeAll();
+                self.monthCorrectionDataSource(_.cloneDeep(self.monthlyAttItems()));
+                if(self.monthCorrectionFormat() == null) {
+                    return;    
+                }
+                let monthItem: MonPfmCorrectionFormatDto = self.monthCorrectionFormat();
+                self.isSetFormatToDefault(monthItem.isSetFormatToDefault);
+                self.checked(!monthItem.isSetFormatToDefault);
+                let sheetItem: SheetCorrectedMonthlyDto = _.find(monthItem.displayItem.listSheetCorrectedMonthly, (item: SheetCorrectedMonthlyDto) => {
+                    return item.sheetNo.toString() == sheetNo;
+                })
+                if (sheetItem) {
+                    self.selectedSheetName(sheetItem.sheetName);
+                    self.monthCorrectionValue(this.mapAttItemMonthRightDetail(self.monthlyAttItems(), sheetItem.listDisplayTimeItem));
+                }
+            }
+
+            mapAttItemMonthRightDetail(attItems: Array<AttendanceItemDto>, details: Array<DisplayTimeItemDto>) {
+                let attItemDetail: Array<AttendanceItemDto> = [];
+                attItemDetail = _.map(details, function(item: DisplayTimeItemDto) {
+                    let dto: AttendanceItemDto = new AttendanceItemDto(null);
+                    dto.attendanceItemId = item.itemDaily;
+                    dto.columnWidth = item.columnWidthTable;
+                    let attItem: AttendanceItemDto = _.find(attItems, (att: AttendanceItemDto) => {
+                        return att.attendanceItemId == item.itemDaily;
+                    })
+                    if (attItem) {
+                        dto.attendanceItemName = attItem.attendanceItemName;
+                        dto.attendanceItemDisplayNumber = attItem.attendanceItemDisplayNumber;
+                    }
+                    return dto;
+                })
+                return attItemDetail;
             }
 
             setNewMode() {
                 let self = this;
-                self.newMode(true);
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
-                self.getDetail(self.selectedCode()).done(() => {
-                    _.defer(() => { $("#currentCode").focus(); 
-                    self.checked(true);
-                    _.defer(() => {nts.uk.ui.errors.clearAll();});
-                    
-                    });
-                });
-                //$("#currentCode").focus();
+
                 self.checked(true);
                 self.showCode(true);
                 self.isUpdate(false);
                 self.isRemove(false);
 
-                if (!self.isDaily()) {
+                self.authorityFormatDailyValue.removeAll();
+                self.authorityFormatMonthlyValue.removeAll();
+                self.monthCorrectionValue.removeAll();
+                self.selectedSheetName("");
+
+                if (self.isDaily()) {
+                    self.authorityFormatDailyValue.removeAll();
+                    self.dailyDataSource.removeAll();
+                    self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
+
+                    self.authorityFormatMonthlyValue.removeAll();
+                    self.monthlyDataSource.removeAll();
+                    self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
+                } else {
                     self.isSetFormatToDefault(true);
-                    self.selectedSheetName("");
-                    self.valuesMonthlyTab3([]);
-                    self.listMonthlyAttdItem(_.cloneDeep(self.listMonthlyAttdItemFullData()));
-                    _.defer(() => {nts.uk.ui.errors.clearAll();});
+                    self.monthCorrectionFormat(null)
+                    self.monthCorrectionValue.removeAll();
+                    self.monthCorrectionDataSource.removeAll();
+                    self.monthCorrectionDataSource(_.cloneDeep(self.monthlyAttItems()));
                 }
-                
-                    _.defer(() => {nts.uk.ui.errors.clearAll();});
+                $("#currentCode").focus();
+                _.defer(() => { nts.uk.ui.errors.clearAll(); });
             }
 
             btnSheetNo() {
@@ -404,25 +459,25 @@ module nts.uk.at.view.kdw008.a {
                 if (self.isDaily()) {
                     //add or update Monthly
                     let deleteBySheet = {
-                        dailyPerformanceFormatCode : self.selectedCode(),
-                        sheetNo : self.selectedSheetNo()                            
+                        dailyPerformanceFormatCode: self.currentDailyFormatCode(),
+                        sheetNo: self.selectedSheetNo()
                     };
                     nts.uk.ui.block.invisible();
                     confirm({ messageId: "Msg_18" }).ifYes(() => {
-                        new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
+                        service.deleteAuthBySheet(deleteBySheet).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                               self.reloadData(self.currentDailyFormatCode());
-                               self.initSelectedSheetNoHasMutated();
+                                //self.reloadData(self.currentDailyFormatCode());
+                                self.initSelectedSheetNoHasMutated();
                             });
                         }).always(function() {
                             nts.uk.ui.block.clear();
                         }).fail(function(error) {
                             $('#currentCode').ntsError('set', error);
-                        }); 
+                        });
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
                     });
-                    
+
                 } else {
                     //monthly
                     let listDisplayTimeItem = [];
@@ -438,7 +493,7 @@ module nts.uk.at.view.kdw008.a {
                     );
                     nts.uk.ui.block.invisible();
                     confirm({ messageId: "Msg_18" }).ifYes(() => {
-                        new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
+                        service.updateMonPfmCorrectionFormat(temp).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                                 self.getListMonPfmCorrectionFormat().done(function(data) {
                                     self.initSelectedSheetNoHasMutated();
@@ -452,91 +507,7 @@ module nts.uk.at.view.kdw008.a {
                     }).ifNo(() => {
                         nts.uk.ui.block.clear();
                     });
-
                 }
-            }
-
-            getDetail(dailyPerformanceFormatCode: string) {
-                let self = this,
-                    dfd = $.Deferred();
-                if (self.isDaily()) {
-                    new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
-
-                        if (data) {
-                            data.attendanceItemDtos = _.sortBy(data.attendanceItemDtos, ["attendanceItemDisplayNumber"]);
-                            if (data.isDefaultInitial == 1) {
-                                self.isSetFormatToDefault(false);
-                                self.checked(true);
-                            } else {
-                                self.isSetFormatToDefault(true);
-                                self.checked(false);
-                            }
-                            self.valuesMonthly([]);
-                            self.authorityFormatDailyValue([]);
-                            self.currentBusinessType(new AuthorityDetailModel(data));
-                            self.currentBusinessType().attendanceItemDtos.valueHasMutated();
-                            // show data tab 2
-                            var dailyDataSource = _.map(self.currentBusinessType().attendanceItemDtos(), item => {
-                                var obj = {
-                                    attendanceItemId: item.attendanceItemId,
-                                    attendanceItemName: item.attendanceItemName,
-                                    attendanceItemDisplayNumber: item.attendanceItemDisplayNumber,
-                                    columnWidth: item.columnWidth
-                                }
-                                return new AttendanceItemModel(obj);
-                            })
-                            self.dailyDataSource(_.clone(dailyDataSource));
-                            self.dailyDataSource.valueHasMutated();
-                            data.dailyAttendanceAuthorityMonthlyDto = _.sortBy(data.dailyAttendanceAuthorityMonthlyDto, ["order"]);
-                            if (data.dailyAttendanceAuthorityMonthlyDto) {
-                                var attendanceItemModelMonthly = _.map(data.dailyAttendanceAuthorityMonthlyDto, item => {
-                                    var obj = {
-                                        attendanceItemId: item.attendanceItemId,
-                                        attendanceItemName: item.attendanceItemName,
-                                        attendanceItemDisplayNumber: item.dislayNumber,
-                                        columnWidth: item.columnWidth
-                                    };
-                                    return new AttendanceItemModel(obj);
-                                });
-                                self.valuesMonthly(attendanceItemModelMonthly);
-
-                            } else self.valuesMonthly([]);
-                            //show data tab 1
-                            //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
-                            self.selectedSheetName(data.dailyAttendanceAuthorityDailyDto.sheetName);
-                            self.currentBusinessType().attendanceItemDtos.valueHasMutated();
-                            self.monthlyDataSource(_.clone(dailyDataSource));
-                            self.monthlyDataSource.valueHasMutated();
-                            if (data.dailyAttendanceAuthorityDailyDto != null && data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos) {
-                                data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos = _.sortBy(data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos, ["order"]);
-                                var attendanceItemModelDaily = _.map(data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos, item => {
-                                    var daily = {
-                                        attendanceItemId: item.attendanceItemId,
-                                        attendanceItemName: item.attendanceItemName,
-                                        attendanceItemDisplayNumber: item.dislayNumber,
-                                        columnWidth: item.columnWidth
-                                    }
-                                    return new AttendanceItemModel(daily);
-                                });
-                                self.authorityFormatDailyValue(attendanceItemModelDaily);
-                            } else {
-                                self.authorityFormatDailyValue([]);
-                            }
-                            if (!self.newMode()) {
-                                $("#currentName").focus();
-                            }
-                        } else {
-                            self.currentBusinessType([]);
-                        }
-                        dfd.resolve();
-                    }).fail(error => {
-
-                    });
-                } else {
-                    dfd.resolve();
-                }
-                return dfd.promise();
-
             }
 
             remove() {
@@ -546,20 +517,19 @@ module nts.uk.at.view.kdw008.a {
                     if (self.checked() == true) {
                         let isDefaultInitial = 1;
                     }
-                    var removeAuthorityDto = {
+                    let removeAuthorityDto = {
                         dailyPerformanceFormatCode: self.currentDailyFormatCode(),
                         isDefaultInitial: isDefaultInitial
                     }
                     nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                         .ifYes(() => {
-                            new service.Service().removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
+                            service.removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                                    self.reloadData(removeAuthorityDto.dailyPerformanceFormatCode, true);    
-                                    self.initSelectedSheetNoHasMutated();
+                                    self.loadData();
                                 });
                             }).fail(function(error) {
                             });
-                            
+
                         });
                 } else {
                     let deleteMonPfmCmd = {
@@ -568,45 +538,25 @@ module nts.uk.at.view.kdw008.a {
                     };
                     nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                         .ifYes(() => {
-                            new service.Service().deleteMonPfmCorrectionFormat(deleteMonPfmCmd).done(function() {
+                            service.deleteMonPfmCorrectionFormat(deleteMonPfmCmd).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
-                                    let indexOfItemOld = _.findIndex(self.listDataCommom(), { monthlyPfmFormatCode: self.currentDailyFormatCode() });
-                                    let indexNext = 0;
-                                    if ((indexOfItemOld) == self.listDataCommom().length - 1) {
-                                        indexNext = self.listDataCommom().length - 2;
-                                    } else {
-                                        indexNext = (indexOfItemOld + 1);
-                                    }
-                                    if (self.listDataCommom().length > 1) {
-                                        let code = self.listDataCommom()[indexNext].monthlyPfmFormatCode;
-                                    }
-                                    self.getListMonPfmCorrectionFormat().done(function(data) {
-                                        if (self.listDataCommom().length == 0) {
-                                            self.listDataCommom([]);
-                                            self.setNewMode();
-                                        } else {
-                                            self.selectedCode(code);
-                                            self.selectedCode.valueHasMutated();
-                                        }
-                                    });
-                                    $("#currentName").focus();
+                                    self.loadData();
                                 })
                             }).fail(function(error) {
                             });
                         });
                 }
-
             }
 
             addOrUpdateClick() {
                 let self = this;
                 $("#currentName").trigger("validate");
-                
+
                 if (!nts.uk.ui.errors.hasError()) {
                     if (self.isDaily()) {
                         $("#checkSheetNameIsDaily").trigger("validate");
                         if (!nts.uk.ui.errors.hasError()) {
-                             if (self.authorityFormatDailyValue().length <= 0) {
+                            if (self.authorityFormatDailyValue().length <= 0) {
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
                             } else {
                                 self.register();
@@ -617,7 +567,7 @@ module nts.uk.at.view.kdw008.a {
                         $("#currentName").trigger("validate");
                         $("#selectedSheetName").trigger("validate");
                         if (!nts.uk.ui.errors.hasError()) {
-                            if (self.valuesMonthlyTab3().length <= 0) {
+                            if (self.monthCorrectionValue().length <= 0) {
                                 nts.uk.ui.dialog.alert({ messageId: "Msg_920" });
                             } else {
                                 self.register();
@@ -634,75 +584,68 @@ module nts.uk.at.view.kdw008.a {
                 if (self.isDaily()) {
                     if (!nts.uk.ui.errors.hasError()) {
                         //add or update Monthly
-                        var authorityFormatDetailDtos = _.map(self.valuesMonthly(), item => {
-                            var indexOfItem = _.findIndex(self.valuesMonthly(), { attendanceItemId: item.attendanceItemId });
-                            var obj = {
-                                attendanceItemId: item.attendanceItemId,
-                                dislayNumber: item.attendanceItemDisplayNumber,
-                                attendanceItemName: item.attendanceItemName,
-                                order: indexOfItem,
-                                columnWidth: item.columnWidth ? item.columnWidth : null
-                            };
-                            return new DailyAttendanceAuthorityDetailDto(obj);
-                        });
-                        var addOrUpdateBusinessFormatMonthly = new AddAuthorityFormatMonthly(self.currentDailyFormatCode(), authorityFormatDetailDtos);
-
-                        //add or update Daily
-                        var businessTypeFormatDetailDailyDto = _.map(self.authorityFormatDailyValue(), item => {
-                            var indexOfDaily = _.findIndex(self.authorityFormatDailyValue(), { attendanceItemId: item.attendanceItemId });
-                            var monthly = {
-                                attendanceItemId: item.attendanceItemId,
-                                dislayNumber: item.attendanceItemDisplayNumber,
-                                attendanceItemName: item.attendanceItemName,
-                                order: indexOfDaily,
-                                columnWidth: item.columnWidth ? item.columnWidth : null
-                            };
+                        let authorityFormatDetailDtos = _.map(self.authorityFormatMonthlyValue(), item => {
+                            let indexOfItem = _.findIndex(self.authorityFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
+                            let monthly: IDailyAttendanceAuthorityDetailDto = {};
+                            monthly.attendanceItemId = item.attendanceItemId;
+                            monthly.order = indexOfItem;
+                            monthly.columnWidth = item.columnWidth == null ? 0 : item.columnWidth;
                             return new DailyAttendanceAuthorityDetailDto(monthly);
                         });
+                        let addOrUpdateBusinessFormatMonthly = new AddAuthorityFormatMonthly(self.currentDailyFormatCode(), authorityFormatDetailDtos);
 
+                        //add or update Daily
+                        let businessTypeFormatDetailDailyDto = _.map(self.authorityFormatDailyValue(), item => {
+                            let indexOfItem = _.findIndex(self.authorityFormatDailyValue(), { attendanceItemId: item.attendanceItemId });
+                            let daily: IDailyAttendanceAuthorityDetailDto = {};
+                            daily.attendanceItemId = item.attendanceItemId;
+                            daily.order = indexOfItem;
+                            daily.columnWidth = item.columnWidth == null ? 0 : item.columnWidth;
+                            return new DailyAttendanceAuthorityDetailDto(daily);
+                        });
+
+                        let addOrUpdateBusinessFormatDaily: AddAuthorityFormatDaily = {};
                         if (self.checked() == true) {
-                            var addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 1);
+                            addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 1);
                         } else {
-                            var addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 0);
+                            addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 0);
                         }
 
-                        var addOrUpdateDailyFormat = new AddOrUpdateDailyFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
-                        nts.uk.ui.block.invisible();
+                        let addOrUpdateDailyFormat = new AddOrUpdateDailyFormat(addOrUpdateBusinessFormatMonthly, addOrUpdateBusinessFormatDaily);
+                        block.invisible();
                         if (self.isUpdate() == true) {
-                            new service.Service().updateDailyDetail(addOrUpdateDailyFormat).done(function() {
+                            service.updateDailyDetail(addOrUpdateDailyFormat).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    self.reloadData(self.currentDailyFormatCode());
+                                    self.loadData();
                                 });
                                 $("#currentName").focus();
-                            }).always(function() {
-                                nts.uk.ui.block.clear();
                             }).fail(function(error) {
                                 nts.uk.ui.dialog.alertError(error.message);
+                            }).always(function() {
+                                block.clear();
                             });
                         } else {
-                            new service.Service().addDailyDetail(addOrUpdateDailyFormat).done(function() {
+                            service.addDailyDetail(addOrUpdateDailyFormat).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    self.reloadData(self.currentDailyFormatCode());
+                                    self.loadData();
                                 });
 
                                 $("#currentName").focus();
-                            }).always(function() {
-                                nts.uk.ui.block.clear();
                             }).fail(function(error) {
-                                //                        nts.uk.ui.dialog.alertError(error.message);
                                 $('#currentCode').ntsError('set', error);
+                            }).always(function() {
+                                block.clear();
                             });
                         }
-                        //self.getDetail(self.currentDailyFormatCode());
                     }
                 } else {
                     //monthly
                     let listDisplayTimeItem = [];
-                    for (let i = 0; i < self.valuesMonthlyTab3().length; i++) {
-                        var indexOfItem = _.findIndex(self.valuesMonthlyTab3(), { attendanceItemId: self.valuesMonthlyTab3()[i].attendanceItemId });
+                    for (let i = 0; i < self.monthCorrectionValue().length; i++) {
+                        var indexOfItem = _.findIndex(self.monthCorrectionValue(), { attendanceItemId: self.monthCorrectionValue()[i].attendanceItemId });
                         let obj = new DisplayTimeItem(
                             indexOfItem,
-                            self.valuesMonthlyTab3()[i].attendanceItemId,
+                            self.monthCorrectionValue()[i].attendanceItemId,
                             null
                         );
                         listDisplayTimeItem.push(obj);
@@ -720,87 +663,32 @@ module nts.uk.at.view.kdw008.a {
                         self.checked()
                     );
                     if (!self.isRemove()) {
-                        nts.uk.ui.block.invisible();
-                        new service.Service().addMonPfmCorrectionFormat(temp).done(function() {
+                        block.invisible();
+                        service.addMonPfmCorrectionFormat(temp).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.getListMonPfmCorrectionFormat().done(function(data) {
-                                    nts.uk.ui.block.clear();
-                                    self.selectedCode(self.currentDailyFormatCode());
-                                    self.selectedCode.valueHasMutated();
-                                });
+                                self.loadData();
                             });
                             $("#currentName").focus();
-                        }).always(function() {
                         }).fail(function(error) {
-                            nts.uk.ui.block.clear();
                             $('#currentCode').ntsError('set', error);
+                        }).always(function() {
+                            block.clear();
                         });
                     } else {
-                        nts.uk.ui.block.invisible();
-                        new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
+                        block.invisible();
+                        service.updateMonPfmCorrectionFormat(temp).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                self.getListMonPfmCorrectionFormat().done(function(data) {
-                                    self.selectedCode(self.currentDailyFormatCode());
-                                    self.selectedCode.valueHasMutated();
-                                });
+                                self.loadData();
                             });
                             $("#currentName").focus();
-                        }).always(function() {
-                            nts.uk.ui.block.clear();
                         }).fail(function(error) {
                             $('#currentCode').ntsError('set', error);
+                        }).always(function() {
+                            block.clear();
                         });
-
                     }
                 }
-
-
             }
-
-            reloadData(dailyPerformanceFormatCode: string, isRemove?: boolean) {
-                let self = this,
-                    dfd = $.Deferred();
-                let oldSelectIndex = _.findIndex(self.listDataCommom(), item => { return item.dailyPerformanceFormatCode == dailyPerformanceFormatCode; });
-                self.listDataCommom([]);
-                new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
-                    if (data && data.length > 0) {
-                        data = _.orderBy(data, ["dailyPerformanceFormatCode"], ['asc']);
-                        self.listDataCommom(_.map(data, item => { return new BusinessTypeModel(item) }));
-                        self.currentDailyFormatCode(dailyPerformanceFormatCode);
-                        //                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
-                        //                        self.selectedCode(dailyPerformanceFormatCode);
-//                        self.selectedSheetNo(1);
-                        self.getDetail(dailyPerformanceFormatCode);
-                        if (isRemove && isRemove == true) {
-                            self.selectedCode(self.getNewSelectRemove(oldSelectIndex));
-                        } else {
-                            self.selectedCode(dailyPerformanceFormatCode);
-                        }
-                    } else {
-                        self.setNewMode();
-                    }
-                    
-                    dfd.resolve();
-                });
-
-                return dfd.promise();
-            }
-
-            getNewSelectRemove(oldSelectIndex: number): String {
-                let self = this;
-                let dataLength = self.listDataCommom().length;
-                if (dataLength == 1 || oldSelectIndex > dataLength) {
-                    return self.listDataCommom()[0].dailyPerformanceFormatCode;
-                }
-                if (oldSelectIndex <= dataLength - 1) {
-                    return self.listDataCommom()[oldSelectIndex].dailyPerformanceFormatCode;
-                }
-                if (oldSelectIndex == dataLength) {
-                    return self.listDataCommom()[oldSelectIndex - 1].dailyPerformanceFormatCode;
-                }
-                return null;
-            }
-
         }
 
         //monthly class :
@@ -868,9 +756,9 @@ module nts.uk.at.view.kdw008.a {
         }
 
         export class AddOrUpdateDailyFormat {
-            authorityMonthlyCommand: KnockoutObservable<AddAuthorityFormatMonthly>;
-            authorityDailyCommand: KnockoutObservable<AddAuthorityFormatDaily>;
-            constructor(addOrUpdateAuthorityFormatMonthly: KnockoutObservable<AddAuthorityFormatMonthly>, addOrUpdateAuthorityFormatDaily: KnockoutObservable<AddAuthorityFormatDaily>) {
+            authorityMonthlyCommand: AddAuthorityFormatMonthly;
+            authorityDailyCommand: AddAuthorityFormatDaily;
+            constructor(addOrUpdateAuthorityFormatMonthly: AddAuthorityFormatMonthly, addOrUpdateAuthorityFormatDaily: AddAuthorityFormatDaily) {
                 let self = this;
                 self.authorityMonthlyCommand = addOrUpdateAuthorityFormatMonthly;
                 self.authorityDailyCommand = addOrUpdateAuthorityFormatDaily;
@@ -915,91 +803,185 @@ module nts.uk.at.view.kdw008.a {
             }
         }
 
-        export class AttendanceItemModel {
-            attendanceItemId: number = 0;
-            attendanceItemName: string = "";
-            attendanceItemDisplayNumber: number = 0;
-            columnWidth: number;
-            constructor(data: IAttendanceItem) {
-                if (!data) return;
-                this.attendanceItemId = data.attendanceItemId || 0;
-                this.attendanceItemName = data.attendanceItemName || "";
-                this.attendanceItemDisplayNumber = data.attendanceItemDisplayNumber || 0;
-                this.columnWidth = data.columnWidth;
+        class FormatCode {
+            formatCode: string;
+            formatName: string;
+            isSetDefault: boolean;
+            constructor(data: IFormatCode) {
+                this.formatCode = data.formatCode;
+                this.formatName = data.formatName;
+                this.isSetDefault = data.isSetDefault;
+            }
+
+            static fromDaily(listItem): Array<FormatCode> {
+                let result = _.map(listItem, item => {
+                    let dto: IFormatCode = {};
+                    dto.formatCode = item.dailyPerformanceFormatCode;
+                    dto.formatName = item.dailyPerformanceFormatName;
+                    dto.isSetDefault = item.setFormatToDefault;
+                    return new FormatCode(dto);
+                })
+                return _.sortBy(result, ["formatCode"]);
+            }
+
+            static fromMonthly(listItem): Array<FormatCode> {
+                let result = _.map(listItem, item => {
+                    let dto: IFormatCode = {};
+                    dto.formatCode = item.monthlyPfmFormatCode;
+                    dto.formatName = item.monPfmCorrectionFormatName;
+                    dto.isSetDefault = item.setFormatToDefault;
+                    return new FormatCode(dto);
+                })
+                return _.sortBy(result, ["formatCode"]);
             }
         }
 
-        export class DailyAttendanceAuthorityDetailDto {
-            attendanceItemId: number = 0;
-            dislayNumber: number = 0;
-            attendanceItemName: string = '';
-            order: number = 0;
-            columnWidth: number = 0;
-            constructor(data: IAuthorityFormatDetail) {
-                if (!data) return;
-                this.attendanceItemId = data.attendanceItemId || 0;
-                this.dislayNumber = data.dislayNumber || 0;
-                this.attendanceItemName = data.attendanceItemName || '';
-                this.order = data.order || 0;
-                this.columnWidth = data.columnWidth || 0;
-            }
+        interface IFormatCode {
+            formatCode: string;
+            formatName: string;
+            isSetDefault: boolean;
         }
 
-        export class DailyAttendanceAuthorityDailyDto {
-            sheetNo: number;
-            sheetName: string;
-            dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>;
-            constructor(sheetNo: number, sheetName: string, dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>) {
-                this.sheetNo = sheetNo || 0;
-                this.sheetName = sheetName || null;
-                this.dailyAttendanceAuthorityDetailDtos = dailyAttendanceAuthorityDetailDtos || [];
-            }
-        }
-
-        export class AuthorityDetailModel {
-            attendanceItemDtos: KnockoutObservableArray<AttendanceItemModel> = ko.observableArray([]);
-            dailyAttendanceAuthorityDailyDto: KnockoutObservable<DailyAttendanceAuthorityDailyDto> = ko.observable(new DailyAttendanceAuthorityDailyDto(null, null, null));
-            dailyAttendanceAuthorityMonthlyDto: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto> = ko.observableArray([]);
-            isDefaultInitial: number = 0;
-            constructor(data: IDailyPerformanceFormatTypeDetail) {
-                if (!data) return;
-                this.attendanceItemDtos(data.attendanceItemDtos ? _.map(data.attendanceItemDtos, item => { return new AttendanceItemModel(item) }) : []);
-                this.dailyAttendanceAuthorityDailyDto(data.dailyAttendanceAuthorityDailyDto ? new DailyAttendanceAuthorityDailyDto(data.dailyAttendanceAuthorityDailyDto.sheetNo, data.dailyAttendanceAuthorityDailyDto.sheetName, data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos) : null);
-                this.dailyAttendanceAuthorityMonthlyDto(data.dailyAttendanceAuthorityMonthlyDto ? _.map(data.dailyAttendanceAuthorityMonthlyDto, item => { return new DailyAttendanceAuthorityDetailDto(item) }) : []);
-                this.isDefaultInitial = data.isDefaultInitial;
-            }
-        }
-
-        export interface IDailyPerformanceFormatTypeDetail {
-            attendanceItemDtos: Array<IAttendanceItem>;
-            dailyAttendanceAuthorityDailyDto: IAuthorityFormatDaily;
-            dailyAttendanceAuthorityMonthlyDto: Array<IAuthorityFormatDetail>;
-            isDefaultInitial: number;
-        }
-
-        export interface IDailyPerformanceFormatType {
-            dailyPerformanceFormatCode: string;
-            dailyPerformanceFormatName: string;
-        }
-        export interface IAttendanceItem {
+        class AttendanceItemDto {
             attendanceItemId: number;
             attendanceItemName: string;
             attendanceItemDisplayNumber: number;
             columnWidth: number;
+            constructor(data: IAttendanceItemDto) {
+                if (!data) return;
+                this.attendanceItemId = data.attendanceItemId;
+                this.attendanceItemName = data.attendanceItemName || "";
+                this.attendanceItemDisplayNumber = data.attendanceItemDisplayNumber;
+                this.columnWidth = null;
+            }
+            static fromApp(app: Array<IAttendanceItemDto>): Array<AttendanceItemDto> {
+                let items = _.map(app, (item: IAttendanceItemDto) => {
+                    return new AttendanceItemDto(item);
+                })
+                return _.sortBy(items, ["attendanceItemDisplayNumber"])
+            }
         }
-        export interface IAuthorityFormatDetail {
+
+        interface IAttendanceItemDto {
             attendanceItemId: number;
-            dislayNumber: number;
             attendanceItemName: string;
+            attendanceItemDisplayNumber: number;
+        }
+
+        class DailyAttendanceAuthorityDetailDto {
+            attendanceItemId: number;
+            order: number;
+            columnWidth: number;
+            constructor(data: IDailyAttendanceAuthorityDetailDto) {
+                this.attendanceItemId = data.attendanceItemId;
+                this.order = data.order;
+                this.columnWidth = data.columnWidth
+            }
+
+            static fromApp(listItem: Array<IDailyAttendanceAuthorityDetailDto>): Array<DailyAttendanceAuthorityDetailDto> {
+                let result = _.map(listItem, (item: IDailyAttendanceAuthorityDetailDto) => {
+                    return new DailyAttendanceAuthorityDetailDto(item);
+                })
+                return _.sortBy(result, ["order"]);
+            }
+        }
+
+        interface IDailyAttendanceAuthorityDetailDto {
+            attendanceItemId: number;
             order: number;
             columnWidth: number;
         }
-        export interface IAuthorityFormatDaily {
-            sheetNo: number;
-            sheetName: string;
-            dailyAttendanceAuthorityDetailDtos: Array<IAuthorityFormatDetail>;
+
+        // Month Correction
+
+        class MonPfmCorrectionFormatDto {
+            monthlyPfmFormatCode: string;
+            monPfmCorrectionFormatName: string;
+            isSetFormatToDefault: boolean;
+            displayItem: MonthlyActualResultsDto;
+            constructor(data: IMonPfmCorrectionFormatDto) {
+                this.monthlyPfmFormatCode = data.monthlyPfmFormatCode;
+                this.monPfmCorrectionFormatName = data.monPfmCorrectionFormatName;
+                this.isSetFormatToDefault = data.setFormatToDefault;
+                this.displayItem = MonthlyActualResultsDto.fromApp(data.displayItem);
+            }
+
+            static fromApp(listItem: Array<IMonPfmCorrectionFormatDto>): Array<MonPfmCorrectionFormatDto> {
+                let result = _.map(listItem, (item: IMonPfmCorrectionFormatDto) => {
+                    return new MonPfmCorrectionFormatDto(item);
+                })
+                return result;
+            }
         }
 
+        interface IMonPfmCorrectionFormatDto {
+            monthlyPfmFormatCode: string;
+            monPfmCorrectionFormatName: string;
+            setFormatToDefault: boolean;
+            displayItem: IMonthlyActualResultsDto;
+        }
+
+        class MonthlyActualResultsDto {
+            listSheetCorrectedMonthly: Array<SheetCorrectedMonthlyDto>;
+            constructor(data: IMonthlyActualResultsDto) {
+                this.listSheetCorrectedMonthly = SheetCorrectedMonthlyDto.fromApp(data.listSheetCorrectedMonthly);
+            }
+
+            static fromApp(item: IMonthlyActualResultsDto): MonthlyActualResultsDto {
+                return new MonthlyActualResultsDto(item);
+            }
+        }
+
+        interface IMonthlyActualResultsDto {
+            listSheetCorrectedMonthly: Array<ISheetCorrectedMonthlyDto>;
+        }
+
+        class SheetCorrectedMonthlyDto {
+            sheetNo: number;
+            sheetName: string;
+            listDisplayTimeItem: Array<DisplayTimeItemDto>;
+            constructor(data: ISheetCorrectedMonthlyDto) {
+                this.sheetNo = data.sheetNo;
+                this.sheetName = data.sheetName;
+                this.listDisplayTimeItem = DisplayTimeItemDto.fromApp(data.listDisplayTimeItem);
+            }
+
+            static fromApp(listItem: Array<ISheetCorrectedMonthlyDto>): Array<SheetCorrectedMonthlyDto> {
+                return _.map(listItem, (item: ISheetCorrectedMonthlyDto) => {
+                    return new SheetCorrectedMonthlyDto(item);
+                })
+            }
+        }
+
+        interface ISheetCorrectedMonthlyDto {
+            sheetNo: number;
+            sheetName: string;
+            listDisplayTimeItem: Array<IDisplayTimeItemDto>;
+        }
+
+        class DisplayTimeItemDto {
+            displayOrder: number;
+            itemDaily: number;
+            columnWidthTable: number;
+            constructor(data: IDisplayTimeItemDto) {
+                this.displayOrder = data.displayOrder;
+                this.itemDaily = data.itemDaily;
+                this.columnWidthTable = data.columnWidthTable;
+            }
+
+            static fromApp(listItem: Array<IDisplayTimeItemDto>): Array<DisplayTimeItemDto> {
+                let result = _.map(listItem, (item: IDisplayTimeItemDto) => {
+                    return new DisplayTimeItemDto(item);
+                })
+                return _.sortBy(result, ["displayOrder"]);
+            }
+        }
+
+        interface IDisplayTimeItemDto {
+            displayOrder: number;
+            itemDaily: number;
+            columnWidthTable: number;
+        }
     }
 }
 
