@@ -9,48 +9,49 @@ module nts.uk.pr.view.qmm008.g.viewmodel {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable('');
         socialInsuranceName: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
-        takeoverMethod: KnockoutObservable<number> = ko.observable(0);
+        takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
         lastestHistory: number = 190001;
         constructor() {
             let self = this;
-            let params = getShared("QMM008_G_PARAMS"); 
+            let params = getShared("QMM008_G_PARAMS");
             block.invisible();
-            if (params){
+            if (params) {
                 let selectedOffice = params.selectedOffice, displayLastestHistory = "";
                 let history = params.history;
-                if (history && history.length > 0){
+                if (history && history.length > 0) {
                     let lastestHistory = history[0].startMonth;
                     displayLastestHistory = String(lastestHistory).substring(0, 4) + "/" + String(lastestHistory).substring(4, 6)
                     self.lastestHistory = lastestHistory;
                 }
                 self.socialInsuranceCode(selectedOffice.socialInsuranceCode);
                 self.socialInsuranceName(selectedOffice.socialInsuranceName);
-                self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY,  getText('QMM008_200', [displayLastestHistory])));
+                if (displayLastestHistory.length > 0) {
+                    self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY, getText('QMM008_200', [displayLastestHistory])));
+                    self.takeoverMethod(0);
+                }
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
             }
-            block.clear(); 
+            block.clear();
         }
-        addNewHistory (){ 
+        addNewHistory() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            if (self.startMonth() <= self.lastestHistory.toString()){
+            if (self.startMonth() <= self.lastestHistory.toString()) {
                 dialog.alertError({ messageId: "Msg_79" });
                 return;
             }
-            setShared('QMM008_G_RES_PARAMS', {startMonth: self.startMonth(), takeoverMethod: self.takeoverMethod()});
+            setShared('QMM008_G_RES_PARAMS', { startMonth: self.startMonth(), takeoverMethod: self.takeoverMethod() });
             nts.uk.ui.windows.close();
         }
-        cancel (){
+        cancel() {
             nts.uk.ui.windows.close();
         }
     }
-    
-    
 }
 
 

@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
     export class ScreenModel {
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
         isSelectFirstOfficeAndHistory: boolean = true;
+        jumpTopPageIfNoData: boolean = false;
         // History Tree Grid C1_1 -> C1_12 
         socialInsuranceOfficeList: KnockoutObservableArray<model.SocialInsuranceOffice> = ko.observableArray([]);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
@@ -57,7 +58,9 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             command.healthInsuranceMonthlyFee.historyId = command.yearMonthHistoryItem.historyId;
             service.registerEmployeeHealthInsurance(command).done(function(data) {
                 block.clear();
-                dialog.info({ messageId: 'Msg_15' });
+                dialog.info({ messageId: 'Msg_15' }).then(function(){
+                    $('#B2_7').focus();
+                });
                 self.isUpdateMode(true);
             }).fail(function(err) {
                 block.clear();
@@ -74,11 +77,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
                 // Reload tree grid if data change
                 self.isSelectFirstOfficeAndHistory = true;
-                self.showAllOfficeAndHistory().done(function() {
-                    if (self.healthInsuranceRateTreeList().length == 0) {
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                    }
-                });
+                self.jumpTopPageIfNoData = true;
+                self.showAllOfficeAndHistory();
             });
         }
 
@@ -109,8 +109,10 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     block.clear();
                     // show add office screen if there are no office
                     if (data.length == 0) {
+                        if (self.jumpTopPageIfNoData){
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml") ;
+                        }
                         self.registerBusinessEstablishment();
-                        self.healthInsuranceRateTreeList([]);
                     } else {
                         let socailInsuranceOfficeList: Array<model.SocialInsuranceOffice> = [];
                         data.forEach(office => {
@@ -125,6 +127,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                             if (firstOffice.history.length > 0) self.selectedHealthInsurance(firstOffice.socialInsuranceCode + "___" + firstOffice.history[0].historyId);
                             else self.selectedHealthInsurance(firstOffice.socialInsuranceCode);
                         }
+                        self.changeBySelectedValue();
                     }
                 }
                 dfd.resolve();
@@ -143,7 +146,11 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 if (selectedValue) {
                     self.changeBySelectedValue();
-                    self.showByHistory();
+                    if (!self.isUpdateMode()) {
+                        // reload to remove not register history
+                        self.isUpdateMode(true);
+                        self.showAllOfficeAndHistory();
+                    }
                     // if select history
                     if (selectedValue.length >= 36) {
                         self.isSelectedHistory(true);
@@ -153,15 +160,6 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     }
                 }
             });
-        }
-
-        showByHistory() {
-            let self = this;
-            if (!self.isUpdateMode()) {
-                // reload to remove not register history
-                self.isUpdateMode(true);
-                self.showAllOfficeAndHistory();
-            }
         }
 
         changeBySelectedValue() {
@@ -207,8 +205,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 if (!self.isUpdateMode()) $('#B2_7').focus();
             }).fail(function(err) {
                 dialog.alertError(err.message);
-            }).always(function(){
-                block.clear();    
+            }).always(function() {
+                block.clear();
             });
         }
 
@@ -218,7 +216,6 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 displayHealthInsuranceList: Array<model.TreeGridNode> = [],
                 pensionItem = {};
             let selectedHealthInsurance = self.selectedHealthInsurance();
-            self.selectedHealthInsurance(null);
             healthInsuranceList.forEach(function(office) {
                 let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, [], office.socialInsuranceCode, office.socialInsuranceName);
                 if (office.healthInsuranceFeeRateHistory) {
@@ -233,7 +230,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 displayHealthInsuranceList.push(healthInsuranceItem);
             });
             self.healthInsuranceRateTreeList(displayHealthInsuranceList);
-            self.selectedHealthInsurance(selectedHealthInsurance);
+
         }
 
         convertYearMonthToDisplayYearMonth(yearMonth) {
@@ -298,20 +295,11 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                     // change selected value
                     if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
                         if (history.length <= 1) {
-                            setTimeout(function() {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
-                        }, 50);
-                            
+
                         } else {
                             self.selectedHealthInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)
                         }
-                    } else {
-                        let selectedHealthInsurance = self.selectedHealthInsurance();
-                        setTimeout(function() {
-                            self.selectedHealthInsurance(selectedOffice.socialInsuranceCode);
-                            self.selectedHealthInsurance(selectedHealthInsurance);
-                        }, 50);
-
                     }
                 }
             });

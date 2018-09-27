@@ -384,8 +384,8 @@ module nts.uk.pr.view.qmm008.share.model {
 
         // Control Item
         fundClsItem: KnockoutObservableArray<EnumModel> = ko.observableArray([
-            new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_55')),
-            new EnumModel(FUND_CLASSIFICATION.NOT_JOIN, getText('QMM008_54'))
+            new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_54')),
+            new EnumModel(FUND_CLASSIFICATION.NOT_JOIN, getText('QMM008_55'))
         ]);
         constructor(params: IWelfarePensionInsuranceClassification) {
             this.fundClassification(params ? params.fundClassification : 1);
@@ -455,10 +455,10 @@ module nts.uk.pr.view.qmm008.share.model {
         remainBurdenRatio: any;
         remainEmployeeContributionRatio: any;
         constructor(params: IEmployeePensionContributionRate) {
-            this.individualBurdenRatio(params ? params.individualBurdenRatio : null);
-            this.employeeContributionRatio(params ? params.employeeContributionRatio : null);
-            this.individualExemptionRate(params ? params.individualExemptionRate : null);
-            this.employeeExemptionRate(params ? params.employeeExemptionRate : null);
+            this.individualBurdenRatio(params ? params.individualBurdenRatio : 0.000);
+            this.employeeContributionRatio(params ? params.employeeContributionRatio : 0.000);
+            this.individualExemptionRate(params ? params.individualExemptionRate : 0.000);
+            this.employeeExemptionRate(params ? params.employeeExemptionRate : 0.000);
 
             this.remainBurdenRatio = ko.computed(function() {
                 if (isNaN(this.individualBurdenRatio())|| isNaN(this.individualExemptionRate())) return 0;

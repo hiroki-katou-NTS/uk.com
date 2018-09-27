@@ -31,7 +31,7 @@
 								selected: selectedWelfareInsurance, 
 								selectedKey: 'code', 
 								childField: 'child', 
-								fields: ['code', 'displayText']}" />
+								fields: ['officeCode', 'officeName']}" />
 				<div style="width: 100%">
 					<button id="C1_3" tabindex="2"
 						data-bind="click: createNewHistory, enable: $vm.viewmodelC.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
@@ -605,7 +605,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div style="margin-top: 10px;">#{i18n.getText('QMM008_57')}</div>
+			<div style="margin-top: 10px;">#{i18n.getText('QMM008_58')}</div>
 			<hr></hr>
 			<div id="C5_container"
 				class="nts-fixed-header-container ui-iggrid nts-fixed-header">
@@ -745,7 +745,7 @@
 													name: '#[QMM008_185]',
 													options: shareAmountMethodItem,
 													optionsValue: 'value',
-													visibleItemsCount: 5,
+													visibleItemsCount: 2,
 													value: employeeShareAmountMethod,
 													optionsText: 'name',
 													enable: true,

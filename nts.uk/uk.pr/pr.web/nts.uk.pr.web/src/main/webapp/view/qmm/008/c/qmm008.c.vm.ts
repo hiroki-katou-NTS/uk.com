@@ -35,6 +35,17 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             $("#C5").ntsFixedTable({});
             self.initBlankData();
             self.watchDataChanged();
+            self.validateRemainRatio();
+        }
+        
+        validateRemainRatio () {
+            let self = this;
+            self.bonusEmployeePensionInsuranceRate.subscribe(function(value){
+                console.log(value);    
+            })
+            self.bonusEmployeePensionInsuranceRate().maleContributionRate.subscribe(function(value){
+                console.log(value);    
+            })
         }
 
 
@@ -49,6 +60,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             service.findAllOffice().done(function(data) {
                 if (data) {
                     if (data.length == 0) {
+                        self.welfareInsuranceRateTreeList([])
                         self.registerBusinessEstablishment();
                         return;
                     }
@@ -80,22 +92,16 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             return dfd.promise();
         }
 
-        showByHistory() {
-            let self = this;
-            if (!self.isUpdateMode()) {
-                self.isUpdateMode(true);
-                self.showAllOfficeAndHistory();
-            } else {
-                self.changeBySelectedValue();
-            }
-        }
-
         watchDataChanged() {
             let self = this;
             self.selectedWelfareInsurance.subscribe(function(selectedValue: any) {
                 nts.uk.ui.errors.clearAll();
                 if (selectedValue) {
-                    self.showByHistory();
+                    self.changeBySelectedValue();
+                    if (!self.isUpdateMode()) {
+                        self.isUpdateMode(true);
+                        self.showAllOfficeAndHistory();
+                    }
                     // if select history
                     if (selectedValue.length >= 36) {
                         self.isSelectedHistory(true);
@@ -126,7 +132,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     }
                     // 201809 -> 2018/09
                     if (selectedHistoryPeriod) {
-                        selectedHistoryPeriod.displayJapanYearMonth =  "(" + self.convertYearMonthToDisplayJpanYearMonth(selectedHistoryPeriod.startMonth)  + ")";
+                        selectedHistoryPeriod.displayJapanYearMonth = "(" + self.convertYearMonthToDisplayJpanYearMonth(selectedHistoryPeriod.startMonth) + ")";
                         selectedHistoryPeriod.displayStart = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.startMonth);
                         selectedHistoryPeriod.displayEnd = self.convertYearMonthToDisplayYearMonth(selectedHistoryPeriod.endMonth);
                         self.selectedHistoryPeriod(selectedHistoryPeriod);
@@ -169,10 +175,10 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 pensionList = ko.toJS(self.socialInsuranceOfficeList),
                 displayPensionList: Array<model.TreeGridNode> = [],
                 pensionItem = {};
-            
+
             // each office
             pensionList.forEach(function(office) {
-                let pensionItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
+                let pensionItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, [], office.socialInsuranceCode, office.socialInsuranceName);
                 if (office.welfareInsuranceRateHistory) {
                     let displayStart, displayEnd = "";
                     // each history
@@ -191,9 +197,9 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         convertYearMonthToDisplayYearMonth(yearMonth) {
             return nts.uk.time.formatYearMonth(Number(yearMonth));
         }
-        
-        convertYearMonthToDisplayJpanYearMonth (yearMonth) {
-            return nts.uk.time.yearmonthInJapanEmpire(Number(yearMonth)).toString().split(' ').join('');    
+
+        convertYearMonthToDisplayJpanYearMonth(yearMonth) {
+            return nts.uk.time.yearmonthInJapanEmpire(Number(yearMonth)).toString().split(' ').join('');
         }
 
         register() {
@@ -224,7 +230,9 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             command.welfarePensionInsuranceClassification.historyId = command.yearMonthHistoryItem.historyId;
             service.registerEmployeePension(command).done(function(data) {
                 block.clear();
-                dialog.info({ messageId: 'Msg_15' });
+                dialog.info({ messageId: 'Msg_15' }).then(function() {
+                    $('#C2_7').focus();
+                });
                 self.isUpdateMode(true);
             }).fail(function(err) {
                 block.clear();
@@ -291,7 +299,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LASTEST_HISTORY && history.length > 1) {
                         self.showEmployeePensionByHistoryId(history[1].historyId);
                     } else {
-                        self.initBlankData();    
+                        self.initBlankData();
                     }
                     self.isUpdateMode(false);
                 }
@@ -303,7 +311,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             let self = this;
             let selectedOffice = self.selectedOffice, selectedHistoryId = self.selectedHistoryId, history = selectedOffice.welfareInsuranceRateHistory.history;
             let selectedHistory = ko.toJS(self.selectedHistoryPeriod);
-            setShared("QMM008_H_PARAMS", {screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: history });
+            setShared("QMM008_H_PARAMS", { screen: "C", selectedOffice: self.selectedOffice, selectedHistory: selectedHistory, history: history });
             modal("/view/qmm/008/h/index.xhtml").onClosed(() => {
                 $("#C1_5").focus();
                 let params = getShared("QMM008_H_RES_PARAMS");
@@ -313,15 +321,15 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     self.convertToTreeGridList();
                     if (params.modifyMethod == model.MOFIDY_METHOD.DELETE) {
                         // select office if no history
-                        if (history.length <= 1){
+                        if (history.length <= 1) {
                             self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
                         } else {
-                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)    
+                            self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode + "___" + history[1].historyId)
                         }
                     } else {
-                         // reselect for highlight
+                        // reselect for highlight
                         let selectedWelfareInsurance = self.selectedWelfareInsurance();
-                        setTimeout(function(){
+                        setTimeout(function() {
                             self.selectedWelfareInsurance(selectedOffice.socialInsuranceCode);
                             self.selectedWelfareInsurance(selectedWelfareInsurance);
                         }, 50);
@@ -329,35 +337,35 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 }
             });
         }
-        validateRemainRatio (command) {
-            let bonusPensionInsurance = command.bonusEmployeePensionInsuranceRate;
-            let salaryPensuinInrurance = command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate;
-            // C3_9, C3_11 - C4_19, C4_21
-            // C3_9 - C4_19
-            let salaryMaleContributionRate = salaryPensuinInrurance.maleContributionRate;
-            if (salaryMaleContributionRate.individualBurdenRatio < salaryMaleContributionRate.individualExemptionRate) $('#C3_9').ntsError('set', {messageId:"MsgQ_219"});
-            // C3_11 - C4_21
-            if (salaryMaleContributionRate.employeeContributionRatio < salaryMaleContributionRate.employeeExemptionRate) $('#C3_11').ntsError('set', {messageId:"MsgQ_220"});
-            // C3_18, C3_20 - C4_38, C4_40
-            let salaryFemaleContributionRate = salaryPensuinInrurance.femaleContributionRate;
-            // C3_18 - C4_38
-            if (salaryFemaleContributionRate.individualBurdenRatio < salaryFemaleContributionRate.individualExemptionRate) $('#C3_18').ntsError('set', {messageId:"MsgQ_221"});
-            // C3_20 - C4_40
-            if (salaryFemaleContributionRate.employeeContributionRatio < salaryFemaleContributionRate.employeeExemptionRate) $('#C3_20').ntsError('set', {messageId:"MsgQ_222"});
-            // C3_13, C3_15 - C4_23, C4_25
-            let bonusMaleContributionRate = bonusPensionInsurance.maleContributionRate;
-            // C3_13 - C4_23
-            if (bonusMaleContributionRate.individualBurdenRatio < bonusMaleContributionRate.individualExemptionRate) $('#C3_13').ntsError('set', {messageId:"MsgQ_223"});
-            // C3_15 - C4_25
-            if (bonusMaleContributionRate.employeeContributionRatio < bonusMaleContributionRate.employeeExemptionRate) $('#C3_15').ntsError('set', {messageId:"MsgQ_224"});
-            // C3_22, C3_24 - C4_42, C4_44
-            let bonusFemaleContributionRate = bonusPensionInsurance.femaleContributionRate;
-            // C3_22 - C4_42
-            if (bonusFemaleContributionRate.individualBurdenRatio < bonusFemaleContributionRate.individualExemptionRate) $('#C3_22').ntsError('set', {messageId:"MsgQ_223"});
-            // C3_24 - C4_44
-            if (bonusFemaleContributionRate.employeeContributionRatio < bonusFemaleContributionRate.employeeExemptionRate) $('#C3_24').ntsError('set', {messageId:"MsgQ_224"});
-            
-        }
+//        validateRemainRatio(command) {
+//            let bonusPensionInsurance = command.bonusEmployeePensionInsuranceRate;
+//            let salaryPensuinInrurance = command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate;
+//            // C3_9, C3_11 - C4_19, C4_21
+//            // C3_9 - C4_19
+//            let salaryMaleContributionRate = salaryPensuinInrurance.maleContributionRate;
+//            if (salaryMaleContributionRate.individualBurdenRatio < salaryMaleContributionRate.individualExemptionRate) $('#C3_9').ntsError('set', { messageId: "MsgQ_219" });
+//            // C3_11 - C4_21
+//            if (salaryMaleContributionRate.employeeContributionRatio < salaryMaleContributionRate.employeeExemptionRate) $('#C3_11').ntsError('set', { messageId: "MsgQ_220" });
+//            // C3_18, C3_20 - C4_38, C4_40
+//            let salaryFemaleContributionRate = salaryPensuinInrurance.femaleContributionRate;
+//            // C3_18 - C4_38
+//            if (salaryFemaleContributionRate.individualBurdenRatio < salaryFemaleContributionRate.individualExemptionRate) $('#C3_18').ntsError('set', { messageId: "MsgQ_221" });
+//            // C3_20 - C4_40
+//            if (salaryFemaleContributionRate.employeeContributionRatio < salaryFemaleContributionRate.employeeExemptionRate) $('#C3_20').ntsError('set', { messageId: "MsgQ_222" });
+//            // C3_13, C3_15 - C4_23, C4_25
+//            let bonusMaleContributionRate = bonusPensionInsurance.maleContributionRate;
+//            // C3_13 - C4_23
+//            if (bonusMaleContributionRate.individualBurdenRatio < bonusMaleContributionRate.individualExemptionRate) $('#C3_13').ntsError('set', { messageId: "MsgQ_223" });
+//            // C3_15 - C4_25
+//            if (bonusMaleContributionRate.employeeContributionRatio < bonusMaleContributionRate.employeeExemptionRate) $('#C3_15').ntsError('set', { messageId: "MsgQ_224" });
+//            // C3_22, C3_24 - C4_42, C4_44
+//            let bonusFemaleContributionRate = bonusPensionInsurance.femaleContributionRate;
+//            // C3_22 - C4_42
+//            if (bonusFemaleContributionRate.individualBurdenRatio < bonusFemaleContributionRate.individualExemptionRate) $('#C3_22').ntsError('set', { messageId: "MsgQ_223" });
+//            // C3_24 - C4_44
+//            if (bonusFemaleContributionRate.employeeContributionRatio < bonusFemaleContributionRate.employeeExemptionRate) $('#C3_24').ntsError('set', { messageId: "MsgQ_224" });
+//
+//        }
     }
 }
 
