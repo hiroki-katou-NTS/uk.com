@@ -21,7 +21,7 @@ public class StdOutputItemFinder {
 
 	public List<StdOutItemDto> getOutItems(String condSetCd) {
 		String userID = AppContexts.user().userId();
-		List<CtgItemData> listCtgItemData =ctgItemDataRepository.getAllCtgItemData();
+		List<CtgItemData> listCtgItemData = ctgItemDataRepository.getAllCtgItemData();
 		return acquisitionExOutSetting.getExOutItemList(condSetCd, userID, null, StandardAtr.STANDARD, false).stream()
 				.map(item -> StdOutItemDto.fromDomain(item, listCtgItemData)).collect(Collectors.toList());
 	}
