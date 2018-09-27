@@ -318,7 +318,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			if(appRootInstance == null){
 				throw new BusinessException("Msg_1430", "承認者");
 			}
-			// 対象日の就業実績確認状態を取得する
+			// ドメインモデル「就業実績確認状態」を取得する
 			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootCFByMonth(companyID, employeeID, employee.getYearMonth(), 
 					employee.getClosureID(), employee.getClosureDate(), rootTypeEnum);
 			// (中間データ版)承認する
@@ -356,7 +356,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			// ループする社員の「承認ルート中間データ」を取得する
 			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
 					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
-			// 対象日の就業実績確認状態を取得する
+			// ドメインモデル「就業実績確認状態」を取得する
 			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootCFByMonth(companyID, employeeID, employee.getYearMonth(), 
 					employee.getClosureID(), employee.getClosureDate(), rootTypeEnum);
 			// (中間データ版)解除する
@@ -381,6 +381,35 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		// 承認ルート状況を取得する
 		return approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState))
 				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsMonth(
+			List<EmpPerformMonthParam> empPerformMonthParamLst) {
+		String companyID = AppContexts.user().companyId();
+		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<>();
+		// INPUT．対象者社員IDの先頭から最後へループ
+		empPerformMonthParamLst.forEach(employee -> {
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employee.getEmployeeID()), 
+					new DatePeriod(employee.getBaseDate(), employee.getBaseDate()), 
+					RecordRootType.CONFIRM_WORK_BY_MONTH);
+			// 基準日の承認ルート中間データを取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(employee.getBaseDate(), 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employee.getEmployeeID())).findAny().get().getAppRootInstanceLst());
+			if(appRootInstance==null){
+				throw new BusinessException("Msg_1430", "承認者");
+			}
+			// ドメインモデル「就業実績確認状態」を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootCFByMonth(companyID, employee.getEmployeeID(), employee.getYearMonth(), 
+					employee.getClosureID(), employee.getClosureDate(), RecordRootType.CONFIRM_WORK_BY_MONTH);
+			// 中間データから承認ルートインスタンスに変換する
+			ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+			// 承認ルート状況を取得する
+			appRootStatusLst.addAll(approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState)));
+		});
+		return appRootStatusLst.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
 	}
 	
 }
