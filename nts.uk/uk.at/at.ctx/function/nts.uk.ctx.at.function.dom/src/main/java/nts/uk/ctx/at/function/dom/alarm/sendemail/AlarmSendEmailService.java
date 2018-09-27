@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
 import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class AlarmSendEmailService implements SendEmailService {
@@ -55,10 +58,11 @@ public class AlarmSendEmailService implements SendEmailService {
 		//Send mail for employee
 		// get address email
 		if (!CollectionUtil.isEmpty(employeeTagetIds)) {
-			// 本人送信対象のアラーム抽出結果を抽出する
-			List<ValueExtractAlarmDto> valueExtractAlarmEmpDtos = valueExtractAlarmDtos.stream()
-					.filter(c -> employeeTagetIds.contains(c.getEmployeeID())).collect(Collectors.toList());
+
 			for (String employeeId : employeeTagetIds) {
+				// 本人送信対象のアラーム抽出結果を抽出する
+				List<ValueExtractAlarmDto> valueExtractAlarmEmpDtos = valueExtractAlarmDtos.stream()
+						.filter(c -> employeeId.equals(c.getEmployeeID())).collect(Collectors.toList());
 				try {
 					// Do send email
 					boolean isError = sendMail(companyID, employeeId, functionID,
@@ -68,25 +72,34 @@ public class AlarmSendEmailService implements SendEmailService {
 					if (isError) {
 						errors.add(employeeId);
 					}
-				} catch (Exception e) {
-					errors.add(employeeId);
-					isErrorSendMailEmp = true;
-					break;
+				} catch (SendMailFailedException e) {
+					throw e;
 				}
 			}
 		}
 		// Send mail for Manager
 		// get list employeeId of manager
 		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
-			// 本人送信対象のアラーム抽出結果を抽出する
-			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = valueExtractAlarmDtos.stream()
-					.filter(c -> managerTagetIds.contains(c.getWorkplaceID())).collect(Collectors.toList());
-			for (String workplaceId : managerTagetIds) {
+			// 管理者送信対象のアラーム抽出結果を抽出する
+			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = new ArrayList<>();
+			Map<String, String> mapCheck = new HashMap<>();
+			for (ValueExtractAlarmDto obj : valueExtractAlarmDtos) {
+				if(managerTagetIds.contains(obj.getEmployeeID())){
+					valueExtractAlarmManagerDtos.add(obj);
+					// 管理者送信対象のアラーム抽出結果を職場でグループ化する
+					String key = obj.getWorkplaceID()+obj.getEmployeeID();
+					if(!mapCheck.containsKey(key)){
+						mapCheck.put(key, obj.getWorkplaceID());
+					}
+				}
+			}
+			// Get list workplace to send
+			List<String> workplaceIds = new ArrayList<String>(mapCheck.values());
+			for (String workplaceId : workplaceIds) {
 				// call request list 218 return list employee Id
 				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
 
 				if (!CollectionUtil.isEmpty(listEmployeeId)) {
-					
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
@@ -98,9 +111,8 @@ public class AlarmSendEmailService implements SendEmailService {
 							if (isError) {
 								errors.add(employeeId);
 							}
-						} catch (Exception e) {
-							errors.add(employeeId);
-							break;
+						} catch (SendMailFailedException e) {
+							throw e;
 						}
 					}
 				}
@@ -159,8 +171,8 @@ public class AlarmSendEmailService implements SendEmailService {
 					MailContents mailContent = new MailContents(subject, body, attachedFiles);
 					try {
 						mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
-					} catch (Exception e) {
-						throw new BusinessException("Msg_965");
+					} catch (SendMailFailedException e) {
+						throw  e ;
 					}
 				}
 			} else {

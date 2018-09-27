@@ -112,14 +112,13 @@ module nts.uk.at.view.kal001.c {
                                  self.listEmployeeChecked.push(item);
                                  //set to employeee list taget
                                  self.listEmployeeSendTaget.push(item.employeeId);
-                                 self.listManagerSendTaget.push(item.workplaceId);
+                                 self.listManagerSendTaget.push(item.employeeId);
                                      
                              }
                              else if (item.isSendToMe == true )
                              {
                                  isHaveChecked = true;
                                  self.listEmployeeChecked.push(item);
-                                 
                                  //set to employeee list taget
                                  self.listEmployeeSendTaget.push(item.employeeId);
                              }
@@ -127,9 +126,8 @@ module nts.uk.at.view.kal001.c {
                              {
                                  isHaveChecked = true;
                                  self.listEmployeeChecked.push(item);
-                                 
                                  //set to Manager list taget
-                                 self.listManagerSendTaget.push(item.workplaceId);
+                                 self.listManagerSendTaget.push(item.employeeId);
                              }
                          });
                          
@@ -146,16 +144,11 @@ module nts.uk.at.view.kal001.c {
                                  let returnParam = data.split(";");
                                  let isSendMailError = returnParam[0];
                                  let errorStr = returnParam[1];
-                                 if (isSendMailError == 'false') {
-                                     info({ messageId: 'Msg_207' }).then(() => {
-                                         if (errorStr.length > 0) {
-                                             let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
-                                             info({ message: strDisplay });
-                                         }
-                                     });
-                                 }else{
+                                 if (errorStr.length > 0) {
                                      let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
                                      info({ message: strDisplay });
+                                 } else {
+                                     info({ messageId: 'Msg_207' });
                                  }
                                 }
                              });
