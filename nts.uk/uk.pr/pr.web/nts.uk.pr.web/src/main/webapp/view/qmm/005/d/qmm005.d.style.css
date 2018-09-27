@@ -16,11 +16,32 @@
 .column-1 {
 	width: 170px;
 } */
-
-td{
+td {
 	height: 45px;
 }
 
-.item-padding{
+.item-padding {
 	margin-left: 15px;
+}
+
+#openAdvanceSetting {
+	display: none;
+}
+
+#functions-area-top {
+	margin: 0px 30px;
+	height: 40px;
+	padding-top: 15px;
+	white-space: nowrap;
+}
+
+#contents-area {
+	position: relative;
+	margin-top: 0px !important;
+	padding-top: 0px !important;
+	padding: 0px 35px !important;
+}
+
+.expanDialog{
+	top: 0px!important;
 }

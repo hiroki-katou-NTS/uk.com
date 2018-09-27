@@ -387,24 +387,23 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
         }
 
-        reSize():void{
+        reSize(): void {
             let windowSize = nts.uk.ui.windows.getSelf();
-            if(windowSize.$dialog.height()<480){
-                windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 300);
+            let element = document.getElementById('openAdvanceSetting');
+            let expanClass =document.getElementsByClassName("ui-dialog")[0];
+            
+            if (windowSize.$dialog.height() < 440) {
+                
+                //expanClass.addClass('expanDialog');
+                element.style.display = "block";
+                windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 200);
+                //element.attr('style','top: 0px!important');
+                document.getElementsByClassName("ui-dialog").attr('style','top: 0px!important');
+            }else if (windowSize.$dialog.height() > 440) {
+                element.style.display = "none";
+                windowSize.setHeight(440);
             }
-            if(windowSize.$dialog.height()>480)
-            {
-                windowSize.setHeight(windowSize.parent.globalContext.innerHeight - 300);
-            }
-
-
-
-
         }
-
-
-
-
 
         startPage(): JQueryPromise<any> {
             var self = this;

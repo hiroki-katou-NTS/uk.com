@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
 
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 700, height: 480};</script>
+        <script>var dialogSize = {width: 720, height: 440};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm005.d.start.js"/>
@@ -21,7 +21,7 @@
         </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
-        <div id="functions-area">
+        <div id="functions-area-top">
             <!-- D1_1  処理区分 -->
             <div style="margin-left: 5px"
                  data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
@@ -32,16 +32,17 @@
 
             <span data-bind="if : mode==0" style="margin-left: 30px">
 					<!-- D2_3 この処理区分を廃止する -->
-                <div data-bind="ntsCheckBox: { checked: enableChecckBox   }">#{i18n.getText('QMM005_80')}</div>
+                <div data-bind="ntsCheckBox: { checked: enableChecckBox  , style: 'warnpanel' }">#{i18n.getText('QMM005_80')}</div>
 
                 <!-- D2_4 支払年月日区分 -->
-                <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
+                <button data-bind="ntsHelpButton: {position: 'left top',enable: isEnable }">?</button>
 				</span>
         </div>
+        
+        <hr style=" margin: 10px 35px; "/>
 
-        <div id="contents-area">
+        <div id="contents-area" style="padding-top: 0px;">
             <table id="fixed-table">
-
                 <colgroup>
                     <col width="185px"/>
                     <col width="100px"/>
@@ -49,11 +50,8 @@
                     <col width="30px"/>
                     <col width="110px"/>
                     <col width="100px"/>
-
                 </colgroup>
-
                 <tbody>
-
                 <tr>
                     <div class="label">#{i18n.getText('QMM005_95')}</div>
                 </tr>
@@ -196,9 +194,11 @@
                 </tr>
                 </tbody>
             </table>
-            <div style="height: 80px;" class="flex valign-center">
-            <a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')} #{i18n.getText('QMM005_66')}</a>
+            <div style="height: 40px;" class="flex valign-center">
+            <a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')}</a>
             </div>
+            
+            <div id="openAdvanceSetting">
             <table>
                 <colgroup>
                     <col width="215px"/>
@@ -273,7 +273,7 @@
 
             <!-- D4_12 -->
             <div class="label"
-                 style="padding-left: 215px;margin-top: 15px;margin-bottom: 20px;">#{i18n.getText('QMM005_66')}</div>
+                 style="padding-left: 215px;margin-top: 10px;margin-bottom: 10px;">#{i18n.getText('QMM005_66')}</div>
 
             <table>
                 <colgroup>
@@ -522,7 +522,7 @@
 											]}"></div>
 
             </div>
-
+		</div>
 
         </div>
         <div id="functions-area-bottom">
