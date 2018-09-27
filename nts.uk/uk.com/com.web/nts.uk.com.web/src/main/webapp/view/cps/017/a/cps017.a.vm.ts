@@ -509,21 +509,15 @@
                                 self.historySelection().histId.valueHasMutated();
                             }
                         });
-                        if (self.listSelection().length > 1) {
-                            self.checkCreateaaa(false);
-                        } else {
-                            let selection: Selection = self.selection();
-                            self.enableSelectionCd(true);
-                            selection.externalCD('');
-                            selection.selectionCD('');
-                            selection.selectionName('');
-                            selection.memoSelection('');
-                            self.focus.code(true);
-                            self.checkCreateaaa(true);
-                        }
+                        
                     });
                 });
-                
+                if (self.listSelection().length > 1) {
+                    self.checkCreateaaa(false);
+                } else {
+                    self.createNewData();
+                    self.checkCreateaaa(true);
+                }
             }).ifNo(() => {
                 self.selection().selectionID.valueHasMutated();
             })

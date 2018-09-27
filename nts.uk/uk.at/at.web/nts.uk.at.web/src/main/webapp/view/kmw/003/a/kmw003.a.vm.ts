@@ -1273,16 +1273,28 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         } else {
 
                             if (header.constraint.cDisplayType == "Primitive") {
-                                delete header.group[0].constraint.cDisplayType
+                                if (header.group == undefined || header.group.length == 0) {
+                                    delete header.constraint.cDisplayType;
+                                    if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
+                                        header["columnCssClass"] = "halign-right";
+                                    }
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes") {
+                                        header["columnCssClass"] = "halign-right";
+                                    }
+                                } else {
+                                    delete header.group[0].constraint.cDisplayType;
+                                    delete header.constraint;
+                                    delete header.group[1].constraint;
+                                }
                             } else if (header.constraint.cDisplayType == "Combo") {
                                 header.group[0].constraint["min"] = 0;
                                 header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
                                 header.group[0].constraint["cDisplayType"] = header.group[0].constraint.cdisplayType;
                                 delete header.group[0].constraint.cdisplayType
                                 delete header.group[0].constraint.primitiveValue;
+                                delete header.constraint;
+                                delete header.group[1].constraint;
                             }
-                            delete header.constraint;
-                            delete header.group[1].constraint;
                         }
                     }
                     if (header.constraint != undefined) delete header.constraint.cdisplayType;

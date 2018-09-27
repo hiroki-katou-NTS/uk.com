@@ -58,7 +58,9 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
 		
-		if(!dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+		if(dailyInfo.getRecordInfo().getSiftCode() == null
+				|| dailyInfo.getRecordInfo().getWorkTypeCode() == null
+				|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
 				||!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			ischeck = true;
 		} 
@@ -129,8 +131,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordInfo().getWorkTimeCode().v(),
-				dailyPerfor.getRecordInfo().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTimeCode().v(),
+				dailyPerfor.getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTypeCode().v());
 		return dataOut;
 	}
 
