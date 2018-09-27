@@ -994,12 +994,10 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 	
 	private static class AttendanceItemUtilCacheHolder {
-		MasterShareContainer cache;
-		GeneralDateTime startedTime;
-		GeneralDateTime expiredTime;
+		private final MasterShareContainer cache;
 		
 		private AttendanceItemUtilCacheHolder(){
-			this.reset();
+			this.cache = MasterShareBus.open();
 		}
 		
 		public static AttendanceItemUtilCacheHolder cacheNow(){
@@ -1007,16 +1005,7 @@ public class AttendanceItemUtil implements ItemConst {
 		}
 		
 		public <T> T getAndCache(String key, Supplier<T> value) {
-			if(this.expiredTime.afterOrEquals(GeneralDateTime.now())){
-				this.reset();
-			}
 			return cache.getShared(key, value);
-		}
-		
-		public void reset(){
-			this.cache = MasterShareBus.open();
-			this.startedTime = GeneralDateTime.now();
-			this.expiredTime = this.startedTime.addDays(1);
 		}
 	}
 
