@@ -82,18 +82,28 @@ module nts.uk.com.view.cmf002.i.viewmodel {
 
         enableGlobal() {
             let self = this;
-            return self.numberDataFormatSetting().fixedValue() == self.notUse;
+            if (self.numberDataFormatSetting().fixedValue() == self.notUse) {
+                self.numberDataFormatSetting().valueOfFixedValue(null);
+                return true;
+            } else {
+                self.numberDataFormatSetting().decimalDigit(null);
+                self.numberDataFormatSetting().fixedCalculationValue(null);
+                self.numberDataFormatSetting().fixedLengthIntegerDigit(null);
+                self.numberDataFormatSetting().valueOfNullValueReplace(null);
+                return false;
+            }
         }
         enableFormatSelection() {
             let self = this;
             let enable = self.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.DECIMAL && self.enableGlobal();
             if (!enable) {
                 $('#I2_2_2').ntsError('clear');
+                self.numberDataFormatSetting().decimalDigit(null);
                 self.numberDataFormatSetting().decimalDigit(Math.floor(self.numberDataFormatSetting().decimalDigit()));
             }
             return enable;
         }
-        enableRegister(){
+        enableRegister() {
             return errors.hasError();
         }
         enableDecimalFraction() {
@@ -105,6 +115,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let enable = self.numberDataFormatSetting().fixedValueOperation() == self.use && self.enableGlobal();
             if (!enable) {
                 $('#I4_3').ntsError('clear');
+                self.numberDataFormatSetting().fixedCalculationValue(null);
                 self.numberDataFormatSetting().fixedCalculationValue(Math.floor((self.numberDataFormatSetting().fixedCalculationValue()) * 100) / 100);
             }
             return enable;
@@ -114,6 +125,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let enable = self.numberDataFormatSetting().fixedLengthOutput() == self.use && self.enableGlobal();
             if (!enable) {
                 $('#I5_2_2').ntsError('clear');
+                self.numberDataFormatSetting().fixedLengthIntegerDigit(null);
                 self.numberDataFormatSetting().fixedLengthIntegerDigit(Math.floor(self.numberDataFormatSetting().fixedLengthIntegerDigit()));
             }
             return enable;
@@ -122,6 +134,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let self = this;
             let enable = self.numberDataFormatSetting().nullValueReplace() == self.use && self.enableGlobal();
             if (!enable) {
+                self.numberDataFormatSetting().valueOfNullValueReplace(null);
                 $('#I6_2').ntsError('clear');
             }
             return enable;

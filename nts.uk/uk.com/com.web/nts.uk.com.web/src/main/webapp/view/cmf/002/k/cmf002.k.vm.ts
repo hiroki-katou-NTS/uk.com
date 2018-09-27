@@ -65,7 +65,14 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         //enable component when not using fixed value
         enable() {
             let self = this;
-            return self.dateDataFormatSetting().fixedValue() == self.notUse;
+            if (self.dateDataFormatSetting().fixedValue() == self.notUse) {
+                self.dateDataFormatSetting().valueOfFixedValue(null);
+                return true;
+            } else {
+                self.dateDataFormatSetting().formatSelection(null);
+                self.dateDataFormatSetting().valueOfNullValueSubs(null);
+                return false;
+            }
         }
 
         //enable component replacement value editor
@@ -73,6 +80,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let self = this;
             let enable = (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
             if (!enable) {
+                self.dateDataFormatSetting().valueOfNullValueSubs(null);
                 $('#K3_2').ntsError('clear');
             }
             return enable;
@@ -87,8 +95,8 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             }
             return enable;
         }
-        
-        enableRegister(){
+
+        enableRegister() {
             return errors.hasError();
         }
 
