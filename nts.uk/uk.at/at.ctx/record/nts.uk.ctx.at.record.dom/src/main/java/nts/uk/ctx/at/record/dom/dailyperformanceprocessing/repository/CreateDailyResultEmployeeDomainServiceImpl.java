@@ -36,12 +36,15 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -90,6 +93,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
+	
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 
 	// =============== HACK ON (this) ================= //
 	/* The sc context. */
@@ -260,13 +266,15 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 						}
 					}
 				}
-					if (asyncContext.hasBeenRequestedToCancel()) {
-						asyncContext.finishedAsCancelled();
+				Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+				if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
+						&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
+					asyncContext.finishedAsCancelled();
 //						process.add(ProcessState.INTERRUPTION);
 //						return;
-						return ProcessState.INTERRUPTION;
-					}
+					return ProcessState.INTERRUPTION;
 				}
+			}
 		};
 //		if(process.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0){
 //			return ProcessState.INTERRUPTION;
@@ -404,7 +412,10 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 								day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType, stampReflectionManagement);
 					}
 				}
-				if (asyncContext.hasBeenRequestedToCancel()) {
+				
+				Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+				if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
+						&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
 //					asyncContext.finishedAsCancelled();
 					process.add(ProcessState.INTERRUPTION);
 					return;
