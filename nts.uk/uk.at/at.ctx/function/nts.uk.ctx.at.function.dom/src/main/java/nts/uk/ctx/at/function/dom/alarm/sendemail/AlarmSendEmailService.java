@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
@@ -53,7 +55,7 @@ public class AlarmSendEmailService implements SendEmailService {
 			MailSettingsParamDto mailSettingsParamDto){
 		List<String> errors = new ArrayList<>();
 		Integer functionID = 9; //function of Alarm list = 9
-		FileGeneratorContext generatorContext = new FileGeneratorContext();
+		
 		boolean isErrorSendMailEmp = false;
 		//Send mail for employee
 		// get address email
@@ -66,8 +68,7 @@ public class AlarmSendEmailService implements SendEmailService {
 				try {
 					// Do send email
 					boolean isError = sendMail(companyID, employeeId, functionID,
-							valueExtractAlarmEmpDtos, generatorContext,
-							mailSettingsParamDto.getSubject(),
+							valueExtractAlarmEmpDtos, mailSettingsParamDto.getSubject(),
 							mailSettingsParamDto.getText());
 					if (isError) {
 						errors.add(employeeId);
@@ -105,8 +106,7 @@ public class AlarmSendEmailService implements SendEmailService {
 						try {
 							// Get subject , body mail
 							boolean isError = sendMail(companyID, employeeId, functionID,
-									valueExtractAlarmManagerDtos, generatorContext,
-									mailSettingsParamDto.getSubjectAdmin(),
+									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
 									mailSettingsParamDto.getTextAdmin());
 							if (isError) {
 								errors.add(employeeId);
@@ -150,9 +150,9 @@ public class AlarmSendEmailService implements SendEmailService {
 	 * @return true/false
 	 */
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
-			List<ValueExtractAlarmDto> listDataAlarmExport, FileGeneratorContext generatorContext, String subjectEmail,
+			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
 			String bodyEmail) throws BusinessException {
-				
+		FileGeneratorContext generatorContext = new FileGeneratorContext();		
 		// call request list 397 return email address
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
@@ -160,7 +160,9 @@ public class AlarmSendEmailService implements SendEmailService {
 			String subject = subjectEmail;
 			String body = bodyEmail;
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (!CollectionUtil.isEmpty(emails) && !"".equals(subject) && !"".equals(body)) {
+			if (CollectionUtil.isEmpty(emails) || StringUtils.isEmpty(subject) || StringUtils.isEmpty(body)) {
+				return true;
+			} else {
 				// Genarate excel
 				AlarmExportDto alarmExportDto = alarmListGenerator.generate(generatorContext, listDataAlarmExport);
 				// Get all mail address
@@ -170,13 +172,17 @@ public class AlarmSendEmailService implements SendEmailService {
 							.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
 					MailContents mailContent = new MailContents(subject, body, attachedFiles);
 					try {
-						mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
+						if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
+							return true;
+						}
+						else{
+							mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
+						}
+						
 					} catch (SendMailFailedException e) {
 						throw  e ;
 					}
 				}
-			} else {
-				return true;
 			}
 		}
 		return false;
