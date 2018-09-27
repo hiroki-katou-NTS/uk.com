@@ -163,7 +163,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.unUsedDays = domain.getUnUsedDays().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -186,7 +186,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -215,7 +215,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.selectedAtr = domain.getSelectedAtr().value;
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override

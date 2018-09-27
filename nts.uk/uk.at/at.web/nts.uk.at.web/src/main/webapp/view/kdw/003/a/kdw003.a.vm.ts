@@ -509,7 +509,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" });
                     } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
-                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
                             nts.uk.request.jumpToTopPage();
                         });
 
@@ -1664,9 +1664,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }).fail(function(error) {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" })
-                    } else {
+                    } else { 
                         if (error.messageId != undefined) {
-                            nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                            nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
                                 nts.uk.request.jumpToTopPage();
                             });
 
@@ -4108,17 +4108,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.noOfHolidaysOld())) {
+                    //if (Number(val) != Number(self.noOfHolidaysOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.absentDeductionTimeOld())) {
+                    //if (Number(val) != Number(self.absentDeductionTimeOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
         };

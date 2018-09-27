@@ -32,7 +32,7 @@ public class ClosureDate extends DomainObject {
 	 *            the last day of month
 	 */
 	public ClosureDate(Integer closureDay, Boolean lastDayOfMonth) {
-		this.closureDay = new Day(closureDay);
+		this.closureDay = new Day(lastDayOfMonth ? 1 : closureDay);
 		this.lastDayOfMonth = lastDayOfMonth;
 	}
 }

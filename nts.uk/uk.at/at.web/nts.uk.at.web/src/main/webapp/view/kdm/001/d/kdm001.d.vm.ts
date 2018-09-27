@@ -146,14 +146,17 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         if (error === "Msg_737_splitMana") {
                             $('#D12_2').ntsError('set', { messageId: "Msg_737" });
                         }
-                        if (error === "Msg_740") {
-                            $('#D6_1').ntsError('set', { messageId: "Msg_740" });
+                        if (error === "Msg_1435") {
+                            $('#D6_1').ntsError('set', { messageId: "Msg_1435" });
                         }
-                        if (error === "Msg_744") {
-                            $('#D11_1').ntsError('set', { messageId: "Msg_744" });
+                        if (error === "Msg_1436") {
+                            $('#D11_1').ntsError('set', { messageId: "Msg_1436" });
                         }
-                        if (error === "Msg_744_Split") {
-                            $('#D12_2').ntsError('set', { messageId: "Msg_744" });
+                        if (error === "Msg_1437") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_1437" });
+                        }
+                        if ( error === "Msg_1438") {
+                            $('#D12_2').ntsError('set', { messageId: "Msg_1438" });
                         }
                         if (error === "Msg_1256_OccurredDays") {
                             $('#D6_3').ntsError('set', { messageId: "Msg_1256" });
