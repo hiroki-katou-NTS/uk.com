@@ -537,7 +537,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         openSelectAtdItemColorDialog() {
             let self = this;
             //Open dialog KDL021
+            nts.uk.ui.block.invisible();
             service.getAllAttendanceItem().done((lstItem) => {
+                nts.uk.ui.block.clear();
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
                 // example wait
