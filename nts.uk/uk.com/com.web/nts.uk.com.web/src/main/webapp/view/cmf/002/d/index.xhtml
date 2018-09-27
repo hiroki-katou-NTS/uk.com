@@ -1,71 +1,71 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 1260,
-					height : 600
-				};
-			</script>
-			<com:ValidatorScript>
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndCharVal
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndNumVal
-	            nts.uk.shr.com.time.AttendanceClock
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.AttendanceTime
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.MultipleCodeInput
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.ExtOutCndSearchCd
-            </com:ValidatorScript>
-			<com:stylefile path="cmf002.d.style.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="cmf002.d.service.js" />
-			<com:scriptfile path="cmf002.d.vm.js" />
-			<com:scriptfile path="cmf002.d.start.js" />
-		</ui:define>
-		<ui:define name="content">
-			<div id="functions-area">
-				<button id="D1_1"
+<ui:composition template="/master/dialog.xhtml">
+	<ui:define name="htmlHead">
+		<script>
+            var dialogSize = {
+                width : 1260,
+                height : 600
+            };
+		</script>
+		<com:ValidatorScript>
+			nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndCharVal
+			nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndNumVal
+			nts.uk.shr.com.time.AttendanceClock
+			nts.uk.ctx.exio.dom.exo.outcnddetail.AttendanceTime
+			nts.uk.ctx.exio.dom.exo.outcnddetail.MultipleCodeInput
+			nts.uk.ctx.exio.dom.exo.outcnddetail.ExtOutCndSearchCd
+		</com:ValidatorScript>
+		<com:stylefile path="cmf002.d.style.css" />
+		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="../share/model.js" />
+		<com:scriptfile path="cmf002.d.service.js" />
+		<com:scriptfile path="cmf002.d.vm.js" />
+		<com:scriptfile path="cmf002.d.start.js" />
+	</ui:define>
+	<ui:define name="content">
+		<div id="functions-area">
+			<button id="D1_1"
 					data-bind="click: register, enable: $root.errors.isEmpty"
 					tabindex="1" class="proceed">#{i18n.getText('CMF002_98')}</button>
-				<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('CMF002_99')}</button>
+			<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('CMF002_99')}</button>
+		</div>
+		<div id="contents-area">
+			<div class="table title">
+				<!-- D2 -->
+				<div class="cell"
+					 data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_78')}'}"></div>
+				<!-- D2_1 -->
+				<div class="cell" data-bind="text: cndSetCd + '　' + cndSetName"></div>
 			</div>
-			<div id="contents-area">
-				<div class="table title">
-					<!-- D2 -->
-					<div class="cell"
-						data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_78')}'}"></div>
-					<!-- D2_1 -->
-					<div class="cell" data-bind="text: cndSetCd + '　' + cndSetName"></div>
-				</div>
-				<div class="table title">
-					<!-- D3 -->
-					<div class="cell"
-						data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_79')}'}"></div>
-					<!-- D3_1 -->
-					<div class="cell" data-bind="text: categoryName"></div>
-				</div>
-				<div class="table content">
-					<!-- D4 -->
-					<div class="cell"
-						data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_100')}'}"></div>
-					<div class="cell"></div>
-					<!-- D6 -->
-					<div class="cell"
-						data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_103')}'}"></div>
-				</div>
-				<div class="table content">
-					<div class="cell valign-top grid-list">
-						<div id="D5"
-							data-bind="ntsPanel:{width: '420px', height: '300px', direction: 'none',showIcon: true}">
-							<div class="pull-left search-item" style="margin-right: 10px;">
-								<div tabindex="3" style="width: 220px"
-									data-bind="ntsSearchBox: {
+			<div class="table title">
+				<!-- D3 -->
+				<div class="cell"
+					 data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_79')}'}"></div>
+				<!-- D3_1 -->
+				<div class="cell" data-bind="text: categoryName"></div>
+			</div>
+			<div class="table content">
+				<!-- D4 -->
+				<div class="cell"
+					 data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_100')}'}"></div>
+				<div class="cell"></div>
+				<!-- D6 -->
+				<div class="cell"
+					 data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_103')}'}"></div>
+			</div>
+			<div class="table content">
+				<div class="cell valign-top grid-list">
+					<div id="D5"
+						 data-bind="ntsPanel:{width: '420px', height: '300px', direction: 'none',showIcon: true}">
+						<div class="pull-left search-item" style="margin-right: 10px;">
+							<div tabindex="3" style="width: 220px"
+								 data-bind="ntsSearchBox: {
 									searchMode: 'filter',
 									targetKey: 'tableName',
 									comId: 'D5_2',
@@ -75,9 +75,9 @@
 									fields: ['displayTableName'],
 									mode: 'igGrid'}" />
 
-								<!--F4_2 出力項目一覧-->
-								<table id="D5_2"
-									data-bind="ntsGridList: {
+							<!--F4_2 出力項目一覧-->
+							<table id="D5_2"
+								   data-bind="ntsGridList: {
 									rows: 10,
 									name: '#[CMF002_349]',
 									dataSource: tableItemList,
@@ -88,10 +88,10 @@
 								    ],									
 									multiple: false,
 									value: selectedTable}"></table>
-							</div>
-							<div class="pull-left search-item">
-								<div tabindex="4" style="width: 190px"
-									data-bind="ntsSearchBox: {
+						</div>
+						<div class="pull-left search-item">
+							<div tabindex="4" style="width: 190px"
+								 data-bind="ntsSearchBox: {
 									searchMode: 'highlight', 
 									targetKey: 'itemNo',
 									comId: 'D5_4',
@@ -101,9 +101,9 @@
 									fields: ['itemName'],
 									mode: 'igGrid'}" />
 
-								<!--F4_2 出力項目一覧-->
-								<table id="D5_4"
-									data-bind="ntsGridList: {
+							<!--F4_2 出力項目一覧-->
+							<table id="D5_4"
+								   data-bind="ntsGridList: {
 									rows: 10,
 									name: '#[CMF002_343]',
 									dataSource: itemList,
@@ -114,45 +114,47 @@
 								    ],									
 									multiple: false,
 									value: selectedItem}"></table>
-							</div>
 						</div>
 					</div>
-					<div class="cell valign-center">
-						<div class="arrow-item">
-							<button data-bind="click: btnRightClick">
-								<i class="icon icon-button-arrow-right"></i>
-							</button>
-							<button data-bind="click: btnLeftClick">
-								<i class="icon icon-button-arrow-left"></i>
-							</button>
-						</div>
+				</div>
+				<div class="cell valign-center">
+					<div class="arrow-item">
+						<button data-bind="click: btnRightClick">
+							<i class="icon icon-button-arrow-right"></i>
+						</button>
+						<button data-bind="click: btnLeftClick">
+							<i class="icon icon-button-arrow-left"></i>
+						</button>
 					</div>
-					<div class="cell valign-top grid-list">
-						<table tabindex="5" id="fixed-table">
-							<colgroup>
-								<col width="20px" />
-								<col width="auto" />
-								<col width="138px" />
-								<col width="214px" />
-								<col width="215px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header"></th>
-									<th class="ui-widget-header">#{i18n.getText('CMF002_104')}</th>
-									<th class="ui-widget-header">#{i18n.getText('CMF002_105')}</th>
-									<th colspan="2" class="ui-widget-header">#{i18n.getText('CMF002_106')}</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: cndDetai().listOutCndDetailItem">
-								<tr
-									data-bind="attr: { 'data-id': seriNum() }, click: function() {$vm.selectDetailItem(seriNum())}">
-									<td><span data-bind="text: seriNum()"></span></td>
-									<td style="width: auto">
-										<div class="limited-label" data-bind="text: $vm.getItemName(categoryItemNo())">${fileName}</div></td>
-									<td>
-										<div tabindex="6" class="D6_C3_1"
-											data-bind="ntsComboBox: {
+				</div>
+				<div class="cell valign-top grid-list">
+					<table tabindex="5" id="fixed-table">
+						<colgroup>
+							<col width="20px" />
+							<col width="120px" />
+							<col width="145px" />
+							<col width="215px" />
+							<col width="215px" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th class="ui-widget-header"></th>
+							<th class="ui-widget-header">#{i18n.getText('CMF002_104')}</th>
+							<th class="ui-widget-header">#{i18n.getText('CMF002_105')}</th>
+							<th colspan="2" class="ui-widget-header">#{i18n.getText('CMF002_106')}</th>
+						</tr>
+						</thead>
+						<tbody data-bind="foreach: cndDetai().listOutCndDetailItem">
+						<tr
+								data-bind="attr: { 'data-id': seriNum() }, click: function() {$vm.selectDetailItem(seriNum())}">
+							<td><span data-bind="text: seriNum()"></span></td>
+							<td>
+								<div class="limited-label" data-bind="text: $vm.getItemName(categoryItemNo())"></div>
+							</td>
+							<td>
+								<div tabindex="6" class="D6_C3_1"
+									 data-bind="ntsComboBox: {
+									 		width: 140,
 											name: '#[CMF002_105]',
 											options: $vm.getComboboxSource(searchValueCd, dataType),
 											optionsValue: 'code',
@@ -162,28 +164,28 @@
 											columns: [             
 												{ prop: 'name', length: 10 },
 											]}">
-										</div>
-									</td>
-									<td class="view-control view-over">
-										<!-- D6_C4_1 --> <input tabindex="7" class="D6_C4_1"
-										data-bind="ntsTextEditor: {
+								</div>
+							</td>
+							<td class="view-control view-over">
+								<!-- D6_C4_1 --> <input tabindex="7" class="D6_C4_1"
+														data-bind="ntsTextEditor: {
 										name: '#[CMF002_106]',
 										constraint: 'OutCndCharVal', 
 										value: searchChar, 
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_NORMAL" />
 
-										<!-- D6_C4_2 --> <input tabindex="8" class="D6_C4_2"
-										data-bind="ntsTextEditor: {
+								<!-- D6_C4_2 --> <input tabindex="8" class="D6_C4_2"
+														data-bind="ntsTextEditor: {
 										name: '#[CMF002_107]',
 										constraint: 'OutCndCharVal', 
 										value: searchCharStartVal, 
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD">#{i18n.getText('CMF002_407')}</span>
+								<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
-										<!-- D6_C4_4 --> <input tabindex="8" class="D6_C4_4"
-										data-bind="ntsNumberEditor: {
+								<!-- D6_C4_4 --> <input tabindex="8" class="D6_C4_4"
+														data-bind="ntsNumberEditor: {
 										name: '#[CMF002_106]',
 										constraint: 'OutCndNumVal', 
 										value: searchNum, 
@@ -191,36 +193,38 @@
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_NORMAL" />
 
-										<!-- D6_C4_5 --> <input tabindex="10" class="D6_C4_5"
-										data-bind="ntsNumberEditor: {
+								<!-- D6_C4_5 --> <input tabindex="10" class="D6_C4_5"
+														data-bind="ntsNumberEditor: {
 										name: '#[CMF002_107]',
 										constraint: 'OutCndNumVal', 
 										value: searchNumStartVal, 
 										option: {decimallength: 2},
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD">#{i18n.getText('CMF002_407')}</span>
+								<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
-										<!-- D6_C4_7 -->
-										<div tabindex="10" class="D6_C4_7"
-											data-bind="ntsDatePicker: {
+								<!-- D6_C4_7 -->
+								<div tabindex="10" class="D6_C4_7"
+									 data-bind="ntsDatePicker: {
+									 width: 180,
 										name: '#[CMF002_106]',
 										value: searchDate, 
 										dateFormat: 'YYYY/MM/DD', 
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_NORMAL"></div>
 
-										<!-- D6_C4_8 -->
-										<div tabindex="12" style="float: right; padding-right: 10px;" class="D6_C4_8"
-											data-bind="ntsDatePicker: {
+								<!-- D6_C4_8 -->
+								<div tabindex="12" style="float: right; padding-right: 10px;" class="D6_C4_8"
+									 data-bind="ntsDatePicker: {
+									 width: 180,
 										name: '#[CMF002_106]',
 										value: searchDateStart, 
 										dateFormat: 'YYYY/MM/DD', 
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD"></div>
 
-										<!-- D6_C4_10 --> <input tabindex="10" class="D6_C4_10"
-										data-bind="ntsTimeEditor: {
+								<!-- D6_C4_10 --> <input tabindex="10" class="D6_C4_10"
+														 data-bind="ntsTimeEditor: {
 										name: '#[CMF002_106]',
 										constraint: 'AttendanceTime', 
 										value: searchTime, 
@@ -229,8 +233,8 @@
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_NORMAL" />
 
-										<!-- D6_C4_11 --> <input tabindex="13" class="D6_C4_11"
-										data-bind="ntsTimeEditor: {
+								<!-- D6_C4_11 --> <input tabindex="13" class="D6_C4_11"
+														 data-bind="ntsTimeEditor: {
 										name: '#[CMF002_107]',
 										constraint: 'AttendanceTime', 
 										value: searchTimeStartVal, 
@@ -239,8 +243,8 @@
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD" />
 
-										<!-- D6_C4_13 --> <input tabindex="15" class="D6_C4_13"
-										data-bind="ntsTimeEditor: { 
+								<!-- D6_C4_13 --> <input  class="D6_C4_13"
+														 data-bind="ntsTimeEditor: {
 										name: '#[CMF002_106]',
 										constraint:'AttendanceClock', 
 										inputFormat: 'time',
@@ -248,8 +252,7 @@
 										value: searchClock, 
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_NORMAL" />
-
-										<!-- D6_C4_14 --> <input tabindex="16" class="D6_C4_14"
+							<!-- D6_C4_14 --> <input tabindex="16" class="D6_C4_14"
 										data-bind="ntsTimeEditor: {
 										name: '#[CMF002_107]',
 										constraint: 'AttendanceClock', 
@@ -258,6 +261,8 @@
 										mode: 'time',
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
+								<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
+
 
 										<!-- D6_C4_16 --> <input tabindex="18" class="D6_C4_16"
 										data-bind="ntsTextEditor: {
@@ -267,52 +272,50 @@
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.SEARCH_CODE_LIST" />
 
-										<!-- D6_C4_17 -->
-										<button class="D6_C4_17"
-											data-bind="ntsHelpButton: {
+								<!-- D6_C4_17 -->
+								<button class="D6_C4_17"
+										data-bind="ntsHelpButton: {
 											image: '../resource/複数条件の入力.jpg', 
 											position: 'bottom right', 
 											enable: true }, 
 											visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.SEARCH_CODE_LIST">?</button>
 
-									</td>
-									<td class="view-control view-over" >
-										<!-- D6_C4_3 --> <input tabindex="9" class="D6_C4_3" style="float: right ;padding-left: 5px"
-										data-bind="ntsTextEditor: {
+							</td>
+							<td class="view-control view-over" >
+								<!-- D6_C4_3 --> <input tabindex="9" class="D6_C4_3" style="float: right ;padding-left: 5px"
+														data-bind="ntsTextEditor: {
 										name: '#[CMF002_108]',
 										constraint: 'OutCndCharVal', 
 										value: searchCharEndVal, 
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
-											<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
-										data-bind="ntsNumberEditor: {
+								<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
+														data-bind="ntsNumberEditor: {
 										name: '#[CMF002_108]',
 										constraint: 'OutCndNumVal', 
 										value: searchNumEndVal, 
 										option: {decimallength: 2},
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD">#{i18n.getText('CMF002_407')}</span>
-										<!-- D6_C4_9 -->
-										<div tabindex="13"  class="D6_C4_9"
-											data-bind="ntsDatePicker: {
+								<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD">#{i18n.getText('CMF002_407')}</span>
+								<!-- D6_C4_9 -->
+								<div tabindex="13"  class="D6_C4_9"
+									 data-bind="ntsDatePicker: {
 										name: '#[CMF002_106]',
 										value: searchDateEnd, 
 										dateFormat: 'YYYY/MM/DD', 
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD"></div>
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
-
-										<!-- D6_C4_12 --> <input tabindex="15" class="D6_C4_12"
-										data-bind="ntsTimeEditor: {
-										name: '#[CMF002_108]',
+								<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
+                                    <!-- D6_C4_12 --> <input tabindex="14" class="D6_C4_12"
+														 data-bind="ntsTimeEditor: {
+														 name: '#[CMF002_108]',
 										constraint: 'AttendanceTime', 
 										value: searchTimeEndVal, 
 										inputFormat: 'time',
 										mode: 'time',
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
 										<!-- D6_C4_15 --> <input tabindex="17" class="D6_C4_15"
 										data-bind="ntsTimeEditor: {
@@ -324,14 +327,14 @@
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
 
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
-		</ui:define>
-	</ui:composition>
+		</div>
+	</ui:define>
+</ui:composition>
 </body>
 </html>
