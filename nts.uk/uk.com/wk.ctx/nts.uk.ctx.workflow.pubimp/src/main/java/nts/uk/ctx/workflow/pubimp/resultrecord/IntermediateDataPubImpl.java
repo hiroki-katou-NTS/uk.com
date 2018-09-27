@@ -33,6 +33,7 @@ import nts.uk.ctx.workflow.dom.service.resultrecord.ApproverToApprove;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproveDoneExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproverEmpExport;
+import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
@@ -291,6 +292,31 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType) {
 		String companyID =  AppContexts.user().companyId();
 		this.appRootConfirmRepository.deleteByRequestList424(companyID, employeeID, date, rootType);
+	}
+
+	@Override
+	public void approveMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst) {
+		String companyID = AppContexts.user().companyId();
+		RecordRootType rootTypeEnum = RecordRootType.CONFIRM_WORK_BY_MONTH;
+		empPerformMonthParamLst.forEach(employee -> {
+			String employeeID = employee.getEmployeeID();
+			GeneralDate date = employee.getBaseDate();
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employeeID), 
+					new DatePeriod(date, date), 
+					rootTypeEnum);
+			// ループする社員の「承認ルート中間データ」を取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			if(appRootInstance == null){
+				throw new BusinessException("Msg_1430", "承認者");
+			}
+			// 対象日の就業実績確認状態を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
+			// (中間データ版)承認する
+			appRootConfirmService.approve(approverID, employeeID, date, appRootInstance, appRootConfirm);
+		});
 	}
 	
 }

@@ -145,4 +145,11 @@ public interface IntermediateDataPub {
 	 */
 	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType);
 	
+	/**
+	 * RequestList 528
+	 * [No.528](中間データ版)実績の承認を登録する（月別）
+	 * @param approverID
+	 * @param empPerformMonthParamLst
+	 */
+	public void approveMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst);
 }
