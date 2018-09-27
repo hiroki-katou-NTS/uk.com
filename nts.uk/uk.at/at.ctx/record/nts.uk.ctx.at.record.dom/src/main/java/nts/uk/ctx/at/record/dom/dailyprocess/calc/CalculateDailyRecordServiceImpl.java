@@ -687,6 +687,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					leaveLate = Optional.of(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly());
 				}
 				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc2(workType,integrationOfDaily,personalInfo,holidayCalcMethodSet,regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,leaveLate);
+				/*大塚モード*/
+				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()));
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				List<EmTimeZoneSet> fixWoSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
@@ -721,8 +723,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				statutoryOverFrameNoList = fixOtSetting.stream()
 													   .map(tc -> new OverTimeFrameNo(tc.getLegalOTframeNo().v()))
 													   .collect(Collectors.toList());
-				/*大塚モード*/
-				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()));
+
 				//出退勤削除
 				if(!ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation())
 					&& workType.get().getDailyWork().isHolidayType()) {
