@@ -214,7 +214,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	public Optional<Company> find(String companyId) {
 		Optional<BcmmtAddInfor> addInforOptional = this.queryProxy().find(new BcmmtAddInforPK(companyId), BcmmtAddInfor.class);
 		return this.queryProxy().find(new BcmmtCompanyInforPK(companyId), BcmmtCompanyInfor.class).map(x -> {
-			x.bcmmtAddInfor = addInforOptional.get();
+			x.bcmmtAddInfor = addInforOptional.orElse(null);
 			return toDomainCom(x);
 		});
 	}

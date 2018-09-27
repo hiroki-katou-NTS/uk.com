@@ -32,6 +32,7 @@ public class DataCopyHandler {
     private static final int UDP_CCD_COLL = 6;
     private static final int UDP_SCD_COLL = 7;
     private static final int UDP_PG_COLL = 8;
+    private static final int EXCLUS_VER_COLL = 9;
 
     /**
      * Logger
@@ -152,7 +153,7 @@ public class DataCopyHandler {
                                 rowData[k] = "CMM001";
                             }
 
-                            if (!isOnlyCid) {
+                            if (!isOnlyCid && k > EXCLUS_VER_COLL) {
                                 for (int n = rowData.length - keyCheck; n < rowData.length; n++) {
                                     if (rowData[n].equals(rowData[k])) {
                                         rowData[k] = UUID.randomUUID().toString();
