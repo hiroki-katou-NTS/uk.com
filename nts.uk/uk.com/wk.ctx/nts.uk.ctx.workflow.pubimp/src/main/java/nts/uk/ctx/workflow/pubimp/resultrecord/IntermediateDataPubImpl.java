@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
@@ -45,6 +46,7 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.RouteSituationExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -317,6 +319,20 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			// (中間データ版)承認する
 			appRootConfirmService.approve(approverID, employeeID, date, appRootInstance, appRootConfirm);
 		});
+	}
+
+	@Override
+	public void createApprovalStatusMonth(String employeeID, GeneralDate date, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate) {
+		String companyID = AppContexts.user().companyId();
+		
+		String rootID = IdentifierUtil.randomUniqueId();
+		
+		AppRootConfirm newDomain = new AppRootConfirm(rootID, companyID, employeeID, date,
+				RecordRootType.CONFIRM_WORK_BY_MONTH, Collections.emptyList(),
+				Optional.of(yearMonth), Optional.of(closureID), Optional.of(closureDate));
+		
+		this.appRootConfirmRepository.insert(newDomain);
 	}
 	
 }

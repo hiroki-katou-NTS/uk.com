@@ -3,9 +3,11 @@ package nts.uk.ctx.workflow.pub.resultrecord;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface IntermediateDataPub {
@@ -152,4 +154,15 @@ public interface IntermediateDataPub {
 	 * @param empPerformMonthParamLst
 	 */
 	public void approveMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst);
+	
+	/**
+	 * RequestList 527
+	 * [No.527]承認状態を作成する（月別）
+	 * @param employeeID
+	 * @param date
+	 * @param yearMonth
+	 * @param closureID
+	 * @param closureDate
+	 */
+	public void createApprovalStatusMonth(String employeeID, GeneralDate date, YearMonth yearMonth, Integer closureID, ClosureDate closureDate);
 }
