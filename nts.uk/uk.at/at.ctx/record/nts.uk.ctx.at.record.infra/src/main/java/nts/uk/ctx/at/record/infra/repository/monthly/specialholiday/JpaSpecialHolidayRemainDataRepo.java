@@ -41,6 +41,12 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 			+ " AND c.pk.ym = :ym"
 			+ " AND c.closureStatus = :status";
 	
+	private static final String SQL_BY_YM_STATUS_CODE = "SELECT c FROM KrcdtMonSpRemain c"
+			+ " WHERE c.pk.sid = :sid"
+			+ " AND c.pk.ym = :ym"
+			+ " AND c.closureStatus = :status"
+			+ " AND c.pk.specialHolidayCd = :specialHolidayCd";
+	
 	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtMonSpRemain a "
 			+ "WHERE a.pk.sid = :employeeId "
 			+ "AND a.pk.ym = :yearMonth "
@@ -326,5 +332,15 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.executeUpdate();
+	}
+
+	@Override
+	public List<SpecialHolidayRemainData> getByYmStatus(String sid, YearMonth ym, ClosureStatus status, int speCode) {
+		return this.queryProxy().query(SQL_BY_YM_STATUS_CODE, KrcdtMonSpRemain.class)
+				.setParameter("sid", sid)
+				.setParameter("ym", ym.v())
+				.setParameter("status", status.value)	
+				.setParameter("specialHolidayCd", speCode)
+				.getList(c -> toDomain(c));
 	}
 }
