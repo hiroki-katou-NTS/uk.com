@@ -1408,7 +1408,7 @@ module nts.layout {
                                 selectedCodes: [ko.toJS(data.value)],
                                 baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
                                 isMultiple: false,
-                                selectedSystemType: 5,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                                 isrestrictionOfReferenceRange: false,
                                 showNoSelection: !data.required,
                                 isShowBaseDate: false
@@ -1432,19 +1432,15 @@ module nts.layout {
                                 setShared('inputCDL008', null);
                             }
                         } else {
-//                            if (__viewContext.viewModel.layout.mode() == 'layout') {
-                                setShared('inputCDL008', {
-                                    selectedCodes: [data.value],
-                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
-                                    isMultiple: false,
-                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                    isrestrictionOfReferenceRange: false,
-                                    showNoSelection: !data.required,
-                                    isShowBaseDate: false
-                                }, true);
-//                            } else {
-//                                setShared('inputCDL008', null);
-//                            }
+                            setShared('inputCDL008', {
+                                selectedCodes: [data.value],
+                                baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
+                                isMultiple: false,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                isrestrictionOfReferenceRange: false,
+                                showNoSelection: !data.required,
+                                isShowBaseDate: false
+                            }, true);
                         }
                     }
                 };
