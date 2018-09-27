@@ -69,13 +69,15 @@
 					</td>
 					<td style="vertical-align: top">
 						<!--R7_1 出力条件一覧-->
-						<table id="single-list"
+						<table id="single-list2"
 							data-bind="ntsGridList: {								
 								rows: 5,
 								name: '#{i18n.getText('CMF002_351')}',
 								dataSource: listOutputCondition,
+								primaryKey: 'seriNum',
 								columns: [ 
-									{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 100},
+									{ headerText: '', key: 'seriNum', width: 0, hidden: true},
+									{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 150},
                 					{ headerText: '#{i18n.getText('CMF002_232')}', key: 'conditions', width: 380}
                 				],
 								multiple: false,
