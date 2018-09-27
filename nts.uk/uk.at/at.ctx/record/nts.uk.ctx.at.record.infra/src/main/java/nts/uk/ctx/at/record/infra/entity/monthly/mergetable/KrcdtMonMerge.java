@@ -21,9 +21,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
@@ -54,8 +52,6 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Va
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateAbsenceDaysMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateHolidayWorkTimeMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateSpecificDaysMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCount;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
@@ -111,26 +107,26 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.Budg
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
-import nts.uk.shr.com.enumcommon.DayAttr;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 /**
  * 残数系以外
- * 
  * @author lanlt
- *
  */
 @Getter
 @Setter
@@ -2409,64 +2405,18 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		key.setClosureDate(new ClosureDate(this.krcdtMonMergePk.getClosureDay(),
 			(this.krcdtMonMergePk.getIsLastDay() == 1)));
 		return key;
-		
-	}
-
-	/** KRCDT_MON_AGGR_ABSN_DAYS 30 **/
-	public void toEntityAbsenceDays(AggregateAbsenceDaysMerge absenceDaysMerge) {
-		this.toEntityAbsenceDays1(absenceDaysMerge.getAbsenceDays1());
-		this.toEntityAbsenceDays2(absenceDaysMerge.getAbsenceDays2());
-		this.toEntityAbsenceDays2(absenceDaysMerge.getAbsenceDays2());
-		this.toEntityAbsenceDays3(absenceDaysMerge.getAbsenceDays3());
-		this.toEntityAbsenceDays4(absenceDaysMerge.getAbsenceDays4());
-		this.toEntityAbsenceDays5(absenceDaysMerge.getAbsenceDays5());
-		this.toEntityAbsenceDays6(absenceDaysMerge.getAbsenceDays6());
-		this.toEntityAbsenceDays7(absenceDaysMerge.getAbsenceDays7());
-		this.toEntityAbsenceDays8(absenceDaysMerge.getAbsenceDays8());
-		this.toEntityAbsenceDays9(absenceDaysMerge.getAbsenceDays9());
-		this.toEntityAbsenceDays10(absenceDaysMerge.getAbsenceDays10());
-		this.toEntityAbsenceDays11(absenceDaysMerge.getAbsenceDays11());
-		this.toEntityAbsenceDays12(absenceDaysMerge.getAbsenceDays12());
-		this.toEntityAbsenceDays13(absenceDaysMerge.getAbsenceDays13());
-		this.toEntityAbsenceDays14(absenceDaysMerge.getAbsenceDays14());
-		this.toEntityAbsenceDays15(absenceDaysMerge.getAbsenceDays15());
-		this.toEntityAbsenceDays16(absenceDaysMerge.getAbsenceDays16());
-		this.toEntityAbsenceDays17(absenceDaysMerge.getAbsenceDays17());
-		this.toEntityAbsenceDays18(absenceDaysMerge.getAbsenceDays18());
-		this.toEntityAbsenceDays19(absenceDaysMerge.getAbsenceDays19());
-		this.toEntityAbsenceDays20(absenceDaysMerge.getAbsenceDays20());
-		this.toEntityAbsenceDays21(absenceDaysMerge.getAbsenceDays21());
-		this.toEntityAbsenceDays22(absenceDaysMerge.getAbsenceDays22());
-		this.toEntityAbsenceDays23(absenceDaysMerge.getAbsenceDays23());
-		this.toEntityAbsenceDays24(absenceDaysMerge.getAbsenceDays24());
-		this.toEntityAbsenceDays25(absenceDaysMerge.getAbsenceDays25());
-		this.toEntityAbsenceDays26(absenceDaysMerge.getAbsenceDays26());
-		this.toEntityAbsenceDays27(absenceDaysMerge.getAbsenceDays27());
-		this.toEntityAbsenceDays28(absenceDaysMerge.getAbsenceDays28());
-		this.toEntityAbsenceDays29(absenceDaysMerge.getAbsenceDays29());
-		this.toEntityAbsenceDays30(absenceDaysMerge.getAbsenceDays30());
-	}
-
-	/** KRCDT_MON_AGGR_HDWK_TIME 10 **/
-	public void toEntityHolidayWorkTime(AggregateHolidayWorkTimeMerge domain) {
-		this.toEntityHolidayWorkTime1(domain.getHolidayWorkTime1());
-		this.toEntityHolidayWorkTime2(domain.getHolidayWorkTime2());
-		this.toEntityHolidayWorkTime3(domain.getHolidayWorkTime3());
-		this.toEntityHolidayWorkTime4(domain.getHolidayWorkTime4());
-		this.toEntityHolidayWorkTime5(domain.getHolidayWorkTime5());
-		this.toEntityHolidayWorkTime6(domain.getHolidayWorkTime6());
-		this.toEntityHolidayWorkTime7(domain.getHolidayWorkTime7());
-		this.toEntityHolidayWorkTime8(domain.getHolidayWorkTime8());
-		this.toEntityHolidayWorkTime9(domain.getHolidayWorkTime9());
-		this.toEntityHolidayWorkTime10(domain.getHolidayWorkTime10());
 	}
 
 	/** KRCDT_MON_AGGR_OVER_TIME 10 **/
 	public void toEntityOverTime(Map<OverTimeFrameNo, AggregateOverTime> aggregateOverTimeMap) {
-		for(OverTimeFrameNo i : aggregateOverTimeMap.keySet()) {
-			AggregateOverTime aggrOverTime = aggregateOverTimeMap.get(i);
-			switch(i.v()) {
-			case 1 :
+		for (int i = 1; i <= 10; i++){
+			OverTimeFrameNo frameNo = new OverTimeFrameNo(i);
+			AggregateOverTime aggrOverTime = new AggregateOverTime(frameNo);
+			if (aggregateOverTimeMap.containsKey(frameNo)){
+				aggrOverTime = aggregateOverTimeMap.get(frameNo);
+			}
+			switch (i) {
+			case 1:
 				toEntityOverTime1(aggrOverTime);
 				break;
 			case 2:
@@ -2496,23 +2446,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 			case 10:
 				toEntityOverTime10(aggrOverTime);
 				break;
-			default: break;
 			}
 		}
-	}
-
-	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	public void toEntitySpecificDays(AggregateSpecificDaysMerge domain) {
-		this.toEntitySpecificDays1(domain.getSpecificDays1());
-		this.toEntitySpecificDays2(domain.getSpecificDays2());
-		this.toEntitySpecificDays3(domain.getSpecificDays3());
-		this.toEntitySpecificDays4(domain.getSpecificDays4());
-		this.toEntitySpecificDays5(domain.getSpecificDays5());
-		this.toEntitySpecificDays6(domain.getSpecificDays6());
-		this.toEntitySpecificDays7(domain.getSpecificDays7());
-		this.toEntitySpecificDays8(domain.getSpecificDays8());
-		this.toEntitySpecificDays9(domain.getSpecificDays9());
-		this.toEntitySpecificDays10(domain.getSpecificDays10());
 	}
 
 	/** KRCDT_MON_EXCOUT_TIME 50 **/
@@ -2523,173 +2458,171 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		// 時間外超過：時間
 		val excessOutsideTimeMap = excessOutsideWork.getTime();
-
-		  for (Integer i : excessOutsideTimeMap.keySet()) {
-			  Map<Integer, ExcessOutsideWork> breakdownMap = excessOutsideTimeMap.get(i).getBreakdown();
-			  toEntityExcessOutsideWork(breakdownMap);
-		  }
-	}
-	
-	public void toEntityExcessOutsideWork(Map<Integer, ExcessOutsideWork> breakdownMap) {
-		  for(Integer j :  breakdownMap.keySet()) {
-			  ExcessOutsideWork excessOutsideTime = (ExcessOutsideWork) breakdownMap.get(j);
-				switch(j) {
-				case 1 :
-					toEntityExcessOutsideWork1(excessOutsideTime);
-					break;
-				case 2:
-					toEntityExcessOutsideWork2(excessOutsideTime);
-					break;
-				case 3:
-					toEntityExcessOutsideWork3(excessOutsideTime);
-					break;
-				case 4:
-					toEntityExcessOutsideWork4(excessOutsideTime);
-					break;
-				case 5:
-					toEntityExcessOutsideWork5(excessOutsideTime);
-					break;
-				case 6:
-					toEntityExcessOutsideWork6(excessOutsideTime);
-					break;
-				case 7:
-					toEntityExcessOutsideWork7(excessOutsideTime);
-					break;
-				case 8:
-					toEntityExcessOutsideWork8(excessOutsideTime);
-					break;
-				case 9:
-					toEntityExcessOutsideWork9(excessOutsideTime);
-					break;
-				case 10:
-					toEntityExcessOutsideWork10(excessOutsideTime);
-					break;
-				case 11 :
-					toEntityExcessOutsideWork11(excessOutsideTime);
-					break;
-				case 12:
-					toEntityExcessOutsideWork12(excessOutsideTime);
-					break;
-				case 13:
-					toEntityExcessOutsideWork13(excessOutsideTime);
-					break;
-				case 14:
-					toEntityExcessOutsideWork14(excessOutsideTime);
-					break;
-				case 15:
-					toEntityExcessOutsideWork15(excessOutsideTime);
-					break;
-				case 16:
-					toEntityExcessOutsideWork16(excessOutsideTime);
-					break;
-				case 17:
-					toEntityExcessOutsideWork17(excessOutsideTime);
-					break;
-				case 18:
-					toEntityExcessOutsideWork18(excessOutsideTime);
-					break;
-				case 19:
-					toEntityExcessOutsideWork19(excessOutsideTime);
-					break;
-				case 20:
-					toEntityExcessOutsideWork20(excessOutsideTime);
-					break;
-				case 21 :
-					toEntityExcessOutsideWork21(excessOutsideTime);
-					break;
-				case 22:
-					toEntityExcessOutsideWork22(excessOutsideTime);
-					break;
-				case 23:
-					toEntityExcessOutsideWork23(excessOutsideTime);
-					break;
-				case 24:
-					toEntityExcessOutsideWork24(excessOutsideTime);
-					break;
-				case 25:
-					toEntityExcessOutsideWork25(excessOutsideTime);
-					break;
-				case 26:
-					toEntityExcessOutsideWork26(excessOutsideTime);
-					break;
-				case 27:
-					toEntityExcessOutsideWork27(excessOutsideTime);
-					break;
-				case 28:
-					toEntityExcessOutsideWork28(excessOutsideTime);
-					break;
-				case 29:
-					toEntityExcessOutsideWork29(excessOutsideTime);
-					break;
-				case 30:
-					toEntityExcessOutsideWork30(excessOutsideTime);
-					break;
-				case 31 :
-					toEntityExcessOutsideWork31(excessOutsideTime);
-					break;
-				case 32:
-					toEntityExcessOutsideWork32(excessOutsideTime);
-					break;
-				case 33:
-					toEntityExcessOutsideWork33(excessOutsideTime);
-					break;
-				case 34:
-					toEntityExcessOutsideWork34(excessOutsideTime);
-					break;
-				case 35:
-					toEntityExcessOutsideWork35(excessOutsideTime);
-					break;
-				case 36:
-					toEntityExcessOutsideWork36(excessOutsideTime);
-					break;
-				case 37:
-					toEntityExcessOutsideWork37(excessOutsideTime);
-					break;
-				case 38:
-					toEntityExcessOutsideWork38(excessOutsideTime);
-					break;
-				case 39:
-					toEntityExcessOutsideWork39(excessOutsideTime);
-					break;
-				case 40:
-					toEntityExcessOutsideWork40(excessOutsideTime);
-					break;				
-				case 41 :
-					toEntityExcessOutsideWork41(excessOutsideTime);
-					break;
-				case 42:
-					toEntityExcessOutsideWork42(excessOutsideTime);
-					break;
-				case 43:
-					toEntityExcessOutsideWork43(excessOutsideTime);
-					break;
-				case 44:
-					toEntityExcessOutsideWork44(excessOutsideTime);
-					break;
-				case 45:
-					toEntityExcessOutsideWork45(excessOutsideTime);
-					break;			
-				case 46 :
-					toEntityExcessOutsideWork46(excessOutsideTime);
-					break;
-				case 47:
-					toEntityExcessOutsideWork47(excessOutsideTime);
-					break;
-				case 48:
-					toEntityExcessOutsideWork48(excessOutsideTime);
-					break;
-				case 49:
-					toEntityExcessOutsideWork49(excessOutsideTime);
-					break;
-				case 50:
-					toEntityExcessOutsideWork50(excessOutsideTime);
-					break;				
-				default: break;
-				} 
-			  
-		  }
 		
-		
+		for (int i = 0; i < 50; i++){
+			int breakdownNo = i / 5 + 1;
+			int excessNo = i % 5 + 1;
+			
+			ExcessOutsideWork excessOutsideTime = new ExcessOutsideWork(breakdownNo, excessNo);
+			if (excessOutsideTimeMap.containsKey(breakdownNo)){
+				Map<Integer, ExcessOutsideWork> breakdown = excessOutsideTimeMap.get(breakdownNo).getBreakdown();
+				if (breakdown.containsKey(excessNo)){
+					excessOutsideTime = breakdown.get(excessNo);
+				}
+			}
+			switch (i){
+			case 1:
+				toEntityExcessOutsideWork1(excessOutsideTime);
+				break;
+			case 2:
+				toEntityExcessOutsideWork2(excessOutsideTime);
+				break;
+			case 3:
+				toEntityExcessOutsideWork3(excessOutsideTime);
+				break;
+			case 4:
+				toEntityExcessOutsideWork4(excessOutsideTime);
+				break;
+			case 5:
+				toEntityExcessOutsideWork5(excessOutsideTime);
+				break;
+			case 6:
+				toEntityExcessOutsideWork6(excessOutsideTime);
+				break;
+			case 7:
+				toEntityExcessOutsideWork7(excessOutsideTime);
+				break;
+			case 8:
+				toEntityExcessOutsideWork8(excessOutsideTime);
+				break;
+			case 9:
+				toEntityExcessOutsideWork9(excessOutsideTime);
+				break;
+			case 10:
+				toEntityExcessOutsideWork10(excessOutsideTime);
+				break;
+			case 11:
+				toEntityExcessOutsideWork11(excessOutsideTime);
+				break;
+			case 12:
+				toEntityExcessOutsideWork12(excessOutsideTime);
+				break;
+			case 13:
+				toEntityExcessOutsideWork13(excessOutsideTime);
+				break;
+			case 14:
+				toEntityExcessOutsideWork14(excessOutsideTime);
+				break;
+			case 15:
+				toEntityExcessOutsideWork15(excessOutsideTime);
+				break;
+			case 16:
+				toEntityExcessOutsideWork16(excessOutsideTime);
+				break;
+			case 17:
+				toEntityExcessOutsideWork17(excessOutsideTime);
+				break;
+			case 18:
+				toEntityExcessOutsideWork18(excessOutsideTime);
+				break;
+			case 19:
+				toEntityExcessOutsideWork19(excessOutsideTime);
+				break;
+			case 20:
+				toEntityExcessOutsideWork20(excessOutsideTime);
+				break;
+			case 21:
+				toEntityExcessOutsideWork21(excessOutsideTime);
+				break;
+			case 22:
+				toEntityExcessOutsideWork22(excessOutsideTime);
+				break;
+			case 23:
+				toEntityExcessOutsideWork23(excessOutsideTime);
+				break;
+			case 24:
+				toEntityExcessOutsideWork24(excessOutsideTime);
+				break;
+			case 25:
+				toEntityExcessOutsideWork25(excessOutsideTime);
+				break;
+			case 26:
+				toEntityExcessOutsideWork26(excessOutsideTime);
+				break;
+			case 27:
+				toEntityExcessOutsideWork27(excessOutsideTime);
+				break;
+			case 28:
+				toEntityExcessOutsideWork28(excessOutsideTime);
+				break;
+			case 29:
+				toEntityExcessOutsideWork29(excessOutsideTime);
+				break;
+			case 30:
+				toEntityExcessOutsideWork30(excessOutsideTime);
+				break;
+			case 31:
+				toEntityExcessOutsideWork31(excessOutsideTime);
+				break;
+			case 32:
+				toEntityExcessOutsideWork32(excessOutsideTime);
+				break;
+			case 33:
+				toEntityExcessOutsideWork33(excessOutsideTime);
+				break;
+			case 34:
+				toEntityExcessOutsideWork34(excessOutsideTime);
+				break;
+			case 35:
+				toEntityExcessOutsideWork35(excessOutsideTime);
+				break;
+			case 36:
+				toEntityExcessOutsideWork36(excessOutsideTime);
+				break;
+			case 37:
+				toEntityExcessOutsideWork37(excessOutsideTime);
+				break;
+			case 38:
+				toEntityExcessOutsideWork38(excessOutsideTime);
+				break;
+			case 39:
+				toEntityExcessOutsideWork39(excessOutsideTime);
+				break;
+			case 40:
+				toEntityExcessOutsideWork40(excessOutsideTime);
+				break;				
+			case 41:
+				toEntityExcessOutsideWork41(excessOutsideTime);
+				break;
+			case 42:
+				toEntityExcessOutsideWork42(excessOutsideTime);
+				break;
+			case 43:
+				toEntityExcessOutsideWork43(excessOutsideTime);
+				break;
+			case 44:
+				toEntityExcessOutsideWork44(excessOutsideTime);
+				break;
+			case 45:
+				toEntityExcessOutsideWork45(excessOutsideTime);
+				break;			
+			case 46:
+				toEntityExcessOutsideWork46(excessOutsideTime);
+				break;
+			case 47:
+				toEntityExcessOutsideWork47(excessOutsideTime);
+				break;
+			case 48:
+				toEntityExcessOutsideWork48(excessOutsideTime);
+				break;
+			case 49:
+				toEntityExcessOutsideWork49(excessOutsideTime);
+				break;
+			case 50:
+				toEntityExcessOutsideWork50(excessOutsideTime);
+				break;				
+			} 
+		}
 	}
 
 	public void toEntityAbsenceDays1(AggregateAbsenceDays absenceDays) {
@@ -3396,7 +3329,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
-
 	public void toEntityPremiumTime1(AggregatePremiumTime domain) {
 		this.premiumTime1 = domain.getTime().v();
 
@@ -3448,7 +3380,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-
 	public void toEntitySpecificDays1(AggregateSpecificDays domain) {
 		this.specificDays1 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
 		this.holidayWorkSpecificDays1 = domain.getHolidayWorkSpecificDays() == null ? 0
@@ -3519,7 +3450,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_AGGR_TOTAL_WRK */
-
 	public void toEntityTotalWorkingTime(AggregateTotalWorkingTime domain) {
 		/** 就業時間 */
 		WorkTimeOfMonthly workTime = domain.getWorkTime();
@@ -3552,7 +3482,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_ATTENDANCE_TIME */
-
 	public void toEntityAttendanceTimeOfMonthly(AttendanceTimeOfMonthly domain) {
 		
 		this.startYmd = domain.getDatePeriod().start();
@@ -3574,8 +3503,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 回数集計 */
 		val totalCount = domain.getTotalCount();
 		toEntityTotalCount(totalCount.getTotalCountList());
-		
-		/* TODO TotalCountByPeriod  thiếu dữ liệu cho  List<MonthlyAggregationErrorInfo> errorInfos  エラー情報 */
 	}
 	
 	/**
@@ -3588,11 +3515,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
 		/** フレックス時間 */
 		val flexTime = monthlyCalculation.getFlexTime();
-		 
-		 toEntityRegAndIrreTimeOfMonth(actualWorkingTime);
-		 
 		
-		 toEntityFlexTimeOfMonthly(flexTime);
+		toEntityRegAndIrreTimeOfMonth(actualWorkingTime);
+		
+		toEntityFlexTimeOfMonthly(flexTime);
 		
 		/** 法定労働時間 */
 		this.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
@@ -3611,11 +3537,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 36協定時間 */
 		val agreementTime = monthlyCalculation.getAgreementTime();
 		toEntityAgreementTimeOfMonthly(agreementTime);
-		
 	}
 
 	/* KRCDT_MON_FLEX_TIME */
-
 	public void toEntityFlexTimeOfMonthly(FlexTimeOfMonthly domain) {
 
 		val flexTime = domain.getFlexTime();
@@ -3658,11 +3582,16 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		toEntityAggregateHolidayWorkTime(aggregateHolidayWorkTimeMap);
 	}
 	
+	/** KRCDT_MON_AGGR_HDWK_TIME 10 **/
 	public void toEntityAggregateHolidayWorkTime(Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> aggregateHolidayWorkTimeMap) {
-		for (HolidayWorkFrameNo i : aggregateHolidayWorkTimeMap.keySet()){
-            AggregateHolidayWorkTime aggrHolidayWorkTime = aggregateHolidayWorkTimeMap.get(i);
-			switch(i.v()) {
-			case 1 :
+		for (int i = 1; i <= 10; i++){
+			HolidayWorkFrameNo frameNo = new HolidayWorkFrameNo(i);
+			AggregateHolidayWorkTime aggrHolidayWorkTime = new AggregateHolidayWorkTime(frameNo);
+			if (aggregateHolidayWorkTimeMap.containsKey(frameNo)){
+				aggrHolidayWorkTime = aggregateHolidayWorkTimeMap.get(frameNo);
+			}
+			switch (i){
+			case 1:
 				toEntityHolidayWorkTime1(aggrHolidayWorkTime);
 				break;
 			case 2:
@@ -3692,16 +3621,11 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 			case 10:
 				toEntityHolidayWorkTime10(aggrHolidayWorkTime);
 				break;
-			default: break;	
-			
 			}
 		}
-		
-		
 	}
 
 	/* KRCDT_MON_LEAVE - リポジトリ：月別実績の休業 only update */
-
 	public void toEntityLeaveOfMonthly(LeaveOfMonthly domain) {
 		this.prenatalLeaveDays = 0.0;
 		this.postpartumLeaveDays = 0.0;
@@ -3779,7 +3703,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		/** 集計残業時間 */
 		toEntityOverTime(domain.getAggregateOverTimeMap());
-		
 	}
 
 	/* KRCDT_MON_REG_IRREG_TIME */
@@ -3797,115 +3720,118 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_VACT_USE_TIME */
-
 	public void toEntityVacationUseTimeOfMonth(VacationUseTimeOfMonthly domain) {
 		this.annualLeaveUseTime = domain.getAnnualLeave().getUseTime().v();
 		this.retentionYearlyUseTime = domain.getRetentionYearly().getUseTime().v();
 		this.specialHolidayUseTime = domain.getSpecialHoliday().getUseTime().v();
 		this.compensatoryLeaveUseTime = domain.getCompensatoryLeave().getUseTime().v();
-
 	}
 	
+	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
 	public void toEntitySpecificDaysOfMonthly(Map<SpecificDateItemNo, AggregateSpecificDays> specificDaysList) {
-		  for (SpecificDateItemNo i : specificDaysList.keySet()) {
-			  AggregateSpecificDays specificDay = (AggregateSpecificDays) specificDaysList.get(i);
-			  switch(i.v()) {
-			  case 1:
-				  this.toEntitySpecificDays1(specificDay); break;
-			  case 2:
-				  this.toEntitySpecificDays2(specificDay); break;
-			  case 3:
-				  this.toEntitySpecificDays3(specificDay); break;
-			  case 4:
-				  this.toEntitySpecificDays4(specificDay); break;
-			  case 5:
-				  this.toEntitySpecificDays5(specificDay); break;
-			  case 6:
-				  this.toEntitySpecificDays6(specificDay); break;
-			  case 7:
-				  this.toEntitySpecificDays7(specificDay); break;
-			  case 8:
-				  this.toEntitySpecificDays8(specificDay); break;
-			  case 9:
-				  this.toEntitySpecificDays9(specificDay); break;
-			  case 10:
-				  this.toEntitySpecificDays10(specificDay); break;
-			  default: break;
-			  }
-	      }	
+		for (int i = 1; i <= 10; i++){
+			SpecificDateItemNo itemNo = new SpecificDateItemNo(i);
+			AggregateSpecificDays specificDay = new AggregateSpecificDays(itemNo);
+			if (specificDaysList.containsKey(itemNo)){
+				specificDay = specificDaysList.get(itemNo);
+			}
+			switch (i){
+			case 1:
+				this.toEntitySpecificDays1(specificDay); break;
+			case 2:
+				this.toEntitySpecificDays2(specificDay); break;
+			case 3:
+				this.toEntitySpecificDays3(specificDay); break;
+			case 4:
+				this.toEntitySpecificDays4(specificDay); break;
+			case 5:
+				this.toEntitySpecificDays5(specificDay); break;
+			case 6:
+				this.toEntitySpecificDays6(specificDay); break;
+			case 7:
+				this.toEntitySpecificDays7(specificDay); break;
+			case 8:
+				this.toEntitySpecificDays8(specificDay); break;
+			case 9:
+				this.toEntitySpecificDays9(specificDay); break;
+			case 10:
+				this.toEntitySpecificDays10(specificDay); break;
+			}
+		}
 	}
 	
 	public void toEntitySpcVacationDaysList(Map<Integer, AggregateSpcVacationDays> spcVacationDaysList) {
-		  for (Integer i : spcVacationDaysList.keySet()) {
-			  AggregateSpcVacationDays specificDay = (AggregateSpcVacationDays) spcVacationDaysList.get(i);
-			  switch(i) {
-			  case 1:
-				  toEntitySpcVacationDays1(specificDay); break;
-			  case 2:
-				  toEntitySpcVacationDays2(specificDay); break;
-			  case 3:
-				  toEntitySpcVacationDays3(specificDay); break;
-			  case 4:
-				  toEntitySpcVacationDays4(specificDay); break;
-			  case 5:
-				  toEntitySpcVacationDays5(specificDay); break;
-			  case 6:
-				  toEntitySpcVacationDays6(specificDay); break;
-			  case 7:
-				  toEntitySpcVacationDays7(specificDay); break;
-			  case 8:
-				  toEntitySpcVacationDays8(specificDay); break;
-			  case 9:
-				  toEntitySpcVacationDays9(specificDay); break;
-			  case 10:
-				  toEntitySpcVacationDays10(specificDay); break;
-			  case 11:
-				  toEntitySpcVacationDays11(specificDay); break;
-			  case 12:
-				  toEntitySpcVacationDays12(specificDay); break;
-			  case 13:
-				  toEntitySpcVacationDays13(specificDay); break;
-			  case 14:
-				  toEntitySpcVacationDays14(specificDay); break;
-			  case 15:
-				  toEntitySpcVacationDays15(specificDay); break;
-			  case 16:
-				  toEntitySpcVacationDays16(specificDay); break;
-			  case 17:
-				  toEntitySpcVacationDays17(specificDay); break;
-			  case 18:
-				  toEntitySpcVacationDays18(specificDay); break;
-			  case 19:
-				  toEntitySpcVacationDays19(specificDay); break;
-			  case 20:
-				  toEntitySpcVacationDays20(specificDay); break;
-			  case 21:
-				  toEntitySpcVacationDays21(specificDay); break;
-			  case 22:
-				  toEntitySpcVacationDays22(specificDay); break;
-			  case 23:
-				  toEntitySpcVacationDays23(specificDay); break;
-			  case 24:
-				  toEntitySpcVacationDays24(specificDay); break;
-			  case 25:
-				  toEntitySpcVacationDays25(specificDay); break;
-			  case 26:
-				  toEntitySpcVacationDays26(specificDay); break;
-			  case 27:
-				  toEntitySpcVacationDays27(specificDay); break;
-			  case 28:
-				  toEntitySpcVacationDays28(specificDay); break;
-			  case 29:
-				  toEntitySpcVacationDays29(specificDay); break;
-			  case 30:
-				  toEntitySpcVacationDays30(specificDay); break;				  
-			  default: break;
-			  }
-	      }	
+		for (int i = 1; i <= 30; i++){
+			AggregateSpcVacationDays specificDay = new AggregateSpcVacationDays(i);
+			if (spcVacationDaysList.containsKey(i)){
+				specificDay = spcVacationDaysList.get(i);
+			}
+			switch (i){
+			case 1:
+				toEntitySpcVacationDays1(specificDay); break;
+			case 2:
+				toEntitySpcVacationDays2(specificDay); break;
+			case 3:
+				toEntitySpcVacationDays3(specificDay); break;
+			case 4:
+				toEntitySpcVacationDays4(specificDay); break;
+			case 5:
+				toEntitySpcVacationDays5(specificDay); break;
+			case 6:
+				toEntitySpcVacationDays6(specificDay); break;
+			case 7:
+				toEntitySpcVacationDays7(specificDay); break;
+			case 8:
+				toEntitySpcVacationDays8(specificDay); break;
+			case 9:
+				toEntitySpcVacationDays9(specificDay); break;
+			case 10:
+				toEntitySpcVacationDays10(specificDay); break;
+			case 11:
+				toEntitySpcVacationDays11(specificDay); break;
+			case 12:
+				toEntitySpcVacationDays12(specificDay); break;
+			case 13:
+				toEntitySpcVacationDays13(specificDay); break;
+			case 14:
+				toEntitySpcVacationDays14(specificDay); break;
+			case 15:
+				toEntitySpcVacationDays15(specificDay); break;
+			case 16:
+				toEntitySpcVacationDays16(specificDay); break;
+			case 17:
+				toEntitySpcVacationDays17(specificDay); break;
+			case 18:
+				toEntitySpcVacationDays18(specificDay); break;
+			case 19:
+				toEntitySpcVacationDays19(specificDay); break;
+			case 20:
+				toEntitySpcVacationDays20(specificDay); break;
+			case 21:
+				toEntitySpcVacationDays21(specificDay); break;
+			case 22:
+				toEntitySpcVacationDays22(specificDay); break;
+			case 23:
+				toEntitySpcVacationDays23(specificDay); break;
+			case 24:
+				toEntitySpcVacationDays24(specificDay); break;
+			case 25:
+				toEntitySpcVacationDays25(specificDay); break;
+			case 26:
+				toEntitySpcVacationDays26(specificDay); break;
+			case 27:
+				toEntitySpcVacationDays27(specificDay); break;
+			case 28:
+				toEntitySpcVacationDays28(specificDay); break;
+			case 29:
+				toEntitySpcVacationDays29(specificDay); break;
+			case 30:
+				toEntitySpcVacationDays30(specificDay); break;				
+			}
+		}
 	}
 	
 	/** 勤務日数 */
-	
 	public void toEntityWorkDays(WorkDaysOfMonthly vtWorkDays) {
 		
 		/** 出勤日数 */
@@ -3933,7 +3859,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 特定日数 SpecificDaysOfMonthly */
 		val specificDays = vtWorkDays.getSpecificDays();
 		this.toEntitySpecificDaysOfMonthly(specificDays.getSpecificDays());
-		
 		
 		/** 休出日数  */
 		val holidayWorkDays = vtWorkDays.getHolidayWorkDays();
@@ -3969,7 +3894,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.totalSpcvactDays = specialVacationDays.getTotalSpcVacationDays().v();
 		this.totalSpcvactTime = specialVacationDays.getTotalSpcVacationTime().v();
 		this.toEntitySpcVacationDaysList(specialVacationDays.getSpcVacationDaysList());
-		
 	}
 	
 	/** 勤務時間 */
@@ -3994,9 +3918,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		toEntityPremiumTimeOfMonthly(premiumTimes);
 		
 		/** 休憩時間 */
-		breakTime = vtWorkTime.getBreakTime().getBreakTime().v();
-		
-		/** 休日時間 */
 		toEntityBreakTime(vtWorkTime.getBreakTime());
 		
 		/** 休日時間 */
@@ -4027,41 +3948,45 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 乖離時間 */
 		Map<Integer, AggregateDivergenceTime> divergenceTimeList = divergenceTime.getDivergenceTimeList();
 		
-		for (Integer i : divergenceTimeList.keySet()) {
-			AggregateDivergenceTime bonus = (AggregateDivergenceTime) divergenceTimeList.get(i);
-			switch(i) {
-			 case 1:
-				  this.toEntityDivergenceTime1(bonus); break;
-			  case 2:
-				  this.toEntityDivergenceTime2(bonus); break;
-			  case 3:
-				  this.toEntityDivergenceTime3(bonus); break;
-			  case 4:
-				  this.toEntityDivergenceTime4(bonus); break;
-			  case 5:
-				  this.toEntityDivergenceTime5(bonus); break;
-			  case 6:
-				  this.toEntityDivergenceTime6(bonus); break;
-			  case 7:
-				  this.toEntityDivergenceTime7(bonus); break;
-			  case 8:
-				  this.toEntityDivergenceTime8(bonus); break;
-			  case 9:
-				  this.toEntityDivergenceTime9(bonus); break;
-			  case 10:
-				  this.toEntityDivergenceTime10(bonus); break;
-			  default : break;
+		for (int i = 1; i <= 10; i++){
+			AggregateDivergenceTime bonus = new AggregateDivergenceTime(i);
+			if (divergenceTimeList.containsKey(i)){
+				bonus = divergenceTimeList.get(i);
+			}
+			switch (i){
+			case 1:
+				this.toEntityDivergenceTime1(bonus); break;
+			case 2:
+				this.toEntityDivergenceTime2(bonus); break;
+			case 3:
+				this.toEntityDivergenceTime3(bonus); break;
+			case 4:
+				this.toEntityDivergenceTime4(bonus); break;
+			case 5:
+				this.toEntityDivergenceTime5(bonus); break;
+			case 6:
+				this.toEntityDivergenceTime6(bonus); break;
+			case 7:
+				this.toEntityDivergenceTime7(bonus); break;
+			case 8:
+				this.toEntityDivergenceTime8(bonus); break;
+			case 9:
+				this.toEntityDivergenceTime9(bonus); break;
+			case 10:
+				this.toEntityDivergenceTime10(bonus); break;
 			}
 		}
-	
 	}
 	
+	/** KRCDT_MON_AGGR_ABSN_DAYS 30 **/
 	/** 欠勤日数 */
 	public void toEntityAbsenceDays(Map<Integer, AggregateAbsenceDays> absenceDaysList) {
-		
-		for (Integer i : absenceDaysList.keySet()) {
-			AggregateAbsenceDays absenceDays = (AggregateAbsenceDays) absenceDaysList.get(i);
-			switch(i) {
+		for (int i = 1; i <= 30; i++){
+			AggregateAbsenceDays absenceDays = new AggregateAbsenceDays(i);
+			if (absenceDaysList.containsKey(i)){
+				absenceDays = absenceDaysList.get(i);
+			}
+			switch (i){
 			case 1:
 				toEntityAbsenceDays1(absenceDays);
 				break;
@@ -4152,13 +4077,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 			case 30:
 				toEntityAbsenceDays30(absenceDays);
 				break;
-			default: break;
-			
 			}
 		}
-		
 	}
-	
 	
 	/** 入退門時間 */
 	public void toEntityAttendanceLeaveGateTimeOfMonthly(AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime) {
@@ -4171,7 +4092,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.attendanceLeaveGateStayingTime = attendanceLeaveGateTime.getStayingTime().v();
 		/** 不就労時間 */
 		this.attendanceLeaveGateUnemployedTime = attendanceLeaveGateTime.getUnemployedTime().v();
-		
 	}
 	
 	/** 遅刻早退 */
@@ -4188,7 +4108,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.leaveEarlyTimes = leaveEarly.getTimes().v();
 		this.leaveEarlyTime = leaveEarly.getTime().getTime().v();
 		this.calcLeaveEarlyTime = leaveEarly.getTime().getCalcTime().v();
-		
 	}
 	
 	/** 深夜時間 */
@@ -4223,7 +4142,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		TimeMonthWithCalculation specialHolidayWorkMidnightTime = midnightTime.getSpecialHolidayWorkMidnightTime();
 		this.specialHolidayWorkMidnightTime = specialHolidayWorkMidnightTime.getTime().v();
 		this.calcSpecialHolidayWorkMidnightTime =specialHolidayWorkMidnightTime.getCalcTime().v();
-		
 	}
 	
 	/** 休日時間 */
@@ -4232,13 +4150,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalHolidayTime = holidayTime.getLegalHolidayTime().v();
 		this.illegalHolidayTime = holidayTime.getIllegalHolidayTime().v();
 		this.illegalSpecialHolidayTime = holidayTime.getIllegalSpecialHolidayTime().v();
-		
 	}
 	
 	/** 休憩時間 */
 	public void toEntityBreakTime(BreakTimeOfMonthly breakTime) {
-		this.breakTime = breakTime.getBreakTime().v();
 		
+		this.breakTime = breakTime.getBreakTime().v();
 	}
 	
 	/** 割増時間 */
@@ -4260,30 +4177,32 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	/** KRCDT_MON_AGGR_BNSPY_TIME 10 **/
 	public void toEntityBonusPayTime(Map<Integer, AggregateBonusPayTime> bonusPayTime) {
-		for (Integer i : bonusPayTime.keySet()) {
-			AggregateBonusPayTime bonus = (AggregateBonusPayTime) bonusPayTime.get(i);
-			switch(i) {
-			 case 1:
-				  this.toEntityBonusPayTime1(bonus); break;
-			  case 2:
-				  this.toEntityBonusPayTime2(bonus); break;
-			  case 3:
-				  this.toEntityBonusPayTime3(bonus); break;
-			  case 4:
-				  this.toEntityBonusPayTime4(bonus); break;
-			  case 5:
-				  this.toEntityBonusPayTime5(bonus); break;
-			  case 6:
-				  this.toEntityBonusPayTime6(bonus); break;
-			  case 7:
-				  this.toEntityBonusPayTime7(bonus); break;
-			  case 8:
-				  this.toEntityBonusPayTime8(bonus); break;
-			  case 9:
-				  this.toEntityBonusPayTime9(bonus); break;
-			  case 10:
-				  this.toEntityBonusPayTime10(bonus); break;
-			  default : break;
+		for (int i = 1; i <= 10; i++){
+			AggregateBonusPayTime bonus = new AggregateBonusPayTime(i);
+			if (bonusPayTime.containsKey(i)){
+				bonus = bonusPayTime.get(i);
+			}
+			switch (i){
+			case 1:
+				this.toEntityBonusPayTime1(bonus); break;
+			case 2:
+				this.toEntityBonusPayTime2(bonus); break;
+			case 3:
+				this.toEntityBonusPayTime3(bonus); break;
+			case 4:
+				this.toEntityBonusPayTime4(bonus); break;
+			case 5:
+				this.toEntityBonusPayTime5(bonus); break;
+			case 6:
+				this.toEntityBonusPayTime6(bonus); break;
+			case 7:
+				this.toEntityBonusPayTime7(bonus); break;
+			case 8:
+				this.toEntityBonusPayTime8(bonus); break;
+			case 9:
+				this.toEntityBonusPayTime9(bonus); break;
+			case 10:
+				this.toEntityBonusPayTime10(bonus); break;
 			}
 		}
 	}
@@ -4291,48 +4210,52 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** 外出 */
 	/** KRCDT_MON_AGGR_GOOUT 4 **/
 	public void toEntityGout(Map<GoingOutReason, AggregateGoOut> goOuts) {
-		for (GoingOutReason i : goOuts.keySet()) {
-			AggregateGoOut bonus = (AggregateGoOut) goOuts.get(i);
-			switch(i) {
-			 case PRIVATE:
-				  this.toEntityGoOut1(bonus); break;
-			  case PUBLIC:
-				  this.toEntityGoOut2(bonus); break;
-			  case COMPENSATION:
-				  this.toEntityGoOut3(bonus); break;
-			  case UNION:
-				  this.toEntityGoOut4(bonus); break;
-			  default : break;
-			}
-		}
+		
+		GoingOutReason reason1 = GoingOutReason.PRIVATE;
+		AggregateGoOut goOut1 = new AggregateGoOut(reason1);
+		if (goOuts.containsKey(reason1)) goOut1 = goOuts.get(reason1);
+		this.toEntityGoOut1(goOut1);
+		
+		GoingOutReason reason2 = GoingOutReason.PUBLIC;
+		AggregateGoOut goOut2 = new AggregateGoOut(reason2);
+		if (goOuts.containsKey(reason2)) goOut2 = goOuts.get(reason2);
+		this.toEntityGoOut2(goOut2);
+		
+		GoingOutReason reason3 = GoingOutReason.COMPENSATION;
+		AggregateGoOut goOut3 = new AggregateGoOut(reason3);
+		if (goOuts.containsKey(reason3)) goOut3 = goOuts.get(reason3);
+		this.toEntityGoOut3(goOut3);
+		
+		GoingOutReason reason4 = GoingOutReason.UNION;
+		AggregateGoOut goOut4 = new AggregateGoOut(reason4);
+		if (goOuts.containsKey(reason4)) goOut4 = goOuts.get(reason4);
+		this.toEntityGoOut4(goOut4);
 	}
 	
 	/** 育児外出 */
 	public void toEntityGoOutChildCare(Map<ChildCareAtr, GoOutForChildCare> goOutForChildCares) {
-		for (ChildCareAtr i : goOutForChildCares.keySet()) {
-			GoOutForChildCare goOutForChildCare = (GoOutForChildCare) goOutForChildCares.get(i);
-			switch (i) {
-			case CHILD_CARE:
-				this.childcareGoOutTimes = goOutForChildCare.getTimes().v();
-				this.childcareGoOutTime = goOutForChildCare.getTime().v();
-				break;
-			case CARE:
-				this.careGoOutTimes = goOutForChildCare.getTimes().v();
-				this.careGoOutTime = goOutForChildCare.getTime().v();
-				break;
-			default:
-				break;
-			}
-		}
 		
+		ChildCareAtr atr1 = ChildCareAtr.CHILD_CARE;
+		GoOutForChildCare goOutForChildCare1 = new GoOutForChildCare(atr1);
+		if (goOutForChildCares.containsKey(atr1)) goOutForChildCare1 = goOutForChildCares.get(atr1);
+		this.childcareGoOutTimes = goOutForChildCare1.getTimes().v();
+		this.childcareGoOutTime = goOutForChildCare1.getTime().v();
+		
+		ChildCareAtr atr2 = ChildCareAtr.CARE;
+		GoOutForChildCare goOutForChildCare2 = new GoOutForChildCare(atr2);
+		if (goOutForChildCares.containsKey(atr2)) goOutForChildCare2 = goOutForChildCares.get(atr2);
+		this.careGoOutTimes = goOutForChildCare2.getTimes().v();
+		this.careGoOutTime = goOutForChildCare2.getTime().v();
 	}
-	
 	
 	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
 	public void toEntityPremiumTime(Map<Integer, AggregatePremiumTime> premiumTimes) {
-		for (Integer i : premiumTimes.keySet()) {
-			AggregatePremiumTime premiumTime = (AggregatePremiumTime) premiumTimes.get(i);
-			switch (i) {
+		for (int i = 1; i <= 10; i++){
+			AggregatePremiumTime premiumTime = new AggregatePremiumTime(i);
+			if (premiumTimes.containsKey(i)){
+				premiumTime = premiumTimes.get(i);
+			}
+			switch (i){
 			case 1:
 				this.toEntityPremiumTime1(premiumTime);
 				break;
@@ -4414,11 +4337,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	    this.logOffDivTotalTime = logoffDivergence.getTotalTime().v();
 	    /** 平均時間 */
 	    this.logOffDivAveTime = logoffDivergence.getAverageTime().v();
-		
 	}
 
 	/*  期間別の縦計 - KRCDT_MON_VERTICAL_TOTAL */
-
 	public void toEntityVerticalTotal(VerticalTotalOfMonthly domain) {
 		/** 勤務日数 */
 		val vtWorkDays = domain.getWorkDays();
@@ -4433,11 +4354,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		toEntityWorkClock(domain.getWorkClock());
 	}
 	
-	
 	private void toEntityTotalCount(Map<Integer, TotalCount> totalCountList) {
-		for (Integer i : totalCountList.keySet()) {
-			TotalCount totalCount = (TotalCount) totalCountList.get(i);
-			switch (i) {
+		for (int i = 1; i <= 30; i++){
+			TotalCount totalCount = new TotalCount(i);
+			if (totalCountList.containsKey(i)){
+				totalCount = totalCountList.get(i);
+			}
+			switch (i){
 			case 1:
 				this.toEntityTotalCount1(totalCount);
 				break;
@@ -4528,15 +4451,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 			case 30:
 				this.toEntityTotalCount30(totalCount);
 				break;
-			default:
-				break;
 			}
 		}
-		
-		
-		
 	}
-
 
 	/* KRCDT_MON_EXCESS_OUTSIDE*/
 	public void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
@@ -4760,7 +4677,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_AFFILIATION */
-
 	public void toEntityAffiliationInfoOfMonthly(AffiliationInfoOfMonthly domain) {
 
 		this.firstEmploymentCd = domain.getFirstInfo().getEmploymentCd().v();
@@ -4773,12 +4689,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.lastJobTitleId = domain.getLastInfo().getJobTitleId().v();
 		this.lastClassCd = domain.getLastInfo().getClassCd().v();
 		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().v();
-
 	}
 
 	/**
 	 * ドメインに変換
-	 * 
 	 * @return 集計加給時間
 	 */
 	public AggregateBonusPayTime toDomainBonusPayTime1() {
@@ -4853,7 +4767,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	/**
 	 * ドメインに変換
-	 * 
 	 * @return 集計乖離時間
 	 */
 	public AggregateDivergenceTime toDomainDivergenceTime1() {
@@ -4995,7 +4908,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計休出時間
 	 */
-	
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime1() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(1),
@@ -5008,7 +4920,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.calcTransferTime1)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime1),
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime1));
-		}
+	}
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime2() {
 		return AggregateHolidayWorkTime.of(
@@ -5022,7 +4934,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 			new AttendanceTimeMonth(this.calcTransferTime2)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime2),
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime2));
-		}
+	}
 
 	public AggregateHolidayWorkTime toDomainHolidayWorkTime3() {
 		return AggregateHolidayWorkTime.of(
@@ -5316,7 +5228,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	
 	public List<AggregateSpecificDays> getSpecificDaysLst(){
 		List<AggregateSpecificDays> lst= new ArrayList<>();
 		lst.add(this.toDomainSpecificDays1());
@@ -5974,54 +5885,55 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 3, this.excessTime_1_3));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 4, this.excessTime_1_4));
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 5, this.excessTime_1_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 6, this.excessTime_2_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 7, this.excessTime_2_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 8, this.excessTime_2_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 9, this.excessTime_2_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 10, this.excessTime_2_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 1, this.excessTime_3_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime_3_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 3, this.excessTime_3_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 4, this.excessTime_3_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 5, this.excessTime_3_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 6, this.excessTime_4_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 7, this.excessTime_4_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 8, this.excessTime_4_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 9, this.excessTime_4_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 10, this.excessTime_4_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 1, this.excessTime_5_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 2, this.excessTime_5_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime_5_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 4, this.excessTime_5_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 5, this.excessTime_5_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 6, this.excessTime_6_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 7, this.excessTime_6_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 8, this.excessTime_6_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 9, this.excessTime_6_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 10, this.excessTime_6_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 1, this.excessTime_7_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 2, this.excessTime_7_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 3, this.excessTime_7_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime_7_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 5, this.excessTime_7_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 6, this.excessTime_8_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 7, this.excessTime_8_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 8, this.excessTime_8_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 9, this.excessTime_8_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 10, this.excessTime_8_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 1, this.excessTime_9_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 2, this.excessTime_9_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 3, this.excessTime_9_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 4, this.excessTime_9_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime_9_5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 6, this.excessTime_10_1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 7, this.excessTime_10_2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 8, this.excessTime_10_3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 9, this.excessTime_10_4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 10, this.excessTime_10_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 1, this.excessTime_2_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime_2_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 3, this.excessTime_2_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 4, this.excessTime_2_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 5, this.excessTime_2_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 1, this.excessTime_3_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 2, this.excessTime_3_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime_3_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 4, this.excessTime_3_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 5, this.excessTime_3_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 1, this.excessTime_4_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 2, this.excessTime_4_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 3, this.excessTime_4_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime_4_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 5, this.excessTime_4_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 1, this.excessTime_5_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 2, this.excessTime_5_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 3, this.excessTime_5_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 4, this.excessTime_5_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime_5_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 1, this.excessTime_6_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 2, this.excessTime_6_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 3, this.excessTime_6_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 4, this.excessTime_6_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 5, this.excessTime_6_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 1, this.excessTime_7_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 2, this.excessTime_7_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 3, this.excessTime_7_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 4, this.excessTime_7_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 5, this.excessTime_7_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 1, this.excessTime_8_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 2, this.excessTime_8_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 3, this.excessTime_8_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 4, this.excessTime_8_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 5, this.excessTime_8_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 1, this.excessTime_9_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 2, this.excessTime_9_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 3, this.excessTime_9_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 4, this.excessTime_9_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 5, this.excessTime_9_5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 1, this.excessTime_10_1));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 2, this.excessTime_10_2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 3, this.excessTime_10_3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 4, this.excessTime_10_4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 5, this.excessTime_10_5));
 		
 		return excessOutsideWork;
 	}
+	
 	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
 		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
@@ -6039,9 +5951,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public ExcessOutsideWork toDomainExcessOutsideWorkXX(int breakdownNo, int excessNo, int excessTime) {
 		return ExcessOutsideWork.of(breakdownNo, excessNo, new AttendanceTimeMonth(excessTime));
 	}
-	
-
-	
 	
 	/** KRCDT_MON_AGREEMENT_TIME **/
 	/**
@@ -6216,10 +6125,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	public AggregateAbsenceDays toDomainAbsenceDays1() {
-		return AggregateAbsenceDays.of(
-				new AttendanceDaysMonth(new Double(this.absenceDay1)),
+		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay1)),
 				new AttendanceTimeMonth((int) this.absenceTime1));
-		
 	}
 
 	public AggregateAbsenceDays toDomainAbsenceDays2() {

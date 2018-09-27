@@ -435,8 +435,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		executorService.submit(task);
 	}
 
-	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
+	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeDailyPerError> lstError,
 			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
+		
+		employeeErrorRepo.removeParam(toMapParam(commandNew));
 
 		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
 
@@ -444,8 +446,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 		updateDomainAfterCalc(domainDailyNew, null);
 
-		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
-				.collect(Collectors.toList()));
+		registerErrorWhenCalc(lstError);
 
 		if (mode == 0) {
 			updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,

@@ -2,27 +2,27 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.workrule.closure;
+package nts.uk.shr.com.time.calendar;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * The Class ClosureDay.
+ * The Class Day.
  */
-@IntegerRange(max = 30, min = 0)
-public class ClosureDay extends IntegerPrimitiveValue<ClosureDay> {
+// 日
+@IntegerRange(min = 1, max = 31)
+public class Day extends IntegerPrimitiveValue<Day> {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -4727391399987061483L;
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new closure day.
+	 * Instantiates a new day.
 	 *
-	 * @param rawValue
-	 *            the raw value
+	 * @param rawValue the raw value
 	 */
-	public ClosureDay(Integer rawValue) {
+	public Day(Integer rawValue) {
 		super(rawValue);
 	}
 
