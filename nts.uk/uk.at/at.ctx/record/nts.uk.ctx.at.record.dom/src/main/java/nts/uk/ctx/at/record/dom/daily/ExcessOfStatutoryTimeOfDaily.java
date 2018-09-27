@@ -194,12 +194,11 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
-														   String searchWord,
 														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary,errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkOverTimeExcess(employeeId,targetDate, attendanceItemDictionary,errorCode);
 		return returnErrorItem;
 	}
 	
@@ -208,12 +207,11 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
-														   String searchWord,
 														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getOverTimeWork().isPresent())
-			returnErrorItem = this.getOverTimeWork().get().checkPreOverTimeExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
+			returnErrorItem = this.getOverTimeWork().get().checkPreOverTimeExcess(employeeId,targetDate, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	/**
@@ -249,12 +247,11 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkHolidayWorkTimeExcess(String employeeId,
 														   		  GeneralDate targetDate,
-																   String searchWord,
 																   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 																   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getWorkHolidayTime().isPresent())
-			returnErrorItem = this.getWorkHolidayTime().get().checkHolidayWorkExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
+			returnErrorItem = this.getWorkHolidayTime().get().checkHolidayWorkExcess(employeeId,targetDate, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
@@ -263,12 +260,11 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreHolidayWorkTimeExcess(String employeeId,
 														   		  GeneralDate targetDate,
-																   String searchWord,
 																   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 																   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorItem = new ArrayList<>();
 		if(this.getWorkHolidayTime().isPresent())
-			returnErrorItem = this.getWorkHolidayTime().get().checkPreHolidayWorkExcess(employeeId,targetDate,searchWord, attendanceItemDictionary, errorCode);
+			returnErrorItem = this.getWorkHolidayTime().get().checkPreHolidayWorkExcess(employeeId,targetDate, attendanceItemDictionary, errorCode);
 		return returnErrorItem;
 	}
 	
