@@ -111,6 +111,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems) {
 		List<Integer> attendanceItemIds = attendanceItems.stream().map(x -> x.getAttendanceItemId())
 				.collect(Collectors.toList());
+		attendanceItems = this.getAttendanceItemName(attendanceItems);
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
 				.getFullDataByAttdIdAndType(attendanceItemIds, type);
@@ -122,6 +123,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
+		attendanceItems = this.getAttendanceItemName(attendanceItems);
 		Map<Integer, AttItemName> mapAttendanceItems = attendanceItems.stream()
 				.collect(Collectors.toMap(AttItemName::getAttendanceItemId, x -> x));
 		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream()
@@ -408,6 +410,13 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		}
 
 		return attendanceItemList;
+	}
+	
+	private List<AttItemName> getAttendanceItemName(List<AttItemName> attendanceItem) {
+		for (AttItemName attItemName : attendanceItem) {
+			attItemName.setAttendanceItemName(this.formatName(attItemName.getAttendanceItemName()));
+		}
+		return attendanceItem;
 	}
 
 	private String formatName(String name) {

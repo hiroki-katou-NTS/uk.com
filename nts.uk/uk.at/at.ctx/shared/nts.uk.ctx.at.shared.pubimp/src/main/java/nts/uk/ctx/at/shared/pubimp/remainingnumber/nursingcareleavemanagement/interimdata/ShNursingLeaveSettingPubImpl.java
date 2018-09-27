@@ -224,6 +224,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 
 	private Output1 calculationUsagePeriod(Integer startMonthDay, GeneralDate startDate, GeneralDate endDate) {
 		Output1 output = new Output1();
+		// startMonthDay không thể null. nếu null. sai data. gửi cho anh Thành newways
 		int dayStartMonthDay = startMonthDay % 100;
 		int monthStartMonthDay = startMonthDay / 100;
 		GeneralDate commencementDate = GeneralDate.ymd(startDate.year(), monthStartMonthDay, dayStartMonthDay);

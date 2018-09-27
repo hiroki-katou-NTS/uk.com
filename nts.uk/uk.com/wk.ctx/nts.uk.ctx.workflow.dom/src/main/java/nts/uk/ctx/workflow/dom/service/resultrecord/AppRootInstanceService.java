@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service.resultrecord;
 
 import java.util.List;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;

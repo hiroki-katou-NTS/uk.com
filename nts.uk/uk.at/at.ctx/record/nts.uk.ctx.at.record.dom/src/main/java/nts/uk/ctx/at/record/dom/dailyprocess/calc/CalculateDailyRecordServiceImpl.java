@@ -358,7 +358,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,wko); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 	
 		///ここのnullは治す　→　直さないと絶対落ちる
-		if(!workType.isPresent()) return ManageReGetClass.cantCalc(Optional.empty(),integrationOfDaily,null);
+		if(!workType.isPresent() || (workType.get().getDailyWork().isWeekDayAttendance() && !checkAttendanceLeaveState(integrationOfDaily.getAttendanceLeave()))) {
+			integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(AttendanceTimeOfDailyPerformance.allZeroValue(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd())));
+			return ManageReGetClass.cantCalc(Optional.empty(),integrationOfDaily,null);
+		}
 		val beforeWorkType = workType;
 		
 		/* 労働制 */
@@ -684,6 +687,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 					leaveLate = Optional.of(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly());
 				}
 				if(!fixedWorkSetting.isPresent()) return ManageReGetClass.cantCalc2(workType,integrationOfDaily,personalInfo,holidayCalcMethodSet,regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,leaveLate);
+				/*大塚モード*/
+				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()));
 				List<OverTimeOfTimeZoneSet> fixOtSetting = Collections.emptyList();
 				List<EmTimeZoneSet> fixWoSetting = Collections.emptyList();
 				if(workType.get().getAttendanceHolidayAttr().isFullTime()) {
@@ -718,8 +723,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				statutoryOverFrameNoList = fixOtSetting.stream()
 													   .map(tc -> new OverTimeFrameNo(tc.getLegalOTframeNo().v()))
 													   .collect(Collectors.toList());
-				/*大塚モード*/
-				workType = Optional.of(ootsukaProcessService.getOotsukaWorkType(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()));
+
 				//出退勤削除
 				if(!ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation())
 					&& workType.get().getDailyWork().isHolidayType()) {
@@ -849,6 +853,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 										flexCalcSetting,
 										leaveLate);
 	}
+
+	private boolean checkAttendanceLeaveState(Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
+		if(attendanceLeave.isPresent()) {
+			for(TimeLeavingWork leavingWork : attendanceLeave.get().getTimeLeavingWorks()) {
+				if(leavingWork.checkLeakageStamp())
+					return true;
+			}
+		}
+		return false;
+	}
+
+
+
 
 	/**
 	 * 作成した時間帯から時間を計算する
