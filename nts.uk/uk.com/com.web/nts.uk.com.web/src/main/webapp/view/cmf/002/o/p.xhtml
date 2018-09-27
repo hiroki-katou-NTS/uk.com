@@ -40,7 +40,7 @@
 								<!--P5_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--P5_2 絞り込み検索-->
-								<div tabindex="2" style="width: 350px"
+								<div tabindex="2" style="width: 250px"
 									 data-bind="ntsSearchBox: {
 										searchMode: 'filter',
 										targetKey: 'code',
@@ -49,7 +49,7 @@
 										selected: selectedConditionCd,
 										selectedKey: 'code',
 										enable : mode() != 2,
-
+										width: 118,
 										fields: ['code', 'name'],
 										mode: 'igGrid'}" />
 							</div>
