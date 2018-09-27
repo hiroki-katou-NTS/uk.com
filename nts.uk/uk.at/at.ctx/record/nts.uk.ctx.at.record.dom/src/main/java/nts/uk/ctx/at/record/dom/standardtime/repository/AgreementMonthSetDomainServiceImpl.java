@@ -75,7 +75,7 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 	}
 
 	@Override
-	public List<String> update(AgreementMonthSetting agreementMonthSetting, Optional<WorkingConditionItem> workingConditionItem) {
+	public List<String> update(AgreementMonthSetting agreementMonthSetting, Optional<WorkingConditionItem> workingConditionItem, Integer yearMonthValueOld) {
 		List<String> errors = new ArrayList<>();
 		
 		LoginUserContext login = AppContexts.user();
@@ -112,7 +112,9 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		}
 		
 		if (errors.isEmpty()) {
-			this.agreementMonthSettingRepository.update(agreementMonthSetting);
+			// fix bug 100605
+			// this.agreementMonthSettingRepository.update(agreementMonthSetting);
+			this.agreementMonthSettingRepository.updateById(agreementMonthSetting, yearMonthValueOld);
 		}
 		
 		return errors;

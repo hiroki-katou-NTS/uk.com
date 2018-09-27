@@ -4,6 +4,7 @@ package nts.uk.ctx.pereg.dom.mastercopy;
  * @author locph
  */
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.command.CommandProxy;
 import nts.arc.layer.infra.data.query.QueryProxy;
 

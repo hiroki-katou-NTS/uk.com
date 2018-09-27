@@ -96,6 +96,9 @@ public class IntegrationOfMonthly {
 	 * @param absenceLeaveRemain 振休月別残数データ
 	 * @param monthlyDayoffRemain 代休月別残数データ
 	 * @param specialLeaveRemainList 特別休暇月別残数データ
+	 * @param remarks 月別実績の備考
+	 * @param care 介護休暇月別残数データ
+	 * @param childCare 子の看護月別残数データ
 	 */
 	public IntegrationOfMonthly(
 			Optional<AttendanceTimeOfMonthly> attendanceTime,

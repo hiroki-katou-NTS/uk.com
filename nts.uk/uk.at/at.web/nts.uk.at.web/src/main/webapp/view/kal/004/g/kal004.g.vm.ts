@@ -92,8 +92,8 @@ module nts.uk.at.view.kal004.g.viewmodel {
             self.monthly4 = _.find(self.listMonthly36, ['unit', 2]);
 
             //start date
-            self.strSelected = ko.observable(self.daily36.strSpecify);
-            self.strDay = ko.observable(self.strSelected() == 0 ? self.daily36.strDay : null);
+            self.strSelected = ko.observable(Number(self.daily36.strSpecify));
+            self.strDay = ko.observable(self.strSelected() == 0 ? Number(self.daily36.strDay) : 0);
             self.strMonth = ko.observable(self.strSelected() == 1 ? self.daily36.strMonth : 0);
             self.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             self.strSelected.subscribe((newSelect) => {
@@ -102,8 +102,8 @@ module nts.uk.at.view.kal004.g.viewmodel {
 
 
             //End Date
-            self.endSelected = ko.observable(self.daily36.endSpecify);
-            self.endDay = ko.observable(self.endSelected() == 0 ? self.daily36.endDay : null);
+            self.endSelected = ko.observable(Number(self.daily36.endSpecify));
+            self.endDay = ko.observable(self.endSelected() == 0 ? Number(self.daily36.endDay) : null);
             self.endMonth = ko.observable(self.endSelected() == 1 ? self.daily36.endMonth : 0);
             self.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
             self.endSelected.subscribe((newSelect) => {
@@ -150,8 +150,8 @@ module nts.uk.at.view.kal004.g.viewmodel {
             });
 
             //tab5
-            self.strSelected5 = ko.observable(self.yearly36.thisYear);
-            self.strYear5 = ko.observable(self.strSelected5() == 0 ? self.yearly36.year : null);
+            self.strSelected5 = ko.observable(Number(self.yearly36.thisYear));
+            self.strYear5 = ko.observable(self.strSelected5() == 0 ? Number(self.yearly36.year) : null);
             self.strSelected5.subscribe((newSelect) => {
                 if (newSelect) $('.input-str5').ntsError('clear');
             });
@@ -229,14 +229,14 @@ module nts.uk.at.view.kal004.g.viewmodel {
                 strSpecify: self.strSelected(),
                 strPreviousDay: 0,
                 strMakeToDay: 0,
-                strDay: self.strSelected() == 0 ? self.strDay() : 0,
+                strDay: self.strSelected() == 0 ? Number(self.strDay()) : 0,
                 strPreviousMonth: 0,
                 strCurrentMonth: 1,
                 strMonth: self.strSelected() == 1 ? self.strMonth() : 0,
                 endSpecify: self.endSelected(),
                 endPreviousDay: 0,
                 endMakeToDay: 0,
-                endDay: self.endSelected() == 0 ? self.endDay() : 0,
+                endDay: self.endSelected() == 0 ? Number(self.endDay()) : 0,
                 endPreviousMonth: 0,
                 endCurrentMonth: 1,
                 endMonth: self.endSelected() == 1 ? self.endMonth() : 0
@@ -294,7 +294,7 @@ module nts.uk.at.view.kal004.g.viewmodel {
             let yearly36Share = {
                 extractionId: "",
                 extractionRange: 1,
-                year: self.strSelected5() == 0 ? self.strYear5() : 0,
+                year: self.strSelected5() == 0 ? Number(self.strYear5()) : 0,
                 thisYear: self.strSelected5()
             }
 

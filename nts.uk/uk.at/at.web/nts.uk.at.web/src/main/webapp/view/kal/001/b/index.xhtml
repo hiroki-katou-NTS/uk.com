@@ -16,8 +16,8 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1"  data-bind="click: exportExcel ">#{i18n.getText('KAL001_8')}</button>
-				<button tabindex="2" data-bind="click: sendEmail">#{i18n.getText('KAL001_9')}</button>
+				<button tabindex="1"  data-bind="click: exportExcel,enable :flgActive ">#{i18n.getText('KAL001_8')}</button>
+				<button tabindex="2" data-bind="click: sendEmail, enable :flgActive">#{i18n.getText('KAL001_9')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAL001_10')}</button>
 				 
 			</div>

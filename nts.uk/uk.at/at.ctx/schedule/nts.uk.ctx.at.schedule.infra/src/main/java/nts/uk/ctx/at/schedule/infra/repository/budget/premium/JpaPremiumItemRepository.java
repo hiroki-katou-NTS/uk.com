@@ -93,11 +93,9 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 				entity.name = rec.getString("PREMIUM_NAME");
 				return entity;
 			}).stream().map(e -> convertToDomain(e)).collect(Collectors.toList());
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		return new ArrayList<>();
 	}
 	
 	/**

@@ -36,7 +36,7 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 	public OptionalItemOfDailyPerformDto find(String employeeId, GeneralDate baseDate) {
 		AnyItemValueOfDaily domain = this.repo.find(employeeId, baseDate).orElse(null);
 		if (domain != null) {
-			List<Integer> itemIds = domain.getItems().stream().map(i -> i.getItemNo().v()).collect(Collectors.toList());
+			List<Integer> itemIds = domain.getItems().stream().map(i -> i.getItemNo().v()).distinct().collect(Collectors.toList());
 			if(!itemIds.isEmpty()){
 				Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 						.findByListNos(AppContexts.user().companyId(), itemIds).stream()
@@ -52,8 +52,8 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
 		List<AnyItemValueOfDaily> domains = this.repo.finds(employeeId, baseDate);
 		List<Integer> itemIds = domains.stream()
-										.map(d -> d.getItems().stream().map(i -> i.getItemNo().v()).collect(Collectors.toSet()))
-										.flatMap(Set::stream)
+										.map(d -> d.getItems().stream().map(i -> i.getItemNo().v()).collect(Collectors.toList()))
+										.flatMap(List::stream).distinct()
 										.collect(Collectors.toList());
 		if (!itemIds.isEmpty()) {
 			Map<Integer, OptionalItem> masters = optionalMasterRepo.findByListNos(AppContexts.user().companyId(), itemIds).stream()
@@ -69,7 +69,8 @@ public class OptionalItemOfDailyPerformFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 		return (List<T>) this.repo.finds(param).stream()
 			.map(c -> OptionalItemOfDailyPerformDto.getDtoWith(c, optionalMaster)).collect(Collectors.toList());
 	}

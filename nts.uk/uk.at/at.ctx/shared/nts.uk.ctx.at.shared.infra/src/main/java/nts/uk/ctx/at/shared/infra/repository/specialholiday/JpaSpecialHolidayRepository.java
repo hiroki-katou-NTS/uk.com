@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestri
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
@@ -36,7 +36,6 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGr
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshstGrantPeriodic;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshstGrantPeriodicPK;
 import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * Jpa Special Holiday Repository
@@ -172,8 +171,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		int interval = c[7] != null ? Integer.parseInt(String.valueOf(c[7])) : 0;
 		int grantedDays = c[8] != null ? Integer.parseInt(String.valueOf(c[8])) : 0;
 		int timeMethod = Integer.parseInt(String.valueOf(c[9]));
-		GeneralDate startDate = c[10] != null ? (GeneralDate)c[10] : null;
-		GeneralDate endDate = c[11] != null ? (GeneralDate)c[11] : null;
+		Integer startDate = c[10] != null ? (Integer)c[10] : null;
+		Integer endDate = c[11] != null ? (Integer)c[11] : null;
 		int deadlineMonths = c[12] != null ? Integer.parseInt(String.valueOf(c[12])) : 0;
 		int deadlineYears = c[13] != null ? Integer.parseInt(String.valueOf(c[13])) : 0;
 		int limitCarryoverDays = c[14] != null ? Integer.parseInt(String.valueOf(c[14])) : 0;
@@ -195,7 +194,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 		GrantRegular grantRegular = GrantRegular.createFromJavaType(companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
 		
-		DatePeriod availabilityPeriod = new DatePeriod(startDate, endDate);
+		AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
 		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
 		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, timeMethod, availabilityPeriod, expirationDate, limitCarryoverDays);
 		
@@ -253,8 +252,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return new KshstGrantPeriodic(
 				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), 
 				domain.getGrantPeriodic().getTimeSpecifyMethod().value, 
-				domain.getGrantPeriodic().getAvailabilityPeriod().start(), 
-				domain.getGrantPeriodic().getAvailabilityPeriod().end(), 
+				domain.getGrantPeriodic().getAvailabilityPeriod().getStartDateValue(), 
+				domain.getGrantPeriodic().getAvailabilityPeriod().getEndDateValue(), 
 				domain.getGrantPeriodic().getExpirationDate().getMonths().v(), 
 				domain.getGrantPeriodic().getExpirationDate().getYears().v(), 
 				domain.getGrantPeriodic().getLimitCarryoverDays().v());
@@ -342,8 +341,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstGrantPeriodic oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshstGrantPeriodic.class).orElse(null);
 		GrantPeriodic grantPeriodic = specialHoliday.getGrantPeriodic();
 		oldGrantPeriodic.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
-		oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().start();
-		oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().end();
+		oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().getStartDateValue();
+		oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().getEndDateValue();
 		oldGrantPeriodic.deadlineMonths = grantPeriodic.getExpirationDate().getMonths().v();
 		oldGrantPeriodic.deadlineYears = grantPeriodic.getExpirationDate().getYears().v();
 		oldGrantPeriodic.limitCarryoverDays = grantPeriodic.getLimitCarryoverDays().v();

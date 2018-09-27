@@ -950,9 +950,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // synchronize period
                 if (self.dateRangeOfParentScreen) {
-                    const isSameDate = DateRangePickerModel.isSamePeriod(self.dateRangeOfParentScreen(), self.inputPeriod());
+                    const dateRangeOfParentScreen = _.clone(self.dateRangeOfParentScreen());
+                    const isSameDate = DateRangePickerModel.isSamePeriod(dateRangeOfParentScreen, self.inputPeriod());
                     if (!isSameDate) {
-                        self.inputPeriod(self.dateRangeOfParentScreen());
+                        self.inputPeriod(dateRangeOfParentScreen);
                     }
                 } else if (self.periodStartOfParentScreen) {
                     const isSameDate = moment.isMoment(self.periodStartOfParentScreen()) ?
@@ -1324,7 +1325,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     baseDate: moment.utc(self.queryParam.baseDate, 'YYYY-MM-DD').toDate(),
                     isMultiple: true,
                     selectedSystemType: self.systemType,
-                    selectedCodes: self.selectedCodeWorkplace()
+                    selectedCodes: self.selectedCodeWorkplace(),
+                    isShowBaseDate :false
                 };
                 nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
                 nts.uk.ui.windows.sub.modal('com',"/view/cdl/008/a/index.xhtml").onClosed(() => {
@@ -1518,7 +1520,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set period
                 if (options.dateRangePickerValue) {
                     self.dateRangeOfParentScreen = options.dateRangePickerValue;
-                    self.inputPeriod(self.dateRangeOfParentScreen());
+                    self.inputPeriod(_.clone(self.dateRangeOfParentScreen()));
                 }
                 else if (_.isFunction(options.periodStartDate) && _.isFunction(options.periodEndDate)) {
                     self.periodStartOfParentScreen = options.periodStartDate;
@@ -1750,6 +1752,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 // A：締め状態更新
                 if (self.systemType == ConfigEnumSystemType.EMPLOYMENT && self.showClosure) {
                     service.getClosureByCurrentEmployee(self.queryParam.baseDate).done(id => {
+                        if (_.isNil(id)) {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1434' });
+                            return;
+                        }
                         if (self.selectedClosure() != id) {
                             self.selectedClosure(id);
                         }
@@ -2069,7 +2075,7 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             public static isSamePeriod(a: DateRangePickerModel, b: DateRangePickerModel): boolean {
-                return a.startDate == b.startDate && a.endDate == b.endDate
+                return a.startDate === b.startDate && a.endDate === b.endDate
             }
         }
 

@@ -44,4 +44,10 @@ public interface RoundingMonthRepository {
 	 */
 	Optional<RoundingMonth> findByCId(String companyId, String timeItemId);
 
+	/**
+	 * Adds the list.
+	 *
+	 * @param lstRoundingMonth the lst rounding month
+	 */
+	void addList(List<RoundingMonth> lstRoundingMonth);
 }

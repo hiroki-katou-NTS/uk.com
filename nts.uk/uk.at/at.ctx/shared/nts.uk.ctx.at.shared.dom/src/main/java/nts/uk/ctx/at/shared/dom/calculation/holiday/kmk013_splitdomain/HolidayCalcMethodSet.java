@@ -47,10 +47,8 @@ public class HolidayCalcMethodSet extends DomainObject{
 	 * @return
 	 */
 	public static HolidayCalcMethodSet emptyHolidayCalcMethodSet() {
-		PremiumCalcMethodDetailOfHoliday premiumCalcMethodDetailOfHoliday = null;
-		PremiumHolidayCalcMethod premiumHolidayCalcMethod = new PremiumHolidayCalcMethod(0,premiumCalcMethodDetailOfHoliday);
-		WorkTimeCalcMethodDetailOfHoliday workTimeCalcMethodDetailOfHoliday = null;
-		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(0,workTimeCalcMethodDetailOfHoliday);
+		PremiumHolidayCalcMethod premiumHolidayCalcMethod = new PremiumHolidayCalcMethod(0,Optional.empty());
+		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = new WorkTimeHolidayCalcMethod(0,Optional.empty());
 		return new HolidayCalcMethodSet(premiumHolidayCalcMethod,workTimeHolidayCalcMethod);
 	}
 	

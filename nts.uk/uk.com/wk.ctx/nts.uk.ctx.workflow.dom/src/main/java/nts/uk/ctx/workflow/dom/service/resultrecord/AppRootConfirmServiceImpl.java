@@ -53,7 +53,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		List<AppPhaseInstance> appPhaseInstanceLst = appRootInstance.getListAppPhase().stream()
 				.sorted(Comparator.comparing(AppPhaseInstance::getPhaseOrder)).collect(Collectors.toList());
 		for(AppPhaseInstance appPhaseInstance : appPhaseInstanceLst){
-			AppPhaseConfirm appPhaseConfirm = new AppPhaseConfirm(appPhaseInstance.getPhaseOrder(), ApprovalBehaviorAtr.UNAPPROVED, Collections.emptyList());
+			AppPhaseConfirm appPhaseConfirm = new AppPhaseConfirm(appPhaseInstance.getPhaseOrder(), ApprovalBehaviorAtr.UNAPPROVED, new ArrayList<>());
 			// ループする順の「承認済フェーズ」が承認済かチェックする
 			Optional<AppPhaseConfirm> opAppPhaseConfirm = appRootConfirm.getListAppPhase().stream()
 					.filter(phaseConfirm -> phaseConfirm.getPhaseOrder()==appPhaseInstance.getPhaseOrder()).findAny();
@@ -95,14 +95,6 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 				// 承認したフラグ=true
 				approvalFlg = ApprovalBehaviorAtr.APPROVED;
 			}
-			// 承認したフラグをチェックする
-			if(approvalFlg==ApprovalBehaviorAtr.APPROVED){
-				// ループする順の「承認済フェーズ」が存在するかチェックする
-				if(!opAppPhaseConfirm.isPresent()){
-					// ドメインモデル「承認済フェーズ」を追加する
-					appRootConfirm.getListAppPhase().add(appPhaseConfirm);
-				}
-			}
 			// 中間データから承認フェーズインスタンスに変換する
 			ApprovalPhaseState approvalPhaseState = this.convertPhaseInsToPhaseState(appPhaseInstance, appPhaseConfirm);
 			// 指定する承認フェーズの承認が完了したか
@@ -111,8 +103,20 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			if(phaseComplete){
 				appPhaseConfirm.setAppPhaseAtr(ApprovalBehaviorAtr.APPROVED);
 			}
+			// 承認したフラグをチェックする
+			if(approvalFlg==ApprovalBehaviorAtr.APPROVED){
+				// ループする順の「承認済フェーズ」が存在するかチェックする
+				if(!opAppPhaseConfirm.isPresent()){
+					// ドメインモデル「承認済フェーズ」を追加する
+					appRootConfirm.getListAppPhase().add(appPhaseConfirm);
+				} else {
+					AppPhaseConfirm oldAppPhaseConfirm = opAppPhaseConfirm.get();
+					appRootConfirm.getListAppPhase().remove(oldAppPhaseConfirm);
+					appRootConfirm.getListAppPhase().add(appPhaseConfirm);
+				}
+				appRootConfirmRepository.update(appRootConfirm);
+			}
 		}
-		appRootConfirmRepository.update(appRootConfirm);
 	}
 
 	@Override
@@ -179,10 +183,10 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			}
 			// ループ終了フラグをチェックする
 			if(loopCompleteFlg){
-				appRootConfirmRepository.update(appRootConfirm);
 				break;
 			}
 		}
+		appRootConfirmRepository.update(appRootConfirm);
 		return cleanComplete;
 	}
 
@@ -193,12 +197,14 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		approvalPhaseState.setApprovalAtr(appPhaseConfirm.getAppPhaseAtr());
 		approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 		approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
+		approvalPhaseState.setListApprovalFrame(new ArrayList<>());
 		appPhaseInstance.getListAppFrame().forEach(frameInstance -> {
 			ApprovalFrame approvalFrame = new ApprovalFrame();
 			approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 			approvalFrame.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 			approvalFrame.setFrameOrder(frameInstance.getFrameOrder());
 			approvalFrame.setConfirmAtr(frameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
+			approvalFrame.setListApproverState(new ArrayList<>());
 			frameInstance.getListApprover().forEach(approver -> {
 				ApproverState approverState = new ApproverState();
 				approverState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
@@ -213,6 +219,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 					.filter(frameConfirm -> frameConfirm.getFrameOrder()==frame.getFrameOrder()).findAny();
 			if(opAppFrameConfirm.isPresent()){
 				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
+				frame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 				frame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
 				frame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
 				frame.setApprovalDate(appFrameConfirm.getApprovalDate());

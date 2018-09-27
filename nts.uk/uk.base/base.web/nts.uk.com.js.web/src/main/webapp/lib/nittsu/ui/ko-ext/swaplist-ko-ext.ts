@@ -19,7 +19,7 @@ module nts.uk.ui.koExtentions {
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var HEADER_HEIGHT = 27;
-            var CHECKBOX_WIDTH = 70;
+            var CHECKBOX_WIDTH = 40;
             var SEARCH_AREA_HEIGHT = 45;
             var BUTTON_SEARCH_WIDTH = 70;
             var INPUT_SEARCH_PADDING = 65;
@@ -44,7 +44,7 @@ module nts.uk.ui.koExtentions {
             var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var leftColumns: KnockoutObservableArray<any> = data.leftColumns || data.columns;
             var rightColumns: KnockoutObservableArray<any> = data.rightColumns || data.columns;
-            var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+            var enableRowNumbering = false;
             var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
             let beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
@@ -147,7 +147,7 @@ module nts.uk.ui.koExtentions {
 
             var features = [{ name: 'Selection', multipleSelection: true },
 //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
           
             $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
             $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
@@ -184,6 +184,7 @@ module nts.uk.ui.koExtentions {
                                 .build());
             
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
+            
             
             $grid1.igGrid({
                 width: leftGridWidth + CHECKBOX_WIDTH, 

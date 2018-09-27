@@ -205,7 +205,7 @@ module nts.custom.component {
             <div class="right-area">
                 <div class='header-info'>
                     <div class="avatar-group">
-                        <div class="active-panel" data-bind="click: action.avatar">
+                        <div class="active-panel" data-bind="click: function() { if(!employee.id()) { return; } action.avatar(); }">
                             <img data-bind="attr: { src: person.avatar }" class="avatar" tabindex="13" />
                         </div>
                     </div>
@@ -247,6 +247,7 @@ module nts.custom.component {
                             <div class="column">
                                 <button class="btn btn-location" type="button" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             click: action.location,
                                             text: text('CPS001_20'),
                                             style: { 
@@ -255,6 +256,7 @@ module nts.custom.component {
                                         tabindex="14"></button>
                                 <button class="btn btn-details" type="button" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             click: action.ebook,
                                             text: text('CPS001_19'),   
                                             style: { 
@@ -265,6 +267,7 @@ module nts.custom.component {
                             <div class="column">
                                 <button class="btn btn-print" type="button" tabindex="16" 
                                         data-bind="
+                                            enable: !!employee.id(),
                                             text: text('CPS001_17'),
                                             style: { 
                                                 visibility: auth.allowPrintRef() ? 'visible' : 'hidden' 
@@ -314,7 +317,7 @@ module nts.custom.component {
 
                         setShared("CPS001F_PARAMS", {
                             pid: pid,
-                            sid:sid
+                            sid: sid
                         });
 
                         modal('../f/index.xhtml').onClosed(() => { });
@@ -390,73 +393,93 @@ module nts.custom.component {
                     department = params.department,
                     constract = params.constract;
 
-                fetch.employee(id).done((emp: IData) => {
-                    if (emp) {
-                        
-                        if (!params.auth.allowAvatarRef()) {
-                            person.avatar(DEF_AVATAR);
-                        } else {
-                            fetch.avartar(id).done(avatar => {
-                                person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
-                            }).fail(msg => person.avatar(DEF_AVATAR));
-                        }
+                if (!!id) {
+                    fetch.employee(id).done((emp: IData) => {
+                        if (emp) {
 
-                        person.id(emp.pid);
+                            if (!params.auth.allowAvatarRef()) {
+                                person.avatar(DEF_AVATAR);
+                            } else {
+                                fetch.avartar(id).done(avatar => {
+                                    person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
+                                }).fail(msg => person.avatar(DEF_AVATAR));
+                            }
 
-                        if (!emp.gender) {
-                            person.gender('');
-                        } else {
-                            person.gender(`(${emp.gender})`);
-                        }
+                            person.id(emp.pid);
 
-                        if (!emp.birthday) {
-                            person.age('');
-                        } else {
-                            let now = moment.utc(),
-                                birthDay = moment.utc(emp.birthday, "YYYY/MM/DD").toDate(),
-                                duration = moment.duration(now.diff(birthDay));
+                            if (!emp.gender) {
+                                person.gender('');
+                            } else {
+                                person.gender(`(${emp.gender})`);
+                            }
 
-                            if (!birthDay) {
+                            if (!emp.birthday) {
                                 person.age('');
                             } else {
-                                person.age((duration.years() + text('CPS001_66')));
+                                let now = moment.utc(),
+                                    birthDay = moment.utc(emp.birthday, "YYYY/MM/DD").toDate(),
+                                    duration = moment.duration(now.diff(birthDay));
+
+                                if (!birthDay) {
+                                    person.age('');
+                                } else {
+                                    person.age((duration.years() + text('CPS001_66')));
+                                }
                             }
-                        }
 
-                        if (emp.numberOfWork > -1 && emp.numberOfTempHist > -1) {
-                            let days = emp.numberOfWork - emp.numberOfTempHist,
-                                duration = moment.duration(days, "days");
+                            if (emp.numberOfWork > -1 && emp.numberOfTempHist > -1) {
+                                let days = emp.numberOfWork - emp.numberOfTempHist,
+                                    duration = moment.duration(days, "days");
 
-                            employee.entire(`${duration.years()}${text('CPS001_67')}${duration.months()}${text('CPS001_88')}`);
+                                employee.entire(`${duration.years()}${text('CPS001_67')}${duration.months()}${text('CPS001_88')}`);
+                            } else {
+                                employee.entire('');
+                            }
+
+                            employee.code(emp.employeeCode);
+                            employee.name(emp.employeeName);
+
+                            department.code(emp.departmentCode);
+                            department.name(emp.departmentName);
+
+                            constract.position(emp.position);
+                            constract.contractType(emp.contractCodeType);
                         } else {
+                            person.id('');
+                            person.age('');
+                            person.gender('');
+                            person.avatar(DEF_AVATAR);
+
+
+                            employee.code('');
+                            employee.name('');
                             employee.entire('');
+
+                            department.code('');
+                            department.name('');
+
+                            constract.position('');
+                            constract.contractType('');
                         }
-
-                        employee.code(emp.employeeCode);
-                        employee.name(emp.employeeName);
-
-                        department.code(emp.departmentCode);
-                        department.name(emp.departmentName);
-
-                        constract.position(emp.position);
-                        constract.contractType(emp.contractCodeType);
-                    } else {
-                        person.id('');
-                        person.age('');
-                        person.gender('');
+                    });
+                } else {
+                    person.id('');
+                    person.age('');
+                    person.gender('');
+                    person.avatar(DEF_AVATAR);
 
 
-                        employee.code('');
-                        employee.name('');
-                        employee.entire('');
+                    employee.code('');
+                    employee.name('');
+                    employee.entire('');
 
-                        department.code('');
-                        department.name('');
+                    department.code('');
+                    department.name('');
 
-                        constract.position('');
-                        constract.contractType('');
-                    }
-                });
+                    constract.position('');
+                    constract.contractType('');
+                    __viewContext.viewModel.unblock();
+                }
             });
 
             params.employeeIds.subscribe(ids => {

@@ -363,8 +363,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     settingCode: self.currentCategory().settingCode()
                 };
             self.ctgIdUpdate(false);
-            block.invisible();
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+           
+            confirm({ messageId: "Msg_18" }).ifYes(() => { 
                 service.deleteInitVal(objDelete).done(function(data) {
                     dialog.info({ messageId: "Msg_16" }).then(function() {
                         $('#ctgName').focus();
@@ -385,12 +385,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             self.start(undefined);
 
                         }
-                        block.clear();
                     });
-                });
+                })
             }).ifNo(() => {
                 $('#ctgName').focus();
-                block.clear();
                 return;
             });
         }
@@ -433,10 +431,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return item.selectedRuleCode() == 2;
                 });
             $('#date1').trigger('validate');
+            $('.sub-input-units ').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
-            if(nts.uk.ui.errors.hasError()){ return;}
+            if(error.hasError()){ return;}
 
             block.invisible();
             service.update(updateObj).done(function(data) {
@@ -462,6 +461,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
         historyFilter() {
+            if(error.hasError()) return;
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
@@ -814,6 +814,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             new ItemCode("IS00239", "IS00241", "IS00242", "IS00244", "IS00245"),
             new ItemCode("IS00185", "IS00187", "IS00188", "IS00190", "IS00191"),
         ];
+//        isFirstSelected : number = 0;
 
 
         constructor(params: IPerInfoInitValueSettingItemDto) {
@@ -931,7 +932,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
-                    self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
+                    self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
 
                     break;
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -950,7 +951,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
 
-                    self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? text("CPS001_107") : objSel.optionText));
 
                     break;
 
@@ -978,6 +979,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value !== 2) {
                     error.clearAll();
                 }
+//                if(value == 2){
+//                   self.isFirstSelected = self.isFirstSelected + 1;
+//                    if (self.isFirstSelected > 1) {
+//                        setTimeout(function(c) {
+//                            let x = "#" + self.perInfoItemDefId(), content: string = $("#" + self.perInfoItemDefId()).val();
+//                            if (!_.isNil(content)) {
+//                                $("#" + self.perInfoItemDefId()).trigger("validate");
+//                            }
+//                        }, 100);
+//                    }
+//                }
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
@@ -1343,6 +1355,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         setData(childData: IChildData, itemChilds: Array<any>, checkStartEnd: boolean, mutiTime: boolean) {
             let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
                 itemlength: number = itemChilds.length; 
+            
             for (let i: number = 0; i < itemlength; i++) {
                 if (itemlength <= 2) {
                     vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
@@ -1350,7 +1363,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
                     vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
                     i = i + 1;
+                    
                 } else {
+                    vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
+                    vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
+                    vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
+                    vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
                     vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
                     vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
                     vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);

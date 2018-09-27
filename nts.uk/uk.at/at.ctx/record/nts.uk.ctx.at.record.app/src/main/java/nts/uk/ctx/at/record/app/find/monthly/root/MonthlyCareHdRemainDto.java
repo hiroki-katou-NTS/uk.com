@@ -10,8 +10,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdMinutes;
 import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdNumber;
 import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RecordRemarks;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
@@ -69,17 +67,17 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 	/** 使用時間 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME, layout = LAYOUT_E)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
-	private Double usedMinutes;
+	private Integer usedMinutes;
 	
 	/** 使用時間付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + BEFORE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
-	private Double usedMinutesBefore;
+	private Integer usedMinutesBefore;
 	
 	/** 使用時間付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + AFTER, layout = LAYOUT_G)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
-	private Double usedMinutesAfter;
+	private Integer usedMinutesAfter;
 	
 	@Override
 	public String employeeId() {
@@ -97,10 +95,10 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 	}
 	
 	private MonCareHdNumber toNumber(Double number){
-		return new MonCareHdNumber(number == null ? 0 : number);
+		return new MonCareHdNumber(number == null ? 0.0 : number);
 	}
 	
-	private MonCareHdMinutes toMinutes(Double minutes){
+	private MonCareHdMinutes toMinutes(Integer minutes){
 		return new MonCareHdMinutes(minutes == null ? 0 : minutes);
 	}
 	

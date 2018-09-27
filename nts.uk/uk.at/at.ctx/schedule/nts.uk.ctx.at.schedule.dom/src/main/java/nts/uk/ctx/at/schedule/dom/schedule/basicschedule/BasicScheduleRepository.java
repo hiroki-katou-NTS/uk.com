@@ -106,8 +106,6 @@ public interface BasicScheduleRepository {
 	 */
 	void delete(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule);
 	
-	void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule);
-
 	/**
 	 * Find child care by id.
 	 *

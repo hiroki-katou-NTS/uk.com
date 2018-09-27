@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -104,7 +105,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			integraionList.add(provisionalDailyRecord);
 		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(new CalculateOption(true, true), integraionList, companySetting);
+		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(new CalculateOption(true, true), integraionList, companySetting,ExecutionType.NORMAL_EXECUTION);
 	}
 
 	/**

@@ -27,8 +27,6 @@ module nts.uk.at.view.kal003.a.tab {
                     self.listExtraResultMonthly()[i].rowId(i + 1);
                 }
             });
-            
-            self.dataItems = ko.observableArray([]);
             //
             self.category = ko.observable(model.CATEGORY.MONTHLY);
             
@@ -118,6 +116,7 @@ module nts.uk.at.view.kal003.a.tab {
             let self = this;
 //            let sendData = ko.toJS(extraResultMonthly);
 //            sendData = { data: shareutils.convertArrayOfExtraResultMonthlyToJS(sendData, extraResultMonthly), category: self.category() };
+             $(".nameAlarm").ntsError("clear");
             let sendData = { data: ko.toJS( extraResultMonthly), category: self.category() };
 
             windows.setShared('inputKal003b', sendData);

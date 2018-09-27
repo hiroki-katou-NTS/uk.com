@@ -67,17 +67,17 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 	/** 使用時間 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME, layout = LAYOUT_E)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
-	private Double usedMinutes;
+	private Integer usedMinutes;
 	
 	/** 使用時間付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + BEFORE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
-	private Double usedMinutesBefore;
+	private Integer usedMinutesBefore;
 	
 	/** 使用時間付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + AFTER, layout = LAYOUT_G)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
-	private Double usedMinutesAfter;
+	private Integer usedMinutesAfter;
 	
 	@Override
 	public String employeeId() {
@@ -95,10 +95,10 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 	}
 	
 	private MonChildHdNumber toNumber(Double number){
-		return new MonChildHdNumber(number == null ? 0 : number);
+		return new MonChildHdNumber(number == null ? 0.0 : number);
 	}
 	
-	private MonChildHdMinutes toMinutes(Double minutes){
+	private MonChildHdMinutes toMinutes(Integer minutes){
 		return new MonChildHdMinutes(minutes == null ? 0 : minutes);
 	}
 	

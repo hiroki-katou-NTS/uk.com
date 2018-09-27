@@ -112,8 +112,8 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 								c -> new DivergenceTime(toAttendanceTime(c.getDivergenceTimeAfterDeduction()),
 										toAttendanceTime(c.getDeductionTime()), toAttendanceTime(c.getDivergenceTime()),
 										c.getNo(),
-										new DivergenceReasonContent(c.getDivergenceReason()),
-										new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
+										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
+										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
 				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
 										c -> new PremiumTime(c.getNo(), toAttendanceTime(c.getPremitumTime())))));
 	}

@@ -103,7 +103,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		}
 		//残数関連の申請を抽出する
 		List<AppRemainCreateInfor> lstAppInfor = lstAppData.stream()
-				.filter(x -> x.getSid().equals(sid) && x.getAppDate().equals(baseDate) && x.getWorkTypeCode().isPresent())
+				.filter(x -> x.getSid().equals(sid) && x.getWorkTypeCode().isPresent() && (x.getAppDate().equals(baseDate) 
+						|| (x.getStartDate().isPresent() && x.getEndDate().isPresent() && x.getStartDate().get().beforeOrEquals(baseDate) && x.getEndDate().get().afterOrEquals(baseDate))))
 				.collect(Collectors.toList());
 		if(lstAppInfor.isEmpty()) {
 			return null;
@@ -149,9 +150,6 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
 		if(workTypeData.getDailyWork().isOneDay()) {
 			workTypeClass = workTypeData.getDailyWork().getOneDay();
-			if(!this.lstZansu().contains(workTypeClass)) {
-				return lstOutputData;
-			}
 			outputData.setWorkTypeClass(workTypeClass);
 			lstOutputData.add(this.createWithOneDayWorkType(cid, workTypeData, outputData));
 			//勤務区分をチェックする

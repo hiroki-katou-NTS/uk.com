@@ -86,6 +86,15 @@ public interface AffJobTitleHistoryRepository {
 	 */
 	List<AffJobTitleHistory> getByEmployeeListPeriod(List<String> employeeIds, DatePeriod period);
 	
+	/**
+	 * request list 515
+	 * @param employeeIds
+	 * @param period
+	 * @return
+	 * @author yennth
+	 */
+	Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate, String cid);
+	
 	Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate);
 	
 	@Value

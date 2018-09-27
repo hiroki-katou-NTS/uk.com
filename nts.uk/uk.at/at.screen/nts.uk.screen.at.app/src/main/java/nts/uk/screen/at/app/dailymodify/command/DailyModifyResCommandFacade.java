@@ -27,17 +27,17 @@ import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandl
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrectionResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -105,7 +105,10 @@ public class DailyModifyResCommandFacade {
 		if (!flagCalculation) {
 			return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
 		} else {
-			this.handler.handlerNoCalc(commandNew, commandOld, dailyItems, true, month, mode);
+			List<EmployeeDailyPerErrorDto> lstErrorDto = dtoNews.stream().map(result -> result.getErrors()).flatMap(List::stream)
+				                                                  .collect(Collectors.toList());
+			List<EmployeeDailyPerError> lstError = lstErrorDto.stream().map(x -> x.toDomain(x.getEmployeeID(), x.getDate())).collect(Collectors.toList());
+			this.handler.handlerNoCalc(commandNew, commandOld, lstError, dailyItems, true, month, mode);
 			return null;
 		}
 	}
@@ -122,7 +125,8 @@ public class DailyModifyResCommandFacade {
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
+				.findAll(AppContexts.user().companyId())
+				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 		
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()
@@ -192,13 +196,13 @@ public class DailyModifyResCommandFacade {
 						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage());
+						month.getRedConditionMessage(), month.getHasFlex());
 			} else {
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), Optional.empty(),
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage());
+						month.getRedConditionMessage(), month.getHasFlex());
 			}
 		}
 
@@ -287,7 +291,7 @@ public class DailyModifyResCommandFacade {
 						resultError.putAll(errorDivergence);
 						hasError = true;
 					}
-					if (dataParent.getMode() == 0) {
+					if (dataParent.getMode() == 0 && monthParam.getHasFlex()) {
 						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
 								monthParam);
 						dataResultAfterIU.setFlexShortage(flexShortageRCDto);

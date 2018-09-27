@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 /**
  * The Class RetentionYearsAmount.積立年休保持年数
  */
-@IntegerMaxValue(5)
+@IntegerMaxValue(99)
 @IntegerMinValue(0)
 public class RetentionYearsAmount extends IntegerPrimitiveValue<RetentionYearsAmount> {
 	

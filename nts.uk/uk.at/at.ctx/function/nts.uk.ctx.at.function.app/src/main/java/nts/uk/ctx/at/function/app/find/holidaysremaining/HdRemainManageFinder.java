@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
@@ -41,6 +42,8 @@ public class HdRemainManageFinder {
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 	@Inject
 	private VariousVacationControlService variousVacationControlService;
+	@Inject
+	private RoleExportRepoAdapter roleExportRepoAdapter;
 
 	public List<HdRemainManageDto> findAll() {
 		return this.hdRemainingManagementRepo.getHolidayManagerLogByCompanyId(AppContexts.user().companyId()).stream()
@@ -114,6 +117,12 @@ public class HdRemainManageFinder {
 						permissionOfEmploymentForm.getFunctionNo(), permissionOfEmploymentForm.isAvailable()))
 				.orElseGet(() -> new PermissionOfEmploymentFormDto(companyId, employeeRoleId, 1, false));
 
+	}
+	
+	public RoleWhetherLoginDto getCurrentLoginerRole() {
+		RoleWhetherLoginDto role = new RoleWhetherLoginDto();
+		role.setEmployeeCharge(roleExportRepoAdapter.getCurrentLoginerRole().isEmployeeCharge());
+		return role;
 	}
 
 	public VariousVacationControlDto getVariousVacationControl() {

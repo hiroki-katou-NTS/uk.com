@@ -44,6 +44,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -202,9 +203,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
 				try {
 					if (workTimeSetting == null) {
-						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode, listWorkType);
 					} else {
-						basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeSetting.getWorktimeCode().v());
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeSetting.getWorktimeCode().v(), listWorkType);
 					}
 				} catch (BusinessException ex) {
 					// find and remove in listBefore because this data is not insert/update to DB
@@ -225,13 +226,16 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			Optional<BasicSchedule> basicSchedule = basicScheduleListBefore.stream()
 					.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0))
 					.findFirst();
-
+			
+			// ver32 trong document
+			boolean isOptional = basicScheduleService.checkNeedWorkTimeSetByList(workTypeCode, listWorkType) == SetupType.OPTIONAL;
+			
 			if (basicSchedule.isPresent()) {
 				// UPDATE
 				BasicSchedule basicSche = basicSchedule.get();
 				isInsertMode = false;
 				
-				if (workTimeSetting != null) {
+				if (!isOptional && workTimeSetting != null) {
 					// add scheTimeZone
 					if (modeDisplay.intValue() == 2) {
 						// get schedule time zone from user input
@@ -298,6 +302,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// add scheMaster
 				// set scheMaster = scheMaster of basicSche from DB
 				// (compare to insert state and log, not to update in DB)
+				// hien tai tai lieu excel dang ghi la "khong update"
 				bSchedule.setWorkScheduleMaster(basicSche.getWorkScheduleMaster());
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
@@ -306,7 +311,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			} else {
 				// INSERT
 				isInsertMode = true;
-				if (workTimeSetting != null) {
+				if (!isOptional && workTimeSetting != null) {
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 					// add breakTime
@@ -343,6 +348,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 				basicScheduleRepo.insert(bSchedule); 
 			}
+			
+			// clear list
+			startClock.clear();
+			endClock.clear();
+			breakStartTime.clear();
+			breakEndTime.clear();
+			childCareStartTime.clear();
+			childCareEndTime.clear();
 			
 			basicScheduleListAfter.add(bSchedule);
 			

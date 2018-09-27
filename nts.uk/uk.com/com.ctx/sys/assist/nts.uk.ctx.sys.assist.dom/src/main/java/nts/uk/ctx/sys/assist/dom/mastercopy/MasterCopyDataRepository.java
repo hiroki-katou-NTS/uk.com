@@ -27,12 +27,13 @@ public interface MasterCopyDataRepository {
 	
 	/**
 	 * Do copy.
-	 *
-	 * @param tableName the table name
-	 * @param copyMethod the copy method
-	 * @param companyId the company id
-	 */
-	void doCopy(String tableName, CopyMethod copyMethod, String companyId);
+     * @param tableName the table name
+     * @param keys
+     * @param copyMethod the copy method
+     * @param companyId the company id
+     * @param isOnlyCid
+     */
+	void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId, boolean isOnlyCid);
 
 	/**
 	 *

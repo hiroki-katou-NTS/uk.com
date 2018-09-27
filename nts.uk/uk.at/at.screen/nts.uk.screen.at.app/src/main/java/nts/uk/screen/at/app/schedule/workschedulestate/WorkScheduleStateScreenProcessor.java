@@ -18,13 +18,18 @@ public class WorkScheduleStateScreenProcessor {
 
 	@Inject
 	private WorkScheduleStateScreenRepository workScheduleStateScreenRepo;
-
+	
+	/**
+	 * <<Public>> 指定項目の勤務予定の状態チェック
+	 * 
+	 * @param params
+	 * @return
+	 */
 	public List<WorkScheduleStateScreenDto> getByListSidAndDateAndScheId(BasicScheduleScreenParams params) {
 		if (params.employeeId == null || params.employeeId.size() == 0) {
 			return Collections.emptyList();
-		} else {
-			return this.workScheduleStateScreenRepo.getByListSidAndDateAndScheId(params.employeeId, params.startDate,
-					params.endDate);
 		}
+		return this.workScheduleStateScreenRepo.getByListSidAndDateAndScheId(params.employeeId, params.startDate,
+				params.endDate);
 	}
 }

@@ -33,9 +33,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         expYearEnable: KnockoutObservable<boolean>;
         expMonth: KnockoutObservable<number>;
         expMonthEnable: KnockoutObservable<boolean>;
-        startDate: KnockoutObservable<number>;
         startDateEnable: KnockoutObservable<boolean>;
-        endDate: KnockoutObservable<number>;
         endDateEnable: KnockoutObservable<boolean>;
         genderSelected: KnockoutObservable<boolean>;
         empSelected: KnockoutObservable<boolean>;
@@ -66,6 +64,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
         ageBaseDateReq: KnockoutObservable<boolean>;
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
+        dateRange: KnockoutObservableArray<any> = ko.observable({});
+        startYM: KnockoutObservable<number> = ko.observable();
+        endYM: KnockoutObservable<number> = ko.observable();
         
         constructor() {
             let self = this;
@@ -108,9 +109,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
                         self.expYears(data.grantPeriodicDto.expirationDate.years);
                         self.expMonth(data.grantPeriodicDto.expirationDate.months);
-                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate);
-                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate);
-                        
+                        self.startYM(data.grantPeriodicDto.availabilityPeriod.startDate);
+                        self.endYM(data.grantPeriodicDto.availabilityPeriod.endDate);
                         self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
                         self.selectedGender(data.specialLeaveRestrictionDto.gender);
                         self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
@@ -255,16 +255,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.expYearEnable = ko.observable(false);
             self.expMonth = ko.observable();
             self.expMonthEnable = ko.observable(false);
-            self.startDate = ko.observable();
             self.startDateEnable = ko.observable(false);
-            self.endDate = ko.observable();
             self.endDateEnable = ko.observable(false);
             
-            self.startDate.subscribe(function(value) {
-                if(value != null || value !== "") {
-                    $('.end-date .ntsControl.nts-datepicker-wrapper').removeClass('error');
-                }
-            });
             
             self.selectedTimeMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
@@ -278,8 +271,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.endDateEnable(false);
                         self.expYears('');
                         self.expMonth('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.startYM();
+                        self.endYM();
                         break;
                     case 1:
                         self.limitedDaysEnable(false);
@@ -288,8 +281,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startDateEnable(false);
                         self.endDateEnable(false);
                         self.limitedDays('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.startYM();
+                        self.endYM();
                         break;
                     case 2:
                         self.limitedDaysEnable(false);
@@ -300,8 +293,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.limitedDays('');
                         self.expYears('');
                         self.expMonth('');
-                        self.startDate('');
-                        self.endDate('');
+                        self.startYM();
+                        self.endYM();
                         break;
                     case 3:
                         self.limitedDaysEnable(false);
@@ -468,13 +461,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openJDialog() {
             let self = this;
             
-            let selectedNo = [];
+            let currentCodeList = [];
             
             _.forEach(self.selectedTargetItems, function(code) {
-                selectedNo.push(code);
+                currentCodeList.push(code);
             });
             
-            nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", selectedNo);
+            nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", {
+                currentCodeList: currentCodeList,
+                selectedCode: self.currentCode()
+            });
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
                 let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");
@@ -558,23 +554,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 allowDisappear: self.allowDisappear(),
                 grantTime: grantTime
             };
+            let start = self.startYM(),
+                end = self.endYM();
             
-            let start = null;
-            let end = null;
-            if (self.startDate()) {
-                if (self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
-                    start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
-                } else {
-                    start = self.startDate() != "" ? self.startDate() : null;
-                }
-            }
-            if (self.endDate()) {
-                if (self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
-                    end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : null;
-                } else {
-                    end = self.endDate() != "" ? self.endDate() : null;
-                }
-            }
             let availabilityPeriod : service.AvailabilityPeriod = {
                 startDate: start,
                 endDate: end
@@ -678,21 +660,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if(self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
                 $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "FND_E_REQ_INPUT");
             }
-            
-            if(self.selectedTimeMethod() == 3) {
-                if(self.startDate() === "") {
-                    $("#start-date-inp").ntsError("set", "使用可能期間開始日入力してください", "FND_E_REQ_INPUT");
-                }
-                
-                if(self.endDate() === "") {
-                    $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
-                }
-                
-                if(self.startDate() > self.endDate()) {
-                    $(".period-date-inp").ntsError("set", "期間入力フォームの開始と終了が逆転しています", "FND_E_SPAN_REVERSED");
-                    $('.end-date .ntsControl.nts-datepicker-wrapper').addClass('error');
-                }
-            }
+           
             
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
@@ -838,9 +806,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.limitedDays('');
             self.expYears('');
             self.expMonth('');
-            self.startDate('');
-            self.endDate('');
-            
+            self.startYM();
+            self.endYM();
+            self.dateRange({ startDate: "", endDate: "" });
             self.genderSelected(false);
             self.empSelected(false);
             self.clsSelected(false);
@@ -851,7 +819,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);
-            self.ageBaseDate(101);
+            self.ageBaseDate(0);
             self.ageBaseDateReq(false);
             self.ageBaseDateDefaultValue(true);
             self.yearReq(true);

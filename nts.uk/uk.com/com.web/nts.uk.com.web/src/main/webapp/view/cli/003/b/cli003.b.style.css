@@ -27,6 +27,7 @@
 .contentF {
 	margin-left: 20px;
 	display: inline-block;
+	height: calc(100% - 25px);
 	width :965px;
 }
 
@@ -71,6 +72,7 @@
 	
 }
 #F2_2 {
+	height:20px;
 	font-size :14px;
 	width: 450px;
 }
@@ -102,7 +104,7 @@ div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
 
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
-	width: auto !important;
+	max-width: 330px !important;
 }
 
 div#list-box_b1 {
@@ -125,4 +127,47 @@ div#list-box_b1 {
 }
 #title_dataType {
 	margin-bottom: 30px;
+}
+
+.ui-iggrid-expandcolumn{
+	height: 26px !important;	
+}
+.ui-iggrid-headertext{
+	font-weight: normal;
+}
+
+.ui-iggrid-childarea{
+	overflow :visible !important;
+}
+.ui-iggrid-header.ui-widget-header{
+	overflow :visible;
+}
+
+ .default-overflow{
+	overflow :auto hidden !important;
+}
+
+.overflow-show{
+	overflow :visible !important;
+}
+
+#igGridLog_tooltips.ui-tooltip {
+	border: none;
+	background: none;
+	box-shadow: none;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+#igGridLog_tooltips.ui-tooltip .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+.ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
+	z-index: 99999999;
 }

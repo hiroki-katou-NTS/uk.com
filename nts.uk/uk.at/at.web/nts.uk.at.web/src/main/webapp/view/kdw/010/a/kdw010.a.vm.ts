@@ -136,6 +136,7 @@ module nts.uk.at.view.kdw010.a {
             openKDL002Dialog(typeWorkType: any) {
                 var self = this;
                 setShared('KDL002_Multiple', true);
+                setShared('KDL002_isAcceptSelectNone', true);
                 //all possible items
                 var posibleItems = self.listWorkTypeDto().map(e => e.code);
                 setShared('KDL002_AllItemObj', posibleItems);

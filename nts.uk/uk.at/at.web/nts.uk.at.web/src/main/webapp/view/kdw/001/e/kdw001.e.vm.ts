@@ -96,7 +96,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             ]);
 
             self.selectedExeContent.subscribe((value) => {
-                self.getLogData();
+                if(value != undefined && value.length == undefined) {
+                    self.getLogData();    
+                }
             });
         }
 
