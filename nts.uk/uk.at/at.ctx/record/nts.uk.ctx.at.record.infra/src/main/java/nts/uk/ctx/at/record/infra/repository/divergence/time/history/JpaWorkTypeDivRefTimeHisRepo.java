@@ -13,8 +13,10 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryRepository;
@@ -27,7 +29,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class JpaWorkTypeDivergenceReferenceTimeHistoryRepository.
  */
 @Stateless
-public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepository
+public class JpaWorkTypeDivRefTimeHisRepo extends JpaRepository
 		implements WorkTypeDivergenceReferenceTimeHistoryRepository {
 
 	/*
@@ -250,24 +252,27 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryRepository extends JpaRepo
 		// Build query
 		cq.select(root);
 
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
+		List<KrcstWorktypeDrtHist> worktypeDrtHists = new ArrayList<>();
 
-		// Find by history id
-		if (!histIds.isEmpty()) {
-			predicates.add(root.get(KrcstWorktypeDrtHist_.histId).in(histIds));
-		}
+		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// create where conditions
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.cid), companyId));
+			predicates.add(criteriaBuilder.equal(root.get(KrcstWorktypeDrtHist_.worktypeCd), workTypeCode));
 
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
+			// Find by history id
+			if (!histIds.isEmpty()) {
+				predicates.add(root.get(KrcstWorktypeDrtHist_.histId).in(splitData));
+			}
 
-		// order by insert date
-		cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.strD)));
+			// add where to query
+			cq.where(predicates.toArray(new Predicate[] {}));
 
-		// query data
-		List<KrcstWorktypeDrtHist> worktypeDrtHists = em.createQuery(cq).getResultList();
+			// order by insert date
+			cq.orderBy(criteriaBuilder.desc(root.get(KrcstWorktypeDrtHist_.strD)));
+
+			worktypeDrtHists.addAll(em.createQuery(cq).getResultList());
+		});
 
 		return worktypeDrtHists;
 	}

@@ -22,6 +22,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -30,7 +31,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange_;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
@@ -176,6 +176,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByListNos(
 	 * java.lang.String, java.util.List)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos) {
 		// Get entity manager
@@ -192,20 +193,23 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root
 				.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
+		List<Object[]> results = new ArrayList<>();
 
-		// Add where condition
-		predicateList.add(builder.equal(
-				root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
-				companyId));
-		predicateList.add(root.get(KrcstOptionalItem_.krcstOptionalItemPK)
-				.get(KrcstOptionalItemPK_.optionalItemNo).in(optionalitemNos));
-		cq.multiselect(root, joinRoot);
-		cq.where(predicateList.toArray(new Predicate[] {}));
+		CollectionUtil.split(optionalitemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		// Get results
-		@SuppressWarnings("unchecked")
-		List<Object[]> results = (List<Object[]>) em.createQuery(cq).getResultList();
+			// Add where condition
+			predicateList.add(builder.equal(
+					root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+					companyId));
+			predicateList.add(root.get(KrcstOptionalItem_.krcstOptionalItemPK)
+					.get(KrcstOptionalItemPK_.optionalItemNo).in(splitData));
+			cq.multiselect(root, joinRoot);
+			cq.where(predicateList.toArray(new Predicate[] {}));
+
+			// Get results
+			results.addAll((List<Object[]>) em.createQuery(cq).getResultList());
+		});
 
 		// Check empty
 		if (CollectionUtil.isEmpty(results)) {

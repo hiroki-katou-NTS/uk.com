@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
@@ -116,7 +117,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		Root<KrcstApplEmpCon> root = cq.from(KrcstApplEmpCon.class);
 
 		List<KrcstApplEmpCon> result = new ArrayList<>();
-		CollectionUtil.split(optionalItemNoList, 1000, subList -> {
+		CollectionUtil.split(optionalItemNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			List<Predicate> predicateList = new ArrayList<Predicate>();
 
 			// Add where condition

@@ -14,7 +14,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
@@ -27,7 +29,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * The Class JpaCompanyDivergenceReferenceTimeRepository.
  */
 @Stateless
-public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
+public class JpaComDivRefTimeRepo extends JpaRepository
 		implements CompanyDivergenceReferenceTimeRepository {
 
 	/** The Constant DIVERGENCE_TIME_MAX_COUNT. */
@@ -209,19 +211,23 @@ public class JpaCompanyDivergenceReferenceTimeRepository extends JpaRepository
 		// Build query
 		cq.select(root);
 
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
-		if (!divTimeNos.isEmpty()) {
-			predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(divTimeNos));
-		}
+		List<KrcstDrt> krcstDrts = new ArrayList<>();
 
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+		CollectionUtil.split(divTimeNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// create where conditions
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
+			if (!divTimeNos.isEmpty()) {
+				predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(splitData));
+			}
 
-		// query data
-		List<KrcstDrt> krcstDrts = em.createQuery(cq).getResultList();
+			// add where to query
+			cq.where(predicates.toArray(new Predicate[] {}));
+			cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+
+			// query data
+			krcstDrts.addAll(em.createQuery(cq).getResultList());
+		});
 
 		return krcstDrts;
 	}

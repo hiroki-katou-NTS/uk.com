@@ -13,7 +13,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeRepository;
@@ -27,7 +29,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * The Class JpaWorkTypeDivergenceReferenceTimeRepository.
  */
 @Stateless
-public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
+public class JpaWorkTypeDivRefTimeRepo extends JpaRepository
 		implements WorkTypeDivergenceReferenceTimeRepository {
 
 	/** The Constant DIVERGENCE_TIME_MAX_COUNT. */
@@ -214,19 +216,23 @@ public class JpaWorkTypeDivergenceReferenceTimeRepository extends JpaRepository
 		// Build query
 		cq.select(root);
 
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
-		if (!divTimeNos.isEmpty()) {
-			predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(divTimeNos));
-		}
+		List<KrcstDrt> krcstDrts = new ArrayList<>();
 
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+		CollectionUtil.split(divTimeNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// create where conditions
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
+			if (!divTimeNos.isEmpty()) {
+				predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(splitData));
+			}
 
-		// query data
-		List<KrcstDrt> krcstDrts = em.createQuery(cq).getResultList();
+			// add where to query
+			cq.where(predicates.toArray(new Predicate[] {}));
+			cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+
+			// query data
+			krcstDrts.addAll(em.createQuery(cq).getResultList());
+		});
 
 		return krcstDrts;
 	}

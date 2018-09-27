@@ -16,8 +16,10 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
@@ -30,7 +32,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * The Class JpaCompanyDivergenceReferenceTimeHistoryRepository.
  */
 @Stateless
-public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepository
+public class JpaComDivRefTimeHisRepo extends JpaRepository
 		implements CompanyDivergenceReferenceTimeHistoryRepository {
 
 	/*
@@ -259,23 +261,25 @@ public class JpaCompanyDivergenceReferenceTimeHistoryRepository extends JpaRepos
 		// Build query
 		cq.select(root);
 
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
+		List<KrcstComDrtHist> comDrtHists = new ArrayList<>();
 
-		// Find by history id
-		if (!histIds.isEmpty()) {
-			predicates.add(root.get(KrcstComDrtHist_.histId).in(histIds));
-		}
+		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// create where conditions
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(root.get(KrcstComDrtHist_.cid), companyId));
 
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
+			// Find by history id
+			if (!histIds.isEmpty()) {
+				predicates.add(root.get(KrcstComDrtHist_.histId).in(splitData));
+			}
 
-		// order by insert date
-		cq.orderBy(criteriaBuilder.desc(root.get(KrcstComDrtHist_.strD)));
+			// add where to query
+			cq.where(predicates.toArray(new Predicate[] {}));
 
-		// query data
-		List<KrcstComDrtHist> comDrtHists = em.createQuery(cq).getResultList();
+			// order by insert date
+			cq.orderBy(criteriaBuilder.desc(root.get(KrcstComDrtHist_.strD)));
+			comDrtHists.addAll(em.createQuery(cq).getResultList());
+		});
 
 		return comDrtHists;
 	}

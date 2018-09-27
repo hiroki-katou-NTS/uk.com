@@ -12,7 +12,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageGetMemento;
@@ -28,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository.
  */
 @Stateless
-public class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository extends JpaRepository
+public class JpaWorkTypeDivTimeErrAlarmMsgRepo extends JpaRepository
 		implements WorkTypeDivergenceTimeErrorAlarmMessageRepository {
 
 	/*
@@ -93,24 +95,28 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageRepository extends JpaRep
 		// Build query
 		cq.select(root);
 
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.cid), cId));
-		predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.worktypeCd),
-				workTypeCode));
-		// dvgcTimeNo in divergenceTimeNoList
-		predicates.add(
-				root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.dvgcTimeNo).in(divergenceTimeNoList));
+		List<KrcstDvgcwtTimeEaMsg> resultList = new ArrayList<>();
 
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
+		CollectionUtil.split(divergenceTimeNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// create where conditions
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.cid), cId));
+			predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.worktypeCd),
+					workTypeCode));
+			// dvgcTimeNo in divergenceTimeNoList
+			predicates.add(
+					root.get(KrcstDvgcwtTimeEaMsg_.id).get(KrcstDvgcwtTimeEaMsgPK_.dvgcTimeNo).in(splitData));
 
-		// query data
-		List<KrcstDvgcwtTimeEaMsg> KrcstDvgcwtTimeEaMsg = em.createQuery(cq).getResultList();
+			// add where to query
+			cq.where(predicates.toArray(new Predicate[] {}));
+
+			// query data
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// return
-		return KrcstDvgcwtTimeEaMsg.isEmpty() ? new ArrayList<WorkTypeDivergenceTimeErrorAlarmMessage>()
-				: KrcstDvgcwtTimeEaMsg.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return resultList.isEmpty() ? new ArrayList<WorkTypeDivergenceTimeErrorAlarmMessage>()
+				: resultList.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
