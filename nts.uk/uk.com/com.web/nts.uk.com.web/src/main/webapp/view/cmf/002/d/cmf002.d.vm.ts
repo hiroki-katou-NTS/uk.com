@@ -980,9 +980,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             cmd.searchNum = dto.searchNum();
             cmd.searchNumEndVal = dto.searchNumEndVal();
             cmd.searchNumStartVal = dto.searchNumStartVal();
-            cmd.searchChar = dto.searchChar();
-            cmd.searchCharEndVal = dto.searchCharEndVal();
-            cmd.searchCharStartVal = dto.searchCharStartVal();
+            if(dto.searchChar() != ""){
+                cmd.searchChar = dto.searchChar();
+            }
+            if(dto.searchCharEndVal() != ""){
+                cmd.searchCharEndVal = dto.searchCharEndVal();
+            }
+            if(dto.searchCharStartVal() != ""){
+                cmd.searchCharStartVal = dto.searchCharStartVal();
+            }
             if (dto.searchDate() != null) {
                 cmd.searchDate = moment.utc(dto.searchDate(), "YYYY/MM/DD")._d
             }
