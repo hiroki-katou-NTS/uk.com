@@ -686,7 +686,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (self.searchNumStartVal() > self.searchNumEndVal()) {
+                    if (parseFloat(self.searchNumStartVal()) > parseFloat(self.searchNumEndVal())) {
                         self.setErrorCompare("D6_C4_5", "D6_C4_6");
                         checkCompare = true;
                     }
