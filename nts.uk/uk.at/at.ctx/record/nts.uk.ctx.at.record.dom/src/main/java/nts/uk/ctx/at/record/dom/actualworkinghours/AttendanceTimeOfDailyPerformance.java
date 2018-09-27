@@ -106,6 +106,20 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		return new AttendanceTimeOfDailyPerformance(this.employeeId, this.ymd, this.workScheduleTimeOfDaily, time, this.stayingTime, this.budgetTimeVariance, this.unEmployedTime); 
 	}
 	
+	/**
+	 * 時間・回数・乖離系(計算で求める全ての値)が全て０
+	 * @return
+	 */
+	public static AttendanceTimeOfDailyPerformance allZeroValue(String empId, GeneralDate ymd) {
+		return new AttendanceTimeOfDailyPerformance(empId, 
+													ymd, 
+													WorkScheduleTimeOfDaily.defaultValue(), 
+													ActualWorkingTimeOfDaily.defaultValue(), 
+													StayingTimeOfDaily.defaultValue(), 
+													new AttendanceTimeOfExistMinus(0), 
+													new AttendanceTimeOfExistMinus(0), 
+													MedicalCareTimeOfDaily.defaultValue());
+	}
 	
 	/**
 	 * 日別実績の勤怠時間の計算

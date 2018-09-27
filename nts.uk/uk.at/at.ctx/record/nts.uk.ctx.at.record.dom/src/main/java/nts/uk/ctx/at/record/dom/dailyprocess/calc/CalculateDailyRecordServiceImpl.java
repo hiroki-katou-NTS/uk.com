@@ -359,7 +359,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,wko); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 	
 		///ここのnullは治す　→　直さないと絶対落ちる
-		if(!workType.isPresent()) return ManageReGetClass.cantCalc(Optional.empty(),integrationOfDaily,null);
+		if(!workType.isPresent() || (workType.get().getDailyWork().isWeekDayAttendance() && !checkAttendanceLeaveState(integrationOfDaily.getAttendanceLeave()))) {
+			integrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(AttendanceTimeOfDailyPerformance.allZeroValue(integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd())));
+			return ManageReGetClass.cantCalc(Optional.empty(),integrationOfDaily,null);
+		}
 		val beforeWorkType = workType;
 		
 		/* 労働制 */
@@ -847,6 +850,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 										flexCalcSetting,
 										leaveLate);
 	}
+
+	private boolean checkAttendanceLeaveState(Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
+		if(attendanceLeave.isPresent()) {
+			for(TimeLeavingWork leavingWork : attendanceLeave.get().getTimeLeavingWorks()) {
+				if(leavingWork.checkLeakageStamp())
+					return true;
+			}
+		}
+		return false;
+	}
+
+
+
 
 	/**
 	 * 作成した時間帯から時間を計算する

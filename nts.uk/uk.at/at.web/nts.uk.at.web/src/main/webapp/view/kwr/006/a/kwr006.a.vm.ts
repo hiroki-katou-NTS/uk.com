@@ -50,6 +50,7 @@ module nts.uk.at.view.kwr006.a {
             // start variable of CCG001
             ccg001ComponentOption: GroupOption;
             // end variable of CCG001
+
             constructor() {
                 let self = this;
                 self.monthlyWorkScheduleConditionModel = new MonthlyWorkScheduleConditionModel();
@@ -191,21 +192,12 @@ module nts.uk.at.view.kwr006.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
-                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod()).done(() => {
-                    if (_.isEmpty(self.itemListCodeTemplate())) {
-                        self.loadAuthorityOfEmploymentForm().done(hasAuthority => {
-                            if (hasAuthority) {
-                                self.openScreenC();
-                            } else {
-                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' })
-                                    .then(() => nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"));
-                            }
-                        });
-                        dfd.resolve();
-                    } else {
+                
+                var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
+                    self.enableBtnConfigure(role.employeeCharge);
+                });
+                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod(), getCurrentLoginerRole).done(() => {
                         self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
-                    }
-                    
                 });
                 return dfd.promise();
             }
@@ -403,10 +395,6 @@ module nts.uk.at.view.kwr006.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-
-            private loadAuthorityOfEmploymentForm(): JQueryPromise<boolean> {
-                return service.getExistAuthority();
             }
 
             private loadPeriod(): JQueryPromise<void> {

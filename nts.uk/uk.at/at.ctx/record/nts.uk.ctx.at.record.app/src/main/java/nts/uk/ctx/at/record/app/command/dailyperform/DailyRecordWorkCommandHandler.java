@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -438,8 +439,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		executorService.submit(task);
 	}
 
-	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
+	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeDailyPerError> lstError,
 			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
+		
+		employeeErrorRepo.removeParam(toMapParam(commandNew));
 
 		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
 
@@ -447,7 +450,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 		List<IntegrationOfDaily> lastDt = updateDomainAfterCalc(domainDailyNew, null);
 
-		registerErrorWhenCalc(domainDailyNew);
+		registerErrorWhenCalc(lstError);
 
 		if (mode == 0) {
 			updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
@@ -512,9 +515,13 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		// determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
 	}
 
-	private void registerErrorWhenCalc(List<IntegrationOfDaily> domain) {
+	private void registerErrorWhenCalc(List<EmployeeDailyPerError> lstError) {
 		// insert error;
-		employeeErrorRepo.insert(domain.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
+		employeeErrorRepo.insert(lstError);
+	}
+	
+	private void registerErrorWhenCalc(Collection<IntegrationOfDaily> domain) {
+		registerErrorWhenCalc(domain.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
 				.collect(Collectors.toList()).stream().filter(e -> e != null && e.getAttendanceItemList().get(0) != null)
 				.collect(Collectors.toList()));
 	}
