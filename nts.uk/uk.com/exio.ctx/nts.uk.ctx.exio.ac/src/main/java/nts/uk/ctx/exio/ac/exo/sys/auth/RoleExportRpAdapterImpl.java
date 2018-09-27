@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 
 @Stateless
-public class RoleExportRepoAdapterImpl implements RoleExportRepoAdapter {
+public class RoleExportRpAdapterImpl implements RoleExportRepoAdapter {
 
 	@Inject
 	private RoleExportRepo roleExportRepo;
