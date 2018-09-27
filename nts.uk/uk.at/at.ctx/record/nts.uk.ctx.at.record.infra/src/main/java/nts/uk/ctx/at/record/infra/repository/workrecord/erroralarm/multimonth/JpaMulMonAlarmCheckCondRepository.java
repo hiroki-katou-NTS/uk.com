@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtM
 public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements MulMonAlarmCheckCondRepository {
 	
 	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KrcmtMulMonAlarmCheck c "
-			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID ORDER BY insDate ASC ";
+			+ " WHERE c.errorAlarmCheckID IN :listErrorAlarmCheckID ORDER BY c.insDate ASC ";
 	private static final String SELECT_BY_CODE  = "SELECT c FROM KrcmtMulMonAlarmCheck c "
 			+ " WHERE c.errorAlarmCheckID =:errorAlarmCheckID" ;
 	
