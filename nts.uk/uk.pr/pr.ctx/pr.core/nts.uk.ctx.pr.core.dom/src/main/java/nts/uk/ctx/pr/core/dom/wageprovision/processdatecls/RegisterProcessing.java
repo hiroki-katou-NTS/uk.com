@@ -169,7 +169,7 @@ public class RegisterProcessing {
         List<SetDaySupport> arr=this.setDaySupportRepository.getSetDaySupportById(cid,processCateNo);
         int currTreatYear=currentDay.yearMonth().v();
         for(int i=0;i<arr.size();i++){
-            if(arr.get(i).getPaymentDate().after(currentDay)){
+            if(arr.get(i).getPaymentDate().before(currentDay)){
                 currTreatYear=arr.get(i).getPaymentDate().yearMonth().v();
                 break;
             }

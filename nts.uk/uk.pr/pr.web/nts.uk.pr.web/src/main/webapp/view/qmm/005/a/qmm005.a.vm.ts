@@ -26,19 +26,18 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             var self = this;
             // $("#A2_2").ntsFixedTable({height: 247, width: 1000});
             // $("#A3_1").ntsFixedTable({height: 247, width: 400});
-
-            if (/Chrome/.test(navigator.userAgent)) {
+             if(/Edge/.test(navigator.userAgent)){
+                $("#A2_2").ntsFixedTable({height: 248, width: 1000});
+                $("#A3_1").ntsFixedTable({height: 247, width: 400});
+             }
+             else if (/Chrome/.test(navigator.userAgent)) {
                 $("#A2_2").ntsFixedTable({height: 247, width: 1000});
                 $("#A3_1").ntsFixedTable({height: 247, width: 400});
-            }
-            else if(/Edge/.test(navigator.userAgent)){
+             }
+             else {
                 $("#A2_2").ntsFixedTable({height: 248, width: 1000});
                 $("#A3_1").ntsFixedTable({height: 247, width: 400});
-            }
-            else {
-                $("#A2_2").ntsFixedTable({height: 248, width: 1000});
-                $("#A3_1").ntsFixedTable({height: 247, width: 400});
-            }
+             }
 
 
             //A3_4 対象雇用
@@ -230,6 +229,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
                 }
                 console.log(self.itemBinding());
+                console.log(self.itemTable);
             });
             dfd.resolve();
             return dfd.promise();
@@ -268,10 +268,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         months: KnockoutObservableArray<ItemComboBox>;
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
-        currentProcessDate:model.CurrentProcessDate;
+        currentYaerMonthSelected:KnockoutObservable<number>=ko.observable(0);
 
         constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
-            var self = this;
+            let self = this;
             self.processInfomation = processInfomation;
             self.setDaySupports = ko.observableArray(setDaySupports);
             self.setDaySupportsSelectedCode = ko.observable(0);
@@ -281,7 +281,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             self.yaersSelected = ko.observable(0);
             self.months = ko.observableArray(months);
             self.monthsSelectd = ko.observable(0);
-            self.currentProcessDate=currentProcessDate;
+            if(currentProcessDate){ self.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
+
 
 
             self.yaersSelected.subscribe(function (data) {
@@ -293,9 +294,11 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 )
             })
 
+             let startYearSelected=parseInt((self.currentYaerMonthSelected())/100);
+             let startMonthsSelected=self.currentYaerMonthSelected();
+             self.yaersSelected(startYearSelected);
+             self.monthsSelectd(startMonthsSelected);
 
-            // self.yaersSelected(parseInt(currentProcessDate.giveCurrTreatYear/100));
-            // self.monthsSelectd(currentProcessDate.giveCurrTreatYear);
 
         }
     }

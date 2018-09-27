@@ -166,27 +166,27 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D4_42
             self.yearSelectClassification = ko.observableArray([
-                new model.ItemModel(model.YearSelectClassification.LAST_YEAR, 'LAST_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.THIS_YEAR, 'THIS_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, 'AFTER_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, 'LEAP_YEAR')
+                new model.ItemModel(model.YearSelectClassification.LAST_YEAR, getText('Enum_YearSelectClassification_PREVIOUS_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.THIS_YEAR, getText('Enum_YearSelectClassification_THIS_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, getText('Enum_YearSelectClassification_AFTER_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, getText('Enum_YearSelectClassification_LEAP_YEAR'))
             ]);
             self.yearSelectClassificationSelectedCode = ko.observable(1);
 
             //D4_44
             self.incomeTaxBaseMonth = ko.observableArray([
-                new model.ItemModel(model.MonthSelectionSegment.JANUARY, 'JANUARY'),
-                new model.ItemModel(model.MonthSelectionSegment.FEBRUARY, 'FEBRUARY'),
-                new model.ItemModel(model.MonthSelectionSegment.MARCH, 'MARCH'),
-                new model.ItemModel(model.MonthSelectionSegment.APRIL, 'APRIL'),
-                new model.ItemModel(model.MonthSelectionSegment.MAY, 'MAY'),
-                new model.ItemModel(model.MonthSelectionSegment.JUNE, 'JUNE'),
-                new model.ItemModel(model.MonthSelectionSegment.JULY, 'JULY'),
-                new model.ItemModel(model.MonthSelectionSegment.AUGUST, 'AUGUST'),
-                new model.ItemModel(model.MonthSelectionSegment.SEPTEMBER, 'SEPTEMBER'),
-                new model.ItemModel(model.MonthSelectionSegment.OCTOBER, 'OCTOBER'),
-                new model.ItemModel(model.MonthSelectionSegment.NOVEMBER, 'NOVEMBER'),
-                new model.ItemModel(model.MonthSelectionSegment.DECEMBER, 'DECEMBER')
+                new model.ItemModel(model.MonthSelectionSegment.JANUARY, getText('Enum_MonthSelectionSegment_JANUARY')),
+                new model.ItemModel(model.MonthSelectionSegment.FEBRUARY, getText('Enum_MonthSelectionSegment_FEBRUARY')),
+                new model.ItemModel(model.MonthSelectionSegment.MARCH, getText('Enum_MonthSelectionSegment_MARCH')),
+                new model.ItemModel(model.MonthSelectionSegment.APRIL, getText('Enum_MonthSelectionSegment_APRIL')),
+                new model.ItemModel(model.MonthSelectionSegment.MAY, getText('Enum_MonthSelectionSegment_SECOND_MAY')),
+                new model.ItemModel(model.MonthSelectionSegment.JUNE, getText('Enum_MonthSelectionSegment_JUNE')),
+                new model.ItemModel(model.MonthSelectionSegment.JULY, getText('Enum_MonthSelectionSegment_JULY')),
+                new model.ItemModel(model.MonthSelectionSegment.AUGUST, getText('Enum_MonthSelectionSegment_AUGUST')),
+                new model.ItemModel(model.MonthSelectionSegment.SEPTEMBER, getText('Enum_MonthSelectionSegment_SEPTEMBER')),
+                new model.ItemModel(model.MonthSelectionSegment.OCTOBER, getText('Enum_MonthSelectionSegment_SECOND_OCTOBER')),
+                new model.ItemModel(model.MonthSelectionSegment.NOVEMBER, getText('Enum_MonthSelectionSegment_NOVEMBER')),
+                new model.ItemModel(model.MonthSelectionSegment.DECEMBER, getText('Enum_MonthSelectionSegment_DECEMBER'))
             ]);
             self.incomeTaxBaseMonthSelectedCode = ko.observable(1);
 
@@ -197,21 +197,21 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D4_34
             self.timeBaseYear = ko.observableArray([
-                new model.ItemModel(model.YearSelectClassification.LAST_YEAR, 'LAST_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.THIS_YEAR, 'THIS_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, 'AFTER_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, 'LEAP_YEAR')
+                new model.ItemModel(model.YearSelectClassification.LAST_YEAR, getText('Enum_YearSelectClassification_PREVIOUS_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.THIS_YEAR, getText('Enum_YearSelectClassification_THIS_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, getText('Enum_YearSelectClassification_AFTER_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, getText('Enum_YearSelectClassification_LEAP_YEAR'))
             ]);
             self.timeBaseYearSelectedCode = ko.observable(0);
 
 
             //D4_36
             self.timeClosingStandardMonth = ko.observableArray([
-                new model.ItemModel(model.SocialInsuColleMonth.BEFORE_MONTH, 'BEFORE_MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.LAST_MONTH, 'LAST_MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.MONTH, 'MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.NEXT_MONTH, 'NEXT_MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.SECOND_FOLLOWING_MONTH, 'SECOND_FOLLOWING_MONTH'),
+                new model.ItemModel(model.SocialInsuColleMonth.BEFORE_MONTH, getText('Enum_SocialInsuColleMonth_BEFORE_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.LAST_MONTH, getText('Enum_SocialInsuColleMonth_LAST_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.MONTH, getText('Enum_SocialInsuColleMonth_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.NEXT_MONTH, getText('Enum_SocialInsuColleMonth_NEXT_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.SECOND_FOLLOWING_MONTH, getText('Enum_SocialInsuColleMonth_SECOND_FOLLOWING_MONTH')),
             ]);
             self.timeClosingStandardMonthSelectedCode = ko.observable(0);
 
@@ -235,18 +235,18 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D4_25
             self.employmentInsuranceStandardMonth = ko.observableArray([
-                new model.ItemModel(model.MonthSelectionSegment.JANUARY, 'JANUARY'),
-                new model.ItemModel(model.MonthSelectionSegment.FEBRUARY, 'FEBRUARY'),
-                new model.ItemModel(model.MonthSelectionSegment.MARCH, 'MARCH'),
-                new model.ItemModel(model.MonthSelectionSegment.APRIL, 'APRIL'),
-                new model.ItemModel(model.MonthSelectionSegment.MAY, 'MAY'),
-                new model.ItemModel(model.MonthSelectionSegment.JUNE, 'JUNE'),
-                new model.ItemModel(model.MonthSelectionSegment.JULY, 'JULY'),
-                new model.ItemModel(model.MonthSelectionSegment.AUGUST, 'AUGUST'),
-                new model.ItemModel(model.MonthSelectionSegment.SEPTEMBER, 'SEPTEMBER'),
-                new model.ItemModel(model.MonthSelectionSegment.OCTOBER, 'OCTOBER'),
-                new model.ItemModel(model.MonthSelectionSegment.NOVEMBER, 'NOVEMBER'),
-                new model.ItemModel(model.MonthSelectionSegment.DECEMBER, 'DECEMBER')
+                new model.ItemModel(model.MonthSelectionSegment.JANUARY, getText('Enum_MonthSelectionSegment_JANUARY')),
+                new model.ItemModel(model.MonthSelectionSegment.FEBRUARY, getText('Enum_MonthSelectionSegment_FEBRUARY')),
+                new model.ItemModel(model.MonthSelectionSegment.MARCH, getText('Enum_MonthSelectionSegment_MARCH')),
+                new model.ItemModel(model.MonthSelectionSegment.APRIL, getText('Enum_MonthSelectionSegment_APRIL')),
+                new model.ItemModel(model.MonthSelectionSegment.MAY, getText('Enum_MonthSelectionSegment_SECOND_MAY')),
+                new model.ItemModel(model.MonthSelectionSegment.JUNE, getText('Enum_MonthSelectionSegment_JUNE')),
+                new model.ItemModel(model.MonthSelectionSegment.JULY, getText('Enum_MonthSelectionSegment_JULY')),
+                new model.ItemModel(model.MonthSelectionSegment.AUGUST, getText('Enum_MonthSelectionSegment_AUGUST')),
+                new model.ItemModel(model.MonthSelectionSegment.SEPTEMBER, getText('Enum_MonthSelectionSegment_SEPTEMBER')),
+                new model.ItemModel(model.MonthSelectionSegment.OCTOBER, getText('Enum_MonthSelectionSegment_SECOND_OCTOBER')),
+                new model.ItemModel(model.MonthSelectionSegment.NOVEMBER, getText('Enum_MonthSelectionSegment_NOVEMBER')),
+                new model.ItemModel(model.MonthSelectionSegment.DECEMBER, getText('Enum_MonthSelectionSegment_DECEMBER'))
             ]);
             self.employmentInsuranceStandardMonthSelectedCode = ko.observable(1);
 
@@ -257,16 +257,16 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D3_17
             self.processingMonth = ko.observableArray([
-                new model.ItemModel(model.PreviousMonthClassification.THIS_MONTH, 'THIS_MONTH'),
-                new model.ItemModel(model.PreviousMonthClassification.LAST_MONTH, 'LAST_MONTH')
+                new model.ItemModel(model.PreviousMonthClassification.THIS_MONTH, getText('Enum_PreviousMonthClassification_THIS_MONTH')),
+                new model.ItemModel(model.PreviousMonthClassification.LAST_MONTH, getText('Enum_PreviousMonthClassification_LAST_MONTH'))
             ]);
             self.processingMonthSelectedCode = ko.observable(0);
 
 
             //D4_3
             self.printingMonth = ko.observableArray([
-                new model.ItemModel(model.PreviousMonthClassification.THIS_MONTH, 'THIS_MONTH'),
-                new model.ItemModel(model.PreviousMonthClassification.LAST_MONTH, 'LAST_MONTH')
+                new model.ItemModel(model.PreviousMonthClassification.THIS_MONTH, getText('Enum_PreviousMonthClassification_THIS_MONTH')),
+                new model.ItemModel(model.PreviousMonthClassification.LAST_MONTH, getText('Enum_PreviousMonthClassification_LAST_MONTH'))
             ]);
             self.printingMonthSelectedCode = ko.observable(0);
 
@@ -290,21 +290,21 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D4_9
             self.monthsCollected = ko.observableArray([
-                new model.ItemModel(model.SocialInsuColleMonth.BEFORE_MONTH, 'BEFORE_MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.LAST_MONTH, 'LAST_MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.MONTH, 'MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.NEXT_MONTH, 'NEXT_MONTH'),
-                new model.ItemModel(model.SocialInsuColleMonth.SECOND_FOLLOWING_MONTH, 'SECOND_FOLLOWING_MONTH'),
+                new model.ItemModel(model.SocialInsuColleMonth.BEFORE_MONTH, getText('Enum_SocialInsuColleMonth_BEFORE_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.LAST_MONTH, getText('Enum_SocialInsuColleMonth_LAST_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.MONTH, getText('Enum_SocialInsuColleMonth_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.NEXT_MONTH, getText('Enum_SocialInsuColleMonth_NEXT_MONTH')),
+                new model.ItemModel(model.SocialInsuColleMonth.SECOND_FOLLOWING_MONTH, getText('Enum_SocialInsuColleMonth_SECOND_FOLLOWING_MONTH')),
 
             ]);
             self.monthsCollectedSelectedCode = ko.observable(0);
 
             //D4_15
             self.guaranteedBaseYear = ko.observableArray([
-                new model.ItemModel(model.YearSelectClassification.LAST_YEAR, 'LAST_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.THIS_YEAR, 'THIS_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, 'AFTER_YEAR'),
-                new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, 'LEAP_YEAR')
+                new model.ItemModel(model.YearSelectClassification.LAST_YEAR, getText('Enum_YearSelectClassification_PREVIOUS_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.THIS_YEAR, getText('Enum_YearSelectClassification_THIS_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, getText('Enum_YearSelectClassification_AFTER_YEAR')),
+                new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, getText('Enum_YearSelectClassification_LEAP_YEAR'))
 
 
             ]);
@@ -318,27 +318,27 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             //D3_8
 
             self.refeMonth = ko.observableArray([
-                new model.ItemModel(model.PreviousMonthClassification.THIS_MONTH, 'THIS_MONTH'),
-                new model.ItemModel(model.PreviousMonthClassification.LAST_MONTH, 'LAST_MONTH')
+                new model.ItemModel(model.PreviousMonthClassification.THIS_MONTH, getText('Enum_PreviousMonthClassification_THIS_MONTH')),
+                new model.ItemModel(model.PreviousMonthClassification.LAST_MONTH, getText('Enum_PreviousMonthClassification_LAST_MONTH'))
             ]);
             self.refeMonthSelectedCode = ko.observable(0);
 
             //D4_17
             self.guaranteedBaseMonth = ko.observableArray([
-                new model.ItemModel(model.InsuranceStanMonthClassSification.LAST_MONTH, 'LAST_MONTH'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.MONTH, 'MONTH'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.JANUARY, 'JANUARY'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.FEBRUARY, 'FEBRUARY'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.MARCH, 'MARCH'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.APRIL, 'APRIL'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.MAY, 'MAY'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.JUNE, 'JUNE'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.JULY, 'JULY'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.AUGUST, 'AUGUST'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.SEPTEMBER, 'SEPTEMBER'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.OCTOBER, 'OCTOBER'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.NOVEMBER, 'NOVEMBER'),
-                new model.ItemModel(model.InsuranceStanMonthClassSification.DECEMBER, 'DECEMBER')
+                new model.ItemModel(model.InsuranceStanMonthClassSification.LAST_MONTH, getText('Enum_InsuranceStanMonthClassification_LAST_MONTH')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.MONTH, getText('Enum_InsuranceStanMonthClassification_MONTH')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.JANUARY, getText('Enum_InsuranceStanMonthClassification_JANUARY')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.FEBRUARY, getText('Enum_InsuranceStanMonthClassification_FEBRUARY')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.MARCH, getText('Enum_InsuranceStanMonthClassification_MARCH')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.APRIL, getText('Enum_InsuranceStanMonthClassification_APRIL')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.MAY, getText('Enum_InsuranceStanMonthClassification_MAY')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.JUNE, getText('Enum_InsuranceStanMonthClassification_JUNE')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.JULY, getText('Enum_InsuranceStanMonthClassification_JULY')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.AUGUST, getText('Enum_InsuranceStanMonthClassification_AUGUST')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.SEPTEMBER, getText('Enum_InsuranceStanMonthClassification_SEPTEMBER')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.OCTOBER, getText('Enum_InsuranceStanMonthClassification_OCTOBER')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.NOVEMBER, getText('Enum_InsuranceStanMonthClassification_NOVEMBER')),
+                new model.ItemModel(model.InsuranceStanMonthClassSification.DECEMBER, getText('Enum_InsuranceStanMonthClassification_DECEMBER'))
 
             ]);
             self.guaranteedBaseMonthSelectedCode = ko.observable(0);
