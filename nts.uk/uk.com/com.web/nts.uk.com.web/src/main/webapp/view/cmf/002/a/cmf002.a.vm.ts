@@ -56,7 +56,7 @@ module nts.uk.com.view.cmf002.a.viewmodel {
          */
         referenceHistoryScreen(): void {
             let self = this;
-            jump("/view/cmf/002/x/index.xhtml", self.roleAuthority);
+            jump("/view/cmf/002/x/index.xhtml", {roleAuthority: self.roleAuthority});
         }
     }
 }

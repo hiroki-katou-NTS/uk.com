@@ -25,7 +25,7 @@
 				<!--C1_1 新規-->
 				<button tabindex="1" data-bind="click: settingNewMode, enable: !isNewMode()">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
-				<button tabindex="2" data-bind="click: registerOutputItem" class="proceed">#{i18n.getText('CMF002_72')}</button>
+				<button tabindex="2" data-bind="click: registerOutputItem, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
 				<button tabindex="3" data-bind="click: openCMF002g">#{i18n.getText('CMF002_73')}</button>
 				<!--C1_4 出力項目初期値設定-->
