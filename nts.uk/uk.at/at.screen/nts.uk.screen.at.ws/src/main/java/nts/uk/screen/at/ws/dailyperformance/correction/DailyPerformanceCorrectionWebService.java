@@ -277,6 +277,12 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
+	@Path("getnameattItembytype/{type}")
+	public List<AttItemName> getNameOfAttendanceItemByType(@PathParam(value = "type") int type) {
+		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemNameByType(type);
+	}
+	
+	@POST
 	@Path("getNamedailyAttItem")
 	public List<AttItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
 		return this.dailyPerformanceAuthoritySetting.getListAttendanceItemName(dailyAttendanceItemIds);
