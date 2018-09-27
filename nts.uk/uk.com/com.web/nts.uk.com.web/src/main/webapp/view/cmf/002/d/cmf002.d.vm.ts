@@ -608,7 +608,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_NORMAL:
-                    if (_.isEmpty(self.searchNum())) {
+                    if (_.isNil(self.searchNum())) {
                         self.setError("D6_C4_4", "Msg_656");
                         checkRequired = true;
                     }
@@ -657,7 +657,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     break;
                 case SWITCH_VIEW.INS_TIME_NORMAL:
                     if (_.isNil(self.searchClock())) {
-                        self.setError("D6_C4_1", "Msg_656");
+                        self.setError("D6_C4_13", "Msg_656");
                         checkRequired = true;
                     }
                     break;
