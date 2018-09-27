@@ -17,6 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
@@ -43,6 +44,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalStatusOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -618,5 +620,17 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			}
 		});
 		return routeSituationLst;
+	}
+
+	@Override
+	public AppRootConfirm getAppRootCFByMonth(String companyID, String employeeID, YearMonth yearMonth,
+			Integer closureID, ClosureDate closureDate, RecordRootType rootType) {
+		// ドメインモデル「就業実績確認状態」を取得する
+		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpMonth(companyID, employeeID, yearMonth, closureID, closureDate, rootType);
+		if(!opAppRootConfirm.isPresent()){
+			return new AppRootConfirm(UUID.randomUUID().toString(), companyID, employeeID, GeneralDate.today(), rootType, new ArrayList<>(),
+					Optional.empty(), Optional.empty(), Optional.empty());
+		}
+		return opAppRootConfirm.get();
 	}
 }

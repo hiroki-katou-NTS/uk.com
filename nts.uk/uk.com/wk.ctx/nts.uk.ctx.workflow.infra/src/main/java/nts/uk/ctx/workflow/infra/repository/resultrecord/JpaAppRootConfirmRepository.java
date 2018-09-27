@@ -108,6 +108,15 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
 			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+	
+	private final String FIND_BY_EMP_MONTH = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = 'rootType'" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.YEARMONTH = yearMonth" +
+			" AND appRoot.CLOSURE_ID = closureID" +
+			" AND appRoot.CLOSURE_DAY = closureDay" +
+			" AND appRoot.LAST_DAY_FLG = lastDayFlg";
 
 	@Override
 	public Optional<AppRootConfirm> findByID(String rootID) {
@@ -336,6 +345,33 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			query = query.replaceAll("rootType", String.valueOf(rootType.value));
 			query = query.replaceAll("employeeID", employeeID);
 			query = query.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<AppRootConfirm> findByEmpMonth(String companyID, String employeeID, YearMonth yearMonth,
+			Integer closureID, ClosureDate closureDate, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_MONTH;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("yearMonth", yearMonth.v().toString());
+			query = query.replaceAll("closureID", closureID.toString());
+			query = query.replaceAll("closureDay", closureDate.getClosureDay().v().toString());
+			query = query.replaceAll("lastDayFlg", closureDate.getLastDayOfMonth() ? "1" : "0");
 			PreparedStatement pstatement = con.prepareStatement(query);
 			ResultSet rs = pstatement.executeQuery();
 			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));

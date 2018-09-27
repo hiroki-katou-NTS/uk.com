@@ -315,7 +315,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				throw new BusinessException("Msg_1430", "承認者");
 			}
 			// 対象日の就業実績確認状態を取得する
-			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootCFByMonth(companyID, employeeID, employee.getYearMonth(), 
+					employee.getClosureID(), employee.getClosureDate(), rootTypeEnum);
 			// (中間データ版)承認する
 			appRootConfirmService.approve(approverID, employeeID, date, appRootInstance, appRootConfirm);
 		});
@@ -333,6 +334,34 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				Optional.of(yearMonth), Optional.of(closureID), Optional.of(closureDate));
 		
 		this.appRootConfirmRepository.insert(newDomain);
+	}
+
+	@Override
+	public boolean cancelMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst) {
+		boolean result = false;
+		String companyID = AppContexts.user().companyId();
+		RecordRootType rootTypeEnum = RecordRootType.CONFIRM_WORK_BY_MONTH;
+		for(EmpPerformMonthParam employee : empPerformMonthParamLst){
+			String employeeID = employee.getEmployeeID();
+			GeneralDate date = employee.getBaseDate();
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employeeID), 
+					new DatePeriod(date, date), 
+					rootTypeEnum);
+			// ループする社員の「承認ルート中間データ」を取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			// 対象日の就業実績確認状態を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootCFByMonth(companyID, employeeID, employee.getYearMonth(), 
+					employee.getClosureID(), employee.getClosureDate(), rootTypeEnum);
+			// (中間データ版)解除する
+			result = appRootConfirmService.cleanStatus(approverID, employeeID, date, appRootInstance, appRootConfirm);
+			if(!result){
+				break;
+			}
+		};
+		return result;
 	}
 	
 }

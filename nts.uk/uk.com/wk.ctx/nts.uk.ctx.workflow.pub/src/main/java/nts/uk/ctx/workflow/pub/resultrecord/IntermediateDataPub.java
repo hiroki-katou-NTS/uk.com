@@ -165,4 +165,13 @@ public interface IntermediateDataPub {
 	 * @param closureDate
 	 */
 	public void createApprovalStatusMonth(String employeeID, GeneralDate date, YearMonth yearMonth, Integer closureID, ClosureDate closureDate);
+	
+	/**
+	 * RequestList 529
+	 * [No.529](中間データ版)実績の承認を解除する（月別）
+	 * @param approverID
+	 * @param empPerformMonthParamLst
+	 * @return
+	 */
+	public boolean cancelMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst);
 }
