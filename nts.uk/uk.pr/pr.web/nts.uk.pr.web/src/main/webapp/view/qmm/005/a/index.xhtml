@@ -40,7 +40,7 @@
                     <colgroup>
                         <col width="35px"/>
                         <col width="180px"/>
-                        <col width="90px"/>
+                        <col width="70px"/>
                         <col width="360px"/>
                     </colgroup>
                     <thead>
@@ -49,7 +49,7 @@
                         <!--A2_3 処理区分-->
                         <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_7')}</th>
                         <!--A2_4 基準日の詳細設定-->
-                        <th class="ui-widget-header" rowspan="2">#{i18n.getText('QMM005_8')}</th>
+                        <th class="ui-widget-header" rowspan="2" style="    white-space: normal;">#{i18n.getText('QMM005_8')}</th>
                         <!--A2_5 給与-->
                         <th class="ui-widget-header">#{i18n.getText('QMM005_9')}</th>
                     </tr>
@@ -67,9 +67,9 @@
                         </td>
                         <td style="text-align: center;background-color: #CFF1A5" >
                             <!--A2_8 処理区分名称-->
-                            <div id="A2_8"
-                                 data-bind="if: processInfomation.processDivisionName() != ''">
-                                <div style="width: 100px" id="A2_8_label">
+                            <div id="A2_8"  class="flex valign-center"
+                                     data-bind="if: processInfomation.processDivisionName() != '' " >
+                                <div style="width: 100px;text-overflow: ellipsis;overflow: hidden;" id="A2_8_label">
                                     <label
                                             data-bind="text: processInfomation.processDivisionName()"></label>
                                 </div>
@@ -90,7 +90,7 @@
                             <div class="flex valign-center">
                             <!--A2_11 処理年一覧-->
                             <div id="combo-box" data-bind="ntsComboBox: {
-                                name: 'Sample List', width:80,
+                                name: 'Sample List', width:78,
                                 options: years,
                                 optionsValue: 'code',
                                  visibleItemsCount: 8,
@@ -98,7 +98,8 @@
                                 value:yaersSelected,
                                 dropDownAttachedToBody:true,
                                 columns:
-                                [ { prop: 'name', length: 10 },
+                                [ { prop: 'name', length: 3 },
+                                { prop: 'fix_leng', length: 10 }
                             ]}"></div>
                             <!--A2_13 キャレット-->
                             <span
@@ -115,9 +116,11 @@
                             enable: processInfomation.processDivisionName() != '',
                             columns: [
 
-                                { prop: 'name', length: 10 },
+                                { prop: 'name', length: 5 },
+
+
                             ]}"
-                                    style="width: 222px; margin-left: 10px"></div>
+                                    style=" margin-left: 10px"></div>
                             </div>
                         </td>
                     </tr>
@@ -147,7 +150,7 @@
                             <button class="small"
                             data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable:processInfomation.processDivisionName() != '' ">#{i18n.getText('QMM005_20')}</button>
                             <!--A3_4 対象雇用-->
-                            <input style="padding-left: 10px"
+                            <input style="padding-left: 10px;width: 195px"
                                     data-bind="ntsTextEditor: {
                                 value: employeeString,
                                 readonly: true,

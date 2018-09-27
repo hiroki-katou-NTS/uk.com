@@ -64,8 +64,11 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if(processInformationUpdate.deprecatCate==0)
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=0;
                     if (processInformationUpdate.deprecatCate == 1) {
-                        self.resetEmployee(processInformationUpdate.processCateNo);
-                        nts.uk.ui.dialog.alertError({ messageId: "MsgQ_158" });
+                        service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
+                            self.resetEmployee(processInformationUpdate.processCateNo);
+                            nts.uk.ui.dialog.alertError({ messageId: "MsgQ_158" });
+                        });
+
                     }
 
 
@@ -265,7 +268,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         months: KnockoutObservableArray<ItemComboBox>;
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
-
+        currentProcessDate:model.CurrentProcessDate;
 
         constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
             var self = this;
@@ -278,6 +281,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             self.yaersSelected = ko.observable(0);
             self.months = ko.observableArray(months);
             self.monthsSelectd = ko.observable(0);
+            self.currentProcessDate=currentProcessDate;
 
 
             self.yaersSelected.subscribe(function (data) {
@@ -288,6 +292,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     })
                 )
             })
+
+
+            // self.yaersSelected(parseInt(currentProcessDate.giveCurrTreatYear/100));
+            // self.monthsSelectd(currentProcessDate.giveCurrTreatYear);
 
         }
     }

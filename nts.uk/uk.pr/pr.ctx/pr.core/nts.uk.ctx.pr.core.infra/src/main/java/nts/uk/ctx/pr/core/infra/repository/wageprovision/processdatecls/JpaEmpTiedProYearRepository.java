@@ -17,7 +17,7 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpTiedProYear f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.empTiedProYearPk.cid =:cid AND  f.empTiedProYearPk.processCateNo =:processCateNo ";
-
+    private static final String DELETE_BY_PROCESSCATENO = "DELETE FROM QpbmtEmpTiedProYear f WHERE f.empTiedProYearPk.cid =:cid AND  f.empTiedProYearPk.processCateNo =:processCateNo ";
 
     @Override
     public Optional<EmpTiedProYear> getEmpTiedProYearById(String cid, int processCateNo) {
@@ -42,6 +42,13 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
         List<QpbmtEmpTiedProYearPk> pks = oldDomain.getEmploymentCodes().stream().map(x -> new QpbmtEmpTiedProYearPk(oldDomain.getCid(), oldDomain.getProcessCateNo(), x.v())).collect(Collectors.toList());
         this.commandProxy().removeAll(QpbmtEmpTiedProYear.class, pks);
         this.commandProxy().insertAll(QpbmtEmpTiedProYear.toEntity(newDomain));
+    }
+
+    @Override
+    public void remove(String cid, int processCateNo) {
+        this.getEntityManager().createQuery(DELETE_BY_PROCESSCATENO)
+                .setParameter("cid", cid)
+                .setParameter("processCateNo", processCateNo).executeUpdate();
     }
 
 }

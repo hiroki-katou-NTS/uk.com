@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
 
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 650, height: 480};</script>
+        <script>var dialogSize = {width: 700, height: 480};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm005.d.start.js"/>
@@ -23,7 +23,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!-- D1_1  処理区分 -->
-            <div style="margin-left: 10px"
+            <div style="margin-left: 5px"
                  data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
 
             <!-- D1_2  処理区分名称 -->
@@ -43,7 +43,7 @@
             <table id="fixed-table">
 
                 <colgroup>
-                    <col width="200px"/>
+                    <col width="185px"/>
                     <col width="100px"/>
                     <col width="110px"/>
                     <col width="30px"/>
@@ -201,7 +201,7 @@
             </div>
             <table>
                 <colgroup>
-                    <col width="200px"/>
+                    <col width="215px"/>
                     <col width="120px"/>
                     <col width="120px"/>
                     <col width="120px"/>
@@ -273,11 +273,11 @@
 
             <!-- D4_12 -->
             <div class="label"
-                 style="padding-left: 200px;margin-top: 15px;margin-bottom: 20px;">#{i18n.getText('QMM005_66')}</div>
+                 style="padding-left: 215px;margin-top: 15px;margin-bottom: 20px;">#{i18n.getText('QMM005_66')}</div>
 
             <table>
                 <colgroup>
-                    <col width="200px"/>
+                    <col width="215px"/>
                     <col width="80px"/>
                     <col width="120px"/>
                     <col width="120px"/>
@@ -340,7 +340,7 @@
 
             <table>
                 <colgroup>
-                    <col width="200px"/>
+                    <col width="215px"/>
                     <col width="120px"/>
                     <col width="120px"/>
                     <col width="120px"/>
@@ -394,13 +394,13 @@
             <!-- D4_27 -->
 
 
-            <div class="label" style="padding-left: 200px">#{i18n.getText('QMM005_74')}</div>
+            <div class="label" style="padding-left: 215px">#{i18n.getText('QMM005_74')}</div>
 
 
             <!-- D4_28 -->
 
 
-            <div class="label" style="padding-left: 200px">#{i18n.getText('QMM005_75')}</div>
+            <div class="label" style="padding-left: 215px">#{i18n.getText('QMM005_75')}</div>
 
 
             <div class="flex valign-center" style="padding-top: 20px;">
@@ -415,7 +415,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: timeCloseDateSelectedCode,
-									}" style="width: 175px;margin-left: 80px;"></div>
+									}" style="width: 175px;margin-left: 95px;"></div>
 
             </div>
 
@@ -475,7 +475,7 @@
                 <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>
 
                 <!-- D4_41 -->
-                <span class="label" style="padding-left: 90px;">#{i18n.getText('QMM005_68')}</span>
+                <span class="label" style="padding-left: 105px;">#{i18n.getText('QMM005_68')}</span>
                 <!--  D4_42 -->
 
                 <div data-bind="ntsComboBox: {

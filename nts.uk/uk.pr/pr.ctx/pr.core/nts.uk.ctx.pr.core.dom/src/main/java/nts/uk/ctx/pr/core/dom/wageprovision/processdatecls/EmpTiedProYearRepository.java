@@ -13,4 +13,6 @@ public interface EmpTiedProYearRepository {
 
     void update(EmpTiedProYear oldDomain, EmpTiedProYear newDomain);
 
+    void remove(String cid,int processCateNo);
+
 }
