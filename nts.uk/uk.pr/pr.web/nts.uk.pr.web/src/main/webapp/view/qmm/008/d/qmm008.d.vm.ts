@@ -110,6 +110,10 @@ module nts.uk.pr.view.qmm008.d {
                 self.detail().welfarePensionPrefectureNo(self.selectedNoD38);
                 self.isEnableBtnDelete(true);
 
+                $('.nts-input').trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return
+                }
                 if (self.currentCode() == null) {
                     nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
                         if (response.msg == 'Msg_3') {
@@ -192,20 +196,6 @@ module nts.uk.pr.view.qmm008.d {
                                     }
                                     if (!self.isEnableCode()) {
                                         self.currentCode(self.items()[parameter].code);
-//                                        nts.uk.pr.view.qmm008.d.service.findByCode(self.items()[parameter].code).done(function(response) {
-//                                            self.detail(new SocialOfficeDetail(response));
-//                                            let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
-//                                            if (response.healthInsurancePrefectureNo)
-//                                                self.selectedNoD35(selectedNo35.no);
-//                                            let selectedNo38 = _.find(self.itemList(), { no: response.welfarePensionPrefectureNo });
-//                                            if (response.welfarePensionPrefectureNo)
-//                                                self.selectedNoD38(selectedNo38.no);
-//                                            self.currentCode(self.items()[parameter].code);
-//                                            self.isEnableCode(false);
-//                                            _.defer(function() {
-//                                                $("#D4_3").focus();
-//                                            });
-//                                        });
                                     }
                                 }
                             }
