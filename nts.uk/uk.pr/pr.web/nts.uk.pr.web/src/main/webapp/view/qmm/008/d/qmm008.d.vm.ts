@@ -47,8 +47,6 @@ module nts.uk.pr.view.qmm008.d {
                         }
                     }
                     
-                    $( "#D4_2" ).append( '"disabled="disabled""' );
-                    
                 });
 
                 this.columns2 = ko.observableArray([
@@ -70,9 +68,9 @@ module nts.uk.pr.view.qmm008.d {
 
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
-
+                self.isEnableCode(true);
                 self.values = ko.observable('');
-
+                
                 self.currentCode.subscribe(function(codeId) {
                     if (codeId) {
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
@@ -249,30 +247,30 @@ module nts.uk.pr.view.qmm008.d {
             constructor(parameter?: ISocialOfficeDetail) {
                 this.code(parameter ? parameter.code : '');
                 this.name(parameter ? parameter.name : '');
-                this.shortName(parameter ? parameter.shortName : '');
-                this.representativeName(parameter ? parameter.representativeName : '');
+                this.shortName(parameter ? parameter.shortName : null);
+                this.representativeName(parameter ? parameter.representativeName : null);
                 this.representativePosition(parameter ? parameter.representativePosition : '');
-                this.memo(parameter ? parameter.memo : '');
-                this.postalCode(parameter ? parameter.postalCode : '');
-                this.address1(parameter ? parameter.address1 : '');
-                this.addressKana1(parameter ? parameter.addressKana1 : '');
-                this.address2(parameter ? parameter.address2 : '');
-                this.addressKana2(parameter ? parameter.addressKana2 : '');
-                this.phoneNumber(parameter ? parameter.phoneNumber : '');
-                this.welfarePensionFundNumber(parameter ? parameter.welfarePensionFundNumber : '');
-                this.welfarePensionOfficeNumber(parameter ? parameter.welfarePensionOfficeNumber : '');
-                this.healthInsuranceOfficeNumber(parameter ? parameter.healthInsuranceOfficeNumber : '');
-                this.healthInsuranceUnionOfficeNumber(parameter ? parameter.healthInsuranceUnionOfficeNumber : '');
-                this.healthInsuranceOfficeNumber1(parameter ? parameter.healthInsuranceOfficeNumber1 : '');
-                this.healthInsuranceOfficeNumber2(parameter ? parameter.healthInsuranceOfficeNumber2 : '');
-                this.welfarePensionOfficeNumber1(parameter ? parameter.welfarePensionOfficeNumber1 : '');
-                this.welfarePensionOfficeNumber2(parameter ? parameter.welfarePensionOfficeNumber2 : '');
-                this.healthInsuranceCityCode(parameter ? parameter.healthInsuranceCityCode : '');
-                this.healthInsuranceOfficeCode(parameter ? parameter.healthInsuranceOfficeCode : '');
-                this.welfarePensionCityCode(parameter ? parameter.welfarePensionCityCode : '');
-                this.welfarePensionOfficeCode(parameter ? parameter.welfarePensionOfficeCode : '');
-                this.healthInsurancePrefectureNo(parameter ? parameter.healthInsurancePrefectureNo : '');
-                this.welfarePensionPrefectureNo(parameter ? parameter.welfarePensionPrefectureNo : '');
+                this.memo(parameter ? parameter.memo : null);
+                this.postalCode(parameter ? parameter.postalCode : null);
+                this.address1(parameter ? parameter.address1 : null);
+                this.addressKana1(parameter ? parameter.addressKana1 : null);
+                this.address2(parameter ? parameter.address2 : null);
+                this.addressKana2(parameter ? parameter.addressKana2 : null);
+                this.phoneNumber(parameter ? parameter.phoneNumber : null);
+                this.welfarePensionFundNumber(parameter ? parameter.welfarePensionFundNumber : null);
+                this.welfarePensionOfficeNumber(parameter ? parameter.welfarePensionOfficeNumber : null);
+                this.healthInsuranceOfficeNumber(parameter ? parameter.healthInsuranceOfficeNumber : null);
+                this.healthInsuranceUnionOfficeNumber(parameter ? parameter.healthInsuranceUnionOfficeNumber : null);
+                this.healthInsuranceOfficeNumber1(parameter ? parameter.healthInsuranceOfficeNumber1 : null);
+                this.healthInsuranceOfficeNumber2(parameter ? parameter.healthInsuranceOfficeNumber2 : null);
+                this.welfarePensionOfficeNumber1(parameter ? parameter.welfarePensionOfficeNumber1 : null);
+                this.welfarePensionOfficeNumber2(parameter ? parameter.welfarePensionOfficeNumber2 : null);
+                this.healthInsuranceCityCode(parameter ? parameter.healthInsuranceCityCode : null);
+                this.healthInsuranceOfficeCode(parameter ? parameter.healthInsuranceOfficeCode : null);
+                this.welfarePensionCityCode(parameter ? parameter.welfarePensionCityCode : null);
+                this.welfarePensionOfficeCode(parameter ? parameter.welfarePensionOfficeCode : null);
+                this.healthInsurancePrefectureNo(parameter ? parameter.healthInsurancePrefectureNo : null);
+                this.welfarePensionPrefectureNo(parameter ? parameter.welfarePensionPrefectureNo : null);
             }
 
         }

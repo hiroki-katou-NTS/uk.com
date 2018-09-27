@@ -13,6 +13,6 @@ module nts.uk.pr.view.qmm008.j.service {
         return ajax("pr", paths.update, command);
     }
     export function count(command): JQueryPromise<any> {
-        return ajax(paths.start, command);
+        return ajax(paths.count, command);
     }
 }

@@ -25,10 +25,10 @@
 		<ui:define name="content">
 			<div id="contents-area" style="margin-left: 65px;">
 				<div style="margin-bottom: 15px;">
-					<button class="proceed" id = "E1_1" data-bind="click: update" >#{i18n.getText('QMM008_1')}</button>
-					<button id ="E1_2" >#{i18n.getText('QMM008_2')}</button>
-					<button id ="E1_3" data-bind="click: count">#{i18n.getText('QMM008_141')}</button>
-					<button id ="E1_4" data-bind = "click: closeDialog">#{i18n.getText('QMM008_108')}</button>
+					<button class="proceed" id = "E1_1" tabindex="1" data-bind="click: update" >#{i18n.getText('QMM008_1')}</button>
+					<button id ="E1_2" tabindex="2" >#{i18n.getText('QMM008_2')}</button>
+					<button id ="E1_3" tabindex="3" data-bind="click: count">#{i18n.getText('QMM008_141')}</button>
+					<button id ="E1_4" tabindex="4" data-bind = "click: closeDialog">#{i18n.getText('QMM008_108')}</button>
 				</div>
 				<hr></hr>
 				<div>
@@ -102,21 +102,21 @@
 								data-bind="text: $data.rewardMonthlyLowerLimit"></span></td>
 							<td class = "td-widget"><span class="limited-label"
 								data-bind="text: $data.rewardMonthlyUpperLimit"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="5"  class="limited-label"
 								data-bind="text: $data.inHealthInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="6" class="limited-label"
 								data-bind="text: $data.inNursingCare"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="7" class="limited-label"
 								data-bind="text: $data.inSpecInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="8" class="limited-label"
 								data-bind="text: $data.inBasicInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="9" class="limited-label"
 								data-bind="text: $data.emHealthInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="10" class="limited-label"
 								data-bind="text: $data.emNursingCare"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="11" class="limited-label"
 								data-bind="text: $data.emSpecInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td><span tabindex="12" class="limited-label"
 								data-bind="text: $data.emBasicInsurancePremium"></span></td>
 						</tr>
 					</tbody>

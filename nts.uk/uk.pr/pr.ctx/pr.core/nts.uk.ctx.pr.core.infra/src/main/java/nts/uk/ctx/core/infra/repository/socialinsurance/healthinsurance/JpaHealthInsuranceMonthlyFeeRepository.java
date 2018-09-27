@@ -61,7 +61,9 @@ public class JpaHealthInsuranceMonthlyFeeRepository extends JpaRepository implem
     @Override
     public void deleteByHistoryIds(List<String> historyIds) {
         this.commandProxy().removeAll(QpbmtHealthInsuranceMonthlyFee.class, historyIds);
-        this.deleteHealthInsurancePerGradeByHistoryId(historyIds);
+        if(!historyIds.isEmpty()) {
+        	 this.deleteHealthInsurancePerGradeByHistoryId(historyIds);
+        }
     }
 
     @Override

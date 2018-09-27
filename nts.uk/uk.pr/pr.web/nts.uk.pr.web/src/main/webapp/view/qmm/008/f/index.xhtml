@@ -25,10 +25,10 @@
 		<ui:define name="content">
 			<div id="contents-area" style="margin-left: 15px;">
 				<div style="margin-bottom: 15px;">
-					<button class="proceed" id = "F1_1" data-bind="click: update" >#{i18n.getText('QMM008_1')}</button>
-					<button id ="F1_2">#{i18n.getText('QMM008_2')}</button>
-					<button id ="F1_3" data-bind="click: countReview">#{i18n.getText('QMM008_141')}</button>
-					<button id ="F1_4" data-bind = "click: closeDialog" >#{i18n.getText('QMM008_108')}</button>
+					<button class="proceed" id = "F1_1" tabindex="1" data-bind="click: update" >#{i18n.getText('QMM008_1')}</button>
+					<button id ="F1_2" tabindex="2">#{i18n.getText('QMM008_2')}</button>
+					<button id ="F1_3" tabindex="3" data-bind="click: countReview">#{i18n.getText('QMM008_141')}</button>
+					<button id ="F1_4" tabindex="4" data-bind = "click: closeDialog" >#{i18n.getText('QMM008_108')}</button>
 				</div>
 				<hr></hr>
 				<div>
@@ -105,21 +105,21 @@
 								data-bind="text: $data.rewardMonthlyLowerLimit"></span></td>
 							<td class = "td-widget"><span class="limited-label"
 								data-bind="text: $data.rewardMonthlyUpperLimit"></span></td>
-							<td><span class="limited-label"
+							<td ><span tabindex="5" class="limited-label"
 								data-bind="text: $data.inMaleInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td ><span tabindex="6" class="limited-label"
 								data-bind="text: $data.emMaleInsurancePremium"></span></td>
-							<td><span class="limited-label"
+							<td ><span tabindex="7" class="limited-label"
 								data-bind="text: $data.inMaleExemptionInsurance"></span></td>
-							<td><span class="limited-label"
+							<td ><span tabindex="8" class="limited-label"
 								data-bind="text: $data.emMaleExemptionInsurance"></span></td>
-							<td data-bind="css: { hidden: $parent.display() }"><span class="limited-label"
+							<td  data-bind="css: { hidden: $parent.display() }"><span tabindex="9" class="limited-label"
 								data-bind="text: $data.inFemaleInsurancePremium"></span></td>
-							<td data-bind="css: { hidden: $parent.display()  }"><span class="limited-label"
+							<td  data-bind="css: { hidden: $parent.display()  }"><span tabindex="10" class="limited-label"
 								data-bind="text: $data.emFemaleInsurancePremium "></span></td>
-							<td data-bind="css: { hidden: $parent.display()  }"><span class="limited-label"
+							<td  data-bind="css: { hidden: $parent.display()  }"><span tabindex="11" class="limited-label"
 								data-bind="text: $data.inFemaleExemptionInsurance"></span></td>
-							<td data-bind="css: { hidden: $parent.display()  }" ><span class="limited-label"
+							<td  data-bind="css: { hidden: $parent.display()  }" ><span tabindex="12" class="limited-label"
 								data-bind="text: $data.emFemaleExemptionInsurance"></span></td>
 						</tr>
 					</tbody>
