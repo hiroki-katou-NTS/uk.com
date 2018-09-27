@@ -708,7 +708,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             //            self.monthlyParam().initMenuMode = self.initMode();
 //            self.monthlyParam().closureId = self.closureId();
             self.monthlyParam().yearMonth = date;
-//            self.monthlyParam().lstEmployees = self.lstEmployee();
+            self.monthlyParam().lstEmployees = self.lstEmployee();
 
             if ($("#dpGrid").data('mGrid')) {
                 $("#dpGrid").mGrid("destroy");
