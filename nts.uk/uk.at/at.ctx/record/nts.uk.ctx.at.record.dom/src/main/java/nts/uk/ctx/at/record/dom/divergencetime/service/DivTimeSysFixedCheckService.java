@@ -46,7 +46,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
@@ -58,6 +57,8 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;

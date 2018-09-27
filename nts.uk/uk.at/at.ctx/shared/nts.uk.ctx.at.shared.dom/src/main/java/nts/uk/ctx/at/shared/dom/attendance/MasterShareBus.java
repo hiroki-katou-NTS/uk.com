@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergencetime.service;
+package nts.uk.ctx.at.shared.dom.attendance;
 
 import java.util.HashMap;
 import java.util.Map;

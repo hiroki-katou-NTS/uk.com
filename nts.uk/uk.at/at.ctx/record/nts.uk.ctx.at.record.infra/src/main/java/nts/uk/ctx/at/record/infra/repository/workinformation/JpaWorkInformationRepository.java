@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -21,11 +22,15 @@ import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfoPK;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -190,9 +195,48 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod) {
-		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_DESC, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeId", employeeId).setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+		try {
+			PreparedStatement sqlSchedule = this.connection().prepareStatement(
+					"select * from KRCDT_WORK_SCHEDULE_TIME where SID = ? and YMD >= ? and YMD <= ? order by YMD desc");
+			sqlSchedule.setString(1, employeeId);
+			sqlSchedule.setDate(2, Date.valueOf(datePeriod.start().localDate()));
+			sqlSchedule.setDate(3, Date.valueOf(datePeriod.end().localDate()));
+			List<KrcdtWorkScheduleTime> scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
+				KrcdtWorkScheduleTime entity = new KrcdtWorkScheduleTime();
+				entity.krcdtWorkScheduleTimePK = new KrcdtWorkScheduleTimePK(
+						rec.getString("SID"),
+						rec.getGeneralDate("YMD"),
+						rec.getInt("WORK_NO"));
+				entity.attendance = rec.getInt("ATTENDANCE");
+				entity.leaveWork = rec.getInt("LEAVE_WORK");
+				return entity;
+			});
+			
+			PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
+					"select * from KRCDT_DAI_PER_WORK_INFO where SID = ? and YMD >= ? and YMD <= ? order by YMD desc ");
+			sqlWorkInfo.setString(1, employeeId);
+			sqlWorkInfo.setDate(2, Date.valueOf(datePeriod.start().localDate()));
+			sqlWorkInfo.setDate(3, Date.valueOf(datePeriod.end().localDate()));
+			
+			return new NtsResultSet(sqlWorkInfo.executeQuery()).getList(rec -> {
+				GeneralDate ymd = rec.getGeneralDate("YMD");
+				int calcState = rec.getInt("CALCULATION_STATE"),
+						goStraight = rec.getInt("GO_STRAIGHT_ATR"),
+						backStraight = rec.getInt("BACK_STRAIGHT_ATR"),
+						dayOfWeek = rec.getInt("DAY_OF_WEEK"); 
+				return new WorkInfoOfDailyPerformance(employeeId, 
+						new WorkInformation(rec.getString("RECORD_WORK_WORKTIME_CODE"), rec.getString("RECORD_WORK_WORKTYPE_CODE")), 
+						new WorkInformation(rec.getString("SCHEDULE_WORK_WORKTIME_CODE"), rec.getString("SCHEDULE_WORK_WORKTYPE_CODE")), 
+						calcState == CalculationState.Calculated.value ? CalculationState.Calculated : CalculationState.No_Calculated, 
+						goStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+						backStraight == NotUseAttribute.Use.value ? NotUseAttribute.Use : NotUseAttribute.Not_use, 
+						ymd, EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), scheduleTimes.stream()
+																	.filter(c -> c.krcdtWorkScheduleTimePK.ymd.equals(ymd)).map(c -> c.toDomain())
+																	.collect(Collectors.toList()));
+			});
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
