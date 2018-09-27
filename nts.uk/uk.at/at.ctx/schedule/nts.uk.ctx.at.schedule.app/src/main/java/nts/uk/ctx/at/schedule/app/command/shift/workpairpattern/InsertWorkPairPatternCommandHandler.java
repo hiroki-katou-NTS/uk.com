@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.workpairpattern.ComPattern;
 import nts.uk.ctx.at.schedule.dom.shift.workpairpattern.ComPatternItem;
@@ -36,14 +38,21 @@ public class InsertWorkPairPatternCommandHandler extends CommandHandler<InsertPa
 	@Override
 	protected void handle(CommandHandlerContext<InsertPatternCommand> context) {
 		InsertPatternCommand patternCommand = context.getCommand();
-		// check the validity of pair workTypeCode-workTimeCode
+		// 制約のチェックを行う(check quy ước cảu domain)
+		// groupUsageAtr = 0 is 使用区分
+		if(patternCommand.getGroupUsageAtr() == 0 && CollectionUtil.isEmpty(patternCommand.getListInsertPatternItemCommand())){
+			throw new BusinessException("Msg_510");
+		}
+		
+		// 制約のチェックを行う(check quy ước cảu domain)
 		patternCommand.getListInsertPatternItemCommand().stream().forEach(patternItemCommand -> {
 			patternItemCommand.getListInsertWorkPairSetCommand().stream().forEach(workPairSetCommand -> {
 				basicScheduleService.checkPairWorkTypeWorkTime(workPairSetCommand.getWorkTypeCode(),
 						workPairSetCommand.getWorkTimeCode());
 			});
 		});
-
+		
+		// 親画面パラメータ.勤務ペアパターン単位選択をチェックする(check parameter 勤務ペアパターン単位選択)
 		if (StringUtil.isNullOrEmpty(patternCommand.getWorkplaceId(), true)) {
 			String companyId = AppContexts.user().companyId();
 			// convert to domain

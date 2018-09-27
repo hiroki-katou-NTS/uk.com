@@ -31,6 +31,7 @@ public class AddMonPfmCorrectionFormatCmdHandler extends CommandHandler<MonPfmCo
 		command.setCompanyID(companyID);
 		Optional<MonPfmCorrectionFormat> data = repo.getMonPfmCorrectionFormat(companyID, command.getMonthlyPfmFormatCode());
 		if(!data.isPresent()){
+			command.getDisplayItem().getListSheetCorrectedMonthly().get(0).setSheetNo(1);
 			repo.addMonPfmCorrectionFormat(MonPfmCorrectionFormatCmd.fromCommand(command));
 			//if A9_1 = true
 			if(command.isSetFormatToDefault()) {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.ac.specificdatesetting;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -20,6 +22,13 @@ public class RecSpecificDateSettingAdapterImpl implements RecSpecificDateSetting
 			GeneralDate date) {
 		WpSpecificDateSettingExport wpSpecificDateSettingExport = wpSpecificDateSettingPub.workplaceSpecificDateSettingService(companyID, workPlaceID, date);
 		return new RecSpecificDateSettingImport(wpSpecificDateSettingExport.getDate(), wpSpecificDateSettingExport.getNumberList());
+	}
+
+	@Override
+	public RecSpecificDateSettingImport specificDateSettingServiceByListWpl(String companyID, List<String> workPlaceID,
+			GeneralDate date) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

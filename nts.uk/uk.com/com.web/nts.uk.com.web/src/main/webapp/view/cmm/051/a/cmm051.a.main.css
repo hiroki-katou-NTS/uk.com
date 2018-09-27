@@ -17,15 +17,15 @@
 }
 
 #left-content-bottom {
-	width: 100%;
+	width: 84%;
 	padding: 15px;
 	border-radius: 5px;
 }
 
 #right-content {
-	width: 720px;
+	margin-left: 5px;
+    width: 572px;
 	float: left;
-	margin-left: 125px;
 	margin-top: 30px;
 }
 
@@ -68,5 +68,12 @@
 #employee-selection {
 	display: flex;
 	height: 30px;
-	line-height: 30px;
+}
+.ui-widget-header{
+	text-align: left !important;
+	
+}
+.label-group-1{
+    margin-top: -3px;
+    margin-bottom: 9px;
 }

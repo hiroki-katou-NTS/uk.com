@@ -28,6 +28,10 @@
 	width: 850px;
 }
 
+#content-right #roleConfigArea .fix-width-lable{
+	min-width: 130px;
+}
+
 #A2_001_container {
 	margin-left: 15px;
 }

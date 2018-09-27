@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -15,10 +17,12 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFor
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class JpaBusinessFormatSheetRepository extends JpaRepository implements BusinessFormatSheetRepository {
 
 	private static final String FIND;
+	private static final String FIND_BY_CODE;
 
 	private static final String UPDATE_BY_KEY;
 	 
@@ -32,6 +36,13 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
 		builderString.append("AND a.krcmtBusinessFormatSheetPK.sheetNo = :sheetNo ");
 		FIND = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessFormatSheet a ");
+		builderString.append("WHERE a.krcmtBusinessFormatSheetPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessFormatSheetPK.businessTypeCode = :businessTypeCode ");
+		FIND_BY_CODE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KrcmtBusinessFormatSheet a ");
@@ -106,6 +117,7 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 			+ " AND c.krcmtBusinessTypeDailyPK.businessTypeCode  = :businessTypeCode"
 			+ " AND c.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ";
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void deleteBusBySheetNo(String companyId, String businessTypeCode, BigDecimal sheetNo) {
 		this.commandProxy().remove(KrcmtBusinessFormatSheet.class,new KrcmtBusinessFormatSheetPK(
@@ -117,6 +129,13 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 				.setParameter("sheetNo", sheetNo)
 				.getList();
 		this.commandProxy().removeAll(listData);
+	}
+
+	@Override
+	public List<BusinessFormatSheet> getSheetInformationByCode(String companyId, String businessTypeCode) {
+		return this.queryProxy().query(FIND_BY_CODE, KrcmtBusinessFormatSheet.class).setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode)
+				.getList(f -> toDomain(f));
 	}
 
 }

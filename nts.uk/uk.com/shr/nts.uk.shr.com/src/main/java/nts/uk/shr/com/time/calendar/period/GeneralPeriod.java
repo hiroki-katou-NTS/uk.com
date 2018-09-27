@@ -49,10 +49,15 @@ public abstract class GeneralPeriod<S extends GeneralPeriod<S, T>, T extends Com
 	public boolean isReversed() {
 		return this.start.compareTo(this.end) > 0;
 	}
+	
+	public boolean contains(T target) {
+		return this.start.compareTo(target) <= 0 && this.end.compareTo(target) >= 0;
+	}
 
 	protected abstract T max();
 
 	protected abstract List<YearMonth> yearMonthsBetween();
 
 	protected abstract List<GeneralDate> datesBetween();
+	
 }

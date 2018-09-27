@@ -34,6 +34,6 @@ public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcess
 				GeneralDate.fromString(command.getPeriodEndDate(), "yyyy/MM/dd"));
 		processFlowOfDailyCreationDomainService.processFlowOfDailyCreation(asyncContext, ExecutionAttr.MANUAL, periodTime, command.getEmpCalAndSumExecLogID());
 		
-		dataSetter.setData("endTime", GeneralDateTime.now().toString());
+		
 	}
 }

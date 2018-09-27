@@ -18,9 +18,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kdw/006/a/index.xhtml' }">#{i18n.getText('KDW002_8')}</a> -->
-				<a id="button1" class="goback"
-					data-bind="ntsLinkButton: { action: jumpToHome.bind($data, sideBar)}">#{i18n.getText('KDW002_8')}</a>
-				<button tabindex="4" class="proceed" data-bind="click: submitData,enable :isSave">#{i18n.getText('KDW002_2')}</button>
+				<a tabindex="1" id="button1" class="goback"
+					data-bind="ntsLinkButton: { action: jumpToHome.bind($data, sideBar)}">#{i18n.getText('KDW002_21')}</a>
+				<button tabindex="2" data-prevent-click="true" class="proceed" data-bind="click: submitData,enable :isSave">#{i18n.getText('KDW002_2')}</button>
 
 			</div>
 			<div id="contents-area">
@@ -32,20 +32,20 @@
 						mode:'igGrid', comId:'gridList', items: attendanceItems,selected: aICurrentCode, 
 						selectedKey: 'attendanceItemId', childField: 'childs', 
 						fields: ['attendanceItemName', 'attendanceItemId']}" /> -->
-					<div style="width: 300px" tabindex="5"
-						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'attendanceItemId',
+					<div style="width: 300px" tabindex="3"
+						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'displayNumber',
 						comId: 'gridList', 
 								items: attendanceItems, selected: aICurrentCode,
-								selectedKey: 'attendanceItemId', fields: ['attendanceItemName', 'attendanceItemId'], mode: 'igGrid'}" />
-					<label>勤 怠 項 目</label>
-					<table tabindex="6" id="gridList"
+								selectedKey: 'displayNumber', fields: ['attendanceItemName', 'displayNumber'], mode: 'igGrid'}" />
+					<label>#{i18n.getText('KDW002_23')}</label>
+					<table tabindex="4" id="gridList"
 						data-bind="ntsGridList:{
 							width: 300,
 							height: 500,
 							options: attendanceItems,
 							value: aICurrentCode,
 							columns: attendanceItemColumn,
-							optionsValue: 'attendanceItemId',
+							optionsValue: 'displayNumber',
 							multiple: false,
 							enable: true,										
 							showCheckBox: false,
@@ -57,18 +57,18 @@
 				</div>
 				<div class="rightContent"></div>
 				<div class="component-area">
-					<label>#{i18n.getText('KDW002_3')} </label> <label class="mylabel"
+					<label>#{i18n.getText('KDW002_23')} </label> <label class="mylabel"
 						data-bind="text: txtItemId"></label> <label class="mylabel">#{i18n.getText('KDW002_4')}</label>
 					<label class="mylabel" data-bind="text: txtItemName"></label>
 				</div>
 				<label data-bind="value: linebreak "></label>
 				<div class="component-area">
 					<label>#{i18n.getText('KDW002_25')}</label>
-					<div tabindex="7" class="headerColor"
+					<div id="colorID" tabindex="5" class="headerColor"
 						data-bind="ntsColorPicker: {value: headerColorValue, width: 50}" />
 				</div>
 				<div class="component-area">
-					<label>#{i18n.getText('KDW002_27')}</label> <select tabindex="8"
+					<label>#{i18n.getText('KDW002_27')}</label> <select tabindex="6"
 						class="unitRounding"
 						data-bind="options: unitRoundings , optionsText: 'timeInputName', optionsValue: 'timeInputValue' , value: timeInputCurrentCode, enable: timeInputEnable"></select>
 				</div>

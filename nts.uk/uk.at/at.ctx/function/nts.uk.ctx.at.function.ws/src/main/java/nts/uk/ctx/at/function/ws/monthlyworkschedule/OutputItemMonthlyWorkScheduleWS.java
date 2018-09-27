@@ -18,11 +18,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCommand;
-import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.DisplayTimeItemDto;
-import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyDataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyPerformanceDataReturnDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
@@ -38,6 +39,10 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	/** The output item monthly work schedule finder. */
 	@Inject
 	private OutputItemMonthlyWorkScheduleFinder outputItemMonthlyWorkScheduleFinder;
+	
+	/** The role whether login finder. */
+	@Inject
+	private RoleWhetherLoginFinder roleWhetherLoginFinder;
 
 	/** The output item monthly work schedule save handler. */
 	@Inject
@@ -47,15 +52,16 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@Inject
 	private OutputItemMonthlyWorkScheduleDeleteHandler outputItemMonthlyWorkScheduleDeleteHandler;
 
+	
 	/**
-	 * Find employment authority.
+	 * Gets the current loginer role.
 	 *
-	 * @return the boolean
+	 * @return the current loginer role
 	 */
-	@Path("find/employment/authority")
+	@Path("getCurrentLoginerRole")
 	@POST
-	public Boolean findEmploymentAuthority() {
-		return this.outputItemMonthlyWorkScheduleFinder.findEmploymentAuthority();
+	public RoleWhetherLoginDto getCurrentLoginerRole() {
+		return this.roleWhetherLoginFinder.getCurrentLoginerRole();
 	}
 
 	/**
@@ -122,7 +128,7 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 */
 	@Path("findCopy")
 	@POST
-	public List<MonthlyDataInforReturnDto> findCopy() {
+	public MonthlyPerformanceDataReturnDto findCopy() {
 		return this.outputItemMonthlyWorkScheduleFinder.getFormatMonthlyPerformance();
 	}
 
@@ -140,9 +146,8 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
 	public List<DisplayTimeItemDto> executeCopy(@PathParam("codeCopy") String codeCopy,
-			@PathParam("codeSourceSerivce") String codeSourceSerivce,
-			List<OutputItemMonthlyWorkScheduleCopyCommand> lstCommandCopy) {
-		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
+			@PathParam("codeSourceSerivce") String codeSourceSerivce) {
+		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}
 	
 	/**

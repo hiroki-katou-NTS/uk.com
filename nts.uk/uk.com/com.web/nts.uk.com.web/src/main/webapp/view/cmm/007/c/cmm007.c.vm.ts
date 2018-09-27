@@ -7,11 +7,16 @@ module nts.uk.com.view.cmm007.c {
     export module viewmodel {
         export class ScreenModel {
             mapModel : KnockoutObservable<Map<number, moduleDto>>;
+            checkStatusSetOptions: KnockoutObservableArray<any>;
             
             constructor(){
                 let _self = this;
                 
                 _self.mapModel = new Map<number, moduleDto>();
+                _self.checkStatusSetOptions = ko.observableArray([
+                    { code: true, name: nts.uk.resource.getText("CMM007_101") },
+                    { code: false, name: nts.uk.resource.getText("CMM007_102") }
+                ]);
             }
             
              /**
@@ -57,9 +62,9 @@ module nts.uk.com.view.cmm007.c {
             /*
             *   status check/uncheck checkbox
             */
-            public checkStatusEnable(value): boolean {
+            public checkStatusEnable(value): KnockoutObservable<boolean> {
                 let _self = this;
-                return _self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE ? true : false;
+                return ko.observable(_self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE ? true : false);
             }
             
             /*
@@ -89,7 +94,7 @@ module nts.uk.com.view.cmm007.c {
                 for (let i=1; i<=_self.mapModel.size; i++) {
                     lstDto.push(_self.mapModel.get(i));
                 }
-                
+                nts.uk.ui.block.grayout();
                 service.updateTempAbsenceFrame(lstDto).done(function(data){
                     _self.getDataByCId().done(() => {
                     });
@@ -98,7 +103,9 @@ module nts.uk.com.view.cmm007.c {
                     });
                 }).fail(function(data) {
 //                    console.log(data);
-                })
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
             
              /**

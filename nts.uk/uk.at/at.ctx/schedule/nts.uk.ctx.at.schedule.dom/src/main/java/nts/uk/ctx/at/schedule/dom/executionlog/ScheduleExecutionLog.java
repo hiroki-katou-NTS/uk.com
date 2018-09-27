@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -158,6 +159,10 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	public void setPeriod(DatePeriod period) {
 		this.period = period;
+	}
+	
+	public void setStartPeriod(GeneralDate date) {
+		this.period = new DatePeriod( date,this.period.end());
 	}
 
 	public void setExeAtr(ExecutionAtr exeAtr) {

@@ -5,9 +5,9 @@
 package nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
@@ -54,11 +54,11 @@ public class LockOutDataUserFinder {
 					lockOutDataUserDto.setLogType((item.getLogType().value));
 					lockOutDataUserDto.setUserId(item.getUserId());
 				}
-				Optional<UserImportNew> findByUserId = userAdapter.findByUserId(item.getUserId());
-				findByUserId.ifPresent(value -> {
-					lockOutDataUserDto.setLoginId(value.getLoginId().trim());
-					lockOutDataUserDto.setUserName(value.getUserName().get());
-				});
+				UserDto userDto = userAdapter.getUser(Arrays.asList(item.getUserId())).get(0);
+                if(userDto != null){
+                    lockOutDataUserDto.setLoginId(userDto.getLoginId().trim());
+                    lockOutDataUserDto.setUserName(userDto.getUserName());
+                }
 				lstLockOutDataUserDto.add(lockOutDataUserDto);
 
 			});
@@ -72,10 +72,10 @@ public class LockOutDataUserFinder {
 	 * @return SearchUser
 	 */
 	public SearchUser findByUserId(String userId) {
-		Optional<UserImportNew> user = userAdapter.findByUserId(userId);
-		if(user.isPresent())
-			return SearchUser.convertToDto(user.get());
-
+		UserDto userDto = userAdapter.getUser(Arrays.asList(userId)).get(0);
+		if (userDto != null) {
+			return new SearchUser(userDto.getUserId(), userDto.getLoginId(), userDto.getUserName());
+		}
 		return null;
 	}
 	

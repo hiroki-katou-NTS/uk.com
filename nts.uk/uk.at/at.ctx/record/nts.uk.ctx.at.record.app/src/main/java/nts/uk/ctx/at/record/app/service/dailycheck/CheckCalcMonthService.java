@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.app.service.dailycheck;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,12 +40,12 @@ public class CheckCalcMonthService {
 				datePeriod.addAll(valueCheck.getRight());
 			}
 		}
-		return Pair.of(datePeriod.isEmpty(), datePeriod);
+		return Pair.of(!datePeriod.isEmpty(), datePeriod);
 	}
 
 	private Pair<Boolean, List<AggrPeriodEachActualClosure>> isInPeriod(List<AggrPeriodEachActualClosure> periods,
 			List<GeneralDate> lstDayChange) {
-		List<AggrPeriodEachActualClosure> datePeriods = new ArrayList<>();
+		Set<AggrPeriodEachActualClosure> datePeriods = new HashSet<>();
 		for (GeneralDate date : lstDayChange) {
 			for (AggrPeriodEachActualClosure datePeriod : periods) {
 				// datePeriod.getPeriod()
@@ -55,6 +57,6 @@ public class CheckCalcMonthService {
 			;
 		}
 		;
-		return Pair.of(datePeriods.isEmpty(), datePeriods);
+		return Pair.of(!datePeriods.isEmpty(), new ArrayList(datePeriods));
 	}
 }

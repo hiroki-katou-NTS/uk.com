@@ -21,16 +21,18 @@ import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class EmployeeGeneralInfoAdapterImpl implements EmployeeGeneralInfoAdapter{
-	
+public class EmployeeGeneralInfoAdapterImpl implements EmployeeGeneralInfoAdapter {
+
 	@Inject
 	private EmployeeGeneralInfoPub employeeGeneralInfoPub;
 
 	@Override
-	public EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> employeeIds, DatePeriod period,boolean checkEmployment,
-			boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace, boolean checkDepartment) {
-		EmployeeGeneralInfoDto dto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period,true,true,true,true,true);
-		
+	public EmployeeGeneralInfoImport getEmployeeGeneralInfo(List<String> employeeIds, DatePeriod period,
+			boolean checkEmployment, boolean checkClassification, boolean checkJobTitle, boolean checkWorkplace,
+			boolean checkDepartment) {
+		EmployeeGeneralInfoDto dto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period, checkEmployment,
+				checkClassification, checkJobTitle, checkWorkplace, checkDepartment);
+
 		List<ExEmploymentHistoryImport> employmentHistoryImports = dto.getEmploymentDto().stream()
 				.map(employmentHistory -> new ExEmploymentHistoryImport(employmentHistory.getEmployeeId(),
 						employmentHistory.getEmploymentItems().stream().map(exEmpHistItem -> {
@@ -38,16 +40,15 @@ public class EmployeeGeneralInfoAdapterImpl implements EmployeeGeneralInfoAdapte
 									exEmpHistItem.getPeriod(), exEmpHistItem.getEmploymentCode());
 						}).collect(Collectors.toList())))
 				.collect(Collectors.toList());
-		
-		List<ExClassificationHistoryImport> exClassificationHistoryImports = dto
-				.getClassificationDto().stream()
+
+		List<ExClassificationHistoryImport> exClassificationHistoryImports = dto.getClassificationDto().stream()
 				.map(classificationHistory -> new ExClassificationHistoryImport(classificationHistory.getEmployeeId(),
 						classificationHistory.getClassificationItems().stream().map(classificationHistItem -> {
 							return new ExClassificationHistItemImport(classificationHistItem.getHistoryId(),
 									classificationHistItem.getPeriod(), classificationHistItem.getClassificationCode());
 						}).collect(Collectors.toList())))
 				.collect(Collectors.toList());
-		
+
 		List<ExJobTitleHistoryImport> exJobTitleHistoryImports = dto.getJobTitleDto().stream()
 				.map(jobTitle -> new ExJobTitleHistoryImport(jobTitle.getEmployeeId(),
 						jobTitle.getJobTitleItems().stream().map(jobTitleItem -> {
@@ -55,7 +56,7 @@ public class EmployeeGeneralInfoAdapterImpl implements EmployeeGeneralInfoAdapte
 									jobTitleItem.getJobTitleId());
 						}).collect(Collectors.toList())))
 				.collect(Collectors.toList());
-		
+
 		List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = dto.getWorkplaceDto().stream()
 				.map(workPlaceHistory -> new ExWorkPlaceHistoryImport(workPlaceHistory.getEmployeeId(),
 						workPlaceHistory.getWorkplaceItems().stream().map(workPlaceHistoryItem -> {
@@ -63,8 +64,9 @@ public class EmployeeGeneralInfoAdapterImpl implements EmployeeGeneralInfoAdapte
 									workPlaceHistoryItem.getPeriod(), workPlaceHistoryItem.getWorkplaceId());
 						}).collect(Collectors.toList())))
 				.collect(Collectors.toList());
-		
-		return new EmployeeGeneralInfoImport(employmentHistoryImports, exClassificationHistoryImports, exJobTitleHistoryImports, exWorkPlaceHistoryImports);
+
+		return new EmployeeGeneralInfoImport(employmentHistoryImports, exClassificationHistoryImports,
+				exJobTitleHistoryImports, exWorkPlaceHistoryImports);
 	}
 
 }

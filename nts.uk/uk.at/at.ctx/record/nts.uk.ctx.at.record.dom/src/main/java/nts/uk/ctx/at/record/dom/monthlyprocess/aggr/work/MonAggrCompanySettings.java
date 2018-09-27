@@ -29,6 +29,8 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthAc
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimit;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
@@ -37,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -117,6 +120,12 @@ public class MonAggrCompanySettings {
 	/** フレックス勤務所定労働時間 */
 	@Getter
 	private GetFlexPredWorkTime flexPredWorkTime;
+	/** フレックス不足の年休補填管理 */
+	@Getter
+	private Optional<InsufficientFlexHolidayMnt> insufficientFlexOpt;
+	/** フレックス不足の繰越上限管理 */
+	@Getter
+	private Optional<FlexShortageLimit> flexShortageLimitOpt;
 	/** 休暇加算設定 */
 	@Getter
 	private VacationAddSet vacationAddSet;
@@ -167,6 +176,9 @@ public class MonAggrCompanySettings {
 	private ConcurrentHashMap<String, EmptYearlyRetentionSetting> emptYearlyRetentionSetMap;
 	/** 実績ロック */
 	private ConcurrentMap<Integer, ActualLock> actualLockMap;
+	/** 日別実績の運用開始設定 */
+	@Getter
+	private Optional<OperationStartSetDailyPerform> operationStartSet;
 	
 	/** エラー情報 */
 	@Getter
@@ -191,6 +203,8 @@ public class MonAggrCompanySettings {
 		this.comRegSetOpt = Optional.empty();
 		this.comIrgSetOpt = Optional.empty();
 		this.comFlexSetOpt = Optional.empty();
+		this.insufficientFlexOpt = Optional.empty();
+		this.flexShortageLimitOpt = Optional.empty();
 		this.outsideOTBDItems = new CopyOnWriteArrayList<>();
 		this.outsideOTOverTimes = new CopyOnWriteArrayList<>();
 		this.agreementOperationSet = Optional.empty();
@@ -202,6 +216,7 @@ public class MonAggrCompanySettings {
 		this.retentionYearlySet = Optional.empty();
 		this.emptYearlyRetentionSetMap = new ConcurrentHashMap<>();
 		this.actualLockMap = new ConcurrentHashMap<>();
+		this.operationStartSet = Optional.empty();
 		this.errorInfos = new ConcurrentHashMap<>();
 	}
 	
@@ -214,8 +229,6 @@ public class MonAggrCompanySettings {
 	public static MonAggrCompanySettings loadSettings(
 			String companyId,
 			RepositoriesRequiredByMonthlyAggr repositories){
-		
-		final String resourceId = "001";
 		
 		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
 		
@@ -274,8 +287,11 @@ public class MonAggrCompanySettings {
 			domain.actualLockMap.put(closureId, actualLock);
 		}
 		
+		// 日別実績の運用開始設定
+		domain.operationStartSet = repositories.getOperationStartSet().findByCid(new CompanyId(companyId));
+		
 		// 設定読み込み処理　（36協定時間用）
-		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
+		domain.loadSettingsForAgreementProc(companyId, repositories);
 		
 		return domain;
 	}
@@ -290,12 +306,10 @@ public class MonAggrCompanySettings {
 			String companyId,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		final String resourceId = "001";
-		
 		MonAggrCompanySettings domain = new MonAggrCompanySettings(companyId);
 
 		// 設定読み込み処理　（36協定時間用）
-		domain.loadSettingsForAgreementProc(companyId, resourceId, repositories);
+		domain.loadSettingsForAgreementProc(companyId, repositories);
 		
 		return domain;
 	}
@@ -303,13 +317,11 @@ public class MonAggrCompanySettings {
 	/**
 	 * 設定読み込み処理　（36協定時間用）
 	 * @param companyId 会社ID
-	 * @param resourceId リソースID
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 * @return 月別集計で必要な会社別設定
 	 */
 	private void loadSettingsForAgreementProc(
 			String companyId,
-			String resourceId,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 締め
@@ -356,10 +368,11 @@ public class MonAggrCompanySettings {
 		// 法定内振替順設定
 		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
 		if (!legalTransferOrderSetOpt.isPresent()){
-			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1232")));
-			return;
+			this.errorInfos.put("009", new ErrMessageContent(TextResource.localize("Msg_1232")));
 		}
-		this.legalTransferOrderSet = legalTransferOrderSetOpt.get();
+		else {
+			this.legalTransferOrderSet = legalTransferOrderSetOpt.get();
+		}
 
 		// 残業枠の役割
 		this.roleOverTimeFrameList.addAll(repositories.getRoleOverTimeFrame().findByCID(companyId));
@@ -368,7 +381,10 @@ public class MonAggrCompanySettings {
 		this.roleHolidayWorkFrameList.addAll(repositories.getRoleHolidayWorkFrame().findByCID(companyId));
 		
 		// 休暇時間加算設定
-		this.holidayAdditionMap.putAll(repositories.getHolidayAddition().findByCompanyId(companyId));
+		for (val holidayAddition : repositories.getHolidayAddition().findByCompanyId(companyId).entrySet()){
+			if (holidayAddition.getValue() == null) continue;
+			this.holidayAdditionMap.put(holidayAddition.getKey(), holidayAddition.getValue());
+		}
 		
 		// 労働時間と日数の設定の利用単位の設定
 		this.usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
@@ -391,22 +407,30 @@ public class MonAggrCompanySettings {
 		
 		// フレックス会社別月別実績集計設定
 		this.comFlexSetOpt = repositories.getComFlexSetRepo().find(companyId);
-
+		
 		// フレックス勤務の月別集計設定
 		val aggrSetOfFlexOpt = repositories.getMonthlyAggrSetOfFlex().find(companyId);
 		if (!aggrSetOfFlexOpt.isPresent()){
-			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1238")));
-			return;
+			this.errorInfos.put("011", new ErrMessageContent(TextResource.localize("Msg_1238")));
 		}
-		this.aggrSetOfFlex = aggrSetOfFlexOpt.get();
+		else {
+			this.aggrSetOfFlex = aggrSetOfFlexOpt.get();
+		}
 
 		// フレックス勤務所定労働時間
 		val flexPredWorkTimeOpt = repositories.getFlexPredWorktime().find(companyId);
 		if (!flexPredWorkTimeOpt.isPresent()){
-			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1243")));
-			return;
+			this.errorInfos.put("016", new ErrMessageContent(TextResource.localize("Msg_1243")));
 		}
-		this.flexPredWorkTime = flexPredWorkTimeOpt.get();
+		else {
+			this.flexPredWorkTime = flexPredWorkTimeOpt.get();
+		}
+
+		// フレックス不足の年休補填管理
+		this.insufficientFlexOpt = repositories.getInsufficientFlex().findByCId(companyId);
+		
+		// フレックス不足の繰越上限管理
+		this.flexShortageLimitOpt = repositories.getFlexShortageLimit().get(companyId);
 		
 		// 休暇加算設定
 		this.vacationAddSet = repositories.getVacationAddSet().get(companyId);
@@ -414,28 +438,37 @@ public class MonAggrCompanySettings {
 		// 時間外超過設定
 		val outsideOTSetOpt = repositories.getOutsideOTSet().findById(companyId);
 		if (!outsideOTSetOpt.isPresent()){
-			this.errorInfos.put(resourceId, new ErrMessageContent(TextResource.localize("Msg_1236")));
-			return;
+			this.errorInfos.put("014", new ErrMessageContent(TextResource.localize("Msg_1236")));
 		}
-		this.outsideOverTimeSet = outsideOTSetOpt.get();
-		
-		// 時間外超過設定：内訳項目一覧（積上番号順）
-		this.outsideOTBDItems.addAll(this.outsideOverTimeSet.getBreakdownItems());
-		this.outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		this.outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
-		
-		// 時間外超過設定：超過時間一覧（超過時間順）
-		this.outsideOTOverTimes.addAll(this.outsideOverTimeSet.getOvertimes());
-		this.outsideOTOverTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		this.outsideOTOverTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
+		else {
+			this.outsideOverTimeSet = outsideOTSetOpt.get();
+			
+			// 時間外超過設定：内訳項目一覧（積上番号順）
+			this.outsideOTBDItems.addAll(this.outsideOverTimeSet.getBreakdownItems());
+			this.outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
+			this.outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
+			
+			// 時間外超過設定：超過時間一覧（超過時間順）
+			this.outsideOTOverTimes.addAll(this.outsideOverTimeSet.getOvertimes());
+			this.outsideOTOverTimes.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
+			this.outsideOTOverTimes.sort((a, b) -> a.getOvertime().v() - b.getOvertime().v());
+		}
 		
 		// 丸め設定
 		this.roundingSet = new RoundingSetOfMonthly(companyId);
 		val roundingSetOpt = repositories.getRoundingSetOfMonthly().find(companyId);
-		if (roundingSetOpt.isPresent()) this.roundingSet = roundingSetOpt.get();
+		if (roundingSetOpt.isPresent()) {
+			this.roundingSet = roundingSetOpt.get();
+		}
+		else {
+			this.errorInfos.put("013", new ErrMessageContent(TextResource.localize("Msg_1239")));
+		}
 		
 		// 36協定運用設定を取得
 		this.agreementOperationSet = repositories.getAgreementOperationSet().find(companyId);
+		if (!this.agreementOperationSet.isPresent()){
+			this.errorInfos.put("017", new ErrMessageContent(TextResource.localize("Msg_1246")));
+		}
 	}
 	
 	/**

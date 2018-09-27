@@ -261,16 +261,22 @@ module nts.uk.ui.koExtentions {
             });
             
             $input.on("keyup", (e) => {
+                if ($input.attr('readonly')) {
+                    return;                
+                }
+                
                 var code = e.keyCode || e.which;
-                if (!$input.attr('readonly') && _.toString(code) !== '9') {
-                    let validator = self.getValidator(data);
-                    var newText = $input.val();
-                    var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.ntsError('clear');
-                    if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                    } 
-                } 
+                if (_.includes(KeyCodes.NotValueKeys, code)) {
+                    return;
+                }
+                
+                let validator = self.getValidator(data);
+                var newText = $input.val();
+                var result = validator.validate(newText, { isCheckExpression: true });
+                $input.ntsError('clear');
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                }
             });
             
             // Format on blur
@@ -295,7 +301,8 @@ module nts.uk.ui.koExtentions {
                         if (constraint === "StampNumber" || constraint === "EmployeeCode") {
                             let formatter = self.getFormatter(data);
                             let formatted = formatter.format(result.parsedValue);
-                            $input.val(formatted);
+                            //$input.val(formatted);
+                            value(formatted);
                         }
                     }
                 }
@@ -306,7 +313,7 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
-                    $input.ntsError('clear');
+                    //$input.ntsError('clear');
                     if (result.isValid) {
                         if (value() === result.parsedValue) {
                             $input.val(result.parsedValue);
@@ -315,7 +322,15 @@ module nts.uk.ui.koExtentions {
                             value(result.parsedValue);
                         }
                     } else {
-                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
+                        if(nts.uk.util.isNullOrEmpty(oldError)){
+                           $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        } else {
+                            let inListError = _.find(oldError, function (o){ return o.errorCode === result.errorCode; });
+                            if(nts.uk.util.isNullOrUndefined(inListError)){
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                            }
+                        }
                         
                         if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
                             valueChanging.markUserChange($input);
@@ -455,10 +470,11 @@ module nts.uk.ui.koExtentions {
             $input.focus(() => {
                 if (!$input.attr('readonly')) {
                     // Remove separator (comma)
-                    let numb = Number(data.value());
+                    let value = ko.toJS(data.value),
+                        numb = Number(value);
 
-                    if(_.isNumber(numb) && !_.isNaN(numb)) {
-                        $input.val(numb);
+                    if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
+                        $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
                     } else {
                         $input.val(data.value());
                     }
@@ -484,14 +500,20 @@ module nts.uk.ui.koExtentions {
                 $parent.addClass("symbol").addClass(this.editorOption.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                 var format = this.editorOption.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
-            } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
-                let unit = text.getNumberUnit(this.editorOption.unitID);
-                this.editorOption.symbolChar = unit.unitText;
-                this.editorOption.symbolPosition = unit.position;
-                this.setupUnit($input, width);
-            } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
-                this.setupUnit($input,　width);
+            } else {
+                if (!nts.uk.util.isNullOrEmpty(this.editorOption.unitID)) {
+                    let unit = text.getNumberUnit(this.editorOption.unitID);
+                    this.editorOption.symbolChar = unit.unitText;
+                    this.editorOption.symbolPosition = unit.position;
+                    this.setupUnit($input, width);
+                } else if (!nts.uk.util.isNullOrEmpty(this.editorOption.symbolChar) && !nts.uk.util.isNullOrEmpty(this.editorOption.symbolPosition)) {
+                    this.setupUnit($input, width);
+                }
+
+                // remove currency symbol if number mode
+//                $parent.removeClass('symbol').removeClass('symbol-left').removeClass('symbol-right');
             }
+            
             if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
                 && nts.uk.util.isNullOrEmpty(data.value())){
                 data.value(this.editorOption.defaultValue);        
@@ -525,11 +547,19 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            var name = data.name !== undefined ? ko.unwrap(data.name) : "";
-            name = nts.uk.resource.getControlName(name);
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-            this.editorOption['required'] = required;   
+            let option: any = !nts.uk.util.isNullOrUndefined(data.option) ? ko.toJS(data.option) : {},
+                eOption = $.extend(this.getDefaultOption(), option),
+                required = (data.required !== undefined) ? ko.unwrap(data.required) : false,
+                constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "",
+                name = nts.uk.resource.getControlName(data.name !== undefined ? ko.unwrap(data.name) : "");
+
+            // update editor option
+            $.extend(this.editorOption, {
+                required: required,
+                decimallength: Number(eOption.decimallength),
+                grouplength: Number(eOption.grouplength),
+                decimalseperator: eOption.decimalseperator
+            });
             
             return new validation.NumberValidator(name, constraintName, this.editorOption);
         }
@@ -619,6 +649,15 @@ module nts.uk.ui.koExtentions {
                 }
                 
             });
+        }
+        
+        update($input: JQuery, data: any) {
+            super.update($input, data);
+            let value = ko.unwrap(data.value);
+            if ($input.ntsError("hasError") && typeof(value) === "number") {
+                $input.ntsError("clearKibanError");
+                $input.val(this.getFormatter(data).format(value));
+            }
         }
         
         getDefaultOption(): any {

@@ -47,6 +47,8 @@ public class WorkChangeDetailDto {
 	 */
 	List<String> workTimeCodes;
 	
+	boolean isTimeRequired;
+	
 	public static WorkChangeDetailDto  formDomain(WorkChangeDetail domain){
 		return new WorkChangeDetailDto(AppWorkChangeDto.fromDomain(domain.getAppWorkChange()), 
 				ApplicationDto_New.fromDomain(domain.getApplication()), 
@@ -54,6 +56,7 @@ public class WorkChangeDetailDto {
 				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
 				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
 				domain.getDetailScreenInitModeOutput().getOutputMode().value,
-				domain.getWorkTypeCodes(), domain.getWorkTimeCodes());
+				domain.getWorkTypeCodes(), domain.getWorkTimeCodes(),
+				domain.isTimeRequired());
 	}
 }

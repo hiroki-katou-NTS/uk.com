@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.updatedomain;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,12 +39,9 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 	@Override
 	public void insertUpdateAll(List<IntegrationOfMonthly> domains) {
 		domains.forEach(domain ->{
-			if(domain.getAffiliationInfo().isPresent()){
-				affRepo.persistAndUpdate(domain.getAffiliationInfo().get());
-			}
 			
 			if(domain.getAttendanceTime().isPresent()){
-				attTimeRepo.persistAndUpdate(domain.getAttendanceTime().get());
+				attTimeRepo.persistAndUpdate(domain.getAttendanceTime().get(), domain.getAffiliationInfo());
 			}
 			
 			if(!CollectionUtil.isEmpty(domain.getAnyItemList())){

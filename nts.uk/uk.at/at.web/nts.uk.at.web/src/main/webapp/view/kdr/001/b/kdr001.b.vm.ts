@@ -13,7 +13,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
         switchOptions: KnockoutObservableArray<any>;
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);
+        allSpecialHolidays: KnockoutObservableArray<SpecialHoliday> = ko.observableArray([]);;
+        listSpecialHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
+        listSpecialHolidayEnable: KnockoutObservableArray<any> = ko.observableArray([]);
+        vacationControl: IVariousVacationControl;
         constructor() {
             let self = this;
             let params = getShared("KDR001Params");
@@ -25,6 +28,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         if (data) {
                             let item = new HolidayRemaining(data);
                             self.currentHoliday(item);
+                            self.setData();
                             self.isNewMode(false);
                             self.setFocus();
                             self.setSpecialHolidayStyle();
@@ -48,100 +52,120 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            self.displayYearlyHoliday();
-            self.displayYearlyReserved();
-            self.displaySubstituteHoliday();
-            self.displayPauseItemHoliday();
-            service.findAllSpecialHoliday().done(function(data: Array<SpecialHoliday>) {
-                if (data && data.length > 0) {
-                    data = _.sortBy(data, ['specialHolidayCode']);
-                    self.allSpecialHolidays(data);
+
+            $.when(service.getVariousVacationControl(),
+                service.findAll()
+            ).done((
+                vacationControl: IVariousVacationControl,
+                holidayRemainings: Array<HolidayRemaining>
+            ) => {
+                self.vacationControl = vacationControl;
+                if (!vacationControl || vacationControl.annualHolidaySetting == false) {
+                    $('#rowYearlyHoliday').addClass("hidden");
                 }
-                // no data
-                else {
-                    self.allSpecialHolidays([]);
+
+                if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
+                    $('#rowYearlyReserved').addClass("hidden");
+                }
+
+                if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
+                    $('#rowSubstituteHoliday').addClass("hidden");
+                }
+
+                if (!vacationControl || vacationControl.pauseItemHolidaySetting == false) {
+                    $('#rowPauseItemHoliday').addClass("hidden");
+                }
+
+                if (!vacationControl || vacationControl.childNursingSetting == false) {
+                    $('#rowChildNursingHoliday').addClass("hidden");
+                }
+
+                if (!vacationControl || vacationControl.nursingCareSetting == false) {
+                    $('#rowNursingCareHoliday').addClass("hidden");
+                }
+
+                if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
                     $('#rowSpecialHoliday').addClass("hidden");
-                      self.currentHoliday().listSpecialHoliday([]);
                 }
-                service.findAll().done(function(data: Array<HolidayRemaining>) {
-                    if (data && data.length) {
-                        data = _.sortBy(data, ['cd']);
-
-                        let _rsList: Array<HolidayRemaining> = _.map(data, result => {
-                            return new HolidayRemaining(result);
-                        });
-
-                        self.lstHolidays(_rsList);
-                        if (!self.currentCode()) {
-                            self.currentCode(_rsList[0].cd);
+                else {
+                    for (let i = 1; i < 21; i++) {
+                        let item = _.find(vacationControl.listSpecialHoliday, x => { return x.specialHolidayCode == i; });
+                        if (item) {
+                            self.allSpecialHolidays.push(new SpecialHoliday({ specialHolidayCode: i, specialHolidayName: item.specialHolidayName, enable: true }));
+                            self.listSpecialHolidayEnable.push(i);
                         }
                         else {
-                            self.currentCode.valueHasMutated();
+                            self.allSpecialHolidays.push(new SpecialHoliday({ specialHolidayCode: i, specialHolidayName: "", enable: false }));
                         }
                     }
-                    block.clear();
-                    dfd.resolve(self);
-                }).fail(function(res) {
-                    alertError({ messageId: res.messageId });
-                    block.clear();
-                    dfd.reject();
-                });
+                }
+
+                if (holidayRemainings && holidayRemainings.length) {
+                    holidayRemainings = _.sortBy(holidayRemainings, ['cd']);
+
+                    let _rsList: Array<HolidayRemaining> = _.map(holidayRemainings, result => {
+                        return new HolidayRemaining(result);
+                    });
+
+                    self.lstHolidays(_rsList);
+                    if (!self.currentCode()) {
+                        self.currentCode(_rsList[0].cd);
+                    }
+                    else {
+                        self.currentCode.valueHasMutated();
+                    }
+                }
+
+                dfd.resolve(self);
             }).fail(function(res) {
                 alertError({ messageId: res.messageId });
-                block.clear();
                 dfd.reject();
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
-
-        displayYearlyHoliday() {
+        
+        setData() {
             let self = this;
-            service.findAnnualPaidLeave().done(function(data: AnnualPaidLeaveSetting) {
-                if (!data || data.annualManage === 0) {
-                    $('#rowYearlyHoliday').addClass("hidden");
-                    self.currentHoliday().yearlyHoliday(false);
-                }
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-            });
-        }
+            let vacationControl = self.vacationControl;
+            if (!vacationControl || vacationControl.annualHolidaySetting == false) {
+                self.currentHoliday().yearlyHoliday(false);
+            }
 
-        displayYearlyReserved() {
-            let self = this;
-            service.findRetentionYearly().done(function(data: RetentionYearlySetting) {
-                if (!data || data.managementCategory === 0) {
-                    $('#rowYearlyReserved').addClass("hidden");
-                    self.currentHoliday().yearlyReserved(false);
-                }
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-            });
-        }
+            if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
+                self.currentHoliday().yearlyReserved(false);
+            }
 
-        displaySubstituteHoliday() {
-            let self = this;
-            service.findCompensatory().done(function(data: CompensatoryLeaveComSetting) {
-                if (!data || data.isManaged === 0) {
-                    $('#rowSubstituteHoliday').addClass("hidden");
-                    self.currentHoliday().outputItemSubstitute(false);
-                }
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-            });
-        }
+            if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
+                self.currentHoliday().outputItemSubstitute(false);
+            }
 
-        displayPauseItemHoliday() {
-            let self = this;
-            service.findSubstVacation().done(function(data: SubstVacationSetting) {
-                if (!data || data.isManage === 0) {
-                    $('#rowPauseItemHoliday').addClass("hidden");
-                    self.currentHoliday().pauseItem(false);
-                }
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
-            });
-        }
+            if (!vacationControl || vacationControl.pauseItemHolidaySetting == false) {
+                self.currentHoliday().pauseItem(false);
+            }
 
+            if (!vacationControl || vacationControl.childNursingSetting == false) {
+                self.currentHoliday().childNursingLeave(false);
+            }
+
+            if (!vacationControl || vacationControl.nursingCareSetting == false) {
+                self.currentHoliday().nursingLeave(false);
+            }
+
+            if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
+                self.currentHoliday().listSpecialHoliday([]);
+            }
+            else {
+                let listSpecialHoliday: Array<number> = [];
+                _.forEach(self.currentHoliday().listSpecialHoliday(), function(item) {
+                    if (_.find(vacationControl.listSpecialHoliday, x => { return x.specialHolidayCode == item; }))
+                        listSpecialHoliday.push(item);
+                });
+                self.currentHoliday().listSpecialHoliday(listSpecialHoliday);
+            }
+        }
+        
         getAllData(code?: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -207,8 +231,8 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 $('#holidayName').focus();
             }
         }
-        
-        setSpecialHolidayStyle(){
+
+        setSpecialHolidayStyle() {
             $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox limited-label");
         }
 
@@ -220,6 +244,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 currentHoliday: HolidayRemaining = self.currentHoliday();
             $('.nts-input').trigger("validate");
             if (errors.hasError() === false) {
+                
                 block.invisible();
 
                 if (self.isNewMode()) {
@@ -272,7 +297,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 lstHolidays = self.lstHolidays,
                 currentHoliday: HolidayRemaining = self.currentHoliday();
             block.invisible();
-            dialog.confirmDanger({ messageId: "Msg_18" }).ifYes(() => {
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 if (currentHoliday.cd()) {
                     let index: number = _.findIndex(lstHolidays(), function(x)
                     { return x.cd() == currentHoliday.cd() });
@@ -321,7 +346,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
     }
     export class HolidayRemaining {
-        
+
         /**
          * 会社ID
          */
@@ -334,7 +359,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 名称
          */
         name: KnockoutObservable<string>;
-        
+
         displayCd: string;
         displayName: string;
         /**
@@ -405,9 +430,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
          * 積立年休の項目を出力する
          */
         yearlyReserved: KnockoutObservable<boolean>;
-        
+
         listSpecialHoliday: KnockoutObservableArray<number>;
-        
+
         constructor(param: any) {
             let self = this;
             self.cid = ko.observable(param ? param.cid || '' : '');
@@ -431,16 +456,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.pauseItem = ko.observable(param ? param.pauseItem || false : false);
             self.yearlyReserved = ko.observable(param ? param.yearlyReserved || false : false);
             self.listSpecialHoliday = ko.observableArray(param ? param.listSpecialHoliday || [] : []);
-            
+
             self.outputItemSubstitute.subscribe((isCheck) => {
-                if(isCheck === false){
+                if (isCheck === false) {
                     self.representSubstitute(false);
                     self.remainingChargeSubstitute(false);
                 }
             });
-            
+
             self.pauseItem.subscribe((isCheck) => {
-                if(isCheck === false){
+                if (isCheck === false) {
                     self.unDigestedPause(false);
                     self.numberRemainingPause(false);
                 }
@@ -449,37 +474,40 @@ module nts.uk.at.view.kdr001.b.viewmodel {
     }
 
     export class SpecialHoliday {
-        
+
         /*特別休暇コード*/
         specialHolidayCode: KnockoutObservable<number>;
-        
+
         /*特別休暇名称*/
         specialHolidayName: KnockoutObservable<string>;
 
-        statusCheck: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
 
         constructor(param: any) {
             let self = this;
             self.specialHolidayCode = ko.observable(param ? param.specialHolidayCode || null : null);
             self.specialHolidayName = ko.observable(param ? param.specialHolidayName || '' : '');
-            self.statusCheck = ko.observable(param ? param.statusCheck || false : false);
+            self.enable = ko.observable(param ? param.enable || false : false);
         }
     }
 
-    export class AnnualPaidLeaveSetting {
-        /** The annual manage. */
-        annualManage: number;
+    export interface ISpecialHoliday {
+
+        /*特別休暇コード*/
+        specialHolidayCode: number;
+
+        /*特別休暇名称*/
+        specialHolidayName: string;
     }
 
-    export class RetentionYearlySetting {
-        managementCategory: number;
-    }
+    export interface IVariousVacationControl {
 
-    export class CompensatoryLeaveComSetting {
-        isManaged: number;
-    }
-
-    export class SubstVacationSetting {
-        isManage: number;
+        annualHolidaySetting: boolean;
+        yearlyReservedSetting: boolean;
+        substituteHolidaySetting: boolean;
+        pauseItemHolidaySetting: boolean;
+        childNursingSetting: boolean;
+        nursingCareSetting: boolean;
+        listSpecialHoliday: Array<ISpecialHoliday>;
     }
 }

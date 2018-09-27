@@ -27,4 +27,6 @@ public class AppAbsenceFull {
 	private String relationshipName;
 	/**喪主フラグ*/
 	private Boolean mournerFlag;
+	/**勤務種類名称*/
+    private String workTypeName;
 }

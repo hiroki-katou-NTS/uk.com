@@ -42,7 +42,7 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 				KscdtScheState.class);
 		if (kscstWorkScheduleState.isPresent()) {
 			kscstWorkScheduleState.get().scheduleEditState = domain.getScheduleEditState().value;
-			this.commandProxy().update(kscstWorkScheduleState);
+			this.commandProxy().update(kscstWorkScheduleState.get());
 			this.getEntityManager().flush();
 		}
 	}
@@ -51,5 +51,19 @@ public class JpaWorkScheduleState extends JpaRepository implements WorkScheduleS
 	public List<WorkScheduleState> findByDateAndEmpId(String sId, GeneralDate date) {
 		return this.queryProxy().query(SELCET_BY_DATE_EMPID, KscdtScheState.class).setParameter("sId", sId)
 				.setParameter("date", date).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public void updateOrInsert(WorkScheduleState domain) {
+		KscdtScheStatePK pk = new KscdtScheStatePK(domain.getSId(), domain.getScheduleItemId(), domain.getYmd());
+		Optional<KscdtScheState> kscstWorkScheduleState = this.queryProxy().find(pk,KscdtScheState.class);
+		if (kscstWorkScheduleState.isPresent()) {
+			kscstWorkScheduleState.get().scheduleEditState = domain.getScheduleEditState().value;
+			this.commandProxy().update(kscstWorkScheduleState.get());
+		} else {
+			KscdtScheState entity = new KscdtScheState(pk, domain.getScheduleEditState().value);
+			this.commandProxy().insert(entity);
+		}
+		this.getEntityManager().flush();
 	}
 }

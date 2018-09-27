@@ -26,9 +26,9 @@ public class KwrmtErAlWorkRecordPK implements Serializable {
 	@NotNull
 	@Column(name = "CID")
 	public String companyId;
-	
+
 	@NotNull
 	@Column(name = "ERROR_ALARM_CD")
 	public String errorAlarmCode;
-	
+
 }

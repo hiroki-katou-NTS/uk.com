@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
@@ -20,6 +24,7 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTRIBUTE, 
@@ -36,6 +41,18 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 						c.getSpecificDateAttr() == null ? 0 : c.getSpecificDateAttr().value, 
 						c.getSpecificDateItemNo().v().intValue());
 			}));
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public SpecificDateAttrOfDailyPerforDto clone() {
+		SpecificDateAttrOfDailyPerforDto dto = new SpecificDateAttrOfDailyPerforDto();
+		dto.setEmployeeId(employeeId());
+		dto.setYmd(workingDate());
+		dto.setSepecificDateAttrs(sepecificDateAttrs == null ? null : sepecificDateAttrs.stream().map(c -> c.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;
@@ -65,7 +82,8 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 		return new SpecificDateAttrOfDailyPerfor(emp,
 				ConvertHelper.mapTo(sepecificDateAttrs,
 						(c) -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.getNo()),
-								ConvertHelper.getEnum(c.getSpecificDate(), SpecificDateAttr.class))),
+								c.getSpecificDate() == SpecificDateAttr.NOT_USE.value 
+										? SpecificDateAttr.NOT_USE : SpecificDateAttr.USE)),
 						date);
 	}
 }

@@ -21,6 +21,9 @@ public class MonthlyPersonalPerformanceData {
 	/** The detailed error data. */
 	public String detailedErrorData;
 	
+	/** The closure date. */
+	public String closureDate;
+	
 	/** The actual value. */
 	public List<ActualValue> actualValue;
 }

@@ -11,6 +11,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -120,6 +122,10 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
     @JoinTable(name = "KRQDT_HOLIDAY_WORK_INPUT")
 	public List<KrqdtHolidayWorkInput> holidayWorkInputs;
 
+	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
+	public KrqdtAppOvertimeDetail appOvertimeDetail;
+
 	@Override
 	protected Object getKey() {
 		return krqdtAppHolidayWorkPK;
@@ -163,6 +169,7 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
 				return null;
 			});
 		}
+		this.appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(appHolidayWork.getAppOvertimeDetail());
 		return this;
 	}
 	

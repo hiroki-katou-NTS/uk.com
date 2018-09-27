@@ -30,7 +30,8 @@ public class AddDaiPerformanceFunCommandHandler extends CommandHandler<DaiPerfor
 																addCommand.isEalyCalcUpdAtr() ? 1 : 0, 
 																addCommand.isOvertimeCalcUpdAtr() ? 1 : 0, 
 																addCommand.isLawOverCalcUpdAtr() ? 1 : 0, 
-																addCommand.isManualFixAutoSetAtr()? 1 : 0));
+																addCommand.isManualFixAutoSetAtr()? 1 : 0,
+																addCommand.isCheckErrRefDisp()? 1 : 0));
 
     }
 }

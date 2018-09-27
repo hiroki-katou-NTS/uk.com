@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguage;
 import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguageRepository;
@@ -40,11 +41,10 @@ public class WorkTypeFinder {
 	 * @param lstPossible the lst possible
 	 * @return the possible work type
 	 */
-	public List<WorkTypeDto> getPossibleWorkType(List<String> lstPossible) {
+	public List<WorkTypeInfor> getPossibleWorkType(List<String> lstPossible) {
 		// company id
 		String companyId = AppContexts.user().companyId();
-		List<WorkTypeDto> lst = this.workTypeRepo.getPossibleWorkType(companyId, lstPossible).stream()
-				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
+		List<WorkTypeInfor> lst = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstPossible);
 		return lst;
 	}
 
@@ -101,6 +101,18 @@ public class WorkTypeFinder {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeRepo.findNotDeprecated(companyId).stream().map(dom -> WorkTypeDto.fromDomain(dom))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find all by order.
+	 *
+	 * @return the list
+	 */
+	public List<WorkTypeInfor> findAllByOrder() {
+		// company id
+		String companyId = AppContexts.user().companyId();
+		List<WorkTypeInfor> lst = this.workTypeRepo.findAllByOrder(companyId);
+		return lst;
 	}
 
 	/**

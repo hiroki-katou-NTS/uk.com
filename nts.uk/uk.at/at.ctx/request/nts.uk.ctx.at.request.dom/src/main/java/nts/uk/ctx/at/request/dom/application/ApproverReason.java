@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author Doan Duy Hung
  *
  */
-@StringMaxLength(200)
+@StringMaxLength(400)
 public class ApproverReason extends StringPrimitiveValue<ApproverReason> {
 
 	private static final long serialVersionUID = 1L;

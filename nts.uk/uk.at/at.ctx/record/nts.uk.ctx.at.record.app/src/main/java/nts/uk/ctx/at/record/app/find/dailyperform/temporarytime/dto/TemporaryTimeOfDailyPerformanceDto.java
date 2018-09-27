@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkLeaveTimeDto;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
@@ -18,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 @Data
 @AttendanceItemRoot(rootName = ItemConst.DAILY_TEMPORARY_TIME_NAME)
@@ -34,6 +35,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			listMaxLength = 3, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<WorkLeaveTimeDto> workLeaveTime;
 
+	@JsonDeserialize(using = CustomGeneralDateSerializer.class)
 	private GeneralDate ymd;
 
 	public static TemporaryTimeOfDailyPerformanceDto getDto(TemporaryTimeOfDailyPerformance domain) {
@@ -43,6 +45,19 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			dto.setYmd(domain.getYmd());
 			dto.setWorkTimes(domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
+			dto.exsistData();
+		}
+		return dto;
+	}
+
+	@Override
+	public TemporaryTimeOfDailyPerformanceDto clone() {
+		TemporaryTimeOfDailyPerformanceDto dto = new TemporaryTimeOfDailyPerformanceDto();
+			dto.setEmployeeId(employeeId());
+			dto.setYmd(workingDate());
+			dto.setWorkTimes(workTimes);
+			dto.setWorkLeaveTime(workLeaveTime == null ? null : workLeaveTime.stream().map(t -> t.clone()).collect(Collectors.toList()));
+		if (isHaveData()) {
 			dto.exsistData();
 		}
 		return dto;
@@ -75,20 +90,10 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 			date = this.workingDate();
 		}
 		return new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
-						ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), date);
+						ConvertHelper.mapTo(workLeaveTime, (c) -> WorkLeaveTimeDto.toDomain(c)), date);
 	}
 
 	private int toWorkTimes() {
 		return workTimes == null ? (workLeaveTime == null ? 0 : workLeaveTime.size()) : workTimes;
-	}
-
-	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
-		return c == null ? null
-				: new TimeLeavingWork(new WorkNo(c.getNo()), toTimeActualStamp(c.getWorking()).isPresent() ? toTimeActualStamp(c.getWorking()).get() : null,
-						toTimeActualStamp(c.getLeave()).isPresent() ? toTimeActualStamp(c.getLeave()).get() : null);
-	}
-
-	private Optional<TimeActualStamp> toTimeActualStamp(WithActualTimeStampDto c) {
-		return c == null ? Optional.empty() : Optional.of(c.toDomain());
 	}
 }

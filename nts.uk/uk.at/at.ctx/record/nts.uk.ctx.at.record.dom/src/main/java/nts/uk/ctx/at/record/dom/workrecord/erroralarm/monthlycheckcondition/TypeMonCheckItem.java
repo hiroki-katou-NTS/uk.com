@@ -8,12 +8,13 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum TypeMonCheckItem {
+	// follow ticket #100108
     /*所定公休日数 */
     CERTAIN_DAY_OFF(0, "Enum_TypeMonCheckItem_CertainDayOff"),
-    /* 36協定エラー時間*/
-    _36_AGR_ERROR_TIME(1, "Enum_TypeMonCheckItem_36AgrErrorTime"),
+//    /* 36協定エラー時間*/
+//    _36_AGR_ERROR_TIME(1, "Enum_TypeMonCheckItem_36AgrErrorTime"),
     /* 36協定アラーム時間 */
-    _36_AGR_ALARM_TIME(2, "Enum_TypeMonCheckItem_36AgrAlarmTime"),
+//    _36_AGR_ALARM_TIME(2, "Enum_TypeMonCheckItem_36AgrAlarmTime"),
     /* 残数チェック*/
     CHECK_REMAIN_NUMBER(3, "Enum_TypeMonCheckItem_CheckRemainNumber"),
     /* 時間 */

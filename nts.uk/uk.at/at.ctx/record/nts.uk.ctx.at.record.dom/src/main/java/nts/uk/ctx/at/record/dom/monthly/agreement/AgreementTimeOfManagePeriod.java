@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * 管理期間の36協定時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeOfManagePeriod extends AggregateRoot {
@@ -80,6 +80,8 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 			MonthlyCalculation monthlyCalculation,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
+		this.year = monthlyCalculation.getYear();
+		
 		// 36協定時間の対象を取得
 		this.breakdown.getTargetItemOfAgreement(aggregateAtr, monthlyCalculation, repositories);
 		
@@ -111,6 +113,8 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 			WeeklyCalculation weeklyCalculation,
 			MonAggrCompanySettings companySets,
 			RepositoriesRequiredByMonthlyAggr repositories){
+		
+		this.year = year;
 		
 		// 36協定時間の対象を取得
 		this.breakdown.getTargetItemOfAgreementForWeek(aggregateAtr, weeklyCalculation, companySets);

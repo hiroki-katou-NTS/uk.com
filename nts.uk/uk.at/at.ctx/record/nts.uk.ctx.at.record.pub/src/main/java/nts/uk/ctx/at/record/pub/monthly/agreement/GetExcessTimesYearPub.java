@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.monthly.agreement;
 
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
@@ -15,5 +16,5 @@ public interface GetExcessTimesYearPub {
 	 * @return 年間超過回数
 	 */
 	// RequestList458
-	int algorithm(String employeeId, Year year);
+	AgreementExcessInfo algorithm(String employeeId, Year year);
 }

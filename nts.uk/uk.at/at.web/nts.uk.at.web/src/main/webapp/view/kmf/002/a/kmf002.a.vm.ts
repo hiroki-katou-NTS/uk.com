@@ -208,10 +208,11 @@ module nts.uk.at.view.kmf002.a {
                 if (typeStart == SideBarTabIndex.THIRD) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
+                    _self.screenB(new viewModelTabB.ScreenModel());
                     $.when(_self.screenB().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrB #datePickerYear" ).focus();
+                        $( "#scrB .datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     // Process for screen A (Mother of all screen)
@@ -225,26 +226,29 @@ module nts.uk.at.view.kmf002.a {
                 } else if (typeStart == SideBarTabIndex.SECOND) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
+                    _self.screenE(new viewModelTabE.ScreenModel());
                     $.when(_self.screenE().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrE #datePickerYear" ).focus();
+                        $( "#scrE .datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FOURTH) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
+                    _self.screenD(new viewModelTabD.ScreenModel());
                     $.when(_self.screenD().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrD #datePickerYear" ).focus();
+                        $( "#scrD .datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIFTH) {
                     nts.uk.ui.errors.clearAll();
                     blockUI.grayout();
+                    _self.screenC(new viewModelTabC.ScreenModel());
                     $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrC #datePickerYear" ).focus();
+                        $( "#scrC .datePickerYear" ).focus();
                     });    
                 }
                 
@@ -330,13 +334,14 @@ module nts.uk.at.view.kmf002.a {
                 _self.validateInput();
                 _self.checkValidate();
                 if (!nts.uk.ui.errors.hasError()) {
+                    blockUI.invisible();
                     $.when(service.save(_self.publicHolidaySetting(), _self.forwardSetOfPubHD(), 
                                         _self.weekHDSet(), _self.fourWkFourHDNumSet())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         _self.getAllData();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res);
-                    });    
+                    }).always(()=> blockUI.clear());    
                 }
             }
             

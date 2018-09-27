@@ -18,6 +18,8 @@
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
 				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay
  			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kal003.c.style.css" />
@@ -28,9 +30,11 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_93')}</div>
-					<div id="conditionAtr-cbb" data-bind="ntsComboBox: {
+				<div class="valign-center control-group"
+					style="display: inline-flex">
+					<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_93')}</div>
+					<div tabindex="-1" id="conditionAtr-cbb"
+						data-bind="ntsComboBox: {
 						options: enumConditionAtr,
 						optionsValue: 'code',
 						value: currentAtdItemCondition.conditionAtr,
@@ -40,8 +44,9 @@
 						columns: [
 							{ prop: 'name', length: 5 },
 						]}"></div>
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_94')}</div>
-               		<div data-bind="ntsRadioBoxGroup: {
+					<div style="margin-right: 20px">#{i18n.getText('KDW007_94')}</div>
+					<div
+						data-bind="ntsRadioBoxGroup: {
 						options: enumConditionType,
 						optionsValue: 'code',
 						optionsText: 'name',
@@ -49,30 +54,43 @@
 						value: currentAtdItemCondition.conditionType,
 						enable: true}"></div>
 				</div>
-				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_95')}</div>
-					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_96')}</div>
-				 	<button data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KDW007_73')}</button>
-				 	<input style="width: 100px;" id="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
-					 	name: '#[KDW007_101]',
+				<div class="valign-center control-group"
+					style="display: inline-flex">
+					<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_95')}</div>
+					<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_96')}</div>
+					<button style="margin-right: 5px"
+						data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KDW007_73')}</button>
+					<input style="width: 100px;" id="display-target-item"
+						class="display-list-label need-check"
+						data-bind="ntsTextEditor: {
+					 	name: '#[KAL003_40]',
 					 	value: displayTargetAtdItems, 
 					 	readonly: true, 
 					 	required: true}" />
-				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
-					 	<div id="compareOperator-cbb" data-bind=" ntsComboBox: {
-							options: enumCompareOperator,
+					<com:ko-if
+						bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
+						<div id="compareOperator-cbb"
+							data-bind=" ntsComboBox: {
+							options: function(){
+                                 if(currentAtdItemCondition.conditionType() == 0){
+                                     return enumlistCompareTypes;
+                                 } else {
+                                     return enumSingleValueCompareTypes;
+                                 }
+                            }(),
 							optionsValue: 'code',
 							value: currentAtdItemCondition.compareOperator,
 							optionsText: 'name',
 							enable: true,
 							visibleItemsCount: 4,
-							width : 262,
+							width : 280,
 							columns: [
 								{ prop: 'name', length: 18 },
 							]}"></div>
-				 	</com:ko-if>
-				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 2">
-				 		<div id="inputCheck-cbb" data-bind="ntsComboBox: {
+					</com:ko-if>
+					<com:ko-if bind="currentAtdItemCondition.conditionType() == 2">
+						<div id="inputCheck-cbb"
+							data-bind="ntsComboBox: {
 							options: enumInputCheckCondition,
 							optionsValue: 'code',
 							value: currentAtdItemCondition.inputCheckCondition,
@@ -82,66 +100,124 @@
 							columns: [
 								{ prop: 'name', length: 18 },
 							]}"></div>
-				 	</com:ko-if>
+					</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionType() == 1">
-					 	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_96')}</div>
-					 	<button data-bind="click: openSelectAtdItemDialogComparison">#{i18n.getText('KDW007_73')}</button>
-					 	<input id="display-compare-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
+						<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_96')}</div>
+						<button style="margin-right: 5px"
+							data-bind="click: openSelectAtdItemDialogComparison">#{i18n.getText('KDW007_73')}</button>
+						<input id="display-compare-item"
+							class="display-list-label need-check"
+							data-bind="ntsTextEditor: {
 									 	value: displayCompareAtdItems, 
 									 	readonly: true, 
 									 	required: currentAtdItemCondition.conditionType() == 1
 								 	}" />
-				 	</com:ko-if>
-				 	<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
-					 	<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_99')}</div>
-					 	<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 0 || currentAtdItemCondition.conditionAtr() == 3 || currentAtdItemCondition.conditionAtr() == 4">
-						 	<input id="startValue" class="value-input need-check" data-bind="ntsNumberEditor: {name: '#[KDW007_75]', value: currentAtdItemCondition.compareStartValue, required: true, constraint: 'CheckedTimesValue'}" />
-						 	<input id="endValue" class="value-input need-check" data-bind="ntsNumberEditor: {
-				 						name: '#[KDW007_76]', 
+					</com:ko-if>
+					<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
+						<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_99')}</div>
+						<com:ko-if
+							bind="currentAtdItemCondition.conditionAtr() == 0">
+						 	<input id="startValue" class="value-input need-check"
+							style="width : 80px! important"
+							data-bind="ntsNumberEditor: {name: '#[KAL003_44]', value: currentAtdItemCondition.compareStartValue, required: true, constraint: 'CheckedTimesValue'}" />
+							<input id="endValue" class="value-input need-check"
+								style="width: 80px ! important"
+								data-bind="ntsNumberEditor: {
+					 						name: '#[KAL003_44]', 
+					 						value: currentAtdItemCondition.compareEndValue,
+											enable: currentAtdItemCondition.compareOperator() > 5,
+											required: currentAtdItemCondition.conditionType() == 0,
+											constraint: 'CheckedTimesValue',
+											option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												})
+										}" />
+						</com:ko-if>
+						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 3">
+							<input id="startValue" class="value-input need-check"
+								style="width: 80px ! important"
+								data-bind="ntsNumberEditor: {name: '#[KAL003_44]', 
+								value: currentAtdItemCondition.compareStartValue, 
+								required: true, 
+								constraint: 'CheckedAmountValue'}" />
+							<input id="endValue" class="value-input need-check"
+								style="width: 80px ! important"
+								data-bind="ntsNumberEditor: {
+				 						name: '#[KAL003_44]', 
 				 						value: currentAtdItemCondition.compareEndValue,
 										enable: currentAtdItemCondition.compareOperator() > 5,
 										required: currentAtdItemCondition.conditionType() == 0,
-										constraint: 'CheckedTimesValue'
+										constraint: 'CheckedAmountValue',
+										option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: ''
+            												})
 									}" />
-				 		</com:ko-if>
-				 		<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 1">
-						 	<input id="startValue" class="value-input need-check" data-bind="ntsTimeEditor: {
+						</com:ko-if>
+						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 4">
+							<input id="startValue" class="value-input need-check"
+								style="width: 80px ! important"
+								data-bind="ntsNumberEditor: {name: '#[KAL003_44]', value: currentAtdItemCondition.compareStartValue, required: true, constraint: 'CheckedTimesValueDay'}" />
+							<input id="endValue" class="value-input need-check"
+								style="width: 80px ! important"
+								data-bind="ntsNumberEditor: {
+				 						name: '#[KAL003_44]', 
+				 						value: currentAtdItemCondition.compareEndValue,
+										enable: currentAtdItemCondition.compareOperator() > 5,
+										required: currentAtdItemCondition.conditionType() == 0,
+										constraint: 'CheckedTimesValueDay'
+									}" />
+						</com:ko-if>
+					</com:ko-if>
+					<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 1">
+						<input id="startValue" style="width: 95px ! important"
+							class="value-input need-check"
+							data-bind="ntsTimeEditor: {
 						 				value: currentAtdItemCondition.compareStartValue,
-						 				name: '#[KDW007_75]',
+						 				name: '#[KAL003_44]',
 						 				constraint: 'CheckedTimeDuration',
 						 				inputFormat: 'time',
 						 				mode: 'time',
 						 				required: currentAtdItemCondition.conditionType() == 0
 				 					}" />
-						 	<input id="endValue" class="value-input need-check" data-bind="ntsTimeEditor: {value: currentAtdItemCondition.compareEndValue, 
+						<input id="endValue" style="width: 95px ! important"
+							class="value-input need-check"
+							data-bind="ntsTimeEditor: {value: currentAtdItemCondition.compareEndValue, 
 																			 	enable: currentAtdItemCondition.compareOperator() > 5, 
-																			 	name: '#[KDW007_76]', 
+																			 	name: '#[KAL003_44]', 
 						 														constraint: 'CheckedTimeDuration',  
 																			 	inputFormat: 'time',
 																			 	mode: 'time', 
 																			 	required: currentAtdItemCondition.conditionType() == 0}" />
-				 		</com:ko-if>
-				 		<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 2">
-						 	<input id="startValue" class="value-input need-check" data-bind="ntsTimeWithDayEditor: { 
-						 		name: '#[KDW007_75]', 
+					</com:ko-if>
+					<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 2">
+						<input id="startValue" style="width: 80px ! important"
+							class="value-input need-check"
+							data-bind="ntsTimeWithDayEditor: {  
+						 		name: '#[KAL003_44]', 
 						 		constraint:'TimeWithDayAttr', 
 								value: currentAtdItemCondition.compareStartValue, 
 								required: currentAtdItemCondition.conditionType() == 0 }" />
-							<input id="endValue" class="value-input need-check" data-bind="ntsTimeWithDayEditor: { 
-						 		name: '#[KDW007_76]', 
+						<input id="endValue" style="width: 80px ! important"
+							class="value-input need-check"
+							data-bind="ntsTimeWithDayEditor: { 
+						 		name: '#[KAL003_44]', 
 						 		constraint:'TimeWithDayAttr', 
 								value: currentAtdItemCondition.compareEndValue, 
 								required: currentAtdItemCondition.conditionType() == 0,
 								enable: currentAtdItemCondition.compareOperator() > 5 }" />
-						</com:ko-if>
-				 	</com:ko-if>
+					</com:ko-if>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed" data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
+				<button class="proceed"
+					data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_97')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KDW007_98')}</button>
 			</div>
-			
+
 		</ui:define>
 
 	</ui:composition>

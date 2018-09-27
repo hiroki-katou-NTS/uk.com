@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.Arrays;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 @Stateless
 public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService {
@@ -45,6 +48,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
 	/**
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 */
@@ -63,15 +69,15 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
-		GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly);
+		GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly, application_New);
 		//直行直帰遅刻早退のチェック
 		//TODO: chua the thuc hien duoc nen mac dinh luc nao cung co loi エラーあり
 		if(goBackLateEarly.isError) {
 			//直行直帰申請共通設定.早退遅刻設定がチェックする
 			if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
-				throw new BusinessException("Msg_297");
+				goBackDirectlyRegisterService.createThrowMsg("Msg_297", goBackLateEarly.msgLst);
 			}else if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKNOTREGISTER) {
-				throw new BusinessException("Msg_298");	
+				goBackDirectlyRegisterService.createThrowMsg("Msg_298", goBackLateEarly.msgLst);	
 			}
 		}
 	}
@@ -85,6 +91,13 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 		this.goBackDirectlyRepo.update(goBackDirectly);
 		application.setVersion(version);
 		appRepo.updateWithVersion(application);
+		
+		// 暫定データの登録
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				application.getCompanyID(), 
+				application.getEmployeeID(), 
+				Arrays.asList(application.getAppDate()));
+		
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		return this.detailAfterUpdate.processAfterDetailScreenRegistration(application);
 	}

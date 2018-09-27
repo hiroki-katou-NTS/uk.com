@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.log;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +14,14 @@ import nts.uk.ctx.at.record.app.find.log.dto.InputEmpCalAndSumByDate;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmpCalAndSumExeLogFinder {
 
+	@Inject
+	private ClosureRepository closureRepository;
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
 	@Inject
@@ -77,7 +81,12 @@ public class EmpCalAndSumExeLogFinder {
 		List<EmpCalAndSumExeLog> lstDomain = empCalAndSumExeLogRepo
 				.getAllEmpCalAndSumExeLogByDate(companyID, inputEmpCalAndSumByDate.getStartDate(),
 						inputEmpCalAndSumByDate.getEndDate());
+				List<String> listClosureName = new ArrayList<>();
+						lstDomain.forEach(x -> listClosureName.add(closureRepository.findBySelectedYearMonth(companyID, x.getClosureID(), x.getProcessingMonth().v()).isPresent() ? closureRepository.findBySelectedYearMonth(companyID, x.getClosureID(), x.getProcessingMonth().v()).get().getClosureName().v() : null));
 		List<EmpCalAndSumExeLogDto> data = lstDomain.stream().filter(item -> item.getExecutionStatus().isPresent()).map(c -> EmpCalAndSumExeLogDto.fromDomain(c,this.executionLogRepo.getExecutionLogs(c.getEmpCalAndSumExecLogID()))).collect(Collectors.toList());
+		for(int i = 0; i < data.size(); i++){
+			data.get(i).setClosureName(listClosureName.get(i));
+		}
 		if (data.isEmpty())
 			return Collections.emptyList();
 		return data;

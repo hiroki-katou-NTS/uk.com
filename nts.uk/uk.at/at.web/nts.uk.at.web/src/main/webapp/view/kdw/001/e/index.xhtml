@@ -55,9 +55,9 @@
 						<tr data-bind="css: {disappear: visibleApproval()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_11')}</span>
-								<span class="process-count"><span >0</span> / <span >0</span>人</span>
-								<span class="process-status" ></span>
-								<span class="process-error" ></span>
+								<span class="process-count"><span data-bind="text: reflectApprovalCount">0</span> / <span data-bind="text: numberEmployee">0</span>人</span>
+								<span class="process-status" data-bind="text: reflectApprovalStatus"></span>
+								<span class="process-error" data-bind="text: reflectApprovalHasError"></span>
 							</td>
 						</tr>
 						<tr data-bind="css: {disappear: visibleMonthly()}">
@@ -103,18 +103,18 @@
 						data-bind="css: {disappear: !isComplete()},
 						ntsGridList: {
 							dataSource: errorMessageInfo,
-							primaryKey: 'GUID',
+							primaryKey: 'id',
 							columns: columns,
 							multiple: false,
 							value: currentCode,
-							showNumbering: true,
-							rows: 10
+							height: 265,
+							rows : 10
 						}"></table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" class="disable-button" data-bind="click: cancelTask,enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
-				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
+				<button tabindex="3" class="danger" data-bind="click: cancelTask,enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
+				<button id="closeDialogButton" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

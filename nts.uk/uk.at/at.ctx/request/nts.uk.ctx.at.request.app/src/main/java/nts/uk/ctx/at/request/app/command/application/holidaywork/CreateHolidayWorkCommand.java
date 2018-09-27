@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.overtime.AppOvertimeDetailCommand;
 @Getter
 public class CreateHolidayWorkCommand {
 
@@ -138,4 +139,8 @@ public class CreateHolidayWorkCommand {
 	 * uiType
 	 */
 	private int uiType;
+	/**
+	 * 時間外時間の詳細
+	 */
+	private AppOvertimeDetailCommand appOvertimeDetail;
 }

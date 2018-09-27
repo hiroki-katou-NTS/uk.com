@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstr
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailOtInstructionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.OvertimeRestAppCommonSetCmd;
+import nts.uk.ctx.at.request.app.command.setting.company.request.apptypesetting.UpdateDisplayReasonCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequestSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
@@ -71,4 +72,6 @@ public class Kaf022AddCommand {
 	private ContentOfRemandMailCmd contentMail;
 	// A16_17
 	private UrlEmbeddedCmd url;
+	// A8_36 -> A8_43
+	private UpdateDisplayReasonCmd dplReasonCmd;
 }

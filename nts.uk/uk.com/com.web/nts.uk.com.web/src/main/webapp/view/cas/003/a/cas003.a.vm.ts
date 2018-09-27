@@ -4,6 +4,7 @@ module nts.uk.com.view.cas003.a {
         import infor = nts.uk.ui.dialog.info;
         import alert = nts.uk.ui.dialog.alert;
         import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             passPolicyCheck: KnockoutObservable<boolean>;
             firstTimeCheck: KnockoutObservable<boolean>;
@@ -159,10 +160,10 @@ module nts.uk.com.view.cas003.a {
                 else {
                     accountPolicy = new AccountPolicy({ errorCount: self.errorCount(), lockInterval: self.lockInterval(), lockOutMessage: self.lockOutMessage(), isAccLockUse: self.accLockCheck(), notificationPasswordChange: self.notificationPasswordChange(), loginCheck: self.violationPassCheck(), initialPasswordChange: self.firstTimeCheck(), isPasswordUse: self.passPolicyCheck(), historyCount: self.historyCount(), lowestDigits: self.lowestDigits(), validityPeriod: self.validityPeriod(), numberOfDigits: self.numberOfDigits(), symbolCharacters: self.symbolCharacters(), alphabetDigit: self.alphabetDigit() });
                 }
-
+                blockUI.grayout();
                 service.updateAccountPolicy(accountPolicy).done(() => {
                     infor(nts.uk.resource.getMessage("Msg_15", []));
-                });
+                }).always(()=> blockUI.clear());
 
             }
 

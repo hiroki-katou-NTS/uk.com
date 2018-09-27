@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.log.dom.reference;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 
  * @author thuongtv
@@ -7,9 +10,16 @@ package nts.uk.ctx.sys.log.dom.reference;
  */
 
 public interface PersonEmpBasicInfoAdapter {
+	
 	/**
-	 * Get list PersonEmpBasicInfo by employee ID
-	 * @return PersonEmpBasicInfoImport
+	 * Get employee code by employee ID
+	 * @return String
 	 */
-	PersonEmpBasicInfoImport getPersonEmpBasicInfoByEmpId(String empId);
+    String getEmployeeCodeByEmpId(String empId);
+
+	/**
+	 * Get list employee code by employee ID
+	 * @return Map<String,String>
+	 */
+	Map<String,String> getEmployeeCodesByEmpIds(List<String> empIds);
 }

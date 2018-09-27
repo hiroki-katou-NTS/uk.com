@@ -44,6 +44,7 @@ module nts.uk.ui.koExtentions {
             if (!nts.uk.util.isNullOrEmpty(rows)) {
                 height = rows* ROW_HEIGHT;    
             }
+            $(element).addClass("ig-tree-background");
             
             let $tree = $(element);
             
@@ -205,7 +206,9 @@ module nts.uk.ui.koExtentions {
                         }
                     });
                 } else {
-                    $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
+                    let $selectingNode = $tree.igTree("nodesByValue", singleValue);
+                    $tree.igTree("select", $selectingNode);
+                    $tree.igTree("expandToNode", $selectingNode);
                 }
             }
         }

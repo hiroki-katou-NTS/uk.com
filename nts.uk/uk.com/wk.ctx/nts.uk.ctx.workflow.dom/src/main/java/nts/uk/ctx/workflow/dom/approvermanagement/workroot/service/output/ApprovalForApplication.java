@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
 public class ApprovalForApplication {
+	Integer empRootAtr;
 	/**
 	 * 申請種類
 	 */

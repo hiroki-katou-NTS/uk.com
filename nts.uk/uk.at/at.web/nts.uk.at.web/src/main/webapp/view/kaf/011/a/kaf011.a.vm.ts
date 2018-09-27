@@ -62,6 +62,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
         totalEmployeeText = ko.observable('');
 
         transferDate: KnockoutObservable<string> = ko.observable(null);
+        
+        firstLoad: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
 
@@ -78,8 +80,10 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
             self.appReasons.subscribe((appReasons) => {
                 if (appReasons) {
-                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
-                    if (defaultReason) {
+                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 }),
+                        displayFixedReason = self.appTypeSet().displayFixedReason() != 0;
+
+                    if (defaultReason && displayFixedReason) {
                         self.appReasonSelectedID(defaultReason.reasonID);
                     }
                 }
@@ -177,6 +181,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
             }
         }
@@ -184,7 +189,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let self = this,
                 isRecError = self.checkRecTime(),
                 isAbsError = self.checkAbsTime();
-            $(".kaf-011-combo-box ,.nts-input").trigger("validate");
+            $(".kaf-011-combo-box ,.nts-input,#swb_pre_post_type").trigger("validate");
             let isKibanControlError = nts.uk.ui.errors.hasError();
             return isRecError || isAbsError || isKibanControlError;
 
@@ -280,7 +285,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (self.screenModeNew()) {
                 return self.appTypeSet().displayAppReason() != 0;
             } else {
-
                 return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
             }
 

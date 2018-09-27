@@ -159,47 +159,47 @@ module nts.uk.at.view.kaf009.b {
                     //申請表示設定.事前事後区分　＝　表示する　〇
                     //申請表示設定.事前事後区分　＝　表示しない ×
                     self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
-                    if(settingData.goBackSettingDto　!= undefined){
-                        //事前事後区分 Enable ※A２
-                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
-                        //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
-                        self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
-                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
-                        //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
-                        if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
-                          || settingData.goBackSettingDto.workChangeFlg == initialSelection){
-                            self.isWorkChange(true);
-                            self.checkboxDisplay(true);
-                            self.workChangeBtnDisplay(true);
-                            self.checkboxEnable(true&&self.isNewScreen());
-                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
-                                self.workChangeAtr(false);
-                            }else{
-                                self.workChangeAtr(true);
-                            }
-                            
-                        }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
-                            self.isWorkChange(false);
-                            self.workChangeAtr(false);
-                            self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(false);
-                            self.checkboxEnable(false&&self.isNewScreen());
-                        }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
-                            self.workChangeAtr(true);
-                            self.isWorkChange(true);
-                            self.workState(false);
-                            self.checkboxDisplay(false);
-                            self.workChangeBtnDisplay(true);
-                            self.checkboxEnable(false&&self.isNewScreen());
-                            self.workLabelRequired(self.workChangeAtr());
-                        }
-                        
-                    }
                     //共通設定.複数回勤務
                     self.useMulti(settingData.dutiesMulti);
                     //Get data 
                     service.getGoBackDirectDetail(appId).done(function(detailData: any) {
                         self.isNewScreen(detailData.outMode==1?true:false);
+                        if(settingData.goBackSettingDto　!= undefined){
+                            //事前事後区分 Enable ※A２
+                            //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できる 〇
+                            //直行直帰申請共通設定.勤務の変更　＝　申請種類別設定.事前事後区分を変更できない  ×
+                            self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == change ? true: false);
+                            //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更する）
+                            //条件：直行直帰申請共通設定.勤務の変更　＝　申請時に決める（初期選択：勤務を変更しない）
+                            if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection 
+                              || settingData.goBackSettingDto.workChangeFlg == initialSelection){
+                                self.isWorkChange(true);
+                                self.checkboxDisplay(true);
+                                self.workChangeBtnDisplay(true);
+                                self.checkboxEnable(true&&self.isNewScreen());
+                                if(settingData.goBackSettingDto.workChangeFlg == notInitialSelection ){
+                                    self.workChangeAtr(false);
+                                }else{
+                                    self.workChangeAtr(true);
+                                }
+                                
+                            }else if(settingData.goBackSettingDto.workChangeFlg == notChange){//条件：直行直帰申請共通設定.勤務の変更　＝　変更しない
+                                self.isWorkChange(false);
+                                self.workChangeAtr(false);
+                                self.checkboxDisplay(false);
+                                self.workChangeBtnDisplay(false);
+                                self.checkboxEnable(false&&self.isNewScreen());
+                            }else{//条件：直行直帰申請共通設定.勤務の変更　＝　変更する
+                                self.workChangeAtr(true);
+                                self.isWorkChange(true);
+                                self.workState(false);
+                                self.checkboxDisplay(false);
+                                self.workChangeBtnDisplay(true);
+                                self.checkboxEnable(false&&self.isNewScreen());
+                                self.workLabelRequired(self.workChangeAtr());
+                            }
+                            
+                        }
                         self.version = detailData.goBackDirectlyDto.version;
                         //get all Location 
                         self.getAllWorkLocation();
@@ -265,6 +265,20 @@ module nts.uk.at.view.kaf009.b {
                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
                         return;
                 }
+                // 勤務時間の大小チェック
+                if(!nts.uk.util.isNullOrUndefined(self.timeStart1()) && !nts.uk.util.isNullOrUndefined(self.timeEnd1())){
+                    if(!nts.uk.util.isNullOrEmpty(self.timeStart1()) && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
+                        if (self.timeStart1() > self.timeEnd1()) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_579" }).then(function() { nts.uk.ui.block.clear(); });
+                            return;
+                        }
+                    }
+                }
+                // 勤務時間2の大小チェック
+//                if (self.timeStart2() > self.timeEnd2()) {
+//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_580" }).then(function() { nts.uk.ui.block.clear(); });
+//                    return;
+//                }
                 var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
@@ -381,6 +395,14 @@ module nts.uk.at.view.kaf009.b {
                         }
                     } else{
                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});    
+                    }
+                    if(res.parameterIds.length>=4){
+                        let rsTime1 = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.parameterIds[3]));
+                        nts.uk.ui.dialog.error({ messageId: res.parameterIds[2].split("=")[1], messageParams: [rsTime1] });    
+                    }
+                    if(res.parameterIds.length>=2){
+                        let rsTime2 = nts.uk.time.format.byId("ClockDay_Short_HM", parseInt(res.parameterIds[1]));
+                        nts.uk.ui.dialog.error({ messageId: res.parameterIds[0].split("=")[1], messageParams: [rsTime2] });    
                     }
                 });
                 return dfd.promise();
@@ -519,7 +541,7 @@ module nts.uk.at.view.kaf009.b {
                     self.selectedBack2(data.backHomeAtr2);
                     self.workLocationCD2(data.workLocationCD2 == null ? '' : data.workLocationCD2);
                     //workType, Sift
-                    self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
+                    // self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
                     self.workTypeCd(data.workTypeCD);
                     self.siftCD(data.siftCD);
                 }
@@ -533,9 +555,6 @@ module nts.uk.at.view.kaf009.b {
                 let comboSource: Array<common.ComboReason> = [];
                 _.forEach(data, function(value: common.ReasonDto) {
                     self.reasonCombo.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
-                    if(value.defaultFlg === 1){
-                        self.selectedReason(value.reasonID);
-                    }
                 });
             }
 

@@ -79,12 +79,20 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 		TimeLeavingWork leavingStamp1 = lstLeavingStamp1.get(0);		
 		boolean isStart = false;
 		boolean isEnd = false;
+		if(!leavingStamp1.getAttendanceStamp().isPresent()
+				|| !leavingStamp1.getAttendanceStamp().get().getStamp().isPresent()) {
+			return;
+		}
 		WorkStamp workStampStart = leavingStamp1.getAttendanceStamp().get().getStamp().get();
 		//打刻自動セット区分を取得する
 		if(!worktypeService.checkStampAutoSet(worktypeCode, AttendanceOfficeAtr.ATTENDANCE)
 				&& (workStampStart.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO
 				|| workStampStart.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT)) {
 			isStart = true;
+		}
+		if(!leavingStamp1.getLeaveStamp().isPresent()
+				|| !leavingStamp1.getLeaveStamp().get().getStamp().isPresent()) {
+			return;
 		}
 		WorkStamp workStampEnd = leavingStamp1.getLeaveStamp().get().getStamp().get();
 		if(!worktypeService.checkStampAutoSet(worktypeCode, AttendanceOfficeAtr.OFFICEWORK)

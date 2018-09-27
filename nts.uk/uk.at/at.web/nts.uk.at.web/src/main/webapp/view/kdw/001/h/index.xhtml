@@ -35,11 +35,11 @@
 							<div style="float:left;" data-bind="ntsFormLabel: {}, visible: processingMonthEnable">#{i18n.getText('KDW001_81')}</div>
 						</td>
 						<!-- H1_6 -->
-						<td><div data-bind="text:processingMonth, visible: processingMonthEnable "></div></td>
+						<td><span data-bind="text:processingMonth, visible: processingMonthEnable "></span>
 						<!-- H1_9 -->
-						<td><span data-bind="text:nameClosue , visible: clouseEnable"></span></td>
+						<span style="padding-left: 20px;"  data-bind="text:nameClosue , visible: clouseEnable"></span></td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: false">
 						<td>
 							<!-- H1_3 -->
 							<div style="float:left;" data-bind="ntsFormLabel: {}, visible: feriodEnable">#{i18n.getText('KDW001_15')}</div>
@@ -72,13 +72,14 @@
 	                             optionsValue: 'GUID',
 	                             columns: columns,
 	                             multiple: false,
+							     rows : 10,
 	                             value: currentSelectedRow}"
 						class="cf table-infor">
 					</table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="large" data-bind="click: closeDialog" >#{i18n.getText('KDW001_38')}</button>
+				<button class="large" data-bind="click: closeDialog, hasFocus: true" >#{i18n.getText('KDW001_38')}</button>
 			</div>
 			
 		</ui:define>

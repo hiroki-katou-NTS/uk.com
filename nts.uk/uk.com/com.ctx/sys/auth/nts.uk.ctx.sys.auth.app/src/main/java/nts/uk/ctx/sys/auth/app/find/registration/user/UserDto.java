@@ -36,15 +36,17 @@ public class UserDto {
 	// 個人ID
 	/** The associated employee id. */
 	private String associatedPersonID;
+	/** The company id. */
+	// CID
+	private String cid;
 
-	 
 	/**
 	 * From domain.
 	 *
 	 * @param domain the domain
 	 * @return the user dto
 	 */
-	public static UserDto fromDomain(User domain) {
+	public static UserDto fromDomain(User domain, String cid) {
 		String userName = "";
 		String mailAddress = "";
 		String personId = null;
@@ -56,7 +58,7 @@ public class UserDto {
 			personId = domain.getAssociatedPersonID().get().toString();
 		return new UserDto(domain.getLoginID().toString(), userName, domain.getUserID(),
 				domain.getContractCode().toString(), domain.getExpirationDate().toString(), Boolean.valueOf(domain.getSpecialUser().toString()),
-				Boolean.valueOf(domain.getMultiCompanyConcurrent().toString()), mailAddress, personId);
+				Boolean.valueOf(domain.getMultiCompanyConcurrent().toString()), mailAddress, personId, cid);
 	}
 	
 	/**
@@ -74,7 +76,7 @@ public class UserDto {
 	 */
 	public UserDto(String loginID, String userName, String userID, String contractCode,
 			String expirationDate, Boolean specialUser, Boolean multiCompanyConcurrent, String mailAddress,
-			String associatedPersonID) {
+			String associatedPersonID, String cid) {
 		super();
 		this.loginID = loginID;
 		this.userName = userName;
@@ -85,5 +87,6 @@ public class UserDto {
 		this.multiCompanyConcurrent = multiCompanyConcurrent;
 		this.mailAddress = mailAddress;
 		this.associatedPersonID = associatedPersonID;
+		this.cid = cid;
 	}
 }

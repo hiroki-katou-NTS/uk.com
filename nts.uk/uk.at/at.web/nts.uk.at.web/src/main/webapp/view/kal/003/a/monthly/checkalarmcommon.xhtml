@@ -11,7 +11,7 @@
 	
 	<div>
 		<div style = "padding-bottom: 10px;">
-			<button data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button>
+			<button style = "margin-right: 10px;" data-bind="click: createNewCheckCondition_click,enable: true">#{i18n.getText('KAL003_21')}</button>
 			<button data-bind="click: deleteCheckCondition_click, enable : checkUseAtr57">#{i18n.getText('KAL003_22')}</button>
 		</div>
 		
@@ -28,7 +28,7 @@
 			            <th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;"><div data-bind="ntsCheckBox: { checked: isAllCheckCondition  }"></div></th>
 					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;">#{i18n.getText('KAL003_24')}</th>
 					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_12')}</th>
-					<th class="ui-widget-header" style ="text-align: center; background-color: #CFF1A5;">#{i18n.getText('KAL003_23')}</th>
+					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_23')}</th>
 					<th class="ui-widget-header" style ="background-color: #CFF1A5;">#{i18n.getText('KAL003_25')}</th>
 			        </tr>
 		        </thead>
@@ -38,7 +38,7 @@
 		                   <div data-bind="ntsCheckBox: {checked: useAtr}"></div>
 		               </td>
 		               <td style ="text-align: center;">
-	                       <span data-bind="text: sortBy"></span>
+	                       <span data-bind="text: rowId"></span>
 	                   </td>
 	                   <td>
 	                       <input class="nameAlarm" data-bind="ntsTextEditor: {value: nameAlarmExtraCon , required: true, constraint: 'NameAlarmExtractionCondition', name: '#[KAL003_12]', 

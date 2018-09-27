@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
@@ -125,7 +126,7 @@ public class SrcdtStartPageLogInfo extends UkJpaEntity {
 															new LoginInformation(ipAddress, pcName, account), startDateTime, toUserRoles(), 
 															new ScreenIdentifier(programId, screenId, queryString), 
 															Optional.ofNullable(note));
-		if(startBeforePid == null){
+		if(StringUtil.isNullOrEmpty(startBeforePid, true)){
 			return StartPageLog.specialStarted(basicInfo);
 		}
 		return StartPageLog.pageStarted(new ScreenIdentifier(startBeforePid, startBeforScId, startBeforeQuery), basicInfo);

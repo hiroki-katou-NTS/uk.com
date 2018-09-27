@@ -22,8 +22,8 @@ import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodFinder;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.PermissionOfEmploymentFinder;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.PermissionOfEmploymentFormDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
@@ -41,8 +41,8 @@ public class Kwr008WebService extends WebService {
 	@Inject
 	private I18NResourcesForUK i18n;
 
-	@Inject
-	private PermissionOfEmploymentFinder permissionOfEmploymentFinder;
+	// @Inject
+	// private PermissionOfEmploymentFinder permissionOfEmploymentFinder;
 
 	@Inject
 	private PeriodFinder periodFinder;
@@ -65,10 +65,14 @@ public class Kwr008WebService extends WebService {
 	@Inject
 	private AnnualWorkScheduleExportService serive;
 
+	@Inject
+	private RoleWhetherLoginFinder roleWhetherLoginFinder;
+
 	@POST
-	@Path("getPermissionOfEmploymentForm")
-	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
-		return this.permissionOfEmploymentFinder.getPermissionOfEmploymentForm();
+	@Path("getCurrentLoginerRole")
+	public RoleWhetherLoginDto getCurrentLoginerRole() {
+		//return this.permissionOfEmploymentFinder.getPermissionOfEmploymentForm();
+		return roleWhetherLoginFinder.getCurrentLoginerRole();
 	}
 
 	@POST

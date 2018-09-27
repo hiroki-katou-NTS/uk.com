@@ -32,6 +32,7 @@ module nts.uk.at.view.kwr006.a {
             
             taskId: KnockoutObservable<string>;
             errorLogs : KnockoutObservableArray<EmployeeError>;
+            errorLogsNoWorkplace : KnockoutObservableArray<EmployeeError>;
 
             // start declare KCP005
             listComponentOption: any;
@@ -49,6 +50,10 @@ module nts.uk.at.view.kwr006.a {
             // start variable of CCG001
             ccg001ComponentOption: GroupOption;
             // end variable of CCG001
+            
+            //enable export
+            enableExport: KnockoutComputed<boolean>;
+            
             constructor() {
                 let self = this;
                 self.monthlyWorkScheduleConditionModel = new MonthlyWorkScheduleConditionModel();
@@ -61,6 +66,10 @@ module nts.uk.at.view.kwr006.a {
                 self.datepickerValue = ko.observable({});
                 self.startDatepicker = ko.observable("");
                 self.endDatepicker = ko.observable("");
+                
+                self.enableExport = ko.pureComputed(() => {
+                    return !_.isEmpty(self.itemListCodeTemplate());    
+                });
 
                 // dropdownlist A7_3
                 self.itemListCodeTemplate = ko.observableArray([]);
@@ -83,6 +92,7 @@ module nts.uk.at.view.kwr006.a {
                 
                 self.taskId = ko.observable('');
                 self.errorLogs = ko.observableArray([]);
+                self.errorLogsNoWorkplace = ko.observableArray([]);
             }
 
             private initSubscribers(): void {
@@ -189,20 +199,12 @@ module nts.uk.at.view.kwr006.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
-                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod()).done(() => {
-                    if (_.isEmpty(self.itemListCodeTemplate())) {
-                        self.loadAuthorityOfEmploymentForm().done(hasAuthority => {
-                            if (hasAuthority) {
-                                self.openScreenC();
-                            } else {
-                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' })
-                                    .then(() => nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"));
-                            }
-                        });
-                        dfd.resolve();
-                    } else {
+                
+                var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
+                    self.enableBtnConfigure(role.employeeCharge);
+                });
+                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod(), getCurrentLoginerRole).done(() => {
                         self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
-                    }
                 });
                 return dfd.promise();
             }
@@ -240,6 +242,7 @@ module nts.uk.at.view.kwr006.a {
                     service.exportSchedule(query).done(function(response) {
                         var employeeStr = "";
                         self.errorLogs.removeAll();
+                        self.errorLogsNoWorkplace.removeAll();
                         _.forEach(response.taskDatas, item => {
                             if (item.key.substring(0, 5) == "DATA_") {
                                 var errors = JSON.parse(item.valueAsString);
@@ -252,10 +255,23 @@ module nts.uk.at.view.kwr006.a {
                                     self.errorLogs.push(errorEmployee);
                                 });
                             }
+                            else if (item.key.substring(0, 6) == "NOWPK_") {
+                                var errors = JSON.parse(item.valueAsString);
+                                _.forEach(errors, error => {
+                                    var errorEmployee : EmployeeError = {
+                                        employeeCode : error.employeeCode,
+                                        employeeName : error.employeeName
+                                    }   
+                                    employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                    self.errorLogsNoWorkplace.push(errorEmployee);
+                                });
+                            }
                         });
                         // Show error in msg_1344
                         if (self.errorLogs().length > 0)
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+                        if (self.errorLogsNoWorkplace().length > 0)
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -281,6 +297,7 @@ module nts.uk.at.view.kwr006.a {
                     service.exportSchedule(query).done(function(response) {
                         var employeeStr = "";
                         self.errorLogs.removeAll();
+                        self.errorLogsNoWorkplace.removeAll();
                         _.forEach(response.taskDatas, item => {
                             if (item.key.substring(0, 5) == "DATA_") {
                                 var errors = JSON.parse(item.valueAsString);
@@ -293,10 +310,23 @@ module nts.uk.at.view.kwr006.a {
                                     self.errorLogs.push(errorEmployee);
                                 });
                             }
+                            else if (item.key.substring(0, 6) == "NOWPK_") {
+                                var errors = JSON.parse(item.valueAsString);
+                                _.forEach(errors, error => {
+                                    var errorEmployee : EmployeeError = {
+                                        employeeCode : error.employeeCode,
+                                        employeeName : error.employeeName
+                                    }   
+                                    employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                    self.errorLogsNoWorkplace.push(errorEmployee);
+                                });
+                            }
                         });
                         // Show error in msg_1344
                         if (self.errorLogs().length > 0)
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+                        if (self.errorLogsNoWorkplace().length > 0)
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -309,7 +339,10 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
-                    self.loadListOutputItemMonthlyWorkSchedule();    
+                    self.loadListOutputItemMonthlyWorkSchedule().done(() => {
+                        let data = nts.uk.ui.windows.getShared('selectedCodeScreenC');
+                        self.monthlyWorkScheduleConditionModel.selectedCode(data);
+                    });
                 });
             }
 
@@ -369,10 +402,6 @@ module nts.uk.at.view.kwr006.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-
-            private loadAuthorityOfEmploymentForm(): JQueryPromise<boolean> {
-                return service.getExistAuthority();
             }
 
             private loadPeriod(): JQueryPromise<void> {
@@ -614,7 +643,7 @@ module nts.uk.at.view.kwr006.a {
             fifthLevel: KnockoutObservable<boolean>;
             sixthLevel: KnockoutObservable<boolean>;
             seventhLevel: KnockoutObservable<boolean>;
-            eightLevel: KnockoutObservable<boolean>;
+            eighthLevel: KnockoutObservable<boolean>;
             ninthLevel: KnockoutObservable<boolean>;
             cumulativeWorkplace: KnockoutObservable<boolean>;
 
@@ -627,7 +656,7 @@ module nts.uk.at.view.kwr006.a {
                 self.fifthLevel = ko.observable(false);
                 self.sixthLevel = ko.observable(false);
                 self.seventhLevel = ko.observable(false);
-                self.eightLevel = ko.observable(false);
+                self.eighthLevel = ko.observable(false);
                 self.ninthLevel = ko.observable(false);
             }
 
@@ -640,7 +669,7 @@ module nts.uk.at.view.kwr006.a {
                 self.fifthLevel(data.fifthLevel);
                 self.sixthLevel(data.sixthLevel);
                 self.seventhLevel(data.seventhLevel);
-                self.eightLevel(data.eightLevel);
+                self.eighthLevel(data.eighthLevel);
                 self.ninthLevel(data.ninthLevel);
             }
 
@@ -654,7 +683,7 @@ module nts.uk.at.view.kwr006.a {
                 dto.fifthLevel = self.fifthLevel();
                 dto.sixthLevel = self.sixthLevel();
                 dto.seventhLevel = self.seventhLevel();
-                dto.eightLevel = self.eightLevel();
+                dto.eighthLevel = self.eighthLevel();
                 dto.ninthLevel = self.ninthLevel();
                 return dto;
             }
@@ -687,7 +716,7 @@ module nts.uk.at.view.kwr006.a {
                 if(self.seventhLevel()){
                     levelCount++;
                 }
-                if(self.eightLevel()){
+                if(self.eighthLevel()){
                     levelCount++;
                 }
                 if(self.ninthLevel()){

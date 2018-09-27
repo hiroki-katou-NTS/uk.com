@@ -31,4 +31,11 @@ public class HolidayWorkFrameTimeDto implements ItemConst {
 	// @AttendanceItemLayout(layout = "D")
 	// @AttendanceItemValue( type = ValueType.INTEGER)
 	private Integer no;
+	
+	@Override
+	public HolidayWorkFrameTimeDto clone() {
+		return new HolidayWorkFrameTimeDto(holidayWorkTime == null ? null : holidayWorkTime.clone(), 
+											transferTime == null ? null : transferTime.clone(),
+											beforeApplicationTime, no);
+	}
 }

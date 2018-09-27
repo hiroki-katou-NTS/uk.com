@@ -16,7 +16,6 @@
 }
 
 #C1_2{
-	margin-top: 10px;
 	margin-left: 80px;
 	height: 40px;
 	width: 580px;
@@ -28,7 +27,7 @@
 #C2_2{
 	margin-left: 80px;
 	width: 580px;
-	height: 500px;
+	height: 320px;
 	margin-top: 2px;
 }
 #C2_5{
@@ -37,17 +36,15 @@
 
 #C3 {
 	width: 600px;
-	margin-top: 10px;
 	margin-left: 10px;
 }
 
 #C3_1{
-	margin-top: 5px;
+	margin-top: 2px;
 	margin-left: 80px;
 }
 #C3_2{
-	margin-top: 5px;
-	/* margin-left: 480px; */
+	margin-top: 2px;
 	float: right;
 
 }

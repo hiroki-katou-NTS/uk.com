@@ -237,6 +237,10 @@ public class OverTimeDto {
 	
 	private AgreeOverTimeDto agreementTimeDto;
 	
+	private AppOvertimeDetailDto appOvertimeDetailDto;
+	
+	private Integer appOvertimeDetailStatus;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -292,6 +296,8 @@ public class OverTimeDto {
 				false,
 				false,
 				false,
+				null,
+				null,
 				null);
 	}
 	

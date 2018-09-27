@@ -36,10 +36,10 @@ public class AttendanceItemLinkingFinder {
 	private OptionalItemRepository optItemRepo;
 
 	/** The Constant MONTHLY_FRAME_TYPE. */
-	private static final int MONTHLY_FRAME_TYPE = 1;
+	private static final int MONTHLY_FRAME_TYPE = 2;
 
 	/** The Constant DAILY_FRAME_TYPE. */
-	private static final int DAILY_FRAME_TYPE = 3;
+	private static final int DAILY_FRAME_TYPE = 1;
 
 	/**
 	 * Find by any item.

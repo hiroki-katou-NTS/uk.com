@@ -22,4 +22,6 @@ public class AppHolidayWorkFull {
 	private String endTime2;
 	
 	private List<OverTimeFrame> lstFrame;
+	//時間外時間の詳細
+	private TimeNo417 timeNo417;
 }

@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
@@ -36,6 +37,8 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	IDataWorkService dataWorkService;
 	@Inject
 	private AtEmployeeAdapter atEmpAdaptor;
+	@Inject
+	private IWorkChangeRegisterService workChangeRegisterService;
 	@Override
 	public WorkChangeBasicData getSettingData(String companyId, String sId,List<String> sIds, GeneralDate appDate) {		
 		// 1-1.新規画面起動前申請共通設定を取得する
@@ -69,10 +72,12 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 			wcBasicData.setMultipleTime(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting);
+		DataWork workingData = dataWorkService.getDataWork(companyId, sId, appDate, appCommonSetting,ApplicationType.WORK_CHANGE_APPLICATION.value);
 		wcBasicData.setWorkingData(workingData);
 		
 		wcBasicData.setEmployees(atEmpAdaptor.getByListSID(sIds));
+		
+		wcBasicData.setTimeRequired(workChangeRegisterService.isTimeRequired(workingData.getSelectedWorkTypeCd()));
 		
 		// 勤務変更申請基本データ
 		return wcBasicData;

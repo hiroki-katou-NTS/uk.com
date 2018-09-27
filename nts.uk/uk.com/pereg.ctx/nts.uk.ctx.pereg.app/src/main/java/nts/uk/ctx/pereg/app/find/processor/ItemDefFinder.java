@@ -111,10 +111,10 @@ public class ItemDefFinder {
 		case SELECTION_RADIO:
 			ReferenceTypes referenceType = dataTypeState.getReferenceTypes();
 			String referenceCode = dataTypeState.getReferenceCode();
-			return ItemValue.createItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(), null, dataType.value,
+			return ItemValue.createItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(),item.getItemName().v(),"", null, dataType.value,
 					referenceType.value, referenceCode);
 		default:
-			return ItemValue.createItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(), null, dataType.value,
+			return ItemValue.createItemValue(item.getPerInfoItemDefId(), item.getItemCode().v(),item.getItemName().v(),"", null, dataType.value,
 					null, null);
 		}
 	}
@@ -210,6 +210,7 @@ public class ItemDefFinder {
 			if(itemCodeValueMap.containsKey(itemDef.itemCode())) {
 				Object value = itemCodeValueMap.get(itemDef.itemCode());
 				itemDef.setValue(value);
+				itemDef.setValueBefore(value);
 			}
 		}
 	}

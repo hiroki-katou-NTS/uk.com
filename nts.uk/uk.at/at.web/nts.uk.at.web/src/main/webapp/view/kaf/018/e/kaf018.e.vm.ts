@@ -82,6 +82,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                         })
 
                         dfd.resolve();
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+                            self.goBackA();        
+                        });    
                     }).always(function() {
                         block.clear();
                     })

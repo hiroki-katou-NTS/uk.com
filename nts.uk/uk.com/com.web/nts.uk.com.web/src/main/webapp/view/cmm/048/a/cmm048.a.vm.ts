@@ -99,6 +99,11 @@ module nts.uk.com.view.cmm048.a {
 
                 // show error message
                 if (Array.isArray(res.errors)) {
+                     // close current error dialog
+                        const buttonCloseDialog = $('#functions-area-bottom>.ntsClose');
+                        if (!nts.uk.util.isNullOrEmpty(buttonCloseDialog)) {
+                            buttonCloseDialog.click();
+                        }
                     nts.uk.ui.dialog.bundledErrors(res);
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

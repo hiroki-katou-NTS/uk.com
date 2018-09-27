@@ -52,7 +52,7 @@ public class JpaLoginRecordGetMemento implements LoginRecordGetMemento {
 	 */
 	@Override
 	public LoginStatus getLoginStatus() {
-		return LoginStatus.valueOf(this.entity.getLockStatus());
+		return LoginStatus.valueOf(this.entity.getLoginStatus());
 	}
 
 	/* (non-Javadoc)

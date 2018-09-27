@@ -223,8 +223,9 @@ module nts.uk.com.view.cps005.a {
                     }
                     let ctrl = $("#category-name-control"),
                         str = ctrl.val();
-
-                    ctrl.focus().val('').val(str);
+                    if($('input.ntsSearchBox.nts-editor.ntsSearchBox_Component:focus').length == 0){
+                         ctrl.focus().val('').val(str);
+                    }
                 });
             });
         }
@@ -277,6 +278,9 @@ module nts.uk.com.view.cps005.a {
                         break;
                     case 5:
                         self.categoryTypeName = getText("Enum_HistoryTypes_DUPLICATE");
+                        break;
+                    case 6:
+                        self.categoryTypeName = getText("Enum_HistoryTypes_CONTINUOUS");
                         break;
                 }
                 self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);

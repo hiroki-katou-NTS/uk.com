@@ -72,6 +72,12 @@ public class DaiPerformanceFunDto
     */
     private int manualFixAutoSetAtr;
     
+    /**
+     * 抽出時にエラーがある場合はエラー参照ダイアログを表示する
+     * 
+     */
+    private int checkErrRefDisp;
+    
     
     public static DaiPerformanceFunDto fromDomain(DaiPerformanceFun domain)
     {
@@ -85,7 +91,8 @@ public class DaiPerformanceFunDto
 						        		domain.getEalyCalcUpdAtr(), 
 						        		domain.getOvertimeCalcUpdAtr(), 
 						        		domain.getLawOverCalcUpdAtr(), 
-						        		domain.getManualFixAutoSetAtr());
+						        		domain.getManualFixAutoSetAtr(),
+						        		domain.getCheckErrRefDisp());
     }
     
 }

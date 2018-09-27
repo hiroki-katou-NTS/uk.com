@@ -92,6 +92,48 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	}
 
 	@Override
+	public List<StartPageLog> findBy(String companyId, List<String> listEmployeeId,
+			GeneralDateTime start, GeneralDateTime end) {
+		if(CollectionUtil.isEmpty(listEmployeeId)){
+			return findBy(companyId, start, end);
+		}
+		List<StartPageLog> res = new ArrayList<>();
+		
+		StringBuilder qb = new StringBuilder("SELECT l FROM SrcdtStartPageLogInfo l WHERE ");
+		qb.append(" l.employeeId IN :employeeIds");
+		qb.append(" AND l.companyId = :cid");
+		qb.append(" AND l.startDateTime >= :start");
+		qb.append(" AND l.startDateTime <= :end");
+		
+		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
+			res.addAll(this.queryProxy().query(qb.toString(), SrcdtStartPageLogInfo.class)
+										.setParameter("cid", companyId)
+										.setParameter("employeeIds", sub)
+										.setParameter("start", start)
+										.setParameter("end", end)
+										.getList(r -> r.toDomain()));
+		});
+		
+		return res;
+	}
+
+	@Override
+	public List<StartPageLog> findBy(String companyId, GeneralDateTime start, GeneralDateTime end) {
+		
+		StringBuilder qb = new StringBuilder("SELECT l FROM SrcdtStartPageLogInfo l WHERE ");
+		qb.append(" l.companyId = :cid");
+		qb.append(" AND l.startDateTime >= :start");
+		qb.append(" AND l.startDateTime <= :end");
+		
+		
+		return this.queryProxy().query(qb.toString(), SrcdtStartPageLogInfo.class)
+				.setParameter("cid", companyId)
+				.setParameter("start", start)
+				.setParameter("end", end)
+				.getList(r -> r.toDomain());
+	}
+
+	@Override
 	public void save(StartPageLog log) {
 		this.commandProxy().insert(SrcdtStartPageLogInfo.from(log));
 	}

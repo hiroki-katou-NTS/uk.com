@@ -28,6 +28,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         prePostSelectedCode: KnockoutObservable<number> = ko.observable(0);
 
+        prePostText: KnockoutObservable<string> = ko.observable('');
+
         appComItems = ko.observableArray([
             { code: 0, text: text('KAF011_19') },
             { code: 1, text: text('KAF011_20') },
@@ -49,6 +51,34 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         displayPrePostFlg: KnockoutObservable<number> = ko.observable(0);
 
         appTypeSet: KnockoutObservable<common.AppTypeSet> = ko.observable(new common.AppTypeSet(null));
+        
+        firstLoad: KnockoutObservable<boolean> = ko.observable(true);
+
+        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            super(listAppMetadata, currentApp);
+            let self = this;
+
+            self.startPage(self.appID());
+
+            self.prePostSelectedCode.subscribe((newCd) => {
+                let prePostItem = _.find(self.prePostTypes(), { 'code': newCd });
+                if (prePostItem) {
+                    self.prePostText(prePostItem.text);
+                }
+            });
+
+            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#recTimeBtn').ntsError("clear");
+                }
+            });
+
+            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
+                if (newWkTimeCD && nts.uk.ui._viewModel) {
+                    $('#absTimeBtn').ntsError("clear");
+                }
+            });
+        }
 
         genSaveCmd(): common.ISaveHolidayShipmentCommand {
             let self = this, returnCmd: common.ISaveHolidayShipmentCommand = {
@@ -81,7 +111,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             if (self.screenModeNew()) {
                 return self.appTypeSet().displayAppReason() != 0;
             } else {
-
                 return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
             }
 
@@ -100,11 +129,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             block.invisible();
             service.update(saveCmd).done(() => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
-                        self.startPage(self.appID());
-                    });
+                    self.startPage(self.appID(), true);
                 });
-
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
 
@@ -151,42 +177,17 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             return appReason;
         }
 
-        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
-            super(listAppMetadata, currentApp);
-            let self = this;
-
-            self.startPage(self.appID());
-
-            self.appReasons.subscribe((appReasons) => {
-                if (appReasons) {
-                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
-                    if (defaultReason) {
-                        self.appReasonSelectedID(defaultReason.reasonID);
-                    }
-                }
-
-            });
-            self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD && nts.uk.ui._viewModel) {
-                    $('#recTimeBtn').ntsError("clear");
-                }
-            });
-
-            self.absWk().wkTimeCD.subscribe((newWkTimeCD) => {
-                if (newWkTimeCD && nts.uk.ui._viewModel) {
-                    $('#absTimeBtn').ntsError("clear");
-                }
-            });
-        }
-
-        startPage(appID: string): JQueryPromise<any> {
+        startPage(appID: string, isReload?: boolean): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred(),
                 appParam = { appID: appID };
             block.invisible();
             service.findById(appParam).done((data) => {
                 self.setDataFromStart(data);
-
+                if (isReload)
+                    self.start(data.application.applicationDate).done(() => {
+                        nts.uk.ui.block.clear();
+                    });
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
@@ -218,26 +219,27 @@ module nts.uk.at.view.kaf011.b.viewmodel {
                 } else {
                     if (data.recApp) {
                         self.setDataApp(self.recWk(), data.recApp, 1);
-
+                        self.absWk(new common.AppItems());
                     }
                     if (data.absApp) {
                         self.setDataApp(self.absWk(), data.absApp, 2);
-
+                        self.recWk(new common.AppItems());
                     }
 
                 }
             }
+            self.firstLoad(false);
         }
 
         setDataCommon(data) {
             let self = this,
                 app = data.application;
             self.appReasons(data.appReasonComboItems || []);
+            self.appReasonSelectedID('');
             self.prePostSelectedCode(app.prePostAtr);
+            self.prePostSelectedCode.valueHasMutated();
             self.showReason(data.applicationSetting.appReasonDispAtr);
-            if (self.appTypeSet().displayAppReason() != 0) {
-                self.reason(data.application.applicationReason);
-            }
+            self.reason(data.application.applicationReason);
         }
 
         setDataBothApp(data) {

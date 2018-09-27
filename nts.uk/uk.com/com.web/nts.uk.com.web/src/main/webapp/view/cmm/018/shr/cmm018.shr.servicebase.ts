@@ -10,7 +10,7 @@ module nts.uk.com.view.cmm018.shr {
             getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
             getNameConfirmType: "workflow/approvermanagement/workroot/find/confirmRootType",
             getWpInfo: "workflow/approvermanagement/workroot/find/wpInfo",
-            getWpName: "screen/com/kcp010/getLoginWkp"
+            getWpLogin: "workflow/approvermanagement/workroot/find-wpInfo-login"
         }
         
         export function updateHistory(data): JQueryPromise<any> {
@@ -42,7 +42,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //get wpName
         export function getWpName(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", paths.getWpName);
+            return nts.uk.request.ajax("com", paths.getWpLogin);
         }
     } 
 }

@@ -1,21 +1,15 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class MasterApproverRootOutput {
-	
-	CompanyApprovalInfor comRootInfor;
-	/**
-	 * workplaceId, approver of workplace
-	 */
-	Map<String, WorkplaceApproverOutput> worplaceRootInfor;
-	/**
-	 * employee Id, approver of employee
-	 */
-	Map<String, PersonApproverOutput> personRootInfor;
+	/** company */
+	private CompanyApprovalInfor comRootInfor;
+	/** workplace */
+	private MasterWkpOutput wkpRootOutput;
+	/** employee */
+	private MasterEmployeeOutput empRootOutput;
 }

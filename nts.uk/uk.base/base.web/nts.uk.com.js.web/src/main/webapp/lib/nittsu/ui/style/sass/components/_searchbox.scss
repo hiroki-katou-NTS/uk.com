@@ -1,5 +1,6 @@
 .nts-searchbbox-wrapper{
 	margin-bottom: 15px;
+	white-space: nowrap;
 	
 	input.ntsSearchBox {
 	    box-sizing: border-box;
@@ -24,6 +25,7 @@
 		vertical-align: top;
 		margin-left: 5px;
 		min-width: 65px;
+		padding: 3px;
 	}
 	
 	div.input-wrapper {

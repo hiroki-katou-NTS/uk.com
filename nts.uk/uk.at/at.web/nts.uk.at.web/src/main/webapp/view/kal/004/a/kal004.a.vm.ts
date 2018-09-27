@@ -46,7 +46,7 @@ module nts.uk.at.view.kal004.a.model {
 
             self.alarmHeader = ko.observableArray([
                 { headerText: getText('KAL004_7'), key: 'alarmPatternCD', width: 50 },
-                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175 },
+                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175,formatter: _.escape },
             ]);
             self.alarmCode = ko.observable('');
             self.alarmName = ko.observable('');

@@ -1,3 +1,15 @@
+    // blockui all ajax request on layout
+    $(document)
+        .ajaxStart(() => {
+            $.blockUI({
+                message: null,
+                overlayCSS: { opacity: 0.1 }
+            });
+        }).ajaxStop(() => {
+            $.unblockUI();
+        });
+
+
 module nts.uk.com.view.cas001.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import errors = nts.uk.ui.errors;
@@ -5,23 +17,25 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
     export class ScreenModel {
         categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
         currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
         isCanceled: boolean;
+        selectedList:  KnockoutObservable<any>  = ko.observableArray([]);;
 
         constructor() {
             var self = this;
-
-            self.start();
+//            self.start();
         }
 
         start(): JQueryPromise<any> {
+            
             let self = this,
                 dfd = $.Deferred(),
                 role: IPersonRole = ko.toJS(self.currentRole);
-
+            block.grayout();
             self.categoryList.removeAll();
             service.getAllCategory(role.roleId).done(function(data: Array<any>) {
                 if (data.length > 0) {
@@ -34,14 +48,17 @@ module nts.uk.com.view.cas001.d.viewmodel {
                     })));
                     dfd.resolve();
                 }
+            }).always(() => {
+                   block.clear(); 
             });
             return dfd.promise();
         }
 
         creatCategory() {
             let self = this,
-                role: IPersonRole = ko.toJS(self.currentRole);
-            self.update(self.categoryList(), role.roleId);
+                role: IPersonRole = ko.toJS(self.currentRole),
+                category: Array<any> = $("#grid").igGrid("option","dataSource");
+            self.update(category, role.roleId);
 
         }
 

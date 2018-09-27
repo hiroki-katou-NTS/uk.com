@@ -57,12 +57,13 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
-									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
+									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime), employeeID);
 							if(overtimeCheckResult.getErrorCode() != 0){
 								breakTime.setErrorCode(overtimeCheckResult.getErrorCode());
 							}
 							// 03-02_実績超過チェック
-							breakTime = this.holidayThreeProcess.checkCaculationActualExcess(prePostAtr, appType, employeeID, companyID, appDate, breakTime, siftCD,entry.getValue().getCalTime());
+							breakTime = this.holidayThreeProcess.checkCaculationActualExcess(prePostAtr, appType, employeeID, companyID, appDate, breakTime, 
+									siftCD,entry.getValue().getCalTime(), true);
 						}
 					}
 			}
@@ -138,12 +139,13 @@ public class HolidaySixProcessImpl implements HolidaySixProcess{
 						}else if(entry.getValue().getCalTime() != null && entry.getValue().getCalTime() > 0){
 							// 03-01_事前申請超過チェック
 							OvertimeCheckResult overtimeCheckResult = this.holidayThreeProcess.preApplicationExceededCheck(companyID,
-									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime));
+									appDate, inputDate, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),AttendanceType.BREAKTIME.value, convert(breakTime), employeeID);
 							if(overtimeCheckResult.getErrorCode() != 0){
 								breakTime.setErrorCode(overtimeCheckResult.getErrorCode());
 							}
 							// 03-02-a_実績超過チェック（承認者）
-							breakTime = this.holidayThreeProcess.checkCaculationActualExcessForApprover(prePostAtr, appType, employeeID, companyID, appDate, breakTime, siftCD,entry.getValue().getCalTime());
+							breakTime = this.holidayThreeProcess.checkCaculationActualExcessForApprover(prePostAtr, appType, employeeID, companyID, appDate, breakTime, 
+									siftCD,entry.getValue().getCalTime(), true);
 						}
 					}
 			}

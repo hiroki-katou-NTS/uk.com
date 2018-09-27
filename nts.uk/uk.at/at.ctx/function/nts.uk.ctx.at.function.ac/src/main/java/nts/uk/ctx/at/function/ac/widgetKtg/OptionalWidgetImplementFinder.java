@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ac.widgetKtg;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,9 @@ import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
 import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GetGrantHdTblSetPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GrantHdTblSetExport;
+import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetExport;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -95,6 +99,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	
 	@Inject
 	private GetRsvLeaNumCriteriaDate getRsvLeaNumCriteriaDate;
+	
+	@Inject
+	private GetGrantHdTblSetPub getGrantHdTblSetPub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -187,7 +194,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		}
 		
 		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(), 
-																		c.getGrantDays().v(), 
+																		c.getGrantDays().v(),
 																		c.getTimes().v(), 
 																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0, 
 																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0, 
@@ -238,10 +245,10 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		
 		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
 				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(), 
-																c.getEarly1()==1?true:false, 
 																c.getLate1()==1?true:false, 
-																c.getEarly2()==1?true:false, 
-																c.getLate2()==1?true:false)).collect(Collectors.toList());
+																c.getEarly1()==1?true:false, 
+																c.getLate2()==1?true:false, 
+																c.getEarly2()==1?true:false)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -251,14 +258,13 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	}
 
 	@Override
-	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, DatePeriod datePeriod) {
-		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, datePeriod.end());
+	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date) {
+		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, date);
 		 
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
-			GeneralDate grantDay = GeneralDate.today();
-			grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			GeneralDate grantDay = rsvDate.getReserveLeaveInfo().getYmd();
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
@@ -269,8 +275,17 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			}
 			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
 		}else {
-			return new KTGRsvLeaveInfoImport(0.0, 0.0, GeneralDate.today());
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
 		}
+	}
+
+	@Override
+	public int getGrantHdTblSet(String companyId, String employeeId) {
+		Optional<GrantHdTblSetExport> GrantHdTblSetImport = this.getGrantHdTblSetPub.algorithm(companyId, employeeId);
+		if(GrantHdTblSetImport.isPresent()) {
+			return GrantHdTblSetImport.get().getCalculationMethod() == CalculationMethod.WORKING_DAY ? 0 : 1;
+		}
+		return 3;
 	}
 
 	

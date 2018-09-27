@@ -27,8 +27,6 @@ module nts.uk.at.view.kal003.a.tab {
                     self.listExtraResultMonthly()[i].rowId(i + 1);
                 }
             });
-            
-            self.dataItems = ko.observableArray([]);
             //
             self.category = ko.observable(model.CATEGORY.MONTHLY);
             
@@ -118,6 +116,7 @@ module nts.uk.at.view.kal003.a.tab {
             let self = this;
 //            let sendData = ko.toJS(extraResultMonthly);
 //            sendData = { data: shareutils.convertArrayOfExtraResultMonthlyToJS(sendData, extraResultMonthly), category: self.category() };
+             $(".nameAlarm").ntsError("clear");
             let sendData = { data: ko.toJS( extraResultMonthly), category: self.category() };
 
             windows.setShared('inputKal003b', sendData);
@@ -148,13 +147,17 @@ module nts.uk.at.view.kal003.a.tab {
                     block.clear();
                     return;
                 });
-            }
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 || s) {
+            } 
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length || _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 ) {
                 block.clear();
+                nts.uk.ui.errors.clearAll();
                 return;
             }
             
-            self.listExtraResultMonthly.remove(function(item) { return item.useAtr(); })
+            self.listExtraResultMonthly.remove(function(item) { 
+                nts.uk.ui.errors.clearAll();
+                return item.useAtr(); 
+            })
             nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listExtraResultMonthly().length; i++) {
                 self.listExtraResultMonthly()[i].rowId(i + 1);
