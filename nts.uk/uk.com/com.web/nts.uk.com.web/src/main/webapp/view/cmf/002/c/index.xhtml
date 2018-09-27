@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--C1_1 新規-->
-				<button tabindex="1" data-bind="click: settingNewMode, enable: !isNewMode()">#{i18n.getText('CMF002_71')}</button>
+				<button tabindex="1" data-bind="click: createNew, enable: !isNewMode()">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
 				<button tabindex="2" data-bind="click: registerOutputItem, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->

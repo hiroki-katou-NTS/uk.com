@@ -242,9 +242,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                let ctgItemDataCustomList = _.sortBy(res.ctgItemDataCustomList, ["itemName"]);
-
-                self.listOutputCondition(ctgItemDataCustomList);
+                self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
 
                 $(".createExOutText").focus();
@@ -380,9 +378,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isAlreadySetting: boolean;
     }
     class OutputCondition {
+        seriNum: number;
         itemName: string;
         condition: string;
-        constructor(itemName: string, condition: string) {
+        constructor(seriNum: number, itemName: string, condition: string) {
+            this.seriNum = seriNum;
             this.itemName = itemName;
             this.condition = condition;
         }
