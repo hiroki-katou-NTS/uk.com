@@ -278,11 +278,13 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			// 休出かどうかの判断
 			boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId,
 					WorkInfo.getRecordInfo().getWorkTypeCode().v());
-			String weekdayHolidayClassification = null;
+			int weekdayHolidayClassification = 0;
 			if (!checkHolidayOrNot) {
-				weekdayHolidayClassification = "平日";
+				// 平日
+				weekdayHolidayClassification = 0;
 			} else {
-				weekdayHolidayClassification = "休日";
+				// 休日
+				weekdayHolidayClassification = 1;
 			}
 			if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {
 				Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
@@ -326,13 +328,13 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	}
 
 	// フレックス勤務設定から休憩時間帯を確認する
-	public boolean confirmInterFlexWorkSetting(String companyId, String weekdayHolidayClassification,
+	public boolean confirmInterFlexWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 		Optional<FlexWorkSetting> FlexWorkSettingOptional = this.flexWorkSettingRepo.find(companyId, workTimeCode);
 		FlexWorkSetting flexWorkSetting = FlexWorkSettingOptional.get();
 		List<DeductionTime> lstTimezone = null;
 		boolean fixRestTime = true;
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone = flexWorkSetting.getLstHalfDayWorkTimezone();
 
 			switch (checkWorkDay.value) {
@@ -393,7 +395,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 	// 時差勤務設定から休憩時間帯を確認する
 	public boolean ConfirmInterTimezoneStaggeredWorkSetting(String companyId, String employeeID,
-			GeneralDate processingDate, String empCalAndSumExecLogID, String weekdayHolidayClassification,
+			GeneralDate processingDate, String empCalAndSumExecLogID, int weekdayHolidayClassification,
 			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
 			WorkStyle checkWorkDay) {
 
@@ -449,7 +451,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					for (EmployeeDailyPerError employeeDailyPerError : employeeDailyPerErrors) {
 						Optional<ErrorAlarmWorkRecord> errorAlarmWorkRecordOptional = this.errorAlarmWorkRecordRepo
 								.findByCode(employeeDailyPerError.getErrorAlarmWorkRecordCode().v());
-						if (errorAlarmWorkRecordOptional.isPresent()) {
+						if (errorAlarmWorkRecordOptional.isPresent() && empCalAndSumExecLogID != null) {
 							ErrorAlarmWorkRecord errorAlarmWorkRecord = errorAlarmWorkRecordOptional.get();
 
 							ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
@@ -466,7 +468,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					List<DiffTimeHalfDayWorkTimezone> lstHalfDayWorkTimezones = diffTimeWorkSetting
 							.getHalfDayWorkTimezones();
 					List<DeductionTime> timezones = null;
-					if ("平日".equals(weekdayHolidayClassification)) {
+					if (weekdayHolidayClassification == 0) {
 						switch (checkWorkDay.value) {
 						case 3:// 1日出勤系
 							for (DiffTimeHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezones) {
@@ -548,14 +550,14 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	}
 
 	// 流動勤務設定から休憩時間帯を確認する
-	public boolean confirmIntermissionTimeZone(String companyId, String weekdayHolidayClassification,
+	public boolean confirmIntermissionTimeZone(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
 		List<DeductionTime> lstTimezone;
 		Optional<FlowWorkSetting> FlowWorkSettingoptional = this.flowWorkSettingRep.find(companyId, workTimeCode);
 		FlowWorkSetting flowWorkSetting = FlowWorkSettingoptional.get();
 
 		boolean fixRestTime;
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			fixRestTime = flowWorkSetting.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime();
 			lstTimezone = flowWorkSetting.getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone()
 					.getTimezones();
@@ -572,7 +574,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	}
 
 	// 固定勤務設定から休憩時間帯を確認する
-	public boolean CheckBreakTimeFromFixedWorkSetting(String companyId, String weekdayHolidayClassification,
+	public boolean CheckBreakTimeFromFixedWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 
 		List<DeductionTime> lstTimezone = new ArrayList<DeductionTime>();
@@ -581,7 +583,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		// check null?
 		FixedWorkSetting fixedWorkSetting = FixedWorkSettingOptional.get();
 		List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone = fixedWorkSetting.getLstHalfDayWorkTimezone();
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			switch (checkWorkDay.value) {
 			case 3:// 1日出勤系
 				for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
