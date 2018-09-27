@@ -1384,21 +1384,36 @@ module nts.layout {
                 ],
                 initCDL008Data = (data: IItemData) => {
                     if (location.href.indexOf('/view/cps/002') > -1) {
-                        setShared('inputCDL008', {
-                            selectedCodes: [ko.toJS(data.value)],
-                            baseDate: ko.toJS((__viewContext || {
+                        let baseDateParam = ko.toJS((__viewContext || {
                                 viewModel: {
                                     currentEmployee: {
                                         hireDate: new Date()
                                     }
                                 }
-                            }).viewModel.currentEmployee).hireDate,
-                            isMultiple: false,
-                            selectedSystemType: 5,
-                            isrestrictionOfReferenceRange: false,
-                            showNoSelection: !data.required,
-                            isShowBaseDate: false
-                        }, true);
+                            }).viewModel.currentEmployee).hireDate;
+                        
+                        if (__viewContext.viewModel.wrkPlaceStartDate()) {
+                            baseDateParam = __viewContext.viewModel.wrkPlaceStartDate();
+                        }
+                        
+                        if (!!CS00017_IS00082) {
+                            let startValue = CS00017_IS00082.data.value();
+                            baseDateParam = startValue;
+                        }
+                        if (_.isNil(baseDateParam) || !moment.utc(baseDateParam, "YYYYMMDD").isValid()) {
+                            setShared('inputCDL008', null);
+                        } else {
+                        
+                            setShared('inputCDL008', {
+                                selectedCodes: [ko.toJS(data.value)],
+                                baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
+                                isMultiple: false,
+                                selectedSystemType: 5,
+                                isrestrictionOfReferenceRange: false,
+                                showNoSelection: !data.required,
+                                isShowBaseDate: false
+                            }, true);
+                        }
                     } else if (location.href.indexOf('/view/cps/001') > -1) {
                         if (!!CS00017_IS00082) {
                             let v = CS00017_IS00082.data.value();
@@ -1417,19 +1432,19 @@ module nts.layout {
                                 setShared('inputCDL008', null);
                             }
                         } else {
-                            if (__viewContext.viewModel.layout.mode() == 'layout') {
+//                            if (__viewContext.viewModel.layout.mode() == 'layout') {
                                 setShared('inputCDL008', {
                                     selectedCodes: [data.value],
-                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
+                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
                                     isMultiple: false,
                                     selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                                     isrestrictionOfReferenceRange: false,
                                     showNoSelection: !data.required,
                                     isShowBaseDate: false
                                 }, true);
-                            } else {
-                                setShared('inputCDL008', null);
-                            }
+//                            } else {
+//                                setShared('inputCDL008', null);
+//                            }
                         }
                     }
                 };

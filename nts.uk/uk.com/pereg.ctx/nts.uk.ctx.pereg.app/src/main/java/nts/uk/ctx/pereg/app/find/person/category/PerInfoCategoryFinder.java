@@ -14,6 +14,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -258,8 +259,27 @@ public class PerInfoCategoryFinder {
 				.mapCategoryIdAndLstItemDf(lstCtgId);
 
 		List<PerInfoCtgShowDto> categoryList = lstCtg.stream().map(p -> {
+			
 			List<Object[]> lstItemDfGroupByCtgId = mapCategoryIdAndLstItemDf.get(p.getPersonInfoCategoryId());
-			if (lstItemDfGroupByCtgId == null || CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
+			
+			if(p.getCategoryCode().toString().equals("CS00001")) {
+				Optional<Object[]> itemEmpCode = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00001")).findFirst();
+				if(itemEmpCode.isPresent()) {
+					lstItemDfGroupByCtgId.remove(itemEmpCode.get());
+				}
+			}else if(p.getCategoryCode().toString().equals("CS00002")) {
+				Optional<Object[]> itemPersonName = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00003")).findFirst();
+				if(itemPersonName.isPresent()) {
+					lstItemDfGroupByCtgId.remove(itemPersonName.get());
+				}
+			}else if(p.getCategoryCode().toString().equals("CS00003")) {
+				Optional<Object[]> itemJobEntryDate = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00020")).findFirst();
+				if(itemJobEntryDate.isPresent()) {
+					lstItemDfGroupByCtgId.remove(itemJobEntryDate.get());
+				}
+			}
+			
+			if (CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
 				return null;
 			}
 			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
