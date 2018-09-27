@@ -118,7 +118,7 @@ public class ClosureHistoryAddCommand {
 		@Override
 		public ClosureDate getClosureDate() {
 			if (command.getClosureHistoryAdd().getClosureDate() == 0) {
-				return new ClosureDate(0, true);
+				return new ClosureDate(1, true);
 			}
 			return new ClosureDate(command.getClosureHistoryAdd().getClosureDate(), false);
 		}
