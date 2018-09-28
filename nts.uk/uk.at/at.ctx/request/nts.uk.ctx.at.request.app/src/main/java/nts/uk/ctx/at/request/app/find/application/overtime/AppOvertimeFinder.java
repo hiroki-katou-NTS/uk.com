@@ -244,7 +244,7 @@ public class AppOvertimeFinder {
 		
 		// 6.計算処理 : 
 		//表示しない
-		if(isSettingNoDisplay(appCommonSettingOutput)){
+		if(!isSettingDisplay(appCommonSettingOutput)){
 			//休憩時間帯を取得する
 			BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID,workTypeCode, siftCD);
 			if (!CollectionUtil.isEmpty(breakTime.getLstTimezone())) {
@@ -311,11 +311,11 @@ public class AppOvertimeFinder {
 		
 	}
 
-	private boolean isSettingNoDisplay(AppCommonSettingOutput appCommonSettingOutput) {
+	private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
 		return appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()
-				.getBreakInputFieldDisp().equals(false)
+				.getBreakInputFieldDisp().equals(true)
 				&& appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get()
-						.getTimeCalUse().equals(UseAtr.NOTUSE);
+						.getTimeCalUse().equals(UseAtr.USE);
 
 	}
 
