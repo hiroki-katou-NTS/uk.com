@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetComm
 import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateDailyLogStateCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
@@ -40,6 +41,9 @@ public class ImplementationResultWebService extends WebService {
 	
 	@Inject
 	private UpdateExecutionTimeCommandHandler updateExecutionTimeCommandHandler;
+	
+	@Inject
+	private UpdateDailyLogStateCommandHandler updateDailyLogStateCommandHandler;
 
 	@POST
 	@Path("addEmpCalSumAndTarget")
@@ -64,6 +68,12 @@ public class ImplementationResultWebService extends WebService {
 	@Path("updateExcutionTime")
 	public void updateExcutionTime(UpdateExecutionTimeCommand command) {
 		this.updateExecutionTimeCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updateLogState")
+	public void updateLogState(String empCalAndSumExecLogID) {
+		this.updateDailyLogStateCommandHandler.handle(empCalAndSumExecLogID);
 	}
 
 }

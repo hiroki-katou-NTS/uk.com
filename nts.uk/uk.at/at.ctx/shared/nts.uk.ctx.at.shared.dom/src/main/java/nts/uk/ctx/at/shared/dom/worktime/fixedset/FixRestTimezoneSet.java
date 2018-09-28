@@ -119,14 +119,21 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject {
 							 					.collect(Collectors.summingInt(tc -> tc)));
 	}
 
-	public AttendanceTime calcTotalTimeDuplicatedAttLeave(List<TimeSpanForCalc> timeLeavingWorks) {
+	public AttendanceTime calcTotalTimeDuplicatedAttLeave(
+			List<TimeSpanForCalc> timeLeavingWorks, List<TimeSpanForCalc> workSpans) {
+		
 		int returnValue = 0;
 		for(TimeSpanForCalc timeSpan : timeLeavingWorks) {
 			if(timeSpan.getStart() != null && timeSpan.getEnd() != null) {
-				returnValue += this.lstTimezone.stream()
+				for(TimeSpanForCalc workSpan : workSpans) {
+					if(workSpan.getStart() != null && workSpan.getEnd() != null) {
+						returnValue += this.lstTimezone.stream()
 								.filter(tc -> tc.getDuplicatedWith(timeSpan.getSpan()).isPresent())
+								.filter(tc -> tc.getDuplicatedWith(workSpan.getSpan()).isPresent())
 								.map(tc -> tc.getDuplicatedWith(timeSpan.getSpan()).get().lengthAsMinutes())
 								.collect(Collectors.summingInt(tc -> tc));
+					}
+				}
 			}
 		}
 		return new AttendanceTime(returnValue);
