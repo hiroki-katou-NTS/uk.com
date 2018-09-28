@@ -346,7 +346,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         subTimeEnd: any;
         subClockStart: any;
         subClockEnd: any;
-        
+
         constructor(categoryId: string, categoryItemNo: number, seriNum: number,
             conditionSettingCd: string, conditionSymbol: number) {
             let self = this;
@@ -472,6 +472,9 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         formatSearchCodeList(joinCode: string) {
             let self = this;
+            if (joinCode == null) {
+                return;
+            }
             if (self.dataType == shareModel.ITEM_TYPE.TIME || self.dataType == shareModel.ITEM_TYPE.INS_TIME) {
                 let parseCode = [];
                 let codes = joinCode.split(',');
@@ -480,7 +483,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 })
                 this.joinedSearchCodeList(parseCode.join(', '));
             } else {
-                this.joinedSearchCodeList(self.joinCode);
+                this.joinedSearchCodeList(joinCode);
             }
         }
 
@@ -751,7 +754,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             this.parsedValSearchCodeList = [];
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
- 
+
                 // 対象の値の桁数が「検索コード」の桁数より大きい場合
                 if (!self.searchCdValidator.validate(searchCode).isValid) {
                     self.setError(control, "Msg_1346");
@@ -1003,13 +1006,13 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             cmd.searchNum = dto.searchNum();
             cmd.searchNumEndVal = dto.searchNumEndVal();
             cmd.searchNumStartVal = dto.searchNumStartVal();
-            if(dto.searchChar() != ""){
+            if (dto.searchChar() != "") {
                 cmd.searchChar = dto.searchChar();
             }
-            if(dto.searchCharEndVal() != ""){
+            if (dto.searchCharEndVal() != "") {
                 cmd.searchCharEndVal = dto.searchCharEndVal();
             }
-            if(dto.searchCharStartVal() != ""){
+            if (dto.searchCharStartVal() != "") {
                 cmd.searchCharStartVal = dto.searchCharStartVal();
             }
             if (dto.searchDate() != null) {
