@@ -53,7 +53,7 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public String getInDayTimeWithFormat(){
-		return this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
+		return (int) this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
 	}
 	
 	public String getFullText() {
@@ -62,8 +62,9 @@ public class TimeDurationFormatExtend {
 		return this.dayAttr().description + this.getInDayTimeWithFormat();
 	}
 	
-	public int hour() {
-		return isNegative()? 24 - Math.abs(rawHour()) % 24 : Math.abs(rawHour()) % 24;
+	public double hour() {
+		double dVal = value;
+		return isNegative()? 24 - Math.ceil(Math.abs(dVal)/60) : Math.floor(dVal / 60) % 24;
 	}
 	
 	public int rawHour(){
@@ -71,6 +72,6 @@ public class TimeDurationFormatExtend {
 	}
 	
 	public int minute() {
-		return Math.abs(value) % 60;
+		return isNegative()? (60 + value % 60) % 60 : value % 60;
 	}
 }
