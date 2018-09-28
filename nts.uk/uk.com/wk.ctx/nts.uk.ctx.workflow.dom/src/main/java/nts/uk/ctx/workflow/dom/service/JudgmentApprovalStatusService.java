@@ -89,5 +89,5 @@ public interface JudgmentApprovalStatusService {
 	 * @param approvalRootState
 	 * @return
 	 */
-	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState);
+	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID);
 }

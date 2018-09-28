@@ -8,4 +8,6 @@ public class DailyPerformanceCodeDto {
 	private String dailyPerformanceFormatCode;
 	
 	private String dailyPerformanceFormatName;
+	
+	private boolean isSetFormatToDefault;
 }

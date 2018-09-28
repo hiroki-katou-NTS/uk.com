@@ -9,11 +9,12 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddExcoutRoundingCommand;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddExcoutRoundingCommandHandler;
+import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.RoundingMonthCommand;
+import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.RoundingMonthCommandHandler;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.RoundingMonthDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.RoundingMonthFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeFinder;
-import nts.uk.ctx.at.shared.dom.monthly.roundingset.TimeRoundingOfExcessOutsideTime;
 
 /**
  * Web service for rounding month
@@ -25,6 +26,9 @@ import nts.uk.ctx.at.shared.dom.monthly.roundingset.TimeRoundingOfExcessOutsideT
 public class RoundingMonthWebService extends WebService{
 	@Inject
 	private RoundingMonthFinder finder;
+	
+	@Inject
+	private RoundingMonthCommandHandler roundingMonthCommandHandler;
 	
 	/**
 	 * Add excout rounding command handler
@@ -42,6 +46,12 @@ public class RoundingMonthWebService extends WebService{
 	@POST
 	public List<RoundingMonthDto> findByCid(String itemTimeId) {
 		return finder.findAllRounding(itemTimeId);
+	}
+	
+	@Path("updateRoundingMonth")
+	@POST
+	public void updateRoundingMonth(List<RoundingMonthCommand> command) {
+		this.roundingMonthCommandHandler.handle(command);
 	}
 	
 	

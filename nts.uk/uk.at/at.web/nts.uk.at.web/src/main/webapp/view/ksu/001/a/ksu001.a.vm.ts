@@ -434,7 +434,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-                $("#ccg001-btn-search-drawer").trigger("click");
+                setTimeout(() =>{$("#ccg001-btn-search-drawer").trigger("click");}, 500);
             });
         }
 
@@ -886,7 +886,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             alertError({ messageId: 'Msg_435' });
                         };
                     }
-
 
                     return true;
                 });

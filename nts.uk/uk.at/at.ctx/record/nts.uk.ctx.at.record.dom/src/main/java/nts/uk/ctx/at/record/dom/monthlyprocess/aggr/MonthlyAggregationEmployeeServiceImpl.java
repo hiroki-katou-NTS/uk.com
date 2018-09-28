@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
@@ -38,8 +39,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -67,6 +68,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** リポジトリ：月別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;
+	/** リポジトリ：週別実績の勤怠時間 */
+	@Inject
+	private AttendanceTimeOfWeeklyRepository attendanceTimeWeekRepo;
 	/** リポジトリ：月別実績の任意項目 */
 	@Inject
 	private AnyItemOfMonthlyRepository anyItemRepository;
@@ -112,14 +116,14 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				empCalAndSumExecLogID, executionType, companySets);
 		
 		// 出力したデータに関連するキー値でストアドプロシージャを実行する
-		for (val aggrPeriod : aggrStatus.getOutAggrPeriod()){
-			this.storedProcedureProcess.monthlyProcessing(
-					companyId,
-					employeeId,
-					aggrPeriod.getYearMonth(),
-					aggrPeriod.getClosureId(),
-					aggrPeriod.getClosureDate());
-		}
+//		for (val aggrPeriod : aggrStatus.getOutAggrPeriod()){
+//			this.storedProcedureProcess.monthlyProcessing(
+//					companyId,
+//					employeeId,
+//					aggrPeriod.getYearMonth(),
+//					aggrPeriod.getClosureId(),
+//					aggrPeriod.getClosureDate());
+//		}
 		
 		return aggrStatus.getState();
 	}
@@ -254,6 +258,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				this.attendanceTimeRepository.remove(
 						employeeId, yearMonth, oldClosureId, oldClosureDate);
 				
+				if (this.attendanceTimeWeekRepo.findByClosure(
+						employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
+					this.attendanceTimeWeekRepo.removeByClosure(
+							employeeId, yearMonth, oldClosureId, oldClosureDate);
+				}
+				
 				if (this.anyItemRepository.findByMonthlyAndClosure(
 						employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
 					this.anyItemRepository.removeByMonthlyAndClosure(
@@ -274,9 +284,25 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			if (value.getAttendanceTime().isPresent()){
 				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get(), value.getAffiliationInfo() );
 			}
-			for (val anyItem : value.getAnyItemList()){
-				this.anyItemRepository.persistAndUpdate(anyItem);
+			if (value.getAttendanceTimeWeeks().size() > 0){
+				for (val attendanceTimeWeek : value.getAttendanceTimeWeeks()){
+					this.attendanceTimeWeekRepo.persistAndUpdate(attendanceTimeWeek);
+				}
 			}
+//			for (val anyItem : value.getAnyItemList()){
+//				this.anyItemRepository.persistAndUpdate(anyItem);
+//			}
+			// 出力したデータに関連するキー値でストアドプロシージャを実行する
+			/** ストアドといってもJava上で処理です　*/
+			this.storedProcedureProcess.monthlyProcessing(
+					companyId,
+					employeeId,
+					aggrPeriod.getYearMonth(),
+					aggrPeriod.getClosureId(),
+					aggrPeriod.getClosureDate(),
+					value.getAttendanceTime(),
+					value.getAnyItemList());
+			
 			if (value.getAgreementTime().isPresent()){
 				this.agreementTimeRepository.persistAndUpdate(value.getAgreementTime().get());
 			}

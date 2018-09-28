@@ -141,6 +141,7 @@ div#list-box_b1 {
 }
 .ui-iggrid-header.ui-widget-header{
 	overflow :visible;
+	text-overflow : ellipsis;
 }
 
  .default-overflow{
@@ -148,5 +149,30 @@ div#list-box_b1 {
 }
 
 .overflow-show{
-	overflow :visible;
+	overflow :visible !important;
+}
+
+#igGridLog_tooltips.ui-tooltip {
+	border: none;
+	background: none;
+	box-shadow: none;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+#master-wrapper div#contents-area {  
+    overflow-y: hidden !important;
+}
+
+#igGridLog_tooltips.ui-tooltip .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+.ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
+	z-index: 99999999;
 }

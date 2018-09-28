@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.dom.weekly;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPremiumTimeWeekOfIrregular;
@@ -19,7 +23,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 週別の通常変形時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class RegAndIrgTimeOfWeekly implements Cloneable {
@@ -29,6 +33,8 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	
 	/** 週割増処理期間 */
 	private DatePeriod weekPremiumProcPeriod;
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -38,6 +44,7 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 		this.weeklyTotalPremiumTime = new AttendanceTimeMonth(0);
 		
 		this.weekPremiumProcPeriod = new DatePeriod(GeneralDate.min(), GeneralDate.min());
+		this.errorInfos = new ArrayList<>();
 	}
 	
 	/**
@@ -98,6 +105,9 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 			
 			// 加算設定　取得　（割増用）
 			val addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByReg.getHolidayAdditionMap());
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
 			
 			// 「週割増・月割増を求める」を取得する
 			boolean isAskPremium = false;
@@ -119,6 +129,9 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 
 			// 加算設定　取得　（割増用）
 			val addSet = GetAddSet.get(workingSystem, PremiumAtr.PREMIUM, settingsByDefo.getHolidayAdditionMap());
+			if (addSet.getErrorInfo().isPresent()){
+				this.errorInfos.add(addSet.getErrorInfo().get());
+			}
 			
 			// 変形労働勤務の週割増時間を集計する
 			this.aggregateWeeklyPremiumTimeOfIrregular(companyId, employeeId, this.weekPremiumProcPeriod,

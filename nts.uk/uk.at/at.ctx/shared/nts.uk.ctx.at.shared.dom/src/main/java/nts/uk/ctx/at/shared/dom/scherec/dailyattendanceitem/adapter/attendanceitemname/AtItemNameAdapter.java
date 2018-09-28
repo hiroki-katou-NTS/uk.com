@@ -11,4 +11,6 @@ public interface AtItemNameAdapter {
 	List<AttItemName> getNameOfDailyAttendanceItem(List<DailyAttendanceItem> attendanceItems);
 
 	List<AttItemName> getNameOfMonthlyAttendanceItem(List<MonthlyAttendanceItem> attendanceItems);
+	
+	List<AttItemName> getNameOfAttdItemByType(TypeOfItemImport type);
 }

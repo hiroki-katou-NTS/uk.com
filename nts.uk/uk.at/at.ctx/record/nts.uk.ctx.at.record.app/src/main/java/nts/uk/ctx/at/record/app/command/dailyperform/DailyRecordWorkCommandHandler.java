@@ -392,7 +392,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			domainDailyNew = calcService.calculate(domainDailyNew);
 
 		}
-		if (mode == 0) {
+		if (mode == 0 && month.getNeedCallCalc()) {
 			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew,
 					(month == null || !month.getDomainMonth().isPresent()) ? domainDailyNew : Collections.emptyList(),
 					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(),
@@ -435,8 +435,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		executorService.submit(task);
 	}
 
-	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld,
+	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeDailyPerError> lstError,
 			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
+		
+		employeeErrorRepo.removeParam(toMapParam(commandNew));
 
 		List<IntegrationOfDaily> domainDailyNew = convertToDomain(commandNew);
 
@@ -444,12 +446,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 		updateDomainAfterCalc(domainDailyNew, null);
 
-		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
-				.collect(Collectors.toList()));
+		registerErrorWhenCalc(lstError);
 
-		if (mode == 0) {
-			updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
+		if (mode == 0 && month.getNeedCallCalc()) {
+			List<IntegrationOfMonthly> lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
 					month == null ? Optional.empty() : month.getDomainMonth(), month);
+			updateAllDomainMonthService.insertUpdateAll(lstMonthDomain);
 		}
 
 		ExecutorService executorService = Executors.newFixedThreadPool(1);

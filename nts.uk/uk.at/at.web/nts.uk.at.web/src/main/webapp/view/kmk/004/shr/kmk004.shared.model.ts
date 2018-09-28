@@ -279,8 +279,8 @@ module nts.uk.at.view.kmk004.shared.model {
             self.flexMonthly = ko.observableArray<FlexMonth>([]);
             for (let i = 1; i < 13; i++) {
                 let flm = new FlexMonth();
-                flm.speName(nts.uk.resource.getText("KMK004_21", [i]));
-                flm.staName(nts.uk.resource.getText("KMK004_22", [i]));
+                flm.speName(nts.uk.resource.getText("KMK004_21", [i+nts.uk.resource.getText("KMK004_13")]));
+                flm.staName(nts.uk.resource.getText("KMK004_22", [i+nts.uk.resource.getText("KMK004_13")]));
                 flm.month(i);
                 flm.statutoryTime(0);
                 flm.specifiedTime(0);
@@ -377,8 +377,8 @@ module nts.uk.at.view.kmk004.shared.model {
             for (let i = 1; i < 13; i++) {
                 let m = new Monthly();
                 m.month(i);
-                m.normal(nts.uk.resource.getText("KMK004_14", [i]));
-                m.deformed(nts.uk.resource.getText("KMK004_26", [i]));
+                m.normal(nts.uk.resource.getText("KMK004_14", [i+nts.uk.resource.getText("KMK004_13")]));
+                m.deformed(nts.uk.resource.getText("KMK004_26", [i+nts.uk.resource.getText("KMK004_13")]));
                 self.monthly.push(m);
             }
         }
@@ -965,8 +965,8 @@ module nts.uk.at.view.kmk004.shared.model {
                 let m = new MonthlyTime();
                 m.month(i);
                 m.time(0);
-                m.monthMsgNormal = nts.uk.resource.getText("KMK004_14", [i]);
-                m.monthMsgDefor = nts.uk.resource.getText("KMK004_26", [i]);
+                m.monthMsgNormal = nts.uk.resource.getText("KMK004_14", [i+nts.uk.resource.getText("KMK004_13")]);
+                m.monthMsgDefor = nts.uk.resource.getText("KMK004_26", [i+nts.uk.resource.getText("KMK004_13")]);
                 self.statutorySetting.push(m);
             }
         }
@@ -1027,8 +1027,8 @@ module nts.uk.at.view.kmk004.shared.model {
                 mFlex.month(i);
                 mFlex.statutoryTime(0);
                 mFlex.specifiedTime(0);
-                mFlex.monthMsgStatutory = nts.uk.resource.getText("KMK004_22", [i]);
-                mFlex.monthMsgSpecified = nts.uk.resource.getText("KMK004_21", [i]);
+                mFlex.monthMsgStatutory = nts.uk.resource.getText("KMK004_22", [i+nts.uk.resource.getText("KMK004_13")]);
+                mFlex.monthMsgSpecified = nts.uk.resource.getText("KMK004_21", [i+nts.uk.resource.getText("KMK004_13")]);
                 self.flexSettingDetail.push(mFlex);
             }
         }
@@ -1181,6 +1181,7 @@ module nts.uk.at.view.kmk004.shared.model {
     export class FlexSetParams {
         isIncludeOverTime: boolean;
         shortageSetting: number;
+        isEnableOverTime: boolean;
 
         constructor() {
             let self = this;

@@ -31,12 +31,13 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthChangeInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthOutDto;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -347,8 +348,12 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("getclosurebycurrentemployee/{basedate}")
-	public int getClosureByCurrentEmployee(@PathParam("basedate") String basedate) {
-		return this.closureService.getClosureDataByEmployee(AppContexts.user().employeeId(),
-				GeneralDate.fromString(basedate, "yyyy-MM-dd")).getClosureId().value;
+	public Integer getClosureByCurrentEmployee(@PathParam("basedate") String basedate) {
+		Closure closure = this.closureService.getClosureDataByEmployee(AppContexts.user().employeeId(),
+				GeneralDate.fromString(basedate, "yyyy-MM-dd"));
+		if (closure == null) {
+			return null;
+		}
+		return closure.getClosureId().value;
 	}
 }
