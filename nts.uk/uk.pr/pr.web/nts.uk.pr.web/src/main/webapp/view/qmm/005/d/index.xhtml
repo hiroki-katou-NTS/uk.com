@@ -22,11 +22,11 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area-top">
-            <!-- D1_1  処理区分 -->
+            <!-- D2_1  処理区分 -->
             <div style="margin-left: 5px"
-                 data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
+                 data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>
 
-            <!-- D1_2  処理区分名称 -->
+            <!-- D2_2  処理区分名称 -->
             <input id="D2_2" data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}"
                    style="width: 150px"/>
 
@@ -35,7 +35,7 @@
                 <div data-bind="ntsCheckBox: { checked: enableChecckBox  , style: 'warnpanel' }">#{i18n.getText('QMM005_80')}</div>
 
                 <!-- D2_4 支払年月日区分 -->
-                <button data-bind="ntsHelpButton: {position: 'left top',enable: isEnable }">?</button>
+                <button data-bind="ntsHelpButton: {position: 'left top',enable: isEnable,image: '../resource/QMM005_01.png' }">?</button>
 				</span>
         </div>
         
@@ -86,7 +86,7 @@
                         <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_30')}</div>
 
                         <!-- D3_6 個人情報の履歴参照日について -->
-                        <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
+                        <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable,image: '../resource/QMM005_02.png' }">?</button>
                     </td>
 
                     <td>
@@ -109,9 +109,11 @@
                     </td>
 
                     <td>
+                        <!--D3_10-->
                         <div class="label">#{i18n.getText('QMM005_53')}</div>
                     </td>
                     <td>
+                        <!--D3_11-->
                         <div data-bind="ntsComboBox: {
 											name: 'Sample List', width:100 ,
 											options: refeDate,
@@ -125,6 +127,7 @@
 											]}"></div>
                     </td>
                     <td>
+                        <!--D3_12-->
                         <div class="label">#{i18n.getText('QMM005_55')}</div>
                     </td>
 
@@ -142,16 +145,22 @@
                                 style="width: 45px; text-align: left !important;"/></span>
 
                     </td>
-                    <td> <span class="label">#{i18n.getText('QMM005_40')}</span></td>
+                    <td>
+                        <!--D5_3-->
+                        <span class="label">#{i18n.getText('QMM005_40')}</span>
+                    </td>
 
 
                 </tr>
                 <tr>
                     <td>
+                        <!--D3_14-->
                         <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
-                        <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable }">?</button>
+                        <!--D3_15-->
+                        <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable,image: '../resource/QMM005_03.png' }">?</button>
                     </td>
                     <td>
+                        <!--D3_16-->
                         <span class="label" style="padding-left: 30px">#{i18n.getText('QMM005_56')}</span>
                     </td>
                     <!-- D3_17 -->

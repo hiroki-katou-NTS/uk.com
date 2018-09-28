@@ -19,7 +19,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         processCategoryNO: number;
         itemBinding: KnockoutObservableArray<ItemBinding>;
 
-        test: Array<model.ItemModel>;
+        isAbolition:KnockoutObservable<boolean>=ko.observable(false);
+
 
 
         constructor() {
@@ -60,13 +61,17 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
                     if(processInformationUpdate.deprecatCate==1)
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=1;
-                    if(processInformationUpdate.deprecatCate==0)
+                    if(processInformationUpdate.deprecatCate==0){
+                        self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(true);
+                    }
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=0;
                     if (processInformationUpdate.deprecatCate == 1) {
                         service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
                             self.resetEmployee(processInformationUpdate.processCateNo);
+                            self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(false);
                             nts.uk.ui.dialog.alertError({ messageId: "MsgQ_158" });
                         });
+                        $('#button_').focus();
 
                     }
 
@@ -269,35 +274,40 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
         currentYaerMonthSelected:KnockoutObservable<number>=ko.observable(0);
+        isAbolition:KnockoutObservable<boolean>=ko.observable(false);
 
         constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
-            let self = this;
-            self.processInfomation = processInfomation;
-            self.setDaySupports = ko.observableArray(setDaySupports);
-            self.setDaySupportsSelectedCode = ko.observable(0);
-            self.employeeString = ko.observable(employeeString);
-            self.employeeList = ko.observableArray(employeeList);
-            self.years = ko.observableArray(years);
-            self.yaersSelected = ko.observable(0);
-            self.months = ko.observableArray(months);
-            self.monthsSelectd = ko.observable(0);
-            if(currentProcessDate){ self.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
+            let selfItemBinding = this;
+            selfItemBinding.processInfomation = processInfomation;
+            selfItemBinding.setDaySupports = ko.observableArray(setDaySupports);
+            selfItemBinding.setDaySupportsSelectedCode = ko.observable(0);
+            selfItemBinding.employeeString = ko.observable(employeeString);
+            selfItemBinding.employeeList = ko.observableArray(employeeList);
+            selfItemBinding.years = ko.observableArray(years);
+            selfItemBinding.yaersSelected = ko.observable(0);
+            selfItemBinding.months = ko.observableArray(months);
+            selfItemBinding.monthsSelectd = ko.observable(0);
+            if(currentProcessDate){ selfItemBinding.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
 
 
 
-            self.yaersSelected.subscribe(function (data) {
-                self.monthsSubcriceYear.removeAll();
-                self.monthsSubcriceYear(
-                    _.filter(self.months(), function (o) {
+            selfItemBinding.yaersSelected.subscribe(function (data) {
+                selfItemBinding.monthsSubcriceYear.removeAll();
+                selfItemBinding.monthsSubcriceYear(
+                    _.filter(selfItemBinding.months(), function (o) {
                         return parseInt(o.code / 100) == data;
                     })
                 )
             })
 
-             let startYearSelected=parseInt((self.currentYaerMonthSelected())/100);
-             let startMonthsSelected=self.currentYaerMonthSelected();
-             self.yaersSelected(startYearSelected);
-             self.monthsSelectd(startMonthsSelected);
+             let startYearSelected=parseInt((selfItemBinding.currentYaerMonthSelected())/100);
+             let startMonthsSelected=selfItemBinding.currentYaerMonthSelected();
+             selfItemBinding.yaersSelected(startYearSelected);
+             selfItemBinding.monthsSelectd(startMonthsSelected);
+
+             if(selfItemBinding.processInfomation.processDivisionName() != '' && selfItemBinding.processInfomation.deprecatCate == 0 ){
+                 selfItemBinding.isAbolition(true);
+             }
 
 
         }

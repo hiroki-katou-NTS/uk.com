@@ -136,6 +136,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         incomeTaxBaseDate: KnockoutObservableArray<model.ItemModel>;
         incomeTaxBaseDateSelectedCode: KnockoutObservable<number>;
 
+        processCategoryNoDisPlay:string;
 
         constructor() {
 
@@ -147,7 +148,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.processInfomation=new model.ProcessInfomation(ko.toJS(init.processInfomation));
             self.processCategoryNo=self.processInfomation.processCateNo;
 
-
+            self.processCategoryNoDisPlay=nts.uk.text.format(nts.uk.resource.getText("QMM005_98"), self.processCategoryNo);
 
 
 

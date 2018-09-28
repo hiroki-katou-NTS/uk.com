@@ -41,7 +41,7 @@
                         <col width="35px"/>
                         <col width="180px"/>
                         <col width="70px"/>
-                        <col width="360px"/>
+                        <col width="380px"/>
                     </colgroup>
                     <thead>
                     <tr>
@@ -108,7 +108,7 @@
                             <!--A2_14 次回給与支払日-->
                             <div tabindex="7" data-bind="ntsComboBox: {
                             name: '#[#QMM005_47]',
-                             width:250,
+                            width:270,
                             options: monthsSubcriceYear,
                             optionsValue: 'code',
                             visibleItemsCount: 8,
@@ -117,12 +117,10 @@
                             dropDownAttachedToBody:true,
                             enable: processInfomation.processDivisionName() != '',
                             columns: [
-
-                                { prop: 'name', length: 5 },
-
+                                { prop: 'name', length: 5,lengthDropDown: 5 },
 
                             ]}"
-                                    style=" margin-left: 10px"></div>
+                             style="margin-left: 10px"       ></div>
                             </div>
                         </td>
                     </tr>
@@ -150,13 +148,13 @@
                             <div class="flex valign-center">
                             <!--A3_3 雇用設定-->
                             <button tabindex="-1" class="small"
-                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable:processInfomation.processDivisionName() != '' ">#{i18n.getText('QMM005_20')}</button>
+                            data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable: isAbolition() ">#{i18n.getText('QMM005_20')}</button>
                             <!--A3_4 対象雇用-->
                             <input style="width: 285px;margin-left: 10px;"
                                     data-bind="ntsTextEditor: {
                                 value: employeeString,
                                 readonly: true,
-                                enable:processInfomation.processDivisionName() != '',
+                                enable:isAbolition(),
                                 }"/>
                             </div>
                         </td>
