@@ -444,7 +444,9 @@ module nts.uk.at.view.kdw002.c {
                     service.updateDailyAttdItem(self.dailyServiceTypeControl()).done(x => {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(function() {
                             self.getDailyAttdItemByRoleID(self.dailyServiceTypeControl().authorityDailyId).done(function(){
-                                $('#grid').igGrid("option","dataSource", temp)    
+                                $("#grid").igGrid("destroy")
+                                self.currentRoleId(self.dailyServiceTypeControl().authorityDailyId);
+                                self.currentRoleId.valueHasMutated();
                             });
                             
                         });
