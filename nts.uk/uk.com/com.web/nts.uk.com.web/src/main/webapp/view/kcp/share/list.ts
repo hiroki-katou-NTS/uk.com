@@ -651,7 +651,7 @@ module kcp.share.list {
 
                 if (data.listType == ListType.EMPLOYMENT) {
                     self.selectedClosureId.subscribe(id => {
-                        self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
+//                        self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
                         self.reloadEmployment(id);
                     });
                 }
@@ -1048,6 +1048,7 @@ module kcp.share.list {
                 if (empList && empList.length > 0) {
                     // Find by employment codes.
                     nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, empList).done(data => {
+                        data = _.sortBy(data,['code']);
                         dfd.resolve(data);
                     })
                     return dfd.promise();
@@ -1058,7 +1059,7 @@ module kcp.share.list {
         }
         
         export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
-            return nts.uk.request.ajax('com', servicePath.findEmployments);
+            return _.sortBy(nts.uk.request.ajax('com', servicePath.findEmployments),['code']);
         }
         
         /**
