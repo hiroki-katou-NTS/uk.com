@@ -47,7 +47,7 @@ public class FindSocialOfficeFinder {
 				data.get().getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceCityCode().map(PrimitiveValueBase::v).orElse(null), 
 				data.get().getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceOfficeCode().map(PrimitiveValueBase::v).orElse(null), 
 				data.get().getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionCityCode().map(PrimitiveValueBase::v).orElse(null), 
-				data.get().getInsuranceMasterInformation().getForMagneticMedia().getHealthInsuranceOfficeCode().map(PrimitiveValueBase::v).orElse(null),
+				data.get().getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionOfficeCode().map(PrimitiveValueBase::v).orElse(null),
 				data.get().getInsuranceMasterInformation().getForMagneticMedia().getHealthInsurancePrefectureNo().orElse(null), 
 				data.get().getInsuranceMasterInformation().getForMagneticMedia().getWelfarePensionPrefectureNo().orElse(null));
 		

@@ -278,6 +278,7 @@ module nts.uk.pr.view.qmm008.d {
             healthInsurancePrefectureNo: KnockoutObservable<string> = ko.observable(null);
             welfarePensionPrefectureNo: KnockoutObservable<string> = ko.observable(null);
             constructor(parameter?: ISocialOfficeDetail) {
+                console.log(parameter);
                 this.code(parameter ? parameter.code : '');
                 this.name(parameter ? parameter.name : '');
                 this.shortName(parameter ? parameter.shortName : null);

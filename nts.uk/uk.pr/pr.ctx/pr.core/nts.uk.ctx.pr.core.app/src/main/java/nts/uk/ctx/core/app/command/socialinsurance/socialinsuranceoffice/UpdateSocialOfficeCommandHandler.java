@@ -43,7 +43,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandlerWithResult<U
 				command.getName(), command.getShortName().isEmpty() ? null : command.getShortName(), command.getRepresentativeName().isEmpty() ? null : command.getRepresentativeName(),
 				command.getRepresentativePosition(), command.getPostalCode().isEmpty() ? null : command.getPostalCode(),command.getAddress1().isEmpty() ? null : command.getAddress1(),
 				command.getAddressKana1().isEmpty() ? null : command.getAddressKana1(), command.getAddress2().isEmpty() ? null : command.getAddress2(), command.getAddressKana2().isEmpty() ? null : command.getAddressKana2(), command.getPhoneNumber().isEmpty() ? null : command.getPhoneNumber() ,
-				command.getMemo().isEmpty() ? null : command.getAddress1(), command.getWelfarePensionFundNumber(), command.getWelfarePensionOfficeNumber().isEmpty() ? null : command.getWelfarePensionOfficeNumber() ,
+				command.getMemo().isEmpty() ? null : command.getMemo(), command.getWelfarePensionFundNumber(), command.getWelfarePensionOfficeNumber().isEmpty() ? null : command.getWelfarePensionOfficeNumber() ,
 				command.getHealthInsuranceOfficeNumber(), command.getHealthInsuranceUnionOfficeNumber().isEmpty() ? null : command.getHealthInsuranceUnionOfficeNumber() ,
 				command.getHealthInsuranceOfficeNumber1().isEmpty() ? null : command.getHealthInsuranceOfficeNumber1(), command.getHealthInsuranceOfficeNumber2().isEmpty() ? null : command.getHealthInsuranceOfficeNumber2(),
 				command.getWelfarePensionOfficeNumber1().isEmpty() ? null : command.getWelfarePensionOfficeNumber1(), command.getWelfarePensionOfficeNumber2().isEmpty() ? null : command.getWelfarePensionOfficeNumber2(),
