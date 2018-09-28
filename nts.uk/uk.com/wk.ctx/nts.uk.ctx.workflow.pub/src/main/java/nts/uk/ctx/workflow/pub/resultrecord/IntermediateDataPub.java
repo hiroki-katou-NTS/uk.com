@@ -204,4 +204,14 @@ public interface IntermediateDataPub {
 	 */
 	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
 			ClosureDate closureDate, GeneralDate baseDate);
+	
+	/**
+	 * RequestList 535
+	 * [No.535](中間データ版)承認すべきデータ有無を取得する（月別）
+	 * @param approverID
+	 * @param period
+	 * @param yearMonth
+	 * @return
+	 */
+	public boolean isDataExistMonth(String approverID, DatePeriod period, YearMonth yearMonth);
 }

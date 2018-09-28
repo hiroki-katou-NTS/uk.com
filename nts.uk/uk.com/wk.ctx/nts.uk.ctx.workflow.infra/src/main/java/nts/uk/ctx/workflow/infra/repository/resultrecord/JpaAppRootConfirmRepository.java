@@ -125,6 +125,12 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.RECORD_DATE >= 'startDate'"+
 			" AND appRoot.RECORD_DATE <= 'endDate'";
+	
+	private final String FIND_BY_EMP_YEARMONTH = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.YEARMONTH = yearMonth";
 
 	@Override
 	public Optional<AppRootConfirm> findByID(String rootID) {
@@ -415,6 +421,29 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Optional.empty();
+		}
+	}
+
+	@Override
+	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_YEARMONTH;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("yearMonth", yearMonth.v().toString());
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Collections.emptyList();
+			} else {
+				return listResult;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
 		}
 	}
 	

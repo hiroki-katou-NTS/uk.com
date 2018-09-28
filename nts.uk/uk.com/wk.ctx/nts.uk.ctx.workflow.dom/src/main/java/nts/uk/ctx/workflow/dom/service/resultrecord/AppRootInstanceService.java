@@ -158,4 +158,8 @@ public interface AppRootInstanceService {
 	
 	public AppRootConfirm getAppRootCFByMonth(String companyID, String employeeID, YearMonth yearMonth,
 			Integer closureID, ClosureDate closureDate, RecordRootType rootType);
+	
+	public boolean isDataApproverExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> approverRouteLst);
+	
+	public boolean isDataAgentExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> agentRouteLst);
 }

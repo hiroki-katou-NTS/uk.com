@@ -330,11 +330,11 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			return false;
 		}
 		// 承認者としての承認すべきデータがあるか
-		if(this.isDataAgentExist(period, approvalPersonInstance.getAgentRoute())){
+		if(this.isDataApproverExist(period, approvalPersonInstance.getApproverRoute())){
 			return true;
 		}
 		// 代行者としての承認すべきデータがあるか
-		if(this.isDataApproverExist(period, approvalPersonInstance.getApproverRoute())){
+		if(this.isDataAgentExist(period, approvalPersonInstance.getAgentRoute())){
 			return true;
 		}
 		return false;
@@ -632,5 +632,70 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 					Optional.empty(), Optional.empty(), Optional.empty());
 		}
 		return opAppRootConfirm.get();
+	}
+
+	@Override
+	public boolean isDataApproverExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> approverRouteLst) {
+		String companyID = AppContexts.user().companyId();
+		// INPUT．「承認ルートの詳細」(List)の件数をチェックする
+		if(CollectionUtil.isEmpty(approverRouteLst)){
+			return false;
+		}
+		for(ApprovalRouteDetails approvalRouteDetails : approverRouteLst){
+			// ドメインモデル「就業実績確認状態」を取得する
+			List<AppRootConfirm> appRootConfirmLst = appRootConfirmRepository.findByEmpYearMonth(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), yearMonth);
+			for(AppRootConfirm appRootConfirmLoop : appRootConfirmLst){
+				// 対象日の承認ルート中間データを取得する
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(appRootConfirmLoop.getRecordDate(), Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				if(appRootInstance==null){
+					throw new BusinessException("Msg_1430", "承認者");
+				}
+				// 中間データから承認ルートインスタンスに変換する
+				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirmLoop);
+				// 指定した社員が承認できるかの判断(NoDBACCESS)
+				ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState, approvalRouteDetails.getEmployeeID());
+				// 実行結果をチェックする
+				if(approverPersonOutput.getAuthorFlag()&&
+						(approverPersonOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED)&&
+						(!approverPersonOutput.getExpirationAgentFlag())){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isDataAgentExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> agentRouteLst) {
+		String companyID = AppContexts.user().companyId();
+		// INPUT．「承認ルートの詳細」(List)の件数をチェックする
+		if(CollectionUtil.isEmpty(agentRouteLst)){
+			return false;
+		}
+		for(ApprovalRouteDetails approvalRouteDetails : agentRouteLst){
+			// ドメインモデル「就業実績確認状態」を取得する
+			List<AppRootConfirm> appRootConfirmLst = appRootConfirmRepository.findByEmpYearMonth(companyID, approvalRouteDetails.getAppRootInstance().getEmployeeID(), yearMonth);
+			for(AppRootConfirm appRootConfirmLoop : appRootConfirmLst){
+				// 対象日の承認ルート中間データを取得する
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(appRootConfirmLoop.getRecordDate(), Arrays.asList(approvalRouteDetails.getAppRootInstance()));
+				if(appRootInstance==null){
+					throw new BusinessException("Msg_1430", "承認者");
+				}
+				if((approvalRouteDetails.getStartDate().isPresent()&&approvalRouteDetails.getStartDate().get().beforeOrEquals(appRootConfirmLoop.getRecordDate())) ||
+						(approvalRouteDetails.getEndDate().isPresent()&&approvalRouteDetails.getEndDate().get().afterOrEquals(appRootConfirmLoop.getRecordDate()))){
+					// 中間データから承認ルートインスタンスに変換する
+					ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirmLoop);
+					// 指定した社員が承認できるかの判断(NoDBACCESS)
+					ApproverPersonOutput approverPersonOutput = judgmentApprovalStatusService.judgmentTargetPerCanApproveNoDB(approvalRootState, approvalRouteDetails.getEmployeeID());
+					// 実行結果をチェックする
+					if(approverPersonOutput.getAuthorFlag()&&
+							(approverPersonOutput.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED)&&
+							(!approverPersonOutput.getExpirationAgentFlag())){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

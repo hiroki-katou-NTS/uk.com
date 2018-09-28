@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.resultrecord;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -42,5 +43,7 @@ public interface AppRootConfirmRepository {
 			Integer closureID, ClosureDate closureDate, RecordRootType rootType);
 	
 	public Optional<AppRootConfirm> findByEmpPeriodMonth(String companyID, String employeeID, DatePeriod period);
+	
+	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth);
 	
 }

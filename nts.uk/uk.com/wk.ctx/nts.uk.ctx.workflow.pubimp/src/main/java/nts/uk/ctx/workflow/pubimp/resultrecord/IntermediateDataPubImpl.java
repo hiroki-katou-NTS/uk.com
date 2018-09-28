@@ -453,5 +453,25 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 						x.getApprovalStatus().map(y -> new ApprovalStatusExport(y.getReleaseAtr().value, y.getApprovalAction().value))))
 				.collect(Collectors.toList()));
 	}
+
+	@Override
+	public boolean isDataExistMonth(String approverID, DatePeriod period, YearMonth yearMonth) {
+		// 承認者(承認代行を含め)と期間から承認ルート中間データを取得する
+		ApprovalPersonInstance approvalPersonInstance = appRootInstanceService.getApproverAndAgent(approverID, period, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		// 取得した「承認者になる中間データ」．承認者としての承認ルートと代行者としての承認ルートの件数をチェックする
+		if(CollectionUtil.isEmpty(approvalPersonInstance.getAgentRoute()) && 
+				CollectionUtil.isEmpty(approvalPersonInstance.getApproverRoute())){
+			return false;
+		}
+		// 承認者としての承認すべきデータがあるか
+		if(appRootInstanceService.isDataApproverExistMonth(yearMonth, approvalPersonInstance.getApproverRoute())){
+			return true;
+		}
+		// 代行者としての承認すべきデータがあるか
+		if(appRootInstanceService.isDataAgentExistMonth(yearMonth, approvalPersonInstance.getAgentRoute())){
+			return true;
+		}
+		return false;
+	}
 	
 }
