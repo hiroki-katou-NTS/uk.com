@@ -77,7 +77,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         selectedId: KnockoutObservable<number>;
 
 
-        enableChecckBox: KnockoutObservable<boolean>;
+        enableCheckBox: KnockoutObservable<boolean>;
 
 
         //d3_17
@@ -357,9 +357,9 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.labelRequired = ko.observable(true);
             self.isEnable = ko.observable(true);
 
-            self.enableChecckBox = ko.observable(false);
+            self.enableCheckBox = ko.observable(false);
             if(self.mode==0){
-                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableChecckBox() ? 1:0);
+                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableCheckBox() ? 1:0);
             }
 
             self.DiscontinueThisProcessClassificationSelectedCode=ko.observable(0);
@@ -445,7 +445,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                         self.processCategoryNo=self.processInfomation.processCateNo;
                         self.processName(self.processInfomation.processDivisionName());
                         self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate);
-                        self.enableChecckBox(self.processInfomation.deprecatCate ==0 ? false:true);
+                        self.enableCheckBox(self.processInfomation.deprecatCate ==0 ? false:true);
 
                 })
                 
@@ -540,7 +540,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
              }
 
             if(self.mode==0){
-                self.enableChecckBox() ? self.processInfomation.deprecatCate=1:self.processInfomation.deprecatCate=0;
+                self.enableCheckBox() ? self.processInfomation.deprecatCate=1:self.processInfomation.deprecatCate=0;
 
                 service.updateprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),

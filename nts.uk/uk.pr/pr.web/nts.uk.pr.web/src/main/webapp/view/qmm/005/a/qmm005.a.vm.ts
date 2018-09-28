@@ -244,7 +244,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             let self = this;
             let commandData = {currProcessDateCommand: [], empTiedProYearCommand: []};
             for (let i = 0; i < MAX_NUMBER_SETTING; i++) {
-                if (self.itemBinding()[i].processInfomation.processDivisionName() != '') {
+                if (self.itemBinding()[i].isAbolition()) {
                     commandData.currProcessDateCommand.push({giveCurrTreatYear: self.itemBinding()[i].monthsSelectd()});
                     let codeList = _.map(self.itemBinding()[i].employeeList(), "code");
                     if (codeList.length > 0) {
