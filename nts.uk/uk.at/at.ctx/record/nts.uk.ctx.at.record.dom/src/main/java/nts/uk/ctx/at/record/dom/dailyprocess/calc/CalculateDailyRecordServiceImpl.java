@@ -236,7 +236,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 * @return 日別実績(Work)
 	 */
 	@Override
-	public IntegrationOfDaily calculate(CalculateOption calculateOption,IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting,
+	public ManageCalcStateAndResult calculate(CalculateOption calculateOption,IntegrationOfDaily integrationOfDaily, ManagePerCompanySet companyCommonSetting,
 										ManagePerPersonDailySet personCommonSetting
 										,Optional<WorkInfoOfDailyPerformance> yesterDayInfo
 										,Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
@@ -244,25 +244,25 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
 		
 		if (integrationOfDaily.getAffiliationInfor() == null || companyCommonSetting == null || personCommonSetting == null)
-			return integrationOfDaily;
+			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
 		boolean isShareContainerNotInit = companyCommonSetting.getShareContainer() == null;
 		if(isShareContainerNotInit) {
 			companyCommonSetting.setShareContainer(MasterShareBus.open());
 		}
 		// 実績データの計算
-		IntegrationOfDaily result = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, personCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
+		ManageCalcStateAndResult result = this.calcDailyAttendancePerformance(integrationOfDaily,companyCommonSetting, personCommonSetting, converter,yesterDayInfo,tomorrowDayInfo);
 		
 		if (!calculateOption.isSchedule()) {
 			//大塚モードの処理
-			val afterOOtsukaModeCalc = replaceStampForOOtsuka(result, companyCommonSetting, personCommonSetting,tomorrowDayInfo, tomorrowDayInfo, converter); 
+			val afterOOtsukaModeCalc = replaceStampForOOtsuka(result.getIntegrationOfDaily(), companyCommonSetting, personCommonSetting,tomorrowDayInfo, tomorrowDayInfo, converter); 
 			
 			//任意項目の計算
-			result = this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting);
+			result.setIntegrationOfDaily(this.calcOptionalItem(afterOOtsukaModeCalc,converter,companyCommonSetting));
 		}
 		
 		if (!calculateOption.isMasterTime()) {
 			//エラーチェック
-			result = calculationErrorCheckService.errorCheck(result, personCommonSetting, companyCommonSetting);
+			result.setIntegrationOfDaily(calculationErrorCheckService.errorCheck(result.getIntegrationOfDaily(), personCommonSetting, companyCommonSetting));
 		}
 		
 		if(isShareContainerNotInit) {
@@ -296,7 +296,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		return integrationOfDaily;
 	}
 
-	private IntegrationOfDaily calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
+	private ManageCalcStateAndResult calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
 															  ManagePerCompanySet companyCommonSetting, 
 															  ManagePerPersonDailySet personCommonSetting, DailyRecordToAttendanceItemConverter converter, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		
@@ -313,13 +313,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//実績が入力されていなくてもor実績側が休日でも、予定時間は計算する必要があるため
 		if (!record.getCalculatable() && (!record.getWorkType().isPresent())) {
 			integrationOfDaily.setCalAttr(copyCalcAtr);
-			return integrationOfDaily;
+			return ManageCalcStateAndResult.failCalc(integrationOfDaily);
 		}
 		
 		//実際の計算処理
 		val calcResult = calcRecord(record,schedule, companyCommonSetting,personCommonSetting, converter);
 		calcResult.setCalAttr(copyCalcAtr);
-		return calcResult;
+		return ManageCalcStateAndResult.successCalc(calcResult);
 	}
 
 	/**
