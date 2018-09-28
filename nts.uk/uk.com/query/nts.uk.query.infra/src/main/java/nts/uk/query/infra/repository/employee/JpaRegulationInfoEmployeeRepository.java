@@ -108,12 +108,12 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// Constructing condition.
 		List<Predicate> conditions = new ArrayList<>();
-		List<String> employmentCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getEmploymentCodes()).orElse(Collections.EMPTY_LIST));
-		List<String> workplaceCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorkplaceCodes()).orElse(Collections.EMPTY_LIST));
-		List<String> classificationCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getClassificationCodes()).orElse(Collections.EMPTY_LIST));
-		List<String> jobTitleCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getJobTitleCodes()).orElse(Collections.EMPTY_LIST));
-		List<String> worktypeCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorktypeCodes()).orElse(Collections.EMPTY_LIST));
-		List<Integer> closureIds = new ArrayList<>(Optional.ofNullable(paramQuery.getClosureIds()).orElse(Collections.EMPTY_LIST));
+		List<String> employmentCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getEmploymentCodes()).orElse(Collections.emptyList()));
+		List<String> workplaceCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorkplaceCodes()).orElse(Collections.emptyList()));
+		List<String> classificationCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getClassificationCodes()).orElse(Collections.emptyList()));
+		List<String> jobTitleCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getJobTitleCodes()).orElse(Collections.emptyList()));
+		List<String> worktypeCodes = new ArrayList<>(Optional.ofNullable(paramQuery.getWorktypeCodes()).orElse(Collections.emptyList()));
+		List<Integer> closureIds = new ArrayList<>(Optional.ofNullable(paramQuery.getClosureIds()).orElse(Collections.emptyList()));
 		GeneralDateTime baseDate = paramQuery.getBaseDate();
 		
 		// Add company condition 
@@ -247,7 +247,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				cb.lessThan(root.get(EmployeeDataView_.absEndDate), start));
 
 		// is in company
-		conditions.add(cb.not(cb.or(cb.greaterThan(root.get(EmployeeDataView_.comStrDate), end),
+		Predicate isInCompany = (cb.not(cb.or(cb.greaterThan(root.get(EmployeeDataView_.comStrDate), end),
 				cb.lessThan(root.get(EmployeeDataView_.comEndDate), start))));
 
 		Predicate incumbentCondition = cb.disjunction();
@@ -257,25 +257,26 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// includeIncumbents
 		if (paramQuery.getIncludeIncumbents()) {
-			incumbentCondition = isWorking;
+			incumbentCondition = cb.and(isInCompany, isWorking);
 		}
 
 		// workerOnLeave
 		if (paramQuery.getIncludeWorkersOnLeave()) {
-			workerOnLeaveCondition = cb.and(cb.not(isWorking),
+			workerOnLeaveCondition = cb.and(isInCompany, cb.not(isWorking),
 					cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
 		}
 
 		// Occupancy
 		if (paramQuery.getIncludeOccupancy()) {
-			occupancyCondition = cb.and(cb.not(isWorking),
+			occupancyCondition = cb.and(isInCompany, cb.not(isWorking),
 					cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
 		}
 
 		// retire
 		if (paramQuery.getIncludeRetirees()) {
 			retireCondition = cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireStart),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireEnd));
+					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireEnd),
+					cb.notEqual(root.get(EmployeeDataView_.comEndDate), GeneralDateTime.ymdhms(9999, 12, 31, 0, 0, 0)));
 		}
 
 		conditions.add(cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition, retireCondition));

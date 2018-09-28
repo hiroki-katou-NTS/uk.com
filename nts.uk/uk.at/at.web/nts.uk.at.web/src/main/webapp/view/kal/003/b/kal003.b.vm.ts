@@ -245,19 +245,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             if(!self.enableComparisonMaxValue()){
                 let mulMonCheckType= self.mulMonCheckCondSet().typeCheckItem();
                
-                if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME) {
-                        //時間
-                        self.comparisonRange().maxTimeValue(null);
-                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES) {
-                        //回数
-                        self.comparisonRange().maxTimesValue(null);
-                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT) {
-                        //金額
-                       self.comparisonRange().maxAmountOfMoneyValue(null);
-                 }
+               
             }
             
         }
