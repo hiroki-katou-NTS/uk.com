@@ -827,6 +827,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }
+            self.valueUpdateMonth["needCallCalc"] = data.monthResult.needCallCalc;
             return dfd.promise();
         }
 
