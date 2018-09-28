@@ -98,7 +98,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton(),
-                maxRows: 10
+                maxRows: 8
             };
             // set data selectedConditionName  P7_1
             self.selectedConditionCd.subscribe(data => {
