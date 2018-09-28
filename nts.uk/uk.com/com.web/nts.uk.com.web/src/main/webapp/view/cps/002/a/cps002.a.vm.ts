@@ -877,6 +877,7 @@ module cps002.a.vm {
             self.employeeName("");
             self.employeeCode("");
             self.loginId("");
+            self.cardNo("");
             self.password("");
             self.avatarOrgId("");
             self.avatarCropedId("");

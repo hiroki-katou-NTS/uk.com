@@ -5,13 +5,13 @@
 package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHistPK;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Class JpaClosureHistorySetMemento.

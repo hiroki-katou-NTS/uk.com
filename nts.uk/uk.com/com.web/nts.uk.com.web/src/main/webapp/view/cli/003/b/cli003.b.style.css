@@ -141,6 +141,7 @@ div#list-box_b1 {
 }
 .ui-iggrid-header.ui-widget-header{
 	overflow :visible;
+	text-overflow : ellipsis;
 }
 
  .default-overflow{
@@ -166,4 +167,8 @@ div#list-box_b1 {
 	padding: 5px;
 	width: auto !important;
 	max-width: 800px !important;
+}
+
+.ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
+	z-index: 99999999;
 }

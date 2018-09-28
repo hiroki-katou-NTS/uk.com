@@ -3934,6 +3934,8 @@ var nts;
                         content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                    // start a dialog when parent window too small, so this will auto resize the dialog
+                    $("#contents-area").css("max-height", "calc(100vh - " + content_height + "px)");
                     //            if($("#functions-area-bottom").length!=0){
                     //            } 
                 };
@@ -4303,7 +4305,8 @@ var nts;
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
                         var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
                         $manualBtn.on(constants.CLICK, function () {
-                            // TODO: Open manual
+                            var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                            window.open(path);
                         });
                         var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
                         $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
@@ -21962,7 +21965,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -21998,6 +22001,9 @@ var nts;
                         self.compreOptions();
                         if (self.enter) {
                             _$grid.data("enterDirect", self.enter);
+                        }
+                        if (!_.isNil(self.subWidth)) {
+                            _remainWidth = parseFloat(self.subWidth);
                         }
                         _$grid.mGrid({});
                     };
@@ -22105,7 +22111,7 @@ var nts;
                                 self.summaries.columns = colParts[1];
                                 self.summaries.height = SUM_HEIGHT + "px";
                                 _.forEach(summaries.columnSettings, function (s) {
-                                    var sum = { calculator: s.summaryCalculator };
+                                    var sum = { calculator: s.summaryCalculator, formatter: s.formatter };
                                     if (s.summaryCalculator === "Time") {
                                         sum[_currentPage] = moment.duration("0:00");
                                     }
@@ -22225,6 +22231,10 @@ var nts;
                         _mafollicle[SheetDef][_currentSheet].controlMap = controlMap;
                         _mafollicle[SheetDef][_currentSheet].painters = painters;
                         _mafollicle[SheetDef][_currentSheet].maxWidth = _maxFreeWidth;
+                        if (!_.isNil(self.maxRows) && self.maxRows >= 31) {
+                            artifactOptions.noBlocRangee = self.maxRows;
+                            artifactOptions.noGrappeBloc = 2;
+                        }
                         v.construe(self.$container, bodyWrappers, artifactOptions);
                         _bodyWrappers = bodyWrappers;
                         var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrapper[0];
@@ -22280,7 +22290,11 @@ var nts;
                                     sum[_currentSheet] = $td;
                                 }
                                 else if (sum.calculator === "Number") {
-                                    $td.textContent = sum[_currentPage];
+                                    if (sum.formatter === "Currency") {
+                                        $td.textContent = ti.asCurrency(sum[_currentPage]);
+                                    }
+                                    else
+                                        $td.textContent = sum[_currentPage];
                                     sum[_currentSheet] = $td;
                                 }
                                 else {
@@ -22302,10 +22316,10 @@ var nts;
                         var freeAdjuster = new kt.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi, self.float);
                         kt._adjuster = freeAdjuster;
                         freeAdjuster.handle();
-                        su.binding(self.$container, self.autoFitWindow);
+                        su.binding(self.$container, self.autoFitWindow, self.minRows, self.maxRows);
                         lch.checkUp(self.$container);
                         self.$container.appendChild($frag);
-                        kt.screenLargeur();
+                        kt.screenLargeur(self.minRows, self.maxRows);
                         console.log(performance.now() - start);
                     };
                     return MGrid;
@@ -22514,7 +22528,7 @@ var nts;
                             }
                         }
                         if (!_cloud)
-                            _cloud = new aho.Cloud(containers, options);
+                            _cloud = new aho.Platrer(containers, options);
                         var res = single ? _cloud.renderSideRows(true) : _cloud.renderRows(true);
                         if (!res)
                             return;
@@ -22581,7 +22595,7 @@ var nts;
                     /**
                      * Peel struct.
                      */
-                    function peelStruct(columns, level, currentLevel) {
+                    function peelStruct(columns, level, currentLevel, parent) {
                         var colspan = 0, noGroup = 0;
                         _.forEach(columns, function (col) {
                             var clonedCol = _.clone(col);
@@ -22589,7 +22603,7 @@ var nts;
                             if (!_.isNil(col.group)) {
                                 colCount = col.group.length;
                                 noGroup++;
-                                var ret = peelStruct(col.group, level, currentLevel + 1);
+                                var ret = peelStruct(col.group, level, currentLevel + 1, col.headerText);
                                 if (!uk.util.isNullOrUndefined(ret)) {
                                     colCount += ret;
                                 }
@@ -22601,7 +22615,7 @@ var nts;
                             level[currentLevel].push(clonedCol);
                             colspan += colCount;
                             if (col.constraint) {
-                                var validator = new hpl.ColumnFieldValidator(col.headerText, col.constraint.primitiveValue, col.constraint);
+                                var validator = new hpl.ColumnFieldValidator(parent, col.headerText, col.constraint.primitiveValue, col.constraint);
                                 _validators[col.key] = validator;
                             }
                             var linkType = col.ntsType;
@@ -23375,14 +23389,14 @@ var nts;
                     aho.TOP_SPACE = "top-space";
                     aho.BOTTOM_SPACE = "bottom-space";
                     aho.NULL = null;
-                    var Cloud = (function () {
-                        function Cloud(containers, options) {
+                    var Platrer = (function () {
+                        function Platrer(containers, options) {
                             this.$fixedContainer = containers[0];
                             this.$container = containers[1];
                             this.options = options;
                             this.primaryKey = options.primaryKey;
-                            this.rowsOfBlock = options.rowsOfBlock || 30;
-                            this.blocksOfCluster = options.blocksOfCluster || 3;
+                            this.rowsOfBlock = options.noBlocRangee || 30;
+                            this.blocksOfCluster = options.noGrappeBloc || 3;
                             this.rowHeight = parseInt(BODY_ROW_HEIGHT);
                             this.blockHeight = this.rowsOfBlock * this.rowHeight;
                             this.clusterHeight = this.blockHeight * this.blocksOfCluster;
@@ -23399,13 +23413,13 @@ var nts;
                         /**
                          * Get cluster no.
                          */
-                        Cloud.prototype.getClusterNo = function () {
+                        Platrer.prototype.getClusterNo = function () {
                             return Math.floor(this.$container.scrollTop / (this.clusterHeight - this.blockHeight));
                         };
                         /**
                          * Render rows.
                          */
-                        Cloud.prototype.renderRows = function (manual) {
+                        Platrer.prototype.renderRows = function (manual) {
                             var self = this;
                             var clusterNo = self.getClusterNo();
                             if (manual)
@@ -23463,7 +23477,7 @@ var nts;
                                     res.colIdxes = rowElms.colIdxes;
                                 }
                             }
-                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT + 2 : self.bottomOffset);
                             tbody.appendChild(bottomSpace);
                             containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                             if (self.$fixedContainer) {
@@ -23486,7 +23500,7 @@ var nts;
                         /**
                          * OnScroll.
                          */
-                        Cloud.prototype.onScroll = function () {
+                        Platrer.prototype.onScroll = function () {
                             var self = this;
                             self.$container.removeXEventListener(ssk.SCROLL_EVT + ".detail");
                             self.$container.addXEventListener(ssk.SCROLL_EVT + ".detail", function () {
@@ -23527,7 +23541,7 @@ var nts;
                         /**
                          * RenderSideRows.
                          */
-                        Cloud.prototype.renderSideRows = function (manual) {
+                        Platrer.prototype.renderSideRows = function (manual) {
                             var self = this;
                             var clusterNo = self.getClusterNo();
                             if (manual)
@@ -23567,7 +23581,7 @@ var nts;
                                     res.colIdxes = rowElms.colIdxes;
                                 }
                             }
-                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT + 2 : self.bottomOffset);
                             tbody.appendChild(bottomSpace);
                             containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                             if (rows.length === 0)
@@ -23581,9 +23595,9 @@ var nts;
                             }, 0);
                             return res;
                         };
-                        return Cloud;
+                        return Platrer;
                     }());
-                    aho.Cloud = Cloud;
+                    aho.Platrer = Platrer;
                 })(aho || (aho = {}));
                 var tc;
                 (function (tc) {
@@ -24285,22 +24299,30 @@ var nts;
                     /**
                      * ScreenLargeur.
                      */
-                    function screenLargeur() {
+                    function screenLargeur(noRowsMin, noRowsMax) {
                         if (!_headerWrappers || _headerWrappers.length === 0)
                             return;
                         var width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
                         var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
-                            width = window.innerWidth - 240 - _maxFixedWidth;
+                            width = window.innerWidth - _remainWidth - _maxFixedWidth;
                             _flexFitWidth = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[1].style.maxWidth));
-                            btmw = _maxFixedWidth + _flexFitWidth;
+                            btmw = _maxFixedWidth + _flexFitWidth + 2;
                             _headerWrappers[1].style.width = width + "px";
                             _bodyWrappers[1].style.width = (width + ti.getScrollWidth()) + "px";
                             height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
+                            if (!_.isNil(noRowsMin) && !_.isNil(noRowsMax)) {
+                                noRowsMin = parseFloat(noRowsMin);
+                                noRowsMax = parseFloat(noRowsMax);
+                                var size = _dataSource.length, no = Math.min(Math.max(size, noRowsMin), noRowsMax);
+                                height = no * BODY_ROW_HEIGHT + 19;
+                            }
                             var vari_1 = height - parseFloat(_bodyWrappers[0].style.height);
                             if (_sumWrappers && _sumWrappers.length > 1) {
                                 _sumWrappers[1].style.width = width + "px";
+                                height += SUM_HEIGHT;
+                                vari_1 += SUM_HEIGHT;
                                 _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari_1) + "px";
                                 _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari_1) + "px";
                             }
@@ -24323,15 +24345,23 @@ var nts;
                             _bodyWrappers[1].style.height = height + "px";
                             return;
                         }
-                        width = window.innerWidth - 240;
+                        width = window.innerWidth - _remainWidth;
                         btmw = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[0].style.maxWidth));
                         _flexFitWidth = btmw;
                         _headerWrappers[0].style.width = width + "px";
                         _bodyWrappers[0].style.width = (width + ti.getScrollWidth()) + "px";
                         height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
+                        if (!_.isNil(noRowsMin) && !_.isNil(noRowsMax)) {
+                            noRowsMin = parseFloat(noRowsMin);
+                            noRowsMax = parseFloat(noRowsMax);
+                            var size = _dataSource.length, no = Math.min(Math.max(size, noRowsMin), noRowsMax);
+                            height = no * BODY_ROW_HEIGHT + 19;
+                        }
                         var vari = height - parseFloat(_bodyWrappers[0].style.height);
                         if (_sumWrappers && _sumWrappers.length > 0) {
                             _sumWrappers[0].style.width = width + "px";
+                            height += SUM_HEIGHT;
+                            vari += SUM_HEIGHT;
                             _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
                         }
                         if (pageDiv) {
@@ -25043,7 +25073,7 @@ var nts;
                     /**
                      * Binding.
                      */
-                    function binding($grid, fitWindow) {
+                    function binding($grid, fitWindow, noRowsMin, noRowsMax) {
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $tCell = evt.target;
                             if (!$tCell || !selector.is($tCell, "." + v.CELL_CLS)
@@ -25269,7 +25299,7 @@ var nts;
                         }
                         if (fitWindow) {
                             window.addXEventListener(ssk.RESIZE, function (evt) {
-                                kt.screenLargeur();
+                                kt.screenLargeur(noRowsMin, noRowsMax);
                             });
                         }
                     }
@@ -25422,7 +25452,7 @@ var nts;
                                     sum[_currentPage] = total;
                                     sumDone = true;
                                 }
-                                sum[sheet].textContent = sum[_currentPage];
+                                sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
                             if (zeroHidden && ti.isZero(origVal)
                                 && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))) {
@@ -25632,8 +25662,9 @@ var nts;
                             before = parseFloat(rData[key]);
                             total = sum[_currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
                             sum[_currentPage] = total;
-                            if (sum[sht])
-                                sum[sht].textContent = sum[_currentPage];
+                            if (sum[sht]) {
+                                sum[sht].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
+                            }
                         }
                         if (_zeroHidden && ti.isZero(origVal)
                             && (value === "" || _.isNil(value) || parseFloat(value) === 0)) {
@@ -25736,7 +25767,7 @@ var nts;
                                 else if (valueType === "Currency") {
                                     var currencyOpts = new ui.option.CurrencyEditorOption();
                                     currencyOpts.grouplength = constraint.groupLength | 3;
-                                    currencyOpts.decimallength = constraint.decimalLength | 2;
+                                    currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                                     currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                     var groupSeparator = constraint.groupSeparator || ",";
                                     var rawValue = uk.text.replaceAll(value, groupSeparator, "");
@@ -26360,7 +26391,7 @@ var nts;
                             if (!sum[_currentSheet])
                                 return;
                             if (sum.calculator === "Number") {
-                                sum[_currentSheet].textContent = sum[_currentPage];
+                                sum[_currentSheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
                             else if (sum.calculator === "Time") {
                                 sum[_currentSheet].textContent = ti.momentToString(sum[_currentPage]);
@@ -26540,7 +26571,7 @@ var nts;
                             $header.style.maxWidth = _maxFreeWidth + "px";
                             var bw_1 = (_maxFreeWidth + ti.getScrollWidth()) + "px";
                             _bodyWrappers[1].style.maxWidth = bw_1;
-                            var btmw_1 = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth()) + "px";
+                            var btmw_1 = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth() + 2) + "px";
                             if (sumWrap) {
                                 sumWrap.style.maxWidth = _maxFreeWidth + "px";
                                 sumWrap.style.width = $header.style.width;
@@ -26604,7 +26635,7 @@ var nts;
                                     sum[_currentSheet] = $td;
                                 }
                                 else if (sum.calculator === "Number") {
-                                    $td.textContent = sum[_currentPage];
+                                    $td.textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                                     sum[_currentSheet] = $td;
                                 }
                                 else {
@@ -26626,7 +26657,7 @@ var nts;
                         $header.style.maxWidth = _maxFreeWidth + "px";
                         var bw = (_maxFreeWidth + ti.getScrollWidth()) + "px";
                         _bodyWrappers[1].style.maxWidth = bw;
-                        var btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth()) + "px";
+                        var btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth() + 2) + "px";
                         if (sumWrap) {
                             sumWrap.style.maxWidth = _maxFreeWidth + "px";
                             sumWrap.style.width = $header.style.width;
@@ -26756,6 +26787,12 @@ var nts;
                         $checkBox.setAttribute("type", "checkbox");
                         $checkBox.addXEventListener("change", function (evt) {
                             var checked = $checkBox.checked || evt.checked ? true : false;
+                            if (checked) {
+                                $checkBox.setAttribute("checked", "checked");
+                            }
+                            else {
+                                $checkBox.removeAttribute("checked");
+                            }
                             setChecked(checked, null, evt.resetValue);
                         });
                         $checkBoxLabel.appendChild($checkBox);
@@ -27437,7 +27474,8 @@ var nts;
                     hpl.CURRENCY_CLS = "currency-symbol";
                     var H_M_MAX = 60;
                     var ColumnFieldValidator = (function () {
-                        function ColumnFieldValidator(name, primitiveValue, options) {
+                        function ColumnFieldValidator(parentName, name, primitiveValue, options) {
+                            this.parentName = parentName;
                             this.name = name;
                             this.primitiveValue = primitiveValue;
                             this.options = options;
@@ -27452,12 +27490,12 @@ var nts;
                                 case "Integer":
                                 case "Decimal":
                                 case "HalfInt":
-                                    return new NumberValidator(this.name, valueType, this.primitiveValue, this.options)
+                                    return new NumberValidator(this.name, valueType, this.primitiveValue, this.options, this.parentName)
                                         .validate(value);
                                 case "Currency":
                                     var opts = new ui.option.CurrencyEditorOption();
                                     opts.grouplength = this.options.groupLength | 3;
-                                    opts.decimallength = this.options.decimalLength | 2;
+                                    opts.decimallength = _.isNil(this.options.decimalLength) ? 0 : this.options.decimalLength;
                                     opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
                                     return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                         .validate(value);
@@ -27494,7 +27532,8 @@ var nts;
                     }());
                     hpl.ColumnFieldValidator = ColumnFieldValidator;
                     var NumberValidator = (function () {
-                        function NumberValidator(name, displayType, primitiveValue, options) {
+                        function NumberValidator(name, displayType, primitiveValue, options, parentName) {
+                            this.parentName = parentName;
                             this.name = name;
                             this.displayType = displayType;
                             this.primitiveValue = primitiveValue;
@@ -27532,6 +27571,10 @@ var nts;
                             }
                             var min = 0, max = 999999999;
                             var value = parseFloat(text);
+                            if (self.options.values && !_.some(self.options.values, function (v) { return v === value; })) {
+                                result.fail(uk.resource.getMessage("Msg_1443", [self.parentName]), "Msg_1443");
+                                return result;
+                            }
                             if (!uk.util.isNullOrUndefined(self.options.min)) {
                                 min = self.options.min;
                                 if (value < min)
@@ -28387,6 +28430,20 @@ var nts;
                         return hour + ":" + minuteStr;
                     }
                     ti.momentToString = momentToString;
+                    /**
+                     * As currency.
+                     */
+                    function asCurrency(value) {
+                        var currencyOpts = new ui.option.CurrencyEditorOption();
+                        currencyOpts.grouplength = 3;
+                        currencyOpts.decimallength = 0;
+                        currencyOpts.currencyformat = "JPY";
+                        var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                        if (!isNaN(value))
+                            return formatter.format(value);
+                        return value;
+                    }
+                    ti.asCurrency = asCurrency;
                     /**
                      * Get cell coord.
                      */

@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.LeaveManagementService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 

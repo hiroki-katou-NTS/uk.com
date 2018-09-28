@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
@@ -41,6 +42,10 @@ public class StayingTimeOfDaily {
 		this.beforeWoringTime = beforeWoringTime;
 		this.stayingTime = stayingTime;
 		this.afterLeaveTime = afterLeaveTime;
+	}
+	
+	public static StayingTimeOfDaily defaultValue(){
+		return new StayingTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 	}
 	
 	/**

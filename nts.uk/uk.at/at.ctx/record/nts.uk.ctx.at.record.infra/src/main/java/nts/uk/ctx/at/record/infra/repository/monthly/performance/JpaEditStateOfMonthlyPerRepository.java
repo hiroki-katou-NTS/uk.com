@@ -9,8 +9,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * リポジトリ実装：月別実績の編集状態

@@ -279,7 +279,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 						premiumSetting.getCompanyID(), 
 						premiumSetting.getDisplayNumber()), 
 				premiumSetting.getName().v(), 
-				premiumSetting.getUseAtr().value);
+				premiumSetting.getUseAtr().value,
+				null);
 	}
 
 	@Override

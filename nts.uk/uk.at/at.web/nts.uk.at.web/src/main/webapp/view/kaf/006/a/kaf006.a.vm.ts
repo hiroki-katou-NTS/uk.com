@@ -156,6 +156,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
+                $('#relaReason').ntsError('clear');
                 service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
                     let line1 = getText('KAF006_44');

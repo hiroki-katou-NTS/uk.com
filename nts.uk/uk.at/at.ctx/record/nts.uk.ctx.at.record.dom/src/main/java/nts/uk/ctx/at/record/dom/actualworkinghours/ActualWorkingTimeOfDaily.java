@@ -323,7 +323,13 @@ public class ActualWorkingTimeOfDaily {
 		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() == null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
 		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork())&&recordClass.getOotsukaFixedWorkSet().isPresent()&& !workType.getDailyWork().isHolidayWork()) {
 			//休憩未取得時間の計算
-			AttendanceTime unUseBreakTime = recordClass.getPersonalInfo().getWorkingSystem().isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(recordClass.getFixRestTimeSetting().get(),recordClass.getIntegrationOfDaily().getAttendanceLeave().get()):new AttendanceTime(0);
+			AttendanceTime unUseBreakTime =
+					recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() ?
+							totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(
+									recordClass.getFixRestTimeSetting().get(),
+									recordClass.getFixWoSetting(),
+									recordClass.getIntegrationOfDaily().getAttendanceLeave().get()) 
+							: new AttendanceTime(0);
 			unUseBreakTime = unUseBreakTime.greaterThan(0)?unUseBreakTime:new AttendanceTime(0);
 			//日別実績の総労働からとってくる
 			AttendanceTime vacationAddTime = totalWorkingTime.getVacationAddTime();

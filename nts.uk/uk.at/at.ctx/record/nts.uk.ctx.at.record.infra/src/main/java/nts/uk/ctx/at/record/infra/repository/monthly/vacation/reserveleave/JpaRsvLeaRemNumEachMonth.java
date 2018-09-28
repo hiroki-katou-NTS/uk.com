@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMo
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * リポジトリ実装：積立年休月別残数データ
