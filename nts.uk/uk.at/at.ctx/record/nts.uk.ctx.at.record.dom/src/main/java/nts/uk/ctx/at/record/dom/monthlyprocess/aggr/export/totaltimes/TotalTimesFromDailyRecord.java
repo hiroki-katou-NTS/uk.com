@@ -291,7 +291,7 @@ public class TotalTimesFromDailyRecord {
 				switch (workType.getAttendanceHolidayAttr()){
 				case MORNING:
 				case AFTERNOON:
-					count += 0.5;
+					count = 0.5;
 					break;
 				default:
 					break;

@@ -79,7 +79,7 @@ module validationcps009 {
                        break;
                        
                case ITEM_SINGLE_TYPE.NUMERIC:
-                       if (_.isNil(item.numbereditor.value())) {
+                       if (_.isNil(item.numbereditor.value()) || item.numbereditor.value() === "") {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
