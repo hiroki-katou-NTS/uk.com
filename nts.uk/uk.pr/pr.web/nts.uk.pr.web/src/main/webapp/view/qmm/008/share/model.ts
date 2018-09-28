@@ -284,7 +284,7 @@ module nts.uk.pr.view.qmm008.share.model {
         constructor(params: IContributionRate) {
             this.automaticCalculationCls(params ? params.automaticCalculationCls : 1);
             this.historyId(params ? params.historyId : null);
-            this.childContributionRatio(params ? params.childContributionRatio : null);
+            this.childContributionRatio(params ? params.childContributionRatio : 0.000);
             this.contributionByGrade(params ? params.contributionByGrade.map(function(item) {
                 return new ContributionByGrade(item);
             }) : []);

@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm008.a {
                 });
             });
             $(".tab-i-sidebar").click(function() {
-//                viewmodelI.isSelectFirstOfficeAndHistory = true;
+                viewmodelI.isOnStartUp = true;
                 viewmodelI.startPage().done(function() {
                     $("#I1_5").focus();
                 });

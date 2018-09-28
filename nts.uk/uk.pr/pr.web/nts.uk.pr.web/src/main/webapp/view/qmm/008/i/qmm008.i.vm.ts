@@ -198,14 +198,14 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                 displayHealthInsuranceList: Array<model.TreeGridNode> = [],
                 pensionItem = {};
             healthInsuranceList.forEach(function(office) {
-                let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, []);
+                let healthInsuranceItem = new model.TreeGridNode(office.socialInsuranceCode, office.socialInsuranceCode + ' ' + office.socialInsuranceName, [], office.socialInsuranceCode, office.socialInsuranceName);
                 if (office.contributionRateHistory) {
                     let displayStart, displayEnd = "", displayStartJM = "";
                     office.contributionRateHistory.history.forEach(function(history) {
                         displayStart = self.convertYearMonthToDisplayYearMonth(history.startMonth);
                         displayEnd = self.convertYearMonthToDisplayYearMonth(history.endMonth);
                         // ___ is for child contain office code and history id
-                        healthInsuranceItem.child.push(new model.TreeGridNode(office.socialInsuranceCode + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, []));
+                        healthInsuranceItem.child.push(new model.TreeGridNode(office.socialInsuranceCode + '___' + history.historyId, displayStart + ' ~ ' + displayEnd, [], "", ""));
                     });
                 }
                 displayHealthInsuranceList.push(healthInsuranceItem);

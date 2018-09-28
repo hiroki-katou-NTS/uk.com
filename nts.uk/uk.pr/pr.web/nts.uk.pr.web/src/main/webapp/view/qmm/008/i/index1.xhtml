@@ -32,7 +32,7 @@
 								selected: selectedHealthInsurance, 
 								selectedKey: 'code', 
 								childField: 'child', 
-								fields: ['code', 'displayText']}" />
+								fields: ['officeCode', 'officeName']}" />
 				<div style="width: 100%">
 					<button id="I1_3" tabindex="2"
 						data-bind="click: createNewHistory, enable: $vm.viewmodelI.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
@@ -88,8 +88,8 @@
 									enable: $vm.viewmodelI.isSelectedHistory }"></div>
 				</div>
 				<!-- I2_10 自動計算区分説明-->
-				<button style="display: inline-block"
-					data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left', enable: true}">?</button>
+				<button style="display: inline-block" tabindex="7"
+					data-bind="ntsHelpButton: {image: '../resource/QMM008_01.png', position: 'bottom left', enable: true}">?</button>
 			</div>
 
 
