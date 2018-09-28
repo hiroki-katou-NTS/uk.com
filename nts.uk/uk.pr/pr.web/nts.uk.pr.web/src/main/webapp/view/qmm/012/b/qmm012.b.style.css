@@ -1,9 +1,20 @@
+#functions-area {
+	width: 1200px;
+}
+
+#contents-area {
+	width: 1200px;
+	overflow-y: inherit;
+}
+
 .fixed-flex-layout-left {
 	padding: 10px;
 	float: left;
+	width: 460px;
 }
 
 .fixed-flex-layout-right {
+	width: 700px;
 	padding: 10px;
 	float: left;
 }
@@ -59,8 +70,8 @@
 	width: 180px;
 }
 
-#C3_1 label, #C2_24, #C4_2 button {
-	white-space: normal;
+#C3_1 label, #C2_24 {
+	white-space: pre;
     line-height: 25px;
 }
 
@@ -88,6 +99,8 @@
 }
 
 #C4_2 button {
+	white-space: normal;
+    line-height: 25px;
 	height: 75px;
 	width: 130px;
 	float: left;
@@ -95,6 +108,10 @@
 
 #C4_2 button:first-child {
 	width: 80px;
+}
+
+#C4_2 button:nth-child(2) {
+	width: 120px;
 }
 
 #C4_10 .ntsRadioBox:first-child {
