@@ -32,7 +32,7 @@ public class ClosureInfo {
 	public ClosureInfo(ClosureId closureId){
 		
 		this.closureId = closureId;
-		this.closureDate = new ClosureDate(0, true);
+		this.closureDate = new ClosureDate(1, true);
 		this.closureName = new ClosureName("");
 		this.currentMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month()); 
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());

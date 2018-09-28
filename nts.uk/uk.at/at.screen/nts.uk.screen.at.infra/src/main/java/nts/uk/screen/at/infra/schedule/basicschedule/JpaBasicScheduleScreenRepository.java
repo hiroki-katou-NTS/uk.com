@@ -52,12 +52,6 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " AND a.kshmtWorkTimeSetPK.cid = b.kshmtWorkTimeSheetSetPK.cid"
 			+ " WHERE a.kshmtWorkTimeSetPK.cid = :companyId" + " AND a.abolitionAtr = :abolitionAtr"
 			+ " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC";
-	private static final String SELECT_BY_CID_DEPRECATE_CLS_1 = "SELECT NEW " + WorkTypeScreenDto.class.getName()
-			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr)"
-			+ " FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o "
-			+ " ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId " + " AND c.deprecateAtr = :deprecateClassification "
-			+ " ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
 			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
 			+ " OR c.workTimeCode IN :workTimeCode";
@@ -208,9 +202,40 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	 */
 	@Override
 	public List<WorkTypeScreenDto> findByCIdAndDeprecateCls1(String companyId, int deprecateClassification) {
-		return this.queryProxy().query(SELECT_BY_CID_DEPRECATE_CLS_1, WorkTypeScreenDto.class)
-				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
-				.getList();
+		
+		List<WorkTypeScreenDto> listWorkTypeScreenDto = new ArrayList<>();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
+		String sqlQueryWhere = "where KSHMT_WORKTYPE.CID = '" + companyId + "' AND KSHMT_WORKTYPE.ABOLISH_ATR = " + deprecateClassification
+				+ " order by CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NULL THEN 1 ELSE 0 END,"
+				+ " CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NULL THEN KSHMT_WORKTYPE.CD END ASC,"
+				+ " CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NOT NULL THEN KSHMT_WORKTYPE_ORDER.DISPORDER END ASC";
+
+		String sqlQuery = 
+				"select KSHMT_WORKTYPE.CD, KSHMT_WORKTYPE.NAME, KSHMT_WORKTYPE.ABNAME, KSHMT_WORKTYPE.SYNAME, KSHMT_WORKTYPE.MEMO,"
+				+ " KSHMT_WORKTYPE.WORK_ATR, KSHMT_WORKTYPE.ONE_DAY_CLS, KSHMT_WORKTYPE.MORNING_CLS, KSHMT_WORKTYPE.AFTERNOON_CLS"
+				+ " from KSHMT_WORKTYPE left join KSHMT_WORKTYPE_ORDER"
+				+ " on KSHMT_WORKTYPE.CID = KSHMT_WORKTYPE_ORDER.CID and KSHMT_WORKTYPE.CD = KSHMT_WORKTYPE_ORDER.WORKTYPE_CD "
+				+ sqlQueryWhere;
+		try {
+			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+			while (rs.next()) {
+				String workTypeCode = rs.getString("CD");
+				String name = rs.getString("NAME");
+				String abbreviationName = rs.getString("ABNAME");
+				String symbolicName = rs.getString("SYNAME");
+				String memo = rs.getString("MEMO");
+				int workTypeUnit = rs.getInt("WORK_ATR");
+				int oneDay = rs.getInt("ONE_DAY_CLS");
+				int morning = rs.getInt("MORNING_CLS");
+				int afternoon = rs.getInt("AFTERNOON_CLS");
+				
+				listWorkTypeScreenDto.add(new WorkTypeScreenDto(workTypeCode, name, abbreviationName, symbolicName, memo, workTypeUnit, oneDay, morning, afternoon));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listWorkTypeScreenDto;
 	}
 
 	/**

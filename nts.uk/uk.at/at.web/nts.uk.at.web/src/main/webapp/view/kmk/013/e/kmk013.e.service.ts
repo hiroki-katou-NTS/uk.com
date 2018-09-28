@@ -3,7 +3,8 @@ module nts.uk.at.view.kmk013.e {
         let paths: any = {
             findByCId : "shared/caculation/holiday/rounding/findByCid",
             findExcByCId : "shared/caculation/holiday/rounding/findExcByCid",
-            save:"shared/caculation/holiday/rounding/add",
+//            save:"shared/caculation/holiday/rounding/add",
+            save:"shared/caculation/holiday/rounding/updateRoundingMonth",
             saveExcOut: "shared/caculation/holiday/rounding/updateExcoutRound",
             getIdMonth:"ctx/at/shared/outsideot/setting/findAll/mothItem",
             getOTCalc:"ctx/at/shared/outsideot/setting/findById",

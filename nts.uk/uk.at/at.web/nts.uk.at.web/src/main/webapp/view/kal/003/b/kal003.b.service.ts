@@ -87,6 +87,9 @@ module nts.uk.at.view.kal003.b.service {
     export function getAttendanceItemByAtr(atr) : JQueryPromise<any>  {
         return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
     }
+    export function getMonthlyAttendanceItemByCodes(atr): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByCodes ,atr);
+    }
     /**
      * Find work type by list codes.
      */

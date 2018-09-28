@@ -371,10 +371,10 @@ public class MultipleMonthAggregateProcessService {
 			
 			for(int i=0; i< attendanceItemNames.size(); i++) {
 				String beforeOperator = "";
-				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? "-" : "+";
+				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? " - " : " + ";
 				
 				if (!"".equals(nameErrorAlarm) || type == 1) {
-					beforeOperator = (i == 0) ? type == 1 ? "-" : "+" : "";
+					beforeOperator = (i == 0) ? type == 1 ? " - " : " + " : "";
 				}
                 nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
 			}
