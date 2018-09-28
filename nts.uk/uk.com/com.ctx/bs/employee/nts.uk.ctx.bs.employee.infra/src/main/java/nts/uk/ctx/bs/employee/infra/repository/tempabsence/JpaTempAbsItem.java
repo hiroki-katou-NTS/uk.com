@@ -237,8 +237,16 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		if (historyIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BsymtTempAbsHisItem> entities = this.queryProxy().query(GET_BY_HISTORYID_LIST, BsymtTempAbsHisItem.class)
-				.setParameter("histIds", historyIds).getList();
+
+		// ResultList
+		List<BsymtTempAbsHisItem> entities = new ArrayList<>();
+		// Split historyIds List if size of historyIds List is greater than 1000
+		CollectionUtil.split(historyIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtTempAbsHisItem> lstBsymtAffCompanyHist = this.queryProxy().query(GET_BY_HISTORYID_LIST, BsymtTempAbsHisItem.class)
+					.setParameter("histIds", subList).getList();
+			entities.addAll(lstBsymtAffCompanyHist);
+		});
+		
 		return entities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
