@@ -39,7 +39,7 @@ public class TimeDfsDto {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
 
 	/**
 	 * 区切り文字設定
