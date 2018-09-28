@@ -247,7 +247,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				cb.lessThan(root.get(EmployeeDataView_.absEndDate), start));
 
 		// is in company
-		conditions.add(cb.not(cb.or(cb.greaterThan(root.get(EmployeeDataView_.comStrDate), end),
+		Predicate isInCompany = (cb.not(cb.or(cb.greaterThan(root.get(EmployeeDataView_.comStrDate), end),
 				cb.lessThan(root.get(EmployeeDataView_.comEndDate), start))));
 
 		Predicate incumbentCondition = cb.disjunction();
@@ -257,18 +257,18 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// includeIncumbents
 		if (paramQuery.getIncludeIncumbents()) {
-			incumbentCondition = isWorking;
+			incumbentCondition = cb.and(isInCompany, isWorking);
 		}
 
 		// workerOnLeave
 		if (paramQuery.getIncludeWorkersOnLeave()) {
-			workerOnLeaveCondition = cb.and(cb.not(isWorking),
+			workerOnLeaveCondition = cb.and(isInCompany, cb.not(isWorking),
 					cb.equal(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
 		}
 
 		// Occupancy
 		if (paramQuery.getIncludeOccupancy()) {
-			occupancyCondition = cb.and(cb.not(isWorking),
+			occupancyCondition = cb.and(isInCompany, cb.not(isWorking),
 					cb.notEqual(root.get(EmployeeDataView_.tempAbsFrameNo), LEAVE_ABSENCE_QUOTA_NO));
 		}
 
