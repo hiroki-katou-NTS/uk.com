@@ -4,6 +4,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -24,8 +25,6 @@ public class KTG030QueryProcessor {
 
 	@Inject
 	private DailyPerformanceAdapter dailyPerformanceAdapter;
-	
-
 
 	@Inject
 	private ShareEmploymentAdapter shareEmpAdapter;
@@ -52,6 +51,7 @@ public class KTG030QueryProcessor {
 			throw new RuntimeException("Not found PresentClosingPeriodExport by closureID" + closureID );
 			
 		}
+		YearMonth yearMonth = presentClosingPeriod.get().getProcessingYm();
 		GeneralDate closureStartDate = presentClosingPeriod.get().getClosureStartDate();
 		GeneralDate closureEndDate = presentClosingPeriod.get().getClosureEndDate();
 
@@ -65,7 +65,7 @@ public class KTG030QueryProcessor {
 
 		// RootType(就業日別確認) = 2
 		DatePeriod period = new DatePeriod(closureStartDate, closureEndDate);
-		boolean checkMonthApproved = dailyPerformanceAdapter.isDataExist(employeeID, period, 2);
+		boolean checkMonthApproved = dailyPerformanceAdapter.dataMonth(employeeID, period, yearMonth);
 
 		return checkMonthApproved;
 	}
