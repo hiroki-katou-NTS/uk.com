@@ -57,7 +57,9 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 }
                 self.updateHistory();
             } else {
-                self.deleteHistory();
+                dialog.confirm({ messageId: "Msg_18" }).ifYes(function () {
+                    self.deleteHistory();
+                });
             }
         }
 
