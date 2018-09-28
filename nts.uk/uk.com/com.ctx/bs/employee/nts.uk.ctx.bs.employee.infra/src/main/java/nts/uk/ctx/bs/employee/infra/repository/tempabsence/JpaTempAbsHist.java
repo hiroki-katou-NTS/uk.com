@@ -35,6 +35,10 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	
 	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT tah.sid FROM BsymtTempAbsHistory tah" 
 			+ " WHERE tah.sid IN :employeeIds AND tah.startDate <= :endDate AND :startDate <= tah.endDate ";
+	
+	/** The Constant MAX_ELEMENTS. */
+	private static final Integer MAX_ELEMENTS = 1000;
+	
 	/**
 	 * Convert from domain to entity
 	 * 
@@ -146,10 +150,18 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 
 	@Override
 	public List<TempAbsenceHistory> getByListSid(List<String> employeeIds, DatePeriod dateperiod) {
-		List<BsymtTempAbsHistory> tempAbsHistoryEntities = this.queryProxy()
-				.query(SELECT_BY_LIST_SID_DATEPERIOD, BsymtTempAbsHistory.class)
-				.setParameter("employeeIds", employeeIds).setParameter("startDate", dateperiod.start())
-				.setParameter("endDate", dateperiod.end()).getList();
+		
+		// ResultList
+		List<BsymtTempAbsHistory> tempAbsHistoryEntities = new ArrayList<>();
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtTempAbsHistory> lstBsymtAffCompanyHist = this.queryProxy()
+					.query(SELECT_BY_LIST_SID_DATEPERIOD, BsymtTempAbsHistory.class)
+					.setParameter("employeeIds", subList).setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end()).getList();
+			tempAbsHistoryEntities.addAll(lstBsymtAffCompanyHist);
+		});
+		
 		Map<String, List<BsymtTempAbsHistory>> tempAbsEntityForEmp = tempAbsHistoryEntities.stream()
 				.collect(Collectors.groupingBy(x -> x.sid));
 		List<TempAbsenceHistory> resultList = new ArrayList<>();
