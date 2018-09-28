@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvR
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -35,6 +36,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 月次処理用の暫定残数管理データを作成する */
 	@Inject
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 指定期間の暫定残数管理データを作成する */
+	@Inject
+	private InterimRemainOffPeriodCreateData periodCreateData;
 	/** 期間中の年休積休残数を取得 */
 	@Inject
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
@@ -69,6 +73,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
 				this.repositories,
 				this.interimRemOffMonth,
+				this.periodCreateData,
 				this.getAnnAndRsvRemNumWithinPeriod,
 				this.absenceRecruitMng,
 				this.breakDayoffMng,

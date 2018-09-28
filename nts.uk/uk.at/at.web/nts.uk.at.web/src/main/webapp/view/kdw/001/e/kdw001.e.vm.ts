@@ -160,6 +160,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             var self = this;
             nts.uk.request.asyncTask.requestToCancel(self.taskId());
             self.enableCancelTask(false);
+            service.updateLogState(self.empCalAndSumExecLogID());
 //            self.elapseTime.end();
         }
 
