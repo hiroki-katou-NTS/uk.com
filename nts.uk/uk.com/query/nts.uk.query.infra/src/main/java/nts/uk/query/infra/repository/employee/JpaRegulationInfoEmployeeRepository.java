@@ -275,7 +275,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// retire
 		if (paramQuery.getIncludeRetirees()) {
 			retireCondition = cb.and(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireStart),
-					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireEnd));
+					cb.lessThanOrEqualTo(root.get(EmployeeDataView_.comEndDate), retireEnd),
+					cb.notEqual(root.get(EmployeeDataView_.comEndDate), GeneralDateTime.ymdhms(9999, 12, 31, 0, 0, 0)));
 		}
 
 		conditions.add(cb.or(incumbentCondition, workerOnLeaveCondition, occupancyCondition, retireCondition));
