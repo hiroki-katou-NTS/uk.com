@@ -47,8 +47,8 @@ public class CreateSocialOfficeCommandHandler extends CommandHandlerWithResult<C
 	
 	private SocialInsuranceOffice mappingEntity(CreateSocialOfficeCommand command) {
 		SocialInsuranceOffice socialInuran = new SocialInsuranceOffice(command.getCompanyID(), command.getCode(),
-				command.getName(), command.getShortName(), command.getRepresentativeName(),
-				command.getRepresentativePosition(), command.getPostalCode().isEmpty() ? null : command.getPostalCode(),command.getAddress1(),
+				command.getName(), command.getShortName().isEmpty() ? null : command.getShortName(), command.getRepresentativeName().isEmpty() ? null : command.getRepresentativeName(),
+				command.getRepresentativePosition(), command.getPostalCode().isEmpty() ? null : command.getPostalCode(),command.getAddress1().isEmpty() ? null : command.getAddress1(),
 				command.getAddressKana1().isEmpty() ? null : command.getAddressKana1(), command.getAddress2().isEmpty() ? null : command.getAddress2(), command.getAddressKana2().isEmpty() ? null : command.getAddressKana2(), command.getPhoneNumber().isEmpty() ? null : command.getPhoneNumber() ,
 				command.getMemo(), command.getWelfarePensionFundNumber(), command.getWelfarePensionOfficeNumber().isEmpty() ? null : command.getWelfarePensionOfficeNumber() ,
 				command.getHealthInsuranceOfficeNumber(), command.getHealthInsuranceUnionOfficeNumber().isEmpty() ? null : command.getHealthInsuranceUnionOfficeNumber() ,

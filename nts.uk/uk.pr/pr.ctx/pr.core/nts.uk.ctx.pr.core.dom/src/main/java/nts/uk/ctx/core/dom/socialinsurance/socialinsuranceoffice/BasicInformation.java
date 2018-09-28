@@ -51,6 +51,6 @@ public class BasicInformation extends DomainObject {
         this.representativeName     = Objects.isNull(representativeName) ? Optional.empty() : Optional.of(new SocialInsuranceOfficeRepresentName(representativeName));
         this.representativePosition = new SocialInsuranceOfficeRepresentPosition(representativePosition);
         this.address                = address;
-        this.memo                   = Optional.of(new Memo(memo));
+        this.memo                   = Objects.isNull(memo) ? Optional.empty() : Optional.of(new Memo(memo));
     }
 }

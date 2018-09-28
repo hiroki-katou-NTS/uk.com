@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.socialinsurance.InsuranceFee;
@@ -12,6 +13,7 @@ import java.util.Optional;
  * 各負担料
  */
 @Getter
+@EqualsAndHashCode
 public class ContributionFee extends DomainObject {
 
     /**

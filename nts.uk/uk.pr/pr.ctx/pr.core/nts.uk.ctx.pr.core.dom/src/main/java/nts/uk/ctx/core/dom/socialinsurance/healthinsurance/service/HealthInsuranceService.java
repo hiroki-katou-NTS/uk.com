@@ -129,7 +129,6 @@ public class HealthInsuranceService {
 		Optional<HealthInsuranceMonthlyFee> opt_oldHealthInsuranceMonthlyFee = healthInsuranceMonthlyFeeRepository.getHealthInsuranceMonthlyFeeById(bonusHealthInsuranceRate.getHistoryID());
 		if (!opt_oldHealthInsuranceMonthlyFee.isPresent()) return false;
 		HealthInsuranceMonthlyFee oldHealthInsuranceMonthlyFee = opt_oldHealthInsuranceMonthlyFee.get();
-		if (oldHealthInsuranceMonthlyFee.getHealthInsurancePerGradeFee().containsAll(healthInsuranceMonthlyFee.getHealthInsurancePerGradeFee())) return false;
-		return true;
+		return !oldHealthInsuranceMonthlyFee.getHealthInsurancePerGradeFee().containsAll(healthInsuranceMonthlyFee.getHealthInsurancePerGradeFee());
 	}
 }

@@ -123,6 +123,7 @@ module nts.uk.pr.view.qmm008.d {
                     nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
                         if (response.msg == 'Msg_3') {
                             nts.uk.ui.dialog.error({ messageId: "Msg_3" }).then(function() {
+                                self.isEnableBtnDelete(false);
                             });
                         } else {
                             self.items([]);
