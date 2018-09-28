@@ -295,14 +295,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //            self.flexShortage.subscribe((val:any) => {
             //            });
             self.flexShortage.valueHasMutated();
-
             self.isVisibleMIGrid.subscribe((value) => {
                 if (value) {
                     self.getNameMonthly();
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 180) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight +100) + 'px !IMPORTANT');
 
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime)
@@ -324,7 +323,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             $(window).on('resize', function() {
                 var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 180) + 'px !IMPORTANT');
+                //$(".grid-container").attr('style', 'height: ' + (win.height() -150) + 'px !IMPORTANT');
             });
         }
         
@@ -2638,11 +2637,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.createNtsMControl();
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
+            let subWidth = "50px";
+            if (self.displayFormat() === 0) {
+                subWidth = "135px";
+            } else if (self.displayFormat() === 1) {
+                subWidth = "135px";
+            } else {
+                subWidth = "155px";
+            }
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
-                width: '1920px',
+                subWidth : subWidth,
                 height: (window.screen.availHeight - 250) + "px",
-                headerHeight: '45px',
+                headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
+                minRows: 31,
+                maxRows: 50,
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
