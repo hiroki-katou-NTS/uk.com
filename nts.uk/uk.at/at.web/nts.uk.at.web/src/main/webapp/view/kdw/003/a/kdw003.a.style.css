@@ -141,7 +141,9 @@
 	border: 1px solid #CCC;
 	text-align: center;
 	height: 29px;
-	width: 50px;
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
@@ -155,7 +157,7 @@
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
-	width: 400px; 
+	width: auto; 
 }
 
 #numberHoliday {
@@ -400,12 +402,12 @@ table#employ_view tr{
     font-size: 18pt !important; 
 }
 #functions-area button {
-	margin-left: 1px;
-	margin-right: 1px
+	margin-left: 4px;
+	margin-right: 4px
 }
 #functions-area button.danger {
-	margin-left: 1px;
-	margin-right: 1px
+	margin-left: 4px;
+	margin-right: 4px
 }
 .nts-datepicker-wrapper .ntsDatepicker {
     width: 65px;
