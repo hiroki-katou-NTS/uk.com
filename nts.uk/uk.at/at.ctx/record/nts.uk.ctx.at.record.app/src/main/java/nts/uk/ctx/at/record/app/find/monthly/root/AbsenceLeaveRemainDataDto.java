@@ -81,7 +81,7 @@ public class AbsenceLeaveRemainDataDto extends MonthlyItemCommon {
 	@Override
 	public AbsenceLeaveRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		return new AbsenceLeaveRemainData(employeeId, ym, closureID, 
-				closureDate == null ? 0 : closureDate.getClosureDay(), 
+				closureDate == null ? 1 : closureDate.getClosureDay(), 
 				closureDate == null ? false : closureDate.getLastDayOfMonth(), 
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
 				datePeriod == null ? null : datePeriod.getStart(), 

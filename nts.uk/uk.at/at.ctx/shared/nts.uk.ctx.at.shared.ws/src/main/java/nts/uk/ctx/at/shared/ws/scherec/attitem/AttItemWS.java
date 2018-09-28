@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemFinder;
@@ -25,8 +26,20 @@ public class AttItemWS {
 	}
 
 	@POST
+	@Path("getdailyattitembyid/{authorityId}")
+	public List<AttItemName> getDailyAttItemById(@PathParam(value = "authorityId") String authorityId) {
+		return this.finder.getDailyAttItemById(authorityId);
+	}
+	
+	@POST
 	@Path("getMonthlyAttItem")
 	public List<AttItemName> getMonthlyAttItemByIdAndAtr(AttItemParam param) {
 		return this.finder.getMonthlyAttItemByIdAndAtr(param);
+	}
+	
+	@POST
+	@Path("getmonthlyattitembyid/{authorityId}")
+	public List<AttItemName> getMonthlyAttItemById(@PathParam(value = "authorityId") String authorityId) {
+		return this.finder.getMonthlyAttItemById(authorityId);
 	}
 }

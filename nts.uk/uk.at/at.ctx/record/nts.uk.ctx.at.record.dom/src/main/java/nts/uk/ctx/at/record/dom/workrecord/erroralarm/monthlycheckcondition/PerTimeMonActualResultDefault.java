@@ -16,6 +16,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.monthly.MonthlyRecordValueImport;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
@@ -83,13 +84,35 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 
 		if (!CollectionUtil.isEmpty(attendanceTimeOfMonthlys)) {
 			for (AttendanceTimeOfMonthly attendanceTimeOfMonthly : attendanceTimeOfMonthlys) {
+				AttendanceTimeOfMonthlyKey key = new AttendanceTimeOfMonthlyKey(
+						attendanceTimeOfMonthly.getEmployeeId(),
+						attendanceTimeOfMonthly.getYearMonth(),
+						attendanceTimeOfMonthly.getClosureId(),
+						attendanceTimeOfMonthly.getClosureDate());
 				MonthlyRecordToAttendanceItemConverter monthly = attendanceItemConvertFactory.createMonthlyConverter();
 					monthly.withAttendanceTime(attendanceTimeOfMonthly);
 				if (!CollectionUtil.isEmpty(anyItems)){
-					monthly.withAnyItem(anyItems);
-					monthlyRecords.add(MonthlyRecordValueImport.of(yearMonth, attendanceTimeOfMonthly.getClosureId(),
-							attendanceTimeOfMonthly.getClosureDate(), monthly.convert(attendanceIds)));
+					Map<AttendanceTimeOfMonthlyKey, List<AnyItemOfMonthly>> anyItemsMap = new HashMap<>();
+					for (AnyItemOfMonthly anyItem : anyItems){
+						AttendanceTimeOfMonthlyKey key2 = new AttendanceTimeOfMonthlyKey(
+								anyItem.getEmployeeId(),
+								anyItem.getYearMonth(),
+								anyItem.getClosureId(),
+								anyItem.getClosureDate());
+						if(anyItemsMap.containsKey(key)){
+							anyItemsMap.get(key2).add(anyItem);
+						}else {
+							List<AnyItemOfMonthly> anyItemsType = new ArrayList<>();
+							anyItemsType.add(anyItem);
+							anyItemsMap.put(key2, anyItemsType);
+						}
+					}
+					if(anyItemsMap.containsKey(key)){
+						monthly.withAnyItem(anyItemsMap.get(key));
+					}
 				}
+				monthlyRecords.add(MonthlyRecordValueImport.of(yearMonth, attendanceTimeOfMonthly.getClosureId(),
+						attendanceTimeOfMonthly.getClosureDate(), monthly.convert(attendanceIds)));
 				
 			}
 		}

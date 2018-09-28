@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.company;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,8 +20,15 @@ public class CompanyFinder {
 	
 	public List<ShortCompanyDto> findAll() {
 		LoginUserContext context = AppContexts.user();
-		return companyAdapter.getCompanyIdList(context.userId(), context.personId())
-				.stream().map(id -> companyAdapter.getCompany(id)).filter(c -> c.isPresent())
+		List<String> idList = companyAdapter.getCompanyIdList(context.userId(), context.personId());
+		
+		if (idList == null || idList.isEmpty()) {
+			return companyAdapter.getCompany(context.companyId())
+					.map(c -> Arrays.asList(new ShortCompanyDto(c.getCompanyId(), c.getCompanyName())))
+					.orElse(Collections.emptyList());
+		}
+		
+		return idList.stream().map(id -> companyAdapter.getCompany(id)).filter(c -> c.isPresent())
 				.map(c -> new ShortCompanyDto(c.get().getCompanyId(), c.get().getCompanyName()))
 				.collect(Collectors.toList());
 	}
