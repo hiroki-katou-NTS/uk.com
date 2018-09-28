@@ -1,7 +1,12 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -10,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingMonth;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingMonthRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRoundingMonthItem;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRoundingMonthItemPK;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author phongtq
@@ -17,13 +23,20 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstRoundingMonthI
  */
 @Stateless
 public class JpaRoudingMonthRepository extends JpaRepository implements RoundingMonthRepository{
-	private static final String SELECT_BY_CID;
+	private static final String SELECT_BY_CID;	
+	private static final String DELETE_BY_CID;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstRoundingMonthItem e");
 		builderString.append(" WHERE e.kshstRoundingMonthSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(" DELETE FROM KshstRoundingMonthItem e");
+		builderString.append(" WHERE e.kshstRoundingMonthSetPK.companyId = :companyId");
+		DELETE_BY_CID = builderString.toString();
 	}
 
 	/**
@@ -86,6 +99,17 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	public Optional<RoundingMonth> findByCId(String companyId, String timeItemId) {
 		return this.queryProxy().find(new KshstRoundingMonthItemPK(companyId,timeItemId),KshstRoundingMonthItem.class)
 				.map(c->convertToDomain(c));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingMonthRepository#addList(java.util.List)
+	 */
+	@Override
+	public void addList(List<RoundingMonth> lstRoundingMonth) {
+		this.getEntityManager().createQuery(DELETE_BY_CID)
+				.setParameter("companyId", AppContexts.user().companyId())
+				.executeUpdate();
+		this.commandProxy().insertAll(lstRoundingMonth.stream().map(domain -> convertToDbType(domain)).collect(Collectors.toList()));
 	}
 
 }

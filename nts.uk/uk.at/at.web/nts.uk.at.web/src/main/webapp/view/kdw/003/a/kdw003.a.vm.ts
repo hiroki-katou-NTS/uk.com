@@ -228,6 +228,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         loadFirst: boolean = true;
         
         clickCounter: CLickCount = new CLickCount();
+        
+        itemInputName: any = [];
 
         constructor(dataShare: any) {
             var self = this;
@@ -507,7 +509,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" });
                     } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
-                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
                             nts.uk.request.jumpToTopPage();
                         });
 
@@ -571,8 +573,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let startTime: number = performance.now();
             console.log(data);
             self.loadFirst = false;
-            self.lstDomainOld = data.domainOld;
-            self.lstDomainEdit = _.cloneDeep(data.domainOld);
+            //self.lstDomainOld = data.domainOld;
+            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
             if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
                 localStorage.removeItem(window.location.href + '/dpGrid');
             }
@@ -581,6 +583,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dateRanger().endDate = data.dateRange.endDate;
             self.dateRanger.valueHasMutated();
             //if(self.displayFormat() == 1) //self.selectedDate(data.dateRange.startDate);
+            // pair name input
+            self.itemInputName = data.lstControlDisplayItem.itemInputName;
             self.dataAll(data);
             self.itemValueAll(data.itemValues);
             self.comment(data.comment != null ? '■ ' + data.comment : null);
@@ -780,6 +784,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
                 self.isVisibleMIGrid(data.monthResult.hasItem);
+                self.isVisibleMIGrid.valueHasMutated();
                 //
             } else {
                 self.agreementInfomation().mapDataAgreement({ showAgreement: false });
@@ -812,7 +817,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.showFlex(false);
                 self.lstErrorFlex = [];
                 if (self.displayFormat() === 0) {
-                    self.itemValueMonthParent = data.monthResult.flexShortage.monthParent;
+                    self.itemValueMonthParent = data.monthResult == undefined ? {} : data.monthResult.flexShortage.monthParent;
                     self.valueUpdateMonth = self.itemValueMonthParent;
                     self.valueUpdateMonth["hasFlex"] = false;
                 }
@@ -953,8 +958,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataCheckApproval: dataCheckApproval,
                     mode: self.displayFormat(),
                     spr: sprStampSourceInfo,
-                    dailyOlds: self.lstDomainOld,
-                    dailyEdits: self.lstDomainEdit,
+                   // dailyOlds: self.lstDomainOld,
+                   //dailyEdits: self.lstDomainEdit,
                     flagCalculation: self.flagCalculation
                 }
                 if (self.displayFormat() == 0) {
@@ -969,7 +974,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
 
                 let checkDailyChange = (dataChangeProcess.length > 0 || dataCheckSign.length > 0 || dataCheckApproval.length > 0) && checkDataCare;
-                if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items)) {
+                if (checkDailyChange || (self.valueUpdateMonth != null && self.valueUpdateMonth.items) || self.flagCalculation) {
                     let dfd = $.Deferred();
                     service.addAndUpdate(dataParent).done((dataAfter) => {
                         // alert("done");
@@ -1149,15 +1154,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 });
-                if (!_.isEmpty(self.lstDomainOld)) {
+                //if (!_.isEmpty(self.lstDomainOld)) {
                     let dataParent = {
                         itemValues: dataChangeProcess,
                         dataCheckSign: dataCheckSign,
                         dataCheckApproval: dataCheckApproval,
                         mode: self.displayFormat(),
                         spr: sprStampSourceInfo,
-                        dailyOlds: self.lstDomainOld,
-                        dailyEdits: self.lstDomainEdit,
+                        //dailyOlds: self.lstDomainOld,
+                        //dailyEdits: self.lstDomainEdit,
                         flagCalculation: updateAll
                     }
                     if (self.displayFormat() == 0) {
@@ -1184,7 +1189,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         }
                         if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
-                            self.lstDomainEdit = data.calculatedRows;
+                            //self.lstDomainEdit = data.calculatedRows;
                             let lstValue = data.resultValues;
                             _.forEach(self.dpData, row => {
                                 let cellDatas = row.cellDatas;
@@ -1238,8 +1243,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         dfd.resolve();
                     });
                     dfd.promise();
-                } else 
-                    nts.uk.ui.block.clear();
+//                } else 
+//                    nts.uk.ui.block.clear();
             }
         }
 
@@ -1320,7 +1325,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 autBussCode: self.autBussCode(),
                 dateMonth: moment(self.dateRanger().endDate).utc().toISOString(),
                 onlyLoadMonth: onlyLoadMonth,
-                dailys: self.lstDomainEdit,
+                //dailys: self.lstDomainEdit,
                 dateExtract: {
                     startDate: moment(self.dateRanger().startDate).toISOString(),
                     endDate: moment(self.dateRanger().endDate).toISOString()
@@ -1337,8 +1342,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return dfd.resolve();
                 }
                 self.showTighProcess(data.showTighProcess);
-                self.lstDomainEdit = data.domainOld;
-                self.lstDomainOld = _.cloneDeep(data.domainOld);
+                //self.lstDomainEdit = data.domainOld;
+                //self.lstDomainOld = _.cloneDeep(data.domainOld);
                 self.processFlex(data, true);
                 let dataSourceRow, dataSource, dataSourceNew, dataRowTemp = [];
                 dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
@@ -1595,18 +1600,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
                     if (_.isEmpty(data.lstEmployee) && _.isEmpty(data.lstControlDisplayItem.lstHeader)) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
-                            return;
-                        });
+                         self.destroyGrid();
+                         self.processFlex(data, false);
+                         //self.hasEmployee = false;
+//                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
+//                            return;
+//                        });
                     } else {
                         self.initScreenSPR = 1;
-                        self.lstDomainOld = data.domainOld;
-                        self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                        //self.lstDomainOld = data.domainOld;
+                        //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                         if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
                             localStorage.removeItem(window.location.href + '/dpGrid');
                         }
                         localStorage.setItem('kdw003_type', data.typeBussiness);
                         self.dataAll(data);
+                        self.itemInputName = data.lstControlDisplayItem.itemInputName;
                         self.formatCodes(data.lstControlDisplayItem.formatCode);
                         self.autBussCode(data.autBussCode);
                         self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
@@ -1656,9 +1665,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }).fail(function(error) {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" })
-                    } else {
+                    } else { 
                         if (error.messageId != undefined) {
-                            nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                            nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
                                 nts.uk.request.jumpToTopPage();
                             });
 
@@ -1797,11 +1806,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return String(data.key) === "A" + value.itemId;
                 })
                 object.itemName = (item == undefined) ? "" : item.headerText;
-
-                let itemGroup = _.find(self.optionalHeader, (data) => {
-                    return String(data.key) === "A" + value.group;
-                })
-                let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup.headerText;
+                let itemOtherInGroup = CHECK_INPUT[value.itemId+""];
+                let itemGroup = self.itemInputName[Number(itemOtherInGroup)];
+                let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup;
                 object.message = nts.uk.resource.getMessage("Msg_1108", [object.itemName, nameGroup]);
                 errorValidateScreeen.push(object);
             });
@@ -1940,8 +1947,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
-                            self.lstDomainOld = data.domainOld;
-                            self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                            //self.lstDomainOld = data.domainOld;
+                            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                             self.dataAll(data);
                             self.removeErrorRefer();
                             self.createSumColumn(data);
@@ -1996,8 +2003,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.startScreen(param).done((data) => {
-                            self.lstDomainOld = data.domainOld;
-                            self.lstDomainEdit = _.cloneDeep(data.domainOld);
+                            //self.lstDomainOld = data.domainOld;
+                            //self.lstDomainEdit = _.cloneDeep(data.domainOld);
                             self.dataAll(data);
                             self.removeErrorRefer();
                             self.createSumColumn(data);
@@ -2326,12 +2333,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         destroyGrid() {
-            $("#dpGrid").mGrid("destroy");
-            //            $("#dpGrid").empty();
-            //            $("#dpGrid").remove();
-            //            $(".nts-grid-sheet-buttons").remove();
-            //            $('<table id="dpGrid"></table>').appendTo('#gid');
-            $("#dpGrid").off();
+            if ($("#dpGrid").hasClass("mgrid")) {
+                $("#dpGrid").mGrid("destroy");
+                $("#dpGrid").removeClass("mgrid");
+                $("#dpGrid").off();
+            }
         }
 
         setColorWeekend() {
@@ -2633,7 +2639,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
-                width: (window.screen.availWidth - 200) + "px",
+                width: '1920px',
                 height: (window.screen.availHeight - 250) + "px",
                 headerHeight: '45px',
                 dataSource: self.lstDataSourceLoad,
@@ -3315,7 +3321,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // get item change in row
                     dataChange = $("#dpGrid").mGrid("updatedCells");
                     dataChageRow = _.map(_.filter(dataChange, row => {
-                        return row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
+                        return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey != "Name" && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {
                         let itemTemp, keyIdRow;
                         keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
@@ -3331,11 +3337,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataChageRow.push(dataMap);
                     
                     let param = {
-                        dailyEdits: __viewContext.vm.lstDomainEdit,
+                        //dailyEdits: __viewContext.vm.lstDomainEdit,
                         itemEdits: dataChageRow
                     };
                     service.calcTime(param).done((value) => {
-                        __viewContext.vm.lstDomainEdit = value.dailyEdits;
+                        //__viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
                             $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
                         })
@@ -3738,6 +3744,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
                         // Check is cancel.
                         if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         //view all code of selected item 
@@ -3776,6 +3783,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 dfd.resolve()
                             });
                         } else {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             if (output == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
                             dfd6.resolve()
                         }
@@ -3811,6 +3819,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                         var isCancel = nts.uk.ui.windows.getShared('CDL004Cancel');
                         if (isCancel) {
+                            __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('outputCDL004');
@@ -3836,6 +3845,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // nts.uk.ui.block.clear();
                         var isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
                         if (isCancel) {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('CDL002Output');
@@ -4103,17 +4113,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.noOfHolidaysOld())) {
+                    //if (Number(val) != Number(self.noOfHolidaysOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.absentDeductionTimeOld())) {
+                    //if (Number(val) != Number(self.absentDeductionTimeOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
         };

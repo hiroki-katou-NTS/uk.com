@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.b {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             itemsB23: KnockoutObservableArray<any>;
@@ -592,7 +595,7 @@ module nts.uk.at.view.kmk013.b {
                         if(self.enableB215()==true){
                             self.enableB217(true);
                         }
-                        if (self.selectedB23() == 1 && self.selectedB29() == 1) {
+                        if (self.selectedB23() == 0 && self.selectedB29() == 0) {
                             $('.input-time').ntsError('check');                            
                         }
                     }
@@ -943,12 +946,15 @@ module nts.uk.at.view.kmk013.b {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                self.initData();
-                $( "#b23" ).focus();
-                dfd.resolve();
+                self.initData().done(() => {
+                    $( "#b23" ).focus();
+                    dfd.resolve(); 
+                });
                 return dfd.promise();
             }
-            initData(): void {
+            
+            initData(): JQueryPromise<any> {
+                var dfd = $.Deferred();
                 let self = this;
                 self.isLoadAfterGetData(true);
                 $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
@@ -1191,7 +1197,9 @@ module nts.uk.at.view.kmk013.b {
                     
                     self.notifyVarKnockoutchange();
                     self.isLoadAfterGetData(false);
-                });    
+                    dfd.resolve();
+                });
+                return dfd.promise();
             }
             
             notifyVarKnockoutchange(): void {
@@ -1217,6 +1225,8 @@ module nts.uk.at.view.kmk013.b {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
+                
+                blockUI.grayout();
 
                 obj.referActualWorkHours = self.selectedB23();
                 obj.notReferringAch = self.oldData().notReferringAch;
@@ -1449,9 +1459,10 @@ module nts.uk.at.view.kmk013.b {
                     self.initData();
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     $( "#b23" ).focus();
-                }
-                ).fail((error) => {
+                }).fail((error) => {
                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    blockUI.clear();
                 });
             }
         }

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -50,7 +50,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author Doan Duy Hung
  *
  */
-@Stateless
+@RequestScoped
 public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
@@ -70,7 +70,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period,
-			Integer rootType) {
+			Integer rootType) throws BusinessException {
 		List<String> employeeIDLst = Arrays.asList(employeeID);
 		return appRootInstanceService.getAppRootStatusByEmpsPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
 				.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
@@ -152,7 +152,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
 					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
 			if(appRootInstance == null){
-				throw new BusinessException("Msg_1430",approverID);
+				throw new BusinessException("Msg_1430", "承認者");
 			}
 			// 対象日の就業実績確認状態を取得する
 			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);

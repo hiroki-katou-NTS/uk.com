@@ -246,7 +246,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
 		this.removeScheduleMaster(employeeId, baseDate);
-//		this.removeScheStateWithoutListScheState(employeeId, baseDate);
+		this.removeScheStateWithoutListScheState(employeeId, baseDate);
 	}
 
 	/*
@@ -1052,7 +1052,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	private void removeScheStateWithoutListScheState(String employeeId, GeneralDate baseDate) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd");
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -1185,14 +1185,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		return lstData;
 	}
 
-	@Override
-	public List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate) {
-		List<BasicSchedule> result = this.queryProxy().query(GET_LIST_BY_LIST_SID_DATE, KscdtBasicSchedule.class)
-				.setParameter("sIds", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toDomain(x));
-		return result;
-	}
-	
 	@Override
 	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);

@@ -48,6 +48,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 			entity.workTypeCode = dataMng.getWorkTypeCode();
 			this.getEntityManager().persist(entity);
 		}
+		this.getEntityManager().flush();
 	}
 
 }

@@ -391,8 +391,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
-                periodStartDate: self.dtPrev, // 対象期間開始日
-                periodEndDate: self.dtAft, // 対象期間終了日
+                periodStartDate: self.dateTimePrev, // 対象期間開始日
+                periodEndDate: self.dateTimeAfter, // 対象期間終了日
                 inService: true, // 在職区分
                 leaveOfAbsence: false, // 休職区分
                 closed: false, // 休業区分
@@ -434,7 +434,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             // Start component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-                $("#ccg001-btn-search-drawer").trigger("click");
+                setTimeout(() =>{$("#ccg001-btn-search-drawer").trigger("click");}, 500);
             });
         }
 
@@ -886,7 +886,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             alertError({ messageId: 'Msg_435' });
                         };
                     }
-
 
                     return true;
                 });
