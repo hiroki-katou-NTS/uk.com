@@ -27,7 +27,7 @@
                  data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
 
             <!-- D1_2  処理区分名称 -->
-            <input data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}"
+            <input id="D2_2" data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}"
                    style="width: 150px"/>
 
             <span data-bind="if : mode==0" style="margin-left: 30px">

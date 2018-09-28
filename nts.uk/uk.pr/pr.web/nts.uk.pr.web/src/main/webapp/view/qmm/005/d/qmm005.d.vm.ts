@@ -398,7 +398,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 element.style.display = "block";
                 windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 200);
                 //element.attr('style','top: 0px!important');
-                document.getElementsByClassName("ui-dialog").attr('style','top: 0px!important');
+                $('.ui-dialog').attr('style','top: 0px!important');
             }else if (windowSize.$dialog.height() > 440) {
                 element.style.display = "none";
                 windowSize.setHeight(440);
