@@ -121,9 +121,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					anyItemValueOfDailyRepo.add(ai);
 				}
 			});
-			
-			//勤務情報の更新
-			workInformationRepository.updateByKeyFlush(d.getWorkInformation());
 		});
 	}
 	
