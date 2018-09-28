@@ -249,8 +249,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 								  			.map(tc -> tc.getAffiliationInfor().getYmd())
 								  			.collect(Collectors.toList());
 		
-		val maxGeneralDate = sortedymd.get(0);
-		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		val minGeneralDate = sortedymd.get(0);
+		val maxGeneralDate = sortedymd.get(sortedymd.size() - 1);
 		
 		
 		//労働制マスタ取得

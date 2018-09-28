@@ -509,7 +509,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" });
                     } else if (error.messageId != undefined && error.messageId != "KDW/003/a") {
-                        nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
                             nts.uk.request.jumpToTopPage();
                         });
 
@@ -784,6 +784,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
                 self.isVisibleMIGrid(data.monthResult.hasItem);
+                self.isVisibleMIGrid.valueHasMutated();
                 //
             } else {
                 self.agreementInfomation().mapDataAgreement({ showAgreement: false });
@@ -1664,9 +1665,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }).fail(function(error) {
                     if (error.messageId == "Msg_672") {
                         nts.uk.ui.dialog.info({ messageId: "Msg_672" })
-                    } else {
+                    } else { 
                         if (error.messageId != undefined) {
-                            nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                            nts.uk.ui.dialog.alert(error.messageId == "Msg_1430" ? error.message : { messageId: error.messageId }).then(function() {
                                 nts.uk.request.jumpToTopPage();
                             });
 
@@ -3320,7 +3321,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // get item change in row
                     dataChange = $("#dpGrid").mGrid("updatedCells");
                     dataChageRow = _.map(_.filter(dataChange, row => {
-                        return row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
+                        return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey != "Name" && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {
                         let itemTemp, keyIdRow;
                         keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
@@ -3743,6 +3744,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
                         // Check is cancel.
                         if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         //view all code of selected item 
@@ -3781,6 +3783,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 dfd.resolve()
                             });
                         } else {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             if (output == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
                             dfd6.resolve()
                         }
@@ -3816,6 +3819,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                         var isCancel = nts.uk.ui.windows.getShared('CDL004Cancel');
                         if (isCancel) {
+                            __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('outputCDL004');
@@ -3841,6 +3845,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // nts.uk.ui.block.clear();
                         var isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
                         if (isCancel) {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('CDL002Output');
@@ -4108,17 +4113,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.bindDataChange(dataCalc, "", "", [], false);
             self.noOfHolidays.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.noOfHolidaysOld())) {
+                    //if (Number(val) != Number(self.noOfHolidaysOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
 
             self.absentDeductionTime.subscribe(val => {
                 if (self.initLoad > 0) {
-                    if (Number(val) != Number(self.absentDeductionTimeOld())) {
+                    //if (Number(val) != Number(self.absentDeductionTimeOld())) {
                         self.calc();
-                    }
+                    //}
                 }
             });
         };

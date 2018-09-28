@@ -142,6 +142,7 @@ public class GetHeaderOfCPS001Finder {
 			if (comHist != null) {
 				AffCompanyHistByEmployee emp = comHist.getAffCompanyHistByEmployee(sid);
 				if (emp != null) {
+					_emp.setHireDate(emp.getHistory().map(i->i.getDatePeriod().start().toString("yyyy/MM/dd")).orElse(null));
 					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
 							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
 							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),

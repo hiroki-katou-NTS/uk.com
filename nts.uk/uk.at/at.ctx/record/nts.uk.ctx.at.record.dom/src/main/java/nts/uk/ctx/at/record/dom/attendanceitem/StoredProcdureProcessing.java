@@ -48,7 +48,6 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -60,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class StoredProcdureProcessing implements StoredProcdureProcess {
@@ -341,32 +341,25 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		return dailies;
 	}
 	
-	private void processOverTime(OverTimeOfDaily ot, int no, int val){
-		Optional<OverTimeFrameTime> frame = ot.getOverTimeWorkFrameTime().stream()
-				.filter(otf -> otf.getOverWorkFrameNo().v() == no).findFirst();
-		if(frame.isPresent()){
-			frame.get().getOverTimeWork().setTime(new AttendanceTime(val));
-		} else {
-			ot.getOverTimeWorkFrameTime().add(new OverTimeFrameTime(new OverTimeFrameNo(no), 
-					TimeDivergenceWithCalculation.sameTime(new AttendanceTime(val)), 
-					TimeDivergenceWithCalculation.sameTime(AttendanceTime.ZERO), 
-					AttendanceTime.ZERO, AttendanceTime.ZERO));
-		}
-	}
-
-	private Map<WorkTypeCode, WorkType> getWorkType(String companyId, Set<String> workTypeCode, Map<WorkTypeCode, WorkType> workTypeMap) {
-		if(workTypeMap != null && !workTypeMap.isEmpty()){
-			return workTypeMap;
-		}
-		return workTypeRepo.getPossibleWorkTypeV2(companyId, new ArrayList<>(workTypeCode))
-							.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
+	@Override
+	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		monthlyProcessing(companyId, employeeId, yearMonth, closureId, closureDate, Optional.empty(), new ArrayList<>());
 	}
 	
 	@Override
 	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
-			ClosureDate closureDate) {
+			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime) {
+		monthlyProcessing(companyId, employeeId, yearMonth, closureId, closureDate, attendanceTime, new ArrayList<>());
+	}
+	
+	@Override
+	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime, List<AnyItemOfMonthly> monthlyOptionalItems) {
 		/** 任意項目の件数を取得 */
-		Optional<AttendanceTimeOfMonthly> attendanceTime = attendanceTimeOfMonthly.find(employeeId, yearMonth, closureId, closureDate);
+		if(!attendanceTime.isPresent()){
+			attendanceTime = attendanceTimeOfMonthly.find(employeeId, yearMonth, closureId, closureDate);
+		}
 		if(!attendanceTime.isPresent()){
 			return;
 		}
@@ -380,7 +373,9 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		/** 残業日数を取得 */
 		int countOver = countOverTime(employeeId, attendanceTime);
 		
-		List<AnyItemOfMonthly> monthlyOptionalItems = monthlyOptionalItem.find(employeeId, yearMonth, closureId, closureDate, Arrays.asList(20, 22, 24, 46, 1, 2));
+		if(monthlyOptionalItems.isEmpty()){
+			monthlyOptionalItems = monthlyOptionalItem.find(employeeId, yearMonth, closureId, closureDate, Arrays.asList(20, 22, 24, 46, 1, 2));
+		}
 		
 		/** 任意項目20: 割合を計算 */
 		accessMonthlyItem(employeeId, yearMonth, closureId, closureDate, 20, getOnDefault(count18, count19), monthlyOptionalItems);
@@ -436,6 +431,27 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		return getTimefrom(otf.getOverTimeWork()) + getTimefrom(otf.getTransferTime());
 	}
 
+	private void processOverTime(OverTimeOfDaily ot, int no, int val){
+		Optional<OverTimeFrameTime> frame = ot.getOverTimeWorkFrameTime().stream()
+				.filter(otf -> otf.getOverWorkFrameNo().v() == no).findFirst();
+		if(frame.isPresent()){
+			frame.get().getOverTimeWork().setTime(new AttendanceTime(val));
+		} else {
+			ot.getOverTimeWorkFrameTime().add(new OverTimeFrameTime(new OverTimeFrameNo(no), 
+					TimeDivergenceWithCalculation.sameTime(new AttendanceTime(val)), 
+					TimeDivergenceWithCalculation.sameTime(AttendanceTime.ZERO), 
+					AttendanceTime.ZERO, AttendanceTime.ZERO));
+		}
+	}
+
+	private Map<WorkTypeCode, WorkType> getWorkType(String companyId, Set<String> workTypeCode, Map<WorkTypeCode, WorkType> workTypeMap) {
+		if(workTypeMap != null && !workTypeMap.isEmpty()){
+			return workTypeMap;
+		}
+		return workTypeRepo.getPossibleWorkTypeV2(companyId, new ArrayList<>(workTypeCode))
+							.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
+	}	
+	
 	private double getOnDefault(Integer count18, Integer count19) {
 		if(count18 == 0 || count19 == 0){
 			return 0;

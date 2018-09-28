@@ -601,6 +601,11 @@ module nts.uk.at.view.kwr001.a {
             private validateMinimumOneChecked(): boolean {
                 let self = this;
                 
+                $('#combo-box').ntsError('check');
+                if (nts.uk.ui.errors.hasError()) {
+                    return false;
+                }
+                
                 if (self.selectedDataOutputType() == 0) {
                     if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() 
                     // update spec ver 25, only hidden temporary

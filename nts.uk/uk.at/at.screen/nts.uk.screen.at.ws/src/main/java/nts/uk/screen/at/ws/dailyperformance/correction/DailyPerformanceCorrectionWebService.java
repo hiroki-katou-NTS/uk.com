@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -198,7 +199,7 @@ public class DailyPerformanceCorrectionWebService {
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
-			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		}else{
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
@@ -245,7 +246,8 @@ public class DailyPerformanceCorrectionWebService {
 		}
 		param.setDailys(dailyEdits);
 		val result = loadRowProcessor.reloadGrid(param);
-		session.setAttribute("domainEdits", result.getDomainOld());
+		session.setAttribute("domainEdits", null);
+		if(!param.getOnlyLoadMonth())session.setAttribute("domainOlds", result.getDomainOld());
 		result.setDomainOld(Collections.emptyList());
 		return result;
 	}
@@ -275,6 +277,12 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
+	@Path("getnameattItembytype/{type}")
+	public List<AttItemName> getNameOfAttendanceItemByType(@PathParam(value = "type") int type) {
+		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemNameByType(type);
+	}
+	
+	@POST
 	@Path("getNamedailyAttItem")
 	public List<AttItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
 		return this.dailyPerformanceAuthoritySetting.getListAttendanceItemName(dailyAttendanceItemIds);
@@ -295,7 +303,7 @@ public class DailyPerformanceCorrectionWebService {
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
-			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		}else{
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
@@ -314,7 +322,7 @@ public class DailyPerformanceCorrectionWebService {
 		val domain  = session.getAttribute("domainEdits");
 		List<DailyRecordDto> dailyEdits = new ArrayList<>();
 		if(domain == null){
-			dailyEdits = (List<DailyRecordDto>) session.getAttribute("domainOlds");
+			dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
 		}else{
 			dailyEdits = (List<DailyRecordDto>) domain;
 		}
@@ -338,4 +346,7 @@ public class DailyPerformanceCorrectionWebService {
 		return dpDisplayLockProcessor.processDisplayLock(param);
 	}
 
+	private List<DailyRecordDto> cloneListDto(List<DailyRecordDto> dtos){
+		return dtos.stream().map(x -> x.clone()).collect(Collectors.toList());
+	}
 }

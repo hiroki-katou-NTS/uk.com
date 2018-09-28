@@ -225,7 +225,7 @@ module nts.uk.ui.menu {
             } else if (pg && pg.length === 1) {
                 programName = pg[0].name;
             }
-            
+                
             // show program name on title of browser
             ui.viewModelBuilt.add(() => {
                 ui._viewModel.kiban.programName(programName);
@@ -236,7 +236,8 @@ module nts.uk.ui.menu {
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
             let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
             $manualBtn.on(constants.CLICK, function() {
-                // TODO: Open manual
+                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                window.open(path);
             });
             
             let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
