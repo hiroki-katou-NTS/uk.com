@@ -58,8 +58,8 @@ public class StatementItem extends AggregateRoot {
 	 */
 	private Optional<IntegrationItemCode> intergrateCd;
 
-	public StatementItem(String cid, int categoryAtr, String itemNameCd, String salaryItemId, int defaultAtr, int valueAtr,
-			int deprecatedAtr, Integer socialInsuaEditableAtr, String intergrateCd) {
+	public StatementItem(String cid, int categoryAtr, String itemNameCd, String salaryItemId, int defaultAtr,
+			int valueAtr, int deprecatedAtr, Integer socialInsuaEditableAtr, String intergrateCd) {
 		super();
 		this.cid = cid;
 		this.categoryAtr = EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class);
@@ -68,9 +68,10 @@ public class StatementItem extends AggregateRoot {
 		this.defaultAtr = EnumAdaptor.valueOf(defaultAtr, DefaultAtr.class);
 		this.valueAtr = EnumAdaptor.valueOf(valueAtr, ValueAtr.class);
 		this.deprecatedAtr = EnumAdaptor.valueOf(deprecatedAtr, Abolition.class);
-		this.socialInsuaEditableAtr = socialInsuaEditableAtr == null? Optional.empty() : Optional
-				.of(EnumAdaptor.valueOf(socialInsuaEditableAtr, SocialInsuaEditableAtr.class));
-		this.intergrateCd = Optional.ofNullable(new IntegrationItemCode(intergrateCd));
+		this.socialInsuaEditableAtr = socialInsuaEditableAtr == null ? Optional.empty()
+				: Optional.of(EnumAdaptor.valueOf(socialInsuaEditableAtr, SocialInsuaEditableAtr.class));
+		this.intergrateCd = intergrateCd == null ? Optional.empty()
+				: Optional.of(new IntegrationItemCode(intergrateCd));
 	}
 
 }
