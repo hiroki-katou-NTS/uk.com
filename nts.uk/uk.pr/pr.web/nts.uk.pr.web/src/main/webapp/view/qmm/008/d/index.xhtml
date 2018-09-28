@@ -53,11 +53,11 @@
     <ui:define name="content">
         <div id="functions-area">
             <button id="D1_1" tabindex="1" data-bind="click: create">#{i18n.getText('QMM008_106')}</button>
-            <button class="proceed" data-bind="click: update" id="D1_2"
+            <button class="proceed" data-bind="click: update,enable: $root.errors.isEmpty" id="D1_2"
                     tabindex="2">#{i18n.getText('QMM008_1')}</button>
-            <button id="D1_3" tabindex="3">#{i18n.getText('QMM008_2')}</button>
+            <button id="D1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
             <button class="danger" id="D1_4" tabindex="4"
-                    data-bind="click: deleteOffice">#{i18n.getText('QMM008_107')}</button>
+                    data-bind="click: deleteOffice , enable: $vm.isEnableBtnDelete()">#{i18n.getText('QMM008_107')}</button>
             <button id="D1_5" tabindex="5" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
         </div>
         <div id="contents-area" class="fixed-flex-layout">
@@ -80,10 +80,10 @@
                 </div>
             </div>
 
-            <div id="fixed-flex-layout-right">
-                <div id="D3_1" tabindex="9" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+            <div id="fixed-flex-layout-right" tabindex="9">
+                <div id="D3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
                      style="width: 665px;">
-                    <div class="tab-content-1" data-bind="with: $vm.detail">
+                    <div class="tab-content-1" tabindex="-1"  data-bind="with: $vm.detail">
                         <div class="flex valign-center">
                             <div id="D4_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true, constraint: ['SocialInsuranceOfficeCode', 'SocialInsuranceOfficeName']}">#{i18n.getText('QMM008_114')}</div>
@@ -216,7 +216,7 @@
                             <span id="D5_34" class="label">#{i18n.getText('QMM008_209')}</span>
                             <div id="D5_35" tabindex="35"
                                  data-bind="ntsComboBox: {
-                                        name: 'Sample List',
+                                        name: '#[QMM008_210]',
                                         options: itemList,
                                         optionsValue: 'no',
                                         visibleItemsCount: 5,
@@ -241,7 +241,7 @@
                             <span id="D5_37" class="label">#{i18n.getText('QMM008_209')}</span>
                             <div id="D5_38" tabindex="36"
                                  data-bind="ntsComboBox: {
-                                        name: 'Sample List',
+                                        name: '#[QMM008_210]',
                                         options: itemList,
                                         optionsValue: 'no',
                                         visibleItemsCount: 5,
