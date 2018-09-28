@@ -247,7 +247,7 @@ public class DailyPerformanceCorrectionWebService {
 		param.setDailys(dailyEdits);
 		val result = loadRowProcessor.reloadGrid(param);
 		session.setAttribute("domainEdits", null);
-		session.setAttribute("domainOlds", result.getDomainOld());
+		if(!param.getOnlyLoadMonth())session.setAttribute("domainOlds", result.getDomainOld());
 		result.setDomainOld(Collections.emptyList());
 		return result;
 	}
@@ -274,6 +274,12 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getNameMonthlyAttItem")
 	public List<AttItemName> getNameOfMonthlyAttendanceItem(List<Integer> monthlyAttendanceItemIds) {
 		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemName(monthlyAttendanceItemIds);
+	}
+	
+	@POST
+	@Path("getnameattItembytype/{type}")
+	public List<AttItemName> getNameOfAttendanceItemByType(@PathParam(value = "type") int type) {
+		return this.monthlyPerfomanceAuthorityFinder.getListAttendanceItemNameByType(type);
 	}
 	
 	@POST

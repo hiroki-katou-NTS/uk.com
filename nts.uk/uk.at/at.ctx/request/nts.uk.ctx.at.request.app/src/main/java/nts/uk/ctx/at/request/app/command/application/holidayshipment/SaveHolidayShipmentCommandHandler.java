@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -124,6 +126,8 @@ public class SaveHolidayShipmentCommandHandler
 	private HolidayShipmentScreenAFinder afinder;
 	@Inject
 	private UseDateDeadlineFromDatePeriod dateDeadline;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange registerDateChange;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -173,6 +177,8 @@ public class SaveHolidayShipmentCommandHandler
 		updateOfSubstitution(command, wkTypeCD);
 		// ドメイン「振休申請」を1件登録する
 		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
+		//暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
 		return this.newAfterReg.processAfterRegister(absCommonApp);
 
@@ -197,6 +203,8 @@ public class SaveHolidayShipmentCommandHandler
 		updateOccurrenceData(companyID, sID, wkTypeCD, recDate);
 		// 消化対象代休管理を振出申請に追加する
 		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
+		//暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
 		return this.newAfterReg.processAfterRegister(recCommonApp);
 	}
@@ -281,9 +289,12 @@ public class SaveHolidayShipmentCommandHandler
 		String absAppID = commonApp.getAppID();
 
 		AbsenceLeaveApp absApp = createNewAbsDomainFromCmd(absAppID, command.getAbsCmd());
-
+		
 		appImp.insert(commonApp);
 		absRepo.insert(absApp);
+		
+		// 暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
 
@@ -314,11 +325,12 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振出申請」を1件登録する
-
 		RecruitmentApp recApp = createNewRecDomainFromCmd(recAppID, command.getRecCmd());
-
 		appImp.insert(commonApp);
 		recRepo.insert(recApp);
+		
+		// 暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
 

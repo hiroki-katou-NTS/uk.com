@@ -498,9 +498,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
             this.attendanceRate = dto.attendanceRate;
             this.workingDays = dto.workingDays;
-            if(dto.calculationMethod==3){
-                info({ messageId: "Msg_1315" });
-            }
+//            if(dto.calculationMethod==3){
+//                info({ messageId: "Msg_1315" });
+//            }
             this.calculationMethod = dto.calculationMethod;
             this.useSimultaneousGrant = dto.useSimultaneousGrant;
             this.showGrantDate = dto.showGrantDate;
