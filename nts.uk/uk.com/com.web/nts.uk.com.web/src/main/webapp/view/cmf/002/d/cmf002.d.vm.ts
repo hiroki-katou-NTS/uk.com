@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     import shareModel = cmf002.share.model;
     import info = nts.uk.ui.dialog.info;
     import validation = nts.uk.ui.validation;
+    import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
 
     export class ScreenModel {
         selectedSearchTable: KnockoutObservable<any> = ko.observable(null);
@@ -610,87 +611,87 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             // 検索する値が入力されていない項目が１件以上ある場合（複数の場合は全ての項目が入力されていること）
             switch (self.switchView()) {
                 case SWITCH_VIEW.CHARACTER_NORMAL:
-                    if (_.isEmpty(self.searchChar())) {
+                    if (isNullOrEmpty(self.searchChar())) {
                         self.setError("D6_C4_1", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.CHARACTER_PERIOD:
-                    if (_.isEmpty(self.searchCharStartVal())) {
+                    if (isNullOrEmpty(self.searchCharStartVal())) {
                         self.setError("D6_C4_2", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isEmpty(self.searchCharEndVal())) {
+                    if (isNullOrEmpty(self.searchCharEndVal())) {
                         self.setError("D6_C4_3", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_NORMAL:
-                    if (_.isEmpty(self.searchNum())) {
+                    if (isNullOrEmpty(self.searchNum())) {
                         self.setError("D6_C4_4", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (_.isEmpty(self.searchNumStartVal())) {
+                    if (isNullOrEmpty(self.searchNumStartVal())) {
                         self.setError("D6_C4_5", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isEmpty(self.searchNumEndVal())) {
+                    if (isNullOrEmpty(self.searchNumEndVal())) {
                         self.setError("D6_C4_6", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.DATE_NORMAL:
-                    if (_.isEmpty(self.searchDate())) {
+                    if (isNullOrEmpty(self.searchDate())) {
                         self.setError("D6_C4_7", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.DATE_PERIOD:
-                    if (_.isEmpty(self.searchDateStart())) {
+                    if (isNullOrEmpty(self.searchDateStart())) {
                         self.setError("D6_C4_8", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isEmpty(self.searchDateEnd())) {
+                    if (isNullOrEmpty(self.searchDateEnd())) {
                         self.setError("D6_C4_9", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.TIME_NORMAL:
-                    if (_.isNil(self.searchTime())) {
+                    if (isNullOrEmpty(self.searchTime())) {
                         self.setError("D6_C4_10", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.TIME_PERIOD:
-                    if (_.isNil(self.searchTimeStartVal())) {
+                    if (isNullOrEmpty(self.searchTimeStartVal())) {
                         self.setError("D6_C4_11", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchTimeEndVal())) {
+                    if (isNullOrEmpty(self.searchTimeEndVal())) {
                         self.setError("D6_C4_12", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.INS_TIME_NORMAL:
-                    if (_.isNil(self.searchClock())) {
+                    if (isNullOrEmpty(self.searchClock())) {
                         self.setError("D6_C4_13", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.INS_TIME_PERIOD:
-                    if (_.isNil(self.searchClockStartVal())) {
+                    if (isNullOrEmpty(self.searchClockStartVal())) {
                         self.setError("D6_C4_14", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchClockEndVal())) {
+                    if (isNullOrEmpty(self.searchClockEndVal())) {
                         self.setError("D6_C4_15", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.SEARCH_CODE_LIST:
-                    if (_.isEmpty(self.joinedSearchCodeList())) {
+                    if (isNullOrEmpty(self.joinedSearchCodeList())) {
                         self.setError("D6_C4_16", "Msg_656");
                         checkRequired = true;
                     }
@@ -764,22 +765,28 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 // 検索コードがカテゴリ項目の型と同じ場合
                 switch (self.dataType) {
                     case shareModel.ITEM_TYPE.CHARACTER:
-                        if (!self.charValidator.validate(searchCode).isValid) {
+                        check = self.charValidator.validate(searchCode);
+                        if (!check.isValid) {
                             self.setError(control, "Msg_760");
                             return false;
                         }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
                         break;
                     case shareModel.ITEM_TYPE.NUMERIC:
-                        if (!self.numberValidator.validate(searchCode).isValid) {
+                        check = self.numberValidator.validate(searchCode);
+                        if (!check.isValid) {
                             self.setError(control, "Msg_760");
                             return false;
                         }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
                         break;
                     case shareModel.ITEM_TYPE.DATE:
-                        if (!moment(searchCode, "YYYY/MM/DD", true).isValid()) {
+                        check = moment(searchCode, "YYYY/MM/DD", true);
+                        if (!check.isValid()) {
                             self.setError(control, "Msg_760");
                             return false;
                         }
+                        this.parsedValSearchCodeList.push(check._i);
                         break;
                     case shareModel.ITEM_TYPE.TIME:
                         check = self.timeValidator.validate(searchCode)
