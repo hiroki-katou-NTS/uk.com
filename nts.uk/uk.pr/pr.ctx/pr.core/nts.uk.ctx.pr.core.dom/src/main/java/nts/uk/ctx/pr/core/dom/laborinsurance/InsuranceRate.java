@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.dom.laborinsurance;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.PrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
 
@@ -10,9 +10,10 @@ import java.math.BigDecimal;
 /**
  * 保険料率
  */
-@DecimalMinValue("0.000")
+@DecimalMinValue("0")
 @DecimalMaxValue("999.999")
-public class InsuranceRate extends DecimalPrimitiveValue<PrimitiveValue<BigDecimal>>{
+@DecimalMantissaMaxLength(3)
+public class InsuranceRate extends DecimalPrimitiveValue<InsuranceRate>{
     /**
      *
      */
