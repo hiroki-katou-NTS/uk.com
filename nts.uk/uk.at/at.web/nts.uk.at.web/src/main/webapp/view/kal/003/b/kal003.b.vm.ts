@@ -1182,20 +1182,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         fillTextDisplayTargetMulMon(defered, currentAtdItemCondition) {
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
-//            if (self.mulMonCheckCondSet().typeCheckItem() === TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT) {
-//                if (currentAtdItemCondition.uncountableAtdItem()) {
-//                    service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
-//                        if (lstItems && lstItems.length > 0) {
-//                            self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
-//                            $("#display-target-item-category9").trigger("validate");
-//                        }
-//                    }, function(rejected) {
-//                        defered.resolve();
-//                    });
-//                }
-//            } else {
                 if (currentAtdItemCondition.countableAddAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
+                    service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
@@ -1204,7 +1192,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             $("#display-target-item-category9").trigger("validate");
                         }
                         if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                            service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
+                            service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -1219,7 +1207,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         defered.resolve();
                     });
                 } else if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
+                    service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";

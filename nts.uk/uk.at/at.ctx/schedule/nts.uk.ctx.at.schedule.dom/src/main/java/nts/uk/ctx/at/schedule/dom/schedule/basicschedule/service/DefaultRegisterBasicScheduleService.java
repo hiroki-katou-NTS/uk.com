@@ -201,20 +201,22 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				}
 
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
-				try {
-					if (workTimeSetting == null) {
-						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode, listWorkType);
-					} else {
-						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeSetting.getWorktimeCode().v(), listWorkType);
-					}
-				} catch (BusinessException ex) {
+				String errMsgId = null;
+				if (workTimeSetting == null) {
+					errMsgId = basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode,
+							listWorkType);
+				} else {
+					errMsgId = basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode,
+							workTimeSetting.getWorktimeCode().v(), listWorkType);
+				}
+				if(errMsgId != null ){
 					// find and remove in listBefore because this data is not insert/update to DB
 					Optional<BasicSchedule> bsBefOpt  = basicScheduleListBefore.stream().filter(x-> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
 					if(bsBefOpt.isPresent()){
 						basicScheduleListBefore.remove(bsBefOpt.get());
 					}
 					
-					addMessage(errList, ex.getMessageId());
+					addMessage(errList, errMsgId);
 					continue;
 				}
 			}

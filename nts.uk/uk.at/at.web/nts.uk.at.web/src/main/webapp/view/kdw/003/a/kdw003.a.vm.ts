@@ -295,14 +295,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //            self.flexShortage.subscribe((val:any) => {
             //            });
             self.flexShortage.valueHasMutated();
-
             self.isVisibleMIGrid.subscribe((value) => {
                 if (value) {
                     self.getNameMonthly();
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 180) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (window.innerHeight +100) + 'px !IMPORTANT');
 
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime)
@@ -324,7 +323,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             $(window).on('resize', function() {
                 var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 180) + 'px !IMPORTANT');
+                //$(".grid-container").attr('style', 'height: ' + (win.height() -150) + 'px !IMPORTANT');
             });
         }
         
@@ -784,6 +783,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // delete localStorage miGrid
                 localStorage.removeItem(window.location.href + '/miGrid');
                 self.isVisibleMIGrid(data.monthResult.hasItem);
+                self.isVisibleMIGrid.valueHasMutated();
                 //
             } else {
                 self.agreementInfomation().mapDataAgreement({ showAgreement: false });
@@ -2637,11 +2637,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.createNtsMControl();
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
+            let subWidth = "50px";
+            if (self.displayFormat() === 0) {
+                subWidth = "135px";
+            } else if (self.displayFormat() === 1) {
+                subWidth = "135px";
+            } else {
+                subWidth = "155px";
+            }
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
-                width: '1920px',
+                subWidth : subWidth,
                 height: (window.screen.availHeight - 250) + "px",
-                headerHeight: '45px',
+                headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
+                minRows: 31,
+                maxRows: 50,
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
@@ -3320,7 +3330,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // get item change in row
                     dataChange = $("#dpGrid").mGrid("updatedCells");
                     dataChageRow = _.map(_.filter(dataChange, row => {
-                        return row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
+                        return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey != "Name" && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {
                         let itemTemp, keyIdRow;
                         keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
@@ -3743,6 +3753,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal('com', '/view/cdl/008/a/index.xhtml').onClosed(function(): any {
                         // Check is cancel.
                         if (nts.uk.ui.windows.getShared('CDL008Cancel')) {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         //view all code of selected item 
@@ -3781,6 +3792,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 dfd.resolve()
                             });
                         } else {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             if (output == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
                             dfd6.resolve()
                         }
@@ -3816,6 +3828,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal('com', '/view/cdl/004/a/index.xhtml').onClosed(function(): any {
                         var isCancel = nts.uk.ui.windows.getShared('CDL004Cancel');
                         if (isCancel) {
+                            __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('outputCDL004');
@@ -3841,6 +3854,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // nts.uk.ui.block.clear();
                         var isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
                         if (isCancel) {
+                             __viewContext.vm.clickCounter.clickLinkGrid = false;
                             return;
                         }
                         var output = nts.uk.ui.windows.getShared('CDL002Output');
