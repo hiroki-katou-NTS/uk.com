@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
@@ -217,28 +218,31 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 		// select root
 		cq.select(root);
+		
+		List<KclmtClosure> resultList = new ArrayList<>();
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		CollectionUtil.split(closureIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// equal company id
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+			// equal company id
+			lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
 
-		// in closure id
-		lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId).in(closureIds));
+			// in closure id
+			lstpredicateWhere.add(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId).in(splitData));
 
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		// order by closure id asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
+			// order by closure id asc
+			cq.orderBy(criteriaBuilder.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
 
-		// create query
-		TypedQuery<KclmtClosure> query = em.createQuery(cq);
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// exclude select
-		return query.getResultList().stream()
+		return resultList.stream()
 				.map(entity -> this.toDomain(entity,
 						this.findHistoryByClosureId(companyId, entity.getKclmtClosurePK().getClosureId())))
 				.collect(Collectors.toList());

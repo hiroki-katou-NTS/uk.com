@@ -103,7 +103,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		List<KshmtWorkingCondItem> result = new ArrayList<>();
 				
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -372,7 +372,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		List<KshmtWorkingCondItem> result = new ArrayList<>();
 
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -529,28 +529,32 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		// root data
 		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
-
+		
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal
-		lstpredicateWhere
-				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeId));
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
-				GeneralDate.max()));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		
-		// create query
-		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+		List<KshmtWorkingCondItem> result = new ArrayList<>();
 
-		List<KshmtWorkingCondItem> result = query.getResultList();
-		
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			// equal
+			lstpredicateWhere
+					.add(root.get(KshmtWorkingCondItem_.sid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+					GeneralDate.max()));
+
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			// create query
+			TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+			result.addAll(query.getResultList());
+		});
+
 		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
 			return Collections.emptyList();

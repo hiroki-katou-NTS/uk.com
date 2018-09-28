@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
@@ -143,21 +145,25 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		// Root
 		Root<KclmtClosureEmployment> root = cq.from(KclmtClosureEmployment.class);
 		cq.select(root);
+		
+		List<KclmtClosureEmployment> resultList = new ArrayList<>();
 
-		// Predicate where clause
-		List<Predicate> predicateList = new ArrayList<>();
-		// Equal companyId
-		predicateList.add(cb.equal(
-				root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
-				companyId));
-		// in ClosureIds
-		predicateList.add(root.get(KclmtClosureEmployment_.closureId).in(closureIds));
+		CollectionUtil.split(closureIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// Predicate where clause
+			List<Predicate> predicateList = new ArrayList<>();
+			// Equal companyId
+			predicateList.add(cb.equal(
+					root.get(KclmtClosureEmployment_.kclmpClosureEmploymentPK).get(KclmpClosureEmploymentPK_.companyId),
+					companyId));
+			// in ClosureIds
+			predicateList.add(root.get(KclmtClosureEmployment_.closureId).in(splitData));
 
-		// Create Query.
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
+			// Create Query.
+			cq.where(predicateList.toArray(new Predicate[] {}));
 
-		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		return resultList.stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)

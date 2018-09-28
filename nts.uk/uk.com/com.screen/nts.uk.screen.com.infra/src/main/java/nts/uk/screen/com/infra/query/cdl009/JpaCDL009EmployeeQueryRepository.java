@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -65,7 +66,7 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 		}
 
 		List<Object[]> employees = new ArrayList<>();
-		CollectionUtil.split(input.getWorkplaceIdList(), MAX_WHERE_IN, (subList) -> {
+		CollectionUtil.split(input.getWorkplaceIdList(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			employees.addAll(this.getEntityManager().createQuery(SEARCH_BY_WORKPLACE)
 					.setParameter("wplIds", subList)
 					.setParameter("refDate", input.getReferenceDate()).getResultList());

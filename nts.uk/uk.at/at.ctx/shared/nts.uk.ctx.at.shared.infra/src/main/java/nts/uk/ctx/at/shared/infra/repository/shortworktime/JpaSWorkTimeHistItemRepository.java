@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.infra.repository.shortworktime;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
@@ -132,14 +132,15 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		CriteriaQuery<BshmtWorktimeHistItem> query = builder
 				.createQuery(BshmtWorktimeHistItem.class);
 		Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
-
-		List<Predicate> predicateList = new ArrayList<>();
-
-		predicateList.add(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
-				.get(BshmtWorktimeHistItemPK_.histId).in(histIds));
-
-		query.where(predicateList.toArray(new Predicate[] {}));
-
+		
+		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// Predicate where clause
+			List<Predicate> predicateList = new ArrayList<>();
+			predicateList.add(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
+					.get(BshmtWorktimeHistItemPK_.histId).in(splitData));
+			query.where(predicateList.toArray(new Predicate[] {}));
+		});
+		
 		return em.createQuery(query).getResultList().stream().map(
 				entity -> new ShortWorkTimeHistoryItem(new JpaSWorkTimeHistItemGetMemento(entity)))
 				.collect(Collectors.toList());

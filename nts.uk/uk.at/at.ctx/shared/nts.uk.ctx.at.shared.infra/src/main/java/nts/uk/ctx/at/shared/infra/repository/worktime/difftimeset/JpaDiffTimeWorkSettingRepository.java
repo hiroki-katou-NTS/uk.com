@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
@@ -155,22 +157,26 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<KshmtDtHolRestTime> query = builder.createQuery(KshmtDtHolRestTime.class);
 		Root<KshmtDtHolRestTime> root = query.from(KshmtDtHolRestTime.class);
+		
+		List<KshmtDtHolRestTime> resultList = new ArrayList<>();
 
-		List<Predicate> predicateList = new ArrayList<>();
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(
-				root.get(KshmtDtHolRestTime_.kshmtDtHolRestTimePK).get(KshmtDtHolRestTimePK_.cid),
-				companyId));
-		predicateList.add(root.get(KshmtDtHolRestTime_.kshmtDtHolRestTimePK)
-				.get(KshmtDtHolRestTimePK_.worktimeCd).in(workTimeCodes));
+			predicateList.add(builder.equal(
+					root.get(KshmtDtHolRestTime_.kshmtDtHolRestTimePK).get(KshmtDtHolRestTimePK_.cid),
+					companyId));
+			predicateList.add(root.get(KshmtDtHolRestTime_.kshmtDtHolRestTimePK)
+					.get(KshmtDtHolRestTimePK_.worktimeCd).in(splitData));
 
-		query.where(predicateList.toArray(new Predicate[] {}));
+			query.where(predicateList.toArray(new Predicate[] {}));
 
-		query.orderBy(builder.asc(root.get(KshmtDtHolRestTime_.startTime)));
+			query.orderBy(builder.asc(root.get(KshmtDtHolRestTime_.startTime)));
 
-		List<KshmtDtHolRestTime> result = em.createQuery(query).getResultList();
+			resultList.addAll(em.createQuery(query).getResultList());
+		});
 
-		Map<WorkTimeCode, List<KshmtDtHolRestTime>> mapResttimes = result.stream()
+		Map<WorkTimeCode, List<KshmtDtHolRestTime>> mapResttimes = resultList.stream()
 				.collect(Collectors.groupingBy(
 						item -> new WorkTimeCode(item.getKshmtDtHolRestTimePK().getWorktimeCd())));
 
@@ -196,22 +202,26 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<KshmtDtHalfRestTime> query = builder.createQuery(KshmtDtHalfRestTime.class);
 		Root<KshmtDtHalfRestTime> root = query.from(KshmtDtHalfRestTime.class);
+		
+		List<KshmtDtHalfRestTime> resultList = new ArrayList<>();
 
-		List<Predicate> predicateList = new ArrayList<>();
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(root.get(KshmtDtHalfRestTime_.kshmtDtHalfRestTimePK)
-				.get(KshmtDtHalfRestTimePK_.cid), companyId));
-		predicateList.add(root.get(KshmtDtHalfRestTime_.kshmtDtHalfRestTimePK)
-				.get(KshmtDtHalfRestTimePK_.worktimeCd).in(workTimeCodes));
+			predicateList.add(builder.equal(root.get(KshmtDtHalfRestTime_.kshmtDtHalfRestTimePK)
+					.get(KshmtDtHalfRestTimePK_.cid), companyId));
+			predicateList.add(root.get(KshmtDtHalfRestTime_.kshmtDtHalfRestTimePK)
+					.get(KshmtDtHalfRestTimePK_.worktimeCd).in(splitData));
 
-		query.where(predicateList.toArray(new Predicate[] {}));
+			query.where(predicateList.toArray(new Predicate[] {}));
 
-		// order by closure id asc
-		query.orderBy(builder.asc(root.get(KshmtDtHalfRestTime_.startTime)));
+			// order by closure id asc
+			query.orderBy(builder.asc(root.get(KshmtDtHalfRestTime_.startTime)));
 
-		List<KshmtDtHalfRestTime> result = em.createQuery(query).getResultList();
+			resultList.addAll(em.createQuery(query).getResultList());
+		});
 
-		Map<WorkTimeCode, List<KshmtDtHalfRestTime>> mapResttimes = result.stream()
+		Map<WorkTimeCode, List<KshmtDtHalfRestTime>> mapResttimes = resultList.stream()
 				.collect(Collectors.groupingBy(
 						item -> new WorkTimeCode(item.getKshmtDtHalfRestTimePK().getWorktimeCd())));
 

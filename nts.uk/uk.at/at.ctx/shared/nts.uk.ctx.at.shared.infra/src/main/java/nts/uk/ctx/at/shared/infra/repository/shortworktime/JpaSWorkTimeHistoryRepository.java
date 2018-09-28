@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -205,21 +206,24 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
 		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
-		
-		List<Predicate> predicateList = new ArrayList<>();
+		List<BshmtWorktimeHist> resultList = new ArrayList<>();
+		CollectionUtil.split(empIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(
-				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid).in(empIdList));
-		
-		predicateList.add(builder.not(builder.or(
-				builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
-				builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+			predicateList.add(
+					root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid).in(splitData));
+			
+			predicateList.add(builder.not(builder.or(
+					builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
+					builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
 
-		query.where(predicateList.toArray(new Predicate[] {}));
+			query.where(predicateList.toArray(new Predicate[] {}));
+			
+			resultList.addAll(em.createQuery(query).getResultList());
 
-		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+		});
 		
-		Map<String, List<BshmtWorktimeHist>> mapResult = result.stream()
+		Map<String, List<BshmtWorktimeHist>> mapResult = resultList.stream()
 				.collect(Collectors.groupingBy(item -> item.getBshmtWorktimeHistPK().getSid()));
 
 		// Return
@@ -241,21 +245,24 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
 		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+		
+		List<BshmtWorktimeHist> resultList = new ArrayList<>();
+		CollectionUtil.split(empIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			List<Predicate> predicateList = new ArrayList<>();
 
-		List<Predicate> predicateList = new ArrayList<>();
+			predicateList.add(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
+					.get(BshmtWorktimeHistPK_.sid).in(splitData));
 
-		predicateList.add(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
-				.get(BshmtWorktimeHistPK_.sid).in(empIdList));
+			predicateList.add(builder.not(
+					builder.or(builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
+							builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
 
-		predicateList.add(builder.not(
-				builder.or(builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
-						builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+			query.where(predicateList.toArray(new Predicate[] {}));
+			resultList.addAll(em.createQuery(query).getResultList());
 
-		query.where(predicateList.toArray(new Predicate[] {}));
-
-		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
-
-		Map<String, List<BshmtWorktimeHist>> mapResult = result.stream()
+		});
+		
+		Map<String, List<BshmtWorktimeHist>> mapResult = resultList.stream()
 				.collect(Collectors.groupingBy(item -> item.getBshmtWorktimeHistPK().getSid()));
 
 		// Return

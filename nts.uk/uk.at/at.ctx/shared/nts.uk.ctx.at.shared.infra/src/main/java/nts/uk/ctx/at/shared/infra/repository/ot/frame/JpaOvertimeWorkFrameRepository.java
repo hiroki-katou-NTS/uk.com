@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
@@ -103,25 +105,28 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 
 				// select root
 				cq.select(root);
+				
+				List<KshstOvertimeFrame> resultList = new ArrayList<>();
+				
+				CollectionUtil.split(overtimeWorkFrNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+					// add where
+					List<Predicate> lstpredicateWhere = new ArrayList<>();
+					// eq company id
+					lstpredicateWhere
+						.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+							.get(KshstOvertimeFramePK_.cid), companyId));
+					
+					lstpredicateWhere
+					.add(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
+						.get(KshstOvertimeFramePK_.otFrNo).in(splitData));
+					// set where to SQL
+					cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-				// add where
-				List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-				// eq company id
-				lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
-						.get(KshstOvertimeFramePK_.cid), companyId));
-				lstpredicateWhere
-				.add(root.get(KshstOvertimeFrame_.kshstOvertimeFramePK)
-					.get(KshstOvertimeFramePK_.otFrNo).in(overtimeWorkFrNos));
-				// set where to SQL
-				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-				// creat query
-				TypedQuery<KshstOvertimeFrame> query = em.createQuery(cq);
+					resultList.addAll(em.createQuery(cq).getResultList());
+				});
 
 				// exclude select
-				return query.getResultList().stream().map(category -> toDomain(category))
+				return resultList.stream().map(category -> toDomain(category))
 					.collect(Collectors.toList());
 	}
 	

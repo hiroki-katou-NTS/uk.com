@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.*;
-import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,10 +15,24 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import nts.arc.layer.infra.data.DbConsts;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategory;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryName;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryOrder;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
+import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
+import nts.uk.ctx.sys.assist.dom.mastercopy.handler.DataCopyHandler;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory_;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK_;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData_;
 
 
 @Stateless
@@ -138,15 +152,20 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		Root<SspmtMastercopyCategory> root = cq.from(SspmtMastercopyCategory.class);
 		// Build query
 		cq.select(root);
-		// Add where conditions
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere
-				.add(root.get(SspmtMastercopyCategory_.categoryNo).in(masterCopyIds));
+		
+		List<SspmtMastercopyCategory> resultList = new ArrayList<>();
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		// query data
-		List<SspmtMastercopyCategory> sspmtMastercopyDatas = em.createQuery(cq).getResultList();
-		return sspmtMastercopyDatas.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
+		CollectionUtil.split(masterCopyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// Add where conditions
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere
+					.add(root.get(SspmtMastercopyCategory_.categoryNo).in(splitData));
+
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+		return resultList.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
 	}
 
 }
