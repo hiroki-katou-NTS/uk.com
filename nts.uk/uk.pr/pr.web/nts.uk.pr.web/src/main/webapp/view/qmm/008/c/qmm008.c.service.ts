@@ -4,7 +4,8 @@ module nts.uk.pr.view.qmm008.c.service {
     var paths = {
         findAllOffice: "ctx/core/socialinsurance/welfarepensioninsurance/getAll",
         findEmployeePensionByHistoryId: "ctx/core/socialinsurance/welfarepensioninsurance/getByHistoryId/{0}",
-        registerEmployeePension: "ctx/core/socialinsurance/welfarepensioninsurance/registerEmployeePension"
+        registerEmployeePension: "ctx/core/socialinsurance/welfarepensioninsurance/registerEmployeePension",
+        checkWelfarePensionInsuranceGradeFeeChange: "ctx/core/socialinsurance/welfarepensioninsurance/checkGradeFeeChange"
     }
     /**
      * get all
@@ -20,4 +21,9 @@ module nts.uk.pr.view.qmm008.c.service {
     export function registerEmployeePension(command): JQueryPromise<any> {
         return ajax(paths.registerEmployeePension, command);
     }
+        
+    export function checkWelfarePensionInsuranceGradeFeeChange(command): JQueryPromise<any> {
+        return ajax(paths.checkWelfarePensionInsuranceGradeFeeChange, command);
+    }
+    
 }

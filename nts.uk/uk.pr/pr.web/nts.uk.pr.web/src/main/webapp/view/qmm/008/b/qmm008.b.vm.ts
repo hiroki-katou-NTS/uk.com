@@ -78,6 +78,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
 
         registerIfValid(command) {
             let self = this;
+            block.invisible();
             service.registerEmployeeHealthInsurance(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {

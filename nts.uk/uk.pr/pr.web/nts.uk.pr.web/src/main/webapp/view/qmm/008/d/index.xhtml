@@ -80,10 +80,10 @@
                 </div>
             </div>
 
-            <div id="fixed-flex-layout-right">
-                <div id="D3_1" tabindex="9" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+            <div id="fixed-flex-layout-right" tabindex="9">
+                <div id="D3_1"  data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
                      style="width: 665px;">
-                    <div class="tab-content-1" data-bind="with: $vm.detail">
+                    <div class="tab-content-1" tabindex="-1"  data-bind="with: $vm.detail">
                         <div class="flex valign-center">
                             <div id="D4_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true, constraint: ['SocialInsuranceOfficeCode', 'SocialInsuranceOfficeName']}">#{i18n.getText('QMM008_114')}</div>

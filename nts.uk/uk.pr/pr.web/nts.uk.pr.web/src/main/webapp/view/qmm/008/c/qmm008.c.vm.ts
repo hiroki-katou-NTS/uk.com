@@ -229,6 +229,28 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             command.bonusEmployeePensionInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.employeesPensionMonthlyInsuranceFee.historyId = command.yearMonthHistoryItem.historyId;
             command.welfarePensionInsuranceClassification.historyId = command.yearMonthHistoryItem.historyId;
+            if (self.isUpdateMode()) {
+                service.checkWelfarePensionInsuranceGradeFeeChange(command).done(function(data) {
+                    block.clear();
+                    if (data) {
+                        dialog.confirm({ messageId: "MsgQ_209" }).ifYes(function() {
+                            self.registerIfValid(command);
+                        });
+                    } else {
+                        self.registerIfValid(command);
+                    }
+                }).fail(function(err) {
+                    block.clear();
+                    dialog.alertError(err.message);
+                });
+            } else {
+                self.registerIfValid(command);
+            }
+        }
+        
+        registerIfValid (command){
+            let self = this;
+            block.invisible();
             service.registerEmployeePension(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {

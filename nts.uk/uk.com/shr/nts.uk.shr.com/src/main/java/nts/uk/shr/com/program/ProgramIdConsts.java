@@ -941,4 +941,16 @@ public class ProgramIdConsts {
 	public static final String CAS004A = "CAS004A";
 	public static final String CAS004B = "CAS004B";
 
+	/** QMM008 */
+	public static final String QMM008A = "QMM008A";
+	public static final String QMM008B = "QMM008B";
+	public static final String QMM008C = "QMM008C";
+	public static final String QMM008D = "QMM008D";
+	public static final String QMM008E = "QMM008E";
+	public static final String QMM008F = "QMM008F";
+	public static final String QMM008G = "QMM008G";
+	public static final String QMM008H = "QMM008H";
+	public static final String QMM008I = "QMM008I";
+	public static final String QMM008J = "QMM008J";
+
 }

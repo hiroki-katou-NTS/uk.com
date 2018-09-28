@@ -142,4 +142,20 @@ public class WelfareInsuranceService {
 		employeesPensionMonthlyInsuranceFeeRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 		welfarePensionInsuranceClassificationRepository.deleteByHistoryIds(Arrays.asList(yearMonth.identifier()));
 	}
+	
+	public boolean checkWelfareInsuranceGradeFeeChange(String officeCode, YearMonthHistoryItem yearMonthItem, BonusEmployeePensionInsuranceRate bonusEmployeePension, EmployeesPensionMonthlyInsuranceFee employeePensonMonthly, WelfarePensionInsuranceClassification welfarePensionClassification) {
+		// Update exemption rate to null when not join fund
+		if (welfarePensionClassification.getFundClassification() == FundClassification.NOT_JOIN){
+			bonusEmployeePension.changeDataWhenNotJoinFund();
+			employeePensonMonthly.changeDataWhenNotJoinFund();
+		}
+		// アルゴリズム「月額厚生年金保険料計算処理」を実行する
+		employeePensonMonthly = calculationWelfarePensionInsurance(employeePensonMonthly, welfarePensionClassification,
+				yearMonthItem);
+		Optional<EmployeesPensionMonthlyInsuranceFee> opt_oldEmployePension = employeesPensionMonthlyInsuranceFeeRepository.getEmployeesPensionMonthlyInsuranceFeeByHistoryId(yearMonthItem.identifier());
+		if (!opt_oldEmployePension.isPresent()){
+			return false;
+		}
+		return !employeePensonMonthly.getPensionInsurancePremium().containsAll(opt_oldEmployePension.get().getPensionInsurancePremium());	
+	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.core.dom.socialinsurance.welfarepensioninsurance;
 
 import java.math.BigDecimal;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.DomainObject;
  * 等級毎厚生年金保険料
  */
 @Getter
+@EqualsAndHashCode
 public class GradeWelfarePensionInsurancePremium extends DomainObject {
 
     /**
