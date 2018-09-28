@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplicationPK;
@@ -162,39 +163,47 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		if (atdItemCon.erAlCompareRange != null) {
 			if (atdItemCon.conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
-						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue),
-						(V) new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue));
+						(V) new CheckedAmountValue((int)atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedAmountValue((int)atdItemCon.erAlCompareRange.endValue));
 			} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_DURATION.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
-						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue),
-						(V) new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue));
+						(V) new CheckedTimeDuration((int)atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimeDuration((int)atdItemCon.erAlCompareRange.endValue));
 			} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
-						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue),
-						(V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue));
+						(V) new TimeWithDayAttr((int)atdItemCon.erAlCompareRange.startValue),
+						(V) new TimeWithDayAttr((int)atdItemCon.erAlCompareRange.endValue));
 			} else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
-						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue),
-						(V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue));
+						(V) new CheckedTimesValue((int)atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimesValue((int)atdItemCon.erAlCompareRange.endValue));
+			} else if (atdItemCon.conditionAtr == ConditionAtr.DAYS.value) {
+				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
+						(V) new CheckedTimesValueDay(atdItemCon.erAlCompareRange.startValue),
+						(V) new CheckedTimesValueDay(atdItemCon.erAlCompareRange.endValue));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
 			if (atdItemCon.erAlCompareSingle.conditionType == ConditionType.FIXED_VALUE.value) {
 				if (atdItemCon.conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
 							atdItemCon.erAlCompareSingle.conditionType,
-							(V) new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue));
+							(V) new CheckedAmountValue((int)atdItemCon.erAlSingleFixed.fixedValue));
 				} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_DURATION.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
 							atdItemCon.erAlCompareSingle.conditionType,
-							(V) new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue));
+							(V) new CheckedTimeDuration((int)atdItemCon.erAlSingleFixed.fixedValue));
 				} else if (atdItemCon.conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
 							atdItemCon.erAlCompareSingle.conditionType,
-							(V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue));
+							(V) new TimeWithDayAttr((int)atdItemCon.erAlSingleFixed.fixedValue));
 				} else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
 							atdItemCon.erAlCompareSingle.conditionType,
-							(V) new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue));
+							(V) new CheckedTimesValue((int)atdItemCon.erAlSingleFixed.fixedValue));
+				} else if (atdItemCon.conditionAtr == ConditionAtr.DAYS.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,
+							atdItemCon.erAlCompareSingle.conditionType,
+							(V) new CheckedTimesValueDay(atdItemCon.erAlSingleFixed.fixedValue));
 				}
 			} else {
 				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr,

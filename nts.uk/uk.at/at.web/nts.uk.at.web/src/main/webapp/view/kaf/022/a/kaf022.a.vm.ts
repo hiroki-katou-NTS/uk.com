@@ -2620,9 +2620,9 @@ module nts.uk.at.view.kmf022 {
                 }
 
                 if (nts.uk.ui.errors.hasError() === false) {
+                    nts.uk.ui.block.grayout();
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            nts.uk.ui.block.invisible();
                             //Load data setting
                             self.loadData();
                         });

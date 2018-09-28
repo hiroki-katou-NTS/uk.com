@@ -4,8 +4,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -196,9 +192,6 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private ShowDialogError showDialogError;
-	
-	@Inject
-	private DisplayRemainingHolidayNumber remainHolidayService;
 	
 	@Resource
 	private ManagedExecutorService executorService;
