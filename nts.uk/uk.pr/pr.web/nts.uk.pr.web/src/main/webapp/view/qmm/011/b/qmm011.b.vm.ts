@@ -91,8 +91,8 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 empInsurPreRate.empPreRateId = i;
                 empInsurPreRate.indBdRatio = ko.observable();
                 empInsurPreRate.empContrRatio = ko.observable();
-                empInsurPreRate.perFracClass = ko.observable(1);
-                empInsurPreRate.busiOwFracClass = ko.observable(1);
+                empInsurPreRate.perFracClass = ko.observable(0);
+                empInsurPreRate.busiOwFracClass = ko.observable(0);
                 listEmpInsurPreRate.push(empInsurPreRate);
             }
             return listEmpInsurPreRate;
