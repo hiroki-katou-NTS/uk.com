@@ -90,7 +90,7 @@
 								</div>
 								<!-- A5_1_2-->
 								<div style="margin-left: 20px;">
-									<label data-bind="text:annualLeaveGrantPostDay"></label>
+									<label data-bind="text:numberOfRemainGrantPre"></label>
 									<!-- A5_1_3 -->
 									<label>#{i18n.getText('KDL020_17')}</label>
 								</div>
@@ -104,7 +104,7 @@
 								<!-- A5_2_2 -->
 								<div style="margin-left: 20px;">
 									<label
-										data-bind="text:$parent.genTime(annualLeaveGrantPostTime())">
+										data-bind="text:$parent.genTime(timeAnnualLeaveWithMinusGrantPre())">
 									</label>
 								</div>
 							</div>
