@@ -827,7 +827,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }
-            self.valueUpdateMonth["needCallCalc"] = data.monthResult.needCallCalc;
+            if(self.displayFormat() === 0) self.valueUpdateMonth["needCallCalc"] = (data.monthResult == null || data.monthResult == undefined) ?  false : data.monthResult.needCallCalc;
             return dfd.promise();
         }
 
@@ -1654,7 +1654,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // flex
                         self.processFlex(data, false);
                         self.displayNumberZero();
-                        self.displayProfileIcon(self.displayFormat());
+                        //self.displayProfileIcon(self.displayFormat());
                         self.dislayNumberHeaderText();
                         //check visable MIGrid
                         if (self.displayFormat() != 0) {
@@ -1713,6 +1713,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             isLoginUser: false
                         }
                         lstEmployee.push(emp);
+                        self.lstEmployee(lstEmployee);
                         dfd.resolve(lstEmployee);
                         //  dfd2.resolve();
                     });
@@ -1897,24 +1898,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
 
             if (self.displayFormat() === 0) {
-                lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
+                let emp =  _.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
-                }));
+                })
+                if (emp != null && emp != undefined) {
+                    lstEmployee.push(emp);
+                }
             } else {
                 lstEmployee = self.lstEmployee();
             }
-            let param = {
-                dateRange: {
-                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
-                },
-                lstEmployee: lstEmployee
-            };
-            setShared("paramToGetError", param);
-            setShared("errorValidate", errorValidateScreeen);
-            self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml").onClosed(function() {
-                let errorCodes = nts.uk.ui.windows.getShared('shareToKdw003aa');
-            });
+            if (lstEmployee.length > 0) {
+                let param = {
+                    dateRange: {
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                    },
+                    lstEmployee: lstEmployee
+                };
+                setShared("paramToGetError", param);
+                setShared("errorValidate", errorValidateScreeen);
+                self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml").onClosed(function() {
+                    let errorCodes = nts.uk.ui.windows.getShared('shareToKdw003aa');
+                });
+            }
         }
 
         changeExtractionCondition() {
