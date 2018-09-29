@@ -1902,9 +1902,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return employee.id === self.selectedEmployee();
                 })
                 if (emp != null && emp != undefined) {
-                    lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
-                        return employee.id === self.selectedEmployee();
-                    }));
+                    lstEmployee.push(emp);
                 }
             } else {
                 lstEmployee = self.lstEmployee();
