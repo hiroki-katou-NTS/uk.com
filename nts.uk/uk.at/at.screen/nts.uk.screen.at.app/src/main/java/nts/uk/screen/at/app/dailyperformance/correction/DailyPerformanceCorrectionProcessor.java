@@ -648,11 +648,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
-				if(mode == ScreenMode.APPROVAL.value) {
-					lock = lock && false;
-				}else {
-					lock = true;
-				}
+				if(mode != ScreenMode.APPROVAL.value) lock = true;
 				
 			}
 			
@@ -669,8 +665,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if (lockSign) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
 				//lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lock = lock && false;
-				else lock = true;
+				if(mode != ScreenMode.APPROVAL.value)  lock = true;
 			}
 			
 			if (lockHist) {
