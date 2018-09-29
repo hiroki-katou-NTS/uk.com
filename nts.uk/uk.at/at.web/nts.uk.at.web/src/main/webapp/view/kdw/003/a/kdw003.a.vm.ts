@@ -1654,7 +1654,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // flex
                         self.processFlex(data, false);
                         self.displayNumberZero();
-                        self.displayProfileIcon(self.displayFormat());
+                        //self.displayProfileIcon(self.displayFormat());
                         self.dislayNumberHeaderText();
                         //check visable MIGrid
                         if (self.displayFormat() != 0) {
