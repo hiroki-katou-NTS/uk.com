@@ -4343,6 +4343,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processState(cssAgree: any, cssFrequency: any) {
             if (cssAgree != "" && cssAgree != null) {
+                $('#agree-time').removeClass();
                 $("#agree-time").addClass(cssAgree);
             } else {
                 $('#agree-time').removeClass();
@@ -4350,8 +4351,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             if (cssFrequency != "" && cssFrequency != null) {
                 $("#agree-excess").removeClass();
-            } else {
                 $("#agree-excess").addClass(cssFrequency);
+            } else {
+                $("#agree-excess").removeClass();
             }
         }
     }
