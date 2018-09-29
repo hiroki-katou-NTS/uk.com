@@ -79,14 +79,20 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneService;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -149,6 +155,11 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private AgreementTimeService agreementTimeService;
+	@Inject
+	private BasicScheduleService basicService;
+	@Inject
+	private BreakTimeZoneService timeService;
+	
 	/**
 	 * @param url
 	 * @param appDate
@@ -232,6 +243,17 @@ public class AppOvertimeFinder {
 						rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		
 		// 6.計算処理 : 
+		//表示しない
+		if(!isSettingDisplay(appCommonSettingOutput)){
+			//休憩時間帯を取得する
+			BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID,workTypeCode, siftCD);
+			if (!CollectionUtil.isEmpty(breakTime.getLstTimezone())) {
+				startTimeRest = breakTime.getLstTimezone().get(0).getStart().v();
+
+				endTimeRest = breakTime.getLstTimezone().get(0).getEnd().v();
+			}
+		}
+		
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRest, endTimeRest);
 		Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
@@ -261,6 +283,42 @@ public class AppOvertimeFinder {
 		
 		return caculationTimes;
 	}
+
+	private BreakTimeZoneSharedOutPut getBreakTimes(String companyID,String workTypeCode, String workTimeCode) {
+		//1日半日出勤・1日休日系の判定
+		WorkStyle workStyle= this.basicService.checkWorkDay(workTypeCode);
+		//平日か休日か判断する
+		WeekdayHolidayClassification weekDay = checkHolidayOrNot(workTypeCode);
+		//休憩時間帯の取得
+		return this.timeService.getBreakTimeZone(companyID, workTimeCode, weekDay.value, workStyle);
+	}
+
+	private WeekdayHolidayClassification checkHolidayOrNot(String workTypeCd) {
+		String companyId =  AppContexts.user().companyId();
+		Optional<WorkType> WorkTypeOptional = this.workTypeRepository.findByPK(companyId, workTypeCd);
+		if (!WorkTypeOptional.isPresent()) {
+			return WeekdayHolidayClassification.WEEKDAY;
+		}
+		// check null?
+		WorkType workType = WorkTypeOptional.get();
+		DailyWork dailyWork = workType.getDailyWork();
+		WorkTypeClassification oneDay = dailyWork.getOneDay();
+		// 休日出勤
+		if (oneDay.value == 11) {
+			return WeekdayHolidayClassification.HOLIDAY;
+		}
+		return WeekdayHolidayClassification.WEEKDAY;
+		
+	}
+
+	private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
+		return appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()
+				.getBreakInputFieldDisp().equals(true)
+				&& appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get()
+						.getTimeCalUse().equals(UseAtr.USE);
+
+	}
+
 	private List<OvertimeInputCaculation> convertMaptoList(Map<Integer,TimeWithCalculationImport> overTime,TimeWithCalculationImport flexTime,TimeWithCalculationImport midNightTime){
 		List<OvertimeInputCaculation> result = new ArrayList<>();
 		
@@ -985,7 +1043,7 @@ public class AppOvertimeFinder {
 					result.getApplication().getPrePostAtr(), 
 					appDate,
 					result.getSiftType().getSiftCode(),
-					result.getWorkType().getWorkTypeCode(), 
+					result.getWorkType().getWorkTypeCode(),
 					result.getWorkClockFrom1(),
 					result.getWorkClockTo1(),
 					null,

@@ -43,7 +43,9 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setBreakStartTime( breakStartTime== null ? null : new AttendanceTime(breakStartTime));
 		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime == null ? null : new AttendanceTime( breakEndTime));
 		
+		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
+		
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(convertMapOverTime(dailyAttendanceTimePubExport.getOverTime()),
 				convertMapHolidayWork(dailyAttendanceTimePubExport.getHolidayWorkTime()),
 				convertBonusTime(dailyAttendanceTimePubExport.getBonusPayTime()),

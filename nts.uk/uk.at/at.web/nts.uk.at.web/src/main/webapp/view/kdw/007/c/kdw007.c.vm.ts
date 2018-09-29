@@ -5,12 +5,18 @@ module nts.uk.at.view.kdw007.c.viewmodel {
         lstAddSubItems: KnockoutObservableArray<any> = ko.observableArray([]);
         allListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KDW007_30"), prop: 'code', width: 50, formatter: _.escape },
-            { headerText: nts.uk.resource.getText("KDW007_31"), prop: 'name', width: 180 , formatter: _.escape },
+            { headerText: nts.uk.resource.getText("KDW007_31"), prop: 'name', width: 180 , formatter: function (name, record) {
+                    return "<label class='limited-label'> " + name + " </label>";       
+                } },
         ]);
         addSubListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KDW007_39"), prop: 'operator', width: 50 , formatter: _.escape },
             { headerText: nts.uk.resource.getText("KDW007_30"), prop: 'code', width: 50 , formatter: _.escape },
-            { headerText: nts.uk.resource.getText("KDW007_31"), prop: 'name', width: 180 , formatter: _.escape },
+            { headerText: nts.uk.resource.getText("KDW007_31"), prop: 'name', width: 180 , 
+                formatter: function (name, record) {
+                    return "<label class='limited-label'> " + name + " </label>";       
+                }    
+        },
         ]);
         selectedAllList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedAddSubList: KnockoutObservableArray<any> = ko.observableArray([]);
