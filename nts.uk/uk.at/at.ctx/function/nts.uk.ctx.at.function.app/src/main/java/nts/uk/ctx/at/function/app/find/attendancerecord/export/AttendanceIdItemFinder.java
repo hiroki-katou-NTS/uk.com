@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.export;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -110,6 +111,7 @@ public class AttendanceIdItemFinder {
 					atItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()), attendanceType);
 
 			return dailyAtNameList.stream().filter(e -> e.getAttendanceItemName() != null).distinct()
+					.sorted(Comparator.comparing(AttendanceItemName::getAttendanceItemId))
 					.map(e -> new AttendanceIdItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), 0))
 					.collect(Collectors.toList());
 		} else {
@@ -150,6 +152,7 @@ public class AttendanceIdItemFinder {
 					atItemList.stream().map(e -> e.getAttendanceItemId()).collect(Collectors.toList()), attendanceType);
 
 			return monthlyAtNameList.stream().filter(e -> e.getAttendanceItemName() != null).distinct()
+					.sorted(Comparator.comparing(AttendanceItemName::getAttendanceItemId))
 					.map(e -> new AttendanceIdItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), 0))
 					.collect(Collectors.toList());
 

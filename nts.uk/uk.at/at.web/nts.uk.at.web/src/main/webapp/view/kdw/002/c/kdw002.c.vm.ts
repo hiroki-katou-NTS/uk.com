@@ -262,7 +262,9 @@ module nts.uk.at.view.kdw002.c {
             getDailyAttdItemByRoleID(roleID: string) {
                 let self = this;
                 let dfd = $.Deferred();
+                let startTime: number = performance.now();
                 service.getDailyAttItemNew(roleID).done(function(data) {
+                    console.log("get setting by role: " + (performance.now() - startTime));
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
                     _.each(self.listAttFullDataClone(), attFullData => {
@@ -314,6 +316,7 @@ module nts.uk.at.view.kdw002.c {
                     self.dailyServiceTypeControl(
                         new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
                     );
+                    console.log("convert object: " + (performance.now() - startTime));
                     dfd.resolve(self.dailyServiceTypeControl());
                 });
                 return dfd.promise();
@@ -439,7 +442,14 @@ module nts.uk.at.view.kdw002.c {
                 nts.uk.ui.block.invisible();
                 if(self.isDaily){
                     service.updateDailyAttdItem(self.dailyServiceTypeControl()).done(x => {
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(function() {
+                            self.getDailyAttdItemByRoleID(self.dailyServiceTypeControl().authorityDailyId).done(function(){
+                                $("#grid").igGrid("destroy")
+                                self.currentRoleId(self.dailyServiceTypeControl().authorityDailyId);
+                                self.currentRoleId.valueHasMutated();
+                            });
+                            
+                        });
                     }).always(function() {
                         nts.uk.ui.block.clear();
                     });
@@ -464,7 +474,14 @@ module nts.uk.at.view.kdw002.c {
                     
                     let monthly = new MonthlyAttendanceItemAuth("",self.dailyServiceTypeControl().authorityDailyId,listDisplayMonthly);
                     service.updateMonthlyAttdItem(monthly).done(x => {
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(function() {
+                            self.getMonthlyAttdItemByRoleID(monthly.authorityMonthlyId).done(function(){
+                            ///var temp = $('#grid').igGrid("option","dataSource", self.dailyServiceTypeControl().displayAndInput)
+                            $("#grid").igGrid("destroy")
+                            self.currentRoleId(monthly.authorityMonthlyId);
+                            self.currentRoleId.valueHasMutated();
+                            });
+                        });
                     }).always(function() {
                         nts.uk.ui.block.clear();
                     });

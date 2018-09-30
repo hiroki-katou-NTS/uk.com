@@ -115,12 +115,25 @@ public class JpaAbsenceLeaveRemainDataRepository extends JpaRepository implement
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonRemain.class,
-				new KrcdtMonMergePk(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+//		this.commandProxy().remove(KrcdtMonRemain.class,
+//				new KrcdtMonMergePk(
+//						employeeId,
+//						yearMonth.v(),
+//						closureId.value,
+//						closureDate.getClosureDay().v(),
+//						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 削除
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
+		if (entity != null) entity.deleteAbsenceLeaveRemainData();
 	}
 }

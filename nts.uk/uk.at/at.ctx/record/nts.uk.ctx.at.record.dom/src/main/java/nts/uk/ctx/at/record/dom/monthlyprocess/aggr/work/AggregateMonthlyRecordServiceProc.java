@@ -83,6 +83,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -1047,20 +1049,13 @@ public class AggregateMonthlyRecordServiceProc {
 			// 年休
 			if (dailyInterimRemainMng.getAnnualHolidayData().isPresent()){
 				val data = dailyInterimRemainMng.getAnnualHolidayData().get();
-				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(
-						master.getRemainManaID(),
-						master.getYmd(),
-						data.getWorkTypeCode(),
-						data.getUseDays()));
+				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
 			
 			// 積立年休
 			if (dailyInterimRemainMng.getResereData().isPresent()){
 				val data = dailyInterimRemainMng.getResereData().get();
-				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(
-						master.getRemainManaID(),
-						master.getYmd(),
-						data.getUseDays()));
+				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(master, data));
 			}
 		}
 
@@ -1073,8 +1068,8 @@ public class AggregateMonthlyRecordServiceProc {
 			val flexTime = attendanceTime.getMonthlyCalculation().getFlexTime();
 			double deductDays = flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
 			if (deductDays > 0.0){
-				TmpAnnualLeaveMngWork compensData = TmpAnnualLeaveMngWork.of(
-						"compens", period.end(), "000", new UseDay(deductDays));
+				TmpAnnualLeaveMngWork compensData = TmpAnnualLeaveMngWork.of("compens",
+						period.end(), "000", new UseDay(deductDays), CreateAtr.FLEXCOMPEN, RemainAtr.SINGLE);
 				tmpAnnualLeaveMngs.add(compensData);
 				isOverWriteAnnual = true;
 			}
