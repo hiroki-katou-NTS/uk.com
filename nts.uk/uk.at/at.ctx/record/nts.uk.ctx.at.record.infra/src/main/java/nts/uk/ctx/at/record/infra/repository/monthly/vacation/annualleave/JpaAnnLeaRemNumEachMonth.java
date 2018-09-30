@@ -58,9 +58,9 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 			+ "AND a.closureStatus = 1 "
 			+ "ORDER BY a.startDate ";
 	
-	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRemain a "
-			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
-			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth ";
+//	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRemain a "
+//			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+//			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth ";
 
 	/** 検索 */
 	@Override
@@ -174,22 +174,40 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonRemain.class,
-				new KrcdtMonMergePk(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+//		this.commandProxy().remove(KrcdtMonRemain.class,
+//				new KrcdtMonMergePk(
+//						employeeId,
+//						yearMonth.v(),
+//						closureId.value,
+//						closureDate.getClosureDay().v(),
+//						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 削除
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
+		if (entity != null) entity.deleteMonAnnleaRemain();
 	}
 	
 	/** 削除　（年月） */
 	@Override
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+//		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+//				.setParameter("employeeId", employeeId)
+//				.setParameter("yearMonth", yearMonth.v())
+//				.executeUpdate();
+		
+		val entitys = this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.executeUpdate();
+				.getList();
+		for (val entity : entitys) entity.deleteMonAnnleaRemain();
 	}
 }
