@@ -168,8 +168,8 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 $('#J2_2_3').ntsError('clear');
                 self.characterDataFormatSetting().startDigit(null);
                 self.characterDataFormatSetting().endDigit(null);
-                self.characterDataFormatSetting().startDigit(Math.floor(self.characterDataFormatSetting().startDigit()));
-                self.characterDataFormatSetting().endDigit(Math.floor(self.characterDataFormatSetting().endDigit()));
+                // self.characterDataFormatSetting().startDigit(Math.floor(self.characterDataFormatSetting().startDigit()));
+                // self.characterDataFormatSetting().endDigit(Math.floor(self.characterDataFormatSetting().endDigit()));
                 return false;
             }
         }
@@ -180,7 +180,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             } else {
                 $('#J3_2_1').ntsError('clear');
                 self.characterDataFormatSetting().cdEditDigit(null);
-                self.characterDataFormatSetting().cdEditDigit(Math.floor(self.characterDataFormatSetting().cdEditDigit()));
+                // self.characterDataFormatSetting().cdEditDigit(Math.floor(self.characterDataFormatSetting().cdEditDigit()));
                 return false;
             }
         }
@@ -197,10 +197,10 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         enableFixedValue() {
             var self = this;
             if (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) {
-                self.characterDataFormatSetting().valueOfFixedValue(null);
                 return true;
             } else {
                 $('#J7_2').ntsError('clear');
+                self.characterDataFormatSetting().valueOfFixedValue(null);
                 return false;
             }
         }

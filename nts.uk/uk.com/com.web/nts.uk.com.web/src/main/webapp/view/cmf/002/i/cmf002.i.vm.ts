@@ -99,7 +99,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             if (!enable) {
                 $('#I2_2_2').ntsError('clear');
                 self.numberDataFormatSetting().decimalDigit(null);
-                self.numberDataFormatSetting().decimalDigit(Math.floor(self.numberDataFormatSetting().decimalDigit()));
+                // self.numberDataFormatSetting().decimalDigit(Math.floor(self.numberDataFormatSetting().decimalDigit()));
             }
             return enable;
         }
@@ -116,7 +116,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             if (!enable) {
                 $('#I4_3').ntsError('clear');
                 self.numberDataFormatSetting().fixedCalculationValue(null);
-                self.numberDataFormatSetting().fixedCalculationValue(Math.floor((self.numberDataFormatSetting().fixedCalculationValue()) * 100) / 100);
+                // self.numberDataFormatSetting().fixedCalculationValue(Math.floor((self.numberDataFormatSetting().fixedCalculationValue()) * 100) / 100);
             }
             return enable;
         }
@@ -126,7 +126,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             if (!enable) {
                 $('#I5_2_2').ntsError('clear');
                 self.numberDataFormatSetting().fixedLengthIntegerDigit(null);
-                self.numberDataFormatSetting().fixedLengthIntegerDigit(Math.floor(self.numberDataFormatSetting().fixedLengthIntegerDigit()));
+                // self.numberDataFormatSetting().fixedLengthIntegerDigit(Math.floor(self.numberDataFormatSetting().fixedLengthIntegerDigit()));
             }
             return enable;
         }
