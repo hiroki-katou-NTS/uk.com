@@ -118,6 +118,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
 	
+	@Inject
+	private AppDetailInfoRepository repoAppDetailInfo;
+	
 	@Override
 	public String getApplicationContent(Application_New app) {
 		String appReason = app.getAppReason().toString();
@@ -207,25 +210,26 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			switch (app.getPrePostAtr()) {
 			case PREDICT: {
 				// OK
-				String time1 = clockShorHm(overTime.getWorkClockFrom1()) == "" ? "" : 
-					clockShorHm(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") + clockShorHm(overTime.getWorkClockTo1());
+				String time1 = repoAppDetailInfo.convertTime(overTime.getWorkClockFrom1()) == "" ? "" : 
+					repoAppDetailInfo.convertTime(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") 
+					+ repoAppDetailInfo.convertTime(overTime.getWorkClockTo1());
 				content += I18NText.getText("CMM045_268") + " " + time1;
 				content += (!Objects.isNull(overTime.getWorkClockFrom2())
-						? " " + clockShorHm(overTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
-				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? clockShorHm(overTime.getWorkClockTo2()) : "");
+						? " " + repoAppDetailInfo.convertTime(overTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
+				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? repoAppDetailInfo.convertTime(overTime.getWorkClockTo2()) : "");
 				String moreInf = "";
 				int count = 0;
 				int totalWorkUnit = 0;
 				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(overTime.getOverTimeShiftNight()) + " ";
+						moreInf += I18NText.getText("CMM045_270") + " " + repoAppDetailInfo.convertTime(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(overTime.getFlexExessTime()) + " ";
+						moreInf += I18NText.getText("CMM045_271") + " " + repoAppDetailInfo.convertTime(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
 				for (val x : overTime.getOverTimeInput()) {
@@ -283,14 +287,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								break;
 							}
 							}
-							moreInf += type + " " + clockShorHm(x.getApplicationTime().v()) + " ";
+							moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 						}
 						count++;
 					}
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
+				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 				break;
 			}
@@ -302,27 +306,28 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				AppOverTime preOverTime = !Objects.isNull(preApp)
 						? overtimeRepo.getAppOvertimeFrame(companyID, preApp.getAppID()).orElse(null) : null;
 				if (!Objects.isNull(preOverTime)) {
-					String time1 = clockShorHm(preOverTime.getWorkClockFrom1()) == "" ? "" : 
-						clockShorHm(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") + clockShorHm(preOverTime.getWorkClockTo1());
+					String time1 = repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom1()) == "" ? "" : 
+						repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100") 
+						+ repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo1());
 					content += I18NText.getText("CMM045_272") + " " + I18NText.getText("CMM045_268") + " "
 							+ time1;
 					content += (!Objects.isNull(preOverTime.getWorkClockFrom2())
-							? " " + clockShorHm(preOverTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
+							? " " + repoAppDetailInfo.convertTime(preOverTime.getWorkClockFrom2()) + I18NText.getText("CMM045_100") : "");
 					content += (!Objects.isNull(preOverTime.getWorkClockTo2())
-							? clockShorHm(preOverTime.getWorkClockTo2()) : "");
+							? repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo2()) : "");
 					String moreInf = "";
 					int count = 0;
 					int totalWorkUnit = 0;
 					if (preOverTime.getOverTimeShiftNight() != null && preOverTime.getOverTimeShiftNight() > 0) {
 						totalWorkUnit += preOverTime.getOverTimeShiftNight();
 						if (count < 3)
-							moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(preOverTime.getOverTimeShiftNight()) + " ";
+							moreInf += I18NText.getText("CMM045_270") + " " + repoAppDetailInfo.convertTime(preOverTime.getOverTimeShiftNight()) + " ";
 						count++;
 					}
 					if (preOverTime.getFlexExessTime() != null && preOverTime.getFlexExessTime() > 0) {
 						totalWorkUnit += preOverTime.getFlexExessTime();
 						if (count < 3)
-							moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(preOverTime.getFlexExessTime()) + " ";
+							moreInf += I18NText.getText("CMM045_271") + " " + repoAppDetailInfo.convertTime(preOverTime.getFlexExessTime()) + " ";
 						count++;
 					}
 					for (val x : preOverTime.getOverTimeInput()) {
@@ -377,21 +382,21 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 									break;
 								}
 								}
-								moreInf += type + " " + clockShorHm(x.getApplicationTime().v()) + " ";
+								moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 							}
 							count++;
 						}
 					}
 					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-					content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
+					content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
 							+ I18NText.getText("CMM045_230", frameInfo);
 				}
 
 				// AFTER
 				content += "\n" + I18NText.getText("CMM045_274") + " " + I18NText.getText("CMM045_268") + " "
-						+ clockShorHm(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100")
-						+ clockShorHm(overTime.getWorkClockTo1());
+						+ repoAppDetailInfo.convertTime(overTime.getWorkClockFrom1()) + I18NText.getText("CMM045_100")
+						+ repoAppDetailInfo.convertTime(overTime.getWorkClockTo1());
 				content += (!Objects.isNull(overTime.getWorkClockFrom2())
 						? overTime.getWorkClockFrom2() + I18NText.getText("CMM045_100") : "");
 				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? overTime.getWorkClockTo2() : "");
@@ -401,13 +406,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
 					totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_270") + " " + clockShorHm(overTime.getOverTimeShiftNight()) + " ";
+						moreInf += I18NText.getText("CMM045_270") + " " + repoAppDetailInfo.convertTime(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
 					totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
-						moreInf += I18NText.getText("CMM045_271") + " " + clockShorHm(overTime.getFlexExessTime()) + " ";
+						moreInf += I18NText.getText("CMM045_271") + " " + repoAppDetailInfo.convertTime(overTime.getFlexExessTime()) + " ";
 					count++;
 				}
 				for (val x : overTime.getOverTimeInput()) {
@@ -466,7 +471,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 									break;
 								}
 								}
-								moreInf += type + " " + clockShorHm(x.getApplicationTime().v()) + " ";
+								moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 							}
 							count++;
 						}
@@ -474,7 +479,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
+				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 			}
 			case NONE: {
@@ -579,22 +584,22 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if (!Objects.isNull(appWork.getWorkTimeStart1()) && !Objects.isNull(appWork.getWorkTimeEnd1())) {
 				content += !Objects.isNull(appWork.getGoWorkAtr1())
 						? (appWork.getGoWorkAtr1() == 1
-								? " " + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeStart1())
-										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeEnd1())
+								? " " + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeStart1())
+										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd1())
 								: "")
 						: "";
 				content += !Objects.isNull(appWork.getGoWorkAtr2())
 						? (appWork.getGoWorkAtr2() == 1
-								? " " + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeStart2())
-										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + clockShorHm(appWork.getWorkTimeEnd2())
+								? " " + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeStart2())
+										+ I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252") + repoAppDetailInfo.convertTime(appWork.getWorkTimeEnd2())
 								: "")
 						: "";
 			}
 			if (!Objects.isNull(appWork.getBreakTimeStart1()) && !Objects.isNull(appWork.getBreakTimeEnd1())) {
 				content += I18NText.getText("CMM045_251")
-						+ (!Objects.isNull(appWork.getBreakTimeStart1()) ? clockShorHm(appWork.getBreakTimeStart1()) + I18NText.getText("CMM045_100")
+						+ (!Objects.isNull(appWork.getBreakTimeStart1()) ? repoAppDetailInfo.convertTime(appWork.getBreakTimeStart1()) + I18NText.getText("CMM045_100")
 								: "" + (!Objects.isNull(appWork.getBreakTimeEnd1())
-										? clockShorHm(appWork.getBreakTimeEnd1()) : ""));
+										? repoAppDetailInfo.convertTime(appWork.getBreakTimeEnd1()) : ""));
 			}
 		}
 
@@ -664,13 +669,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
-							content += clockShorHm(appWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock1().getEndTime().v());
+							content += repoAppDetailInfo.convertTime(appWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
+									+ repoAppDetailInfo.convertTime(appWork.getWorkClock1().getEndTime().v());
 						}
 						if (!Objects.isNull(appWork.getWorkClock2().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock2().getEndTime())) {
-							content += clockShorHm(appWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock2().getEndTime().v());
+							content += repoAppDetailInfo.convertTime(appWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
+									+ repoAppDetailInfo.convertTime(appWork.getWorkClock2().getEndTime().v());
 						}
 						String moreInf = "";
 						int count = 0;
@@ -731,14 +736,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += type + " " + clockShorHm(x.getApplicationTime().v()) + " ";
+										moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 									}
 									count++;
 								}
 							}
 							String frameInfo = moreInf
 									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-							content += " " + I18NText.getText("CMM045_276") + clockShorHm(totalWorkUnit)
+							content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
 									+ I18NText.getText("CMM045_230", frameInfo);
 						}
 					}
@@ -762,13 +767,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						if (!Objects.isNull(preAppWork.getWorkClock1())) {
 							if (!Objects.isNull(preAppWork.getWorkClock1().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock1().getEndTime())) {
-								content += clockShorHm(preAppWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
-										+ clockShorHm(preAppWork.getWorkClock1().getEndTime().v());
+								content += repoAppDetailInfo.convertTime(preAppWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
+										+ repoAppDetailInfo.convertTime(preAppWork.getWorkClock1().getEndTime().v());
 							}
 							if (!Objects.isNull(preAppWork.getWorkClock2().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock2().getEndTime())) {
-								content += clockShorHm(preAppWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-										+ clockShorHm(preAppWork.getWorkClock2().getEndTime().v());
+								content += repoAppDetailInfo.convertTime(preAppWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
+										+ repoAppDetailInfo.convertTime(preAppWork.getWorkClock2().getEndTime().v());
 							}
 							String moreInf = "";
 							int count = 0;
@@ -829,14 +834,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 												break;
 											}
 											}
-											moreInf += type + " " + clockShorHm(x.getApplicationTime().v()) + " ";
+											moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 										}
 										count++;
 									}
 								}
 								String frameInfo = moreInf
 										+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-								content += " " + I18NText.getText("CMM045_276") + clockShorHm(totalWorkUnit)
+								content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
 										+ I18NText.getText("CMM045_230", frameInfo);
 							}
 						}
@@ -851,13 +856,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
-							content += clockShorHm(appWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock1().getEndTime().v());
+							content += repoAppDetailInfo.convertTime(appWork.getWorkClock1().getStartTime().v()) + I18NText.getText("CMM045_100")
+									+ repoAppDetailInfo.convertTime(appWork.getWorkClock1().getEndTime().v());
 						}
 						if (!Objects.isNull(appWork.getWorkClock2().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock2().getEndTime())) {
-							content += clockShorHm(appWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
-									+ clockShorHm(appWork.getWorkClock2().getEndTime().v());
+							content += repoAppDetailInfo.convertTime(appWork.getWorkClock2().getStartTime().v()) + I18NText.getText("CMM045_100")
+									+ repoAppDetailInfo.convertTime(appWork.getWorkClock2().getEndTime().v());
 						}
 						String moreInf = "";
 						int count = 0;
@@ -918,14 +923,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 											break;
 										}
 										}
-										moreInf += type + " " + clockShorHm(x.getApplicationTime().v()) + " ";
+										moreInf += type + " " + repoAppDetailInfo.convertTime(x.getApplicationTime().v()) + " ";
 									}
 									count ++;
 								}
 							}
 							String frameInfo = moreInf
 									+ (count > 3 ? I18NText.getText("CMM045_230", count - 3 + "") : "");
-							content += " " + I18NText.getText("CMM045_276") + clockShorHm(totalWorkUnit)
+							content += " " + I18NText.getText("CMM045_276") + repoAppDetailInfo.convertTime(totalWorkUnit)
 									+ I18NText.getText("CMM045_230", frameInfo);
 						}
 					}
@@ -1148,15 +1153,16 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 		AppCompltLeaveSyncOutput sync = otherCommonAlgorithm.getAppComplementLeaveSync(companyID, appID);
 		if (!sync.isSync()) {
 			if (sync.getType() == 0) {
+				//abs
 				leaveApp = appLeaveRepo.findByAppId(appID).orElse(null);
 				if (!Objects.isNull(leaveApp)) {
 					Optional<WorkType> workType = repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD().v());
 					content += I18NText.getText("CMM045_262") + " " + app.getAppDate().toString("MM/dd")
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(leaveApp.getWorkTime1()) && !Objects.isNull(leaveApp.getWorkTime2())) {
-						content += clockShorHm(leaveApp.getWorkTime1().getStartTime().v())
+						content += repoAppDetailInfo.convertTime(leaveApp.getWorkTime1().getStartTime().v())
 								+ I18NText.getText("CMM045_100")
-								+ clockShorHm(leaveApp.getWorkTime1().getEndTime().v());
+								+ repoAppDetailInfo.convertTime(leaveApp.getWorkTime1().getEndTime().v());
 					}
 				}
 
@@ -1167,8 +1173,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					content += I18NText.getText("CMM045_263") + " " + app.getAppDate().toString("MM/dd")
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(recApp.getWorkTime1()) && !Objects.isNull(recApp.getWorkTime2())) {
-						content += clockShorHm(recApp.getWorkTime1().getStartTime().v())
-								+ I18NText.getText("CMM045_100") + clockShorHm(recApp.getWorkTime1().getEndTime().v());
+						content += repoAppDetailInfo.convertTime(recApp.getWorkTime1().getStartTime().v())
+								+ I18NText.getText("CMM045_100")
+								+ repoAppDetailInfo.convertTime(recApp.getWorkTime1().getEndTime().v());
 					}
 				}
 			}
@@ -1184,8 +1191,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(recApp.getWorkTime1().getStartTime().v())
 							&& !Objects.isNull(recApp.getWorkTime1().getEndTime().v())) {
-						content += " " + clockShorHm(recApp.getWorkTime1().getStartTime().v())
-								+ I18NText.getText("CMM045_100") + clockShorHm(recApp.getWorkTime1().getEndTime().v());
+						content += " " + repoAppDetailInfo.convertTime(recApp.getWorkTime1().getStartTime().v())
+								+ I18NText.getText("CMM045_100") 
+								+ repoAppDetailInfo.convertTime(recApp.getWorkTime1().getEndTime().v());
 					}
 				}
 				if (leaveAppInfo.isPresent()){
@@ -1194,8 +1202,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
 					if (!Objects.isNull(leaveApp.getWorkTime1().getStartTime().v())
 							&& !Objects.isNull(leaveApp.getWorkTime1().getEndTime().v())) {
-						content += " " + clockShorHm(leaveApp.getWorkTime1().getStartTime().v())
-								+ I18NText.getText("CMM045_100") + clockShorHm(leaveApp.getWorkTime1().getEndTime().v());
+						content += " " + repoAppDetailInfo.convertTime(leaveApp.getWorkTime1().getStartTime().v())
+								+ I18NText.getText("CMM045_100") 
+								+ repoAppDetailInfo.convertTime(leaveApp.getWorkTime1().getEndTime().v());
 					}
 				}
 			}
@@ -1223,12 +1232,5 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 	private String getApp36AppContent(Application_New app, String companyID, String appID, String appReason) {
 		// TODO
 		return appReason;
-	}
-
-	private String clockShorHm(Integer minute) {
-		if(minute == null){
-			return "";
-		}
-		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}
 }
