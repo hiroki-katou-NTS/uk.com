@@ -1497,10 +1497,10 @@ public class DailyPerformanceCorrectionProcessor {
 				OptionalItemAtr atr = optionalItemAtr.get(itemNo);
 				if(atr != null && atr.value == OptionalItemAtr.TIME.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
-					item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
+					//item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
-					item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
+					//item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
 				}
