@@ -153,7 +153,7 @@
             </div>
             <div id="functions-area-bottom">
                 <button id="D3_1"  class="proceed large"
-                        data-bind="click: update">#{i18n.getText('QMM011_41')}</button>
+                        data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM011_41')}</button>
                 <button id="D3_2"
                         data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
             </div>
