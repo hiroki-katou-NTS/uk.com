@@ -2,7 +2,8 @@
 
     function isInteger(value: any, option?: any) {
         if (option !== undefined && option.groupseperator !== undefined) {
-            value = isInteger(value) ? value : text.replaceAll(value.toString(), option.groupseperator(), '');
+            var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
+            value = isInteger(value) ? value : text.replaceAll(value.toString(), seperator, '');
         }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }

@@ -2947,11 +2947,11 @@ module nts.uk.ui.mgrid {
                     _cloud.painter.painters[0].unbubColumn(col, i);
                 }
             },
-            updateCell: function(id, key, val, reset) {
+            updateCell: function(id, key, val, reset, ackDis) {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
                 if (_.isNil(idx)) return;
                 let $cell = lch.cellAt(_$grid[0], idx, key);
-                if (_.isNil($cell) || $cell.classList.contains(color.Disable)) return idx;
+                if (_.isNil($cell) || (!ackDis && $cell.classList.contains(color.Disable))) return idx;
                 if (dkn.controlType[key] === dkn.TEXTBOX) {
                     let col = _columnsMap[key];
                     if (!col || col.length === 0) return;
@@ -4896,6 +4896,10 @@ module nts.uk.ui.mgrid {
                     let grid = ti.closest($editor, "." + MGRID);
                     su.endEdit(grid);
                 }
+                
+                if (ti.isArrowLeft(evt) || ti.isArrowRight(evt) || ti.isArrowUp(evt) || ti.isArrowDown(evt)) {
+                    evt.stopPropagation();
+                }
             });
             
             $editor.addXEventListener(ssk.KEY_UP, evt => {
@@ -5669,6 +5673,9 @@ module nts.uk.ui.mgrid {
                         opts.grouplength = this.options.groupLength | 3;
                         opts.decimallength = _.isNil(this.options.decimalLength) ? 0 : this.options.decimalLength;
                         opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
+                        if (!_.isNil(this.options.min)) opts.min = this.options.min;
+                        if (!_.isNil(this.options.max)) opts.max = this.options.max;
+                        if (!_.isNil(this.options.required)) opts.required = this.options.required;
                         return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                 .validate(value);
                     case "Time":
@@ -5743,8 +5750,11 @@ module nts.uk.ui.mgrid {
                      isValid = ntsNumber.isHalfInt(text, message);
                 } else if (self.displayType === "Integer") {
                     isValid = ntsNumber.isNumber(text, false, self.options, message);
-                } else if (self.displayType === "Decimal" || self.displayType === "Currency") {
+                } else if (self.displayType === "Decimal") {
                     isValid = ntsNumber.isNumber(text, true, self.options, message);
+                } else if (self.displayType === "Currency") {
+                    isValid = ntsNumber.isNumber(text, false, self.options, message);
+                    if (_.indexOf(text, ".") > -1) isValid = false;
                 }
                 
                 let min = 0, max = 999999999;

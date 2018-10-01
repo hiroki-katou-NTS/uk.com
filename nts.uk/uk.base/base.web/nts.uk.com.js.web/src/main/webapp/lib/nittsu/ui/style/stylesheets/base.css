@@ -5012,23 +5012,23 @@ div .ex-area-line.x-stay {
 }
 
 /* line 82, ../sass/components/_mgrid.scss */
-.mgrid table tr td.mgrid-calc {
-  background-color: #F69164;
-}
-
-/* line 86, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-reflect {
   background-color: #BFEA60;
 }
 
-/* line 90, ../sass/components/_mgrid.scss */
+/* line 86, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-manual-edit-other {
   background-color: #CEE6FF;
 }
 
-/* line 94, ../sass/components/_mgrid.scss */
+/* line 90, ../sass/components/_mgrid.scss */
 .mgrid table tr td.mgrid-manual-edit-target {
   background-color: #94B7FE;
+}
+
+/* line 94, ../sass/components/_mgrid.scss */
+.mgrid table tr td.mgrid-calc {
+  background-color: #F69164;
 }
 
 /* line 98, ../sass/components/_mgrid.scss */
