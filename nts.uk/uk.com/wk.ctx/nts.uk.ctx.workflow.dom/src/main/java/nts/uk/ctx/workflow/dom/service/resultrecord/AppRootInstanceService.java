@@ -2,12 +2,15 @@ package nts.uk.ctx.workflow.dom.service.resultrecord;
 
 import java.util.List;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 中間データ版
@@ -139,7 +142,7 @@ public interface AppRootInstanceService {
 	 * @param agentLst
 	 * @return
 	 */
-	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst);
+	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst, RecordRootType rootType);
 	
 	/**
 	 * 代行者としてのルート状況を取得する
@@ -148,7 +151,7 @@ public interface AppRootInstanceService {
 	 * @param agentLst
 	 * @return
 	 */
-	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst);
+	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst, RecordRootType rootType);
 	
 	/**
 	 * outputの整合
@@ -157,4 +160,11 @@ public interface AppRootInstanceService {
 	 * @return
 	 */
 	public List<RouteSituation> mergeRouteSituationLst(List<RouteSituation> approverRouteLst, List<RouteSituation> agentRouteLst);
+	
+	public AppRootConfirm getAppRootCFByMonth(String companyID, String employeeID, YearMonth yearMonth,
+			Integer closureID, ClosureDate closureDate, RecordRootType rootType);
+	
+	public boolean isDataApproverExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> approverRouteLst);
+	
+	public boolean isDataAgentExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> agentRouteLst);
 }

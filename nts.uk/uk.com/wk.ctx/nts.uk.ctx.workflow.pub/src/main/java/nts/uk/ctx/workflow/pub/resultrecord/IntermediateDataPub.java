@@ -2,10 +2,13 @@ package nts.uk.ctx.workflow.pub.resultrecord;
 
 import java.util.List;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface IntermediateDataPub {
@@ -18,7 +21,7 @@ public interface IntermediateDataPub {
 	 * @param rootType ルート種類（日別確認／月別確認）
 	 * @return 承認ルートの状況
 	 */
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType);
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType) throws BusinessException;
 	
 	/**
 	 * RequestList 155
@@ -147,4 +150,71 @@ public interface IntermediateDataPub {
 	 */
 	public void deleteApprovalStatus(String employeeID, GeneralDate date, Integer rootType);
 	
+	/**
+	 * RequestList 528
+	 * [No.528](中間データ版)実績の承認を登録する（月別）
+	 * @param approverID
+	 * @param empPerformMonthParamLst
+	 */
+	public void approveMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst);
+	
+	/**
+	 * RequestList 527
+	 * [No.527]承認状態を作成する（月別）
+	 * @param employeeID
+	 * @param date
+	 * @param yearMonth
+	 * @param closureID
+	 * @param closureDate
+	 */
+	public void createApprovalStatusMonth(String employeeID, GeneralDate date, YearMonth yearMonth, Integer closureID, ClosureDate closureDate);
+	
+	/**
+	 * RequestList 529
+	 * [No.529](中間データ版)実績の承認を解除する（月別）
+	 * @param approverID
+	 * @param empPerformMonthParamLst
+	 * @return
+	 */
+	public boolean cancelMonth(String approverID, List<EmpPerformMonthParam> empPerformMonthParamLst);
+	
+	/**
+	 * RequestList 532
+	 * [No.532](中間データ版)承認対象者と期間から承認状況を取得する（月別）
+	 * @param employeeID
+	 * @param period
+	 * @return
+	 */
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period);
+	
+	/**
+	 * RequestList 533
+	 * [No.533](中間データ版)承認対象者リストと日付リストから承認状況を取得する（月別）
+	 * @param empPerformMonthParamLst
+	 * @return
+	 */
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsMonth(List<EmpPerformMonthParam> empPerformMonthParamLst);
+	
+	/**
+	 * RequestList 534
+	 * [No.534](中間データ版)承認状況を取得する （月別）
+	 * @param approverID
+	 * @param yearMonth
+	 * @param closureID
+	 * @param closureDate
+	 * @param baseDate
+	 * @return
+	 */
+	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate);
+	
+	/**
+	 * RequestList 535
+	 * [No.535](中間データ版)承認すべきデータ有無を取得する（月別）
+	 * @param approverID
+	 * @param period
+	 * @param yearMonth
+	 * @return
+	 */
+	public boolean isDataExistMonth(String approverID, DatePeriod period, YearMonth yearMonth);
 }

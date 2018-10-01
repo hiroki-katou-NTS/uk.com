@@ -313,8 +313,6 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 
 	/*
-	 * 勤務種類と職業時間帯のペアチェック
-	 * 
 	 * (non-Javadoc)
 	 * 
 	 * 
@@ -344,18 +342,20 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	 * @param listWorkType
 	 */
 	@Override
-	public void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType) {
+	public String checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType) {
 		SetupType setupType = this.checkNeedWorkTimeSetByList(workTypeCode, listWorkType);
 
 		// In case of Required and work time is not set.
 		if (setupType == SetupType.REQUIRED && !this.isWorkTimeValid(workTimeCode)) {
-			throw new BusinessException("Msg_435");
+			return "Msg_435";
 		}
 
 		// In case of Not Required and work time is set.
 		if (setupType == SetupType.NOT_REQUIRED && this.isWorkTimeValid(workTimeCode)) {
-			throw new BusinessException("Msg_434");
+			return "Msg_434";
 		}
+		
+		return null;
 	}
 
 	@Override

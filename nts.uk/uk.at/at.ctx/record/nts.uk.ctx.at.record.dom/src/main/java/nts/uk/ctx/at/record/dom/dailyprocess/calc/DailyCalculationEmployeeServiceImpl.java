@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
@@ -196,8 +197,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			//0:計算完了
 			targetPersonRepository.updateWithContent(tc, empCalAndSumExecLogID, 1, 0);
 		});
-		
-		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
+		val result = afterCalcRecord.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+		//データ更新
+		for(IntegrationOfDaily value:result) {
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
@@ -208,6 +210,16 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
 		}
+		//計算状態更新
+		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
+			upDateCalcState(stateInfo);
+		}
+	}
+	
+	@Override
+	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
+		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
+		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
 	}
 	
 	/**

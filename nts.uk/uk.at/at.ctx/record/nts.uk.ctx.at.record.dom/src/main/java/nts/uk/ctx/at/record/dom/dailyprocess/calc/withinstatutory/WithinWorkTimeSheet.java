@@ -373,16 +373,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		val loopList = dedTimeSheet.getForRecordTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
 		for(TimeSheetOfDeductionItem masterDedItem : loopList) {
 			List<TimeSheetOfDeductionItem> notDupShort = Arrays.asList(masterDedItem);
-			//実績側の時間帯に埋まっている短時間ループ
-			List<TimeSheetOfDeductionItem> addItems = new ArrayList<>();
 			for(TimeSheetOfDeductionItem dedItem:allInFrameShortTimeSheets) {
 				//ループ中短時間のどこにも所属していない時間帯
-				val timeReplce = notDupShort.stream().map(tc -> tc.getTimeSheet().getTimeSpan().getNotDuplicationWith(dedItem.getTimeSheet().getTimeSpan())).flatMap(List::stream).collect(Collectors.toList());
-				notDupShort = timeReplce.stream().map(ts -> dedItem.replaceTimeSpan(Optional.of(ts))).collect(Collectors.toList());
-				addItems.addAll(notDupShort);
+				List<TimeSpanForCalc> timeReplace = notDupShort.stream().map(tc -> tc.getTimeSheet().getTimeSpan().getNotDuplicationWith(dedItem.getTimeSheet().getTimeSpan())).flatMap(List::stream).collect(Collectors.toList());
+				timeReplace = timeReplace.stream().filter(ts -> ts.getSpan().lengthAsMinutes() > 0).collect(Collectors.toList());
+				notDupShort = timeReplace.stream().map(ts -> dedItem.replaceTimeSpan(Optional.of(ts))).collect(Collectors.toList());
 			}
-			if(!addItems.isEmpty()) {
-				returnList.addAll(addItems);
+			if(!notDupShort.isEmpty()) {
+				returnList.addAll(notDupShort);
 			}
 		}		
 		return returnList;

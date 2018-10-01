@@ -159,15 +159,13 @@ public class MultipleMonthAggregateProcessService {
 					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
 
 						checkAddAlarm = true;
-						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
-								+ String.valueOf(startValue.intValue() % 60);
+						String startValueTime = timeToString(startValue.intValue());
 						String endValueTime = "";
 						if (compare <= 5) {
 							alarmDescription = TextResource.localize("KAL010_254", periodYearMonth, nameErrorAlarm,
 									compareOperatorText.getCompareLeft(), startValueTime);
 						} else {
-							endValueTime = String.valueOf(endValue.intValue() / 60) + ":"
-									+ String.valueOf(endValue.intValue() % 60);
+							endValueTime = timeToString(endValue.intValue());
 							if (compare > 5 && compare <= 7) {
 								alarmDescription = TextResource.localize("KAL010_255", periodYearMonth, startValueTime,
 										compareOperatorText.getCompareLeft(), nameErrorAlarm,
@@ -207,15 +205,13 @@ public class MultipleMonthAggregateProcessService {
 				case AVERAGE_TIME:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
-						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
-								+ String.valueOf(startValue.intValue() % 60);
+						String startValueTime = timeToString(startValue.intValue());
 						String endValueTime = "";
 						if (compare <= 5) {
 							alarmDescription = TextResource.localize("KAL010_264", periodYearMonth, nameErrorAlarm,
 									compareOperatorText.getCompareLeft(), startValueTime);
 						} else {
-							endValueTime = String.valueOf(endValue.intValue() / 60) + ":"
-									+ String.valueOf(endValue.intValue() % 60);
+							endValueTime = timeToString(endValue.intValue());
 							if (compare > 5 && compare <= 7) {
 								alarmDescription = TextResource.localize("KAL010_265", periodYearMonth, startValueTime,
 										compareOperatorText.getCompareLeft(), nameErrorAlarm,
@@ -254,8 +250,7 @@ public class MultipleMonthAggregateProcessService {
 				case CONTINUOUS_TIME:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
-						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
-								+ String.valueOf(startValue.intValue() % 60);
+						String startValueTime = timeToString(startValue.intValue());
 						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameErrorAlarm,
 								compareOperatorText.getCompareLeft(), startValueTime,
 								String.valueOf(extra.getContinuousMonths()));
@@ -276,8 +271,7 @@ public class MultipleMonthAggregateProcessService {
 					ArrayList<Integer> listMonthNumberTime = checkActualResultMulMonth.checkMulMonthCheckCondCosp(period,companyId,employee.getId(),result,extra) ;
 					if (!CollectionUtil.isEmpty(listMonthNumberTime)) {
 						checkAddAlarm = true;
-						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
-								+ String.valueOf(startValue.intValue() % 60);
+						String startValueTime = timeToString(startValue.intValue());
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
 								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
 								listMonthNumberTime.toString(), String.valueOf(extra.getTimes()));
@@ -380,5 +374,11 @@ public class MultipleMonthAggregateProcessService {
 			}
 		}		
 		return nameErrorAlarm;
+	}
+	private String timeToString(int value ){
+		if(value%60<10){
+			return  String.valueOf(value/60)+":0"+  String.valueOf(value%60);
+		}
+		return String.valueOf(value/60)+":"+  String.valueOf(value%60);
 	}
 }

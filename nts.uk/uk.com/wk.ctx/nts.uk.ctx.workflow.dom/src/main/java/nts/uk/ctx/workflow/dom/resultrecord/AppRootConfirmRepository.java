@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -38,5 +40,12 @@ public interface AppRootConfirmRepository {
 	public List<AppRootConfirm> findByEmpDate(String companyID, List<String> employeeID, DatePeriod date, RecordRootType rootType);
 
 	public void deleteByRequestList424(String companyID, String employeeID, GeneralDate date, Integer rootType);
+	
+	public Optional<AppRootConfirm> findByEmpMonth(String companyID, String employeeID, YearMonth yearMonth,
+			Integer closureID, ClosureDate closureDate, RecordRootType rootType);
+	
+	public Optional<AppRootConfirm> findByEmpPeriodMonth(String companyID, String employeeID, DatePeriod period);
+	
+	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth);
 	
 }

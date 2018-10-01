@@ -117,6 +117,13 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType"+
 			" AND appRoot.END_DATE >= 'startDate'"+
 			" AND appRoot.START_DATE <= 'endDate') result)";
+	
+	private final String FIND_BY_CONTAIN_DATE = BASIC_SELECT +
+			" WHERE appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.START_DATE <= 'recordDate'" +
+			" AND appRoot.END_DATE >= 'recordDate'";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -451,6 +458,30 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
 			String query = FIND_BY_EMP_DATE_NEWEST_BELOW;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<AppRootInstance> findByContainDate(String companyID, String employeeID, GeneralDate recordDate,
+			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_CONTAIN_DATE;
 			query = query.replaceAll("companyID", companyID);
 			query = query.replaceAll("employeeID", employeeID);
 			query = query.replaceAll("rootType", String.valueOf(rootType.value));

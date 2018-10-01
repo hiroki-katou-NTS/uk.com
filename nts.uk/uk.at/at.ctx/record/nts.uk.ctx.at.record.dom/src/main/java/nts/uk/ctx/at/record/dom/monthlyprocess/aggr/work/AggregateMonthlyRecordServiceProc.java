@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -13,7 +14,12 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
@@ -52,6 +58,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvR
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -65,7 +72,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDataInputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -73,6 +83,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
@@ -80,6 +93,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfS
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.RemainDaysOfSpecialHoliday;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -98,6 +114,8 @@ public class AggregateMonthlyRecordServiceProc {
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	/** 月次処理用の暫定残数管理データを作成する */
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 指定期間の暫定残数管理データを作成する */
+	private InterimRemainOffPeriodCreateData periodCreateData;
 	/** 期間中の年休積休残数を取得 */
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	/** 出勤率計算用日数を取得する */
@@ -151,10 +169,13 @@ public class AggregateMonthlyRecordServiceProc {
 	private boolean isRetouch;
 	/** 暫定残数データ */
 	private Map<GeneralDate, DailyInterimRemainMngData> dailyInterimRemainMngs;
+	/** 暫定残数データ上書きフラグ */
+	private boolean isOverWriteRemain;
 	
 	public AggregateMonthlyRecordServiceProc(
 			RepositoriesRequiredByMonthlyAggr repositories,
 			InterimRemainOffMonthProcess interimRemOffMonth,
+			InterimRemainOffPeriodCreateData periodCreateData,
 			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
 			AbsenceReruitmentMngInPeriodQuery absenceRecruitMng,
 			BreakDayOffMngInPeriodQuery breakDayoffMng,
@@ -165,6 +186,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		this.repositories = repositories;
 		this.interimRemOffMonth = interimRemOffMonth;
+		this.periodCreateData = periodCreateData;
 		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
 		this.absenceRecruitMng = absenceRecruitMng;
 		this.breakDayoffMng = breakDayoffMng;
@@ -211,6 +233,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.weekNoMap = new HashMap<>();
 		this.isRetouch = false;
 		this.dailyInterimRemainMngs = new HashMap<>();
+		this.isOverWriteRemain = false;
 		
 		ConcurrentStopwatches.start("12100:集計期間ごと準備：");
 
@@ -877,11 +900,10 @@ public class AggregateMonthlyRecordServiceProc {
 	private void remainingProcess(DatePeriod period){
 		
 		ConcurrentStopwatches.start("12405:暫定データ作成：");
-		
-		// 月次処理用の暫定残数管理データを作成する
-		this.dailyInterimRemainMngs = this.interimRemOffMonth.monthInterimRemainData(
-				this.companyId, this.employeeId, period);
 
+		// Workを考慮した月次処理用の暫定残数管理データを作成する
+		this.createDailyInterimRemainMngs(period);
+		
 		ConcurrentStopwatches.stop("12405:暫定データ作成：");
 		ConcurrentStopwatches.start("12410:年休積休：");
 		
@@ -910,11 +932,113 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 	
 	/**
+	 * Workを考慮した月次処理用の暫定残数管理データを作成する
+	 * @param period 期間
+	 */
+	private void createDailyInterimRemainMngs(DatePeriod period){
+		
+		// 【参考：旧処理】　月次処理用の暫定残数管理データを作成する
+		//this.dailyInterimRemainMngs = this.interimRemOffMonth.monthInterimRemainData(
+		//		this.companyId, this.employeeId, period);
+		
+		// 残数作成元情報(実績)を作成する
+		List<RecordRemainCreateInfor> recordRemains = new ArrayList<>();
+		val workInfos = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap();
+		val attendanceTimeMap = this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap();
+		for (val workInfo : workInfos.values()){
+			GeneralDate ymd = workInfo.getYmd();
+			if (!period.contains(ymd)) continue;
+			if (!attendanceTimeMap.containsKey(ymd)) continue;
+			recordRemains.add(this.remainDataFromRecord(workInfo, attendanceTimeMap.get(ymd)));
+		}
+		
+		// 指定期間の暫定残数管理データを作成する
+		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(
+				this.companyId, this.employeeId, period,
+				recordRemains, Collections.emptyList(), Collections.emptyList(), false);
+		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(
+				this.companyId, this.companySets.getAbsSettingOpt(), this.companySets.getDayOffSetting());
+		this.dailyInterimRemainMngs = this.periodCreateData.createInterimRemainDataMng(inputPara, comHolidaySetting);
+		
+		this.isOverWriteRemain = (this.dailyInterimRemainMngs.size() > 0);
+	}
+
+	/**
+	 * 残数作成元情報(実績)を作成する
+	 * @param workInfor 日別実績の勤務情報
+	 * @param attendanceInfor 日別実績の勤怠時間
+	 * @return 残数作成元情報(実績)
+	 * @see RemainCreateInforByRecordDataImpl
+	 */
+	private RecordRemainCreateInfor remainDataFromRecord(
+			WorkInfoOfDailyPerformance workInfor,
+			AttendanceTimeOfDailyPerformance attendanceInfor){
+		
+		RecordRemainCreateInfor outputInfor = new RecordRemainCreateInfor();
+		
+		// 残業振替時間の合計を算出する
+		Optional<OverTimeOfDaily> overTimeWork = attendanceInfor.getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
+		Integer overTimes = 0;
+		if(overTimeWork.isPresent()) {
+			List<OverTimeFrameTime> overTimeWorkFrameTime = overTimeWork.get().getOverTimeWorkFrameTime();
+			for (OverTimeFrameTime overTimeFrameTime : overTimeWorkFrameTime) {
+				overTimes += overTimeFrameTime.getTransferTime().getTime().v();
+			}
+		} 
+		outputInfor.setTransferOvertimesTotal(overTimes);
+		
+		// 休出振替時間の合計を算出する
+		Optional<HolidayWorkTimeOfDaily> workHolidayTime = attendanceInfor.getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
+		Integer transferTotal = 0;
+		if(workHolidayTime.isPresent()) {
+			List<HolidayWorkFrameTime> holidayWorkFrameTime = workHolidayTime.get().getHolidayWorkFrameTime();			
+			for (HolidayWorkFrameTime holidayWork : holidayWorkFrameTime) {
+				transferTotal += holidayWork.getTransferTime().isPresent() ? holidayWork.getTransferTime().get().getTime().v() : 0;
+			}
+		}
+		outputInfor.setTransferTotal(transferTotal);
+		
+		// 時間休暇使用情報を作成する
+		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
+		
+		outputInfor.setSid(workInfor.getEmployeeId());
+		outputInfor.setYmd(workInfor.getYmd());
+		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "000" 
+				: workInfor.getRecordInfo().getWorkTypeCode().v());
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "000" 
+				: workInfor.getRecordInfo().getSiftCode().v()));
+		return outputInfor;
+	}
+	
+	/**
+	 * 時間休暇使用情報を作成する
+	 * @return 時間休暇使用情報
+	 */
+	private List<VacationTimeInfor> getLstVacationTimeInfor(){
+		List<VacationTimeInfor> lstOutput = new ArrayList<>();
+		VacationTimeInfor timeInfor = new VacationTimeInfor(0, AppTimeType.ATWORK, 0, 0);
+		lstOutput.add(timeInfor);
+		timeInfor = new VacationTimeInfor(0, AppTimeType.ATWORK2, 0, 0);
+		lstOutput.add(timeInfor);
+		timeInfor = new VacationTimeInfor(0, AppTimeType.OFFWORK, 0, 0);
+		lstOutput.add(timeInfor);
+		timeInfor = new VacationTimeInfor(0, AppTimeType.OFFWORK2, 0, 0);
+		lstOutput.add(timeInfor);
+		timeInfor = new VacationTimeInfor(0, AppTimeType.PRIVATE, 0, 0);
+		lstOutput.add(timeInfor);
+		timeInfor = new VacationTimeInfor(0, AppTimeType.UNION, 0, 0);
+		lstOutput.add(timeInfor);
+		return lstOutput;
+	}
+	
+	/**
 	 * 年休、積休
 	 * @param period 期間
 	 */
 	private void annualAndReserveLeaveRemain(DatePeriod period){
-
+		
 		// 暫定残数データを年休・積立年休に絞り込む
 		List<TmpAnnualLeaveMngWork> tmpAnnualLeaveMngs = new ArrayList<>();
 		List<TmpReserveLeaveMngWork> tmpReserveLeaveMngs = new ArrayList<>();
@@ -925,20 +1049,29 @@ public class AggregateMonthlyRecordServiceProc {
 			// 年休
 			if (dailyInterimRemainMng.getAnnualHolidayData().isPresent()){
 				val data = dailyInterimRemainMng.getAnnualHolidayData().get();
-				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(
-						master.getRemainManaID(),
-						master.getYmd(),
-						data.getWorkTypeCode(),
-						data.getUseDays()));
+				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
 			
 			// 積立年休
 			if (dailyInterimRemainMng.getResereData().isPresent()){
 				val data = dailyInterimRemainMng.getResereData().get();
-				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(
-						master.getRemainManaID(),
-						master.getYmd(),
-						data.getUseDays()));
+				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(master, data));
+			}
+		}
+
+		// 月別実績の計算結果が存在するかチェック
+		boolean isOverWriteAnnual = this.isOverWriteRemain;
+		if (this.aggregateResult.getAttendanceTime().isPresent()){
+			
+			// 年休控除日数分の年休暫定残数データを作成する
+			val attendanceTime = this.aggregateResult.getAttendanceTime().get();
+			val flexTime = attendanceTime.getMonthlyCalculation().getFlexTime();
+			double deductDays = flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
+			if (deductDays > 0.0){
+				TmpAnnualLeaveMngWork compensData = TmpAnnualLeaveMngWork.of("compens",
+						period.end(), "000", new UseDay(deductDays), CreateAtr.FLEXCOMPEN, RemainAtr.SINGLE);
+				tmpAnnualLeaveMngs.add(compensData);
+				isOverWriteAnnual = true;
 			}
 		}
 		
@@ -950,7 +1083,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
 				period.end(), true, true,
-				Optional.of(true), Optional.of(tmpAnnualLeaveMngs), Optional.of(tmpReserveLeaveMngs),
+				Optional.of(isOverWriteAnnual), Optional.of(tmpAnnualLeaveMngs), Optional.of(tmpReserveLeaveMngs),
 				Optional.of(false),
 				Optional.of(this.employeeSets.isNoCheckStartDate()),
 				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave(),
@@ -1081,8 +1214,8 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 期間内の振休振出残数を取得する
 		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
-				this.companyId, this.employeeId, period, period.end(), true, true,
-				useAbsMng, interimMng, useRecMng);
+				this.companyId, this.employeeId, period, period.end(), true,
+				this.isOverWriteRemain, useAbsMng, interimMng, useRecMng);
 		val aggrResult = this.absenceRecruitMng.getAbsRecMngInPeriod(paramInput);
 		if (aggrResult != null){
 			
@@ -1147,8 +1280,8 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 期間内の休出代休残数を取得する
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
-				this.companyId, this.employeeId, period, true, period.end(), true,
-				interimMng, breakMng, dayOffMng);
+				this.companyId, this.employeeId, period, true, period.end(),
+				this.isOverWriteRemain, interimMng, breakMng, dayOffMng);
 		val aggrResult = this.breakDayoffMng.getBreakDayOffMngInPeriod(inputParam);
 		if (aggrResult != null){
 			
@@ -1222,7 +1355,7 @@ public class AggregateMonthlyRecordServiceProc {
 			// 期間内の特別休暇残を集計する
 			ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
 					this.companyId, this.employeeId, period, true, period.end(), specialLeaveCode, true,
-					true, interimMng, interimSpecialData);
+					this.isOverWriteRemain, interimMng, interimSpecialData);
 			InPeriodOfSpecialLeave inPeriod = this.specialLeaveMng.complileInPeriodOfSpecialLeave(param);
 			
 			// マイナスなしの残数・使用数を計算

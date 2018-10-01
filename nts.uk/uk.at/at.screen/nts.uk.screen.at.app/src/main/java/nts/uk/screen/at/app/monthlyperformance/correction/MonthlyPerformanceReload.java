@@ -102,14 +102,15 @@ public class MonthlyPerformanceReload {
 	@Inject
 	private MonthlyPerformanceScreenRepo repo;
 	
-	private static final String ADD_CHARACTER = "A";
-	private static final String STATE_DISABLE = "ntsgrid-disable";
-	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
-	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
-	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_DISABLE = "mgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "mgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "mgrid-manual-edit-other";
+//	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 	private static final String STATE_ERROR = "mgrid-error";
 	private static final String STATE_ALARM = "mgrid-alarm";
-	private static final String STATE_SPECIAL = "ntsgrid-special";
+	private static final String STATE_SPECIAL = "mgrid-special";
+	private static final String ADD_CHARACTER = "A";
+//	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	@Inject
 	private MonPerformanceFunRepository monPerformanceFunRepository;
