@@ -213,7 +213,7 @@
 																	name:  itemName ,
 																	value: stringValue , 
 																	constraint: itemCode,
-																	required: isRequired},
+																	required: false},
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 															</com:ko-if>
 	
@@ -223,7 +223,7 @@
 																	name:  itemName ,
 																	value: stringValue , 
 																	constraint: itemCode,
-																	required: isRequired},
+																	required: false},
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 															</com:ko-if>
 													</com:ko-if> 
@@ -238,7 +238,7 @@
 																	 value: dateValue, 
 																	 dateFormat: 'YYYY/MM/DD',
 																	 valueFormat: 'YYYY/MM/DD',
-																	 required: isRequired
+																	 required: false
 																	 }, attr: {  id: perInfoItemDefId, NameID: itemName }">
 																</div>
 														</com:ko-if>
@@ -251,7 +251,7 @@
 				                   									value: dateValue, 
 				                   									dateFormat: 'YYYY/MM', 
 				                   									valueFormat: 'YYYY/MM',
-				                   									required: isRequired
+				                   									required: false
 				                   									}, attr: { id: perInfoItemDefId, NameID: itemName }">
 																</div>
 														</com:ko-if>
@@ -264,7 +264,7 @@
 																	value: dateValue, 
 																	dateFormat: 'YYYY', 
 																	valueFormat: 'YYYY',
-																	required: isRequired},
+																	required: false},
 																	attr: { id: perInfoItemDefId, NameID: itemName }">
 																</div>
 														</com:ko-if>
@@ -278,7 +278,7 @@
 																	constraint: itemCode,
 																	inputFormat: 'time', 
 															 		mode: 'time',
-																	required: isRequired,
+																	required: false,
 																	enable: true,
 																	readonly: false},attr: { id: perInfoItemDefId, NameID: itemName }" />
 													</com:ko-if> 
@@ -326,7 +326,7 @@
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
-																		required: $parent.isRequired},
+																		required: false},
 																		attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
 																</div>
 														</com:ko-if>
@@ -342,7 +342,7 @@
 																		enable: enable,
 																		readonly: readonly,
 																		immediate: false,
-																		required: $parent.isRequired},
+																		required: false},
 																		attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
 																</div>
 														</com:ko-if>
