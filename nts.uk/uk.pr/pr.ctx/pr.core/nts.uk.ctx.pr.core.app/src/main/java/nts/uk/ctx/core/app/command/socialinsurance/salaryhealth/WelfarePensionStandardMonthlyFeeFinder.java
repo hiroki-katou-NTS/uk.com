@@ -105,7 +105,7 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 		}
 		Optional<WelfarePensionInsuranceClassification> insuranceClassification = welfarePensionInsuranceClassificationRepository.getWelfarePensionInsuranceClassificationById(startCommand.getHistoryId());
 		Boolean display = false;
-		if(insuranceClassification.isPresent() && insuranceClassification.get().getFundClassification().value == 1) {
+		if(insuranceClassification.isPresent() && insuranceClassification.get().getFundClassification().value == 0) {
 			display = true;
 		} 
 		List<CusWelfarePensionDto> response = mapping(welfarePensionStandardGradePerMonthDtos, welfarePensionGradePerRewardMonthlyRangeDtos, gradeWelfarePensionInsurancePremiumDtos);

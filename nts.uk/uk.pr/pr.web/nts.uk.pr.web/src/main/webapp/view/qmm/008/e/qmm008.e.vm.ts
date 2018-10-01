@@ -78,6 +78,7 @@ module nts.uk.pr.view.qmm008.e {
             * count
             */
            private count(): void {
+               nts.uk.ui.errors.clearAll();
                let self = this;
                block.invisible();
                let command = { historyId: self.historyId(), date: self.startMonth() };

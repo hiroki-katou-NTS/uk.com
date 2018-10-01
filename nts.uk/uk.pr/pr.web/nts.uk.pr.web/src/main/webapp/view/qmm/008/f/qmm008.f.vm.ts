@@ -30,6 +30,7 @@ module nts.uk.pr.view.qmm008.f {
                         self.dataList.push(new RowData(response.cusWelfarePensions[i]));
                     } 
                     self.header(response.insuranceRate);
+                    self.display(response.display);
                 });
 
                 $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });

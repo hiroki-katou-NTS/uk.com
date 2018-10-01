@@ -35,6 +35,7 @@ module nts.uk.pr.view.qmm008.d {
                 self.items = ko.observableArray([]);
                 self.itemList = ko.observableArray([]);
                 nts.uk.pr.view.qmm008.d.service.defaultData().done(function(response) {
+                    block.invisible();
                     for (let i = 0; i < response.listCodeName.length; i++) {
                         self.items.push(new SocialOfficeOverView(response.listCodeName[i].code, response.listCodeName[i].name));
                     }
@@ -58,7 +59,7 @@ module nts.uk.pr.view.qmm008.d {
                             $("#D4_2").focus();
                         });
                     }
-
+                    block.clear();
                 });
 
                 this.columns2 = ko.observableArray([
@@ -84,6 +85,7 @@ module nts.uk.pr.view.qmm008.d {
                 self.values = ko.observable('');
 
                 self.currentCode.subscribe(function(codeId) {
+                    nts.uk.ui.errors.clearAll();
                     if (codeId) {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
