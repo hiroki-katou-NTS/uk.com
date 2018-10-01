@@ -473,8 +473,8 @@ public abstract class CalculationTimeSheet {
 	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().timeSheet.getTimeSpan().contains(baseTime)) {
-				//return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
-				return midNightTimeSheet;
+				return midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
+				//return midNightTimeSheet;
 			}
 			else if(midNightTimeSheet.get().timeSheet.getTimeSpan().getEnd().lessThan(baseTime) && isDateBefore) {
 				return midNightTimeSheet;

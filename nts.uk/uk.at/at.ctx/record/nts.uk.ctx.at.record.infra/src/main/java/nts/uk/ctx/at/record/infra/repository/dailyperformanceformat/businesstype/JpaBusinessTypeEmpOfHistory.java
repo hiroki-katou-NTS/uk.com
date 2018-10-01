@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -17,7 +18,6 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.Krc
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHis;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -183,12 +183,20 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 
 	@Override
 	public List<BusinessTypeOfEmpDto> findByCidSidBaseDate(String cid, List<String> sIds, DatePeriod datePeriod) {
-		List<BusinessTypeOfEmpDto> entities = this.queryProxy()
-				.query(FIND_BY_CID_SID_DATE_PERIOD, BusinessTypeOfEmpDto.class).setParameter("sIds", sIds)
-				.setParameter("cId", cid).setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end())
-				.getList();
-		return entities;
+		
+		// ResultList
+		List<BusinessTypeOfEmpDto> resultList = new ArrayList<>();
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			List<BusinessTypeOfEmpDto> entities = this.queryProxy()
+					.query(FIND_BY_CID_SID_DATE_PERIOD, BusinessTypeOfEmpDto.class).setParameter("sIds", subList)
+					.setParameter("cId", cid).setParameter("startDate", datePeriod.start())
+					.setParameter("endDate", datePeriod.end())
+					.getList();
+			resultList.addAll(entities);
+		});
+		
+		return resultList;
 	}
 
 //	@Override

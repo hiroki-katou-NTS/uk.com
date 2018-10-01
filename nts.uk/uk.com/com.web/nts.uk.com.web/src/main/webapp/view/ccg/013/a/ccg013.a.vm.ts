@@ -68,8 +68,8 @@ module ccg013.a.viewmodel {
                     webmenu.webMenuName(res.webMenuName);
                     webmenu.defaultMenu(res.defaultMenu);
                     self.isDefaultMenu(!!res.defaultMenu);
-                    webmenu.menuBars.removeAll();
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
+                        webmenu.menuBars.removeAll();
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
                             x.menuNames = menuNames;
                             webmenu.menuBars.push(new MenuBar(x));
@@ -564,7 +564,7 @@ module ccg013.a.viewmodel {
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode(newWebMenuCode);
-                        self.currentWebMenuCode.valueHasMutated();
+                     //   self.currentWebMenuCode.valueHasMutated();
                     }
                 });
             });

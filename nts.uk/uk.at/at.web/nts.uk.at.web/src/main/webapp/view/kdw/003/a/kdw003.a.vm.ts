@@ -146,6 +146,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         comboItemsDoWork: KnockoutObservableArray<any> = ko.observableArray([]);
         comboItemsReason: KnockoutObservableArray<any> = ko.observableArray([]);
         comboItemsCalc: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboItemsCompact: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboTimeLimit: KnockoutObservableArray<any> = ko.observableArray([]);
         showPrincipal: KnockoutObservable<any> = ko.observable(true);
         showSupervisor: KnockoutObservable<any> = ko.observable(true);
         dataAll: KnockoutObservable<any> = ko.observable(null);
@@ -295,14 +297,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //            self.flexShortage.subscribe((val:any) => {
             //            });
             self.flexShortage.valueHasMutated();
-
             self.isVisibleMIGrid.subscribe((value) => {
                 if (value) {
                     self.getNameMonthly();
                 }
             });
 
-            $(".grid-container").attr('style', 'height: ' + (window.innerHeight - 180) + 'px !IMPORTANT');
+            $(".grid-container").attr('style', 'height: ' + (1038) + 'px !IMPORTANT');
 
             self.dataHoliday.subscribe(val => {
                 if (val.dispCompensationDay || val.dispCompensationTime)
@@ -324,7 +325,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             $(window).on('resize', function() {
                 var win = $(this); //this = window
-                $(".grid-container").attr('style', 'height: ' + (win.height() - 180) + 'px !IMPORTANT');
+                //$(".grid-container").attr('style', 'height: ' + (win.height() -150) + 'px !IMPORTANT');
             });
         }
         
@@ -595,6 +596,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
             self.comboItemsReason(data.lstControlDisplayItem.comboItemReason);
             self.comboItemsDoWork(data.lstControlDisplayItem.comboItemDoWork);
+            self.comboItemsCompact(data.lstControlDisplayItem.comboItemCalcCompact);
+            self.comboTimeLimit(data.lstControlDisplayItem.comboTimeLimit);
 
             self.employmentCode(data.employmentCode);
             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
@@ -824,6 +827,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.clear();
                 dfd.resolve();
             }
+            self.valueUpdateMonth["needCallCalc"] = data.monthResult.needCallCalc;
             return dfd.promise();
         }
 
@@ -2638,11 +2642,21 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.createNtsMControl();
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
+            let subWidth = "50px";
+            if (self.displayFormat() === 0) {
+                subWidth = "135px";
+            } else if (self.displayFormat() === 1) {
+                subWidth = "135px";
+            } else {
+                subWidth = "155px";
+            }
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
-                width: '1920px',
+                subWidth : subWidth,
                 height: (window.screen.availHeight - 250) + "px",
-                headerHeight: '45px',
+                headerHeight: '40px',
                 dataSource: self.lstDataSourceLoad,
+                minRows: 31,
+                maxRows: 50,
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
@@ -2737,6 +2751,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                { name: 'ComboItemsCompact', options: self.comboItemsCompact(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                { name: 'ComboboxTimeLimit', options: self.comboTimeLimit(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+
                 {
                     name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
                         let data = $("#dpGrid").mGrid("getCellValue", rowId, key);
@@ -3060,12 +3077,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     }
                                 } else {
                                     delete header.group[0].constraint.cDisplayType;
+                                    delete header.group[0].values;
                                     delete header.constraint;
                                     delete header.group[1].constraint;
                                 }
                             } else if (header.constraint.cDisplayType == "Combo") {
-                                header.group[0].constraint["min"] = 0;
-                                header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
+                                if (header.group[0].constraint.values == undefined && header.group[0].constraint != null){
+                                    header.group[0].constraint["min"] = 0;
+                                    header.group[0].constraint["max"] = Number(header.group[0].constraint.primitiveValue);
+                                    delete header.group[0].values;
+                                }else{
+                                     delete header.group[0].constraint.min;
+                                     delete header.group[0].constraint.max;
+                                }
                                 header.group[0].constraint["cDisplayType"] = header.group[0].constraint.cdisplayType;
                                 delete header.group[0].constraint.cdisplayType
                                 delete header.group[0].constraint.primitiveValue;
@@ -3074,7 +3098,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             }
                         }
                     }
-                    if (header.constraint != undefined) delete header.constraint.cdisplayType;
+                    if (header.constraint != undefined) {
+                       delete header.constraint.cdisplayType;
+                       delete header.constraint.values; 
+                    }
                 }
                 if (header.group != null && header.group != undefined) {
                     if (header.group.length > 0) {
@@ -3321,7 +3348,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     // get item change in row
                     dataChange = $("#dpGrid").mGrid("updatedCells");
                     dataChageRow = _.map(_.filter(dataChange, row => {
-                        return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey != "Name" && row.rowId == rowId && row.columnKey != columnKey;
+                        return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {
                         let itemTemp, keyIdRow;
                         keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
