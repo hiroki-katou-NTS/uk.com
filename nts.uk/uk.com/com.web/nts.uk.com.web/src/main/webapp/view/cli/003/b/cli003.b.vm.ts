@@ -722,7 +722,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
-                        filterDialogHeight : "383px",
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -776,7 +777,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
-                        filterDialogHeight : "383px",
+                         filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -864,7 +866,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
-                        filterDialogHeight : "383px",
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -995,6 +998,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
             $(document).delegate("#igGridLog", "iggridresizingcolumnresizing", function(evt, ui) {
                 $(".ui-iggrid-scrolldiv.ui-widget-content.igscroll-touchscrollable.default-overflow").css("overflow-x", "auto");
+                $(".ui-iggrid-headertext").css("text-overflow","ellipsis");
+                $(".ui-iggrid-header.ui-widget-header").css({"overflow":"hidden"}); // th
             });
         }
 
