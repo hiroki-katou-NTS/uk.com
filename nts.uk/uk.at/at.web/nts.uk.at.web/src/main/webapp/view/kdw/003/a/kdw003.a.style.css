@@ -19,7 +19,7 @@
 
 #right-content {
 	margin-left: 80px;
-	width: 1200px;
+	width: auto;
 }
 
 #cbListDate {
@@ -141,7 +141,9 @@
 	border: 1px solid #CCC;
 	text-align: center;
 	height: 29px;
-	width: 50px;
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
@@ -155,7 +157,7 @@
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
-	/* width: 400px; */
+	width: auto; 
 }
 
 #numberHoliday {
@@ -163,8 +165,9 @@
 	height: 80px;
 	 */
 	float: left;
-	margin-left: 60px;
+	margin-left: 10px;
 	margin-top: -20px;
+	height: 80px;
 }
 	
 #fixed-table tr td {
@@ -173,8 +176,10 @@
 }
 
 #emp-component{
-	margin-top: -25px;
+	margin-top: -20px;
 	margin-left: -10px;
+    width: 820px;
+    height: 30px !important;
 }
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
     background-color: white;
@@ -202,7 +207,7 @@
 }
 #right-content {
     margin-left: 80px;
-     width: 1400px !IMPORTANT;
+     width: auto;
 }
 .nts-grid-sheet-buttons{
 /* 	margin-top:32px; */
@@ -339,3 +344,74 @@
 
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */
+
+#functions-area {
+    height: auto;}
+    
+#contents-area {
+    /* margin-top: -15px; */
+    padding: 5px !important;
+}
+#employ_view{
+	margin: 1px !important;
+    margin-left: 12px !important;
+}
+/* #functions-area button {
+	height: 25px !important;
+} */
+/* button next/pre datetime */
+button.auto-height {
+    height: 23px !important;
+}
+button {
+    height: 25px !important;
+    min-width: 10px !important;
+}
+/* .mgrid :not(.mgrid-header) table tr td {
+    font-size: 10px !important;
+} */
+/* .mgrid-fixed-table table tr {
+    height: 19px !important;
+} */
+.mgrid .mgrid-fixed table tr, .mgrid .mgrid-free table tr {
+   /*  height: 10px !important; */
+} 
+#contents-area * {
+    font-size: 0.8rem;
+}
+#functions-area * {
+    font-size: 0.8rem;
+    height: 30px;
+}
+table#employ_view tr{
+	height: 25px !important;
+}
+#ccg001 * {
+    font-size: 1rem;
+}
+#cbDisplayFormat{
+	height: 27px;
+}
+/* #dislayFormatLbl{
+	height: 25px;
+} */
+.mgrid .mbutton {
+	height: 20px !important;	
+}
+.ccg-lbl-vertical {
+    font-size: 18pt !important; 
+}
+#functions-area button {
+	margin-left: 4px;
+	margin-right: 4px
+}
+#functions-area button.danger {
+	margin-left: 4px;
+	margin-right: 4px
+}
+.nts-datepicker-wrapper .ntsDatepicker {
+    width: 67px;
+}
+.btn_show_list {
+    width: auto !important;
+}
