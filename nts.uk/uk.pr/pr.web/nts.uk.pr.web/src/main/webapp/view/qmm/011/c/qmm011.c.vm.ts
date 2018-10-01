@@ -264,13 +264,14 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 isNewMode: isNewMode,
                 startYearMonth: self.convertStringToYearMonth(self.startYearMonth()),
                 endYearMonth: self.convertStringToYearMonth(self.endYearMonth()),
-                hisId: self.listAccInsurPreRate()[0].hisId
+                hisId: self.hisId()
 
             };
             service.register(data).done(() => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.isNewMode(MODE.UPDATE);
-                        self.initScreen(self.selectedEmpInsHisId());
+                    self.transferMethod(null);
+                    self.initScreen(self.selectedEmpInsHisId());
                 });
             });
             $("#C3_1").focus();
@@ -556,3 +557,4 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
     }
 
     export const HIS_ID_TEMP = "000";
+}
