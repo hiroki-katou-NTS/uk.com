@@ -75,12 +75,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         startPage(params): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.startupScreen();
+            self.startupScreen(null);
             dfd.resolve();
             return dfd.promise();
         }
 
-        startupScreen() {
+        startupScreen(selectItem) {
             // get domain 処理区分基本情報 (ProcessInfomation), 給与支払日設定 (SetDaySupport)
             var self = this;
             self.processCateNo = getShared("QMM005_output_B");
@@ -105,9 +105,15 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 });
                 self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
-                    self.processingYearNative = parseInt(self.processingYearList()[0].code);
-                    self.processingYear(self.processingYearList()[0].code);
-                    self.selectProcessingYear(self.processingYearList()[0].code);
+                    if(selectItem){
+                        self.processingYearNative = parseInt(selectItem);
+                        self.processingYear(selectItem);
+                        self.selectProcessingYear(selectItem);
+                    }else {
+                        self.processingYearNative = parseInt(self.processingYearList()[0].code);
+                        self.processingYear(self.processingYearList()[0].code);
+                        self.selectProcessingYear(self.processingYearList()[0].code);
+                    }
                 }
             });
         }
@@ -375,13 +381,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             let commandData = {paymentDateSettingCommands: arrayItem}
             if (self.isNewMode()) {
                 service.addDomainModel(commandData).done(function (data) {
-                    self.transactionSuccess();
+                    self.transactionSuccess(self.processingYear());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
             } else {
                 service.updateDomainModel(commandData).done(function (data) {
-                    self.transactionSuccess();
+                    self.transactionSuccess(self.processingYear());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
@@ -392,10 +398,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             return (month < 10 ? '0' + month : month).toString();
         }
 
-        transactionSuccess() {
+        transactionSuccess(year) {
             let self = this;
-            nts.uk.ui.dialog.info({messageId: "Msg_15"});
-            self.startupScreen();
+            if(self.isNewMode()){
+                self.startupScreen(year);
+            }else {
+                nts.uk.ui.dialog.info({messageId: "Msg_15"});
+            }
+            self.selectProcessingYear(year);
             self.isNewMode(false);
         }
     }
