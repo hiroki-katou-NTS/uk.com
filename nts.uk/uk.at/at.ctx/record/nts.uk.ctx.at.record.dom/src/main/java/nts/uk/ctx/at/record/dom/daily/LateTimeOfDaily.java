@@ -37,11 +37,15 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class LateTimeOfDaily {
-	
+	//遅刻時間
 	private TimeWithCalculation lateTime;
+	//遅刻控除時間
 	private TimeWithCalculation lateDeductionTime;
+	//勤務No
 	private WorkNo workNo;
+	//休暇使用時間
 	private TimevacationUseTimeOfDaily timePaidUseTime;
+	//インターバル時間
 	private IntervalExemptionTime exemptionTime;
 	
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,

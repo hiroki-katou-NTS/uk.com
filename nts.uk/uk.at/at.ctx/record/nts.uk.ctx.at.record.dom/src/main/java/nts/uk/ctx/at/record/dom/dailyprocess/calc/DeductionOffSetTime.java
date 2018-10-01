@@ -10,9 +10,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Value
 public class DeductionOffSetTime {
+	//年休
 	private AttendanceTime annualLeave;
+	//積立年休
 	private AttendanceTime retentionYearly;
+	//特別休暇
 	private AttendanceTime SpecialHoliday;
+	//代休
 	private AttendanceTime CompensatoryLeave;
 	
 	

@@ -147,7 +147,7 @@ table tr td, table tr th {
 }
 
 .contents-header {
-	width: 100%;
+	width: 98.5%;
 	border: 1px solid #ccc;
 }
 
@@ -166,7 +166,7 @@ thead {
 }
 
 #COL_2 {
-	min-width: 190px !important;
+	min-width: 160px !important;
 	border-top: none;
 }
 
@@ -181,16 +181,16 @@ thead {
 }
 
 .input-units-1 {
-	min-width: 200px;
-	max-width: 200px;
+	min-width: 199px;
+	max-width: 199px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
 .input-units-2 {
-	min-width: 190px;
-	max-width: 190px;
+	min-width: 160px;
+	max-width: 160px;
 }
 
 .input-units-3 {
