@@ -843,14 +843,26 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				} else {
 					// If closure not found
-					invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+					String info = "\n " + employee.employeeCode + " " + employee.employeeName;
+					if (info.length() + invidual.length() > 164) {
+						if (!invidual.contains("\n..."))
+							invidual = invidual.concat("\n...");
+					} else {
+						invidual = invidual.concat(info);
+					}
 
 				}
 
 			} else {
 
 				// If closure is wrong
-				invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+				String info = "\n " + employee.employeeCode + " " + employee.employeeName;
+				if (info.length() + invidual.length() > 164) {
+					if (!invidual.contains("\n..."))
+						invidual = invidual.concat("\n...");
+				} else {
+					invidual = invidual.concat(info);
+				}
 
 			}
 
