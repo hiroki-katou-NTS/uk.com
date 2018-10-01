@@ -57,14 +57,14 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if(processInformationUpdate.deprecatCate==1)
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=1;
                     if(processInformationUpdate.deprecatCate==0){
-                        self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(true);
+                        self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(true);
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=0;
                     }
 
                     if (processInformationUpdate.deprecatCate == 1) {
                         service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
                             self.resetEmployee(processInformationUpdate.processCateNo);
-                            self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(false);
+                            self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(false);
                             nts.uk.ui.dialog.info({ messageId: "MsgQ_158" });
                         });
 
@@ -241,7 +241,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             let self = this;
             let commandData = {currProcessDateCommand: [], empTiedProYearCommand: []};
             for (let i = 0; i < MAX_NUMBER_SETTING; i++) {
-                if (self.itemBinding()[i].isAbolition()) {
+                if (self.itemBinding()[i].isNotAbolition()) {
                     commandData.currProcessDateCommand.push({giveCurrTreatYear: self.itemBinding()[i].monthsSelectd()});
                     let codeList = _.map(self.itemBinding()[i].employeeList(), "code");
                     if (codeList.length > 0) {
@@ -271,7 +271,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
         currentYaerMonthSelected:KnockoutObservable<number>=ko.observable(0);
-        isAbolition:KnockoutObservable<boolean>=ko.observable(false);
+        isNotAbolition:KnockoutObservable<boolean>=ko.observable(false);
 
         constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
             let selfItemBinding = this;
@@ -303,7 +303,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
              selfItemBinding.monthsSelectd(startMonthsSelected);
 
              if(selfItemBinding.processInfomation.processDivisionName() != '' && selfItemBinding.processInfomation.deprecatCate == 0 ){
-                 selfItemBinding.isAbolition(true);
+                 selfItemBinding.isNotAbolition(true);
              }
 
 

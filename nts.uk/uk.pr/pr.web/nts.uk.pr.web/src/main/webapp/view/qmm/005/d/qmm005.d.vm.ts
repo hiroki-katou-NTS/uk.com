@@ -149,7 +149,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
 
-            self.numberOfWorkingDays = ko.observable(20);
+            self.numberOfWorkingDays = ko.observable(null);
             self.enableCloseDate = ko.observable(false);
             //d2_2
             self.processName = ko.observable('');
@@ -167,7 +167,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 new model.ItemModel(model.YearSelectClassification.AFTER_YEAR, getText('Enum_YearSelectClassification_AFTER_YEAR')),
                 new model.ItemModel(model.YearSelectClassification.LEAP_YEAR, getText('Enum_YearSelectClassification_LEAP_YEAR'))
             ]);
-            self.yearSelectClassificationSelectedCode = ko.observable(1);
+            self.yearSelectClassificationSelectedCode = ko.observable(0);
 
             //D4_44
             self.incomeTaxBaseMonth = ko.observableArray([
@@ -188,7 +188,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D4_46
             self.incomeTaxBaseDate = ko.observableArray([]);
-            self.incomeTaxBaseDateSelectedCode = ko.observable(0);
+            self.incomeTaxBaseDateSelectedCode = ko.observable(1);
 
 
             //D4_34
@@ -248,7 +248,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D3_20
             self.datePayment = ko.observableArray([]);
-            self.datePaymentSelectedCode = ko.observable(0);
+            self.datePaymentSelectedCode = ko.observable(1);
 
 
             //D3_17
@@ -268,7 +268,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             //D3_20
             self.disposalDay = ko.observableArray([]);
-            self.disposalDaySelectedCode = ko.observable(0);
+            self.disposalDaySelectedCode = ko.observable(1);
 
 
             //D4_30
@@ -304,7 +304,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
             ]);
-            self.guaranteedBaseYearSelectedCode = ko.observable(1);
+            self.guaranteedBaseYearSelectedCode = ko.observable(0);
 
 
             //D3_11
@@ -359,6 +359,18 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             self.DiscontinueThisProcessClassificationSelectedCode=ko.observable(0);
 
+           // closeDate: {timeCloseDate: 0, baseMonth: null, baseYear: null, refeDate: null}
+
+          //  detailPrintingMon: {printingMonth: 0}
+
+           // empInsurStanDate: {refeDate: 1, baseMonth: 1}
+
+          //  incomTaxBaseYear: {refeDate: 1, baseYear: 1, baseMonth: 1}
+
+          //  salaryInsuColMon: {monthCollected: 0}
+
+          //  sociInsuStanDate: {baseMonth: 0, baseYear: 1, refeDate: 1}
+
 
 
 
@@ -390,7 +402,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             let expanClass =document.getElementsByClassName("ui-dialog")[0];
             
             if (!self.isAdvanceSetting()) {
-                windowSize.$dialog.height(450);
+                windowSize.$dialog.height(500);
                 self.isAdvanceSetting(true);
                 
                 //expanClass.addClass('expanDialog');
