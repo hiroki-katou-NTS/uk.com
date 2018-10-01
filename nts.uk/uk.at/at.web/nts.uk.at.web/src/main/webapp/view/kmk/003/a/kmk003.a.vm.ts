@@ -136,9 +136,9 @@ module nts.uk.at.view.kmk003.a {
                     { headerText: nts.uk.resource.getText("KMK003_10"), prop: 'worktimeCode', width: 50 },
                     { headerText: nts.uk.resource.getText("KMK003_11"), prop: 'workTimeName', width: 180 },
                     { headerText: nts.uk.resource.getText("KMK003_12"), prop: 'isAbolish', width: 40,
-                        formatter: isAbolish => {
+                        formatter: (isAbolish: any):string => {
                             if (isAbolish === true || isAbolish === 'true') {
-                                return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-x"></i></div>';
+                                return '<img src="img/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
                             }
                             return '';
                         }
@@ -732,8 +732,8 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
                 self.mainSettingModel.predetemineTimeSetting.predTime.addTime.oneDay(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.oneDay());
-                // focus worktime atr
-                $('#search-daily-atr').focus();
+                // focus worktimecode
+                $('#inp-worktimecode').focus();
             }
 
             /**

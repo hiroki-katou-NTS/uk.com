@@ -24,6 +24,9 @@ public class ParamLoginRecord {
 	/** The remark. */
 	public String remark;
 	
+	/** The employee id. */
+	public String employeeId;
+	
 	/**
 	 * Instantiates a new param login record.
 	 *
@@ -31,12 +34,14 @@ public class ParamLoginRecord {
 	 * @param loginMethod the login method
 	 * @param loginStatus the login status
 	 * @param remark the remark
+	 * @param employeeId the employee id
 	 */
-	public ParamLoginRecord(String companyId, Integer loginMethod, Integer loginStatus, String remark){
+	public ParamLoginRecord(String companyId, Integer loginMethod, Integer loginStatus, String remark, String employeeId){
 		this.companyId = companyId;
 		this.loginMethod = loginMethod;
 		this.loginStatus = loginStatus;
 		this.remark = remark;
+		this.employeeId = employeeId;
 	}
 
 }

@@ -269,7 +269,7 @@ public class LeaveEarlyTimeSheet {
 			boolean leaveEarly //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			) {
 		//早退時間の計算
-		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime(DeductionAtr.Appropriate);
 		//インターバル免除時間を控除する
 		
 		//早退計上時間の作成
@@ -287,12 +287,23 @@ public class LeaveEarlyTimeSheet {
 			) {
 		TimeWithCalculation leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		if(notUseAtr==NotUseAtr.USE) {//控除する場合
-			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime():new AttendanceTime(0);
+			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);
 			leaveEarlyDeductionTime =  leaveEarly?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}
 		return leaveEarlyDeductionTime;
 	}
 	
+	/**
+	 * 自身が持つ短時間勤務時間帯(控除)を収集
+	 * @return　短時間勤務時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> getShortTimeSheet(){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		if(this.getForRecordTimeSheet() != null && this.getForRecordTimeSheet().isPresent()) {
+			returnList.addAll(this.getForRecordTimeSheet().get().collectShortTimeSheet());
+		}
+		return returnList;
+	}
 	
 	
 	

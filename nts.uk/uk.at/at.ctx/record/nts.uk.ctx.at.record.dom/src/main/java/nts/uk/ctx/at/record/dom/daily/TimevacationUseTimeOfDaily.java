@@ -34,6 +34,9 @@ public class TimevacationUseTimeOfDaily {
 		TimeSpecialHolidayUseTime = timeSpecialHolidayUseTime;
 	}
 	
+	public static TimevacationUseTimeOfDaily defaultValue(){
+		return new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
+	}
 	
 	/**
 	 * 各使用時間から相殺時間を控除する

@@ -22,17 +22,17 @@ module validationcps009 {
            switch (item.dataType()) {
                case ITEM_SINGLE_TYPE.STRING:
                 item.stringValue.subscribe(d => {
-                       !nou(d) && rmError($element, "Msg_824");
+                       !nou(d) && (rmError($element, "Msg_824") || rmError($element, "FND_E_REQ_INPUT") );
                    });
                 break;
                case ITEM_SINGLE_TYPE.NUMERIC:
                    item.numbereditor.value.subscribe(d => {
-                       !nou(d) && rmError($element, "Msg_824");
+                       !nou(d) && (rmError($element, "Msg_824")|| rmError($element, "FND_E_REQ_INPUT"));
                    });
                    break;
                case ITEM_SINGLE_TYPE.TIME:
                    item.dateWithDay.subscribe(d => {
-                       !nou(d) && rmError($element, "Msg_824");
+                       !nou(d) && (rmError($element, "Msg_824")|| rmError($element, "FND_E_REQ_INPUT"));
                    });
                    break;
                case ITEM_SINGLE_TYPE.TIMEPOINT:
@@ -64,12 +64,12 @@ module validationcps009 {
            id = v.perInfoItemDefId,
            element = document.getElementById(id),
            $element = $(element);
-           if (element.tagName.toUpperCase() == "INPUT" && element.enabled) {
+           if (element.tagName.toUpperCase() == "INPUT" && !!v.enableControl) {
                
                switch(item.dataType()){
                    
                case ITEM_SINGLE_TYPE.STRING:
-                       if (_.isNil(item.stringValue())) {
+                       if (_.isNil(item.stringValue()) || _.isEmpty(item.stringValue())) {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -79,7 +79,7 @@ module validationcps009 {
                        break;
                        
                case ITEM_SINGLE_TYPE.NUMERIC:
-                       if (_.isNil(item.numbereditor.value())) {
+                       if (_.isNil(item.numbereditor.value()) || item.numbereditor.value() === "") {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -119,7 +119,7 @@ module validationcps009 {
                    });
                }
            } else {
-               if(item.dataType() == 3){
+               if(item.dataType() == 3 && !!v.enableControl){
                    if (_.isNil(item.dateValue())) {
                        $element.addClass("error");
                        $element.find('.nts-input').attr('nameid', item.itemName());

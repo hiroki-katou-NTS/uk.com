@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,8 +13,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -103,9 +109,48 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	@Override
+	@SneakyThrows
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
-		return this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).getSingle(c -> c.toDomain());
+		
+		PreparedStatement sqlSchedule = this.connection().prepareStatement(
+				"select * from KRCDT_WORK_SCHEDULE_TIME"
+				+ " where SID = ? and YMD = ?");
+		sqlSchedule.setString(1, employeeId);
+		sqlSchedule.setDate(2, Date.valueOf(ymd.localDate()));
+		List<KrcdtWorkScheduleTime> scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
+			KrcdtWorkScheduleTime entity = new KrcdtWorkScheduleTime();
+			entity.krcdtWorkScheduleTimePK = new KrcdtWorkScheduleTimePK(
+					rec.getString("SID"),
+					rec.getGeneralDate("YMD"),
+					rec.getInt("WORK_NO"));
+			entity.attendance = rec.getInt("ATTENDANCE");
+			entity.leaveWork = rec.getInt("LEAVE_WORK");
+			return entity;
+		});
+		
+		PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
+				"select * from KRCDT_DAI_PER_WORK_INFO"
+				+ " where SID = ? and YMD = ?");
+		sqlWorkInfo.setString(1, employeeId);
+		sqlWorkInfo.setDate(2, Date.valueOf(ymd.localDate()));
+		
+		Optional<KrcdtDaiPerWorkInfo> workInfo = new NtsResultSet(sqlWorkInfo.executeQuery()).getSingle(rec -> {
+			KrcdtDaiPerWorkInfo entity = new KrcdtDaiPerWorkInfo();
+			entity.krcdtDaiPerWorkInfoPK = new KrcdtDaiPerWorkInfoPK(
+					rec.getString("SID"), rec.getGeneralDate("YMD"));
+			entity.recordWorkWorktypeCode = rec.getString("RECORD_WORK_WORKTYPE_CODE");
+			entity.recordWorkWorktimeCode = rec.getString("RECORD_WORK_WORKTIME_CODE");
+			entity.scheduleWorkWorktypeCode = rec.getString("SCHEDULE_WORK_WORKTYPE_CODE");
+			entity.scheduleWorkWorktimeCode = rec.getString("SCHEDULE_WORK_WORKTIME_CODE");
+			entity.calculationState = rec.getInt("CALCULATION_STATE");
+			entity.goStraightAttribute = rec.getInt("GO_STRAIGHT_ATR");
+			entity.backStraightAttribute = rec.getInt("BACK_STRAIGHT_ATR");
+			entity.dayOfWeek = rec.getInt("DAY_OF_WEEK");
+			entity.scheduleTimes = scheduleTimes;
+			return entity;
+		});
+		
+		return workInfo.map(c -> c.toDomain());
 	}
 
 	@Override
@@ -117,12 +162,23 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(DEL_BY_KEY_ID).setParameter("employeeId", employeeId).setParameter("ymd", ymd)
-		.executeUpdate();
 		
-		this.getEntityManager().createQuery(DEL_BY_KEY).setParameter("employeeId", employeeId).setParameter("ymd", ymd)
-				.executeUpdate();
-		this.getEntityManager().flush();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_WORK_SCHEDULE_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String perWorkInfo = "Delete From KRCDT_DAI_PER_WORK_INFO Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+			con.createStatement().executeUpdate(perWorkInfo);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(DEL_BY_KEY_ID).setParameter("employeeId", employeeId).setParameter("ymd", ymd)
+//		.executeUpdate();
+//		
+//		this.getEntityManager().createQuery(DEL_BY_KEY).setParameter("employeeId", employeeId).setParameter("ymd", ymd)
+//				.executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override

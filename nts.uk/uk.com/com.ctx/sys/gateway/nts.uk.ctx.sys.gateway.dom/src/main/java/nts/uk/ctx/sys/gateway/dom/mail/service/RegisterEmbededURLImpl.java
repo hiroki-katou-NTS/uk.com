@@ -14,8 +14,11 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserInforExImport;
+import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.EmbeddedUrlScreenID;
@@ -34,6 +37,9 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 	
 	@Inject
 	private UserAdapter userAdapter;
+	
+	@Inject
+	private CollectCompanyList collectCompanyList;
 
 	@Override
 	public String obtainApplicationEmbeddedUrl(String appId, int appType, int prePostAtr, String employeeId) {
@@ -47,16 +53,15 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 		List<UrlTaskIncre> taskInce = new ArrayList<>();
 		taskInce.add(UrlTaskIncre.createFromJavaType(null, null, null, appId, appId));
 		return this.embeddedUrlInfoRegis(embeddedUrlScreenID.getProgramId(), embeddedUrlScreenID.getDestinationId(), 1, 1, 
-				employeeId, "000000000000", loginId, "", taskInce);
+				employeeId, "000000000000", loginId, "", 0, taskInce);
 	}
 
 	@Override
-	public String embeddedUrlInfoRegis(String programId, String screenId, int periodCls, int numOfPeriod, 
-			String employeeId, String contractCD, String loginId, String employeeCD, List<UrlTaskIncre> taskIncidental) {
+	public String embeddedUrlInfoRegis(String programId, String screenId, Integer periodCls, Integer numOfPeriod, 
+			String employeeId, String contractCD, String loginId, String employeeCD, Integer isCompanyNotLogin, List<UrlTaskIncre> taskIncidental) {
 		if (loginId.isEmpty() && employeeId.isEmpty()) {
 			return Strings.EMPTY;
 		} 
-		String cid = AppContexts.user().companyId();
 		// Request list 313
 		if(Strings.isNotBlank(employeeId)){
 			Optional<UserInforExImport> opUserInforEx = userAdapter.getByEmpID(employeeId);
@@ -65,9 +70,35 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 				employeeCD = opUserInforEx.get().getEmpCD();
 			};
 		}	
+		// 埋込URL期間区分＝空白（指定なし）
+		int periodClsReal = 1;
+		if(periodCls!=null){
+			// 埋込URL期間区分＝月(phân khu period URL nhứng = month)
+			periodClsReal = periodCls;
+		}
+		// 期間数＝空白（指定なし）
+		int numOfPeriodReal = 1;
+		if(numOfPeriod!=null){
+			// 期間数＝1(Số thời gian = 1)
+			numOfPeriodReal = numOfPeriod;
+		}
+		String cid = AppContexts.user().companyId();
+		if(isCompanyNotLogin==1){
+			// imported（ゲートウェイ）「ユーザ」を取得する
+			Optional<UserImportNew> opUserImportNew = userAdapter.findUserByContractAndLoginIdNew(contractCD, loginId);
+			if(!opUserImportNew.isPresent()){
+				throw new BusinessException("Msg_301");
+			}
+			// 「切替可能な会社一覧を取得する」
+			List<String> companyIDLst = collectCompanyList.getCompanyList(opUserImportNew.get().getUserId());
+			if(CollectionUtil.isEmpty(companyIDLst)){
+				throw new BusinessException("Msg_1419");
+			}
+			cid = companyIDLst.get(0);
+		}
 		GeneralDateTime issueDate = GeneralDateTime.now();
 		GeneralDateTime startDate = GeneralDateTime.now();
-		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodCls, numOfPeriod);
+		GeneralDateTime expiredDate = this.getEmbeddedUrlExpriredDate(startDate, periodClsReal, numOfPeriodReal);
 		UrlExecInfo urlInfo = this.updateEmbeddedUrl(cid, contractCD, loginId, employeeCD, employeeId, programId, screenId, issueDate, expiredDate, taskIncidental);
 		if (!Objects.isNull(urlInfo)){
 			String serverPath = AppContexts.requestedWebApi().getHostApi().replaceFirst("at", "com");
@@ -191,9 +222,8 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 
 	@Override
 	public void checkPassLimitExpire(String embeddedURLID) {
-		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「埋込URL実行情報」を取得する(Get domain model 「埋込URL実行情報」)
-		Optional<UrlExecInfo> opUrlExecInfo = urlExcecInfoRepo.getUrlExecInfoById(embeddedURLID, companyID);
+		Optional<UrlExecInfo> opUrlExecInfo = urlExcecInfoRepo.getUrlExecInfoByUrlID(embeddedURLID);
 		if(!opUrlExecInfo.isPresent()){
 			throw new BusinessException("Msg_1095");
 		}

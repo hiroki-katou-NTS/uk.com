@@ -536,7 +536,6 @@ module nts.uk.at.view.ksm005.c {
                         self.listDestSid(lstSelection);
                         self.copyMonthlyPatternSetting();
                     }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
             

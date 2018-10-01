@@ -23,6 +23,7 @@ module nts.uk.com.view.cas001.d.viewmodel {
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
         currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
         isCanceled: boolean;
+        selectedList:  KnockoutObservable<any>  = ko.observableArray([]);;
 
         constructor() {
             var self = this;

@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1200,
-					height : 810
+					height : 650
 				};
 			</script>
 
@@ -121,13 +121,12 @@
 											columns: columns,
 											value: currentCodeListSwap,
 											searchMode: 'filter',
-											searchCriterion: ['code'],
+											searchCriterion: ['code', 'name'],
 											draggable: true,
 											enableRowNumbering: false,
 											multipleDrag: { left: true, right: false },
 											innerDrag: { left: false, right: true },
 											outerDrag: { left: true, right: true },
-											afterMoveRight: sortCurrentCodeListSwap,
 											afterMoveLeft: sortItems,
 											itemsLimit: { right: 39 }
 										}"></div>

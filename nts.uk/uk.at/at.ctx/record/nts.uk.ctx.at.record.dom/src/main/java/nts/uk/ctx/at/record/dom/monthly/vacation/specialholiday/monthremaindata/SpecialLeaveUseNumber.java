@@ -26,4 +26,8 @@ public class SpecialLeaveUseNumber extends DomainObject {
 	 * 使用時間
 	 */
 	private Optional<SpecialLeaveUseTimes> useTimes;
+	
+	public SpecialLeaveUseNumber(SpecialLeaveUseDays useDays, SpecialLeaveUseTimes useTimes) {
+		this(useDays, Optional.ofNullable(useTimes));
+	}
 }

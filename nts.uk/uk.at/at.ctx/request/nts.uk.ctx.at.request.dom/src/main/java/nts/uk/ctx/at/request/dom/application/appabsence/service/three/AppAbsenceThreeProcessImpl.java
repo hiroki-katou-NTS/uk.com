@@ -27,6 +27,9 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		List<AbsenceWorkType> absenceWorkTypes = new ArrayList<>();
 		// アルゴリズム「勤務種類を取得する（詳細）」を実行する(thực hiện xử lý 「勤務種類を取得する（詳細）」)
 		List<WorkType> workTypes = this.getWorkTypeDetails(appEmploymentWorkType, companyID, employeeID, holidayType, alldayHalfDay,displayHalfDayValue);
+		if(holidayType == 3){//特別休暇 - ver22
+			absenceWorkTypes.add(new AbsenceWorkType("", "未選択"));
+		}
 		for(WorkType workType : workTypes){
 			AbsenceWorkType absenceWorkType = new AbsenceWorkType(workType.getWorkTypeCode().toString(), workType.getWorkTypeCode().toString() +"　　" + workType.getName().toString());
 			absenceWorkTypes.add(absenceWorkType);

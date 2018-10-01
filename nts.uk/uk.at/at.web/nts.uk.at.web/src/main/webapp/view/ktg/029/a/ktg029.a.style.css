@@ -7,7 +7,7 @@
 .widget-table>tbody>tr>td:nth-child(1).tab{padding-left: 20px;}
 
 .widget-table>tbody>tr>td:nth-child(2){width:80px;}
-.widget-table.fix>tbody>tr>td:nth-child(2){width:140px;}
+.widget-table.fix>tbody>tr>td:nth-child(2){width:140px; text-align: right;}
 .widget-table.fix2>tbody>tr>td:nth-child(2){width:95px;}
 .widget-table.fix3>tbody>tr>td:nth-child(2){width:100px;}
 .widget-table>tbody>tr>td:nth-child(2) table{width:100%;}

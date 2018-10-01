@@ -85,6 +85,7 @@
 	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
 	white-space: pre;
+	line-height: 22px;
 }
 
 .bg-green .ui-iggrid-headertable th:last-child, .bg-green .ui-iggrid-tablebody td.ui-state-hover:last-child,

@@ -36,4 +36,9 @@ public interface EmployeeDailyPerErrorRepository {
 	
 	void removeByCidSidDateAndCode(String companyID, String employeeID, GeneralDate date, String errorCode);
 	
+	/**
+	 * Add by ThanhPV
+	 */
+	boolean checkErrorByPeriodDate(String companyID, String employeeID, GeneralDate strDate, GeneralDate endDate);
+	
 }

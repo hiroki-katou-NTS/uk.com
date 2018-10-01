@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
@@ -18,6 +19,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.PersonInfoImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class PersonInfoAdapterImpl.
@@ -90,5 +92,15 @@ public class EmpInfoAdapterImpl implements EmpInfoAdapter {
 					x.getPId(), 
 					x.getBusinessName()))
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getListEmployeeId(List<String> wkpIds, DatePeriod dateperiod) {
+		return syEmployeePub.getListEmployeeId(wkpIds, dateperiod);
+	}
+
+	@Override
+	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+		return syEmployeePub.getListEmployee(jobTitleIds, baseDate);
 	}
 }

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeBasicInfoFnImpor
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SyEmployeeFnAcFinder implements SyEmployeeFnAdapter {
@@ -38,6 +39,13 @@ public class SyEmployeeFnAcFinder implements SyEmployeeFnAdapter {
 				export.getRetiredDate(),
 				export.getCompanyMailAddr().v()
 				);
+	}
+	@Override
+	public List<String> getListEmployeeId(List<String> wkpIds, DatePeriod dateperiod) {
+		List<String> listSyEmployee = syEmployeePub.getListEmployeeId(wkpIds, dateperiod);
+		if(listSyEmployee.isEmpty())
+			return Collections.emptyList();
+		return listSyEmployee;
 	}
 
 }

@@ -18,4 +18,9 @@ public class HolidayWorkFrameTimeSheetDto {
 //	@AttendanceItemLayout(layout = "B")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer holidayWorkFrameNo;
+	
+	@Override
+	public HolidayWorkFrameTimeSheetDto clone() {
+		return new HolidayWorkFrameTimeSheetDto(timeSheet == null ? null : timeSheet.clone(), holidayWorkFrameNo);
+	}
 }

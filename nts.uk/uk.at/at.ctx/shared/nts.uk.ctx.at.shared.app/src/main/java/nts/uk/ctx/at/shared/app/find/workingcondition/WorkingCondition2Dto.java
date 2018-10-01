@@ -453,7 +453,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 
 
 	private static void setSunday(WorkingCondition2Dto dto, SingleDaySchedule sunday) {
-		dto.setSundayWorkTypeCode(sunday.getWorkTypeCode().v());
+		dto.setSundayWorkTypeCode(sunday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		sunday.getWorkTimeCode().ifPresent(wtc -> dto.setSundayWorkTimeCode(wtc.v()));
 
@@ -474,7 +474,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 	}
 
 	private static void setMonday(WorkingCondition2Dto dto, SingleDaySchedule monday) {
-		dto.setMondayWorkTypeCode(monday.getWorkTypeCode().v());
+		dto.setMondayWorkTypeCode(monday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		monday.getWorkTimeCode().ifPresent(wtc -> dto.setMondayWorkTimeCode(wtc.v()));
 
@@ -495,7 +495,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 	}
 
 	private static void setTuesday(WorkingCondition2Dto dto, SingleDaySchedule tuesday) {
-		dto.setTuesdayWorkTypeCode(tuesday.getWorkTypeCode().v());
+		dto.setTuesdayWorkTypeCode(tuesday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		tuesday.getWorkTimeCode().ifPresent(wtc -> dto.setTuesdayWorkTimeCode(wtc.v()));
 
@@ -516,7 +516,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 	}
 
 	private static void setWednesday(WorkingCondition2Dto dto, SingleDaySchedule wednesday) {
-		dto.setWednesdayWorkTypeCode(wednesday.getWorkTypeCode().v());
+		dto.setWednesdayWorkTypeCode(wednesday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		wednesday.getWorkTimeCode().ifPresent(wtc -> dto.setWednesdayWorkTimeCode(wtc.v()));
 
@@ -537,7 +537,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 	}
 
 	private static void setThursday(WorkingCondition2Dto dto, SingleDaySchedule thursday) {
-		dto.setThursdayWorkTypeCode(thursday.getWorkTypeCode().v());
+		dto.setThursdayWorkTypeCode(thursday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		thursday.getWorkTimeCode().ifPresent(wtc -> {
 			dto.setThursdayWorkTimeCode(wtc.v());
@@ -560,7 +560,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 	}
 
 	private static void setFriday(WorkingCondition2Dto dto, SingleDaySchedule friday) {
-		dto.setFridayWorkTypeCode(friday.getWorkTypeCode().v());
+		dto.setFridayWorkTypeCode(friday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		friday.getWorkTimeCode().ifPresent(wtc -> {
 			dto.setFridayWorkTimeCode(wtc.v());
@@ -583,7 +583,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 	}
 
 	private static void setSaturday(WorkingCondition2Dto dto, SingleDaySchedule saturday) {
-		dto.setSaturdayWorkTypeCode(saturday.getWorkTypeCode().v());
+		dto.setSaturdayWorkTypeCode(saturday.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 		saturday.getWorkTimeCode().ifPresent(wtc -> {
 			dto.setSaturdayWorkTimeCode(wtc.v());

@@ -16,6 +16,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.monthly.MonthlyRecordValueImport;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
@@ -23,8 +24,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAtt
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class PerTimeMonActualResultDefault implements PerTimeMonActualResultService {
@@ -83,13 +84,35 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 
 		if (!CollectionUtil.isEmpty(attendanceTimeOfMonthlys)) {
 			for (AttendanceTimeOfMonthly attendanceTimeOfMonthly : attendanceTimeOfMonthlys) {
+				AttendanceTimeOfMonthlyKey key = new AttendanceTimeOfMonthlyKey(
+						attendanceTimeOfMonthly.getEmployeeId(),
+						attendanceTimeOfMonthly.getYearMonth(),
+						attendanceTimeOfMonthly.getClosureId(),
+						attendanceTimeOfMonthly.getClosureDate());
 				MonthlyRecordToAttendanceItemConverter monthly = attendanceItemConvertFactory.createMonthlyConverter();
 					monthly.withAttendanceTime(attendanceTimeOfMonthly);
 				if (!CollectionUtil.isEmpty(anyItems)){
-					monthly.withAnyItem(anyItems);
-					monthlyRecords.add(MonthlyRecordValueImport.of(yearMonth, attendanceTimeOfMonthly.getClosureId(),
-							attendanceTimeOfMonthly.getClosureDate(), monthly.convert(attendanceIds)));
+					Map<AttendanceTimeOfMonthlyKey, List<AnyItemOfMonthly>> anyItemsMap = new HashMap<>();
+					for (AnyItemOfMonthly anyItem : anyItems){
+						AttendanceTimeOfMonthlyKey key2 = new AttendanceTimeOfMonthlyKey(
+								anyItem.getEmployeeId(),
+								anyItem.getYearMonth(),
+								anyItem.getClosureId(),
+								anyItem.getClosureDate());
+						if(anyItemsMap.containsKey(key)){
+							anyItemsMap.get(key2).add(anyItem);
+						}else {
+							List<AnyItemOfMonthly> anyItemsType = new ArrayList<>();
+							anyItemsType.add(anyItem);
+							anyItemsMap.put(key2, anyItemsType);
+						}
+					}
+					if(anyItemsMap.containsKey(key)){
+						monthly.withAnyItem(anyItemsMap.get(key));
+					}
 				}
+				monthlyRecords.add(MonthlyRecordValueImport.of(yearMonth, attendanceTimeOfMonthly.getClosureId(),
+						attendanceTimeOfMonthly.getClosureDate(), monthly.convert(attendanceIds)));
 				
 			}
 		}
@@ -107,7 +130,9 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 				return monthlyRecord.getItemValues().stream().map(iv -> getValueNew(iv))
 						.collect(Collectors.toList());
 			});
-			results.put(employeeID+yearMonth.toString(),check==true ? 1:0);
+			if (check == true) {
+				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
+			}
 		}
 		return results;
 	}

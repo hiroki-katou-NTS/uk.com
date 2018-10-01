@@ -525,7 +525,7 @@ module nts.fixedtable {
             if (keyOptionValue) {
                 if (columnSetting.isRoudingColumn) {
                     newProperties = self.updateElement(newProperties, keyOptionValue,
-                    isSpecialUnit ? "$parent.specialRoudingDataSource" : '$parent.roudingDataSource', columnSetting.enable);
+                    isSpecialUnit ? "$parent.specialRoudingDataSource" : '$parent.specialRoudingDataSource', columnSetting.enable);
                 } else {
                     // add data source for control
                     self.lstDataSource[columnSetting.key] = columnSetting.dataSource;

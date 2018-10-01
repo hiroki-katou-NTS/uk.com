@@ -108,9 +108,8 @@ public class AttendanceLeavingGateOfDaily {
 	 * @return
 	 */
 	public Optional<AttendanceLeavingGate> getAttendanceLeavingGate(WorkNo workNo) {
-		if(!this.attendanceLeavingGates.isEmpty()) {
-			List<AttendanceLeavingGate> list = this.attendanceLeavingGates.stream().filter(t -> t.getWorkNo().equals(workNo)).collect(Collectors.toList());
-			return list.isEmpty()?Optional.empty():Optional.of(list.get(0));
+		if(this.attendanceLeavingGates != null) {
+			return this.attendanceLeavingGates.stream().filter(t -> t.getWorkNo().equals(workNo)).findFirst();
 		}
 		return Optional.empty();
 	}

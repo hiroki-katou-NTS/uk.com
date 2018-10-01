@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -349,6 +350,9 @@ public class RegulationInfoEmployeeFinder {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
 		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, baseDate);
+		if (loginEmployee == null) {
+			throw new BusinessException("Msg_317");
+		}
 		return RegulationInfoEmployeeDto.builder()
 				.employeeCode(loginEmployee.getEmployeeCode())
 				.employeeId(loginEmployee.getEmployeeID())

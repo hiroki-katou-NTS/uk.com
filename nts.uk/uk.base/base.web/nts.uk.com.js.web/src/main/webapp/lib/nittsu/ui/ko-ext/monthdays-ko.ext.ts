@@ -22,8 +22,8 @@ module nts.uk.ui.koExtentions {
                         width: '60px'
                     });
                 },
-                getMonths = () => _.range(1, 13).map(m => ({ text: m, value: m })),
-                getDaysInMonth = (month: number) => _.range(1, moment(month, "MM").daysInMonth() + 1).map(m => ({ text: m, value: m }));
+                getMonths = () => _.range(0, 13).map(m => ({ text: m === 0 ? "" : m, value: m })),
+                getDaysInMonth = (month: number) => _.range(0, moment(month, "MM").daysInMonth() + 1).map(m => ({ text: m === 0 ? "" : m, value: m }));
 
             let value = ko.unwrap(data.value);
             let dataName = ko.unwrap(data.name);
@@ -55,12 +55,17 @@ module nts.uk.ui.koExtentions {
 
             // month change
             monthValueAccessor.value.subscribe(v => {
-                // change options of combobox days
-                let days = getDaysInMonth(v),
-                    curentDay = ko.toJS(dayValueAccessor.value);
-
-                dayValueAccessor.value(_.min([curentDay, days.length]));
-                dayValueAccessor.options(days);
+                if (v === 0) {
+                    dayValueAccessor.value(0);
+                    dayValueAccessor.options([{ text: "", value: 0}]);
+                } else {
+                    // change options of combobox days
+                    let days = getDaysInMonth(v),
+                        curentDay = ko.toJS(dayValueAccessor.value);
+    
+                    dayValueAccessor.value(_.min([curentDay, days.length]));
+                    dayValueAccessor.options(days);
+                }
             });
 
             // bind data out

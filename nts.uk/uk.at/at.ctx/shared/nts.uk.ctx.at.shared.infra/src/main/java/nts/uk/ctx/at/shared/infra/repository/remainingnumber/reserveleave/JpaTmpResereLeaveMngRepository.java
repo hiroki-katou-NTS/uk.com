@@ -46,7 +46,7 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 			entity.useDays = dataMng.getUseDays().v();
 			this.getEntityManager().persist(entity);
 		}
-		
+		this.getEntityManager().flush();
 	}
 
 }

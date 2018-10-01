@@ -47,7 +47,7 @@ public class CompareItemValue {
 		itemValueWorkTimeZone.itemId(3);
 		itemValueWorkTimeZone.value(basicSchedule.getWorkScheduleTimeZones().size() > 0
 				? basicSchedule.getWorkScheduleTimeZones().get(0).getScheduleStartClock().v() : null);
-		itemValueWorkTimeZone.valueType(ValueType.TIME);
+		itemValueWorkTimeZone.valueType(ValueType.TIME_WITH_DAY);
 		itemValues.add(itemValueWorkTimeZone);
 
 		// 予定終了時刻 1
@@ -55,7 +55,7 @@ public class CompareItemValue {
 		itemValueWorkTimeZone.itemId(4);
 		itemValueWorkTimeZone.value(basicSchedule.getWorkScheduleTimeZones().size() > 0
 				? basicSchedule.getWorkScheduleTimeZones().get(0).getScheduleEndClock().v() : null);
-		itemValueWorkTimeZone.valueType(ValueType.TIME);
+		itemValueWorkTimeZone.valueType(ValueType.TIME_WITH_DAY);
 		itemValues.add(itemValueWorkTimeZone);
 
 		// 直行直帰区分 1
@@ -71,7 +71,7 @@ public class CompareItemValue {
 		itemValueWorkTimeZone2.itemId(5);
 		itemValueWorkTimeZone2.value(basicSchedule.getWorkScheduleTimeZones().size() > 1
 				? basicSchedule.getWorkScheduleTimeZones().get(1).getScheduleStartClock().v() : null);
-		itemValueWorkTimeZone2.valueType(ValueType.TIME);
+		itemValueWorkTimeZone2.valueType(ValueType.TIME_WITH_DAY);
 		itemValues.add(itemValueWorkTimeZone2);
 
 		// 予定終了時刻 2
@@ -79,7 +79,7 @@ public class CompareItemValue {
 		itemValueWorkTimeZone2.itemId(6);
 		itemValueWorkTimeZone2.value(basicSchedule.getWorkScheduleTimeZones().size() > 1
 				? basicSchedule.getWorkScheduleTimeZones().get(1).getScheduleEndClock().v() : null);
-		itemValueWorkTimeZone2.valueType(ValueType.TIME);
+		itemValueWorkTimeZone2.valueType(ValueType.TIME_WITH_DAY);
 		itemValues.add(itemValueWorkTimeZone2);
 
 		// 直行直帰区分 2
@@ -99,7 +99,7 @@ public class CompareItemValue {
 			itemValueWorkScheduleBreakStart.itemId(itemIdWorkScheduleBreakStart);
 			itemValueWorkScheduleBreakStart.value(basicSchedule.getWorkScheduleBreaks().size() > i
 					? basicSchedule.getWorkScheduleBreaks().get(i).getScheduledStartClock().v() : null);
-			itemValueWorkScheduleBreakStart.valueType(ValueType.TIME);
+			itemValueWorkScheduleBreakStart.valueType(ValueType.TIME_WITH_DAY);
 			itemValues.add(itemValueWorkScheduleBreakStart);
 
 			// end
@@ -107,7 +107,7 @@ public class CompareItemValue {
 			itemValueWorkScheduleBreakEnd.itemId(itemIdWorkScheduleBreakEnd);
 			itemValueWorkScheduleBreakEnd.value(basicSchedule.getWorkScheduleBreaks().size() > i
 					? basicSchedule.getWorkScheduleBreaks().get(i).getScheduledEndClock().v() : null);
-			itemValueWorkScheduleBreakEnd.valueType(ValueType.TIME);
+			itemValueWorkScheduleBreakEnd.valueType(ValueType.TIME_WITH_DAY);
 			itemValues.add(itemValueWorkScheduleBreakEnd);
 
 			itemIdWorkScheduleBreakStart = itemIdWorkScheduleBreakStart + 2;

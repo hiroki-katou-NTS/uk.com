@@ -48,7 +48,7 @@ public class DataTypeState extends AggregateRoot {
 	}
 
 	public static DataTypeState createNumericItem(int numericItemMinus, int numericItemAmount, int integerPart,
-			int decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
+			Integer decimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax) {
 		return NumericItem.createFromJavaType(numericItemMinus, numericItemAmount, integerPart, decimalPart,
 				numericItemMin, numericItemMax);
 	}

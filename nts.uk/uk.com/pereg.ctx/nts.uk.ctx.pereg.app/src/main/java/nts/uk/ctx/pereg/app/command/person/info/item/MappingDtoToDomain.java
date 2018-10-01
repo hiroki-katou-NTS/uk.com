@@ -8,7 +8,6 @@ import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 
@@ -72,7 +71,7 @@ public class MappingDtoToDomain {
 			if (dataTypeValue == DataTypeValue.DATE) {
 				return DataTypeState.createDateItem(DateType.YEARMONTHDAY.value);
 			}
-			return null;
+			return null; 
 		}
 		switch (singleI.getDataType()) {
 		case 1:
@@ -80,7 +79,7 @@ public class MappingDtoToDomain {
 					singleI.getStringItemDataType());
 		case 2:
 			return DataTypeState.createNumericItem(singleI.getNumericItemMinus(), singleI.getNumericItemAmount(),
-					singleI.getIntegerPart(), singleI.getDecimalPart()== null? 0: singleI.getDecimalPart(), singleI.getNumericItemMin(),
+					singleI.getIntegerPart(), singleI.getDecimalPart()== null ? null: singleI.getDecimalPart(), singleI.getNumericItemMin(),
 					singleI.getNumericItemMax());
 		case 3:
 			return DataTypeState.createDateItem(singleI.getDateItemType());

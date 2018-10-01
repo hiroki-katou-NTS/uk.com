@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -112,6 +115,9 @@ public class ApplicationPubImpl implements ApplicationPub {
 					WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeId, systemDate);
 					// アルゴリズム「締切日を取得する」を実行する
 					// nếu wkpHistImport = null thì xem QA http://192.168.50.4:3000/issues/97192
+					if(wkpHistImport==null || Strings.isBlank(wkpHistImport.getWorkplaceId())){
+						throw new BusinessException("EA No.2110: 終了状態：申請締切日取得エラー");
+					}
 					deadline = obtainDeadlineDateAdapter.obtainDeadlineDate(
 							presentClosingPeriodImport.get().getClosureEndDate(), 
 							appDeadline.getDeadline().v(), 

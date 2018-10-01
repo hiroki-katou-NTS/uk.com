@@ -7,13 +7,14 @@ module nts.uk.com.view.cmm011.a {
             findLstWorkPlace: "bs/employee/workplace/config/info/find",
             getListWkpConfigHistory: "bs/employee/workplace/config/findAll",
             checkWorkplaceState: "bs/employee/workplace/config/validWkp",
-            
+
             findWkpHistList: "bs/employee/workplace/hist",
             saveWkp: "bs/employee/workplace/save",
             removeWkp: "bs/employee/workplace/remove",
             findHistInfoByHistId: "bs/employee/workplace/info/findHistInfo",
-            
+
             removeWorkplaceHistory: "bs/employee/workplace/history/remove",
+            updateTree : "bs/employee/workplace/updateTree"
         };
 
         /**
@@ -22,7 +23,7 @@ module nts.uk.com.view.cmm011.a {
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
             return nts.uk.request.ajax(servicePath.findLstWorkPlace, { baseDate: baseDate });
         }
-        
+
         /**
          * getLstWkpHist
          */
@@ -36,35 +37,35 @@ module nts.uk.com.view.cmm011.a {
         export function getWkpInfoByHistId(wkpId: string, historyId: string): JQueryPromise<model.Workplace> {
             return nts.uk.request.ajax(servicePath.findHistInfoByHistId, { workplaceId: wkpId, historyId: historyId });
         }
-        
+
         /**
          * checkWorkplaceState
          */
         export function checkWorkplaceState(workplace: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.checkWorkplaceState, workplace);
         }
-        
-         /**
-         * saveWkp
-         */
+
+        /**
+        * saveWkp
+        */
         export function saveWkp(command: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveWkp, command);
         }
-        
+
         /**
          * removeWkp
          */
         export function removeWkp(command: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.removeWkp, command);
         }
-        
+
         /**
          * removeWorkplaceHistory
          */
         export function removeWorkplaceHistory(command: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.removeWorkplaceHistory, command);
         }
-        
+
         /**
          * findLstWkpConfigHistory
          */
@@ -83,7 +84,13 @@ module nts.uk.com.view.cmm011.a {
             });
             return dfd.promise();
         }
-        
+        /**
+         * function update tree
+         */
+        export function updateTree(lstWorkplace:Array<model.TreeWorkplace>):JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.updateTree,{ listWorkplaceHierarchyDto: lstWorkplace });
+        }
+
         /**
         * Model namespace.
         */
@@ -96,6 +103,7 @@ module nts.uk.com.view.cmm011.a {
                 hierarchyCode: string;
                 level?: number;
                 childs: Array<TreeWorkplace>;
+                histId:string;
             }
 
             export interface Workplace {

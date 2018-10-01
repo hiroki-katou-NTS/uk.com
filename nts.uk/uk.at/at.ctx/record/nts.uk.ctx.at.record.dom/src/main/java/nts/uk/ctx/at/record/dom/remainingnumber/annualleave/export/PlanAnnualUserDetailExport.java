@@ -8,7 +8,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface PlanAnnualUserDetailExport {
 	/**
-	 * 指定する期間の計画年休使用明細を取得する
+	 * 
 	 * @param sId
 	 * @param workTypeCd
 	 * @param dateData

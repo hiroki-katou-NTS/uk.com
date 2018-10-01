@@ -33,13 +33,17 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
 
             self.columnsWorkTime = ko.observableArray([
-                { headerText: getText("KSU001_1402"), key: 'workTimeCode', width: 70 },
-                { headerText: getText("KSU001_1403"), key: 'symbolName', width: 70 },
-                { headerText: getText("KSU001_1404"), key: 'name', width: 110 },
-                { headerText: getText("KSU001_1406"), key: 'timeZone1', width: 160 },
-                { headerText: getText("KSU001_1407"), key: 'timeZone2', width: 160 },
-                { headerText: getText("KSU001_1408"), key: 'note', width: 160 },
-                { headerText: 'data-id', key: 'codeName', width: 160, hidden: true }
+                { headerText: getText("KSU001_1402"), key: 'workTimeCode', width: 70, formatter: _.escape },
+                { headerText: getText("KSU001_1403"), key: 'symbolName', width: 70, formatter: _.escape },
+                { headerText: getText("KSU001_1404"), key: 'name', width: 110, formatter: _.escape },
+                { headerText: getText("KSU001_1406"), key: 'timeZone1', width: 160, formatter: _.escape },
+                { headerText: getText("KSU001_1407"), key: 'timeZone2', width: 160, formatter: _.escape },
+                { 
+                    headerText: getText("KSU001_1408"), key: 'note', width: 160,
+                    formatter: function(note, record) {
+                        return "<label class = 'limited-label'> " + note + " </label>";
+                    } },
+                { headerText: 'data-id', key: 'codeName', width: 160, hidden: true, formatter: _.escape }
             ]);
             
             self.selectedWorkTypeCode.subscribe((newValue) => {
@@ -153,7 +157,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 self.clear();
                 return;
             }
-            if (self.time2() !== '' && self.time1() > self.time2()) {
+            if (!((self.time1() == '' && self.time2() !== '') || (self.time1() !== '' && self.time2() == '')) && self.time1() > self.time2()) {
                 alertError({ messageId: "Msg_54" });
                 self.clear();
                 return;

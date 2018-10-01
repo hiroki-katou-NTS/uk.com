@@ -104,7 +104,8 @@
 									comId: 'item_grid',
 									items: currentCategory().ctgList ,  
 									selectedKey: 'perInfoCtgId',
-									fields: ['categoryName']}" />
+									fields: ['categoryName'],
+									placeHolder:'名称で検索・・・'}" />
 								<div id="history" class="flex valign-center">
 									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
@@ -206,14 +207,13 @@
 												<td class="input-units-3">
 													<!-- String  --> 
 													<com:ko-if bind="(dataType() === 1)">
-														<com:ko-if bind="(isRequired() === 1)">
 															<com:ko-if bind="(fixedItem === true)">
 																<input class="sub-input-units"
 																	data-bind="ntsTextEditor: {
 																	name:  itemName ,
 																	value: stringValue , 
 																	constraint: itemCode,
-																	required: true},
+																	required: isRequired},
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 															</com:ko-if>
 	
@@ -223,115 +223,54 @@
 																	name:  itemName ,
 																	value: stringValue , 
 																	constraint: itemCode,
-																	required: true},
+																	required: isRequired},
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 															</com:ko-if>
-														</com:ko-if>
-	
-														<com:ko-if bind="(isRequired() === 0)">
-															<com:ko-if bind="(fixedItem === true)">
-																<input class="sub-input-units"
-																	data-bind="ntsTextEditor: {
-																	name:  itemName ,
-																	value: stringValue , 
-																	constraint: itemCode},
-																	attr: { id: perInfoItemDefId, NameID: itemName }" />
-															</com:ko-if>
-	
-															<com:ko-if bind="(fixedItem === false)">
-																<input class="sub-input-units"
-																	data-bind="ntsTextEditor: {
-																	name:  itemName ,
-																	value: stringValue , 
-																	constraint: itemCode},
-																	attr: { id: perInfoItemDefId, NameID: itemName }" />
-															</com:ko-if>
-														</com:ko-if>
 													</com:ko-if> 
 													
 													<!--  date  -->
 													 <com:ko-if bind="(dataType() === 3)">
 														<!--  date thuộc kiểu ngày tháng năm   -->
 														<com:ko-if bind="(dateType === 1)">
-															<com:ko-if bind="(isRequired() === 1)">
 																<div  class="sub-input-units"
 																	data-bind="ntsDatePicker: {
 																	 name:  itemName,
 																	 value: dateValue, 
 																	 dateFormat: 'YYYY/MM/DD',
 																	 valueFormat: 'YYYY/MM/DD',
-																	 required: true
+																	 required: isRequired
 																	 }, attr: {  id: perInfoItemDefId, NameID: itemName }">
 																</div>
-															</com:ko-if>
-	
-															<com:ko-if bind="(isRequired() === 0)">
-																<div class="sub-input-units"
-																	data-bind="ntsDatePicker: {
-																	 name:  itemName,
-																	 value: dateValue, 
-																	 dateFormat: 'YYYY/MM/DD',
-																	 valueFormat: 'YYYY/MM/DD'
-																	 }, attr: {  id: perInfoItemDefId, NameID: itemName }">
-																</div>
-															</com:ko-if>
 														</com:ko-if>
 	
 														<!-- date thuộc kiểu tháng năm   -->
 														<com:ko-if bind="(dateType === 2)">
-															<com:ko-if bind="(isRequired() === 1)">
 																<div class="sub-input-units"
 																	data-bind="ntsDatePicker: {
 				                   									name:  itemName,
 				                   									value: dateValue, 
 				                   									dateFormat: 'YYYY/MM', 
 				                   									valueFormat: 'YYYY/MM',
-				                   									required: true
+				                   									required: isRequired
 				                   									}, attr: { id: perInfoItemDefId, NameID: itemName }">
 																</div>
-															</com:ko-if>
-	
-															<com:ko-if bind="(isRequired() === 0)">
-																<div  class="sub-input-units"
-																	data-bind="ntsDatePicker: {
-				                   									name:  itemName,
-				                   									value: dateValue, 
-				                   									dateFormat: 'YYYY/MM', 
-				                   									valueFormat: 'YYYY/MM'
-				                   									}, attr: {id: perInfoItemDefId, NameID: itemName }">
-																</div>
-															</com:ko-if>
 														</com:ko-if>
 	
 														<!-- date thuộc kiểu  năm  	 -->
 														<com:ko-if bind="(dateType === 3)">
-															<com:ko-if bind="(isRequired() === 1)">
 																<div class="sub-input-units"
 																	data-bind="ntsDatePicker: {
 																	name:  itemName,
 																	value: dateValue, 
 																	dateFormat: 'YYYY', 
 																	valueFormat: 'YYYY',
-																	required: true},
+																	required: isRequired},
 																	attr: { id: perInfoItemDefId, NameID: itemName }">
 																</div>
-															</com:ko-if>
-	
-															<com:ko-if bind="(isRequired() === 0)">
-																<div class="sub-input-units"
-																	data-bind="ntsDatePicker: {
-																	name:  itemName,
-																	value: dateValue, 
-																	dateFormat: 'YYYY', 
-																	valueFormat: 'YYYY'},
-																	attr: { id: perInfoItemDefId, NameID: itemName }">
-																</div>
-															</com:ko-if>
 														</com:ko-if>
 													</com:ko-if> 
 													<!-- timeitem   --> 
 													<com:ko-if bind="(dataType() === 4)">
-														<com:ko-if bind="(isRequired() === 1)">
 															<input class="sub-input-units"
 																data-bind="ntsTimeEditor: {
 																	name: itemName,
@@ -339,29 +278,12 @@
 																	constraint: itemCode,
 																	inputFormat: 'time', 
 															 		mode: 'time',
-																	required: true,
+																	required: isRequired,
 																	enable: true,
 																	readonly: false},attr: { id: perInfoItemDefId, NameID: itemName }" />
-														</com:ko-if>
-	
-														<com:ko-if bind="(isRequired() === 0)">
-															<input class="sub-input-units"
-																data-bind="ntsTimeEditor: {
-																	name: itemName,
-																	value: dateWithDay,
-																	constraint: itemCode,
-																	inputFormat: 'time', 
-															 		mode: 'time',
-																	required: false,
-																	enable: true,
-																	readonly: false},
-																	attr: { id: perInfoItemDefId, NameID: itemName }" />
-	
-														</com:ko-if>
 													</com:ko-if> 
 													<!-- 	 timepoint   --> 
 													<com:ko-if bind="(dataType() === 5)">
-														<com:ko-if bind="(isRequired() === 1)">
 															<input class="sub-input-units"
 																data-bind="ntsTimeWithDayEditor: { 
 																	name: itemName, 
@@ -369,20 +291,8 @@
 																	value: dateWithDay, 
 																	enable: enableControl, 
 																	readonly: false,
-																	required: true },
+																	required: isRequired },
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
-														</com:ko-if>
-	
-														<com:ko-if bind="(isRequired() === 0)">
-															<input  class="sub-input-units"
-																data-bind="ntsTimeWithDayEditor: { 
-																	name: itemName, 
-																	constraint: itemCode, 
-																	value: dateWithDay, 
-																	enable: enableControl, 
-																	readonly: false },
-																	attr: { id: perInfoItemDefId, NameID: itemName }" />
-														</com:ko-if>
 													</com:ko-if> 
 													<!--   list box  --> 
 													<com:ko-if bind="(dataType() === 6)">
@@ -390,11 +300,14 @@
 															data-bind="ntsComboBox: {
 																	options: selection,
 																	optionsValue: 'optionValue',
+																	visibleItemsCount: 5,
 																	value: selectedCode,
 																	optionsText: 'optionText',
 																	editable: false,
 																	enable: true,
 																	dropDownAttachedToBody:true,
+																	selectFirstIfNull: false,
+																	required: false,
 																	columns: [
 																		{ prop: 'optionText', length: 10 },
 																	]},
@@ -405,7 +318,6 @@
 													<com:ko-if bind="(dataType() === 2)">
 														<com:ko-if
 															bind=" ((numbericItem.numberDecimalPart === 0) &amp; (numbericItem.numberIntegerPart !== 0)) ">
-															<com:ko-if bind="(isRequired() === 1)">
 																<div data-bind="with: numbereditor">
 																	<input class="sub-input-units"  data-bind="ntsNumberEditor: { 
 																		name: $parent.itemName,
@@ -414,29 +326,13 @@
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
-																		required: true},
+																		required: $parent.isRequired},
 																		attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
 																</div>
-															</com:ko-if>
-	
-															<com:ko-if bind="(isRequired() === 0)">
-																<div data-bind="with: numbereditor">
-	
-																	<input class="sub-input-units"  data-bind="ntsNumberEditor: { 
-																	 		name: $parent.itemName,
-																	 		value: value,
-																			constraint: $parent.itemCode,
-																			option: option,
-																			enable: enable,
-																			readonly: readonly},
-																			attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
-																</div>
-															</com:ko-if>
 														</com:ko-if>
 	
 														<com:ko-if
 															bind=" ((numbericItem.numberDecimalPart !== 0)) ">
-															<com:ko-if bind="(isRequired() === 1)">
 																<div data-bind="with: numbereditor">
 																	<input class="sub-input-units" data-bind="ntsNumberEditor: { 
 				 														name: $parent.itemName,
@@ -446,23 +342,9 @@
 																		enable: enable,
 																		readonly: readonly,
 																		immediate: false,
-																		required: true},
-																		attr: { NameID: $parent.itemName }" />
-																</div>
-															</com:ko-if>
-															<com:ko-if bind="(isRequired() === 0)">
-																<div data-bind="with: numbereditor">
-																	<input class="sub-input-units" id="number" data-bind="ntsNumberEditor: { 
-																		name: $parent.itemName,
-																		value: value,
-																		constraint: $parent.itemCode,
-																		option: option,
-																		enable: enable,
-																		readonly: readonly,
-																		immediate: false},
+																		required: $parent.isRequired},
 																		attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
 																</div>
-															</com:ko-if>
 														</com:ko-if>
 													</com:ko-if>
 													 

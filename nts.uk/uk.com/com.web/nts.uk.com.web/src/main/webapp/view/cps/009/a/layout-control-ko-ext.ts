@@ -13,19 +13,25 @@ module CPS009Constraint {
             constraint: any = {
                 itemName: data.itemName,
                 itemCode: data.itemCode,
-                required: data.isRequired// !!x.isRequired
+                required: !!data.isRequired// !!x.isRequired
             },
-            constraints: any;
+            constraints: any,
+            itemSpecial: Array<string> = [];
+        if(["CS00035","CS00036"].indexOf(data.ctgCode) > -1){
+         itemSpecial = ["IS00366", "IS00368", "IS00369", "IS00377",
+                "IS00378", "IS00379", "IS00382", "IS00383", "IS00384"];    
+        }
         if (dts) {
             switch (dts.dataType) {
                 default:
                 case ITEM_SINGLE_TYPE.STRING:
                     constraint.valueType = "String";
                     constraint.maxLength = dts.stringItemLength || undefined;
-                    constraint.stringExpression = '';
+                     constraint.stringExpression = /(?:)/;
                     switch (dts.stringItemType) {
                         default:
                         case ITEM_STRING_TYPE.ANY:
+                            constraint.charType = 'Any';
                             break;
                         case ITEM_STRING_TYPE.ANYHALFWIDTH:
                             constraint.charType = 'AnyHalfWidth';
@@ -35,14 +41,6 @@ module CPS009Constraint {
                             break;
                         case ITEM_STRING_TYPE.NUMERIC:
                             constraint.charType = 'Numeric';
-                            if (dts.numberDecimalPart > 0) {
-                                constraint.valueType = "Decimal";
-                                constraint.mantissaMaxLength = dts.numberDecimalPart;
-                            } else {
-                                constraint.valueType = "Integer";
-                            }
-                            constraint.max = dts.numericItemMax || undefined;
-                            constraint.min = dts.numericItemMin || 0;
                             break;
                         case ITEM_STRING_TYPE.KANA:
                             constraint.charType = 'Kana';
@@ -61,6 +59,9 @@ module CPS009Constraint {
                     constraint.charType = 'Numeric';
                     constraint.max = dts.numericItemMax || max;
                     constraint.min = dts.numericItemMin || -max;
+                    if(["CS00035","CS00036"].indexOf(data.ctgCode) > -1 && itemSpecial.indexOf(dts.itemCode) > -1){
+                        constraint.valueType = "HalfInt";
+                    }
                     break;
                 case ITEM_SINGLE_TYPE.DATE:
                     constraint.valueType = "Date";

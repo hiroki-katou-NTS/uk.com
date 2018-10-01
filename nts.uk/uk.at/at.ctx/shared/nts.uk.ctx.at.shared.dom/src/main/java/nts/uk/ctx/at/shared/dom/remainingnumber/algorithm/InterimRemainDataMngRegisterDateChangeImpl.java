@@ -7,7 +7,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
@@ -32,6 +40,20 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private ComSubstVacationRepository subRepos;
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
+	@Inject
+	private ManagedParallelWithContext managedParallelWithContext;
+	@Inject
+	private InterimRemainRepository inRemainData;
+	@Inject
+	private TmpAnnualHolidayMngRepository annualHolidayMngRepos;
+	@Inject
+	private TmpResereLeaveMngRepository resereLeave;
+	@Inject
+	private InterimRecAbasMngRepository recAbsRepos;
+	@Inject
+	private InterimBreakDayOffMngRepository breakDayOffRepos;
+	@Inject
+	private InterimSpecialHolidayMngRepository specialHoliday;
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
 		//「残数作成元情報(実績)」を取得する
@@ -40,12 +62,49 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cid, sid, lstDate);
 		//「残数作成元の申請を取得する」
 		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, lstDate);
+		if(lstRecordData.isEmpty()
+				&& lstAppData.isEmpty()
+				&& lstScheData.isEmpty()) {
+			//スケジュールのデータがないし実績データがないし、申請を削除の場合暫定データがあったら削除します。
+			List<InterimRemain> getDataBySidDates = inRemainData.getDataBySidDates(sid, lstDate);
+			getDataBySidDates.stream().forEach(x -> {
+				
+				inRemainData.deleteById(x.getRemainManaID());
+				//Delete
+				switch (x.getRemainType()) {
+				case ANNUAL:
+					annualHolidayMngRepos.deleteById(x.getRemainManaID());
+					break;
+				case FUNDINGANNUAL:
+					resereLeave.deleteById(x.getRemainManaID());
+					break;
+				case PAUSE:
+					recAbsRepos.deleteInterimAbsMng(x.getRemainManaID());
+					break;
+				case PICKINGUP:
+					recAbsRepos.deleteInterimRecMng(x.getRemainManaID());
+					break;
+				case SUBHOLIDAY:
+					breakDayOffRepos.deleteInterimDayOffMng(x.getRemainManaID());
+					break;
+				case BREAK:
+					breakDayOffRepos.deleteInterimBreakMng(x.getRemainManaID());
+					break;
+				case SPECIAL:
+					specialHoliday.deleteSpecialHoliday(x.getRemainManaID());
+					break;
+				default:
+					break;
+				}
+			});
+			return;
+		}
 		//雇用履歴と休暇管理設定を取得する
 		Optional<ComSubstVacation> comSetting = subRepos.findById(cid);
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, comSetting, leaveComSetting);
 		
-		for (GeneralDate loopDate : lstDate) {
+		this.managedParallelWithContext.forEach(lstDate, loopDate -> {
 			DatePeriod datePeriod = new DatePeriod(loopDate, loopDate);
 			//指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputData = new InterimRemainCreateDataInputPara(cid, 
@@ -56,7 +115,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstAppData,
 					false);
 			mngRegister.registryInterimDataMng(inputData, comHolidaySetting);
-		}
+		});
 	}
 
 }

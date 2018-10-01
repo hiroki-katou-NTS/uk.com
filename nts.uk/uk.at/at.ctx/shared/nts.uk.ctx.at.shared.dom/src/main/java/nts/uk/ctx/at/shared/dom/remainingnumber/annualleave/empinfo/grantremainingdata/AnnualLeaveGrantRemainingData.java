@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-// domain name: 年休付与残数データ
+// domain name CS00037: 年休付与残数データ
 public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 
 	private String annLeavID;
@@ -162,30 +162,37 @@ public class AnnualLeaveGrantRemainingData extends AggregateRoot {
 		return remainingDays;
 	}
 	
-	public static void validate2(AnnualLeaveGrantRemainingData domain){
-		if ((domain.getDetails().getGrantNumber().getDays() != null)
-				|| (domain.getDetails().getUsedNumber().getDays() != null)
-				|| (domain.getDetails().getRemainingNumber().getDays() != null)) {
-			if (domain.getGrantDate() == null || domain.getDeadline() == null) {
-				if (domain.getGrantDate() == null) {
-					throw new BusinessException("Msg_925", "付与日");
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
+			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
+		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
+		if(isNull == false) return isNull;
+		if (grantDays != null || usedDays != null || remainDays != null) {
+			if (deadlineDate == null || grantDate == null) {
+				if (grantDate == null) {
+					throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
 				}
-				if (domain.getDeadline() == null) {
-					throw new BusinessException("Msg_925", "期限日");
+				if (deadlineDate == null) {
+					throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
 				}
 			}
 		}
-		if (domain.getGrantDate() == null  && domain.getDeadline() != null) {
-			throw new BusinessException("Msg_925", "付与日");
+		if (grantDate == null && deadlineDate != null) {
+			throw new BusinessException("Msg_925", grantDateItemName == null ? "付与日" : grantDateItemName);
 		}
-		if (domain.getDeadline() == null && domain.getGrantDate() != null) {
-			throw new BusinessException("Msg_925", "期限日");
+		if (deadlineDate == null && grantDate != null) {
+			throw new BusinessException("Msg_925", deadlineDateItemName == null ? "期限日" : deadlineDateItemName);
 		}
-		// 付与日＞使用期限の場合はエラー #Msg_1023
-		if (domain.getGrantDate() != null || domain.getDeadline() != null) {
-			if (domain.getGrantDate().compareTo(domain.getDeadline()) > 0) {
+		if (grantDate != null && deadlineDate != null) {
+			// 付与日＞使用期限の場合はエラー #Msg_1023
+			if (grantDate.compareTo(deadlineDate) > 0) {
 				throw new BusinessException("Msg_1023");
 			}
 		}
+		return isNull;
+	}
+	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate, BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays) {
+		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
+			return false;
+		return true;
 	}
 }

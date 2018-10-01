@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -69,6 +70,9 @@ public class AnnLeaveOfThisMonth {
 		this.remainMinutes = remainMinutes;
 	}
 
-	
+	// avoid compile error
+	public void setGrantDays(Double days) {
+		this.grantDays = days;
+	}
 	
 }
