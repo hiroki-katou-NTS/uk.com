@@ -28,7 +28,7 @@ public class AddOccAccIsPrRateCommandHandler extends CommandHandler<AddOccAccIsP
         List<OccAccInsurBusiBurdenRatio>  occAccInsurBusiBurdenRatios = command.getListAccInsurPreRate().stream().map(item -> {
             return new OccAccInsurBusiBurdenRatio(item.getOccAccInsurBusNo(), EnumAdaptor.valueOf(item.getFracClass(), InsuPremiumFractionClassification.class), new InsuranceRate(new BigDecimal(item.getEmpConRatio())));
         }).collect(Collectors.toList());
-          if (command.isNewMode()) {
+        if (command.isNewMode()) {
             occAccInsurBusiBurdenRatioService.addOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatios, startYearMonth, endYearMonth);
         } else {
             occAccInsurBusiBurdenRatioService.updateOccAccInsurBusiBurdenRatio(occAccInsurBusiBurdenRatios,command.getHisId());
