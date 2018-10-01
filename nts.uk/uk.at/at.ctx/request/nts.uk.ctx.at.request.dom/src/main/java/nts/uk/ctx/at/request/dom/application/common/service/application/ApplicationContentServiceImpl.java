@@ -1159,8 +1159,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					Optional<WorkType> workType = repoWorkType.findByPK(companyID, leaveApp.getWorkTypeCD().v());
 					content += I18NText.getText("CMM045_262") + " " + app.getAppDate().toString("MM/dd")
 							+ (workType.isPresent() ? I18NText.getText("CMM045_230", workType.get().getName().v()) : "") ;
-					if (!Objects.isNull(leaveApp.getWorkTime1()) && !Objects.isNull(leaveApp.getWorkTime2())) {
-						content += repoAppDetailInfo.convertTime(leaveApp.getWorkTime1().getStartTime().v())
+					if (leaveApp.getStime1() != null){
+						content += repoAppDetailInfo.convertTime(leaveApp.getStime1())
 								+ I18NText.getText("CMM045_100")
 								+ repoAppDetailInfo.convertTime(leaveApp.getWorkTime1().getEndTime().v());
 					}
