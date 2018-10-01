@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm008.f {
             displayEnd : KnockoutObservable<string> = ko.observable(null);
             historyId : KnockoutObservable<string> = ko.observable(null);
             display : KnockoutObservable<Boolean> = ko.observable(true);
+            isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 var self = this;
                 self.dataList = ko.observableArray([]);
@@ -26,14 +27,25 @@ module nts.uk.pr.view.qmm008.f {
                 let command = { historyId: self.historyId(),date : self.startMonth() };
                 nts.uk.pr.view.qmm008.f.service.init(command).done(function(response) {
                     for (var i = 0; i < response.cusWelfarePensions.length; i++) {
-                        self.dataList.push(response.cusWelfarePensions[i]);
+                        self.dataList.push(new RowData(response.cusWelfarePensions[i]));
                     } 
                     self.header(response.insuranceRate);
-                    console.log(response.display);
                 });
 
                 $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
             }
+            
+            genNumber(itemNumber: any, decimalPart: any) {
+               let option: any;
+               if (nts.uk.text.isNullOrEmpty(decimalPart)) {
+                   option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 0 });
+
+               } else {
+                   option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: decimalPart });
+
+               }
+               return nts.uk.ntsNumber.formatNumber(itemNumber, option);
+           }
             
             
             /**
@@ -63,18 +75,17 @@ module nts.uk.pr.view.qmm008.f {
             }
 
             
-            private countReview() :void {
+            private countReview(): void {
+                nts.uk.ui.errors.clearAll();
                 let self = this;
                 let command = { historyId: self.historyId(), date: self.startMonth() };
                 nts.uk.pr.view.qmm008.f.service.count(command).done(function(response) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        self.dataList([]);
-                        for (var i = 0; i < response.cusWelfarePensions.length; i++) {
-                            self.dataList.push(response.cusWelfarePensions[i]);
-                        }
-                        self.header(response.insuranceRate);
+                    self.dataList([]);
+                    for (var i = 0; i < response.cusWelfarePensions.length; i++) {
+                        self.dataList.push(new RowData(response.cusWelfarePensions[i]));
+                    }
+                    self.header(response.insuranceRate);
 
-                    });
                 }
             }
             

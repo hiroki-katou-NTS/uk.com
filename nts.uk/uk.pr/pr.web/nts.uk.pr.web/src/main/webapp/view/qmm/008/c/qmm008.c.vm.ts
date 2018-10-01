@@ -201,6 +201,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 return;
             }
             // Register data
+            block.invisible();
             let command = {
                 officeCode: self.selectedOffice.socialInsuranceCode,
                 bonusEmployeePensionInsuranceRate: ko.toJS(self.bonusEmployeePensionInsuranceRate),
@@ -208,13 +209,6 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 welfarePensionInsuranceClassification: ko.toJS(self.welfareInsuranceClassification),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
-            if (command.welfarePensionInsuranceClassification.fundClassification == model.FUND_CLASSIFICATION.JOIN) {
-                self.validateRemainRatio(command);
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-            }
-            block.invisible();
             // Update historyId for case clone previous data
             command.bonusEmployeePensionInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.employeesPensionMonthlyInsuranceFee.historyId = command.yearMonthHistoryItem.historyId;
@@ -341,35 +335,6 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                     }
                 }
             });
-        }
-        validateRemainRatio(command) {
-            let bonusPensionInsurance = command.bonusEmployeePensionInsuranceRate;
-            let salaryPensuinInrurance = command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate;
-            // C3_9, C3_11 - C4_19, C4_21
-            // C3_9 - C4_19
-            let salaryMaleContributionRate = salaryPensuinInrurance.maleContributionRate;
-            if (Number(salaryMaleContributionRate.individualBurdenRatio) < Number(salaryMaleContributionRate.individualExemptionRate)) $('#C3_9').ntsError('set', { messageId: "MsgQ_219" });
-            // C3_11 - C4_21
-            if (Number(salaryMaleContributionRate.employeeContributionRatio) < Number(salaryMaleContributionRate.employeeExemptionRate)) $('#C3_11').ntsError('set', { messageId: "MsgQ_220" });
-            // C3_18, C3_20 - C4_38, C4_40
-            let salaryFemaleContributionRate = salaryPensuinInrurance.femaleContributionRate;
-            // C3_18 - C4_38
-            if (Number(salaryFemaleContributionRate.individualBurdenRatio) < Number(salaryFemaleContributionRate.individualExemptionRate)) $('#C3_18').ntsError('set', { messageId: "MsgQ_221" });
-            // C3_20 - C4_40
-            if (Number(salaryFemaleContributionRate.employeeContributionRatio) < Number(salaryFemaleContributionRate.employeeExemptionRate)) $('#C3_20').ntsError('set', { messageId: "MsgQ_222" });
-            // C3_13, C3_15 - C4_23, C4_25
-            let bonusMaleContributionRate = bonusPensionInsurance.maleContributionRate;
-            // C3_13 - C4_23
-            if (Number(bonusMaleContributionRate.individualBurdenRatio) < Number(bonusMaleContributionRate.individualExemptionRate)) $('#C3_13').ntsError('set', { messageId: "MsgQ_223" });
-            // C3_15 - C4_25
-            if (Number(bonusMaleContributionRate.employeeContributionRatio) < Number(bonusMaleContributionRate.employeeExemptionRate)) $('#C3_15').ntsError('set', { messageId: "MsgQ_224" });
-            // C3_22, C3_24 - C4_42, C4_44
-            let bonusFemaleContributionRate = bonusPensionInsurance.femaleContributionRate;
-            // C3_22 - C4_42
-            if (Number(bonusFemaleContributionRate.individualBurdenRatio) < Number(bonusFemaleContributionRate.individualExemptionRate)) $('#C3_22').ntsError('set', { messageId: "MsgQ_223" });
-            // C3_24 - C4_44
-            if (Number(bonusFemaleContributionRate.employeeContributionRatio) < Number(bonusFemaleContributionRate.employeeExemptionRate)) $('#C3_24').ntsError('set', { messageId: "MsgQ_224" });
-
         }
     }
 }

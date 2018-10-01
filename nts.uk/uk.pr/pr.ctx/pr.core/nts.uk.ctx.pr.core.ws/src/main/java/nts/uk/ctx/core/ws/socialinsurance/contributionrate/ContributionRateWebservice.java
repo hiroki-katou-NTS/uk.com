@@ -7,9 +7,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.AddContributionRateHistoryCommandHandler;
+import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.CheckContributionRateHistoryCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.DeleteContributionRateCommandHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.EditContributionRateCommnadHandler;
 import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.command.AddContributionRateHistoryCommand;
+import nts.uk.ctx.core.app.command.socialinsurance.contributionrate.command.CheckContributionRateHistoryCommand;
 import nts.uk.ctx.core.app.find.socialinsurance.contributionrate.ContributionRateFinder;
 import nts.uk.ctx.core.app.find.socialinsurance.contributionrate.dto.ContributionRateDto;
 
@@ -20,6 +22,8 @@ public class ContributionRateWebservice {
 	private ContributionRateFinder contributionRateFinder;
 	@Inject
 	private AddContributionRateHistoryCommandHandler addContributionRateHistoryCommandHandler;
+	@Inject
+	private CheckContributionRateHistoryCommandHandler checkContributionRateHistoryCommandHandler;
 	@Inject
 	private EditContributionRateCommnadHandler editContributionRateCommnadHandler;
 	@Inject
@@ -35,6 +39,12 @@ public class ContributionRateWebservice {
 	@Path("/addContributionRateHistory")
 	public void addContributionRateHistory(AddContributionRateHistoryCommand command) {
 		addContributionRateHistoryCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/checkContributionRateHistory")
+	public boolean checkContributionRateHistory(CheckContributionRateHistoryCommand command) {
+		return checkContributionRateHistoryCommandHandler.handle(command);
 	}
 
 	@POST
