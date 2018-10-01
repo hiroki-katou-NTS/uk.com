@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -286,6 +287,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		for (val rsvGrantRemainingData : rsvGrantRemainingDatas){
 			if (rsvGrantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			if (rsvGrantRemainingData.getGrantDate().after(closureStart)) continue;
+			if (rsvGrantRemainingData.getDeadline().before(closureStart)) continue;
 			beforeClosureDatas.add(rsvGrantRemainingData);
 		}
 		
@@ -561,15 +563,6 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		
 		List<TmpReserveLeaveMngWork> results = new ArrayList<>();
 		
-		// 「上書きフラグ」をチェック
-		if (param.getIsOverWrite().isPresent()){
-			if (param.getIsOverWrite().get()){
-				
-				// 上書き用データがある時、使用する
-				if (param.getForOverWriteList().isPresent()) return param.getForOverWriteList().get();
-			}
-		}
-		
 		// 「モード」をチェック
 		if (param.getMode() == TempAnnualLeaveMngMode.MONTHLY){
 			// 月次モード
@@ -584,10 +577,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
 				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
 				val data = dailyInterimRemainMngData.getResereData().get();
-				results.add(TmpReserveLeaveMngWork.of(
-						data.getResereId(),
-						master.getYmd(),
-						data.getUseDays()));
+				results.add(TmpReserveLeaveMngWork.of(master, data));
 			}
 		}
 		if (param.getMode() == TempAnnualLeaveMngMode.OTHER){
@@ -600,13 +590,32 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());
 				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
 				val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
-				results.add(TmpReserveLeaveMngWork.of(
-						tmpReserveLeaveMng.getResereId(),
-						interimRemain.getYmd(),
-						tmpReserveLeaveMng.getUseDays()));
+				results.add(TmpReserveLeaveMngWork.of(interimRemain, tmpReserveLeaveMng));
 			}
 		}
 		
+		// 「上書きフラグ」をチェック
+		if (param.getIsOverWrite().isPresent()){
+			if (param.getIsOverWrite().get()){
+				
+				// 上書き用データがある時、使用する
+				if (param.getForOverWriteList().isPresent()){
+					val overWrites = param.getForOverWriteList().get();
+					for (val overWrite : overWrites){
+						// 重複データを削除
+						ListIterator<TmpReserveLeaveMngWork> itrResult = results.listIterator();
+						while (itrResult.hasNext()){
+							TmpReserveLeaveMngWork target = itrResult.next();
+							if (target.equals(overWrite)) itrResult.remove();
+						}
+						// 上書き用データを追加
+						results.add(overWrite);
+					}
+				}
+			}
+		}
+		
+		results.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		return results;
 	}
 }

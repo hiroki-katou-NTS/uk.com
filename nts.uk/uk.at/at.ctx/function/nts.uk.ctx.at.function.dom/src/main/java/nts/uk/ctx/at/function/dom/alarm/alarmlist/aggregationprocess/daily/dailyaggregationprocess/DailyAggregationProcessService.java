@@ -256,11 +256,7 @@ public class DailyAggregationProcessService {
 				}
 				
 			} else {
-				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
 					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(),this.formatHourData( atdItemCon.getCompareStartValue().toString(), checkItem));
-				} else {
-					alarmContent = TextResource.localize("KAL010_48", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + "", checkItem));
-				}
 			}
 			break;
 		case CONTINUOUS_TIME:
@@ -278,13 +274,8 @@ public class DailyAggregationProcessService {
 				}
 
 			} else {
-				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
 					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getCompareStartValue().toString(), checkItem),
 							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
-				} else {
-					alarmContent = TextResource.localize("KAL010_54", wktypeText, attendanceText, coupleOperator.getOperatorStart(), this.formatHourData(atdItemCon.getSingleAtdItem() + "", checkItem),
-							workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + "");
-				}
 			} 
 			break;
 		case CONTINUOUS_WORK: 
@@ -371,15 +362,9 @@ public class DailyAggregationProcessService {
 				CoupleOperator coupleOperator = findOperator(itemCon.getCompareOperator());
 				String alarm = "";
 				if (singleCompare(itemCon.getCompareOperator())) {
-					if (itemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
 						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
 						+ coupleOperator.getOperatorStart() 
 						+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr()) + ")";
-					} else {
-						alarm = "(式" + (i + 1) + " " + calculateAttendanceText(itemCon,listAttenDanceItem) 
-						+ coupleOperator.getOperatorStart()
-						+ this.formatHourDataByGroup(String.valueOf(itemCon.getSingleAtdItem()), itemCon.getConditionAtr())+ ")";
-					}
 
 				} else {
 					if (betweenRange(itemCon.getCompareOperator())) {

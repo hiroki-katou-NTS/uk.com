@@ -431,7 +431,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return item.selectedRuleCode() == 2;
                 });
             $('#date1').trigger('validate');
-            $('.sub-input-units ').trigger('validate');
+            $('.ntsDatepicker.nts-input.reset-element.sub-input-units:not(:disabled)').trigger('validate');
+            $('.sub-input-units:not(:disabled)').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             

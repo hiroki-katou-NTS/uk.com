@@ -52,7 +52,7 @@
             <ui:define name="content">
                 <div id="functions-area">
                     <div id="function-content">
-                        <button class="proceed"
+                        <button style="margin-left: 15px" class="proceed"
                                 data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
                         <button
                             data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
@@ -72,7 +72,7 @@
                         <!-- showButton().available22 -->
                         <button class="danger"
                                 data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
-                        <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
+                        <button data-bind="visible: showButton().available7">#{i18n.getText('KDW003_17')}</button>
                         <!-- visible: showButton().available7 -->
                         <button data-bind="click : proceedUnLock, visible: showLock">#{i18n.getText('KDW003_84')}</button>
                         <button data-bind="click : proceedLock, visible: unLock">#{i18n.getText('KDW003_85')}</button>
@@ -88,8 +88,8 @@
                     </div>
                     <div id="right-content">
                         <div class="valign-center control-group">
-                            <div style="margin-top: -20px; float: left">
-                            	<div>
+                            <div style="margin-top: -20px; float: left; width: auto">
+                            
 									<div id = "date-extract" style="width: 315px; display: inline-flex;">
 										<div id="daterangepicker"
 											data-bind="ntsDateRangePicker: { 
@@ -151,7 +151,7 @@
 		                            <button id="btnComfirmAttendance"
 		                                    data-bind="click : referencesActualResult, visible:false">#{i18n.getText('KDW003_22')}</button>
 		                            <!-- visible: showButton().available23 -->
-	                            </div>
+	                            
 	                            <div id="container" style="padding-top: 12px">
 	                                <div id="emp-component"></div>
 	                            </div>                              
@@ -160,10 +160,10 @@
 	                            <table id="fixed-table">
 	                                <thead>
 	                                    <tr>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 85px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
 	                                    </tr>
 	                                </thead>
 	                                <tbody>
