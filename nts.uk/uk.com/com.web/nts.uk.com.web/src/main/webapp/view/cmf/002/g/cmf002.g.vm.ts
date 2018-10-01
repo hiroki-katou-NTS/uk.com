@@ -167,7 +167,10 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             nts.uk.ui.errors.clearAll();
             block.invisible();
             $('.nts-input').trigger("validate");
-
+            if (nts.uk.ui.errors.hasError()) {
+                block.clear();
+                return;
+            }
             for (var i = 0; i < self.codeConvertCurrent().listCdConvertDetail().length; i++) {
                 self.codeConvertCurrent().listCdConvertDetail()[i].convertCode(self.codeConvertCurrent().convertCode());
             }
