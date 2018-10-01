@@ -1,25 +1,20 @@
 package nts.uk.ctx.at.record.infra.repository.monthly;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -30,73 +25,30 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class JpaAttendanceTimeOfMonthly extends JpaRepository implements AttendanceTimeOfMonthlyRepository {
-
-	private static final String SEL_NO_WHERE = "SELECT a FROM KrcdtMonMerge a";
-	private static final String FIND_BY_YEAR_MONTH = String.join(" ", SEL_NO_WHERE,
-			"WHERE a.krcdtMonMergePk.employeeId =:employeeId",
-			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
-			"ORDER BY a.startYmd");
-	private static final String FIND_BY_YM_AND_CLOSURE_ID = String.join(" ", SEL_NO_WHERE,
-			"WHERE a.krcdtMonMergePk.employeeId =:employeeId",
-			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
-			"AND   a.krcdtMonMergePk.closureId =:closureId",
-			"ORDER BY a.startYmd");
-	private static final String FIND_BY_EMPLOYEES = String.join(" ", SEL_NO_WHERE,
-			"WHERE a.krcdtMonMergePk.employeeId IN :employeeIds",
-			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
-			"AND   a.krcdtMonMergePk.closureId =:closureId",
-			"AND   a.krcdtMonMergePk.closureDay =:closureDay",
-			"AND   a.krcdtMonMergePk.isLastDay =:isLastDay",
-			"ORDER BY a.krcdtMonMergePk.employeeId");
-	private static final String FIND_BY_SIDS_AND_YEARMONTHS = String.join(" ", SEL_NO_WHERE,
-			"WHERE a.krcdtMonMergePk.employeeId IN :employeeIds",
-			"AND   a.krcdtMonMergePk.yearMonth IN :yearMonths",
-			"ORDER BY a.krcdtMonMergePk.employeeId, a.krcdtMonMergePk.yearMonth, a.startYmd");
-	private static final String FIND_BY_PERIOD = String.join(" ", SEL_NO_WHERE,
-			 "WHERE a.krcdtMonMergePk.employeeId = :employeeId ",
-			 "AND a.startYmd <= :endDate ",
-			 "AND a.endYmd >= :startDate ");
-	private static final String DELETE_BY_YEAR_MONTH = String.join(" ", "DELETE FROM KrcdtMonMerge a ",
-			 "WHERE  a.krcdtMonMergePk.employeeId = :employeeId ",
-			 "AND 	 a.krcdtMonMergePk.yearMonth = :yearMonth ");	
-	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonMerge a "
-			+ "WHERE a.krcdtMonMergePk.employeeId = :employeeId "
-			+ "AND a.endYmd >= :startDate "
-			+ "AND a.endYmd <= :endDate "
-			+ "ORDER BY a.startYmd ";
+	
+	@Inject
+	private TimeOfMonthlyRepository mergeRepo;
 
 	/** 検索 */
 	@Override
 	public Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
-		val key = new KrcdtMonMergePk(
-				employeeId,
-				yearMonth.v(),
-				closureId.value,
-				closureDate.getClosureDay().v(),
-				(closureDate.getLastDayOfMonth() ? 1 : 0));
-		return this.queryProxy().find(key, KrcdtMonMerge.class)
-				.map(c -> c.toDomainAttendanceTimeOfMonthly());
+		return mergeRepo.find(employeeId, yearMonth, closureId, closureDate).map(c -> c.getAttendanceTime().orElse(null));
 	}
 
 	/** 検索　（年月） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
-		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonMerge.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.getList( c -> c.toDomainAttendanceTimeOfMonthly());
+		return mergeRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
+				.map(c -> c.getAttendanceTime().orElse(null)).filter(c -> c != null).collect(Collectors.toList());
 	}
 	
 	/** 検索　（年月と締めID） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
-		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonMerge.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.setParameter("closureId", closureId.value)
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
+		return mergeRepo.findByYMAndClosureIdOrderByStartYmd(employeeId, yearMonth, closureId).stream()
+				.map(c -> c.getAttendanceTime().orElse(null)).filter(c -> c != null).collect(Collectors.toList());
 	}
 
 	/** 検索　（社員IDリスト） */
@@ -104,115 +56,52 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	public List<AttendanceTimeOfMonthly> findByEmployees(List<String> employeeIds, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
 		
-		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMerge.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonth", yearMonth.v())
-					.setParameter("closureId", closureId.value)
-					.setParameter("closureDay", closureDate.getClosureDay().v())
-					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> c.toDomainAttendanceTimeOfMonthly()));
-		});
-		return results;
+		return mergeRepo.findByEmployees(employeeIds, yearMonth, closureId, closureDate).stream()
+				.map(c -> c.getAttendanceTime().orElse(null)).filter(c -> c != null).collect(Collectors.toList());
 	}
 	
 	/** 検索　（社員IDリストと年月リスト） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
 		
-		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
-		
-		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
-		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {			
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMerge.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomainAttendanceTimeOfMonthly()));
-		});
-		return results;
+		return mergeRepo.findBySidsAndYearMonths(employeeIds, yearMonths).stream()
+				.map(c -> c.getAttendanceTime().orElse(null)).filter(c -> c != null).collect(Collectors.toList());
 	}
 		
 	/** 検索　（基準日） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate) {
-		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonMerge.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", criteriaDate)
-				.setParameter("endDate", criteriaDate)
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
+		return mergeRepo.findByDate(employeeId, criteriaDate).stream()
+				.map(c -> c.getAttendanceTime().orElse(null)).filter(c -> c != null).collect(Collectors.toList());
 	}
 	
 	/** 検索　（終了日を含む期間） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByPeriodIntoEndYmd(String employeeId, DatePeriod period) {
 		
-		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonMerge.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", period.start())
-				.setParameter("endDate", period.end())
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
+		return mergeRepo.findByPeriodIntoEndYmd(employeeId, period).stream()
+				.map(c -> c.getAttendanceTime().orElse(null)).filter(c -> c != null).collect(Collectors.toList());
 	}
 			
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(AttendanceTimeOfMonthly domain, Optional<AffiliationInfoOfMonthly> affiliation){
 
-		// 締め日付
-		val closureDate = domain.getClosureDate();
-		
-		// キー
-		val key = new KrcdtMonMergePk(
-				domain.getEmployeeId(),
-				domain.getYearMonth().v(),
-				domain.getClosureId().value,
-				closureDate.getClosureDay().v(),
-				(closureDate.getLastDayOfMonth() ? 1 : 0));		
-		// 登録・更新を判断　および　キー値設定
-		boolean isNeedPersist = false;
-		KrcdtMonMerge entity = this.getEntityManager().find(KrcdtMonMerge.class, key);
-		if (entity == null){
-			isNeedPersist = true;
-			entity = new KrcdtMonMerge();
-			entity.krcdtMonMergePk = new KrcdtMonMergePk(domain.getEmployeeId(), domain.getYearMonth().v(),
-					domain.getClosureId().value, closureDate.getClosureDay().v(),
-					(closureDate.getLastDayOfMonth() ? 1 : 0));
-			entity.toEntityAttendanceTimeOfMonthly(domain);
-		}
-		else entity.toEntityAttendanceTimeOfMonthly(domain);
-		entity.toEntityAffiliationInfoOfMonthly(affiliation.isPresent() == true ? affiliation.get() : new AffiliationInfoOfMonthly(
-						domain.getEmployeeId(), 
-						domain.getYearMonth(), 
-						domain.getClosureId(),
-						closureDate));
-		
-		// 登録が必要な時、登録を実行
-		if (isNeedPersist) {
-			this.getEntityManager().persist(entity);
-		}
+		mergeRepo.persistAndUpdate(new TimeOfMonthly(Optional.of(domain), affiliation));
 	}
 	
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonAttendanceTime.class,
-				new KrcdtMonAttendanceTimePK(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		mergeRepo.removeAttendanceTime(employeeId, yearMonth, closureId, closureDate);
 	}
 		
 	/** 削除　（年月） */
 	@Override
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.executeUpdate();
+		mergeRepo.removeAttendanceTime(employeeId, yearMonth);
 	}
 	
 	/*----------------------これより下はテーブル結合用のソース------------------------------*/

@@ -24,7 +24,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class SpecBonusPayTimeSheetForCalc extends CalculationTimeSheet{
-	
+	//特定日加給時間No
 	private SpecBonusPayNumber specBonusPayNumber;
 
 	/**

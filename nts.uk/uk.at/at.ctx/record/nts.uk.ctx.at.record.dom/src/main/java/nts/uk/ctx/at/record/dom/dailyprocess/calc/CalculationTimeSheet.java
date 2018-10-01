@@ -39,7 +39,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public abstract class CalculationTimeSheet {
+	//時間帯(丸め付き)
 	protected TimeZoneRounding timeSheet;
+	//計算範囲
 	protected TimeSpanForCalc calcrange;
 	@Setter
 	//計上用
@@ -48,10 +50,13 @@ public abstract class CalculationTimeSheet {
 	//控除用
 	protected List<TimeSheetOfDeductionItem> deductionTimeSheet = new ArrayList<>();
 	@Setter
+	//加給
 	protected List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = new ArrayList<>();
 	@Setter
+	//特定日加給
 	protected List<SpecBonusPayTimeSheetForCalc> specBonusPayTimesheet = new ArrayList<>();
 	@Setter
+	//深夜
 	protected Optional<MidNightTimeSheetForCalc> midNightTimeSheet = Optional.empty();
 
 	/**
