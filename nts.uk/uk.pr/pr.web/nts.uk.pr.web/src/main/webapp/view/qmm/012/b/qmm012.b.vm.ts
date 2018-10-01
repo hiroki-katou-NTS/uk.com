@@ -31,6 +31,7 @@ module nts.uk.pr.view.qmm012.b {
                 
                 // category comboBox
                 self.categoryList = ko.observableArray([
+                    new model.ItemModel('5', getText('Enum_CategoryAtr_ALL')),
                     new model.ItemModel(model.CategoryAtr.PAYMENT_ITEM.toString(), getText('QMM012_3')),
                     new model.ItemModel(model.CategoryAtr.DEDUCTION_ITEM.toString(), getText('QMM012_4')),
                     new model.ItemModel(model.CategoryAtr.ATTEND_ITEM.toString(), getText('QMM012_5')),
