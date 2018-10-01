@@ -27,7 +27,7 @@ module nts.uk.pr.view.qmm008.d {
             isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnDelete: KnockoutObservable<boolean> = ko.observable(true);
             isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
-            
+
             values: KnockoutObservable<string>;
 
             constructor() {
@@ -85,6 +85,7 @@ module nts.uk.pr.view.qmm008.d {
 
                 self.currentCode.subscribe(function(codeId) {
                     if (codeId) {
+                        self.setTabIndex();
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
                             self.detail(new SocialOfficeDetail(response));
                             let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
@@ -104,7 +105,7 @@ module nts.uk.pr.view.qmm008.d {
             }
 
             /**
-             * update 
+             * update
             */
             private update(): void {
                 let self = this;
@@ -118,7 +119,7 @@ module nts.uk.pr.view.qmm008.d {
                     self.isEnableBtnDelete(false);
                     block.clear();
                     return
-                } 
+                }
                 if (self.currentCode() == null) {
                     nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
                         if (response.msg == 'Msg_3') {
@@ -171,6 +172,7 @@ module nts.uk.pr.view.qmm008.d {
                 self.selectedNoD38(self.itemList()[0].code);
                 self.isEnableBtnDelete(false);
                 $("#D4_2").focus();
+                self.setTabIndex();
             }
 
             /**
@@ -217,7 +219,27 @@ module nts.uk.pr.view.qmm008.d {
                 });
 
             }
-            
+
+            public setTabIndex(){
+                let self = this;
+                setTimeout(function () {
+                    $('#D4_23').keydown(function (e) {
+                        var code = e.keyCode || e.which;
+                        if (code === 9 && !e.shiftKey) {
+                            e.preventDefault();
+                            self.selectedTab("tab-2");
+                            $('#D5_4').focus();
+                        }
+                    });
+                    $('#D5_4').keydown(function (e) {
+                        if (e.shiftKey && e.key === 'Tab') {
+                            e.preventDefault();
+                            self.selectedTab("tab-1");
+                            $('#D4_23').focus();
+                        }
+                    });
+                }, 2000);
+            }
         }
 
         class SocialOfficeOverView {
