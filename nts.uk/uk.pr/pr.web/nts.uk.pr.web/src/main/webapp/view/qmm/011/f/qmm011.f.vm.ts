@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
         canDelete:              KnockoutObservable<boolean> = ko.observable('');
         insuranceName:          KnockoutObservable<string> = ko.observable('');
         constructor() {
+            block.invisible();
             let self = this;
             self.startYearMonth();
             let params = getShared('QMM011_F_PARAMS_INPUT');
@@ -32,6 +33,7 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
                 self.canDelete(params.canDelete);
                 self.hisId(params.hisId);
             }
+            block.clear();
         }
         
         update() {

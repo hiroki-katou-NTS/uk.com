@@ -208,6 +208,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         }
 
         openEscreen() {
+            block.invisible();
             let self = this;
             let dataToPassScreenE;
             if (self.listOccAccIsHis().length > 0) {
@@ -235,9 +236,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.initScreen(null);
                 }
             });
+            block.clear();
         }
 
         openDscreen() {
+            block.invisible();
             let self = this;
             modal("/view/qmm/011/d/index.xhtml").onClosed(function () {
                 let params = getShared('QMM011_D_PARAMS_CLOSE');
@@ -251,15 +254,15 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 self.getOccAccIsPrRate();
                 nts.uk.ui.errors.clearAll();
             });
+            block.clear();
         }
 
         register() {
             let self = this;
-            block.invisible();
             if (self.validate() || nts.uk.ui.errors.hasError()) {
-                block.clear();
                 return;
             }
+            block.invisible();
             let isNewMode = self.isNewMode() == MODE.NEW;
             let data: any = {
                 listAccInsurPreRate: self.convertToCommand(self.listAccInsurPreRate()),
@@ -277,6 +280,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 });
             });
             $("#C3_1").focus();
+            block.clear();
         }
 
         convertToCommand(dto: Array<AccInsurPreRate>) {
@@ -324,6 +328,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         }
 
         openFscreen() {
+            block.invisible();
             let self = this;
             let laststartYearMonth: number = 0;
             if (self.listOccAccIsHis() && self.listOccAccIsHis().length != self.index() + 1) {
@@ -339,7 +344,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 insurrance: INSURRANCE.ACCIDENT_INSURRANCE_RATE,
                 insuranceName: getText('QMM011_5'),
                 hisId: self.hisId(),
-                laststartYearMonth: laststartYearMonth,
+                startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function () {
@@ -353,9 +358,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.initScreen(null);
                     $('#C1_4_container').focus();
                 }
-                block.clear();
-
             });
+            block.clear();
         }
 
         convertMonthYearToString(yearMonth: any) {

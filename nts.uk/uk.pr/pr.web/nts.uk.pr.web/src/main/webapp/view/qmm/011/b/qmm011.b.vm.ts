@@ -140,6 +140,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         }
 
         openEscreen() {
+            block.invisible();
             let self = this;
             let start;
             if (self.listEmpInsHis().length > 0) {
@@ -162,6 +163,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                     $("#B3_1").focus();
                 }
             });
+            block.clear();
         }
 
         register() {
@@ -250,6 +252,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         }
         
         openFscreen() {
+            block.invisible();
             let self = this;
             let laststartYearMonth: number = 0;
             if (self.listEmpInsHis() && self.listEmpInsHis().length != self.index() + 1) {
@@ -266,7 +269,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 insurrance: INSURRANCE.EMPLOYMENT_INSURRANCE_RATE,
                 insuranceName: getText('QMM011_4'),
                 hisId: self.hisId(),
-                laststartYearMonth: laststartYearMonth,
+                startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete
             });
             modal("/view/qmm/011/f/index.xhtml").onClosed(function() {
@@ -281,6 +284,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 }
 
             });
+            block.clear();
         }
         
         convertMonthYearToString(yearMonth: any) {
