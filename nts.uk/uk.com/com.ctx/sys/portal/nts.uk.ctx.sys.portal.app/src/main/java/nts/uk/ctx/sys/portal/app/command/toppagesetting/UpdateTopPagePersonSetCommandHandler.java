@@ -38,8 +38,10 @@ public class UpdateTopPagePersonSetCommandHandler extends CommandHandler<TopPage
 		String companyId = AppContexts.user().companyId();
 		TopPagePersonSetCommandBase command = context.getCommand();
 		TopPagePersonSet topPagePersonSet = command.toDomain(companyId);
-		topPagePersonSet.validate();
-		if (command.getCtgSet() == CategorySetting.DIVIDE.value && StringUtil.isNullOrEmpty(command.getLoginMenuCode(), true)) {
+		if(command.getCtgSet() == CategorySetting.NOT_DIVIDE.value && StringUtil.isNullOrEmpty(command.getTopMenuCode(), true)){
+			throw new BusinessException("Msg_86");
+		}
+		if (command.getCtgSet() == CategorySetting.DIVIDE.value && StringUtil.isNullOrEmpty(command.getLoginMenuCode(), true) && StringUtil.isNullOrEmpty(command.getTopMenuCode(), true)) {
 			throw new BusinessException("Msg_86");
 		}
 		// Check for existing data in the TOPPAGE_PERSON_SET table
