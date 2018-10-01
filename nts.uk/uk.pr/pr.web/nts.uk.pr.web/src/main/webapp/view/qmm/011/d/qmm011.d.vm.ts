@@ -2,20 +2,22 @@ module nts.uk.com.view.qmm011.d.viewmodel {
     import close = nts.uk.ui.windows.close;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
 
         listNameOfEachBusiness: KnockoutObservableArray<NameOfEachBusiness> = ko.observableArray([]);
         templistNameOfEachBusiness: KnockoutObservableArray<NameOfEachBusiness> = ko.observableArray([]);
-        businessType1: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(0,0,'',false));
-        businessType2: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(1,0,'',false));
-        businessType3: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(2,0,'',false));
-        businessType4: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(3,0,'',false));
-        businessType5: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(4,0,'',false));
-        businessType6: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(5,0,'',false));
-        businessType7: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(6,0,'',false));
-        businessType8: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(7,0,'',false));
-        businessType9: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(8,0,'',false));
-        businessType10: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(9,0,'',false));
+        businessType1: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(1,0,'',false));
+        businessType2: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(2,0,'',false));
+        businessType3: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(3,0,'',false));
+        businessType4: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(4,0,'',false));
+        businessType5: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(5,0,'',false));
+        businessType6: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(6,0,'',false));
+        businessType7: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(7,0,'',false));
+        businessType8: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(8,0,'',false));
+        businessType9: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(9,0,'',false));
+        businessType10: KnockoutObservable<NameOfEachBusiness> = ko.observable(new NameOfEachBusiness(10,0,'',false));
 
         constructor() {
             var self = this;
@@ -31,25 +33,25 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                     if(self.listNameOfEachBusiness().length > 0){
                         _.each(self.listNameOfEachBusiness(),(value) => {
                             value.flagReg = true;
-                            if(value.occAccInsurBusNo === 0){
+                            if(value.occAccInsurBusNo === 1){
                                 self.businessType1(value);
-                            }else if(value.occAccInsurBusNo === 1){
-                                self.businessType2(value);
                             }else if(value.occAccInsurBusNo === 2){
-                                self.businessType3(value);
+                                self.businessType2(value);
                             }else if(value.occAccInsurBusNo === 3){
-                                self.businessType4(value);
+                                self.businessType3(value);
                             }else if(value.occAccInsurBusNo === 4){
-                                self.businessType5(value);
+                                self.businessType4(value);
                             }else if(value.occAccInsurBusNo === 5){
-                                self.businessType6(value);
+                                self.businessType5(value);
                             }else if(value.occAccInsurBusNo === 6){
-                                self.businessType7(value);
+                                self.businessType6(value);
                             }else if(value.occAccInsurBusNo === 7){
-                                self.businessType8(value);
+                                self.businessType7(value);
                             }else if(value.occAccInsurBusNo === 8){
-                                self.businessType9(value);
+                                self.businessType8(value);
                             }else if(value.occAccInsurBusNo === 9){
+                                self.businessType9(value);
+                            }else if(value.occAccInsurBusNo === 10){
                                 self.businessType10(value);
                             }
                         });
@@ -139,6 +141,9 @@ module nts.uk.com.view.qmm011.d.viewmodel {
         }
 
         cancel(){
+            setShared('QMM011_D_PARAMS_CLOSE', {
+                isClose: true
+            });
             close();
         }
 
