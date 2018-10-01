@@ -50,6 +50,7 @@ module nts.uk.com.view.cdl002.a {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: null,
                     isDialog: true,
+                    selectedClosureId: ko.observable(null),
                     isShowNoSelectRow: self.isDisplayUnselect(),
                     maxRows: 10,
                     tabindex: 1

@@ -651,7 +651,7 @@ module kcp.share.list {
 
                 if (data.listType == ListType.EMPLOYMENT) {
                     self.selectedClosureId.subscribe(id => {
-//                        self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
+                        self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
                         self.reloadEmployment(id);
                     });
                 }
