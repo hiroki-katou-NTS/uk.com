@@ -25,11 +25,11 @@ public class SettingDataAWRegisterService extends CommandHandler<AWDataFormatCom
 		AwDataFormatSet awDataFormatSet = new AwDataFormatSet(ItemType.AT_WORK_CLS.value, cid,
 				command.getClosedOutput(), command.getAbsenceOutput(), command.getFixedValue(),
 				command.getValueOfFixedValue(), command.getAtWorkOutput(), command.getRetirementOutput());
-		Optional<AwDataFormatSet> awDataFormatSetCheck = awDataFormatSetRepository
-				.getAwDataFormatSetById(cid);
-		if(!awDataFormatSetCheck.isPresent()){
-		awDataFormatSetRepository.add(awDataFormatSet);
+		Optional<AwDataFormatSet> awDataFormatSetCheck = awDataFormatSetRepository.getAwDataFormatSetById(cid);
+		if (!awDataFormatSetCheck.isPresent()) {
+			awDataFormatSetRepository.add(awDataFormatSet);
+		} else {
+			awDataFormatSetRepository.update(awDataFormatSet);
 		}
-		awDataFormatSetRepository.update(awDataFormatSet);
 	}
 }
