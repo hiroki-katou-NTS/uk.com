@@ -24,8 +24,22 @@ public class ApplicationInitializer {
 		RepositoryLogger.ENABLE_LOGGING = false;
 		RepositoryLogger.THRESHOLD_MILLISECS_TO_WARN = 300;
 		
-		CDI.current().select(InitializeWhenDeploy.class).forEach(obj -> obj.initialize());
+		this.executeAllInitializeWhenDeploy();
 
 		log.info("ApplicationInitializer END");
+	}
+	
+	public void reinitialize() {
+
+		log.info("ApplicationInitializer RE-INIT START");
+		
+		this.executeAllInitializeWhenDeploy();
+		
+		log.info("ApplicationInitializer RE-INIT END");
+	}
+	
+	private void executeAllInitializeWhenDeploy() {
+		
+		CDI.current().select(InitializeWhenDeploy.class).forEach(obj -> obj.initialize());
 	}
 }

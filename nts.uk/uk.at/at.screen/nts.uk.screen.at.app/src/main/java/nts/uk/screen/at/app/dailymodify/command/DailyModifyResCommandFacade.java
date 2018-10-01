@@ -122,11 +122,39 @@ public class DailyModifyResCommandFacade {
 		return editData;
 	}
 
-	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
-		List<DailyRecordDto> dtoNews = new ArrayList<>();
+	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent, List<DailyModifyQuery> querys,
+			Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate, List<DailyModifyQuery> queryNotChanges){
+		if (!querys.isEmpty() && !dataParent.isFlagCalculation()) {
+			dailyOlds.addAll(dataParent.getDailyOlds().stream()
+					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
+					.collect(Collectors.toList()));
+			List<DailyRecordDto> temp = dataParent.getDailyEdits().stream()
+					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
+					.collect(Collectors.toList());
+			dailyEdits.addAll(queryNotChanges.isEmpty() ? temp : toDto(queryNotChanges, temp));
+		} else {
+			dailyOlds.addAll(dataParent.getDailyOlds());
+			dailyEdits.addAll(dataParent.getDailyEdits());
+		}
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
 				.findAll(AppContexts.user().companyId())
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
+		
+		dailyOlds.stream().forEach(o -> {
+			o.getOptionalItem().ifPresent(optional -> {
+				optional.correctItemsWith(optionalMaster);
+			});
+		});
+		
+		dailyEdits.stream().forEach(o -> {
+			o.getOptionalItem().ifPresent(optional -> {
+				optional.correctItemsWith(optionalMaster);
+			});
+		});
+	}
+
+	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
+		List<DailyRecordDto> dtoNews = new ArrayList<>();
 		
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()
@@ -135,10 +163,9 @@ public class DailyModifyResCommandFacade {
 			if (!itemChanges.isPresent())
 				return o;
 			List<ItemValue> itemValues = itemChanges.get().getItemValues();
+			
 			AttendanceItemUtil.fromItemValues(o, itemValues);
-			o.getOptionalItem().ifPresent(optional -> {
-				optional.correctItemsWith(optionalMaster);
-			});
+			
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
 					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
@@ -196,13 +223,13 @@ public class DailyModifyResCommandFacade {
 						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex());
+						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc());
 			} else {
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), Optional.empty(),
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex());
+						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc());
 			}
 		}
 
@@ -221,19 +248,10 @@ public class DailyModifyResCommandFacade {
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
-		List<DailyRecordDto> dailyOlds, dailyEdits = new ArrayList<>();
-		if (!querys.isEmpty() && !dataParent.isFlagCalculation()) {
-			dailyOlds = dataParent.getDailyOlds().stream()
-					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
-					.collect(Collectors.toList());
-			dailyEdits = dataParent.getDailyEdits().stream()
-					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
-					.collect(Collectors.toList());
-			dailyEdits = queryNotChanges.isEmpty() ? dailyEdits : toDto(queryNotChanges, dailyEdits);
-		} else {
-			dailyOlds = dataParent.getDailyOlds();
-			dailyEdits = dataParent.getDailyEdits();
-		}
+		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
+		
+		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, queryNotChanges);
+		
 		List<DailyModifyResult> resultOlds = AttendanceItemUtil.toItemValues(dailyOlds).entrySet().stream().map(dto -> DailyModifyResult.builder().items(dto.getValue())
 						.employeeId(dto.getKey().getEmployeeId()).workingDate(dto.getKey().getDate()).completed()).collect(Collectors.toList());
 		
@@ -348,7 +366,7 @@ public class DailyModifyResCommandFacade {
 		dataResultAfterIU.setErrorMap(resultError);
 		return dataResultAfterIU;
 	}
-
+	
 	private List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
 		List<DailyModifyQuery> querys = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {

@@ -232,7 +232,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
 					request.getEndDate());
-			ClosureDate closureDate = new ClosureDate(0, false);
+			ClosureDate closureDate = new ClosureDate(1, false);
 			if (optionalClosure.isPresent()) {
 				Closure closure = optionalClosure.get();
 
@@ -843,14 +843,26 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				} else {
 					// If closure not found
-					invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+					String info = "\n " + employee.employeeCode + " " + employee.employeeName;
+					if (info.length() + invidual.length() > 164) {
+						if (!invidual.contains("\n..."))
+							invidual = invidual.concat("\n...");
+					} else {
+						invidual = invidual.concat(info);
+					}
 
 				}
 
 			} else {
 
 				// If closure is wrong
-				invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+				String info = "\n " + employee.employeeCode + " " + employee.employeeName;
+				if (info.length() + invidual.length() > 164) {
+					if (!invidual.contains("\n..."))
+						invidual = invidual.concat("\n...");
+				} else {
+					invidual = invidual.concat(info);
+				}
 
 			}
 

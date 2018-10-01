@@ -191,15 +191,19 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkHolidayWorkExcess(String employeeId,
 															  GeneralDate targetDate,
-															  String searchWord,
 															  AttendanceItemDictionaryForCalc attendanceItemDictionary,
 															  ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
 			if(frameTime.isOverLimitDivergenceTime()) {
-				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
-				if(itemId.isPresent())
-					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+				//休出時間
+				attendanceItemDictionary.findId("休出時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
+				//振替時間
+				attendanceItemDictionary.findId("振替時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
 			}
 		}
 		return returnErrorList;
@@ -211,15 +215,19 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreHolidayWorkExcess(String employeeId,
 			  												  GeneralDate targetDate,
-															  String searchWord,
 															  AttendanceItemDictionaryForCalc attendanceItemDictionary,
 			  												  ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
 			if(frameTime.isPreOverLimitDivergenceTime()) {
-				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
-				if(itemId.isPresent())
-					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+				//休出時間
+				attendanceItemDictionary.findId("休出時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
+				//振替時間
+				attendanceItemDictionary.findId("振替時間"+frameTime.getHolidayFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
 			}
 		}
 		return returnErrorList;

@@ -21,6 +21,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 
 @Stateless
 public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
@@ -76,6 +78,32 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			}
 		}
 		return dailyAttItem;
+	}
+
+	@Override
+	public List<AttItemName> getDailyItemsNew(String cid, Optional<String> authorityId) {
+		List<AttItemName> listAttItemName = new ArrayList<>();
+		if (authorityId.isPresent()) {
+			Optional<DailyAttendanceItemAuthority> itemAuthority = dailyAttdItemAuthRepository
+					.getDailyAttdItem(cid, authorityId.get());
+			if (!itemAuthority.isPresent()) {
+				return Collections.emptyList();
+			}
+			for(DisplayAndInputControl displayAndInputDaily : itemAuthority.get().getListDisplayAndInputControl()) {
+				AttItemName attItemName = new AttItemName();
+				attItemName.setAttendanceItemId(displayAndInputDaily.getItemDailyID());
+				AttItemAuthority auth = new AttItemAuthority();
+				auth.setToUse(displayAndInputDaily.isToUse());
+				auth.setYouCanChangeIt(displayAndInputDaily.getInputControl().isYouCanChangeIt());
+				auth.setCanBeChangedByOthers(displayAndInputDaily.getInputControl().isCanBeChangedByOthers());
+				attItemName.setAuthority(auth);
+				
+				listAttItemName.add(attItemName);
+			}
+			return listAttItemName;
+
+		}
+		return Collections.emptyList();
 	}
 
 }

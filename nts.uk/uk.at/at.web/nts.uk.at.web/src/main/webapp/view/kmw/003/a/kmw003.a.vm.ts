@@ -526,8 +526,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         return item.id == value.id;
                     });
                     return val != undefined ? val : value;
-                })
+                });
                 self.dpData = dpDataNew;
+                let cellStatesNew = _.map(self.cellStates(), (value: any) => {
+                    let val = _.find(data.lstCellState, (item: any) => {
+                        return item.rowId == value.rowId && item.columnKey == value.columnKey;
+                    });
+                    return val != undefined ? val : value;
+                });
+                self.cellStates(cellStatesNew);
                 self.dailyPerfomanceData(dpDataNew);
 //                let dataSourceNew = self.displayNumberZero(self.formatDate(self.dpData));
                 $("#dpGrid").mGrid("destroy");
@@ -708,7 +715,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             //            self.monthlyParam().initMenuMode = self.initMode();
 //            self.monthlyParam().closureId = self.closureId();
             self.monthlyParam().yearMonth = date;
-//            self.monthlyParam().lstEmployees = self.lstEmployee();
+            self.monthlyParam().lstEmployees = self.lstEmployee();
 
             if ($("#dpGrid").data('mGrid')) {
                 $("#dpGrid").mGrid("destroy");

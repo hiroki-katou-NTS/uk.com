@@ -23,5 +23,7 @@ public interface CompanyDailyItemService {
 	 */
 	List<AttItemName> getDailyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
 			List<DailyAttendanceAtr> itemAtrs);
+	
+	List<AttItemName> getDailyItemsNew(String cid, Optional<String> authorityId);
 
 }

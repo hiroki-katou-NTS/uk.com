@@ -24,9 +24,9 @@ module nts.uk.at.view.kmf004.j.viewmodel {
                 };
 
             service.findForScreenJ(param).done(function(data) {
-                self.items(_.map(data, (item) => {
+                self.items(_.sortBy(_.map(data, (item) => {
                     return new ItemModel(item);
-                }));
+                }), ['code']));
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });

@@ -19,7 +19,7 @@ public class AggregateMonthlyRecordTest {
 //		String targetEmp = "TESTEMP";
 //		val targetYm = new YearMonth(201710);
 //		ClosureId targetClosureId = ClosureId.RegularEmployee;
-//		val targetClosureDate = new ClosureDate(0, true);
+//		val targetClosureDate = new ClosureDate(1, true);
 //		val targetPeriod = new DatePeriod(GeneralDate.ymd(2017, 10, 1), GeneralDate.ymd(2017, 10, 31));
 //		
 //		/* 期間受け取りテスト　2017/10/31 */
