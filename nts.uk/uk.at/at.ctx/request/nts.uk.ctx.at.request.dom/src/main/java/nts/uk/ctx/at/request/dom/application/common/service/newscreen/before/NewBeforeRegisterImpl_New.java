@@ -47,6 +47,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
@@ -370,7 +371,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		if (!appLimitSetting.getCanAppAchievementMonthConfirm()) {
 			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
 			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済)
-			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getAppRootStatusByEmpPeriodMonth(employeeID, new DatePeriod(appDate, appDate));
 			if(CollectionUtil.isEmpty(approveRootStatus)){
 				return;
 			}
