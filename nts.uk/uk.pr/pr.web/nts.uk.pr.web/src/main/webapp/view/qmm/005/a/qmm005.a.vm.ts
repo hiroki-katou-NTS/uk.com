@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
                             self.resetEmployee(processInformationUpdate.processCateNo);
                             self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(false);
-                            nts.uk.ui.dialog.alertError({ messageId: "MsgQ_158" });
+                            nts.uk.ui.dialog.info({ messageId: "MsgQ_158" });
                         });
 
 
