@@ -31,11 +31,12 @@ public class ContributionRateHandler extends CommandHandlerWithResult<UpdateCont
 		Optional<ContributionRate> contributionRate = contributionRateRepository.getContributionRateByHistoryId(command.getHistoryId());
 		if(contributionRate.isPresent()) {
 			List<ContributionByGrade> dataUpate = command.getData().stream().map(x -> new ContributionByGrade(x.getWelfarePensionGrade(), new BigDecimal(x.getChildCareContribution()))).collect(Collectors.toList());
+			contributionRate.get().updateContributionByGrade(dataUpate);
 			List<ContributionByGrade> dataCheck = contributionRate.get().getContributionByGrade();
 			if(dataCheck.isEmpty()) {
-				contributionRateRepository.updateContributionByGrade(contributionRate.get());
+				contributionRateRepository.insertContributionByGrade(contributionRate.get());
 			} else {
-				contributionRate.get().updateContributionByGrade(dataUpate);
+				contributionRateRepository.updateContributionByGrade(contributionRate.get());
 			}
 		}
 		response.add("Msg_15");

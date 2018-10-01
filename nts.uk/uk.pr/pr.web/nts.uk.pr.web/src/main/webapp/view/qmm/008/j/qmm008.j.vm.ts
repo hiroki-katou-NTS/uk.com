@@ -11,6 +11,7 @@ module nts.uk.pr.view.qmm008.j {
            displayStart: KnockoutObservable<string> = ko.observable(null);
            displayEnd: KnockoutObservable<string> = ko.observable(null);
            historyId: KnockoutObservable<string> = ko.observable(null);
+           isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
            constructor(){
                var self = this;
                self.dataList = ko.observableArray([]);
@@ -25,14 +26,26 @@ module nts.uk.pr.view.qmm008.j {
                let command = { historyId: self.historyId(),date : self.startMonth() };
                nts.uk.pr.view.qmm008.j.service.start(command).done(function(response) {
                     for (var i = 0; i < response.length; i++) {
-                            self.dataList.push(response[i]);
+                            self.dataList.push(new RowData(response[i]));
                      }
                 });
                 $(".focusTest").focus();
                $("#fixed-table").ntsFixedTable({ height: 300, width: 1366 });
            }
            
-          
+            
+           genNumber(itemNumber: any, decimalPart: any) {
+               let option: any;
+               if (nts.uk.text.isNullOrEmpty(decimalPart)) {
+                   option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 0 });
+
+               } else {
+                   option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: decimalPart });
+
+               }
+               return nts.uk.ntsNumber.formatNumber(itemNumber, option);
+           }
+           
            
            /**
             *  close dialog
@@ -43,6 +56,7 @@ module nts.uk.pr.view.qmm008.j {
            }
            
            private update(): void {
+               
                let self = this;
                let command = {
                    data: ko.toJS(self.dataList()),
@@ -55,17 +69,16 @@ module nts.uk.pr.view.qmm008.j {
                }
            }
            
-           private countReview() :void {
-                let self = this;
-                let command = { historyId: self.historyId(), date: self.startMonth() };
-                nts.uk.pr.view.qmm008.j.service.count(command).done(function(response) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        self.dataList([]);
-                        for (var i = 0; i < response.length; i++) {
-                            self.dataList.push(response[i]);
-                        }
-                    });
-                }
+           private countReview(): void {
+               nts.uk.ui.errors.clearAll();
+               let self = this;
+               let command = { historyId: self.historyId(), date: self.startMonth() };
+               nts.uk.pr.view.qmm008.j.service.count(command).done(function(response) {
+                   self.dataList([]);
+                   for (var i = 0; i < response.length; i++) {
+                       self.dataList.push(new RowData(response[i]));
+                   }
+               }
             }
            
        }
