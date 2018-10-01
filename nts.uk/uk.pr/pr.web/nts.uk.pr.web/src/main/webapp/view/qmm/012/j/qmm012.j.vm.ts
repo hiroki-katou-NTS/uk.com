@@ -32,18 +32,18 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             if (categoryAtrScreenB != null) {
                 self.categoryAtr(categoryAtrScreenB);
             }
-            if (self.categoryAtr() == 0) {
+            if (self.categoryAtr(0)) {
                 self.onSelectTabB();
-            } else if (self.categoryAtr() == 1) {
+            } else if (self.categoryAtr(1)) {
                 self.onSelectTabC();
             }
-            else if (self.categoryAtr() == 2) {
+            else if (self.categoryAtr(2)) {
                 self.onSelectTabD();
             }
-            else if (self.categoryAtr() == 3) {
+            else if (self.categoryAtr(3)) {
                 self.onSelectTabE();
             }
-            else if (self.categoryAtr() == 4) {
+            else if (self.categoryAtr(4)) {
                 self.onSelectTabF();
             }
         }

@@ -8,10 +8,14 @@
 <body>
 	<ui:composition template="/master/sidebarpage.xhtml">
 		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.EnglishName
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.OtherLanguageName
+            </com:ValidatorScript>
 			<script type='text/javascript'>
 	            var dialogSize = {
-	                width: 980,
-	                height: 625
+	                width: 950,
+	                height: 628
 	            };
 	        </script>
 			<com:scriptfile set="IGNITE" />
@@ -52,6 +56,7 @@
 					<button tabindex="2" data-bind="click: cancel"
 						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
 				</div>
+				<ui:include src="../j/contents.xhtml" />
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
@@ -101,7 +106,6 @@
 						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
 				</div>
 			</div>
-			<ui:include src="../j/contents.xhtml" />
 		</ui:define>
 	</ui:composition>
 </body>
