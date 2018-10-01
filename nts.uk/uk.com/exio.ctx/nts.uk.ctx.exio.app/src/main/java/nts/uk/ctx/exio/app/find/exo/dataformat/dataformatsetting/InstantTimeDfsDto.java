@@ -39,7 +39,7 @@ public class InstantTimeDfsDto {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
 
 	/**
 	 * 前日出力方法

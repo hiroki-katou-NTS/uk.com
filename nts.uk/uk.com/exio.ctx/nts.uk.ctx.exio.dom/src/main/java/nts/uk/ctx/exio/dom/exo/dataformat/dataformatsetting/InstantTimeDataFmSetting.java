@@ -27,11 +27,11 @@ public class InstantTimeDataFmSetting extends InTimeDataFmSet {
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int timeSeletion, int fixedLengthOutput,
 			Integer fixedLongIntegerDigit, int fixedLengthEditingMethod, int delimiterSetting,
 			int previousDayOutputMethod, int nextDayOutputMethod, int minuteFractionDigit, int decimalSelection,
-			int minuteFractionDigitProcessCla, String conditionSettingCode, String outputItemCode) {
+			int minuteFractionDigitProcessCls, String conditionSettingCode, String outputItemCode) {
 		super(ItemType.INS_TIME.value, cid, nullValueSubs, valueOfNullValueSubs, outputMinusAsZero, fixedValue,
 				valueOfFixedValue, timeSeletion, fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMethod,
 				delimiterSetting, previousDayOutputMethod, nextDayOutputMethod, minuteFractionDigit, decimalSelection,
-				minuteFractionDigitProcessCla);
+				minuteFractionDigitProcessCls);
 		this.outputItemCode = new OutputItemCode(outputItemCode);
 		this.conditionSettingCode = new ConditionSettingCode(conditionSettingCode);
 	}
