@@ -88,11 +88,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 
-	//必要になったら追加
+	//就業時間内時間枠
 	private final List<WithinWorkTimeFrame> withinWorkTimeFrame;
 	//短時間時間帯
 	private List<TimeSheetOfDeductionItem> shortTimeSheet;
+	//早退判断時刻
 	private List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock = new ArrayList<>();
+	//遅刻判断時刻
 	private List<LateDecisionClock> lateDecisionClock = new ArrayList<>();
 	
 	

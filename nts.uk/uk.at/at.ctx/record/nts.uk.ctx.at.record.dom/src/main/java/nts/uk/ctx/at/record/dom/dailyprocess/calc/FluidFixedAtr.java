@@ -5,8 +5,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum FluidFixedAtr {
-	FluidWork,
-	FixedWork;
+	FluidWork,//流動
+	FixedWork;//固定
 	
 	/**
 	 * 流動であるか判定する
