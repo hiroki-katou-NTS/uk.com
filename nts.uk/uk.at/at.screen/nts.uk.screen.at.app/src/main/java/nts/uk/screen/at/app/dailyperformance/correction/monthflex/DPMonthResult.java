@@ -14,10 +14,23 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyRes
 @NoArgsConstructor
 @AllArgsConstructor
 public class DPMonthResult {
-   private FlexShortageDto flexShortage;
-   private List<MonthlyModifyResult> results;
-   private boolean hasItem;
-   private Integer month;
-   private List<FormatDailyDto> formatDaily;
-   private AgreementInfomationDto agreementInfo;
+	private FlexShortageDto flexShortage;
+	private List<MonthlyModifyResult> results;
+	private boolean hasItem;
+	private Integer month;
+	private List<FormatDailyDto> formatDaily;
+	private AgreementInfomationDto agreementInfo;
+	private boolean needCallCalc = false;
+
+	public DPMonthResult(FlexShortageDto flexShortage, List<MonthlyModifyResult> results, boolean hasItem,
+			Integer month, List<FormatDailyDto> formatDaily, AgreementInfomationDto agreementInfo) {
+		this.flexShortage = flexShortage;
+		this.results = results;
+		this.hasItem = hasItem;
+		this.month = month;
+		this.formatDaily = formatDaily;
+		this.agreementInfo = agreementInfo;
+		this.needCallCalc = (flexShortage != null && flexShortage.isShowFlex()) || hasItem
+				|| (agreementInfo != null && agreementInfo.isShowAgreement());
+	}
 }

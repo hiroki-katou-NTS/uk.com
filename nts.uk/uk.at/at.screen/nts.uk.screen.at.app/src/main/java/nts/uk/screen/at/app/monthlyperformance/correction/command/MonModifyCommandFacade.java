@@ -29,11 +29,13 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommand;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommandHandler;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemCheckBox;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemDetail;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author sonnh1
@@ -45,8 +47,8 @@ public class MonModifyCommandFacade {
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 
-//	@Inject
-//	private MonthlyPerformanceCorrectionUpdateCommand monthlyPerformanceCorrectionUpdateCommand;
+	@Inject
+	private MonthlyPerformanceCorrectionUpdateCommand monthlyPerformanceCorrectionUpdateCommand;
 	
 	@Inject
 	private RegisterConfirmationMonth registerConfirmationMonth;
@@ -64,7 +66,7 @@ public class MonModifyCommandFacade {
 		Map<String, List<MPItemDetail>> mapItemDetail = dataParent.getMPItemDetails().stream()
 				.collect(Collectors.groupingBy(x -> x.getEmployeeId()));
 		List<MonthlyModifyQuery> listQuery = new ArrayList<>();
-		// new
+		// insert value
 		mapItemDetail.entrySet().forEach(item -> {
 			List<MPItemDetail> rowDatas = item.getValue();
 			listQuery.add(new MonthlyModifyQuery(rowDatas.stream().map(x -> {
@@ -76,19 +78,19 @@ public class MonModifyCommandFacade {
 		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery);
 		monthModifyCommandFacade.handleUpdate(listQuery);
 
-		// old
-//		dataParent.getMPItemDetails().forEach(item -> {
-//			ClosureDateDto closureDate = dataParent.getClosureDate();
-//			EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto = new EditStateOfMonthlyPerformanceDto(
-//					item.getEmployeeId(), new Integer(item.getItemId()),
-//					new DatePeriod(dataParent.getStartDate(), dataParent.getEndDate()),
-//					dataParent.getYearMonth().intValue(), dataParent.getClosureId(),
-//					new nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto(
-//							closureDate.getClosureDay().intValue(),
-//							closureDate.getLastDayOfMonth().booleanValue() ? 1 : 0),
-//					new Integer(0));
-//			this.monthlyPerformanceCorrectionUpdateCommand.handleAddOrUpdate(editStateOfMonthlyPerformanceDto);
-//		});
+		// insert edit state
+		dataParent.getMPItemDetails().forEach(item -> {
+			ClosureDateDto closureDate = dataParent.getClosureDate();
+			EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto = new EditStateOfMonthlyPerformanceDto(
+					item.getEmployeeId(), new Integer(item.getItemId()),
+					new DatePeriod(dataParent.getStartDate(), dataParent.getEndDate()),
+					dataParent.getYearMonth().intValue(), dataParent.getClosureId(),
+					new nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto(
+							closureDate.getClosureDay().intValue(),
+							closureDate.getLastDayOfMonth().booleanValue() ? 1 : 0),
+					new Integer(0));
+			this.monthlyPerformanceCorrectionUpdateCommand.handleAddOrUpdate(editStateOfMonthlyPerformanceDto);
+		});
 		
 		// insert sign
 		this.insertSign(dataParent);
