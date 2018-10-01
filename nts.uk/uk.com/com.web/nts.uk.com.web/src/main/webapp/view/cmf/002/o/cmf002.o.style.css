@@ -29,7 +29,7 @@
 }
 
 #ex_output_wizard>div.content.clearfix {
-	 margin-right: 0px; 
+	margin-right: 0px;
 }
 
 div#ex_output_wizard-p-2 {
@@ -37,19 +37,16 @@ div#ex_output_wizard-p-2 {
 }
 
 div#nts-component-list {
-	 margin-left: 60px; 
+	margin-left: 60px;
 }
 
 .content clearfix {
 	height: 100%;
 }
 
-#contents-area {
-	height: 480px !important;
-}
-
 #Q6 {
-	margin-left: 10px;
+	margin-left: 590px;
+	width: 417px;
 }
 
 .accordion {
