@@ -48,7 +48,8 @@ module kdl021.a.viewmodel {
                             self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
                         };
                         //set source
-                        self.items(self.dataSoure);
+                        let data = _.sortBy(self.dataSoure, ['code']);
+                        self.items(data);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res.message);
                     }).always(function() {
@@ -60,7 +61,8 @@ module kdl021.a.viewmodel {
                             self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
                         };
                         //set source
-                        self.items(self.dataSoure);
+                        let data = _.sortBy(self.dataSoure, ['code']);
+                        self.items(data);
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert(res.message);
                     }).always(function() {
@@ -89,7 +91,8 @@ module kdl021.a.viewmodel {
         clearClick() {
             var self = this;
             self.items([]);
-            self.items(self.dataSoure);
+            let data = _.sortBy(self.dataSoure, ['code']);
+            self.items(data);
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
         }

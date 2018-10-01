@@ -141,6 +141,7 @@ div#list-box_b1 {
 }
 .ui-iggrid-header.ui-widget-header{
 	overflow :visible;
+	text-overflow : ellipsis;
 }
 
  .default-overflow{
@@ -157,6 +158,10 @@ div#list-box_b1 {
 	box-shadow: none;
 	width: auto !important;
 	max-width: 800px !important;
+}
+
+#master-wrapper div#contents-area {  
+    overflow-y: hidden !important;
 }
 
 #igGridLog_tooltips.ui-tooltip .ui-tooltip-content {

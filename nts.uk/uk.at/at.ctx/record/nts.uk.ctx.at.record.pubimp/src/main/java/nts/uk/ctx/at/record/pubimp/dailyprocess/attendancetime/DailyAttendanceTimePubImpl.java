@@ -136,7 +136,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 					val getOver = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime()
 									.stream().filter(tc -> tc.getOverWorkFrameNo().v().intValue() == loop).findFirst();
 					if(getOver.isPresent()) {
-						overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(getOver.get().getOverTimeWork()));
+						overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.createTimeWithCalculation(getOver.get().getOverTimeWork().getTime().addMinutes(getOver.get().getTransferTime().getTime().valueAsMinutes()),
+																														  getOver.get().getOverTimeWork().getCalcTime().addMinutes(getOver.get().getTransferTime().getCalcTime().valueAsMinutes())));
 					}
 					else {
 						overTimeFrames.put(new OverTimeFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));
@@ -147,7 +148,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 					val getHol = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
 									.stream().filter(tc -> tc.getHolidayFrameNo().v().intValue() == loop).findFirst();
 					if(getHol.isPresent()) {
-						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.convertFromTimeDivergence(getHol.get().getHolidayWorkTime().get()));
+						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber), TimeWithCalculation.createTimeWithCalculation(getHol.get().getHolidayWorkTime().get().getTime().addMinutes(getHol.get().getTransferTime().get().getTime().valueAsMinutes()),
+																																getHol.get().getHolidayWorkTime().get().getCalcTime().addMinutes(getHol.get().getTransferTime().get().getCalcTime().valueAsMinutes())));
 					}
 					else {
 						holidayWorkFrames.put(new HolidayWorkFrameNo(loopNumber),TimeWithCalculation.sameTime(new AttendanceTime(0)));

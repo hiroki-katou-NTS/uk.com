@@ -79,7 +79,7 @@ module validationcps009 {
                        break;
                        
                case ITEM_SINGLE_TYPE.NUMERIC:
-                       if (_.isNil(item.numbereditor.value())) {
+                       if (_.isNil(item.numbereditor.value()) || item.numbereditor.value() === "") {
                            $element.ntsError('set', {
                                messageId: "Msg_824",
                                messageParams: [item.itemName()]
@@ -112,7 +112,7 @@ module validationcps009 {
              }
                    
            } else if (element.tagName.toUpperCase() == "BUTTON") {
-               if (_.isNil(item.selectionName()) || item.selectionName() == " ") {
+               if (_.isNil(item.selectionName()) || item.selectionName() === "") {
                    $element.ntsError('set', {
                        messageId: "Msg_824",
                        messageParams: [item.itemName()]
@@ -127,6 +127,16 @@ module validationcps009 {
                            messageId: "Msg_824",
                            messageParams: [item.itemName()]
                        });
+                   }
+               }else{
+                   
+               if (_.isNil(item.selectedCode()) ||_.isEmpty(item.selectedCode())) {
+                       $element.find('.nts-input').attr('nameid', item.itemName());
+                       $element.addClass("error");  
+                       $element.ntsError('set', {
+                               messageId: "Msg_824",
+                               messageParams: [item.itemName()]
+                           });
                    }
                }
            }

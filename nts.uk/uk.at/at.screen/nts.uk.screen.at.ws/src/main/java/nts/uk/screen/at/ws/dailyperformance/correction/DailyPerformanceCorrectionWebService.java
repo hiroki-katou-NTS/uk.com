@@ -247,7 +247,7 @@ public class DailyPerformanceCorrectionWebService {
 		param.setDailys(dailyEdits);
 		val result = loadRowProcessor.reloadGrid(param);
 		session.setAttribute("domainEdits", null);
-		session.setAttribute("domainOlds", result.getDomainOld());
+		if(!param.getOnlyLoadMonth())session.setAttribute("domainOlds", result.getDomainOld());
 		result.setDomainOld(Collections.emptyList());
 		return result;
 	}

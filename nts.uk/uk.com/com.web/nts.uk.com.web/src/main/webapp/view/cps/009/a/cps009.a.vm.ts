@@ -407,7 +407,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             ctgCode: obj.ctgCode,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             itemName: obj.itemName,
-                            isRequired: obj.isRequired,
+                            isRequired: obj.isRequired == true? 1: 0,
                             refMethodType: obj.refMethodType,
                             itemType: obj.itemType,
                             dataType: obj.dataType,
@@ -431,7 +431,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return item.selectedRuleCode() == 2;
                 });
             $('#date1').trigger('validate');
-            $('.sub-input-units ').trigger('validate');
+            $('.ntsDatepicker.nts-input.reset-element.sub-input-units:not(:disabled)').trigger('validate');
+            $('.sub-input-units:not(:disabled)').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
@@ -728,7 +729,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         settingId: KnockoutObservable<string>;
         perInfoCtgId: KnockoutObservable<string>;
         itemName: KnockoutObservable<string>;
-        isRequired: KnockoutObservable<number>;
+        isRequired: KnockoutObservable<boolean>;
 
         refMethodType: KnockoutObservable<number>;
         itemType: KnockoutObservable<number>;
@@ -830,7 +831,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.ctgCode = ko.observable(params.ctgCode || "");
             self.itemName = ko.observable(params.itemName || "");
 
-            self.isRequired = ko.observable(params.isRequired || 0);
+            self.isRequired = ko.observable(!!params.isRequired || false);
             self.refMethodType = ko.observable(params.refMethodType || 0);
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
@@ -976,20 +977,20 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
+                
                 if (value !== 2) {
                     error.clearAll();
                 }
-//                if(value == 2){
-//                   self.isFirstSelected = self.isFirstSelected + 1;
-//                    if (self.isFirstSelected > 1) {
-//                        setTimeout(function(c) {
-//                            let x = "#" + self.perInfoItemDefId(), content: string = $("#" + self.perInfoItemDefId()).val();
-//                            if (!_.isNil(content)) {
-//                                $("#" + self.perInfoItemDefId()).trigger("validate");
-//                            }
-//                        }, 100);
-//                    }
-//                }
+                
+                if(value == 2 && self.enableControl() === true){
+                    setTimeout(function(c) {
+                        let x = "#" + self.perInfoItemDefId(), content: string = $("#" + self.perInfoItemDefId()).val();
+                        if (!_.isNil(content) && content !=="") {
+                            $("#" + self.perInfoItemDefId()).trigger("validate");
+                        }
+                    }, 100);
+                }
+                
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }

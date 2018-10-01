@@ -23,6 +23,9 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeSetGetterCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.DataRegisterBasicSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommandHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
@@ -76,14 +79,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 	@Inject
 	private ClosureEmploymentRepository closureEmployment;
 	
-	/** The ScheCreExeWorkTimeHandler */
-	@Inject
-	private ScheCreExeWorkTimeHandler scheCreExeWorkTimeHandler;
-	
-	/** The ScheCreExeBasicScheduleHandler  */
-	@Inject
-	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
-	
 	/** The employee adapter*/
 	@Inject
 	private SCEmployeeAdapter scEmployeeAdapter;
@@ -99,10 +94,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	private WorkTypeRepository workTypeRepository;
 	
 	@Inject
-	private InterimRemainOffMonthProcess interimRemainOffMonthProcess;
-	
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	private RegisterBasicScheduleCommandHandler registerBasicScheduleCommandHandler;
 	
 	/** The Constant NEXT_DAY_MONTH. */
 	private static final int NEXT_DAY_MONTH = 1;
@@ -169,12 +161,14 @@ public class ScheBatchCorrectExecutionCommandHandler
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
-		// Get work type
-		WorkType workType = workTypeRepository.findByPK(companyId, command.getWorktypeCode()).get();
-		
 		GeneralDate startDate = command.getStartDate();
 		GeneralDate endDate = command.getEndDate();
 		DatePeriod period = new DatePeriod(startDate, endDate);
+		
+		DataRegisterBasicSchedule dataRegisterBasicSchedule = new DataRegisterBasicSchedule();
+		dataRegisterBasicSchedule.setModeDisplay(1);
+		List<RegisterBasicScheduleCommand> lstRegisterBasicScheduleCommand = new ArrayList<>();
+		dataRegisterBasicSchedule.setListRegisterBasicSchedule(lstRegisterBasicScheduleCommand);
 		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
@@ -191,7 +185,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 					return;
 				}
 				
-				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck, workType);
+				Optional<String> optErrorMsg = getCheckScheduleUpdate(companyId, employeeId, currentDateCheck);
 				
 				if (optErrorMsg.isPresent()) {
 					
@@ -214,20 +208,27 @@ public class ScheBatchCorrectExecutionCommandHandler
 					setter.updateData(NUMBER_OF_ERROR, errorList.size()); // update the number of errors
 					if (errorList.size() == 1) dto.setWithError(WithError.WITH_ERROR); // if there is even one error, output it
 				} else {
+					// Create a new basic schedule register command
+					RegisterBasicScheduleCommand registerBasicScheduleCommand = new RegisterBasicScheduleCommand();
+					registerBasicScheduleCommand.setConfirmedAtr(DEFAULT_VALUE);
+					registerBasicScheduleCommand.setDate(currentDateCheck);
+					registerBasicScheduleCommand.setEmployeeId(employeeId);
+					registerBasicScheduleCommand.setWorkTimeCode(command.getWorktimeCode());
+					registerBasicScheduleCommand.setWorkTypeCode(command.getWorktypeCode());
+					lstRegisterBasicScheduleCommand.add(registerBasicScheduleCommand);
+					
 					countSuccess++;
 					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 				}
-				//setter.updateData(DATA_EXECUTION, dto);
-				
 				
 				// Add 1 more day to current day
 				currentDateCheck = currentDateCheck.nextValue(true);
 			}
-			
-			// 暫定データを作成する
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
-			//Map<GeneralDate, DailyInterimRemainMngData> mapInterimData = interimRemainOffMonthProcess.monthInterimRemainData(companyId, employeeId, period);
 		}
+		
+		// Register process
+		if (!lstRegisterBasicScheduleCommand.isEmpty())
+			registerBasicScheduleCommandHandler.handle(dataRegisterBasicSchedule);
 		
 		// Send the last batch of errors if there is still records unsent
 		if (!errorList.isEmpty()) {
@@ -237,7 +238,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.DONE);
-		//setter.updateData(DATA_EXECUTION, dto);
 	}
 	
 	/**
@@ -250,37 +250,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		return day.addDays(NEXT_DAY_MONTH);
 	}
 
-	/**
-	 * Register process.
-	 */
-	// 登録処理
-	private Optional<String> registerProcess(String companyId, ScheBatchCorrectSetCheckSaveCommand command, String employeeId, GeneralDate baseDate, WorkType workType){
-		
-		// call check schedule update
-		Optional<String> optionalMessage = this.getCheckScheduleUpdate(companyId, employeeId, baseDate);
-		
-		WorkTimeSetGetterCommand workTimeSetGetterCommand = new WorkTimeSetGetterCommand();
-		workTimeSetGetterCommand.setCompanyId(companyId);
-		workTimeSetGetterCommand.setWorktypeCode(command.getWorktypeCode());
-		workTimeSetGetterCommand.setWorkingCode(command.getWorktimeCode());
-		
-		// check exist error
-		if(!optionalMessage.isPresent()){
-			// 勤務予定時間帯を補正する
-			Optional<PrescribedTimezoneSetting> optPrescribedSetting = scheCreExeWorkTimeHandler.getScheduleWorkHour(workTimeSetGetterCommand);
-			// call repository find basic schedule by id
-			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(employeeId, baseDate);
-			
-			// 登録メイン処理
-			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(companyId, optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
-					employeeId, baseDate, workType);
-		}
-		else {
-			return optionalMessage;
-		}
-		return Optional.empty();
-	}
-	
 	/**
 	 * Check closing period (締め期間チェック)
 	 * @param companyId

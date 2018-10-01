@@ -223,13 +223,13 @@ public class DailyModifyResCommandFacade {
 						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex());
+						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc());
 			} else {
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), Optional.empty(),
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex());
+						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc());
 			}
 		}
 

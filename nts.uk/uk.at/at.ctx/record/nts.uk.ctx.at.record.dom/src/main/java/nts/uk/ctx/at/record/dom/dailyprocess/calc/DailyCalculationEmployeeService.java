@@ -43,4 +43,11 @@ public interface DailyCalculationEmployeeService {
 	 * @param companyCommonSetting 
 	 */
 	ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter);
+
+	
+	/**
+	 * 計算状態の更新
+	 * @param stateInfo
+	 */
+	public void upDateCalcState(ManageCalcStateAndResult stateInfo);
 }

@@ -12,7 +12,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Value
 public class FlexTime {
+	//フレックス時間
 	private TimeDivergenceWithCalculationMinusExist flexTime;
+	//申請時間
 	private AttendanceTime beforeApplicationTime; 
 	
 	public TimeWithCalculation getNotMinusFlexTime() {
