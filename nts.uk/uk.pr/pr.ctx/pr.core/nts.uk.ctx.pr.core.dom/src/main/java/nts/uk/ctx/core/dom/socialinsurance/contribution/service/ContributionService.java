@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.dom.socialinsurance.contribution.service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -58,6 +59,20 @@ public class ContributionService {
 			this.updateContribution(contributionRate);
 		}
 		contributionRateHistoryRepository.add(contributionRateHistory);
+	}
+
+	public boolean checkContributionRate(String officeCode, ContributionRate contributionRate,
+			YearMonthHistoryItem yearMonthItem) {
+		// String cid = AppContexts.user().companyId();
+
+		// ドメインモデル「拠出金率」を取得する
+		Optional<ContributionRate> otpContributionRate = contributionRateRepository
+				.getContributionRateByHistoryId(contributionRate.getHistoryId());
+		// アルゴリズム「月額拠出金計算処理」を実行する
+		contributionRate = monthlyContributionCalProcess(contributionRate, yearMonthItem);
+		// 取得したドメインモデル「拠出金率.等級毎拠出金」と計算した値を比較する
+		boolean checker = otpContributionRate.get().getChildContributionRatio().v().setScale(0).equals(contributionRate.getChildContributionRatio().v());
+		return checker;
 	}
 
 	public void addContribution(ContributionRate contributionRate) {

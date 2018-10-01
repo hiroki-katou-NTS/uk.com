@@ -21,6 +21,11 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         // Contribution contribution item
         selectedHistoryPeriod: KnockoutObservable<model.GenericHistoryYearMonthPeiod> = ko.observable({ displayStart: '', displayEnd: '', displayStartJM: '' });
         contributionRate: KnockoutObservable<model.ContributionRate> = ko.observable(null);
+
+
+        //ExChildContributionRatio
+        exChildContributionRatio: KnockoutObservable<number> = ko.observable(null);
+
         constructor() {
             let self = this;
             self.watchDataChanged();
@@ -47,7 +52,35 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
 
-            // Update historyId for case clone previous data           
+            if (command.contributionRate.automaticCalculationCls == 0 || self.isUpdateMode() == false) {
+                // Update historyId for case clone previous data                    
+                self.registerIsValid(command);
+            } else {
+                //「社会保険区分」で「拠出金」を選択している場合
+                service.checkContributionRateHis(command).done(function(data) {                     
+                        if (!data) {
+                            block.clear();
+                            dialog.confirm({ messageId: "MsgQ_209" }).ifYes(function() {
+                                self.registerIsValid(command);
+                            });
+                        } else {
+                            self.registerIsValid(command);
+                        }
+                    
+                }).fail(function(err) {
+                    block.clear();
+                    dialog.alertError(err.message);
+                });
+            }
+            //exChildContributionRatio(ko.toJS(self.contributionRate));
+
+
+        }
+        
+        registerIsValid(command) {
+            let self = this;
+            block.invisible();
+            // Update historyId for case clone previous data                    
             command.contributionRate.historyId = command.yearMonthHistoryItem.historyId;
             service.addContributionRateHis(command).done(function(data) {
                 block.clear();
@@ -58,6 +91,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                 dialog.alertError(err.message);
             });
         }
+        
         printPDF() {
             // TODO
             console.log('TODO');
