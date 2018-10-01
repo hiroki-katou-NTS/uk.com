@@ -36,6 +36,7 @@ module nts.uk.pr.view.qmm008.share.model {
     export class ItemModel {
         code: string;
         name: string;
+
         constructor(code, name) {
             this.code = code;
             this.name = name;
@@ -45,6 +46,7 @@ module nts.uk.pr.view.qmm008.share.model {
     export class EnumModel {
         value: number;
         name: string;
+
         constructor(value, name) {
             this.value = value;
             this.name = name;
@@ -107,13 +109,12 @@ module nts.uk.pr.view.qmm008.share.model {
 
     // 健康保険料率履歴
     export class HealthInsuranceFeeRateHistory {
-        cid: KnockoutObservable<string> = ko.observable(null);
         socialInsuranceOfficeCode: KnockoutObservable<string> = ko.observable(null);
         history: KnockoutObservableArray<GenericHistoryYearMonthPeiod> = ko.observable([]);
+
         constructor(params: IHealthInsuranceFeeRateHistory) {
-            this.cid(params ? params.cid : null);
             this.socialInsuranceOfficeCode(params ? params.socialInsuranceOfficeCode : null);
-            this.history(params ? params.history.map(function(item) {
+            this.history(params ? params.history.map(function (item) {
                 return new GenericHistoryYearMonthPeiod(item);
             }) : []);
         }
@@ -168,7 +169,8 @@ module nts.uk.pr.view.qmm008.share.model {
         basicInsurancePremium: KnockoutObservable<number> = ko.observable(null);
         healthInsurancePremium: KnockoutObservable<number> = ko.observable(null);
         specInsurancePremium: KnockoutObservable<number> = ko.observable(null);
-        constructor(params: I) {
+
+        constructor(params: IHealthContributionFee) {
             this.nursingCare(params ? params.nursingCare : null);
             this.basicInsurancePremium(params ? params.basicInsurancePremium : null);
             this.healthInsurancePremium(params ? params.healthInsurancePremium : null);
@@ -196,6 +198,7 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
             new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
+
         constructor(params: IBonusHealthInsuranceRate) {
             this.historyId(params ? params.historyId : null);
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
@@ -221,6 +224,7 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
             new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
+
         constructor(params: ISalaryHealthInsurancePremiumRate) {
             this.employeeShareAmountMethod(params ? params.employeeShareAmountMethod : null);
             this.individualBurdenRatio(new HealthContributionRate(params ? params.individualBurdenRatio : null));
@@ -253,7 +257,7 @@ module nts.uk.pr.view.qmm008.share.model {
             this.autoCalculationCls(params ? params.autoCalculationCls : 1);
             this.historyId(params ? params.historyId : null);
             this.healthInsuranceRate(new SalaryHealthInsurancePremiumRate(params ? params.healthInsuranceRate : null));
-            this.healthInsurancePerGradeFee(params ? params.healthInsurancePerGradeFee.map(function(item) {
+            this.healthInsurancePerGradeFee(params ? params.healthInsurancePerGradeFee.map(function (item) {
                 return new HealthInsurancePerGradeFee(item);
             }) : []);
         }
@@ -285,7 +289,7 @@ module nts.uk.pr.view.qmm008.share.model {
             this.automaticCalculationCls(params ? params.automaticCalculationCls : 1);
             this.historyId(params ? params.historyId : null);
             this.childContributionRatio(params ? params.childContributionRatio : 0.000);
-            this.contributionByGrade(params ? params.contributionByGrade.map(function(item) {
+            this.contributionByGrade(params ? params.contributionByGrade.map(function (item) {
                 return new ContributionByGrade(item);
             }) : []);
         }
@@ -300,13 +304,12 @@ module nts.uk.pr.view.qmm008.share.model {
     export class ContributionByGrade {
         welfarePensionGrade: KnockoutObservable<number> = ko.observable(null);
         childCareContribution: KnockoutObservable<number> = ko.observable(null);
+
         constructor(params: IContributionByGrade) {
             this.welfarePensionGrade(params ? params.welfarePensionGrade : null);
             this.childCareContribution(params ? params.childCareContribution : null);
         }
     }
-
-
 
 
     // 等級毎健康保険料
@@ -320,6 +323,7 @@ module nts.uk.pr.view.qmm008.share.model {
         healthInsuranceGrade: KnockoutObservable<number> = ko.observable(null);
         employeeBurden: KnockoutObservable<HealthContributionFee> = ko.observable(null);
         insuredBurden: KnockoutObservable<HealthContributionFee> = ko.observable(null);
+
         constructor(params: IHealthInsurancePerGradeFee) {
             this.healthInsuranceGrade(params ? params.healthInsuranceGrade : null);
             this.employeeBurden(new HealthContributionFee(params ? params.healthInsuranceGrade : null));
@@ -334,6 +338,7 @@ module nts.uk.pr.view.qmm008.share.model {
         socialInsuranceCode: string;
         history: IGenericHistoryYearMonthPeiod[];
     }
+
     //拠出金率履歴
     export class ContributionRateHistory {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
@@ -341,12 +346,11 @@ module nts.uk.pr.view.qmm008.share.model {
 
         constructor(params: IWelfarePensionInsuranceRateHistory) {
             this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
-            this.history(params ? params.history.map(function(item) {
+            this.history(params ? params.history.map(function (item) {
                 return new GenericHistoryYearMonthPeiod(item)
             }) : []);
         }
     }
-
 
 
     // Screen C Domain
@@ -364,7 +368,7 @@ module nts.uk.pr.view.qmm008.share.model {
 
         constructor(params: IWelfarePensionInsuranceRateHistory) {
             this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
-            this.history(params ? params.history.map(function(item) {
+            this.history(params ? params.history.map(function (item) {
                 return new GenericHistoryYearMonthPeiod(item)
             }) : []);
         }
@@ -387,9 +391,14 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(FUND_CLASSIFICATION.JOIN, getText('QMM008_54')),
             new EnumModel(FUND_CLASSIFICATION.NOT_JOIN, getText('QMM008_55'))
         ]);
+
         constructor(params: IWelfarePensionInsuranceClassification) {
             this.fundClassification(params ? params.fundClassification : 1);
             this.historyId(params ? params.historyId : null);
+            this.fundClassification.subscribe(newValue => {
+                nts.uk.ui.errors.clearAll();
+                $('.tab-c .nts-input').trigger("validate");
+            })
         }
     }
 
@@ -407,6 +416,7 @@ module nts.uk.pr.view.qmm008.share.model {
         femaleInsurancePremium: KnockoutObservable<number> = ko.observable(null);
         maleExemptionInsurance: KnockoutObservable<number> = ko.observable(null);
         femaleExemptionInsurance: KnockoutObservable<number> = ko.observable(null);
+
         constructor(params: IContributionFee) {
             this.maleInsurancePremium(params ? params.maleInsurancePremium : null);
             this.femaleInsurancePremium(params ? params.femaleInsurancePremium : null);
@@ -427,6 +437,7 @@ module nts.uk.pr.view.qmm008.share.model {
         welfarePensionGrade: KnockoutObservable<number> = ko.observable(null);
         employeeBurden: KnockoutObservable<ContributionFee> = ko.observable(null);
         insuredBurden: KnockoutObservable<ContributionFee> = ko.observable(null);
+
         constructor(params: IGradeWelfarePensionInsurancePremium) {
             this.welfarePensionGrade(params ? params.welfarePensionGrade : null);
             this.employeeBurden(new ContributionFee(params ? params.employeeBurden : null));
@@ -459,7 +470,7 @@ module nts.uk.pr.view.qmm008.share.model {
         employeeContributionRatio: KnockoutObservable<number> = ko.observable(null);
         individualExemptionRate: KnockoutObservable<number> = ko.observable(null);
         employeeExemptionRate: KnockoutObservable<number> = ko.observable(null);
-        
+
         // old value
         oldIndividualBurdenRatio: number = 0;
         oldEmployeeContributionRatio: number = 0;
@@ -480,6 +491,7 @@ module nts.uk.pr.view.qmm008.share.model {
         // Display remain ratio
         remainBurdenRatio: any;
         remainEmployeeContributionRatio: any;
+
         constructor(params: IEmployeePensionContributionRate, inputIdParams: IGroupInputId) {
             this.individualBurdenRatio(params ? params.individualBurdenRatio : 0.000);
             this.employeeContributionRatio(params ? params.employeeContributionRatio : 0.000);
@@ -492,27 +504,29 @@ module nts.uk.pr.view.qmm008.share.model {
             this.employeeExemptionRateId = inputIdParams ? inputIdParams.employeeExemptionRateId : null;
             this.individualErrorMessage = inputIdParams ? inputIdParams.individualErrorMessage : null;
             this.employeeErrorMessage = inputIdParams ? inputIdParams.employeeErrorMessage : null;
-            
-            
+
+
             this.initRemainIndividualRate();
             this.initRemainEmployeeRate();
             this.isAlreadyBinding = true;
         }
 
         initRemainIndividualRate() {
-            this.remainBurdenRatio = ko.computed(function() {
+            this.remainBurdenRatio = ko.computed(function () {
                 if (isNaN(this.individualBurdenRatio()) || isNaN(this.individualExemptionRate())) {
                     this.updateOldIndividualValue();
                     return 0;
                 }
                 if (Number(this.individualBurdenRatio()) < Number(this.individualExemptionRate())) {
-                    if (this.individualBurdenRatio() != this.oldIndividualBurdenRatio) {
-                        $(this.individualBurdenRatioId).ntsError('clear');
-                        $(this.individualBurdenRatioId).ntsError('set', { messageId: this.individualErrorMessage });
-                    }
-                    if (this.individualExemptionRate() != this.oldIndividualExemptionRate) {
-                        $(this.individualExemptionRateId).ntsError('clear');
-                        $(this.individualExemptionRateId).ntsError('set', { messageId: this.individualErrorMessage });
+                    if (__viewContext.viewModel.viewmodelC.welfareInsuranceClassification().fundClassification() == 1) {
+                        if (this.individualBurdenRatio() != this.oldIndividualBurdenRatio) {
+                            $(this.individualBurdenRatioId).ntsError('clear');
+                            $(this.individualBurdenRatioId).ntsError('set', {messageId: this.individualErrorMessage});
+                        }
+                        if (this.individualExemptionRate() != this.oldIndividualExemptionRate) {
+                            $(this.individualExemptionRateId).ntsError('clear');
+                            $(this.individualExemptionRateId).ntsError('set', {messageId: this.individualErrorMessage});
+                        }
                     }
                     this.updateOldIndividualValue();
                     return 0;
@@ -527,24 +541,27 @@ module nts.uk.pr.view.qmm008.share.model {
         }
 
         initRemainEmployeeRate() {
-            this.remainEmployeeContributionRatio = ko.computed(function() {
+            this.remainEmployeeContributionRatio = ko.computed(function () {
                 if (isNaN(this.employeeContributionRatio()) || isNaN(this.employeeExemptionRate())) {
                     this.updateOldEmployeeValue();
                     return 0;
                 }
 
                 if (Number(this.employeeContributionRatio()) < Number(this.employeeExemptionRate())) {
-                    if (this.employeeContributionRatio() != this.oldEmployeeContributionRatio) {
-                        $(this.employeeContributionRatioId).ntsError('clear');
-                        $(this.employeeContributionRatioId).ntsError('set', { messageId: this.employeeErrorMessage });
-                    }
-                    if (this.employeeExemptionRate() != this.oldEmployeeExemptionRate) {
-                        $(this.employeeExemptionRateId).ntsError('clear');
-                        $(this.employeeExemptionRateId).ntsError('set', { messageId: this.employeeErrorMessage });
+                    if (__viewContext.viewModel.viewmodelC.welfareInsuranceClassification().fundClassification() == 1) {
+                        if (this.employeeContributionRatio() != this.oldEmployeeContributionRatio) {
+                            $(this.employeeContributionRatioId).ntsError('clear');
+                            $(this.employeeContributionRatioId).ntsError('set', {messageId: this.employeeErrorMessage});
+                        }
+                        if (this.employeeExemptionRate() != this.oldEmployeeExemptionRate) {
+                            $(this.employeeExemptionRateId).ntsError('clear');
+                            $(this.employeeExemptionRateId).ntsError('set', {messageId: this.employeeErrorMessage});
+                        }
                     }
                     this.updateOldEmployeeValue();
                     return 0
-                };
+                }
+                ;
                 this.updateOldEmployeeValue();
                 if (this.isAlreadyBinding) {
                     $(this.employeeContributionRatioId).ntsError('clear');
@@ -558,12 +575,12 @@ module nts.uk.pr.view.qmm008.share.model {
             this.oldIndividualBurdenRatio = this.individualBurdenRatio();
             this.oldIndividualExemptionRate = this.individualExemptionRate();
         }
-        
+
         updateOldEmployeeValue() {
             this.oldEmployeeContributionRatio = this.employeeContributionRatio();
             this.oldEmployeeExemptionRate = this.employeeExemptionRate();
         }
-        
+
     }
 
     // 厚生年金端数区分
@@ -616,6 +633,7 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
             new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
+
         constructor(params: ISalaryEmployeePensionInsuRate) {
             let maleGroupId: IGroupInputId = {
                 individualBurdenRatioId: '#C3_9',
@@ -624,7 +642,7 @@ module nts.uk.pr.view.qmm008.share.model {
                 employeeExemptionRateId: '#C4_21',
                 individualErrorMessage: 'MsgQ_219',
                 employeeErrorMessage: 'MsgQ_220'
-                
+
             }
             let femaleGroupId: IGroupInputId = {
                 individualBurdenRatioId: '#C3_18',
@@ -665,7 +683,7 @@ module nts.uk.pr.view.qmm008.share.model {
 
         constructor(params: IEmployeePensionMonthlyInsuFee) {
             this.autoCalculationCls(params ? params.autoCalculationCls : 1);
-            this.pensionInsurancePremium(params ? params.pensionInsurancePremium.map(function(item) {
+            this.pensionInsurancePremium(params ? params.pensionInsurancePremium.map(function (item) {
                 return new GradeWelfarePensionInsurancePremium(item);
             }) : []);
             this.historyId(params ? params.historyId : null);
@@ -697,6 +715,7 @@ module nts.uk.pr.view.qmm008.share.model {
             new EnumModel(SHARE_AMOUNT_METHOD.SUBTRACT_OVERALL_INSURANCE, getText('Enum_EmployeeShareAmountMethod_SUBTRACT_INSURANCE_PREMIUM')),
             new EnumModel(SHARE_AMOUNT_METHOD.EMPLOYER_CONTRIBUTION_RATIO, getText('Enum_EmployeeShareAmountMethod_EMPLOYEE_CONTRIBUTION_RATIO'))
         ]);
+
         constructor(params: IBonusEmployeePensionInsuranceRate) {
             let maleGroupId: IGroupInputId = {
                 individualBurdenRatioId: '#C3_13',
@@ -728,7 +747,8 @@ module nts.uk.pr.view.qmm008.share.model {
         displayText: string;
         child: Array<TreeGridNode>;
         officeCode: string;
-        officeName: string;;;
+        officeName: string;
+
         constructor(code: string, displayText: string, child: Array<TreeGridNode>, officeCode, officeName) {
             this.code = code;
             this.displayText = displayText;
@@ -737,6 +757,7 @@ module nts.uk.pr.view.qmm008.share.model {
             this.officeName = officeName;
         }
     }
+
     // 社会保険事業所
     export class SocialInsuranceOffice {
         socialInsuranceCode: KnockoutObservable<string> = ko.observable(null);
@@ -747,6 +768,7 @@ module nts.uk.pr.view.qmm008.share.model {
         welfareInsuranceRateHistory: KnockoutObservable<WelfarePensionInsuranceRateHistory> = ko.observable(null);
         healthInsuranceFeeRateHistory: KnockoutObservable<HealthInsuranceFeeRateHistory> = ko.observable(null);
         contributionRateHistory: KnockoutObservable<ContributionRateHistory> = ko.observable(null);
+
         constructor(params: ISocialInsuranceOffice) {
             this.socialInsuranceCode(params ? params.socialInsuranceCode : null);
             this.socialInsuranceName(params ? params.socialInsuranceName : null);
@@ -775,6 +797,7 @@ module nts.uk.pr.view.qmm008.share.model {
         streetAddress: KnockoutObservable<SocialInsuranceBusinessAddress> = ko.observable(null);
         representativeName: KnockoutObservable<string> = ko.observable(null);
         abbreviatedName: KnockoutObservable<string> = ko.observable(null);
+
         constructor(params: IBasicInfomation) {
             this.representativePosition(params ? params.representativePosition : null);
             this.notes(params ? params.notes : params);
@@ -803,6 +826,7 @@ module nts.uk.pr.view.qmm008.share.model {
         addressKana2: KnockoutObservable<string> = ko.observable(null);
         phoneNumber: KnockoutObservable<string> = ko.observable(null);
         postalCode: KnockoutObservable<string> = ko.observable(null);
+
         constructor(params: ISocialInsuranceBusinessAddress) {
             this.address1(params ? params.address1 : null);
             this.address2(params ? params.address2 : null);
