@@ -2123,6 +2123,21 @@ public class ProgramsManager {
 			"/view/kdp/003/b/index.xhtml");
 	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
 			"/view/kdp/003/c/index.xhtml");
+
+	/**
+	* QMM005
+	*/
+	 public static final Program QMM005A = new Program(WebAppId.PR, ProgramIdConsts.QMM005A, "QMM005_1",
+	 "view/qmm/005/a/index.xhtml");
+	 public static final Program QMM005B = new Program(WebAppId.PR, ProgramIdConsts.QMM005B, "QMM005_2",
+	 "view/qmm/005/b/index.xhtml");
+	 public static final Program QMM005D = new Program(WebAppId.PR, ProgramIdConsts.QMM005D, "QMM005_3",
+	 "view/qmm/005/d/index.xhtml");
+	 public static final Program QMM005E = new Program(WebAppId.PR, ProgramIdConsts.QMM005E, "QMM005_4",
+	 "view/qmm/005/e/index.xhtml");
+	 public static final Program QMM005F = new Program(WebAppId.PR, ProgramIdConsts.QMM005F, "QMM005_5",
+	 "view/qmm/005/f/index.xhtml");
+
 	/**
 	 * All programs map.
 	 */
