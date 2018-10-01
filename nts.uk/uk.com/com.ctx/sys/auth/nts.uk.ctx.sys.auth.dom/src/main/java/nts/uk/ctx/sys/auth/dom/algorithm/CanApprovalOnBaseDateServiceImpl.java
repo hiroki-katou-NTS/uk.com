@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
+import nts.uk.ctx.sys.auth.dom.employee.dto.EmJobTitleHisImport;
 import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
@@ -14,6 +15,7 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepositor
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 
 @Stateless
 public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateService {
@@ -23,6 +25,9 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 
 	@Inject
 	private JobTitleAdapter jobTitleAdapter;
+	
+	@Inject 
+	private EmpInfoAdapter empInfoAdapter;
 
 	@Inject
 	private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepo;
@@ -36,9 +41,13 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 		String roleSetCode = "";
 		Optional<RoleSetGrantedPerson> roleSetGrand = roleSetPersonRepo.findByIDAndDate(companyId, employeeID, date);
 		if (!roleSetGrand.isPresent()) {
-			JobTitleValueImport jobTitle = jobTitleAdapter.findJobTitleBySid(employeeID, date);
-
-			Optional<String> roleJobTitle = roleSetGrantedJobTitleRepo.getRoleSetCd(companyId, jobTitle.getPositionId());
+			//lấy thông tin request 33
+	//		JobTitleValueImport jobTitle = jobTitleAdapter.findJobTitleBySid(employeeID, date);
+			Optional<EmJobTitleHisImport> jobTitle = empInfoAdapter.getTitleHist(employeeID, date);
+			if (!jobTitle.isPresent()){
+				throw new RuntimeException ("Can't find EmJobTitleHisImport");
+			}
+			Optional<String> roleJobTitle = roleSetGrantedJobTitleRepo.getRoleSetCd(companyId, jobTitle.get().getJobTitleID());
 			if (roleJobTitle.isPresent()) {
 				roleSetCode = roleJobTitle.get();
 			}

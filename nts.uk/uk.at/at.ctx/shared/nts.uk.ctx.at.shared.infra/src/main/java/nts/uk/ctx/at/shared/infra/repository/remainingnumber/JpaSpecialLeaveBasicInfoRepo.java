@@ -69,6 +69,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
+		entity.grantNumber = null;
 		if (domain.getGrantSetting().getGrantDays().isPresent()) {
 			entity.grantNumber = domain.getGrantSetting().getGrantDays().get().v();
 		}

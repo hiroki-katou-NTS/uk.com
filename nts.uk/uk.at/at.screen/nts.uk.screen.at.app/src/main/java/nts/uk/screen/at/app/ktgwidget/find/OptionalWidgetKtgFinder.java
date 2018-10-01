@@ -358,16 +358,16 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
 					//sử lý 18
 					//requestList 203 team B
-					BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, employeeId, datePeriod, false, systemDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-					BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
+					//BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyId, employeeId, datePeriod, false, systemDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					//BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
 					//to do some thinks
-					dto.setRemainAlternationNoDay(time.getRemainDays());
+					dto.setRemainAlternationNoDay(breakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
 					//requestList 204 Dudt
-					AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, systemDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-					AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
-					dto.setRemainsLeft(time.getRemainDays());
+					//AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, systemDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+					//AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
+					dto.setRemainsLeft(absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
