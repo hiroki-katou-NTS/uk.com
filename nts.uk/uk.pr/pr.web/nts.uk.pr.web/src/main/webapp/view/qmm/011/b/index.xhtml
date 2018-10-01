@@ -1,5 +1,5 @@
 <div>
-		<div class="sidebar-content-header flex">
+		<div class="sidebar-content-header flex" style="width: 111%">
 					<span class="title">#{i18n.getText('QMM011_4')}</span>
 
 					<div style="margin-left: 100px; margin-top: 10px;">
@@ -60,10 +60,10 @@
 			</div>
 				
 				<div class = "table">
-				<div id ="B2_6" class="set-row">
+				<div id ="B2_6" class="set-row" style="width: 110%">
 					<hr />
 				</div>
-				<table id="B3_1" style="margin-top: 20px;">
+				<table id="B3_1" tabindex="-1" style="margin-top: 20px;">
 					<colgroup>
 					<col width="120px" />
 					<col width="150px"/>
@@ -117,6 +117,7 @@
 																optionsValue: 'code',
 																optionsText: 'name',
 																visibleItemsCount: 5,
+																dropDownAttachedToBody:true,
 																enable: !$parent.enableRegis(),
 																columns: [             
 																{ prop: 'name', length: 10 },]
