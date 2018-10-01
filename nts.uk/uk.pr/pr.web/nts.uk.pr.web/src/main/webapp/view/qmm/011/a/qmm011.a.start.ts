@@ -9,5 +9,6 @@ module nts.uk.pr.view.qmm011.a {
             viewmodelC: viewmodelC
         };
         __viewContext.bind(__viewContext.viewModel);
+        _.defer(() => {$('#B1_4_container').focus()});
     });
 }

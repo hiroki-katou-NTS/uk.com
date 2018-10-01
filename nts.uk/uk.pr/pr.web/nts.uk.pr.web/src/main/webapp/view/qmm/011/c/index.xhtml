@@ -2,14 +2,14 @@
 
    <div>
         <div
-                class="sidebar-content-header flex">
+                class="sidebar-content-header flex" style="width: 111%">
             <span class="title">#{i18n.getText('QMM011_5')}</span>
 
             <div style="margin-left: 100px; margin-top: 10px;">
                 <div>
                     <!-- A1_1-->
                     <button class="proceed" id="A1_1" tabindex="1"
-                            data-bind="click: register,enable: !enableRegis()">#{i18n.getText('QMM011_1')}</button>
+                            data-bind="click: register,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
                     <!-- A1_2 -->
                     <button id="A1_2" tabindex="2"
                             data-bind="click: openDscreen,enable: !enableRegis() ">#{i18n.getText('QMM011_2')}</button>
@@ -65,7 +65,7 @@
                </div>
 
                 <div class = "table" style="width: 100%">
-                    <div id ="C2_6" class="set-row">
+                    <div id ="C2_6" class="set-row" style="width: 103%">
                         <hr />
                     </div>
                     <table id="C3_1" tabindex="4" style="width: 80%">

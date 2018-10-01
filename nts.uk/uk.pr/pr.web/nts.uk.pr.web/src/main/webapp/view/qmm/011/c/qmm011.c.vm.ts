@@ -81,9 +81,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     if (self.selectedEmpInsHisId() == HIS_ID_TEMP) {
                         self.isNewMode(MODE.NEW);
                     }
-
                 }
-
             });
         }
 
@@ -232,7 +230,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.listOccAccIsHis(_.sortBy(self.listOccAccIsHis(), 'startYearMonth').reverse());
                     self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
                     self.getAccInsurPreRate();
-
+                    $("#C3_1").focus();
                 } else {
                     self.initScreen(null);
                 }
@@ -277,6 +275,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.initScreen(self.selectedEmpInsHisId());
                 });
             });
+            $("#C3_1").focus();
         }
 
         convertToCommand(dto: Array<AccInsurPreRate>) {
@@ -347,9 +346,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
                 if (params && params.methodEditing == 1) {
                     self.initScreen(self.selectedEmpInsHisId());
+                    $('#C1_4_container').focus();
                 }
                 if (params && params.methodEditing == 0) {
                     self.initScreen(null);
+                    $('#C1_4_container').focus();
                 }
                 block.clear();
 
@@ -381,8 +382,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         display: string;
 
         constructor() {
-
-
         }
 
         static convertMonthYearToString(yearMonth: any) {
@@ -518,7 +517,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         empConRatio: number;
 
         constructor() {
-
         }
 
         static fromApp(app) {

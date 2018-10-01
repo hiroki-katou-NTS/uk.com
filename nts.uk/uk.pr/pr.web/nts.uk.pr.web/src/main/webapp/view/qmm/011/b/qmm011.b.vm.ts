@@ -154,13 +154,12 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 let params = getShared('QMM011_E_PARAMS_OUTPUT');
                 if (params) {
                     self.isNewMode(MODE.NEW);
-                    if (params) {
-                        self.startYearMonth(params.startYearMonth);
-                        self.isNewMode(MODE.NEW);
-                        self.transferMethod(params.transferMethod);
-                        self.listEmpInsHis(self.addEmplInsurHis(self.startYearMonth(), self.listEmpInsHis()));
-                        self.selectedEmpInsHisId(self.listEmpInsHis()[FIRST].hisId);
-                    }
+                    self.startYearMonth(params.startYearMonth);
+                    self.isNewMode(MODE.NEW);
+                    self.transferMethod(params.transferMethod);
+                    self.listEmpInsHis(self.addEmplInsurHis(self.startYearMonth(), self.listEmpInsHis()));
+                    self.selectedEmpInsHisId(self.listEmpInsHis()[FIRST].hisId);
+                    $("#B3_1").focus();
                 }
             });
         }
@@ -194,6 +193,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             }).always(() => {
                 block.clear();
             });
+            $("#B3_1").focus();
         }
         
         addEmplInsurHis(start: number, list: Array<EmplInsurHis>){
@@ -273,9 +273,11 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 let params = getShared('QMM011_F_PARAMS_OUTPUT');
                 if(params && params.methodEditing == 1) {
                     self.initScreen(self.selectedEmpInsHisId());
+                    $('#B1_4_container').focus();
                 }
                 if(params && params.methodEditing == 0) {
                     self.initScreen(null);
+                    $('#B1_4_container').focus();
                 }
 
             });
