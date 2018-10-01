@@ -72,7 +72,7 @@
 			<div id= "functions-area-bottom">
 				<!-- F2_1 登録 -->
 				<button id="F2_1" tabindex="3" class="proceed large"
-					data-bind="click: update">#{i18n.getText('QMM011_50')}</button>
+					data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM011_50')}</button>
 				<!-- F2_2 削除 -->
 				<button id="F2_2" tabindex="4"
 					data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>

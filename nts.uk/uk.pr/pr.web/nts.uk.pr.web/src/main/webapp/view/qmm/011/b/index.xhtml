@@ -6,7 +6,7 @@
 						<div>
 							<!-- A1_1-->
 							<button class="proceed" id="A1_1" tabindex="1"
-								data-bind="click: register ,enable: !enableRegis()">#{i18n.getText('QMM011_1')}</button>
+								data-bind="click: register ,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
 							<!-- A1_3 -->
 							<button id="A1_3" tabindex="2"
 								data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
