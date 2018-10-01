@@ -11,6 +11,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
     const SOCI_INSU_BASE_YEAR_INDEX = 1;
     const SOCI_INSU_BASE_MONTH_INDEX = 1;
     const INCOM_TAX_BASEYEAR_YEAR_INDEX = 1;
+    const CLOSE_DATE_YEAR_INDEX = 1;
+    const CLOSE_DATE_MONTH_INDEX = 2;
 
     export class ScreenModel {
         processCateNo: any;
@@ -75,12 +77,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         startPage(params): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.startupScreen();
+            self.startupScreen(null);
             dfd.resolve();
             return dfd.promise();
         }
 
-        startupScreen() {
+        startupScreen(selectItem) {
             // get domain 処理区分基本情報 (ProcessInfomation), 給与支払日設定 (SetDaySupport)
             var self = this;
             self.processCateNo = getShared("QMM005_output_B");
@@ -105,9 +107,15 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 });
                 self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
-                    self.processingYearNative = parseInt(self.processingYearList()[0].code);
-                    self.processingYear(self.processingYearList()[0].code);
-                    self.selectProcessingYear(self.processingYearList()[0].code);
+                    if(selectItem){
+                        self.processingYearNative = parseInt(selectItem);
+                        self.processingYear(selectItem);
+                        self.selectProcessingYear(selectItem);
+                    }else {
+                        self.processingYearNative = parseInt(self.processingYearList()[0].code);
+                        self.processingYear(self.processingYearList()[0].code);
+                        self.selectProcessingYear(self.processingYearList()[0].code);
+                    }
                 }
             });
         }
@@ -281,7 +289,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         if (params.checkbox.specPrintDateCheck) {
                             let year = self.processingYear();
                             let month = index + parseInt(advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX;
-                            settingPayment.specificationPrintDate(self.passYear(year, month, true));
+                            settingPayment.specificationPrintDate(self.passYear(year, month, false).year.toString() + self.passYear(year, month, false).month.toString);
                         }
                         // B4_16	要勤務日数
                         // ※5　明細書印字年月チェックが入っている場合のみ更新する
@@ -309,7 +317,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B6_9		勤怠締め日
                         // ※10 勤怠締め日チェックが入っている場合のみ更新する
                         if (params.checkbox.timeClosingDateCheck) {
-                            settingPayment.timeClosingDate(self.preDateTime(self.processingYear(), advancedSetting.closeDate.baseMonth, advancedSetting.closeDate.refeDate));
+                            if (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) {
+                                settingPayment.timeClosingDate(settingPayment.employeeExtractionReferenceDate());
+                            } else {
+                                let year = self.processingYear() + advancedSetting.closeDate.baseYear - CLOSE_DATE_YEAR_INDEX;
+                                let month = index  + advancedSetting.closeDate.baseMonth - CLOSE_DATE_MONTH_INDEX;
+                                settingPayment.timeClosingDate(self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, advancedSetting.closeDate.refeDate));
+                            }
                         }
                         /*B6_10	所得税基準日
                          ※8　所得税基準日チェックが入っている場合のみ更新する*/
@@ -375,13 +389,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             let commandData = {paymentDateSettingCommands: arrayItem}
             if (self.isNewMode()) {
                 service.addDomainModel(commandData).done(function (data) {
-                    self.transactionSuccess();
+                    self.transactionSuccess(self.processingYear());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
             } else {
                 service.updateDomainModel(commandData).done(function (data) {
-                    self.transactionSuccess();
+                    self.transactionSuccess(self.processingYear());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
@@ -392,10 +406,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             return (month < 10 ? '0' + month : month).toString();
         }
 
-        transactionSuccess() {
+        transactionSuccess(year) {
             let self = this;
-            nts.uk.ui.dialog.info({messageId: "Msg_15"});
-            self.startupScreen();
+            if(self.isNewMode()){
+                self.startupScreen(year);
+            }else {
+                nts.uk.ui.dialog.info({messageId: "Msg_15"});
+            }
+            self.selectProcessingYear(year);
             self.isNewMode(false);
         }
     }
