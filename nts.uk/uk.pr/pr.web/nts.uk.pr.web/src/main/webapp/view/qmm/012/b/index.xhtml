@@ -519,7 +519,7 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: breakdownItemUseAtr,
-																				enable: (!$parent.checkCreate() &amp;&amp; ($parent.statementItem().defaultAtr != 1) &amp;&amp; (($parent.statementItem().categoryAtr() == '1') || (($parent.statementItem().categoryAtr() == '0') &amp;&amp; ((taxAtr() == 3) || (taxAtr() == 4))))) }"></div>
+																				enable: (!$parent.checkCreate() &amp;&amp; ($parent.statementItem().defaultAtr != 1) &amp;&amp; (($parent.statementItem().categoryAtr() == '1') || (($parent.statementItem().categoryAtr() == '0') &amp;&amp; !((taxAtr() == 3) || (taxAtr() == 4))))) }"></div>
 								</div>
 								<div class="valign-center control-group">
 									<div class="space1"></div>
