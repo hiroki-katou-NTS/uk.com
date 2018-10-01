@@ -206,8 +206,9 @@
             <div style="height: 40px;" class="flex valign-center">
             <a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')}</a>
             </div>
-            
-            <div id="openAdvanceSetting">
+
+            <com:ko-if bind="isAdvanceSetting()">
+            <div  id="openAdvanceSetting" >
             <table>
                 <colgroup>
                     <col width="215px"/>
@@ -531,6 +532,7 @@
 
             </div>
 		</div>
+            </com:ko-if>
 
         </div>
         <div id="functions-area-bottom">

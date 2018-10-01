@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
     export class ScreenModel {
 
-
+        isAdvanceSetting:KnockoutObservable<boolean>=ko.observable(false);
         enableCloseDate: KnockoutObservable<boolean>;
         mode: number;
 
@@ -18,11 +18,6 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         basicSetting: model.BasicSetting;
         advancedSetting: model.AdvancedSetting;
         processInfomation: model.ProcessInfomation;
-
-
-
-
-
         processCategoryNo: number;
 
         //basicSetting
@@ -389,19 +384,23 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         }
 
         reSize(): void {
+            let self=this;
             let windowSize = nts.uk.ui.windows.getSelf();
             let element = document.getElementById('openAdvanceSetting');
             let expanClass =document.getElementsByClassName("ui-dialog")[0];
             
             if (windowSize.$dialog.height() < 440) {
+                self.isAdvanceSetting(true);
                 
                 //expanClass.addClass('expanDialog');
-                element.style.display = "block";
-                windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 200);
+                //element.style.display = "block";
+               // windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 100);
+                windowSize.setHeight(850);
                 //element.attr('style','top: 0px!important');
                 $('.ui-dialog').attr('style','top: 0px!important');
             }else if (windowSize.$dialog.height() > 440) {
-                element.style.display = "none";
+                //element.style.display = "none";
+                self.isAdvanceSetting(false);
                 windowSize.setHeight(440);
             }
         }

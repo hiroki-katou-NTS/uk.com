@@ -1,21 +1,4 @@
-/* .padding-item {
-	padding: 10px 0 0 10px;
-}
 
-.layout-right-column-1 {
-	width: 450px;
-}
-
-.panel.ntsPanel.direction-right {
-	margin-right: 0px;
-}
-
-.div-line {
-	margin-bottom: 10px;
-}
-.column-1 {
-	width: 170px;
-} */
 td {
 	height: 45px;
 }
@@ -25,7 +8,8 @@ td {
 }
 
 #openAdvanceSetting {
-	display: none;
+
+
 }
 
 #functions-area-top {

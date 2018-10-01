@@ -19,10 +19,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         processCategoryNO: number;
         itemBinding: KnockoutObservableArray<ItemBinding>;
 
-        isAbolition:KnockoutObservable<boolean>=ko.observable(false);
-
-
-
         constructor() {
             var self = this;
             // $("#A2_2").ntsFixedTable({height: 247, width: 1000});
@@ -39,7 +35,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 $("#A2_2").ntsFixedTable({height: 248, width: 1000});
                 $("#A3_1").ntsFixedTable({height: 247, width: 400});
              }
-
 
             //A3_4 対象雇用
             self.targetEmployment = ko.observable([]);
@@ -63,15 +58,16 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=1;
                     if(processInformationUpdate.deprecatCate==0){
                         self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(true);
-                    }
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=0;
+                    }
+
                     if (processInformationUpdate.deprecatCate == 1) {
                         service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
                             self.resetEmployee(processInformationUpdate.processCateNo);
                             self.itemBinding()[processInformationUpdate.processCateNo-1].isAbolition(false);
                             nts.uk.ui.dialog.alertError({ messageId: "MsgQ_158" });
                         });
-                        $('#button_').focus();
+
 
                     }
 
@@ -81,6 +77,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 if (action == 1) {
                     self.itemBinding.removeAll();
                     self.startPage();
+                    $('#button_').focus();
                 }
             })
         }

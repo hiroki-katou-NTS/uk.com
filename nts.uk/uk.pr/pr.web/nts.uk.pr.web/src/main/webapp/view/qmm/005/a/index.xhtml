@@ -65,12 +65,12 @@
                             <div class="label"
                                  data-bind="text:processInfomation.processCateNo" ></div>
                         </td>
-                        <td style="text-align: center;background-color: #CFF1A5" >
+                        <td style="text-align: left;background-color: #CFF1A5" >
                             <!--A2_8 処理区分名称-->
                             <div id="A2_8"  class="flex valign-center"
                                      data-bind="if: processInfomation.processDivisionName() != '' " >
                                 <div style="width: 100px;text-overflow: ellipsis;overflow: hidden;" id="A2_8_label">
-                                    <label
+                                    <label class="limited-label"
                                             data-bind="text: processInfomation.processDivisionName()"></label>
                                 </div>
                                 <!--A2_9 編集-->
