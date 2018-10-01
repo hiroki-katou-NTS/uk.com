@@ -15,8 +15,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.performance.enums.StateOfEditMonthly;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -36,10 +36,6 @@ public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializab
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtEditStateOfMothlyPerPK krcdtEditStateOfMothlyPerPK;
-	
-	/** 末日とする */
-	@Column(name = "IS_LAST_DAY")
-	public Integer isLastDay;
 	
 	/** 編集状態 **/
 	@Column(name = "STATE_OF_EDIT")
@@ -74,7 +70,7 @@ public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializab
 				EnumAdaptor.valueOf(this.krcdtEditStateOfMothlyPerPK.closureID, ClosureId.class),
 				new ClosureDate(
 						this.krcdtEditStateOfMothlyPerPK.closeDay,
-						(this.isLastDay == 1)),
+						(this.krcdtEditStateOfMothlyPerPK.isLastDay == 1)),
 				EnumAdaptor.valueOf(this.stateOfEdit, StateOfEditMonthly.class));
 	}
 }

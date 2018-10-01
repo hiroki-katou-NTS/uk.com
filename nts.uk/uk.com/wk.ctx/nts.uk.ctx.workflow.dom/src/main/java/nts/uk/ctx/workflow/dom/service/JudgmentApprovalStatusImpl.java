@@ -256,6 +256,12 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		if(currentPhase.getPhaseOrder()==1){
 			return true;
 		}
+		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.findFirst().get();
+		if(lowestPhase.getPhaseOrder()==currentPhase.getPhaseOrder()){
+			return true;
+		}
 		
 		// ループ中のフェーズの番号-１から、降順にループする
 		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
@@ -328,9 +334,9 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	}
 
 	@Override
-	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState) {
+	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = approvalRootState.getEmployeeID();
+		String employeeID = approverID;
 		// 承認できるフラグ
 		Boolean authorFlag = false;
 		// 指定する社員の承認区分

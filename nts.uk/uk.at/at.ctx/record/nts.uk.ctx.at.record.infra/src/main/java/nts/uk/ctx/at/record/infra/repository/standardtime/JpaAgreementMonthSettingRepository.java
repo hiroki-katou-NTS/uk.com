@@ -24,6 +24,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	private static final String DEL_BY_KEY;
 
 	private static final String IS_EXIST_DATA;
+	
+	private static final String FIND_BY_ID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -53,6 +55,15 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		IS_EXIST_DATA = builderString.toString();
+		
+		// fix bug 100605
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgreementMonthSet a ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
+		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
+		FIND_BY_ID = builderString.toString();
 	}
 
 	@Override
@@ -94,6 +105,21 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 			data.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().valueAsMinutes());
 			
 			this.commandProxy().update(data);
+		}
+
+	}
+	
+	// fix bug 100605
+	@Override
+	public void updateById(AgreementMonthSetting agreementMonthSetting, Integer yearMonthValueOld) {
+
+		Optional<KmkmtAgreementMonthSet> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", agreementMonthSetting.getEmployeeId())
+				.setParameter("yearmonthValue", yearMonthValueOld).getSingle();
+		if (entity.isPresent()) {
+			KmkmtAgreementMonthSet data = entity.get();
+			this.delete(data.kmkmtAgreementMonthSetPK.employeeId, new BigDecimal(yearMonthValueOld));
+			this.add(agreementMonthSetting);
 		}
 
 	}

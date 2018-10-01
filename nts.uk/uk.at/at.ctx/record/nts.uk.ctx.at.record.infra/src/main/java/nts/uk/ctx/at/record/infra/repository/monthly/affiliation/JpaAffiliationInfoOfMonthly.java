@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.affiliation.KrcdtMonAffiliation;
 import nts.uk.ctx.at.record.infra.entity.monthly.affiliation.KrcdtMonAffiliationPK;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * リポジトリ実装：月別実績の所属情報

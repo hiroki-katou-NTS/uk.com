@@ -9,7 +9,7 @@ module nts.uk.com.view.ccg008.c {
                 var self = this;
                 self.columns = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100, hidden: true},
-                    { headerText: nts.uk.resource.getText("CCG008_8"), key: 'name' }
+                    { headerText: nts.uk.resource.getText("CCG008_8"), key: 'name', formatter: _.escape }
                 ]);
                 self.dataItems = ko.observableArray([]);
                 self.itemSelected = ko.observable(null);

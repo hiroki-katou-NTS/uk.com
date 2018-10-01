@@ -259,16 +259,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"SELECT distinct i.itemCd",
 			"FROM PpemtPerInfoItem i",
 			"INNER JOIN PpemtPerInfoItemCm ic ON  i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
-			"WHERE  ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId ");
+			"WHERE  i.abolitionAtr = 0 AND ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId ");
 	
 	private final static String SELECT_ITEM_CD_BY_ITEM_CD_QUERY = String.join(" ",
 			"SELECT distinct ic.ppemtPerInfoItemCmPK.itemCd",
-			"FROM  PpemtPerInfoItemCm ic ",
-			"WHERE ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ");
+			"FROM PpemtPerInfoItem i INNER JOIN  PpemtPerInfoItemCm ic  ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
+			"WHERE i.abolitionAtr = 0 AND ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ");
 	
 	private final static String SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY = String.join(" ",
 			 SELECT_NO_WHERE,
-			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2  AND ic.ppemtPerInfoItemCmPK.categoryCd IN :ctgLst AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
+			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2 AND i.abolitionAtr = 0 AND ic.ppemtPerInfoItemCmPK.categoryCd IN :ctgLst AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
 			"ORDER BY io.disporder");
 	
 	private final static String SEL_ITEM_EVENT = String.join(" ",
@@ -310,10 +310,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE_BYCATEGORYCODE, "WHERE",
 			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
 	
-	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName, i.ppemtPerInfoItemPK.perInfoItemDefId, i.requiredAtr, i.abolitionAtr  FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND i.abolitionAtr = 0 AND i.requiredAtr = 1 AND ic.itemType <> 1";
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND ic.itemType <> 1";
 	
 	
 	@Override
@@ -691,7 +691,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				numericItemMax = numericItem.getNumericItemMax() != null ? numericItem.getNumericItemMax().v() : null;
 				numericItemAmountAtr = new BigDecimal(numericItem.getNumericItemAmount().value);
 				numericItemMinusAtr = new BigDecimal(numericItem.getNumericItemMinus().value);
-				numericItemDecimalPart = new BigDecimal(numericItem.getDecimalPart().v());
+				numericItemDecimalPart = numericItem.getDecimalPart() == null? null: new BigDecimal(numericItem.getDecimalPart().v());
 				numericItemIntegerPart = new BigDecimal(numericItem.getIntegerPart().v());
 				break;
 			case DATE:
@@ -766,6 +766,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 	// Sonnlb Code start
 
+	
 	private PerInfoItemDefOrder toDomainItemOrder(PpemtPerInfoItemOrder entity) {
 		return new PerInfoItemDefOrder(String.valueOf(entity.ppemtPerInfoItemPK.perInfoItemDefId),
 				String.valueOf(entity.perInfoCtgId), Integer.parseInt(String.valueOf(entity.disporder)),
@@ -891,12 +892,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public boolean checkExistedSelectionItemId(String selectionItemId) {
 		List<PpemtPerInfoItemCm> itemCm = this.queryProxy().query(SEL_ITEM_BY_SELECTIONS, PpemtPerInfoItemCm.class)
 				.setParameter("selectionItemId", selectionItemId).getList();
-		if (itemCm != null) {
-			if (itemCm.size() > 0) {
-				return true;
-			}
-		}
-		return false;
+		return itemCm.size() > 0;
 	}
 
 	@Override
@@ -1107,7 +1103,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithoutAbolition(List<String> lstPerInfoCategoryId,
+	public Map<String, List<ItemBasicInfo>> getItemCDByListCategoryIdWithAbolition(List<String> lstPerInfoCategoryId,
 			String contractCd) {
 		
 		Map<String, List<ItemBasicInfo>> result =  new HashMap<>();
@@ -1127,7 +1123,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		result = perInfoItemDefByList.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> {
 					List<Object[]> listItem = e.getValue();
-					return listItem.stream().map(x-> new ItemBasicInfo(String.valueOf(x[0]),String.valueOf(x[2]))).collect(Collectors.toList());
+					return listItem.stream()
+							.map(x -> new ItemBasicInfo(String.valueOf(x[0]), String.valueOf(x[2]),
+									String.valueOf(x[3]), Integer.parseInt(String.valueOf(x[4])), Integer.parseInt(String.valueOf(x[5]))))
+							.collect(Collectors.toList());
 				}));
 
 		return result;

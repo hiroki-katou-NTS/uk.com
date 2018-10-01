@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +16,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
@@ -63,10 +67,38 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
-		Optional<EmploymentInfo> employee = this.queryProxy().query(SEL_HIS_ITEM, Object[].class)
-				.setParameter("sid", sid).setParameter("date", date).setParameter("companyId", companyId)
-				.getSingle(c -> toDomainEmployee(c));
-		return employee;
+		StringBuilder builder = new StringBuilder();
+		builder.append(" SELECT a.CODE ,a.NAME FROM BSYMT_EMPLOYMENT a");
+		builder.append(" INNER JOIN BSYMT_EMPLOYMENT_HIST h");
+		builder.append(" ON a.CID = h.CID");
+		builder.append(" INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM i");
+		builder.append(" ON h.HIST_ID = i.HIST_ID AND h.SID = i.SID AND a.CODE = i.EMP_CD");
+		builder.append(" WHERE a.CID = ? AND h.SID = ? ");
+		builder.append(" AND h.START_DATE <= ? AND h.END_DATE >= ?");
+		try {
+			val statement = this.connection().prepareStatement(builder.toString());
+			statement.setString(1, companyId);
+			statement.setString(2, sid);
+			statement.setDate(3, Date.valueOf(date.localDate()));
+			statement.setDate(4, Date.valueOf(date.localDate()));
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				EmploymentInfo emp = new EmploymentInfo();
+				if (rec.getString("CODE") != null) {
+					emp.setEmploymentCode(rec.getString("CODE"));
+				}
+				if (rec.getString("NAME") != null) {
+					emp.setEmploymentName(rec.getString("NAME"));
+				}
+				return emp;
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+//		Optional<EmploymentInfo> employee = this.queryProxy().query(SEL_HIS_ITEM, Object[].class)
+//				.setParameter("sid", sid).setParameter("date", date).setParameter("companyId", companyId)
+//				.getSingle(c -> toDomainEmployee(c));
+//		return employee;
 	}
 	
 	@Override

@@ -51,7 +51,7 @@ public class ComPubImp implements SyCompanyPub {
 		
 		List<AffComHistItem> result = new ArrayList<>();
 
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, sid);
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(sid);
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(sid);
 
@@ -96,7 +96,7 @@ public class ComPubImp implements SyCompanyPub {
 
 	@Override
 	public AffCompanyHistExport GetAffComHisBySid(String cid, String sid) {
-		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, sid);
+		AffCompanyHist affComHis = affComHistRepo.getAffCompanyHistoryOfEmployee(sid);
 		
 		if (affComHis == null){
 			return new AffCompanyHistExport(null, Collections.emptyList());

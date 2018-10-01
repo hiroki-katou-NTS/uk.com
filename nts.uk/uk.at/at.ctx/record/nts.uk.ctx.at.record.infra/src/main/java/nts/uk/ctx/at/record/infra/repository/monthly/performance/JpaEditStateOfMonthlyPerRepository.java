@@ -9,8 +9,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * リポジトリ実装：月別実績の編集状態
@@ -24,8 +24,15 @@ public class JpaEditStateOfMonthlyPerRepository extends JpaRepository implements
 			+ "AND a.krcdtEditStateOfMothlyPerPK.processDate = :yearMonth "
 			+ "AND a.krcdtEditStateOfMothlyPerPK.closureID = :closureId "
 			+ "AND a.krcdtEditStateOfMothlyPerPK.closeDay = :closureDay "
-			+ "AND a.isLastDay = :isLastDay ";
+			+ "AND a.krcdtEditStateOfMothlyPerPK.isLastDay = :isLastDay ";
 
+	private static final String DELETE_BY_CLOSURE = "DELETE FROM KrcdtEditStateOfMothlyPer a "
+			+ "WHERE a.krcdtEditStateOfMothlyPerPK.employeeID = :employeeId "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.processDate = :yearMonth "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.closureID = :closureId "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.closeDay = :closureDay "
+			+ "AND a.krcdtEditStateOfMothlyPerPK.isLastDay = :isLastDay ";
+	
 	/** 検索　（締め） */
 	@Override
 	public List<EditStateOfMonthlyPerformance> findByClosure(
@@ -38,5 +45,18 @@ public class JpaEditStateOfMonthlyPerRepository extends JpaRepository implements
 				.setParameter("closureDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 				.getList(c -> c.toDomain());
+	}
+	
+	/** 削除 */
+	@Override
+	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		
+		this.getEntityManager().createQuery(DELETE_BY_CLOSURE)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
 	}
 }

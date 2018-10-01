@@ -21,4 +21,9 @@ public class TimeSheetDto implements ItemConst {
 	private TimeStampDto end;
 
 	private int breakTime;
+
+	@Override
+	public TimeSheetDto clone() {
+		return new TimeSheetDto(no, start == null ? null : start.clone(), end == null ? null : end.clone(), breakTime);
+	}
 }

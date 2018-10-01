@@ -192,7 +192,8 @@ module nts.uk.ui.koExtentions {
 
         buildImageLoadedHandler(zoomble: boolean, customOption: any) {
             let self = this;
-            self.$root.data("img-status", self.buildImgStatus("not init", 0));
+            //self.$root.data("img-status", self.buildImgStatus("not init", 0));
+            self.changeStatus(ImageStatus.NOT_INIT);
             self.$imagePreview.on('load', function() {
                 var image = new Image();
                 image.src = self.$imagePreview.attr("src");
@@ -220,7 +221,8 @@ module nts.uk.ui.koExtentions {
                     jQuery.extend(option, customOption);
                     self.cropper = new Cropper(self.$imagePreview[0], option);
                     self.$root.data("cropper", self.cropper);
-                    self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                    //self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                    self.changeStatus(ImageStatus.LOADED);
                     let evtData = {
                         size: self.$root.data("size"), 
                         height: this.height, 
@@ -231,22 +233,41 @@ module nts.uk.ui.koExtentions {
                     self.$root.trigger("imgloaded", evtData);
                 };
             }).on("error", function(){
-                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                self.changeStatus(ImageStatus.FAIL);
             });
         }
         
-        buildImgStatus(status: string, statusCode: number){
-            return {
-                imgOnView: statusCode === 4 ? true : false,
-                imgStatus: status,
-                imgStatusCode: statusCode    
-            };
+        changeStatus(status: ImageStatus) {
+            let self = this;
+            let dataStatus = self.$root.data("img-status");
+            let imgOnView = false;
+            if (dataStatus) {
+                imgOnView = dataStatus.imgOnView;    
+            }  
+            
+            if (status == ImageStatus.LOADED) {
+                imgOnView = true;    
+            }
+            self.$root.data("img-status", {
+                imgOnView : imgOnView,
+                status : status 
+            });
         }
+        
+//        buildImgStatus(status: string, statusCode: number, imgOnView: boolean){
+//            return {
+//                imgOnView: imgOnView,
+//                imgStatus: status,
+//                imgStatusCode: statusCode    
+//            };
+//        }
 
         buildSrcChangeHandler() {
             let self = this;
             self.$root.bind("srcchanging", function(evt, query?: SrcChangeQuery) {
-                self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
+                self.changeStatus(ImageStatus.lOADING);
                 let target = self.helper.getUrl(query);
                 var xhr = self.getXRequest();
                 if(xhr === null){
@@ -285,7 +306,8 @@ module nts.uk.ui.koExtentions {
         destroyImg(query?: SrcChangeQuery){
             let self = this;
             nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function(){
-                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                self.changeStatus(ImageStatus.FAIL);
                 self.backupData(null, "", "", 0);
                 self.$imagePreview.attr("src", "");
                 self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
@@ -306,17 +328,18 @@ module nts.uk.ui.koExtentions {
         buildFileChangeHandler() {
             let self = this;
             self.$inputFile.change(function() {
-				
-                self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                //self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                self.changeStatus(ImageStatus.lOADING);
                 
                 if (nts.uk.util.isNullOrEmpty(this.files)) {
-                    self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                    self.changeStatus(ImageStatus.FAIL);
                     return;
                 }
                 
                 if (!self.validateFilesSize(this.files[0])) {
                     // if file's size > maxSize, remove that file                    
-                    $(this).val('');
+                    $(this).val('');    
+                    self.changeStatus(ImageStatus.FAIL);
                     return;
                 }
                     
@@ -460,6 +483,13 @@ module nts.uk.ui.koExtentions {
         private isOutSiteUrl(url: string): boolean {
             return url.indexOf(nts.uk.request.location.siteRoot.rawUrl) < 0;
         }
+    }
+
+    enum ImageStatus {
+        NOT_INIT,
+        lOADING,
+        FAIL,
+        LOADED,
     }
 
     interface SrcChangeQuery {

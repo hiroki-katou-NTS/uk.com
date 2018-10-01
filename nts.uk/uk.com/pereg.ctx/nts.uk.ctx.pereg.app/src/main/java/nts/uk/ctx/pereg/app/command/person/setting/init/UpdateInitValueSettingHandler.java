@@ -234,8 +234,7 @@ public class UpdateInitValueSettingHandler extends CommandHandler<UpdateInitValu
 		} else {
 			// add category in init category
 			if (!ctgSetting.isPresent()) {
-				PerInfoInitValSetCtg ctgDomain = PerInfoInitValSetCtg.createFromJavaType(command.getSettingId(),
-						command.getPerInfoCtgId());
+				PerInfoInitValSetCtg ctgDomain = PerInfoInitValSetCtg.createFromJavaType(command.getSettingId(), command.getPerInfoCtgId());
 				this.ctgRepo.add(ctgDomain);
 			}
 			if (itemSetting.size() == 0) {

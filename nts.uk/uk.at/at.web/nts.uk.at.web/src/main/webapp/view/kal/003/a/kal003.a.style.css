@@ -96,3 +96,9 @@ div .tab-content-5 .nts-fixed-table .nts-fixed-body-container{
 	height: 171px !important;
 }
 
+.tab-content-7 > div .nts-fixed-table.cf .nts-fixed-body-container.ui-iggrid .nts-fixed-body-wrapper{
+	height: 386px ! important;
+}
+#div-fixed-table .nts-fixed-table.cf .nts-fixed-body-container.ui-iggrid .nts-fixed-body-wrapper{
+	height: 256px ! important ;
+}

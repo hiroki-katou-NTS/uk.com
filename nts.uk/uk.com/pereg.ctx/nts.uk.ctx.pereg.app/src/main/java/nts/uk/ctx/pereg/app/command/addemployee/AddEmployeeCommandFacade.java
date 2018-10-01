@@ -63,7 +63,7 @@ public class AddEmployeeCommandFacade {
 			command.getInputs().add(createCardNoCategory(command.getCardNo()));
 		}
 		
-		
+		// trường hợp phi thẳng vào layout
 		if (command.getCreateType() == 3) {
 			return command.getInputs();
 		}
@@ -87,7 +87,17 @@ public class AddEmployeeCommandFacade {
 						command.getCategoryData(categoryCode)))
 				.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 		
-		
+		// fix bug 100117
+		// fix bug trong trường hợp coppy category workingCon2 nhưng ở layout không có
+		// category này.
+		Optional<ItemsByCategory> ctgWorkingCod2_Opt = composedData.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00070")).findFirst();
+		if (ctgWorkingCod2_Opt.isPresent()) {
+			Optional<ItemsByCategory> ctgWorkingCod1_Opt = composedData.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst();
+			if (ctgWorkingCod1_Opt.isPresent()) {
+				composedData.remove(ctgWorkingCod2_Opt.get());
+				composedData.stream().filter(ctg -> ctg.getCategoryCd().equals("CS00020")).findFirst().get().getItems().addAll(ctgWorkingCod2_Opt.get().getItems());
+			}
+		}
 		
 		return composedData;
 		
@@ -284,7 +294,7 @@ public class AddEmployeeCommandFacade {
 				break;
 			}
 			List<ComboBoxObject> comboboxs =  this.comboboxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(),
-					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode());
+					true, PersonEmployeeType.EMPLOYEE, true, settingItem.getCategoryCode(),null);
 			
 			if(!comboboxs.isEmpty()) {
 				Optional<ComboBoxObject> opt = comboboxs.stream().filter(i -> i.getOptionValue().equals(value)).findFirst();

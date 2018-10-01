@@ -16,27 +16,29 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * @author thanhnx
- * 対象日の本人確認が済んでいるかチェックする
+ * @author thanhnx 対象日の本人確認が済んでいるかチェックする
  *
  */
 @Stateless
 public class CheckIndentityDayConfirm {
-	
+
 	@Inject
 	private IdentityProcessUseSetRepository identityProcessUseSetRepository;
-	
+
 	@Inject
 	private IdentificationRepository identificationRepository;
-   public boolean checkIndentityDay(String employeeId, List<GeneralDate> dates){
-	   //TODO 対応するドメインモデル「本人確認処理の利用設定」を取得する
-	   String companyId = AppContexts.user().companyId();
-	   Optional<IdentityProcessUseSet> indentityOpt = identityProcessUseSetRepository.findByKey(companyId);
-	   if(indentityOpt.isPresent() && !indentityOpt.get().isUseConfirmByYourself()) return true;
-	   //対応するドメインモデル「日の本人確認」がすべて存在するかチェックする
-	   List<Identification> indentitys = identificationRepository.findByEmployeeID(employeeId, dates);
-       Set<GeneralDate> dateProcess =  indentitys.stream().map(x -> x.getProcessingYmd()).collect(Collectors.toSet());
-       if(dateProcess.size() == dates.size()) return true;
-       return false;
-   }
+
+	public boolean checkIndentityDay(String employeeId, List<GeneralDate> dates) {
+		// TODO 対応するドメインモデル「本人確認処理の利用設定」を取得する
+		String companyId = AppContexts.user().companyId();
+		Optional<IdentityProcessUseSet> indentityOpt = identityProcessUseSetRepository.findByKey(companyId);
+		if (indentityOpt.isPresent() && !indentityOpt.get().isUseConfirmByYourself())
+			return true;
+		// 対応するドメインモデル「日の本人確認」がすべて存在するかチェックする
+		List<Identification> indentitys = identificationRepository.findByEmployeeID(employeeId, dates);
+		Set<GeneralDate> dateProcess = indentitys.stream().map(x -> x.getProcessingYmd()).collect(Collectors.toSet());
+		if (dateProcess.size() == dates.size())
+			return true;
+		return false;
+	}
 }

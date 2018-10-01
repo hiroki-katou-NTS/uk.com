@@ -69,7 +69,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoItemOrder po "
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
-			+ " WHERE c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd  ORDER BY po.disporder";
+			+ " WHERE  c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd AND pc.cid = :cid  ORDER BY po.disporder";
 	// SONNLB
 
 	private static final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -256,12 +256,18 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 						switch (init.getSaveDataType()) {
 						case STRING:
 							c.setStringValue(init.getStringValue().v());
+							c.setDateValue(null);
+							c.setIntValue(null);
 							break;
 						case NUMBERIC:
 							c.setIntValue(init.getIntValue() == null? null: init.getIntValue().v());
+							c.setDateValue(null);
+							c.setStringValue(null);
 							break;
 						case DATE:
 							c.setDateValue(init.getDateValue());
+							c.setIntValue(null);
+							c.setStringValue(null);
 							break;
 						}
 					}
@@ -278,9 +284,11 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	// sonnlb
 	@Override
-	public List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String categoryCd) {
+	public List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String categoryCd, String cid) {
 		return this.queryProxy().query(SEL_ALL_INIT_ITEM, Object[].class).setParameter("categoryCd", categoryCd)
-				.setParameter("settingId", settingId).getList(c -> toInitDomain(c));
+				.setParameter("settingId", settingId)
+				.setParameter("cid", cid)
+				.getList(c -> toInitDomain(c));
 
 	}
 

@@ -11,8 +11,10 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
+import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter
@@ -44,23 +46,16 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 	@Column(name = "END_TIME")
 	public Integer endTime;
 	
+	@Column(name = "STATUS")
+	public int status;
+	
 	
 	@Override
 	protected Object getKey() {
 		return extraProcessStatusID;
 	}
 	
-	public KfnmtAlarmListExtraProcessStatus(String extraProcessStatusID, String companyID, GeneralDate startDate,
-			Integer startTime, String employeeID, GeneralDate endDate, Integer endTime) {
-		super();
-		this.extraProcessStatusID = extraProcessStatusID;
-		this.companyID = companyID;
-		this.startDate = startDate;
-		this.startTime = startTime;
-		this.employeeID = employeeID;
-		this.endDate = endDate;
-		this.endTime = endTime;
-	}
+	
 	
 	public static KfnmtAlarmListExtraProcessStatus  toEntity(AlarmListExtraProcessStatus domain) {
 		return new KfnmtAlarmListExtraProcessStatus(
@@ -70,7 +65,8 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 				domain.getStartTime(),
 				domain.getEmployeeID().isPresent() ==true?domain.getEmployeeID().get(): null,
 				domain.getEndDate().isPresent()==true? domain.getEndDate().get(): null,
-				domain.getEndTime().isPresent()==true? domain.getEndTime().get(): null 
+				domain.getEndTime().isPresent()==true? domain.getEndTime().get(): null,
+				domain.getStatus().value
 				);
 	}
 	
@@ -82,8 +78,24 @@ public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Se
 				this.startTime,
 				this.employeeID,
 				this.endDate,
-				this.endTime
+				this.endTime,
+				EnumAdaptor.valueOf(this.status, ExtractionState.class) 
 				);
+	}
+
+
+
+	public KfnmtAlarmListExtraProcessStatus(String extraProcessStatusID, String companyID, GeneralDate startDate,
+			Integer startTime, String employeeID, GeneralDate endDate, Integer endTime, int status) {
+		super();
+		this.extraProcessStatusID = extraProcessStatusID;
+		this.companyID = companyID;
+		this.startDate = startDate;
+		this.startTime = startTime;
+		this.employeeID = employeeID;
+		this.endDate = endDate;
+		this.endTime = endTime;
+		this.status = status;
 	}
 
 

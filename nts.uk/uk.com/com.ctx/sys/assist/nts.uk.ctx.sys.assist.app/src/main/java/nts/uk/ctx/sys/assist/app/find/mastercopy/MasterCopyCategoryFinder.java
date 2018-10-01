@@ -35,7 +35,7 @@ public class MasterCopyCategoryFinder {
 		}
 
 		// get list category dto
-		List<MasterCopyCategoryFindDto> listMasterCopyCategoryDto = listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().value, e.getMasterCopyCategory().v(), e.getOrder(), e.getMasterCopyId())).collect(Collectors.toList());
+		List<MasterCopyCategoryFindDto> listMasterCopyCategoryDto = listMasterCopyCategory.stream().map(e -> new MasterCopyCategoryFindDto(e.getSystemType().value, e.getCategoryName().v(), e.getOrder().v(), e.getCategoryNo().v())).collect(Collectors.toList());
 		// sort by system then order;
 		return listMasterCopyCategoryDto.stream().sorted(Comparator.comparing(MasterCopyCategoryFindDto::getSystemType).thenComparing(MasterCopyCategoryFindDto::getOrder)).collect(Collectors.toList());
 		

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.approvalmanagement;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +40,18 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_APPROVAL Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override

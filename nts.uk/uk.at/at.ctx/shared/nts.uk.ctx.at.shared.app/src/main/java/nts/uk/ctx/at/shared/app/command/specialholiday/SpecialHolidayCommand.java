@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantcondition.SpecialLeaveRestrictionCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.grantinformation.GrantRegularCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.periodinformation.GrantPeriodicCommand;
@@ -13,10 +12,10 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestri
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Value
 public class SpecialHolidayCommand {
@@ -103,13 +102,10 @@ public class SpecialHolidayCommand {
 			return null;
 		}
 		
-		DatePeriod availabilityPeriod = new DatePeriod(
-				GeneralDate.fromString(this.periodicCommand.getAvailabilityPeriod().getStartDate(), "yyyy/MM/dd"), 
-				GeneralDate.fromString(this.periodicCommand.getAvailabilityPeriod().getEndDate(), "yyyy/MM/dd"));
 		
 		return GrantPeriodic.createFromJavaType(companyId, this.specialHolidayCode,
 				this.periodicCommand.getTimeSpecifyMethod(),
-				availabilityPeriod,
+				new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
 				this.toDomainSpecialVacationDeadline(),
 				this.periodicCommand.getLimitCarryoverDays());
 	}

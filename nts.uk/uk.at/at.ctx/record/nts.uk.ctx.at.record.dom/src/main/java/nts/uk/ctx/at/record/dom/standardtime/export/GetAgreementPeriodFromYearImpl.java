@@ -13,9 +13,9 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -48,7 +48,7 @@ public class GetAgreementPeriodFromYearImpl implements GetAgreementPeriodFromYea
 		int startMonth = agreementOperationSet.getStartingMonth().value + 1;
 		
 		// 36協定の「締め日」を確認
-		ClosureDate closureDate = new ClosureDate(0, true);
+		ClosureDate closureDate = new ClosureDate(1, true);
 		if (agreementOperationSet.getClosingDateType() != ClosingDateType.LASTDAY){
 			closureDate = new ClosureDate(agreementOperationSet.getClosingDateType().value + 1, false);
 		}

@@ -349,7 +349,9 @@ module nts.uk.at.view.kdw001.f {
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth%100 + "月度" + "   " + data.closureName;
+                //fix bug 100501
+                this.closureName = data.closureName == null ? " " : data.closureName;
+                this.processingMonthName = data.processingMonth%100 + "月度" + "   " + this.closureName || data.processingMonth%100 + "月度" + "   " + "" ;
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
@@ -361,7 +363,6 @@ module nts.uk.at.view.kdw001.f {
                 this.executionStatusName = data.executionStatusName;
                 this.employeeID = data.employeeID;
                 this.closureID = data.closureID;
-                this.closureName = data.closureName;
                 this.caseSpecExeContentID = data.caseSpecExeContentID;
                 this.executionLogs = data.executionLogs;
                 this.isTextRed = data.isTextRed;
@@ -370,7 +371,7 @@ module nts.uk.at.view.kdw001.f {
             }
             
             public changeName(id : any,name: string): void {
-                this.closureName = name;
+                this.closureName = name == null ? " " : name;
                 this.processingMonthName = this.processingMonth%100 +"月度   "+ this.closureName;
             }
             

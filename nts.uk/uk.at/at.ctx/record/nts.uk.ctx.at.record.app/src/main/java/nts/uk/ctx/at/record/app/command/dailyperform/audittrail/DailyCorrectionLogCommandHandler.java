@@ -43,7 +43,7 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.DAILY);
         
 		Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(ITEM_ID_ALL)
-				.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+				.stream().filter(x -> x.getAttendanceItemName() != null).collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
 						x -> x.getAttendanceItemName()));
 		
 		val correctionLogParameter = new DailyCorrectionLogParameter(
@@ -98,7 +98,7 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 				if (valueItemNew.getValue() != null && itemOld.getValue() != null
 						&& !valueItemNew.getValue().equals(itemOld.getValue())
 						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
-						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)) {
+						|| (valueItemNew.getValue() != null && itemOld.getValue() == null) && itemNameMap.containsKey(valueItemKey)) {
 					DailyCorrectedItem item = new DailyCorrectedItem(itemNameMap.get(valueItemKey),
 							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
 							convertType(valueItemNew.getValueType()), itemEdits.contains(valueItemNew.getItemId())
@@ -120,6 +120,9 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 			
 		case 13:
 			return DataValueAttribute.MONEY.value;
+			
+		case 15:
+			return DataValueAttribute.CLOCK.value;	
 			
 		default:
 			return DataValueAttribute.STRING.value;

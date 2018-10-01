@@ -1,5 +1,10 @@
 @CHARSET "UTF-8";
 
+#contents-area {
+	display: flex;
+	flex-direction: row;
+}
+
 #left-content {
 	width: 386px;
 	float: left;
@@ -18,20 +23,24 @@
 
 #left-content-bottom {
 	width: 100%;
-	/* height: 570px; */
+	height: 570px;
 	padding: 15px;
 	border-radius: 5px;
 }
 
 #right-content {
-	width: 720px;
-	float: left;
-	margin-left: 40px;
+	/* width: 720px;
+	float: left; */
+	margin-left: 56px;
 	margin-top: 10px;
+	/* float:  right; */
 }
+
+
 /* #table-detail-setting {
 	margin-top: -10px;
 } */
+
 .td-detail {
 	padding-top: 10px;
 	padding-bottom: 10px;

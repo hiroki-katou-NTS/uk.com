@@ -14,8 +14,12 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.record.dom.adapter.employee.RegularSortingTypeImport;
+import nts.uk.ctx.at.record.dom.adapter.employee.RegulationInfoEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.SortingConditionOrderImport;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
@@ -64,6 +68,9 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	@Inject
 	private RegulationInfoEmployeeQueryAdapter regulationInfoEmployeeQueryAdapter;
+	
+	@Inject
+	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
 
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
 			GeneralDate endDate) {
@@ -224,14 +231,26 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport = approvalStatusAdapter.getApprovalRootOfEmloyee(
 					datePeriod.start(), datePeriod.end(), AppContexts.user().employeeId(),
 					AppContexts.user().companyId(), 1);
+			List<String> lstEmployment = new ArrayList<>();
 			if (approvalRootOfEmployeeImport == null
 					|| approvalRootOfEmployeeImport.getApprovalRootSituations().size() == 0) {
 				throw new BusinessException("Msg_874");
 			}
+			else//クエリ「社員を並び替える(任意)」を実行する (Sort employee)
+			{
+				String companyId = AppContexts.user().companyId();
+				List<String> employeeList = approvalRootOfEmployeeImport.getApprovalRootSituations().stream().map(item->{
+					return item.getTargetID();
+				}).collect(Collectors.toList());
+				// list order conditions
+				lstEmployment = this.regulationInfoEmployeeAdapter.sortEmployees(companyId, employeeList,
+						this.createListConditions(), this.convertFromDateToDateTime(datePeriod.end()));
+			}
+			
 			// ドメインモデル「雇用に紐づく就業締め」を取得する
 			List<ClosureEmployment> lstClosureEmployment = closureEmploymentRepository
 					.findByClosureId(AppContexts.user().companyId(), currentClosure);
-			List<String> lstEmployment = new ArrayList<>();
+//			List<String> lstEmployment = new ArrayList<>();
 			lstEmployment.addAll(lstClosureEmployment.stream().map(closureEmployment -> {
 				return closureEmployment.getEmploymentCD();
 			}).collect(Collectors.toList()));
@@ -254,5 +273,20 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		}
 		return oneMonthApprovalStatusDto;
 	}
-
+	
+	//並び替え条件　=<職場(inlevel)、1>、<分類コード(ASC)、2>、<職位(序列)、3>、<社員コード(ASC)、4>
+	private List<SortingConditionOrderImport> createListConditions()
+	{
+		List<SortingConditionOrderImport> lstCondition = new ArrayList<>();
+		lstCondition.add(new SortingConditionOrderImport(1,RegularSortingTypeImport.WORKPLACE));
+		lstCondition.add(new SortingConditionOrderImport(2,RegularSortingTypeImport.CLASSIFICATION));
+		lstCondition.add(new SortingConditionOrderImport(3,RegularSortingTypeImport.POSITION));
+		lstCondition.add(new SortingConditionOrderImport(4,RegularSortingTypeImport.EMPLOYMENT));
+		return lstCondition;
+	}
+	
+	//convert from Date to DateTime
+	private GeneralDateTime convertFromDateToDateTime(GeneralDate date) {
+		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+	}
 }
