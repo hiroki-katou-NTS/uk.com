@@ -99,7 +99,7 @@ public class JpaCDL009EmployeeQueryRepository extends JpaRepository implements C
 					.employeeCode((String) filteredItem[1])
 					.employeeName((String) filteredItem[2])
 					.workplaceName((String) filteredItem[3]).build();
-		}).collect(Collectors.toList());
+		}).distinct().collect(Collectors.toList());
 
 	}
 

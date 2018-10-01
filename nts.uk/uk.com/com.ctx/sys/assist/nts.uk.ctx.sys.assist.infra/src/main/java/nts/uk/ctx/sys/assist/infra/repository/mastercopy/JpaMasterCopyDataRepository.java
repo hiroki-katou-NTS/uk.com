@@ -57,9 +57,10 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository#doCopy(java.lang.String, nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod, java.lang.String)
 	 */
 	@Override
-	public void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId) {
+	public void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId, boolean isOnlyCid) {
 		//case 0,1
         DataCopyHandler.DataCopyHandlerBuilder.aDataCopyHandler()
+                .withOnlyCid(isOnlyCid)
                 .withCompanyId(companyId)
                 .withCopyMethod(copyMethod)
                 .withEntityManager(getEntityManager())
