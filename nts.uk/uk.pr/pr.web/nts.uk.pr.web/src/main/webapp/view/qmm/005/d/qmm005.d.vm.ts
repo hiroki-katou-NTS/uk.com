@@ -389,19 +389,20 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             let element = document.getElementById('openAdvanceSetting');
             let expanClass =document.getElementsByClassName("ui-dialog")[0];
             
-            if (windowSize.$dialog.height() < 440) {
+            if (!self.isAdvanceSetting()) {
+                windowSize.$dialog.height(450);
                 self.isAdvanceSetting(true);
                 
                 //expanClass.addClass('expanDialog');
                 //element.style.display = "block";
                // windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 100);
-                windowSize.setHeight(850);
+
                 //element.attr('style','top: 0px!important');
-                $('.ui-dialog').attr('style','top: 0px!important');
-            }else if (windowSize.$dialog.height() > 440) {
-                //element.style.display = "none";
+                //$('.ui-dialog').attr('style','top: 0px!important');
+            }else {
                 self.isAdvanceSetting(false);
-                windowSize.setHeight(440);
+                windowSize.$dialog.height(410);
+                //element.style.display = "none";
             }
         }
 
