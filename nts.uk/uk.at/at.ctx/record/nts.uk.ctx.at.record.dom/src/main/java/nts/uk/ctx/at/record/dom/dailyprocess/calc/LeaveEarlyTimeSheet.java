@@ -32,17 +32,20 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class LeaveEarlyTimeSheet {
 	
+	//計上用遅刻早退時間帯
 	//早退していない場合はempty
 	@Getter
 	private Optional<LateLeaveEarlyTimeSheet> forRecordTimeSheet;
 	
+	//控除用遅刻早退時間帯
 	@Getter
 	private Optional<LateLeaveEarlyTimeSheet> forDeducationTimeSheet;
 
 	@Getter
-	//今は一時的にint型で作成しているが、本来はworkNo型
+	//勤務No
 	private int workNo;
 	
+	//控除相殺時間
 	private Optional<DeductionOffSetTime> OffsetTime;
 	
 	public LeaveEarlyTimeSheet(

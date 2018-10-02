@@ -160,6 +160,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ " WHERE c.pk.companyId = :companyId"
 			+ " AND c.pk.sphdNo = :sphdNo";
 	
+	private final static String SELECT_SPHD_BY_COMPANY_AND_NO = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.memo FROM KshstSpecialHoliday e "
+			+ "WHERE e.pk.companyId = :companyId "
+			+ "AND e.pk.specialHolidayCode IN :specialHolidayCode";
+	
 	private SpecialHoliday createDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
 		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
@@ -557,5 +561,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				.map(c -> {
 					return c.pk.specialHolidayCode;
 				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes) {
+		if(specialHolidayCodes.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_AND_NO, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCodes)
+				.getList(c -> {
+					return createSphdDomainFromEntity(c);
+				});
 	}
 }

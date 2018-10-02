@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneSettingOutPut;
@@ -11,10 +12,11 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 
+@Stateless
 public class ReflectBreakTimzoneImpl implements BreakTimeZoneService {
-
+	
 	@Inject
-	private ReflectBreakTimeOfDailyDomainServiceImpl reflectBreakTimeOfDailyDomainServiceImpl;
+	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
@@ -39,11 +41,11 @@ public class ReflectBreakTimzoneImpl implements BreakTimeZoneService {
 
 			switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value) {
 			case 0:// 固定勤務
-				checkReflect = reflectBreakTimeOfDailyDomainServiceImpl.CheckBreakTimeFromFixedWorkSetting(companyId,
+				checkReflect = reflectBreakTimeOfDailyDomainService.CheckBreakTimeFromFixedWorkSetting(companyId,
 						weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut, checkWorkDay);
 				break;
 			case 2:// 流動勤務
-				checkReflect = reflectBreakTimeOfDailyDomainServiceImpl.confirmIntermissionTimeZone(companyId,
+				checkReflect = reflectBreakTimeOfDailyDomainService.confirmIntermissionTimeZone(companyId,
 						weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut);
 
 				break;
@@ -55,13 +57,13 @@ public class ReflectBreakTimzoneImpl implements BreakTimeZoneService {
 				break;
 
 			default:
-				checkReflect = reflectBreakTimeOfDailyDomainServiceImpl.CheckBreakTimeFromFixedWorkSetting(companyId,
+				checkReflect = reflectBreakTimeOfDailyDomainService.CheckBreakTimeFromFixedWorkSetting(companyId,
 						weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut, checkWorkDay);
 				break;
 			}
 
 		} else {
-			checkReflect = reflectBreakTimeOfDailyDomainServiceImpl.confirmInterFlexWorkSetting(companyId,
+			checkReflect = reflectBreakTimeOfDailyDomainService.confirmInterFlexWorkSetting(companyId,
 					weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut, checkWorkDay);
 		}
 

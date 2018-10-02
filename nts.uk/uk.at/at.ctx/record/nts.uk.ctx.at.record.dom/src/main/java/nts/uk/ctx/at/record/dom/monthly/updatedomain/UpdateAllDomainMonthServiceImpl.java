@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.updatedomain;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +8,7 @@ import javax.inject.Inject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
@@ -36,6 +36,9 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 	@Inject
 	private EmployeeMonthlyPerErrorRepository empErrorRepo;
 	
+	@Inject
+	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
+	
 	@Override
 	public void insertUpdateAll(List<IntegrationOfMonthly> domains) {
 		domains.forEach(domain ->{
@@ -62,6 +65,10 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 				domain.getEmployeeMonthlyPerErrorList().forEach(x ->{
 					empErrorRepo.insertAll(x);
 				});
+			}
+			
+			if(domain.getAgreementTime().isPresent()){
+				agreementTimeRepository.persistAndUpdate(domain.getAgreementTime().get());
 			}
 		});
 		

@@ -34,7 +34,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.caltimediff.CalculateTimeDiffService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
@@ -93,8 +92,6 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
 	@Inject
 	private ErrMessageInfoRepository errRepo;
-	@Inject
-	private WorkingConditionItemService workingConditionItemService;
 	@Inject
 	private CalculateTimeDiffService calculateTimeDiffService;
 	@Inject
@@ -327,6 +324,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		return checkReflect;
 	}
 
+	@Override
 	// フレックス勤務設定から休憩時間帯を確認する
 	public boolean confirmInterFlexWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
@@ -393,6 +391,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 	}
 
+	@Override
 	// 時差勤務設定から休憩時間帯を確認する
 	public boolean ConfirmInterTimezoneStaggeredWorkSetting(String companyId, String employeeID,
 			GeneralDate processingDate, String empCalAndSumExecLogID, int weekdayHolidayClassification,
@@ -549,6 +548,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		return false;
 	}
 
+	@Override
 	// 流動勤務設定から休憩時間帯を確認する
 	public boolean confirmIntermissionTimeZone(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
@@ -573,6 +573,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		return false;
 	}
 
+	@Override
 	// 固定勤務設定から休憩時間帯を確認する
 	public boolean CheckBreakTimeFromFixedWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
