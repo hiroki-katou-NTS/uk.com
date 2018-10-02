@@ -396,8 +396,10 @@ module nts.uk.pr.view.qmm008.share.model {
             this.fundClassification(params ? params.fundClassification : 1);
             this.historyId(params ? params.historyId : null);
             this.fundClassification.subscribe(newValue => {
-                nts.uk.ui.errors.clearAll();
-                $('.tab-c .nts-input').trigger("validate");
+                if (newValue == FUND_CLASSIFICATION.NOT_JOIN) {
+                    nts.uk.ui.errors.clearAll();
+                    $('.tab-c #C3 .nts-input').trigger("validate");
+                }
             })
         }
     }

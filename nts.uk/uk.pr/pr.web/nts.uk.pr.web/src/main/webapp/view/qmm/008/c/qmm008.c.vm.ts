@@ -211,6 +211,8 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
+            } else {
+                command = self.updateOptionalData(command);
             }
             block.invisible();
             // Update historyId for case clone previous data
@@ -370,6 +372,23 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             if (Number(bonusFemaleContributionRate.employeeContributionRatio) < Number(bonusFemaleContributionRate.employeeExemptionRate)) $('#C3_24').ntsError('set', { messageId: "MsgQ_224" });
 
         }
+
+        updateOptionalData (command) {
+            // update to 0 to prevent handling from format exception
+            // value change to null by server
+            let bonusEmployeePension = command.bonusEmployeePensionInsuranceRate.historyId;
+            let employeePensionMonthly = command.employeesPensionMonthlyInsuranceFee.historyId;
+            command.bonusEmployeePensionInsuranceRate.femaleContributionRate.individualExemptionRate = 0;
+            command.bonusEmployeePensionInsuranceRate.femaleContributionRate.employeeExemptionRate = 0;
+            command.bonusEmployeePensionInsuranceRate.maleContributionRate.individualExemptionRate = 0;
+            command.bonusEmployeePensionInsuranceRate.maleContributionRate.employeeExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate.individualExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate.employeeExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate.individualExemptionRate = 0;
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate.employeeExemptionRate = 0;
+            return command;
+        }
+
     }
 }
 
