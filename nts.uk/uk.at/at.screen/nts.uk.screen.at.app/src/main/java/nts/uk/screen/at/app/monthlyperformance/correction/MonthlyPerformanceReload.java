@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
@@ -102,14 +103,15 @@ public class MonthlyPerformanceReload {
 	@Inject
 	private MonthlyPerformanceScreenRepo repo;
 	
-	private static final String ADD_CHARACTER = "A";
-	private static final String STATE_DISABLE = "ntsgrid-disable";
-	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
-	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
-	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+	private static final String STATE_DISABLE = "mgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "mgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "mgrid-manual-edit-other";
+//	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 	private static final String STATE_ERROR = "mgrid-error";
 	private static final String STATE_ALARM = "mgrid-alarm";
-	private static final String STATE_SPECIAL = "ntsgrid-special";
+	private static final String STATE_SPECIAL = "mgrid-special";
+	private static final String ADD_CHARACTER = "A";
+//	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	@Inject
 	private MonPerformanceFunRepository monPerformanceFunRepository;
@@ -277,16 +279,19 @@ public class MonthlyPerformanceReload {
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
 		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
 			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
-				// *10 request list 155
-				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter
-						.getApprovalByListEmplAndListApprovalRecordDateNew(
-								Arrays.asList(param.getActualTime().getEndDate()), listEmployeeIds,
-								Integer.valueOf(2));
+				// *10 request list 533
+				List<EmpPerformMonthParamImport> params = new ArrayList<>();
+				for (MonthlyPerformanceEmployeeDto emp : screenDto.getLstEmployee()) {
+					EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(new YearMonth(yearMonth), closureId,
+							screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate(), emp.getId());
+					params.add(p);
+				}
+				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(params);
 			} else if (param.getInitMenuMode() == 2) {
-				// *8 request list 133
-				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(
-						param.getActualTime().getEndDate(), param.getActualTime().getEndDate(),
-						AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+				// *8 request list 534
+				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
+						AppContexts.user().userId(), new YearMonth(yearMonth), closureId,
+						screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 			}
 		}
 

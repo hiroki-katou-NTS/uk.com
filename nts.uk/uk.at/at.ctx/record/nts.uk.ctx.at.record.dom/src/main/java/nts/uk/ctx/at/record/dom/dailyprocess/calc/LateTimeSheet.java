@@ -33,14 +33,20 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class LateTimeSheet{
 	
 	// 遅刻していない場合はempty
+	//計上用時間帯
 	private Optional<LateLeaveEarlyTimeSheet> forRecordTimeSheet;
 	
+	//控除用時間帯
 	private Optional<LateLeaveEarlyTimeSheet> forDeducationTimeSheet;
 	
-	//今は一時的にint型で作成しているが、本来はworkNo型
+	//勤務No
 	private int workNo;
 	
+	//相殺時間
 	private Optional<DeductionOffSetTime> OffsetTime;
+	
+	//コアなしフレックス遅刻時間
+	private Optional<AttendanceTime> noCoreFlexLateTime = Optional.empty();
 	
 	
 	public LateTimeSheet(

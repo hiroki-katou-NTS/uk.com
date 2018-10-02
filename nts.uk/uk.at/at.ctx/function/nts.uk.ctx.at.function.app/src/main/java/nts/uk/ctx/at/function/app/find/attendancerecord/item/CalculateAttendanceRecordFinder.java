@@ -93,7 +93,7 @@ public class CalculateAttendanceRecordFinder {
 		List<AttendanceRecordItemDto> result = new ArrayList<>();
 		result = atName.getNameOfAttendanceItem(listAttendanceId, attendanceType.intValue()).stream()
 				.map(e -> new AttendanceRecordItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), 0,
-						e.getTypeOfAttendanceItem()))
+						(e.getTypeOfAttendanceItem() == null ? 0 : e.getTypeOfAttendanceItem())))
 				.collect(Collectors.toList());
 		return result;
 	}

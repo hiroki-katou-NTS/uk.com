@@ -526,8 +526,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         return item.id == value.id;
                     });
                     return val != undefined ? val : value;
-                })
+                });
                 self.dpData = dpDataNew;
+                let cellStatesNew = _.map(self.cellStates(), (value: any) => {
+                    let val = _.find(data.lstCellState, (item: any) => {
+                        return item.rowId == value.rowId && item.columnKey == value.columnKey;
+                    });
+                    return val != undefined ? val : value;
+                });
+                self.cellStates(cellStatesNew);
                 self.dailyPerfomanceData(dpDataNew);
 //                let dataSourceNew = self.displayNumberZero(self.formatDate(self.dpData));
                 $("#dpGrid").mGrid("destroy");
@@ -849,6 +856,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     else
                         return _.assign(a, { state: [] });
                 });
+                self.cellStates(self.dataAll().lstCellState);
             }
             let dataSource = self.formatDate(self.dpData);
 

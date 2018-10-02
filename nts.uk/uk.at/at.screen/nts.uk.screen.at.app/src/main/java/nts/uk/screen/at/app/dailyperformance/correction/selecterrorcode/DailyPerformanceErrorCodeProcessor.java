@@ -96,7 +96,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);
-		dailyProcessor.setHideCheckbok(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
+		dailyProcessor.setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date

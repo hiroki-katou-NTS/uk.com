@@ -78,6 +78,14 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			+ "AND a.startYmd <= :endDate "
 			+ "AND a.endYmd >= :startDate ";
 	
+	private static final String DELETE_BY_PK = "DELETE FROM KrcdtWekAttendanceTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay "
+			+ "AND a.PK.weekNo = :weekNo ";
+	
 	private static final String DELETE_BY_CLOSURE = "DELETE FROM KrcdtWekAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth "
@@ -475,14 +483,14 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
 			int weekNo) {
 		
-		this.commandProxy().remove(KrcdtWekAttendanceTime.class,
-				new KrcdtWekAttendanceTimePK(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0),
-						weekNo));
+		this.getEntityManager().createQuery(DELETE_BY_PK)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.setParameter("weekNo", weekNo)
+				.executeUpdate();
 	}
 
 	/** 削除　（締め） */

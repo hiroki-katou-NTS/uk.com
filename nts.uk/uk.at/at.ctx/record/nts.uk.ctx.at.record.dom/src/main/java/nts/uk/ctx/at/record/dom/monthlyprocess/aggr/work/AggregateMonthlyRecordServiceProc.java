@@ -83,6 +83,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -1047,20 +1049,13 @@ public class AggregateMonthlyRecordServiceProc {
 			// 年休
 			if (dailyInterimRemainMng.getAnnualHolidayData().isPresent()){
 				val data = dailyInterimRemainMng.getAnnualHolidayData().get();
-				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(
-						master.getRemainManaID(),
-						master.getYmd(),
-						data.getWorkTypeCode(),
-						data.getUseDays()));
+				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
 			
 			// 積立年休
 			if (dailyInterimRemainMng.getResereData().isPresent()){
 				val data = dailyInterimRemainMng.getResereData().get();
-				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(
-						master.getRemainManaID(),
-						master.getYmd(),
-						data.getUseDays()));
+				tmpReserveLeaveMngs.add(TmpReserveLeaveMngWork.of(master, data));
 			}
 		}
 
@@ -1073,8 +1068,8 @@ public class AggregateMonthlyRecordServiceProc {
 			val flexTime = attendanceTime.getMonthlyCalculation().getFlexTime();
 			double deductDays = flexTime.getFlexShortDeductTime().getAnnualLeaveDeductDays().v();
 			if (deductDays > 0.0){
-				TmpAnnualLeaveMngWork compensData = TmpAnnualLeaveMngWork.of(
-						"compens", period.end(), "000", new UseDay(deductDays));
+				TmpAnnualLeaveMngWork compensData = TmpAnnualLeaveMngWork.of("compens",
+						period.end(), "000", new UseDay(deductDays), CreateAtr.FLEXCOMPEN, RemainAtr.SINGLE);
 				tmpAnnualLeaveMngs.add(compensData);
 				isOverWriteAnnual = true;
 			}
@@ -1351,7 +1346,6 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		// 「特別休暇」を取得する
-		boolean isError = false;
 		val specialHolidays = this.specialHolidayRepo.findByCompanyId(this.companyId);
 		for (val specialHoliday : specialHolidays){
 			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
@@ -1381,21 +1375,20 @@ public class AggregateMonthlyRecordServiceProc {
 			
 			// 特別休暇エラーがあるか
 			if (inPeriod.getLstError() != null){
-				if (inPeriod.getLstError().size() > 0) isError = true;
+				if (inPeriod.getLstError().size() > 0){
+					// 特別休暇エラー処理
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							specialLeaveCode,
+							ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							null));
+				}
 			}
-		}
-		
-		if (isError){
-			// 特別休暇エラー処理
-			this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-					ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
-					this.yearMonth,
-					this.employeeId,
-					this.closureId,
-					this.closureDate,
-					null,
-					null,
-					null));
 		}
 	}
 	
@@ -1455,7 +1448,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val firstInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstInfoOfDailyOpt.isPresent()){
-			if (!isExistStartWorkInfo){
+			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
 				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
@@ -1466,7 +1459,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val firstWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstWorkTypeOfDailyOpt.isPresent()){
-			if (!isExistStartWorkInfo){
+			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
 				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);

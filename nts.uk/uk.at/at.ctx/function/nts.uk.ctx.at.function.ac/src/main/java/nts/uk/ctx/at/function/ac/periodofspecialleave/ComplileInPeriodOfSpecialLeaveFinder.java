@@ -61,4 +61,23 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		return lstSpecialHoliday;
 	}
 
+	@Override
+	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
+			YearMonth endMonth, List<Integer> listSpeCode) {
+		
+		// requestList263 with speCode
+				List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = specialHolidayRemainDataSevice
+						.getSpeHoliOfPeriodAndCodes(sid, startMonth, endMonth, listSpeCode);
+
+				if (lstSpeHoliOfConfirmedMonthly == null)
+					return null;
+				List<SpecialHolidayImported> lstSpecialHoliday = new ArrayList<>();
+				lstSpeHoliOfConfirmedMonthly.forEach(item -> {
+					SpecialHolidayImported specialHoliday = new SpecialHolidayImported(item.getYm(), item.getUseDays(),
+							item.getUseTimes(), item.getRemainDays(), item.getRemainTimes());
+					lstSpecialHoliday.add(specialHoliday);
+				});
+				return lstSpecialHoliday;
+	}
+	
 }
