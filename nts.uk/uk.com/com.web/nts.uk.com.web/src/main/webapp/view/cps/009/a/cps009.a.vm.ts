@@ -547,7 +547,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
             { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
         ]);
-        itemList: KnockoutObservableArray<any>;
+        itemList: KnockoutObservableArray<PerInfoInitValueSettingItemDto>;
         constructor(params: IInitValueSettingDetail) {
             let self = this;
             self.settingCode = ko.observable(params.settingCode);
