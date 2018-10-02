@@ -518,8 +518,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case 'D6_C4_5': return 'CMF002_107';
                 case 'D6_C4_6': return 'CMF002_108';
                 case 'D6_C4_7': return 'CMF002_106';
-                case 'D6_C4_8': return 'CMF002_106';
-                case 'D6_C4_9': return 'CMF002_106';
+                case 'D6_C4_8': return 'CMF002_107';
+                case 'D6_C4_9': return 'CMF002_108';
                 case 'D6_C4_10': return 'CMF002_106';
                 case 'D6_C4_11': return 'CMF002_107';
                 case 'D6_C4_12': return 'CMF002_108';
