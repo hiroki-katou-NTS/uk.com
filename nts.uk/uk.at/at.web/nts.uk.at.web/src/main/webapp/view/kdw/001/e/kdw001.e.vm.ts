@@ -78,6 +78,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         // monthly
         monthlyAggregateStartTime : KnockoutObservable<string> = ko.observable("");
         monthlyAggregateEndTime : KnockoutObservable<string> = ko.observable("");
+        employeeIDS : KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -326,12 +327,41 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             };
             service.getErrorMessageInfo(params).done((res) => {
                 let i = 0;
-                let data = _.map(res,function(item:any){
+                let data = _.map(res.listResult,function(item:any){
                    return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
                 });
                 self.errorMessageInfo(data);
                 self.dataExport(res);
+                if(res.listEmployee.lenght > 0) {
+                   self.employeeIDS(res.listEmployee);
+                   LabelGetLogDataAgain : getLogDataAgain(res.listEmployee).done((EmpIDS) => {
+                       if(EmpIDS.lenght > 0){
+                           self.employeeIDS(EmpIDS);
+                           continue LabelGetLogDataAgain;
+                       } 
+                    });
+                }
             });
+        }
+
+        getLogDataAgain(employeeIDS : any) : JQueryPromise<any> {
+            var self = this;
+            let dfd = $.Deferred<any>();
+            var params = {
+                empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
+                executionContent: self.selectedExeContent(),
+                employeeID : self.employeeIDS()
+            };
+            service.getErrorMessageInfo(params).done((res) => {
+                let i = 0;
+                let data = _.map(res.listResult,function(item:any){
+                   return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
+                });
+                self.errorMessageInfo.push(data);
+                self.dataExport.push(data);
+                dfd.resolve(res.listEmployee);  
+            });
+            return dfd.promise();
         }
 
     }
