@@ -26,6 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @AllArgsConstructor
 public class HolidayMidnightWork {
+	//休出深夜時間
 	private List<HolidayWorkMidNightTime> holidayWorkMidNightTime;
 	
 	/**

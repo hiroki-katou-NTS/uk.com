@@ -18,6 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface CalculateDailyRecordServiceCenter{//
 
 	//計算
+	//old_process. Don't use!
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily);
 
 	//計算(会社共通のマスタを渡せる場合)

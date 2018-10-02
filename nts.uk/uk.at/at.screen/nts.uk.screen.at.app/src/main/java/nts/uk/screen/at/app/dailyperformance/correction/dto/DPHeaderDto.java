@@ -146,10 +146,22 @@ public class DPHeaderDto {
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
-			dto.setConstraint(new Constraint("Currency", false, ""));
+			if (item.getPrimitive() != null && item.getPrimitive() == 54) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999", "999999"));
+			} else if (item.getPrimitive() != null && item.getPrimitive() == 55) {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+			} else {
+				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
+			}
 		} else if (attendanceAtr == DailyAttendanceAtr.Time.value) {
 			if(item.getPrimitive() != null && item.getPrimitive() == 1){
 				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("00:00", "48:00"));
+			}else if(item.getPrimitive() != null && (item.getPrimitive() == 56 || item.getPrimitive() == 57)){
+				if(item.getPrimitive() == 56){
+					dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-999:59", "999:59"));
+				}else{
+					dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-999999:59", "999999:59"));
+				}
 			}else{
 				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-48:00", "48:00"));
 			}

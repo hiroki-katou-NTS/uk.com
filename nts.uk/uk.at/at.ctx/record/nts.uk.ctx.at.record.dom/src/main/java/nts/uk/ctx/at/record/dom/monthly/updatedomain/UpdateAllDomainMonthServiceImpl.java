@@ -86,6 +86,10 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 					empErrorRepo.insertAll(x);
 				});
 			}
+			
+			if(domain.getAgreementTime().isPresent()){
+				agreementRepo.persistAndUpdate(domain.getAgreementTime().get());
+			}
 		});
 		
 	}

@@ -37,7 +37,6 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 			if (agreementTime.getAgreementTime().getStatus().value > 0){
 				excessCount++;
 				yearMonths.add(agreementTime.getYearMonth());
-				break;
 			}
 		}
 		

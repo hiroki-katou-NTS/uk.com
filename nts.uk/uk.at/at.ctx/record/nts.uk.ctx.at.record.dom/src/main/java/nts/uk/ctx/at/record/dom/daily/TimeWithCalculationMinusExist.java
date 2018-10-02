@@ -5,14 +5,16 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
- * 計算付き時間(マイナス)
+ * 計算付き時間(マイナス有)
  * @author keisuke_hoshina
  *
  */
 @Getter
 public class TimeWithCalculationMinusExist {
+	//時間
 	@Setter
 	private AttendanceTimeOfExistMinus time;
+	//計算時間
 	private AttendanceTimeOfExistMinus calcTime;
 	
 	private TimeWithCalculationMinusExist(AttendanceTimeOfExistMinus time,AttendanceTimeOfExistMinus calcTime) {

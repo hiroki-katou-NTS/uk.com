@@ -1346,7 +1346,6 @@ public class AggregateMonthlyRecordServiceProc {
 		}
 		
 		// 「特別休暇」を取得する
-		boolean isError = false;
 		val specialHolidays = this.specialHolidayRepo.findByCompanyId(this.companyId);
 		for (val specialHoliday : specialHolidays){
 			int specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
@@ -1376,21 +1375,20 @@ public class AggregateMonthlyRecordServiceProc {
 			
 			// 特別休暇エラーがあるか
 			if (inPeriod.getLstError() != null){
-				if (inPeriod.getLstError().size() > 0) isError = true;
+				if (inPeriod.getLstError().size() > 0){
+					// 特別休暇エラー処理
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							specialLeaveCode,
+							ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							null));
+				}
 			}
-		}
-		
-		if (isError){
-			// 特別休暇エラー処理
-			this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-					ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
-					this.yearMonth,
-					this.employeeId,
-					this.closureId,
-					this.closureDate,
-					null,
-					null,
-					null));
 		}
 	}
 	
@@ -1450,7 +1448,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val firstInfoOfDailyOpt = this.repositories.getAffiliationInfoOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstInfoOfDailyOpt.isPresent()){
-			if (!isExistStartWorkInfo){
+			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
 				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
@@ -1461,7 +1459,7 @@ public class AggregateMonthlyRecordServiceProc {
 		val firstWorkTypeOfDailyOpt = this.repositories.getWorkTypeOfDaily().findByKey(
 				this.employeeId, datePeriod.start());
 		if (!firstWorkTypeOfDailyOpt.isPresent()){
-			if (!isExistStartWorkInfo){
+			if (isExistStartWorkInfo){
 				val errorInfo = new MonthlyAggregationErrorInfo(
 						"003", new ErrMessageContent(TextResource.localize("Msg_1157")));
 				this.errorInfos.putIfAbsent(errorInfo.getResourceId(), errorInfo);
