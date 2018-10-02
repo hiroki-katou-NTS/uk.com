@@ -181,6 +181,7 @@ public class MonthlyPerformanceReload {
 		
 		param.setLstLockStatus(lstLockStatus);
 		screenDto.setParam(param);
+		screenDto.setLstEmployee(param.getLstEmployees());
 
 		// アルゴリズム「月別実績を表示する」を実行する(Hiển thị monthly actual result)
 		displayMonthlyResult(screenDto, param.getYearMonth(), param.getClosureId(), optApprovalProcessingUseSetting.get(), companyId);
