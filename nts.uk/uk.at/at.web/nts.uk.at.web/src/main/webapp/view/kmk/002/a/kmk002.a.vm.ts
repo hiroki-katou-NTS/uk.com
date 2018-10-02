@@ -90,7 +90,7 @@ module nts.uk.at.view.kmk002.a {
             atrDataSource: EnumConstantDto[];
 
             // function
-            getOptItemNoAbove: () => Array<number>;
+            getExcludedOptItems: () => Array<number>;
 
             // flag
             hasChanged: boolean;
@@ -468,7 +468,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private getSelectableFormulas(orderNo: number): Array<FormulaDto> {
                 let self = this;
-                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() < orderNo);
+                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() > orderNo);
                 return _.map(filtered, item => item.toDto());
             }
 
@@ -493,7 +493,7 @@ module nts.uk.at.view.kmk002.a {
                 f.getSymbolById = self.getSymbolById.bind(self);
                 f.setApplyFormula = self.setApplyFormula.bind(self);
                 f.getSelectableFormulas = self.getSelectableFormulas.bind(self);
-                f.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+                f.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                 // Set order
                 f.orderNo(order);
@@ -855,7 +855,7 @@ module nts.uk.at.view.kmk002.a {
                     formula.getSymbolById = self.getSymbolById.bind(self);
                     formula.setApplyFormula = self.setApplyFormula.bind(self);
                     formula.getSelectableFormulas = self.getSelectableFormulas.bind(self);
-                    formula.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+                    formula.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                     // convert dto to viewmodel
                     formula.fromDto(item);
@@ -1318,7 +1318,7 @@ module nts.uk.at.view.kmk002.a {
                         OptionalItem.selectedFormulas([]);
 
                         // bind function
-                        self.optionalItem.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+                        self.optionalItem.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                         // convert dto to view model.
                         self.optionalItem.fromDto(res);
@@ -1338,12 +1338,13 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Get list optional item above of selected optional item.
              */
-            private getOptItemNoAbove(): Array<number> {
+            private getExcludedOptItems(): Array<number> {
                 let self = this;
                 let selectedNo = self.selectedCode();
                 return self.optionalItemHeaders()
-                    .filter(item => item.performanceAtr == self.optionalItem.performanceAtr()
-                        && item.itemNo < selectedNo)
+                    .filter(item => item.itemNo >= selectedNo
+                        || item.usageAtr == 0
+                        || item.performanceAtr != self.optionalItem.performanceAtr())
                     .map(item => item.itemNo);
             }
         }
@@ -1390,7 +1391,7 @@ module nts.uk.at.view.kmk002.a {
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
-            getOptItemNoAbove: () => Array<number>;
+            getExcludedOptItems: () => Array<number>;
             getSelectableFormulas: (orderNo: number) => Array<FormulaDto>;
 
             // Enums datasource
@@ -1756,7 +1757,7 @@ module nts.uk.at.view.kmk002.a {
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = dto.itemSelection;
-                param.selectableOptItemNos = self.getOptItemNoAbove();
+                param.excludedOptItemNos = self.getExcludedOptItems();
                 nts.uk.ui.windows.setShared('paramToC', param);
 
                 // Open dialog.
@@ -2023,7 +2024,7 @@ module nts.uk.at.view.kmk002.a {
             formulaAtrName: string;
             formulaName: string;
             itemSelection: ItemSelectionDto;
-            selectableOptItemNos: Array<number>;
+            excludedOptItemNos: Array<number>;
         }
         export interface ParamToD {
             formulaId: string;
