@@ -2902,8 +2902,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<EditStateOfDailyPerformanceDto> editStateDto = remarkDataContainer.getEditStateDto();
 			List<GeneralDate> lstEditStateDate = new ArrayList<>();
 			// Likely lstEditStateDate only has 0-1 element
-			editStateDto.stream().filter(x -> x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF.value
-										   || x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER.value).forEach(x -> lstEditStateDate.add(x.getYmd()));
+			editStateDto.stream().filter(x -> (x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_MYSELF.value
+										   || x.getEditStateSetting() == EditStateSetting.HAND_CORRECTION_OTHER.value)
+										   && x.getYmd().compareTo(currentDate) == 0).forEach(x -> lstEditStateDate.add(x.getYmd()));
 			
 			if (lstEditStateDate.size() > 0 && choice == RemarksContentChoice.MANUAL_INPUT) {
 				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.MANUAL_INPUT.value);
