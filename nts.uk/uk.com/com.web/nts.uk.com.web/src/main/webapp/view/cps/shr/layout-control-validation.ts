@@ -200,7 +200,7 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
@@ -2362,7 +2362,7 @@ module nts.layout {
 
 
             if (CS00070IS00781) {
-                fetch.get_cats().done(cats => {
+                fetch.get_cats(false).done(cats => {
                     let cat = _(cats.categoryList).find(c => _.isEqual(c.categoryCode, 'CS00020')) || {};
                     // update categoryName
                     CS00070IS00781.data.resourceParams([cat.categoryName]);
