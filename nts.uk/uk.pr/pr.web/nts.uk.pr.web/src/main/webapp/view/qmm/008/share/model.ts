@@ -753,10 +753,10 @@ module nts.uk.pr.view.qmm008.share.model {
 
         constructor(code: string, displayText: string, child: Array<TreeGridNode>, officeCode, officeName) {
             this.code = code;
-            this.displayText = displayText;
+            this.displayText =_.escape(displayText);
             this.child = child;
             this.officeCode = officeCode;
-            this.officeName = officeName;
+            this.officeName = _.escape(officeName);
         }
     }
 
