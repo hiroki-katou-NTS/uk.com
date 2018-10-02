@@ -146,9 +146,9 @@ public class DPHeaderDto {
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value) {
-			if (item.getPrimitive() == 54) {
+			if (item.getPrimitive() != null && item.getPrimitive() == 54) {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999", "999999"));
-			} else if (item.getPrimitive() == 55) {
+			} else if (item.getPrimitive() != null && item.getPrimitive() == 55) {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
 			} else {
 				dto.setConstraint(new Constraint("Currency", false, "").createMinMax("-999999999", "999999999"));
