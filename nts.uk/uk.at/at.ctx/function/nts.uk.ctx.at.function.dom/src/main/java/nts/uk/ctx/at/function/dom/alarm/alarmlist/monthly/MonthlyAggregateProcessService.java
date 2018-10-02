@@ -50,6 +50,12 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -104,6 +110,8 @@ public class MonthlyAggregateProcessService {
 	@Inject
 	private CheckResultRemainMonthlyAdapter checkResultRemainMonthlyAdapter;
 	
+	@Inject 
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 	
 	public List<ValueExtractAlarm> monthlyAggregateProcess(String companyID , String  checkConditionCode,DatePeriod period,List<EmployeeSearchDto> employees){
 		
@@ -145,28 +153,12 @@ public class MonthlyAggregateProcessService {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		for(EmployeeSearchDto employee : employees) {
-			Closure closure = null;
+			
 			if(listFixed.get(1).isUseAtr()) {
 				//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
-				closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
-				//MinhVV
-				CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
-				if (listFixed.get(1).isUseAtr()) {
-					Optional<ValueExtractAlarm> checkDeadline = sysFixedCheckConMonAdapter
-							.checkDeadlineCompensatoryLeaveCom(employee.getId(), closure, compensatoryLeaveComSetting);
-					if (checkDeadline.isPresent()) {
-						
-						int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
-						
-						checkDeadline.get().setComment(Optional.ofNullable(listFixed.get(1).getMessage()));
-						checkDeadline.get().setAlarmValueMessage(TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)));
-						checkDeadline.get().setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
-						String dateString = checkDeadline.get().getAlarmValueDate().substring(0, 7);
-						checkDeadline.get().setAlarmValueDate(dateString);
-						listValueExtractAlarm.add(checkDeadline.get());
-					}
-				}
+				listValueExtractAlarm.addAll(extractErrorAlarmForHoliday(listFixed.get(1), employee, companyID).get());
 			}
+			
 			for (YearMonth yearMonth : lstYearMonth) {
 				for(int i = 0;i<listFixed.size();i++) {
 					if(listFixed.get(i).isUseAtr()) {
@@ -206,7 +198,6 @@ public class MonthlyAggregateProcessService {
 			}
 			
 		}
-		
 		
 		return listValueExtractAlarm;
 	}
@@ -942,4 +933,89 @@ public class MonthlyAggregateProcessService {
 		return nameErrorAlarm;
 	}
 
+	
+	//Added by HiepTH
+	/**
+	 * 代休の消化期限チェック
+	 * @param listFixed
+	 * @param employees
+	 * @param companyID
+	 * @return
+	 */
+	private Optional<List<ValueExtractAlarm>> extractErrorAlarmForHoliday(FixedExtraMonFunImport fixedExtraMonFunImport, EmployeeSearchDto employee, String companyID) {
+		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
+		
+		GeneralDate today = GeneralDate.today();
+		CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value;
+		Closure closure = closureService.getClosureDataByEmployee(employee.getId(), today);
+
+		//締めのアルゴリズム「当月の期間を算出する」を実行する
+		DatePeriod periodCurrentMonth = closureService.getClosurePeriod(closure.getClosureId().value,
+				today.yearMonth());
+		
+		//代休期限アラーム基準日を決定する
+		DatePeriod periodCheckDealMonth = closureService.getClosurePeriod(closure.getClosureId().value,
+				getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth));
+
+		//RequestList No.203 期間内の休出代休残数を取得する
+		BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(companyID, employee.getId(),
+				periodCurrentMonth, true, periodCurrentMonth.end(), false, Collections.emptyList(),
+				Collections.emptyList(), Collections.emptyList());
+		BreakDayOffRemainMngOfInPeriod breakDayOffRemainMngOfInPeriod = breakDayOffMngInPeriodQuery
+				.getBreakDayOffMngInPeriod(param);
+		List<BreakDayOffDetail> lstDetailData = breakDayOffRemainMngOfInPeriod.getLstDetailData();
+
+		List<BreakDayOffDetail> lstExtractData = new ArrayList<>();
+		if (!CollectionUtil.isEmpty(lstDetailData)) {
+			//代休期限アラーム基準日以前に発生した未使用の休出を抽出する
+			lstExtractData = lstDetailData.stream().filter(detail -> {
+				return ((detail.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE)
+						&& (detail.getUnUserOfBreak().isPresent()
+								&& detail.getUnUserOfBreak().get().getDigestionAtr() == DigestionAtr.UNUSED)
+						&& (detail.getYmdData().getDayoffDate().isPresent()
+								&& detail.getYmdData().getDayoffDate().get().beforeOrEquals(periodCheckDealMonth.end())));
+			}).collect(Collectors.toList());
+
+			if (!CollectionUtil.isEmpty(lstExtractData)) {
+				//アラームメッセージを生成する
+				for (BreakDayOffDetail breakDayOffDetail : lstExtractData) {
+					ValueExtractAlarm valueExractAlarm = new ValueExtractAlarm();
+					valueExractAlarm.setEmployeeID(employee.getId());
+					valueExractAlarm.setWorkplaceID(Optional.ofNullable(employee.getWorkplaceId()));
+					valueExractAlarm.setAlarmValueDate(GeneralDate.today().toString().substring(0, 7));
+					valueExractAlarm.setClassification(TextResource.localize("KAL010_100"));
+					valueExractAlarm.setAlarmItem(TextResource.localize("KAL010_278"));
+					valueExractAlarm.setAlarmValueMessage(String.format(TextResource.localize("KAL010_279"),
+							String.valueOf(deadlCheckMonth), breakDayOffDetail.getYmdData().getDayoffDate().get(),
+							breakDayOffDetail.getUnUserOfBreak().get().getUnUsedDays()));
+					valueExractAlarm.setComment(Optional.ofNullable(fixedExtraMonFunImport.getMessage()));
+					listValueExtractAlarm.add(valueExractAlarm);
+				}
+			}
+		}
+		return Optional.of(listValueExtractAlarm);
+	}
+	
+	/**
+	 * get period of check unused holiday
+	 * @param currentPeriod
+	 * @param deadlCheckMonth
+	 * @return
+	 */
+	private YearMonth getDeadlCheckMonth(DatePeriod currentPeriod, int deadlCheckMonth) {
+		GeneralDate endCurrentDate = currentPeriod.end();
+		int currentMonth = endCurrentDate.month();
+		int currentYear = endCurrentDate.year();
+		
+		int monthCheck = currentMonth - deadlCheckMonth;
+		
+		if (monthCheck <= 0) {
+			monthCheck = monthCheck + 12; 
+			currentYear = currentYear - 1;
+		}
+		
+		return YearMonth.of(monthCheck, currentYear);
+	}
+	//End HiepTH
 }
