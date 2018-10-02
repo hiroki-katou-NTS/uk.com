@@ -1016,7 +1016,7 @@ public class MonthlyAggregateProcessService {
 			currentYear = currentYear - 1;
 		}
 		
-		return YearMonth.of(monthCheck, currentYear);
+		return YearMonth.of(currentYear, monthCheck);
 	}
 	//End HiepTH
 }
