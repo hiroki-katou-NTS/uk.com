@@ -7,49 +7,41 @@ package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
-import org.apache.commons.lang3.StringUtils;
-
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.CreateScheduleMasterCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleBreakSaveCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleTimeZoneSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeImport;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.BusinessDayCal;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalService;
-import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.PersonFeeTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationService;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
@@ -59,38 +51,22 @@ import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.ScreenIdentifier;
-import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
-import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
-import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
-import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
-import nts.uk.shr.com.security.audittrail.correction.processor.DataCorrectionLogWriter;
-import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
-import nts.uk.shr.com.security.audittrail.start.StartPageLog;
-import nts.uk.shr.com.security.audittrail.start.StartPageLogRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class ScheCreExeBasicScheduleHandler.
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@Transactional(value = TxType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeBasicScheduleHandler {
 
@@ -125,6 +101,9 @@ public class ScheCreExeBasicScheduleHandler {
 	@Inject 
 	private ScheBasicScheduleLogCorrectionHandler logCorrectionHandler;
 	
+	@Inject
+	private ScheduleErrorLogRepository scheduleErrorLogRepository;
+	
 	/** The Constant DEFAULT_VALUE. */
 	private static final int DEFAULT_VALUE = 0;
 
@@ -144,7 +123,6 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param listFlowWorkSetting
 	 * @param listDiffTimeWorkSetting
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void updateAllDataToCommandSave(
 			ScheduleCreatorExecutionCommand command,
 			GeneralDate dateInPeriod,
@@ -253,7 +231,7 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(command.getCompanySetting(), param, commandSave);
+		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
         
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
@@ -284,27 +262,6 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 	}
 
-	/**
-	 * Save basic schedule.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	// 勤務予定情報を登録する
-	private void saveBasicSchedule(BasicScheduleSaveCommand command) {
-
-		// find basic schedule by id
-        boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
-                command.getYmd());
-
-        // check exist data
-        if (optionalBasicSchedule) {
-			this.basicScheduleRepository.update(command.toDomain());
-		} else {
-			this.basicScheduleRepository.insert(command.toDomain());
-		}
-	}
-	
 	/**
 	 * Save basic schedule, also add work schedule state
 	 *
@@ -439,7 +396,7 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, toDate, new WorkTypeCode(workTypeCode),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(command.getCompanySetting(), param, commandSave);
+		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
 		
 		boolean isDeleteBeforeInsert = false;
 		// save command
@@ -616,14 +573,27 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(Object companySetting, ScTimeParam param, BasicScheduleSaveCommand commandSave) {
-		ScTimeImport scTimeImport = CalculationCache.getResult(
-				param.forCache(),
-				() -> scTimeAdapter.calculation(companySetting, param));
+	private BasicScheduleSaveCommand saveScheduleTime(Object companySetting, ScTimeParam param, BasicScheduleSaveCommand commandSave, String executionId) {
+		ScTimeImport scTimeImport = new ScTimeImport();
+		try {
+			scTimeImport = CalculationCache.getResult(param.forCache(),
+					() -> scTimeAdapter.calculation(companySetting, param));
+		} catch (Exception e) {
+			if (e.getCause() instanceof BusinessException) {
+				BusinessException b = (BusinessException) e.getCause();
+				String errorContent = TextResource.localize(b.getMessageId());
+				// ドメインモデル「スケジュール作成エラーログ」を登録する
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, executionId,
+						commandSave.getYmd(), commandSave.getEmployeeId());
+				this.scheduleErrorLogRepository.add(scheduleErrorLog);
+				return commandSave;
+			}
+			throw new RuntimeException(e);
+		}
 		
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
-			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i)));
+			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i-1)));
 		}
 		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
@@ -715,7 +685,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
 		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
-		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand);
+		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand, null);
 		
 		// Get all schedule item by company id (for optimization)
 		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);
