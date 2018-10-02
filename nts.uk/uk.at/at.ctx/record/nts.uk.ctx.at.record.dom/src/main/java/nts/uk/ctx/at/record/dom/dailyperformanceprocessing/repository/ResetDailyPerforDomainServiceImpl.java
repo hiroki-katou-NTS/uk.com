@@ -48,7 +48,9 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Exe
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
@@ -414,37 +416,72 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							converter2.withAttendanceLeavingGate(
 									stampOutput.getReflectStampOutput().getAttendanceLeavingGateOfDaily());
 							converter2.withPCLogInfo(stampOutput.getReflectStampOutput().getPcLogOnInfoOfDaily());
-
-							if (!attItemIdStateOfTimeLeaving.isEmpty()) {
-								List<ItemValue> valueList = new ArrayList<>();
-
-								for (Integer timeLeavingId : attItemIds) {
-									// state of attItemId
-									Optional<EditStateOfDailyPerformance> editState = attItemIdStateOfTimeLeaving
-											.stream().filter(item -> item.getAttendanceItemId() == timeLeavingId)
-											.findFirst();
-									if (editState.isPresent()) {
-										// get data from DB
-										valueList.add(converter.convert(timeLeavingId).get());
-									}
+							
+							// ---------------------
+							// neu nhu attItemIdStateOfTimeLeaving chua gia tri cua Id nao, thi Id do lay
+							// gia tri cua Old, còn nếu k chua thì lấy New
+							// try!
+							// example id 75
+//							if (attItemIdStateOfTimeLeaving.contains(75)) {
+//								// get itemValue of Id
+//								Optional<ItemValue> id75 = converter.convert(75);
+//								// mergr value of Id to converter2
+//								if (id75.isPresent()) {
+//									converter2.merge(id75.orElse(null));
+//								}								
+//								
+//							}
+							
+							for(int itemId : attItemIds){
+								if (attItemIdStateOfTimeLeaving.contains(itemId)) {
+									// get itemValue of Id
+									Optional<ItemValue> itemValue = converter.convert(itemId);
+									// mergr value of Id to converter2
+									if (itemValue.isPresent()) {
+										converter2.merge(itemValue.get());
+									}								
+									
 								}
-
-								// update value of Attendance Item Id
-								converter2.merge(valueList);
-								// set data stampOutPut
-								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter.timeLeaving().orElse(null));
-								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter.outingTime().orElse(null));
-								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter.temporaryTime().orElse(null));
-								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter.attendanceLeavingGate().orElse(null));
-								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter.pcLogInfo().orElse(null));
-							} else {
-								// set data stampOutPut
-								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
-								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
-								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
-								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
-								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
 							}
+							
+							stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
+							stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
+							stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
+							stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
+							stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
+							
+							//---------------
+
+//							if (!attItemIdStateOfTimeLeaving.isEmpty()) {
+//								List<ItemValue> valueList = new ArrayList<>();
+//
+//								for (Integer timeLeavingId : attItemIds) {
+//									// state of attItemId
+//									Optional<EditStateOfDailyPerformance> editState = attItemIdStateOfTimeLeaving
+//											.stream().filter(item -> item.getAttendanceItemId() == timeLeavingId)
+//											.findFirst();
+//									if (editState.isPresent()) {
+//										// get data from DB
+//										valueList.add(converter.convert(timeLeavingId).get());
+//									}
+//								}
+//
+//								// update value of Attendance Item Id
+//								converter2.merge(valueList);
+//								// set data stampOutPut
+//								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter.timeLeaving().orElse(null));
+//								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter.outingTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter.temporaryTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter.attendanceLeavingGate().orElse(null));
+//								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter.pcLogInfo().orElse(null));
+//							} else {
+//								// set data stampOutPut
+//								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
+//								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
+//								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
+//							}
 
 						}
 					}

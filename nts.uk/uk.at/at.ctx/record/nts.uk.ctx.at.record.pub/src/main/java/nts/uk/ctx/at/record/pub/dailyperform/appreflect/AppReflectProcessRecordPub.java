@@ -13,7 +13,8 @@ public interface AppReflectProcessRecordPub {
 	/**
 	 * チェック処理(Xử lý check)
 	 * @param para
-	 * @return
+	 * @return True 反映する、
+	 * False：反映しない
 	 */
 	public boolean appReflectProcess(AppCommonPara para);
 	/**
