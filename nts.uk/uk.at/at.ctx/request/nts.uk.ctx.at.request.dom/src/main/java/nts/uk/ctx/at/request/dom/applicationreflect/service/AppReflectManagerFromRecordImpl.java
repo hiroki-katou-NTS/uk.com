@@ -103,7 +103,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		//処理した社員の実行状況を「完了」にする
 		execuLog.updateLogInfo(sid, workId, 2, 0);
 		execuLog.updateLogInfo(workId, 2, 0);
-		dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);
+		if(dataSetter != null) {
+			dataSetter.updateData("reflectApprovalStatus", ExecutionStatusReflect.DONE.nameId);	
+		}		
 		if(optState.isPresent() && optState.get() == ExeStateOfCalAndSumImport.START_INTERRUPTION) {
 			return false;
 		}
@@ -186,6 +188,31 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		lstApp = lstApp.stream().sorted(Comparator.comparing(Application_New :: getAppDate))
 				.collect(Collectors.toList());
 		return lstApp;
+	}
+	@Override
+	public ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
+		//ドメインモデル「申請承認設定」を取得する
+		Optional<RequestSetting> optRequesSetting = requestSettingRepo.findByCompany(AppContexts.user().companyId());
+		if(!optRequesSetting.isPresent()) {
+			return ProcessStateReflect.SUCCESS;
+		}
+		//再実行かどうか判断する 
+		Optional<SetInforReflAprResultImport> optRefAppResult = execuLog.optReflectResult(workId, 2);//2: 承認結果反映 
+		//対象社員を取得
+		List<TargetPersonImport> lstPerson = targetPerson.getTargetPerson(workId)
+				.stream()
+				.sorted(Comparator.comparing(TargetPersonImport::getEmployeeId))
+				.collect(Collectors.toList());
+		ExecutionTypeExImport aprResult = ExecutionTypeExImport.NORMAL_EXECUTION;
+		if(optRefAppResult.isPresent()) {
+			aprResult = optRefAppResult.get().getExecutionType();
+		}
+		if(!this.reflectAppOfEmployee(workId, sid, datePeriod, 
+				optRequesSetting.get(), aprResult, null)) {
+			return ProcessStateReflect.INTERRUPTION;
+		}
+		
+		return ProcessStateReflect.SUCCESS;
 	}
 
 }
