@@ -25,7 +25,7 @@ module nts.uk.com.view.cmm001.e {
                 self.switchHeader.subscribe((value) => {
                     let listItems = self.dataSource();
                     if (self.selectedCopyItems().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_14" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1433" });
                         return;
                     }
                     ko.utils.arrayForEach(listItems, function(item) {
