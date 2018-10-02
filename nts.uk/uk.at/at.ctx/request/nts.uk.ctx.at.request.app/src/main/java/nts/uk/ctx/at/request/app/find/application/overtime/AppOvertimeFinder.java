@@ -246,7 +246,7 @@ public class AppOvertimeFinder {
 		//表示しない
 		if(!isSettingDisplay(appCommonSettingOutput)){
 			//休憩時間帯を取得する
-			BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID,workTypeCode, siftCD);
+			BreakTimeZoneSharedOutPut breakTime = this.overtimeService.getBreakTimes(companyID,workTypeCode, siftCD);
 			if (!CollectionUtil.isEmpty(breakTime.getLstTimezone())) {
 				startTimeRest = breakTime.getLstTimezone().get(0).getStart().v();
 
@@ -284,32 +284,9 @@ public class AppOvertimeFinder {
 		return caculationTimes;
 	}
 
-	private BreakTimeZoneSharedOutPut getBreakTimes(String companyID,String workTypeCode, String workTimeCode) {
-		//1日半日出勤・1日休日系の判定
-		WorkStyle workStyle= this.basicService.checkWorkDay(workTypeCode);
-		//平日か休日か判断する
-		WeekdayHolidayClassification weekDay = checkHolidayOrNot(workTypeCode);
-		//休憩時間帯の取得
-		return this.timeService.getBreakTimeZone(companyID, workTimeCode, weekDay.value, workStyle);
-	}
+	
 
-	private WeekdayHolidayClassification checkHolidayOrNot(String workTypeCd) {
-		String companyId =  AppContexts.user().companyId();
-		Optional<WorkType> WorkTypeOptional = this.workTypeRepository.findByPK(companyId, workTypeCd);
-		if (!WorkTypeOptional.isPresent()) {
-			return WeekdayHolidayClassification.WEEKDAY;
-		}
-		// check null?
-		WorkType workType = WorkTypeOptional.get();
-		DailyWork dailyWork = workType.getDailyWork();
-		WorkTypeClassification oneDay = dailyWork.getOneDay();
-		// 休日出勤
-		if (oneDay.value == 11) {
-			return WeekdayHolidayClassification.HOLIDAY;
-		}
-		return WeekdayHolidayClassification.WEEKDAY;
-		
-	}
+
 
 	private boolean isSettingDisplay(AppCommonSettingOutput appCommonSettingOutput) {
 		return appCommonSettingOutput.approvalFunctionSetting.getApplicationDetailSetting().get()
