@@ -53,8 +53,8 @@
 								primaryKey: 'id',
 								columns: [
 					                { headerText: '', key: 'id', width: 160 , hidden: true },
-					                { headerText: text('CPS001_52'), key: 'code', width: 140 , hidden: false }, 
-					                { headerText: '', key: 'name', width: 160 , hidden: false }
+					                { headerText: text('CPS001_52'), key: 'code', width: 300 , hidden: false }, 
+					                { headerText: '', key: 'name', width: 160 , hidden: true }
 								],
 								multiple: false,
 								value: currentEmployee().id
@@ -62,14 +62,6 @@
 					</div>
 				</div>
 				<div class="right-area" data-bind="with: currentEmployee">
-					<div class="form-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_54')}</div>
-						<span class="text-inform" data-bind="text: dateDelete"></span>
-					</div>
-					<div class="form-group">
-						<div class="reasonLable" data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_55')}</div>
-						<div class="reason"><span data-bind="text: reason"></span></div>
-					</div>
 					<div class="form-group">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CPS001_56')}</div>
 						<input id="A_INP_CODE"
@@ -89,6 +81,14 @@
 							required: true,
 							constraint: 'BusinessName',
 							enable: enableName}" />
+					</div>
+					<div class="form-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_54')}</div>
+						<span class="text-inform" data-bind="text: dateDelete"></span>
+					</div>
+					<div class="form-group">
+						<div class="reasonLable" data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_55')}</div>
+						<div class="reason"><span style = "overflow-wrap: break-word;" data-bind="text: reason"></span></div>
 					</div>
 				</div>
 			</div>

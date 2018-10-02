@@ -189,11 +189,17 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode) {
-		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, Object[].class)
+		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, KshstGrantDateTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getSingle(c -> {
-					return createGdDomainFromEntity(c);
+					String grantDateCd = String.valueOf(c.pk.grantDateCd);
+					String grantName = String.valueOf(c.grantName);
+					boolean isSpecified = Integer.parseInt(String.valueOf(c.isSpecified)) == 1 ? true : false;
+					boolean fixedAssign = Integer.parseInt(String.valueOf(c.fixedAssign)) == 1 ? true : false;
+					int numberOfDays = c.numberOfDays != null ? Integer.parseInt(String.valueOf(c.numberOfDays)) : 0;
+					
+					return GrantDateTbl.createFromJavaType(grantDateCd, grantName, isSpecified, fixedAssign, numberOfDays);
 				});
 	}
 }

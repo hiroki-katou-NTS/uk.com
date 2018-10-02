@@ -43,6 +43,8 @@
 				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.NameWork
 				nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment
 				nts.uk.shr.com.time.AttendanceClock
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.MailTitle
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting.MailBody
 			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
@@ -604,7 +606,7 @@
 													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
-													visibleItemsCount: 2,
+													visibleItemsCount: 3,
 													value: displayInitialSegment,
 													optionsText: 'name',
 													editable: $parent.isEditable,
@@ -660,7 +662,7 @@
 													width: '90px',
 													options: $parent.itemListA8_33,
 													optionsValue: 'code',
-													visibleItemsCount: 2,
+													visibleItemsCount: 3,
 													value: displayInitialSegment,
 													optionsText: 'name',
 													editable: $parent.isEditable,
@@ -1090,6 +1092,7 @@
 												<input id="a16_14" data-bind="ntsTextEditor: {
 													name:'#{i18n.getText('KAF022_117')}',
 													value: value,
+													constraint: 'MailTitle',
 													option: option,
 													enable: enable,
 													readonly: false}" ></input>  
@@ -1104,6 +1107,7 @@
 												<textarea id="a16_15" data-bind="ntsMultilineEditor: {
 													name:'#{i18n.getText('KAF022_118')}',
 													value: value,
+													constraint: 'MailBody',
 													option: option,
 													enable: true,
 													readonly: false}" ></textarea>

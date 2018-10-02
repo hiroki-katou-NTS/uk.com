@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.common.time;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
+import nts.uk.shr.com.enumcommon.DayAttr;
 
 /**
  * 勤怠時間(マイナス有り)

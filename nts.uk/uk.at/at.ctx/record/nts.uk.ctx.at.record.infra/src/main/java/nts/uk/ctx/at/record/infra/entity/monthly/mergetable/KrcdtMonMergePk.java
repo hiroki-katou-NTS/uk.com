@@ -11,9 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
- *  プライマリキー：残数系以外
+ * プライマリキー：月別実績
  * @author lanlt
- *
  */
 @Getter
 @Setter
@@ -49,6 +48,4 @@ public class KrcdtMonMergePk implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "IS_LAST_DAY")
 	private int isLastDay;
-	
-
 }

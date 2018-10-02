@@ -34,7 +34,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.caltimediff.CalculateTimeDiffService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
@@ -93,8 +92,6 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
 	@Inject
 	private ErrMessageInfoRepository errRepo;
-	@Inject
-	private WorkingConditionItemService workingConditionItemService;
 	@Inject
 	private CalculateTimeDiffService calculateTimeDiffService;
 	@Inject
@@ -222,35 +219,43 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			TimeWithDayAttr startDate1 = timeZone.getStart();
 			TimeWithDayAttr endDate1 = timeZone.getEnd();
 			// 高須の応急処置
-			TimeWithDayAttr startDate2 = (timeLeavingWork.getAttendanceStamp() != null
+			TimeWithDayAttr startDate2 = null; 
+			TimeWithDayAttr endDate2 = null;
+			
+			if (timeLeavingWork.getAttendanceStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().isPresent()
 					&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null)
-							? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay()
-							: new TimeWithDayAttr(0);
-			TimeWithDayAttr endDate2 = (timeLeavingWork.getLeaveStamp() != null
+					&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
+				startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+			}
+			
+			if (timeLeavingWork.getLeaveStamp() != null
 					&& timeLeavingWork.getLeaveStamp().isPresent()
 					&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
 					&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null)
-							? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay()
-							: new TimeWithDayAttr(0);
+					&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+				endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+			}
+			
 			// TimeWithDayAttr startDate2 =
 			// timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
 			// TimeWithDayAttr endDate2 =
 			// timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
-			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endDate1, startDate1);
-			TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(endDate2, startDate2);
-			DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
-					.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-			DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
-					.checkStateAtr(duplicateStateAtr);
-			// 非重複
-			if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
-				isAddBreaktime = true;
-				break;
+			if (startDate2 != null && endDate2 != null) {
+				TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endDate1, startDate1);
+				TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(endDate2, startDate2);
+				DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+						.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+				DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+						.checkStateAtr(duplicateStateAtr);
+				// 非重複
+				if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
+					isAddBreaktime = true;
+					break;
+				}
 			}
+			
 		}
 		return isAddBreaktime;
 	}
@@ -270,11 +275,13 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			// 休出かどうかの判断
 			boolean checkHolidayOrNot = this.checkHolidayOrNot(companyId,
 					WorkInfo.getRecordInfo().getWorkTypeCode().v());
-			String weekdayHolidayClassification = null;
+			int weekdayHolidayClassification = 0;
 			if (!checkHolidayOrNot) {
-				weekdayHolidayClassification = "平日";
+				// 平日
+				weekdayHolidayClassification = 0;
 			} else {
-				weekdayHolidayClassification = "休日";
+				// 休日
+				weekdayHolidayClassification = 1;
 			}
 			if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {
 				Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
@@ -317,14 +324,15 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		return checkReflect;
 	}
 
+	@Override
 	// フレックス勤務設定から休憩時間帯を確認する
-	public boolean confirmInterFlexWorkSetting(String companyId, String weekdayHolidayClassification,
+	public boolean confirmInterFlexWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 		Optional<FlexWorkSetting> FlexWorkSettingOptional = this.flexWorkSettingRepo.find(companyId, workTimeCode);
 		FlexWorkSetting flexWorkSetting = FlexWorkSettingOptional.get();
 		List<DeductionTime> lstTimezone = null;
 		boolean fixRestTime = true;
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone = flexWorkSetting.getLstHalfDayWorkTimezone();
 
 			switch (checkWorkDay.value) {
@@ -383,9 +391,10 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 
 	}
 
+	@Override
 	// 時差勤務設定から休憩時間帯を確認する
 	public boolean ConfirmInterTimezoneStaggeredWorkSetting(String companyId, String employeeID,
-			GeneralDate processingDate, String empCalAndSumExecLogID, String weekdayHolidayClassification,
+			GeneralDate processingDate, String empCalAndSumExecLogID, int weekdayHolidayClassification,
 			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
 			WorkStyle checkWorkDay) {
 
@@ -441,7 +450,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					for (EmployeeDailyPerError employeeDailyPerError : employeeDailyPerErrors) {
 						Optional<ErrorAlarmWorkRecord> errorAlarmWorkRecordOptional = this.errorAlarmWorkRecordRepo
 								.findByCode(employeeDailyPerError.getErrorAlarmWorkRecordCode().v());
-						if (errorAlarmWorkRecordOptional.isPresent()) {
+						if (errorAlarmWorkRecordOptional.isPresent() && empCalAndSumExecLogID != null) {
 							ErrorAlarmWorkRecord errorAlarmWorkRecord = errorAlarmWorkRecordOptional.get();
 
 							ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeID, empCalAndSumExecLogID,
@@ -458,7 +467,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					List<DiffTimeHalfDayWorkTimezone> lstHalfDayWorkTimezones = diffTimeWorkSetting
 							.getHalfDayWorkTimezones();
 					List<DeductionTime> timezones = null;
-					if ("平日".equals(weekdayHolidayClassification)) {
+					if (weekdayHolidayClassification == 0) {
 						switch (checkWorkDay.value) {
 						case 3:// 1日出勤系
 							for (DiffTimeHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezones) {
@@ -539,15 +548,16 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		return false;
 	}
 
+	@Override
 	// 流動勤務設定から休憩時間帯を確認する
-	public boolean confirmIntermissionTimeZone(String companyId, String weekdayHolidayClassification,
+	public boolean confirmIntermissionTimeZone(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut) {
 		List<DeductionTime> lstTimezone;
 		Optional<FlowWorkSetting> FlowWorkSettingoptional = this.flowWorkSettingRep.find(companyId, workTimeCode);
 		FlowWorkSetting flowWorkSetting = FlowWorkSettingoptional.get();
 
 		boolean fixRestTime;
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			fixRestTime = flowWorkSetting.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime();
 			lstTimezone = flowWorkSetting.getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone()
 					.getTimezones();
@@ -563,8 +573,9 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		return false;
 	}
 
+	@Override
 	// 固定勤務設定から休憩時間帯を確認する
-	public boolean CheckBreakTimeFromFixedWorkSetting(String companyId, String weekdayHolidayClassification,
+	public boolean CheckBreakTimeFromFixedWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 
 		List<DeductionTime> lstTimezone = new ArrayList<DeductionTime>();
@@ -573,7 +584,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		// check null?
 		FixedWorkSetting fixedWorkSetting = FixedWorkSettingOptional.get();
 		List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone = fixedWorkSetting.getLstHalfDayWorkTimezone();
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			switch (checkWorkDay.value) {
 			case 3:// 1日出勤系
 				for (FixHalfDayWorkTimezone fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {

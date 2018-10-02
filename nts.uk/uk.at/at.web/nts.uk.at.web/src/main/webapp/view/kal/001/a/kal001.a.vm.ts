@@ -41,7 +41,7 @@ module nts.uk.at.view.kal001.a.model {
         //search component
             self.ccg001ComponentOption = {
                 /** Common properties */
-                systemType: 1,
+                systemType: 2,
                 showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
@@ -110,7 +110,9 @@ module nts.uk.at.view.kal001.a.model {
                 maxRows  : 22
             };
             self.empCount = ko.observable(0);
-            
+            self.currentAlarmCode.subscribe((newCode) => {
+                errors.clearAll();
+            });
                    
         }
 
@@ -153,7 +155,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             
             self.currentAlarmCode.subscribe((newCode)=>{
-                    $(".nts-input").ntsError("clear");
+                    $(".nts-combobox").ntsError("clear");
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
@@ -458,8 +460,9 @@ module nts.uk.at.view.kal001.a.model {
             this.startDate = dto.dateValue().startDate;    
             this.endDate = dto.dateValue().endDate;    
             this.checkBox = dto.checkBox(); 
-            this.required = dto.required();    
+            this.required = dto.required();
             this.visible = dto.visible();
+            this.year = dto.year();
           }
       }
 }

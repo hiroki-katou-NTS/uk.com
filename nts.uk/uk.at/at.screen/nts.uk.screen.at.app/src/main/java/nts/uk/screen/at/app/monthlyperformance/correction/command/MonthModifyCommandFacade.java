@@ -1,7 +1,9 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.command;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -15,9 +17,9 @@ import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 
 @Stateless
@@ -37,8 +39,8 @@ public class MonthModifyCommandFacade {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void handleUpdate(List<MonthlyModifyQuery> query, List<MonthlyRecordWorkDto> dtos) {
-		this.commandHandler.handleUpdate(createMultiCommand(query, dtos));
+	public void handleUpdate(List<MonthlyModifyQuery> query) {
+		this.commandHandler.handleUpdate(createMultiCommand(query));
 	}
 
 	public MonthlyRecordWorkDto toDto(MonthlyModifyQuery query) {
@@ -48,20 +50,25 @@ public class MonthModifyCommandFacade {
 		return AttendanceItemUtil.fromItemValues(oldValues, query.getItems(), AttendanceItemType.MONTHLY_ITEM);
 	}
 	
-	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query, List<MonthlyRecordWorkDto> oldValues) {
-		List<MonthlyRecordWorkCommand> newValues = new ArrayList<>();
-		oldValues.forEach(oldDto -> {
-			MonthlyModifyQuery q = query.stream().filter(qr -> {
-				return qr.getClosureId() == oldDto.getClosureID() && qr.getEmployeeId().equals(oldDto.getEmployeeId())
-						&& oldDto.yearMonth().compareTo(qr.getYearMonth()) == 0 && oldDto.getClosureDate().equals(qr.getClosureDate());
-			}).findFirst().orElse(null);
-			if (q != null) {
-				MonthlyRecordWorkDto newDto = AttendanceItemUtil.fromItemValues(new MonthlyRecordWorkDto(),
-						q.getItems(), AttendanceItemType.MONTHLY_ITEM);
-				newValues.add(createCommand(newDto, q));
-			}
+	private List<MonthlyRecordWorkCommand> createMultiCommand(List<MonthlyModifyQuery> query) {
+		Set<String> emps = new HashSet<>();
+		Set<YearMonth> yearmonth = new HashSet<>();
+		query.stream().forEach(q -> {
+			emps.add(q.getEmployeeId());
+			yearmonth.add(new YearMonth(q.getYearMonth()));
 		});
-		return newValues;
+		List<MonthlyRecordWorkDto> oldValues = finder.find(emps, yearmonth);
+		return oldValues.stream().map(v -> {
+			MonthlyModifyQuery q = query.stream().filter(qr -> {
+				return qr.getClosureId() == v.getClosureID() && qr.getEmployeeId().equals(v.getEmployeeId())
+						&& v.yearMonth().compareTo(qr.getYearMonth()) == 0 && v.getClosureDate().equals(qr.getClosureDate());
+			}).findFirst().orElse(null);
+			if(q == null){
+				return null;
+			}
+			MonthlyRecordWorkDto dto = AttendanceItemUtil.fromItemValues(v, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
+			return createCommand(dto, q);
+		}).filter(v -> v != null).collect(Collectors.toList());
 	}
 
 	private MonthlyRecordWorkCommand createCommand(MonthlyRecordWorkDto dto, MonthlyModifyQuery query) {

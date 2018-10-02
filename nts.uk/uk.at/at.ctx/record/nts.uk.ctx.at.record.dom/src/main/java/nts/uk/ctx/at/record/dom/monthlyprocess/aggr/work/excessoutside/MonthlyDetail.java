@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -19,6 +21,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
@@ -41,7 +44,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTra
 
 /**
  * 月次明細
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class MonthlyDetail {
@@ -65,6 +68,8 @@ public class MonthlyDetail {
 
 	/** 時間外超過管理 */
 	private ExcessOutsideWorkMng excessOutsideWorkMng;
+	/** エラー情報 */
+	private List<MonthlyAggregationErrorInfo> errorInfos;
 	
 	/**
 	 * コンストラクタ
@@ -79,6 +84,7 @@ public class MonthlyDetail {
 		this.holidayWorkTime = new HashMap<>();
 		this.flexTime = new HashMap<>();
 		this.weeklyPremiumAssignedTime = new ReverseWeeklyPremiumAssignedTime();
+		this.errorInfos = new ArrayList<>();
 	}
 	
 	/**
@@ -452,6 +458,9 @@ public class MonthlyDetail {
 		// 加算設定　取得　（割増用）
 		val addSet = GetAddSet.get(this.excessOutsideWorkMng.getWorkingSystem(), PremiumAtr.PREMIUM,
 				this.excessOutsideWorkMng.getSettingsByReg().getHolidayAdditionMap());
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		if (addSet.isAnnualLeave()){
 			val assignedDetail = this.weeklyPremiumAssignedTime.getAnnualLeaveUseTime();

@@ -33,7 +33,6 @@ module ccg013.a.viewmodel {
             // WebMenu
             self.listWebMenu = ko.observableArray([]);
             self.webMenuColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_8"), key: 'icon', width: 50 },
                 { headerText: nts.uk.resource.getText("CCG013_9"), key: 'webMenuCode', width: 50, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_10"), key: 'webMenuName', width: 50, formatter: _.escape }
             ]);
@@ -69,8 +68,8 @@ module ccg013.a.viewmodel {
                     webmenu.webMenuName(res.webMenuName);
                     webmenu.defaultMenu(res.defaultMenu);
                     self.isDefaultMenu(!!res.defaultMenu);
-                    webmenu.menuBars.removeAll();
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
+                        webmenu.menuBars.removeAll();
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
                             x.menuNames = menuNames;
                             webmenu.menuBars.push(new MenuBar(x));
@@ -565,7 +564,7 @@ module ccg013.a.viewmodel {
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode(newWebMenuCode);
-                        self.currentWebMenuCode.valueHasMutated();
+                     //   self.currentWebMenuCode.valueHasMutated();
                     }
                 });
             });
@@ -599,19 +598,19 @@ module ccg013.a.viewmodel {
 
         openJdialog(id): any {
             var self = this;
-            var activeid = self.currentMenuBar().menuBarId();
-            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
+            var activeid = id;
+            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
             var menu = _.find(datas, x => x.menuBarId == activeid);
-            var dataTitleMenu: Array<any> = menu.titleMenu;
-            var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
+            //var dataTitleMenu: Array<any> = menu.titleMenu;
+            var titleMenu = _.find(datas, y => y.titleMenuId == id);
             setShared("CCG013A_ToChild_TitleBar", titleMenu);
             modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013J_ToMain_TitleBar");
                 if (data) {
                     let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
-                        menuBar = _.find(menuBars, x => x.menuBarId() == activeid);
-
-                    _.forEach(menuBar.titleMenu(), function(item: TitleMenu) {
+                        menuBar = _.forEach(menuBars, x => x.titleMenu()[0].titleMenuId() == activeid);
+                    _.forEach(menuBar, function(menuBarItem: any) {
+                        _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
                         if (item.titleMenuId() == id) {
                             item.titleMenuName(data.nameTitleBar);
                             item.backgroundColor(data.backgroundColor);
@@ -621,6 +620,8 @@ module ccg013.a.viewmodel {
                             item.imageSize(data.imageSize);
                         }
                     });
+                    }
+                 );   
                 }
             });
         }

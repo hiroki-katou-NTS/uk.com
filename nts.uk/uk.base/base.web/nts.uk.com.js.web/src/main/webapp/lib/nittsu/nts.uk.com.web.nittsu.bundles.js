@@ -323,7 +323,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -475,7 +475,7 @@ var nts;
                 }
                 return -1;
             }
-            var TreeObject = /** @class */ (function () {
+            var TreeObject = (function () {
                 function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
@@ -499,7 +499,7 @@ var nts;
                     return new Optional(null);
                 }
                 optional.empty = empty;
-                var Optional = /** @class */ (function () {
+                var Optional = (function () {
                     function Optional(value) {
                         this.value = orDefault(value, null);
                     }
@@ -539,7 +539,7 @@ var nts;
                 }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
-            var Range = /** @class */ (function () {
+            var Range = (function () {
                 function Range(start, end) {
                     if (start > end) {
                         throw new Error('start is larger than end');
@@ -590,7 +590,7 @@ var nts;
                     });
                 }
                 value.reset = reset;
-                var DefaultValue = /** @class */ (function () {
+                var DefaultValue = (function () {
                     function DefaultValue() {
                     }
                     DefaultValue.prototype.onReset = function ($control, koValue) {
@@ -617,9 +617,9 @@ var nts;
                         if (immediateApply)
                             this.applyReset($control, koValue);
                     };
-                    DefaultValue.RESET_EVT = "reset";
                     return DefaultValue;
                 }());
+                DefaultValue.RESET_EVT = "reset";
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
             var accessor;
@@ -628,7 +628,7 @@ var nts;
                     return new AccessorDefine(obj);
                 }
                 accessor.defineInto = defineInto;
-                var AccessorDefine = /** @class */ (function () {
+                var AccessorDefine = (function () {
                     function AccessorDefine(obj) {
                         this.obj = obj;
                     }
@@ -657,7 +657,7 @@ var nts;
                 exception_1.isBusinessError = isBusinessError;
             })(exception = util.exception || (util.exception = {}));
         })(util = uk.util || (uk.util = {}));
-        var WebStorageWrapper = /** @class */ (function () {
+        var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
                 this.nativeStorage = nativeStorage;
             }
@@ -719,7 +719,7 @@ var nts;
                     return new Configuration();
                 }
                 repeater.createConfiguration = createConfiguration;
-                var Configuration = /** @class */ (function () {
+                var Configuration = (function () {
                     function Configuration() {
                         this.pauseMilliseconds = 0;
                         this.runAfter = 0;
@@ -790,9 +790,6 @@ var nts;
                         responseText_1 = res;
                     }).fail(function () {
                     });
-                    if (responseText_1.length == 0 || responseText_1 === messageId) {
-                        return messageId;
-                    }
                     message = responseText_1;
                     messages[messageId] = message;
                 }
@@ -954,7 +951,7 @@ var nts;
     (function (uk) {
         var format;
         (function (format) {
-            var NoFormatter = /** @class */ (function () {
+            var NoFormatter = (function () {
                 function NoFormatter() {
                 }
                 NoFormatter.prototype.format = function (source) {
@@ -1377,7 +1374,7 @@ var nts;
             /**
              * Type of characters
              */
-            var CharType = /** @class */ (function () {
+            var CharType = (function () {
                 function CharType(viewName, width, validator) {
                     this.viewName = viewName;
                     this.width = width;
@@ -1513,7 +1510,7 @@ var nts;
                 return format;
             }
             text_3.getISOFormat = getISOFormat;
-            var StringFormatter = /** @class */ (function () {
+            var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
                 }
@@ -1534,7 +1531,7 @@ var nts;
                 return StringFormatter;
             }());
             text_3.StringFormatter = StringFormatter;
-            var NumberFormatter = /** @class */ (function () {
+            var NumberFormatter = (function () {
                 function NumberFormatter(option) {
                     this.option = option;
                 }
@@ -1546,7 +1543,7 @@ var nts;
                 return NumberFormatter;
             }());
             text_3.NumberFormatter = NumberFormatter;
-            var TimeFormatter = /** @class */ (function () {
+            var TimeFormatter = (function () {
                 function TimeFormatter(option) {
                     this.option = option;
                 }
@@ -1583,7 +1580,7 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
-            var TimeWithDayFormatter = /** @class */ (function () {
+            var TimeWithDayFormatter = (function () {
                 function TimeWithDayFormatter(option) {
                     this.option = option;
                 }
@@ -1597,7 +1594,7 @@ var nts;
                 return TimeWithDayFormatter;
             }());
             text_3.TimeWithDayFormatter = TimeWithDayFormatter;
-            var NumberUnit = /** @class */ (function () {
+            var NumberUnit = (function () {
                 function NumberUnit(unitID, unitText, position, language) {
                     this.unitID = unitID;
                     this.unitText = unitText;
@@ -1672,7 +1669,7 @@ var nts;
                     return year + "年 " + month + " 月";
                 return year;
             }
-            var JapanYearMonth = /** @class */ (function () {
+            var JapanYearMonth = (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
                     this.year = year;
@@ -1696,70 +1693,30 @@ var nts;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
             function yearInJapanEmpire(date) {
-                var year = moment.utc(date, defaultInputFormat, true).year();
-                if (year == 1868) {
-                    return new JapanYearMonth("明治元年");
-                }
-                if (year <= 1912) {
-                    var diff = year - 1867;
-                    return new JapanYearMonth("明治 ", diff);
-                }
-                if (year <= 1926) {
-                    var diff = year - 1911;
-                    return new JapanYearMonth("大正 ", diff);
-                }
-                if (year < 1989) {
-                    var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff);
-                }
-                if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", diff);
-                }
-                var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff);
+                return yearmonthInJapanEmpire(date, true);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
-            function yearmonthInJapanEmpire(yearmonth) {
-                if (!(yearmonth instanceof String)) {
-                    yearmonth = "" + yearmonth;
+            function yearmonthInJapanEmpire(yearmonth, onlyYear) {
+                if (!nts.uk.ntsNumber.isNumber(yearmonth) && _.isEmpty(yearmonth)) {
+                    return null;
                 }
-                var nguyennien = "元年";
-                yearmonth = yearmonth.replace("/", "");
-                var year = parseInt(yearmonth.substring(0, 4));
-                var month = parseInt(yearmonth.substring(4));
-                if (year == 1868) {
-                    return new JapanYearMonth("明治元年 ", undefined, month);
+                var dateString = yearmonth.toString(), seperator = (dateString.match(/\//g) || []).length;
+                if (seperator > 2 || seperator < 0) {
+                    return null;
                 }
-                if (year < 1912) {
-                    var diff = year - 1867;
-                    return new JapanYearMonth("明治 ", diff, month);
+                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
+                for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
+                    var i = _a[_i];
+                    var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
+                    if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
+                        var diff = formattedYear - startEraYear;
+                        return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
+                    }
                 }
-                if (year == 1912) {
-                    if (month < 8)
-                        return new JapanYearMonth("明治 ", 45, month);
-                    return new JapanYearMonth("大正元年 ", undefined, month);
-                }
-                if (year < 1926) {
-                    var diff = year - 1911;
-                    return new JapanYearMonth("大正 ", diff, month);
-                }
-                if (year == 1926) {
-                    if (month < 12)
-                        return new JapanYearMonth("大正", 15, month);
-                    return new JapanYearMonth("昭和元年 ", undefined, month);
-                }
-                if (year < 1989) {
-                    var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff, month);
-                }
-                if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", undefined, month);
-                }
-                var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff, month);
+                return null;
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            var JapanDateMoment = /** @class */ (function () {
+            var JapanDateMoment = (function () {
                 function JapanDateMoment(date, outputFormat) {
                     var MomentResult = parseMoment(date, outputFormat);
                     var year = MomentResult.momentObject.year();
@@ -1869,14 +1826,14 @@ var nts;
                 return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
-            var ParseResult = /** @class */ (function () {
+            var ParseResult = (function () {
                 function ParseResult(success) {
                     this.success = success;
                 }
                 return ParseResult;
             }());
             time_1.ParseResult = ParseResult;
-            var ResultParseTime = /** @class */ (function (_super) {
+            var ResultParseTime = (function (_super) {
                 __extends(ResultParseTime, _super);
                 function ResultParseTime(success, minus, hours, minutes, msg) {
                     var _this = _super.call(this, success) || this;
@@ -1944,7 +1901,7 @@ var nts;
                 return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
             }
             time_1.parseTime = parseTime;
-            var ResultParseTimeWithSecond = /** @class */ (function (_super) {
+            var ResultParseTimeWithSecond = (function (_super) {
                 __extends(ResultParseTimeWithSecond, _super);
                 function ResultParseTimeWithSecond(success, minus, hours, minutes, second, msg) {
                     var _this = _super.call(this, success, minus, hours, minutes, msg) || this;
@@ -2019,7 +1976,7 @@ var nts;
                 return ResultParseTimeWithSecond.succeeded(minusNumber, parseInt(hours), parseInt(minutes), parseInt(seconds));
             }
             time_1.parseTimeWithSecond = parseTimeWithSecond;
-            var ResultParseYearMonth = /** @class */ (function (_super) {
+            var ResultParseYearMonth = (function (_super) {
                 __extends(ResultParseYearMonth, _super);
                 function ResultParseYearMonth(success, msg, year, month) {
                     var _this = _super.call(this, success) || this;
@@ -2074,7 +2031,7 @@ var nts;
                 return ResultParseYearMonth.succeeded(year, month);
             }
             time_1.parseYearMonth = parseYearMonth;
-            var ResultParseTimeOfTheDay = /** @class */ (function (_super) {
+            var ResultParseTimeOfTheDay = (function (_super) {
                 __extends(ResultParseTimeOfTheDay, _super);
                 function ResultParseTimeOfTheDay(success, msg, hour, minute) {
                     var _this = _super.call(this, success) || this;
@@ -2129,7 +2086,7 @@ var nts;
                 return ResultParseTimeOfTheDay.succeeded(hour, minute);
             }
             time_1.parseTimeOfTheDay = parseTimeOfTheDay;
-            var ResultParseYearMonthDate = /** @class */ (function (_super) {
+            var ResultParseYearMonthDate = (function (_super) {
                 __extends(ResultParseYearMonthDate, _super);
                 function ResultParseYearMonthDate(success, msg, year, month, date) {
                     var _this = _super.call(this, success) || this;
@@ -2214,7 +2171,7 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            var MomentResult = /** @class */ (function (_super) {
+            var MomentResult = (function (_super) {
                 __extends(MomentResult, _super);
                 function MomentResult(momentObject, outputFormat) {
                     var _this = _super.call(this, true) || this;
@@ -2388,7 +2345,7 @@ var nts;
                 }
             }
             time_1.UTCDate = UTCDate;
-            var DateTimeFormatter = /** @class */ (function () {
+            var DateTimeFormatter = (function () {
                 function DateTimeFormatter() {
                     this.shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
@@ -2695,7 +2652,7 @@ var nts;
             (function (minutesBased) {
                 var duration;
                 (function (duration_1) {
-                    var ResultParseMiuntesBasedDuration = /** @class */ (function (_super) {
+                    var ResultParseMiuntesBasedDuration = (function (_super) {
                         __extends(ResultParseMiuntesBasedDuration, _super);
                         function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
                             var _this = _super.call(this, success) || this;
@@ -2981,7 +2938,7 @@ var nts;
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
-                        var ResultParseTimeWithDayAttr = /** @class */ (function () {
+                        var ResultParseTimeWithDayAttr = (function () {
                             function ResultParseTimeWithDayAttr(success, asMinutes) {
                                 this.success = success;
                                 this.asMinutes = asMinutes;
@@ -3117,7 +3074,7 @@ var nts;
             (function (secondsBased) {
                 var duration;
                 (function (duration_2) {
-                    var ResultParseSecondsBasedDuration = /** @class */ (function (_super) {
+                    var ResultParseSecondsBasedDuration = (function (_super) {
                         __extends(ResultParseSecondsBasedDuration, _super);
                         function ResultParseSecondsBasedDuration(success, minus, hours, minutes, seconds, msg) {
                             var _this = _super.call(this, success) || this;
@@ -3347,7 +3304,7 @@ var nts;
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web'
             };
-            var QueryString = /** @class */ (function () {
+            var QueryString = (function () {
                 function QueryString() {
                     this.items = {};
                 }
@@ -3410,7 +3367,7 @@ var nts;
             /**
              * URL and QueryString
              */
-            var Locator = /** @class */ (function () {
+            var Locator = (function () {
                 function Locator(url) {
                     this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
@@ -3923,7 +3880,7 @@ var nts;
             /** Event to notify ViewModel applied bindings. */
             ui.viewModelApplied = $.Callbacks();
             // Kiban ViewModel
-            var KibanViewModel = /** @class */ (function () {
+            var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
                     var _this = this;
                     this.systemName = ko.observable("");
@@ -3977,6 +3934,8 @@ var nts;
                         content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                    // start a dialog when parent window too small, so this will auto resize the dialog
+                    $("#contents-area").css("max-height", "calc(100vh - " + content_height + "px)");
                     //            if($("#functions-area-bottom").length!=0){
                     //            } 
                 };
@@ -4129,7 +4088,7 @@ var nts;
                 /**
                  * Menu item.
                  */
-                var MenuItem = /** @class */ (function () {
+                var MenuItem = (function () {
                     function MenuItem(name, path) {
                         this.name = name;
                         this.path = path;
@@ -4346,7 +4305,8 @@ var nts;
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
                         var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
                         $manualBtn.on(constants.CLICK, function () {
-                            // TODO: Open manual
+                            var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                            window.open(path);
                         });
                         var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
                         $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
@@ -4553,7 +4513,7 @@ var nts;
             var validation;
             (function (validation) {
                 var util = nts.uk.util;
-                var NoValidator = /** @class */ (function () {
+                var NoValidator = (function () {
                     function NoValidator() {
                     }
                     NoValidator.prototype.validate = function (inputText, option) {
@@ -4565,7 +4525,7 @@ var nts;
                     return NoValidator;
                 }());
                 validation.NoValidator = NoValidator;
-                var ValidationResult = /** @class */ (function () {
+                var ValidationResult = (function () {
                     function ValidationResult() {
                         this.errorMessage = 'error message';
                     }
@@ -4581,7 +4541,7 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                var DepartmentCodeValidator = /** @class */ (function () {
+                var DepartmentCodeValidator = (function () {
                     function DepartmentCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4653,7 +4613,7 @@ var nts;
                     }
                     return inputText;
                 }
-                var WorkplaceCodeValidator = /** @class */ (function () {
+                var WorkplaceCodeValidator = (function () {
                     function WorkplaceCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4694,7 +4654,7 @@ var nts;
                     return WorkplaceCodeValidator;
                 }());
                 validation.WorkplaceCodeValidator = WorkplaceCodeValidator;
-                var PostCodeValidator = /** @class */ (function () {
+                var PostCodeValidator = (function () {
                     function PostCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4737,7 +4697,7 @@ var nts;
                     return PostCodeValidator;
                 }());
                 validation.PostCodeValidator = PostCodeValidator;
-                var PunchCardNoValidator = /** @class */ (function () {
+                var PunchCardNoValidator = (function () {
                     function PunchCardNoValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4756,17 +4716,8 @@ var nts;
                             return result;
                         }
                         //let validateResult;
-                        // Check CharType
-                        result = checkCharType(inputText, this.charType);
-                        if (!result.isValid)
-                            return result;
                         // Check Constraint
                         if (this.constraint !== undefined && this.constraint !== null) {
-                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
-                                var maxLength = this.constraint.maxLength;
-                                result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
-                                return result;
-                            }
                             if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
                                     result.fail(nts.uk.resource.getMessage('Msg_1285', [this.name]), 'Msg_1285');
@@ -4774,13 +4725,22 @@ var nts;
                                 }
                             }
                         }
+                        // Check CharType
+                        result = checkCharType(inputText, this.charType);
+                        if (!result.isValid)
+                            return result;
+                        if (!_.isNil(this.constraint) && this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                            var maxLength = this.constraint.maxLength;
+                            result.fail(nts.uk.resource.getMessage(result.errorMessage, [this.name, maxLength]), result.errorCode);
+                            return result;
+                        }
                         result.success(inputText);
                         return result;
                     };
                     return PunchCardNoValidator;
                 }());
                 validation.PunchCardNoValidator = PunchCardNoValidator;
-                var EmployeeCodeValidator = /** @class */ (function () {
+                var EmployeeCodeValidator = (function () {
                     function EmployeeCodeValidator(name, options) {
                         var self = this;
                         this.name = name;
@@ -4813,7 +4773,7 @@ var nts;
                     return EmployeeCodeValidator;
                 }());
                 validation.EmployeeCodeValidator = EmployeeCodeValidator;
-                var StringValidator = /** @class */ (function () {
+                var StringValidator = (function () {
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4876,7 +4836,7 @@ var nts;
                     return StringValidator;
                 }());
                 validation.StringValidator = StringValidator;
-                var NumberValidator = /** @class */ (function () {
+                var NumberValidator = (function () {
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4954,7 +4914,7 @@ var nts;
                     return NumberValidator;
                 }());
                 validation.NumberValidator = NumberValidator;
-                var TimeValidator = /** @class */ (function () {
+                var TimeValidator = (function () {
                     function TimeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4992,11 +4952,11 @@ var nts;
                         if (this.acceptJapaneseCalendar) {
                             inputText = uk.time.convertJapaneseDateToGlobal(inputText);
                         }
-                        var maxStr, minStr;
+                        var maxStr, minStr, max, min;
                         // Time duration
                         if (this.mode === "time") {
-                            var timeParse;
-                            if (this.outputFormat.indexOf("s") >= 0) {
+                            var timeParse, isSecondBase = this.outputFormat.indexOf("s") >= 0, mesId = isSecondBase ? "FND_E_CLOCK_SECOND" : "FND_E_TIME";
+                            if (isSecondBase) {
                                 timeParse = uk.time.secondsBased.duration.parseString(inputText);
                             }
                             else {
@@ -5013,24 +4973,34 @@ var nts;
                             }
                             if (!util.isNullOrUndefined(this.constraint.max)) {
                                 maxStr = this.constraint.max;
-                                var max = uk.time.parseTime(this.constraint.max);
+                                if (isSecondBase) {
+                                    max = uk.time.secondsBased.duration.parseString(maxStr);
+                                }
+                                else {
+                                    max = uk.time.minutesBased.duration.parseString(maxStr);
+                                }
                                 if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                                    var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                                    result.fail(msg, "FND_E_TIME");
+                                    var msg = nts.uk.resource.getMessage(mesId, [this.name, this.constraint.min, this.constraint.max]);
+                                    result.fail(msg, mesId);
                                     return result;
                                 }
                             }
                             if (!util.isNullOrUndefined(this.constraint.min)) {
                                 minStr = this.constraint.min;
-                                var min = uk.time.parseTime(this.constraint.min);
+                                if (isSecondBase) {
+                                    min = uk.time.secondsBased.duration.parseString(minStr);
+                                }
+                                else {
+                                    min = uk.time.minutesBased.duration.parseString(minStr);
+                                }
                                 if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                                    var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                                    result.fail(msg, "FND_E_TIME");
+                                    var msg = nts.uk.resource.getMessage(mesId, [this.name, this.constraint.min, this.constraint.max]);
+                                    result.fail(msg, mesId);
                                     return result;
                                 }
                             }
                             if (!result.isValid && this.constraint.valueType === "Time") {
-                                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
+                                result.fail(nts.uk.resource.getMessage(mesId, [this.name, minStr, maxStr]), mesId);
                             }
                             return result;
                         }
@@ -5088,7 +5058,7 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                var TimeWithDayValidator = /** @class */ (function () {
+                var TimeWithDayValidator = (function () {
                     function TimeWithDayValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -5169,7 +5139,7 @@ var nts;
         (function (ui) {
             var errors;
             (function (errors_1) {
-                var ErrorsViewModel = /** @class */ (function () {
+                var ErrorsViewModel = (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
                         this.title = "エラー一覧";
@@ -5325,7 +5295,7 @@ var nts;
                     return ErrorsViewModel;
                 }());
                 errors_1.ErrorsViewModel = ErrorsViewModel;
-                var ErrorViewModelMemento = /** @class */ (function () {
+                var ErrorViewModelMemento = (function () {
                     function ErrorViewModelMemento() {
                     }
                     ErrorViewModelMemento.prototype.setErrors = function (errors) {
@@ -5357,7 +5327,7 @@ var nts;
                     return ErrorViewModelMemento;
                 }());
                 errors_1.ErrorViewModelMemento = ErrorViewModelMemento;
-                var ErrorHeader = /** @class */ (function () {
+                var ErrorHeader = (function () {
                     function ErrorHeader(name, text, width, visible) {
                         this.name = name;
                         this.text = text;
@@ -5587,7 +5557,7 @@ var nts;
                     };
                 }
             })(block = ui.block || (ui.block = {}));
-            var DirtyChecker = /** @class */ (function () {
+            var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
                     this.initialState = this.getCurrentState();
@@ -5708,7 +5678,7 @@ var nts;
                 /**
                  * Main or Sub Window(dialog)
                  */
-                var ScreenWindow = /** @class */ (function () {
+                var ScreenWindow = (function () {
                     function ScreenWindow(id, isRoot, parent) {
                         this.globalContext = null;
                         this.$dialog = null;
@@ -5903,7 +5873,7 @@ var nts;
                  * All ScreenWindows are managed by this container.
                  * this instance is singleton in one browser-tab.
                  */
-                var ScreenWindowContainer = /** @class */ (function () {
+                var ScreenWindowContainer = (function () {
                     function ScreenWindowContainer() {
                         this.windows = {};
                         this.windows[windows.selfId] = ScreenWindow.createMainWindow();
@@ -5996,16 +5966,52 @@ var nts;
                         if (typeof arguments[1] !== 'string') {
                             return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        return dialog(webAppId, path, true, options);
+                        var $dialog = dialog(webAppId, path, true, options);
+                        setTimeout(function () {
+                            $(window.top).on('resize', function (evt) { return resizeDialog(evt, $dialog); }).trigger('resize');
+                        }, 1000);
+                        return $dialog;
                     }
                     sub.modal = modal;
                     function modeless(webAppId, path, options) {
                         if (typeof arguments[1] !== 'string') {
                             return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        return dialog(webAppId, path, false, options);
+                        var $dialog = dialog(webAppId, path, false, options);
+                        setTimeout(function () {
+                            $(window.top).on('resize', function (evt) { return resizeDialog(evt, $dialog); }).trigger('resize');
+                        }, 1000);
+                        return $dialog;
                     }
                     sub.modeless = modeless;
+                    function resizeDialog(evt, $subWindow) {
+                        console.log('resize dialog');
+                        var $dialog = $subWindow.$dialog;
+                        if (!$dialog) {
+                            return;
+                        }
+                        var width = $dialog.width(), height = $dialog.parent().outerHeight(), 
+                        // because the height() function don't includes title's height
+                        $data = $($dialog).data('__size__');
+                        if (!$data || !$data.width || !$data.height) {
+                            $data = { width: width, height: height };
+                            $($dialog).data('__size__', $data);
+                        }
+                        // resize width
+                        if (evt.target.innerWidth <= $data.width) {
+                            $dialog.dialog('option', 'width', evt.target.innerWidth - 30);
+                        }
+                        else {
+                            $dialog.dialog('option', 'width', $data.width);
+                        }
+                        // resize height    
+                        if (evt.target.innerHeight <= $data.height) {
+                            $dialog.dialog('option', 'height', evt.target.innerHeight - 30);
+                        }
+                        else {
+                            $dialog.dialog('option', 'height', $data.height);
+                        }
+                    }
                     function dialog(webAppId, path, modal, options) {
                         options = options || {};
                         options.modal = modal;
@@ -6558,14 +6564,14 @@ var nts;
         (function (ui_2) {
             var option;
             (function (option_1) {
-                var DialogOption = /** @class */ (function () {
+                var DialogOption = (function () {
                     function DialogOption() {
                         this.show = false;
                     }
                     return DialogOption;
                 }());
                 option_1.DialogOption = DialogOption;
-                var ConfirmDialogOption = /** @class */ (function (_super) {
+                var ConfirmDialogOption = (function (_super) {
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6588,7 +6594,7 @@ var nts;
                     return ConfirmDialogOption;
                 }(DialogOption));
                 option_1.ConfirmDialogOption = ConfirmDialogOption;
-                var DelDialogOption = /** @class */ (function (_super) {
+                var DelDialogOption = (function (_super) {
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6622,7 +6628,7 @@ var nts;
                     return DelDialogOption;
                 }(DialogOption));
                 option_1.DelDialogOption = DelDialogOption;
-                var OKDialogOption = /** @class */ (function (_super) {
+                var OKDialogOption = (function (_super) {
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6656,7 +6662,7 @@ var nts;
                     return OKDialogOption;
                 }(DialogOption));
                 option_1.OKDialogOption = OKDialogOption;
-                var ErrorDialogOption = /** @class */ (function (_super) {
+                var ErrorDialogOption = (function (_super) {
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6686,7 +6692,7 @@ var nts;
                     return ErrorDialogOption;
                 }(DialogOption));
                 option_1.ErrorDialogOption = ErrorDialogOption;
-                var ErrorDialogWithTabOption = /** @class */ (function (_super) {
+                var ErrorDialogWithTabOption = (function (_super) {
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         var _this = _super.call(this) || this;
@@ -6717,7 +6723,7 @@ var nts;
                     return ErrorDialogWithTabOption;
                 }(ErrorDialogOption));
                 option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
-                var DialogButton = /** @class */ (function () {
+                var DialogButton = (function () {
                     function DialogButton() {
                     }
                     DialogButton.prototype.click = function (viewmodel, ui) { };
@@ -6742,13 +6748,13 @@ var nts;
                     "JPY": "left",
                     "USD": "right"
                 };
-                var EditorOptionBase = /** @class */ (function () {
+                var EditorOptionBase = (function () {
                     function EditorOptionBase() {
                     }
                     return EditorOptionBase;
                 }());
                 option_2.EditorOptionBase = EditorOptionBase;
-                var TextEditorOption = /** @class */ (function (_super) {
+                var TextEditorOption = (function (_super) {
                     __extends(TextEditorOption, _super);
                     function TextEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6765,7 +6771,7 @@ var nts;
                     return TextEditorOption;
                 }(EditorOptionBase));
                 option_2.TextEditorOption = TextEditorOption;
-                var TimeEditorOption = /** @class */ (function (_super) {
+                var TimeEditorOption = (function (_super) {
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6780,7 +6786,7 @@ var nts;
                     return TimeEditorOption;
                 }(EditorOptionBase));
                 option_2.TimeEditorOption = TimeEditorOption;
-                var NumberEditorOption = /** @class */ (function (_super) {
+                var NumberEditorOption = (function (_super) {
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6801,7 +6807,7 @@ var nts;
                     return NumberEditorOption;
                 }(EditorOptionBase));
                 option_2.NumberEditorOption = NumberEditorOption;
-                var CurrencyEditorOption = /** @class */ (function (_super) {
+                var CurrencyEditorOption = (function (_super) {
                     __extends(CurrencyEditorOption, _super);
                     function CurrencyEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6826,7 +6832,7 @@ var nts;
                 function getCurrencyPosition(currencyformat) {
                     return currenryPosition[currencyformat] === null ? "right" : currenryPosition[currencyformat];
                 }
-                var MultilineEditorOption = /** @class */ (function (_super) {
+                var MultilineEditorOption = (function (_super) {
                     __extends(MultilineEditorOption, _super);
                     function MultilineEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6840,7 +6846,7 @@ var nts;
                     return MultilineEditorOption;
                 }(EditorOptionBase));
                 option_2.MultilineEditorOption = MultilineEditorOption;
-                var TimeWithDayAttrEditorOption = /** @class */ (function (_super) {
+                var TimeWithDayAttrEditorOption = (function (_super) {
                     __extends(TimeWithDayAttrEditorOption, _super);
                     function TimeWithDayAttrEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6895,7 +6901,7 @@ var nts;
                 var STICK = "stick";
                 var Connector = {};
                 var _scrollWidth, emptyCells = {};
-                var ExTable = /** @class */ (function () {
+                var ExTable = (function () {
                     function ExTable($container, options) {
                         // dynamic or fixed
                         this.bodyHeightSetMode = DYNAMIC;
@@ -7426,7 +7432,7 @@ var nts;
                     function groupHeader($container, options, isUpdate) {
                         var $table = selector.create("table").html("<tbody></tbody>").addClass(options.tableClass)
                             .css({ position: "relative", "table-layout": "fixed", width: "100%",
-                            "border-collapse": "separate", "user-select": "none" }).getSingle();
+                            /**"border-collapse": "separate",**/ "user-select": "none" }).getSingle();
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
                         if (!isUpdate) {
@@ -7471,7 +7477,7 @@ var nts;
                         $table.style.position = "relative";
                         $table.style.tableLayout = "fixed";
                         $table.style.width = "100%";
-                        $table.style.borderCollapse = "separate";
+                        //            $table.style.borderCollapse = "separate";
                         $table.style.userSelect = "none";
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
@@ -7579,7 +7585,7 @@ var nts;
                         });
                         return colspan !== 0 ? (colspan - noGroup) : undefined;
                     }
-                    var Conditional = /** @class */ (function () {
+                    var Conditional = (function () {
                         function Conditional(options) {
                             this.options = options;
                             var columns = helper.classifyColumns(options);
@@ -7590,7 +7596,7 @@ var nts;
                         }
                         return Conditional;
                     }());
-                    var Painter = /** @class */ (function (_super) {
+                    var Painter = (function (_super) {
                         __extends(Painter, _super);
                         function Painter($container, options) {
                             var _this = _super.call(this, options) || this;
@@ -7624,7 +7630,7 @@ var nts;
                             $.data(td, internal.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + "; position: relative;";
+                                + ws + ";"; //"; position: relative;";
                             self.highlight(td);
                             if (!self.visibleColumnsMap[key])
                                 tdStyle += "; display: none;"; //td.style.display = "none";
@@ -7659,7 +7665,7 @@ var nts;
                                     //                       spread.bindSticker(div, rowIdx, key, self.options);
                                 });
                                 style.detCell(self.$container, td, rowIdx, key);
-                                tdStyle += "; padding: 0px;";
+                                tdStyle += "; position: relative; padding: 0px;";
                                 td.style.cssText += tdStyle;
                                 if (self.options.overflowTooltipOn)
                                     widget.textOverflow(td);
@@ -7922,7 +7928,7 @@ var nts;
                         return Painter;
                     }(Conditional));
                     render.Painter = Painter;
-                    var GroupHeaderPainter = /** @class */ (function (_super) {
+                    var GroupHeaderPainter = (function (_super) {
                         __extends(GroupHeaderPainter, _super);
                         function GroupHeaderPainter(options) {
                             var _this = _super.call(this, options) || this;
@@ -8376,7 +8382,7 @@ var nts;
                     intan.TOP_SPACE = "top-space";
                     intan.BOTTOM_SPACE = "bottom-space";
                     intan.NULL = null;
-                    var Cloud = /** @class */ (function () {
+                    var Cloud = (function () {
                         function Cloud($container, dataSource, options) {
                             this.$container = $container;
                             this.options = options;
@@ -8853,7 +8859,7 @@ var nts;
                     update.EDITOR_CLS = "ex-editor";
                     update.EDITABLE_CLS = "ex-editable";
                     var EMPTY_TBL_HEIGHT = "1px";
-                    var Editor = /** @class */ (function () {
+                    var Editor = (function () {
                         function Editor($editor, land, rowIdx, columnKey, innerIdx, value) {
                             this.$editor = $editor;
                             this.land = land;
@@ -9804,14 +9810,14 @@ var nts;
                         Mode[Mode["SINGLE"] = 0] = "SINGLE";
                         Mode[Mode["MULTIPLE"] = 1] = "MULTIPLE";
                     })(Mode || (Mode = {}));
-                    var History = /** @class */ (function () {
+                    var History = (function () {
                         function History(cells) {
                             this.cells = cells;
                         }
                         return History;
                     }());
                     copy.History = History;
-                    var Printer = /** @class */ (function () {
+                    var Printer = (function () {
                         function Printer(options) {
                             this.options = options;
                         }
@@ -10112,7 +10118,7 @@ var nts;
                 (function (spread) {
                     spread.SINGLE = "single";
                     spread.MULTIPLE = "multiple";
-                    var Sticker = /** @class */ (function () {
+                    var Sticker = (function () {
                         function Sticker(data) {
                             this.mode = spread.MULTIPLE;
                             this.validate = function () { return true; };
@@ -10219,7 +10225,7 @@ var nts;
                     validation.DEF_HOUR_MIN = 0;
                     validation.DEF_MIN_MAXMIN = 0;
                     validation.DAY_MINS = 1439;
-                    var Result = /** @class */ (function () {
+                    var Result = (function () {
                         function Result(isValid, value) {
                             this.isValid = isValid;
                             this.value = value;
@@ -10587,7 +10593,7 @@ var nts;
                 (function (selection) {
                     selection.CELL_SELECTED_CLS = "x-cell-selected";
                     selection.ROW_SELECTED_CLS = "x-row-selected";
-                    var Cell = /** @class */ (function () {
+                    var Cell = (function () {
                         function Cell(rowIdx, columnKey, value, innerIdx) {
                             this.rowIndex = rowIdx;
                             this.columnKey = columnKey;
@@ -11061,7 +11067,7 @@ var nts;
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
                     resize.STAY_CLS = "x-stay";
-                    var ColumnAdjuster = /** @class */ (function () {
+                    var ColumnAdjuster = (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
                             this.$contentTable = $contentTable;
@@ -11211,7 +11217,7 @@ var nts;
                         return ColumnAdjuster;
                     }());
                     resize.ColumnAdjuster = ColumnAdjuster;
-                    var AreaAdjuster = /** @class */ (function () {
+                    var AreaAdjuster = (function () {
                         function AreaAdjuster($container, headerWrappers, bodyWrappers, $follower) {
                             this.$container = $container;
                             this.headerWrappers = headerWrappers;
@@ -11711,7 +11717,7 @@ var nts;
                 (function (storage) {
                     storage.AREA_WIDTHS = "areawidths";
                     storage.TBL_HEIGHT = "tableheight";
-                    var Store = /** @class */ (function () {
+                    var Store = (function () {
                         function Store() {
                         }
                         /**
@@ -11740,7 +11746,7 @@ var nts;
                     }());
                     var area;
                     (function (area) {
-                        var Cache = /** @class */ (function (_super) {
+                        var Cache = (function (_super) {
                             __extends(Cache, _super);
                             function Cache() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -11831,7 +11837,7 @@ var nts;
                     })(area = storage.area || (storage.area = {}));
                     var tableHeight;
                     (function (tableHeight) {
-                        var Cache2 = /** @class */ (function (_super) {
+                        var Cache2 = (function (_super) {
                             __extends(Cache2, _super);
                             function Cache2() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -12351,7 +12357,7 @@ var nts;
                     style.DET_CLS = "xdet";
                     style.HIDDEN_CLS = "xhidden";
                     style.SEAL_CLS = "xseal";
-                    var CellStyleParam = /** @class */ (function () {
+                    var CellStyleParam = (function () {
                         function CellStyleParam($cell, cellData, rowData, rowIdx, columnKey) {
                             this.$cell = $cell;
                             this.cellData = cellData;
@@ -12362,7 +12368,7 @@ var nts;
                         return CellStyleParam;
                     }());
                     style.CellStyleParam = CellStyleParam;
-                    var Cell = /** @class */ (function () {
+                    var Cell = (function () {
                         function Cell(rowIndex, columnKey, makeup) {
                             this.rowIndex = rowIndex;
                             this.columnKey = columnKey;
@@ -13728,7 +13734,7 @@ var nts;
                         }
                     }
                     selector.siblingsLt = siblingsLt;
-                    var Manipulator = /** @class */ (function () {
+                    var Manipulator = (function () {
                         function Manipulator() {
                         }
                         Manipulator.prototype.addNodes = function (nodes) {
@@ -14661,7 +14667,7 @@ var nts;
                     /**
                      * Widget.
                      */
-                    var XWidget = /** @class */ (function () {
+                    var XWidget = (function () {
                         function XWidget($selector) {
                             this.$selector = $selector;
                         }
@@ -14676,7 +14682,7 @@ var nts;
                     /**
                      * Tooltip.
                      */
-                    var Tooltip = /** @class */ (function (_super) {
+                    var Tooltip = (function (_super) {
                         __extends(Tooltip, _super);
                         function Tooltip($selector, options) {
                             var _this = _super.call(this, $selector) || this;
@@ -14724,7 +14730,7 @@ var nts;
                     /**
                      * Popup.
                      */
-                    var Popup = /** @class */ (function (_super) {
+                    var Popup = (function (_super) {
                         __extends(Popup, _super);
                         function Popup($selector) {
                             var _this = _super.call(this, $selector) || this;
@@ -14748,7 +14754,7 @@ var nts;
                     /**
                      * Context menu.
                      */
-                    var ContextMenu = /** @class */ (function (_super) {
+                    var ContextMenu = (function (_super) {
                         __extends(ContextMenu, _super);
                         function ContextMenu($selector, items) {
                             var _this = _super.call(this, $selector) || this;
@@ -14810,7 +14816,7 @@ var nts;
                     /**
                      * Menu item.
                      */
-                    var MenuItem = /** @class */ (function () {
+                    var MenuItem = (function () {
                         function MenuItem(text, selectHandler, disabled, icon) {
                             this.text = text;
                             this.selectHandler = selectHandler ? selectHandler : $.noop();
@@ -14823,7 +14829,7 @@ var nts;
                     /**
                      * Popup panel.
                      */
-                    var PopupPanel = /** @class */ (function (_super) {
+                    var PopupPanel = (function (_super) {
                         __extends(PopupPanel, _super);
                         function PopupPanel($selector, provider, position) {
                             var _this = _super.call(this, $selector) || this;
@@ -15152,7 +15158,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsCheckboxBindingHandler = /** @class */ (function () {
+                var NtsCheckboxBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -15244,7 +15250,7 @@ var nts;
                 /**
                  * MultiCheckbox binding handler
                  */
-                var NtsMultiCheckBoxBindingHandler = /** @class */ (function () {
+                var NtsMultiCheckBoxBindingHandler = (function () {
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -15377,7 +15383,7 @@ var nts;
                 var _ = window['_'], $ = window['$'], ko = window['ko'];
                 var count = nts.uk.text.countHalf;
                 var WoC = 9, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
-                var ComboBoxBindingHandler = /** @class */ (function () {
+                var ComboBoxBindingHandler = (function () {
                     function ComboBoxBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var template = '', $element = $(element), accessor = valueAccessor(), 
@@ -15578,6 +15584,12 @@ var nts;
                                             //reload data
                                             data = $element.data(DATA);
                                         }
+                                        // not match any filter value
+                                        if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
+                                            $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
+                                            //reload data
+                                            data = $element.data(DATA);
+                                        }
                                         // set value on select
                                         accessor.value(data[VALUE]);
                                         // validate if required
@@ -15586,8 +15598,13 @@ var nts;
                                             .trigger(SHOWVALUE);
                                         clearTimeout(sto);
                                     }, 10);
-                                    if (data[ENABLE] && !$(":focus").length) {
-                                        $element.focus();
+                                    if (data[ENABLE]) {
+                                        var f = $(':focus');
+                                        if (f.hasClass('ui-igcombo-field')
+                                            || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
+                                            || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
+                                            $element.focus();
+                                        }
                                     }
                                 },
                                 dropDownOpening: function (evt, ui) {
@@ -15607,6 +15624,7 @@ var nts;
                                     })
                                         .show()
                                         .find('input')
+                                        .prop('readonly', !data[EDITABLE])
                                         .css({
                                         'width': '0px',
                                         'height': !!data[EDITABLE] ? '30px' : '0px',
@@ -15746,6 +15764,13 @@ var nts;
                                 .trigger(CHANGED, [ENABLE, enable])
                                 .trigger(CHANGED, [EDITABLE, editable])
                                 .trigger(CHANGED, [REQUIRED, required]);
+                            var sto = setTimeout(function () {
+                                if ($element.data("igCombo")) {
+                                    $element
+                                        .igCombo(OPTION, "disabled", !enable);
+                                    clearTimeout(sto);
+                                }
+                            }, 100);
                             // if igCombo has init
                             if ($element.data("igCombo")) {
                                 var data = $element.data(DATA), olds = data[DATA];
@@ -15753,11 +15778,6 @@ var nts;
                                 if (!_.isEqual(olds, options)) {
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
-                                var sto_1 = setTimeout(function () {
-                                    $element
-                                        .igCombo(OPTION, "disabled", !enable);
-                                    clearTimeout(sto_1);
-                                }, 100);
                                 $element
                                     .igCombo("value", value);
                                 if (!enable) {
@@ -15807,7 +15827,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = /** @class */ (function () {
+                var DatePickerBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -16109,7 +16129,7 @@ var nts;
                     ViewLocation[ViewLocation["CURRENT"] = 1] = "CURRENT";
                     ViewLocation[ViewLocation["NEXT"] = 2] = "NEXT";
                 })(ViewLocation || (ViewLocation = {}));
-                var DatePickerNormalizer = /** @class */ (function () {
+                var DatePickerNormalizer = (function () {
                     function DatePickerNormalizer() {
                         this.fiscalMonth = 1;
                         // Constants
@@ -16725,7 +16745,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDialogBindingHandler = /** @class */ (function () {
+                var NtsDialogBindingHandler = (function () {
                     function NtsDialogBindingHandler() {
                     }
                     /**
@@ -16815,7 +16835,7 @@ var nts;
                 /**
                  * Error Dialog binding handler
                  */
-                var NtsErrorDialogBindingHandler = /** @class */ (function () {
+                var NtsErrorDialogBindingHandler = (function () {
                     function NtsErrorDialogBindingHandler() {
                     }
                     /**
@@ -17129,7 +17149,7 @@ var nts;
                 /**
                  * BaseEditor Processor
                  */
-                var EditorProcessor = /** @class */ (function () {
+                var EditorProcessor = (function () {
                     function EditorProcessor() {
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
@@ -17287,7 +17307,7 @@ var nts;
                 /**
                  * TextEditor Processor
                  */
-                var TextEditorProcessor = /** @class */ (function (_super) {
+                var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17471,7 +17491,7 @@ var nts;
                 /**
                  * MultilineEditor Processor
                  */
-                var MultilineEditorProcessor = /** @class */ (function (_super) {
+                var MultilineEditorProcessor = (function (_super) {
                     __extends(MultilineEditorProcessor, _super);
                     function MultilineEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17501,7 +17521,7 @@ var nts;
                 /**
                  * NumberEditor Processor
                  */
-                var NumberEditorProcessor = /** @class */ (function (_super) {
+                var NumberEditorProcessor = (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17511,9 +17531,9 @@ var nts;
                         $input.focus(function () {
                             if (!$input.attr('readonly')) {
                                 // Remove separator (comma)
-                                var numb = Number(data.value());
-                                if (_.isNumber(numb) && !_.isNaN(numb) && String(data.value()).trim() != '') {
-                                    $input.val(numb.toLocaleString(undefined, { useGrouping: false }));
+                                var value = ko.toJS(data.value), numb = Number(value);
+                                if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
+                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
                                 }
                                 else {
                                     $input.val(data.value());
@@ -17593,7 +17613,7 @@ var nts;
                 /**
                  * TimeEditor Processor
                  */
-                var TimeEditorProcessor = /** @class */ (function (_super) {
+                var TimeEditorProcessor = (function (_super) {
                     __extends(TimeEditorProcessor, _super);
                     function TimeEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17644,7 +17664,7 @@ var nts;
                 /**
                  * TimeWithDayAttrEditor Processor
                  */
-                var TimeWithDayAttrEditorProcessor = /** @class */ (function (_super) {
+                var TimeWithDayAttrEditorProcessor = (function (_super) {
                     __extends(TimeWithDayAttrEditorProcessor, _super);
                     function TimeWithDayAttrEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17672,6 +17692,14 @@ var nts;
                             }
                         });
                     };
+                    TimeWithDayAttrEditorProcessor.prototype.update = function ($input, data) {
+                        _super.prototype.update.call(this, $input, data);
+                        var value = ko.unwrap(data.value);
+                        if ($input.ntsError("hasError") && typeof (value) === "number") {
+                            $input.ntsError("clearKibanError");
+                            $input.val(this.getFormatter(data).format(value));
+                        }
+                    };
                     TimeWithDayAttrEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeWithDayAttrEditorOption();
                     };
@@ -17692,7 +17720,7 @@ var nts;
                 /**
                  * Base Editor
                  */
-                var NtsEditorBindingHandler = /** @class */ (function () {
+                var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
                     }
                     /**
@@ -17712,7 +17740,7 @@ var nts;
                 /**
                  * TextEditor
                  */
-                var NtsTextEditorBindingHandler = /** @class */ (function (_super) {
+                var NtsTextEditorBindingHandler = (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17734,7 +17762,7 @@ var nts;
                 /**
                  * NumberEditor
                  */
-                var NtsNumberEditorBindingHandler = /** @class */ (function () {
+                var NtsNumberEditorBindingHandler = (function () {
                     function NtsNumberEditorBindingHandler() {
                     }
                     /**
@@ -17754,7 +17782,7 @@ var nts;
                 /**
                  * TimeEditor
                  */
-                var NtsTimeEditorBindingHandler = /** @class */ (function () {
+                var NtsTimeEditorBindingHandler = (function () {
                     function NtsTimeEditorBindingHandler() {
                     }
                     /**
@@ -17775,7 +17803,7 @@ var nts;
                 /**
                  * MultilineEditor
                  */
-                var NtsMultilineEditorBindingHandler = /** @class */ (function (_super) {
+                var NtsMultilineEditorBindingHandler = (function (_super) {
                     __extends(NtsMultilineEditorBindingHandler, _super);
                     function NtsMultilineEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17797,7 +17825,7 @@ var nts;
                 /**
                  * TimeWithDayAttr
                  */
-                var NtsTimeWithDayAttrEditorBindingHandler = /** @class */ (function (_super) {
+                var NtsTimeWithDayAttrEditorBindingHandler = (function (_super) {
                     __extends(NtsTimeWithDayAttrEditorBindingHandler, _super);
                     function NtsTimeWithDayAttrEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17848,7 +17876,7 @@ var nts;
                 /**
                  * FormLabel
                  */
-                var NtsFormLabelBindingHandler = /** @class */ (function () {
+                var NtsFormLabelBindingHandler = (function () {
                     function NtsFormLabelBindingHandler() {
                     }
                     /**
@@ -17949,7 +17977,7 @@ var nts;
                 /**
                  * GridList binding handler
                  */
-                var NtsGridListBindingHandler = /** @class */ (function () {
+                var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -17971,6 +17999,7 @@ var nts;
                         var columnResize = ko.unwrap(data.columnResize);
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
+                        var rowVirtualization = ko.unwrap(data.rowVirtualization) ? true : false;
                         var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
@@ -18109,6 +18138,7 @@ var nts;
                             columns: iggridColumns,
                             virtualization: virtualization,
                             virtualizationMode: 'continuous',
+                            rowVirtualization: rowVirtualization,
                             features: features,
                             tabIndex: -1
                         });
@@ -18365,7 +18395,7 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
-                var SwapHandler = /** @class */ (function () {
+                var SwapHandler = (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -18458,7 +18488,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = /** @class */ (function () {
+                var SwapModel = (function () {
                     function SwapModel($grid, primaryKey) {
                         this.$grid = $grid;
                         this.primaryKey = primaryKey;
@@ -18466,7 +18496,7 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var GridSwapList = /** @class */ (function (_super) {
+                var GridSwapList = (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -18497,7 +18527,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = /** @class */ (function () {
+                var ListItemTransporter = (function () {
                     function ListItemTransporter() {
                     }
                     ListItemTransporter.prototype.primary = function (primaryKey) {
@@ -18560,7 +18590,7 @@ var nts;
                 /**
                  * ListBox binding handler
                  */
-                var ListBoxBindingHandler = /** @class */ (function () {
+                var ListBoxBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -18889,7 +18919,7 @@ var nts;
         (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsRadioBoxBindingHandler = /** @class */ (function () {
+                var NtsRadioBoxBindingHandler = (function () {
                     function NtsRadioBoxBindingHandler() {
                     }
                     /**
@@ -18983,7 +19013,7 @@ var nts;
                 /**
                  * RadioBoxGroup binding handler
                  */
-                var NtsRadioBoxGroupBindingHandler = /** @class */ (function () {
+                var NtsRadioBoxGroupBindingHandler = (function () {
                     function NtsRadioBoxGroupBindingHandler() {
                     }
                     /**
@@ -19164,7 +19194,7 @@ var nts;
                 /**
                 * SearchBox Binding Handler
                 */
-                var SearchBox = /** @class */ (function () {
+                var SearchBox = (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
                         this.source = _.isEmpty(source) ? [] : this.cloneDeep(source);
@@ -19203,7 +19233,7 @@ var nts;
                     return SearchBox;
                 }());
                 koExtentions.SearchBox = SearchBox;
-                var SearchResult = /** @class */ (function () {
+                var SearchResult = (function () {
                     function SearchResult() {
                         this.options = [];
                         this.selectItems = [];
@@ -19211,7 +19241,7 @@ var nts;
                     return SearchResult;
                 }());
                 koExtentions.SearchResult = SearchResult;
-                var SearchPub = /** @class */ (function () {
+                var SearchPub = (function () {
                     function SearchPub(key, mode, source, searchField, childField) {
                         this.seachBox = new SearchBox(source, searchField, childField);
                         ;
@@ -19265,7 +19295,7 @@ var nts;
                     return SearchPub;
                 }());
                 koExtentions.SearchPub = SearchPub;
-                var NtsSearchBoxBindingHandler = /** @class */ (function () {
+                var NtsSearchBoxBindingHandler = (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
                     /**
@@ -19504,7 +19534,7 @@ var nts;
                 /**
                  * SwapList binding handler
                  */
-                var NtsSwapListBindingHandler = /** @class */ (function () {
+                var NtsSwapListBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -19515,7 +19545,7 @@ var nts;
                      */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var CHECKBOX_WIDTH = 70;
+                        var CHECKBOX_WIDTH = 40;
                         var SEARCH_AREA_HEIGHT = 45;
                         var BUTTON_SEARCH_WIDTH = 70;
                         var INPUT_SEARCH_PADDING = 65;
@@ -19537,7 +19567,7 @@ var nts;
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
-                        var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+                        var enableRowNumbering = false;
                         var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
                         var beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
@@ -19624,7 +19654,7 @@ var nts;
                         var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
                             //                            { name: 'Sorting', type: 'local' },
-                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering }];
+                            { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: enableRowNumbering, rowSelectorColumnWidth: 25 }];
                         $swap.find("#" + elementId + "-gridArea1").width(leftGridWidth + CHECKBOX_WIDTH);
                         $swap.find("#" + elementId + "-gridArea2").width(rightGridWidth + CHECKBOX_WIDTH);
                         var leftCriterion = _.map(leftColumns(), function (c) { return c.key === undefined ? c.prop : c.key; });
@@ -19789,7 +19819,7 @@ var nts;
                     return NtsSwapListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler().makeBindings();
-                var SwapHandler = /** @class */ (function () {
+                var SwapHandler = (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -19940,7 +19970,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = /** @class */ (function () {
+                var SwapModel = (function () {
                     function SwapModel($container, swapParts) {
                         this.$container = $container;
                         this.swapParts = swapParts;
@@ -19949,14 +19979,14 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var SearchResult = /** @class */ (function () {
+                var SearchResult = (function () {
                     function SearchResult(results, indices) {
                         this.data = results;
                         this.indices = indices;
                     }
                     return SearchResult;
                 }());
-                var SwapPart = /** @class */ (function () {
+                var SwapPart = (function () {
                     function SwapPart() {
                         this.searchMode = "highlight"; // highlight & filter - Default: highlight
                         this.innerDrop = true;
@@ -20103,7 +20133,7 @@ var nts;
                     };
                     return SwapPart;
                 }());
-                var GridSwapPart = /** @class */ (function (_super) {
+                var GridSwapPart = (function (_super) {
                     __extends(GridSwapPart, _super);
                     function GridSwapPart() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -20155,7 +20185,7 @@ var nts;
                     };
                     return GridSwapPart;
                 }(SwapPart));
-                var GridSwapList = /** @class */ (function (_super) {
+                var GridSwapList = (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -20287,7 +20317,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = /** @class */ (function () {
+                var ListItemTransporter = (function () {
                     function ListItemTransporter(firstList, secondList) {
                         this.firstList = firstList;
                         this.secondList = secondList;
@@ -20435,7 +20465,7 @@ var nts;
                 /**
                  * SwitchButton binding handler
                  */
-                var NtsSwitchButtonBindingHandler = /** @class */ (function () {
+                var NtsSwitchButtonBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -20609,7 +20639,7 @@ var nts;
                 /**
                  * TabPanel Binding Handler
                  */
-                var TabPanelBindingHandler = /** @class */ (function () {
+                var TabPanelBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -20736,7 +20766,7 @@ var nts;
                 /**
                  * Panel binding handler
                  */
-                var NtsPanelBindingHandler = /** @class */ (function () {
+                var NtsPanelBindingHandler = (function () {
                     function NtsPanelBindingHandler() {
                     }
                     /**
@@ -20800,7 +20830,7 @@ var nts;
                 /**
                  * TreeGrid binding handler
                  */
-                var NtsTreeGridViewBindingHandler = /** @class */ (function () {
+                var NtsTreeGridViewBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -20932,9 +20962,9 @@ var nts;
                                 $treegrid.data("autoExpanding", true);
                                 var holder = $treegrid.data("expand");
                                 //                    if(!nts.uk.util.isNullOrEmpty(holder.nodes)){
-                                _.forEach(holder.nodes, function (node) {
-                                    $treegrid.igTreeGrid("expandRow", node);
-                                });
+                                //                    _.forEach(holder.nodes, function(node: any){
+                                //                        $treegrid.igTreeGrid("expandRow", node); 
+                                //                    });
                                 //                    }
                                 $treegrid.data("autoExpanding", false);
                             }
@@ -21026,7 +21056,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 var isEmpty = nts.uk.util.isNullOrEmpty;
-                var ExpandNodeHolder = /** @class */ (function () {
+                var ExpandNodeHolder = (function () {
                     function ExpandNodeHolder() {
                         this.nodes = [];
                     }
@@ -21112,7 +21142,7 @@ var nts;
                         }
                     }
                 })(Helper || (Helper = {}));
-                var ExpandNode = /** @class */ (function () {
+                var ExpandNode = (function () {
                     function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {
                         this.nodeSource = source;
                         this.nodeLevel = nodeLevel;
@@ -21142,7 +21172,7 @@ var nts;
                 /**
                  * UpDownButton binding handler
                  */
-                var NtsUpDownBindingHandler = /** @class */ (function () {
+                var NtsUpDownBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -21260,9 +21290,18 @@ var nts;
                                     data.targetSource(source);
                                     //                        $targetElement.igGrid("option", "dataSource", source);
                                     //                        $targetElement.igGrid("dataBind");
-                                    var index = upDown + grouped["group1"][0].index;
+                                    //                        var index = upDown + grouped["group1"][0].index;
+                                    var id = grouped["group1"][0].id;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
-                                    _.defer(function () { $targetElement.igGrid("virtualScrollTo", index); });
+                                    _.defer(function () {
+                                        var row = { element: $targetElement.igGrid("rowById", id), id: id };
+                                        if ($targetElement.igGrid("option").virtualization === true) {
+                                            nts.uk.ui.ig.grid.virtual.expose(row, $targetElement);
+                                        }
+                                        else {
+                                            nts.uk.ui.ig.grid.expose(row, $targetElement);
+                                        }
+                                    });
                                 }
                             }
                         };
@@ -21425,7 +21464,7 @@ var nts;
                 /**
                  * Wizard binding handler
                  */
-                var WizardBindingHandler = /** @class */ (function () {
+                var WizardBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -21537,7 +21576,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsLegentButtonBindingHandler = /** @class */ (function () {
+                var NtsLegentButtonBindingHandler = (function () {
                     function NtsLegentButtonBindingHandler() {
                     }
                     /**
@@ -21662,7 +21701,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsCharsetSettingBindingHandler = /** @class */ (function () {
+                var NtsCharsetSettingBindingHandler = (function () {
                     function NtsCharsetSettingBindingHandler() {
                     }
                     /**
@@ -21733,7 +21772,7 @@ var nts;
         (function (ui_16) {
             var contextmenu;
             (function (contextmenu) {
-                var ContextMenu = /** @class */ (function () {
+                var ContextMenu = (function () {
                     /**
                      * Create an instance of ContextMenu. Auto call init() method
                      *
@@ -21891,7 +21930,7 @@ var nts;
                     return ContextMenu;
                 }());
                 contextmenu.ContextMenu = ContextMenu;
-                var ContextMenuItem = /** @class */ (function () {
+                var ContextMenuItem = (function () {
                     function ContextMenuItem(key, text, handler, icon, visible, enable) {
                         this.key = key;
                         this.text = text;
@@ -21926,8 +21965,8 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
-                var MGrid = /** @class */ (function () {
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var MGrid = (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
                         this.fixedBody = { containerClass: FIXED };
@@ -21950,6 +21989,9 @@ var nts;
                         _.assignIn(self, _.cloneDeep(options));
                         self.makeDefault();
                     }
+                    /**
+                     * MakeDefault.
+                     */
                     MGrid.prototype.makeDefault = function () {
                         var self = this;
                         self.fixedHeader = _.assignIn(self.fixedHeader, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
@@ -21960,8 +22002,14 @@ var nts;
                         if (self.enter) {
                             _$grid.data("enterDirect", self.enter);
                         }
+                        if (!_.isNil(self.subWidth)) {
+                            _remainWidth = parseFloat(self.subWidth);
+                        }
                         _$grid.mGrid({});
                     };
+                    /**
+                     * CompreOptions.
+                     */
                     MGrid.prototype.compreOptions = function () {
                         var self = this;
                         if (self.features) {
@@ -22063,7 +22111,7 @@ var nts;
                                 self.summaries.columns = colParts[1];
                                 self.summaries.height = SUM_HEIGHT + "px";
                                 _.forEach(summaries.columnSettings, function (s) {
-                                    var sum = { calculator: s.summaryCalculator };
+                                    var sum = { calculator: s.summaryCalculator, formatter: s.formatter };
                                     if (s.summaryCalculator === "Time") {
                                         sum[_currentPage] = moment.duration("0:00");
                                     }
@@ -22077,6 +22125,9 @@ var nts;
                                 _copie = true;
                         }
                     };
+                    /**
+                     * Create.
+                     */
                     MGrid.prototype.create = function () {
                         var self = this;
                         var left = "0px";
@@ -22180,6 +22231,10 @@ var nts;
                         _mafollicle[SheetDef][_currentSheet].controlMap = controlMap;
                         _mafollicle[SheetDef][_currentSheet].painters = painters;
                         _mafollicle[SheetDef][_currentSheet].maxWidth = _maxFreeWidth;
+                        if (!_.isNil(self.maxRows) && self.maxRows >= 31) {
+                            artifactOptions.noBlocRangee = self.maxRows;
+                            artifactOptions.noGrappeBloc = 2;
+                        }
                         v.construe(self.$container, bodyWrappers, artifactOptions);
                         _bodyWrappers = bodyWrappers;
                         var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrapper[0];
@@ -22235,7 +22290,11 @@ var nts;
                                     sum[_currentSheet] = $td;
                                 }
                                 else if (sum.calculator === "Number") {
-                                    $td.textContent = sum[_currentPage];
+                                    if (sum.formatter === "Currency") {
+                                        $td.textContent = ti.asCurrency(sum[_currentPage]);
+                                    }
+                                    else
+                                        $td.textContent = sum[_currentPage];
                                     sum[_currentSheet] = $td;
                                 }
                                 else {
@@ -22257,10 +22316,10 @@ var nts;
                         var freeAdjuster = new kt.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi, self.float);
                         kt._adjuster = freeAdjuster;
                         freeAdjuster.handle();
-                        su.binding(self.$container, self.autoFitWindow);
+                        su.binding(self.$container, self.autoFitWindow, self.minRows, self.maxRows);
                         lch.checkUp(self.$container);
                         self.$container.appendChild($frag);
-                        kt.screenLargeur();
+                        kt.screenLargeur(self.minRows, self.maxRows);
                         console.log(performance.now() - start);
                     };
                     return MGrid;
@@ -22301,6 +22360,9 @@ var nts;
                     v_1.CELL_CLS = "mcell";
                     v_1.DATA = "md";
                     v_1.INIT_MAN_EDIT = "init-man-edit";
+                    /**
+                     * Process.
+                     */
                     function process($container, options, isUpdate) {
                         var levelStruct = synthesizeHeaders(options);
                         options.levelStruct = levelStruct;
@@ -22408,6 +22470,9 @@ var nts;
                         return { $table: $table, cols: colDef.cols, controlMap: colDef.controlMap };
                     }
                     v_1.table = table;
+                    /**
+                     * Paint.
+                     */
                     function paint($container, options) {
                         var dataSource;
                         if (!_.isNil(options.dataSource)) {
@@ -22438,7 +22503,7 @@ var nts;
                     }
                     v_1.normal = normal;
                     /**
-                     * Begin.
+                     * Construe.
                      */
                     function construe($container, containers, options, single) {
                         if (options.features) {
@@ -22463,7 +22528,7 @@ var nts;
                             }
                         }
                         if (!_cloud)
-                            _cloud = new aho.Cloud(containers, options);
+                            _cloud = new aho.Platrer(containers, options);
                         var res = single ? _cloud.renderSideRows(true) : _cloud.renderRows(true);
                         if (!res)
                             return;
@@ -22501,6 +22566,7 @@ var nts;
                         _vessel().dirties = _dirties;
                         _vessel().zeroHidden = _zeroHidden;
                         _vessel().selected = _selected;
+                        _vessel().histoire = _histoire;
                         if (!_.isNil(_currentPage)) {
                             var openRange = _pageSize * _currentPage;
                             var closeRange = _pageSize * (_currentPage + 1) - 1;
@@ -22529,7 +22595,7 @@ var nts;
                     /**
                      * Peel struct.
                      */
-                    function peelStruct(columns, level, currentLevel) {
+                    function peelStruct(columns, level, currentLevel, parent) {
                         var colspan = 0, noGroup = 0;
                         _.forEach(columns, function (col) {
                             var clonedCol = _.clone(col);
@@ -22537,7 +22603,7 @@ var nts;
                             if (!_.isNil(col.group)) {
                                 colCount = col.group.length;
                                 noGroup++;
-                                var ret = peelStruct(col.group, level, currentLevel + 1);
+                                var ret = peelStruct(col.group, level, currentLevel + 1, col.headerText);
                                 if (!uk.util.isNullOrUndefined(ret)) {
                                     colCount += ret;
                                 }
@@ -22549,7 +22615,7 @@ var nts;
                             level[currentLevel].push(clonedCol);
                             colspan += colCount;
                             if (col.constraint) {
-                                var validator = new hpl.ColumnFieldValidator(col.headerText, col.constraint.primitiveValue, col.constraint);
+                                var validator = new hpl.ColumnFieldValidator(parent, col.headerText, col.constraint.primitiveValue, col.constraint);
                                 _validators[col.key] = validator;
                             }
                             var linkType = col.ntsType;
@@ -22568,6 +22634,9 @@ var nts;
                         });
                         return colspan !== 0 ? (colspan - noGroup) : undefined;
                     }
+                    /**
+                     * Get constraint name.
+                     */
                     function getConstraintName(key) {
                         var column = _columnsMap[key];
                         if (!column)
@@ -22577,7 +22646,7 @@ var nts;
                             : constraint.cDisplayType;
                     }
                     v_1.getConstraintName = getConstraintName;
-                    var Conditional = /** @class */ (function () {
+                    var Conditional = (function () {
                         function Conditional(options) {
                             this.options = options;
                             var clsColumns = ti.classifyColumns(options);
@@ -22590,7 +22659,7 @@ var nts;
                         }
                         return Conditional;
                     }());
-                    var Painter = /** @class */ (function (_super) {
+                    var Painter = (function (_super) {
                         __extends(Painter, _super);
                         function Painter($container, options) {
                             var _this = _super.call(this, options) || this;
@@ -22609,6 +22678,9 @@ var nts;
                             }
                             return _this;
                         }
+                        /**
+                         * BubColumn.
+                         */
                         Painter.prototype.bubColumn = function (name, i) {
                             var self = this;
                             var col = _.remove(self.hiddenColumns, function (c) { return c.key === name; });
@@ -22635,6 +22707,9 @@ var nts;
                                 });
                             });
                         };
+                        /**
+                         * UnbubColumn.
+                         */
                         Painter.prototype.unbubColumn = function (name, i) {
                             var self = this;
                             var col = _.remove(self.visibleColumns, function (c) { return c.key === name; });
@@ -22661,6 +22736,9 @@ var nts;
                                 });
                             });
                         };
+                        /**
+                         * Cell.
+                         */
                         Painter.prototype.cell = function (rData, rowIdx, key) {
                             var self = this;
                             var cData = rData[key];
@@ -22693,6 +22771,9 @@ var nts;
                             td.style.cssText += tdStyle;
                             return td;
                         };
+                        /**
+                         * Row.
+                         */
                         Painter.prototype.row = function (data, config, rowIdx) {
                             var self = this;
                             var tr = document.createElement("tr");
@@ -22710,7 +22791,7 @@ var nts;
                         return Painter;
                     }(Conditional));
                     v_1.Painter = Painter;
-                    var GroupHeaderPainter = /** @class */ (function (_super) {
+                    var GroupHeaderPainter = (function (_super) {
                         __extends(GroupHeaderPainter, _super);
                         function GroupHeaderPainter(options) {
                             var _this = _super.call(this, options) || this;
@@ -22775,7 +22856,7 @@ var nts;
                         return GroupHeaderPainter;
                     }(Conditional));
                     v_1.GroupHeaderPainter = GroupHeaderPainter;
-                    var ConcurrentPainter = /** @class */ (function () {
+                    var ConcurrentPainter = (function () {
                         function ConcurrentPainter(ui) {
                             this.columns = [];
                             this.revive();
@@ -22784,6 +22865,9 @@ var nts;
                             this.protoRow = document.createElement("tr");
                             this.protoCell = document.createElement("td");
                         }
+                        /**
+                         * Revive.
+                         */
                         ConcurrentPainter.prototype.revive = function () {
                             var _this = this;
                             this.painters = _mafollicle[SheetDef][_currentSheet].painters;
@@ -22793,6 +22877,9 @@ var nts;
                             }); });
                             this.controlMap = _mafollicle[SheetDef][_currentSheet].controlMap;
                         };
+                        /**
+                         * Cell.
+                         */
                         ConcurrentPainter.prototype.cell = function (rData, rowIdx, key, fixed) {
                             var self = this;
                             var cData = rData[key];
@@ -22828,7 +22915,8 @@ var nts;
                                         }
                                         else if (st === color.ManualEditTarget || st === color.ManualEditOther) {
                                             td.classList.add(st);
-                                            $.data(td, v_1.INIT_MAN_EDIT, st);
+                                            if (!s.suivant)
+                                                $.data(td, v_1.INIT_MAN_EDIT, st);
                                         }
                                         else
                                             td.classList.add(st);
@@ -22913,6 +23001,9 @@ var nts;
                             //                }
                             return td;
                         };
+                        /**
+                         * Row.
+                         */
                         ConcurrentPainter.prototype.row = function (data, config, rowIdx) {
                             var self = this;
                             var fixedColumns, fixedCount;
@@ -22967,6 +23058,9 @@ var nts;
                             }
                             return ret;
                         };
+                        /**
+                         * Hoover.
+                         */
                         ConcurrentPainter.prototype.hoover = function (evt, out) {
                             var $tCell = evt.target;
                             if (!selector.is($tCell, "td." + v_1.CELL_CLS))
@@ -23001,7 +23095,7 @@ var nts;
                         return ConcurrentPainter;
                     }());
                     v_1.ConcurrentPainter = ConcurrentPainter;
-                    var SidePainter = /** @class */ (function () {
+                    var SidePainter = (function () {
                         function SidePainter(ui) {
                             this.revive();
                             this.primaryKey = ui.primaryKey;
@@ -23009,6 +23103,9 @@ var nts;
                             this.protoRow = document.createElement("tr");
                             this.protoCell = document.createElement("td");
                         }
+                        /**
+                         * Revive.
+                         */
                         SidePainter.prototype.revive = function () {
                             var colCls = ti.classifyColumns({ columns: _cstifle() });
                             this.columns = colCls.columns;
@@ -23023,6 +23120,9 @@ var nts;
                                 this.columnsMap = _.groupBy(_cstifle(), "key");
                             }
                         };
+                        /**
+                         * Cell.
+                         */
                         SidePainter.prototype.cell = function (rData, rowIdx, key, fixed) {
                             var self = this;
                             var cData = rData[key];
@@ -23056,7 +23156,8 @@ var nts;
                                         }
                                         else if (st === color.ManualEditTarget || st === color.ManualEditOther) {
                                             td.classList.add(st);
-                                            $.data(td, v_1.INIT_MAN_EDIT, st);
+                                            if (!s.suivant)
+                                                $.data(td, v_1.INIT_MAN_EDIT, st);
                                         }
                                         else
                                             td.classList.add(st);
@@ -23126,6 +23227,9 @@ var nts;
                             //                }
                             return td;
                         };
+                        /**
+                         * Row.
+                         */
                         SidePainter.prototype.row = function (data, config, rowIdx) {
                             var self = this;
                             var colIdxes = {}, elements = [], tr = self.protoRow.cloneNode(true); //document.createElement("tr");
@@ -23152,6 +23256,9 @@ var nts;
                             }
                             return ret;
                         };
+                        /**
+                         * Hoover.
+                         */
                         SidePainter.prototype.hoover = function (evt, out) {
                             var $tCell = evt.target;
                             if (!selector.is($tCell, "td." + v_1.CELL_CLS))
@@ -23196,6 +23303,9 @@ var nts;
                         return element;
                     }
                     v_1.extra = extra;
+                    /**
+                     * Wrapper styles.
+                     */
                     function wrapperStyles(top, left, width, maxWidth, height) {
                         var style = {
                             position: "absolute",
@@ -23216,6 +23326,9 @@ var nts;
                         return style;
                     }
                     v_1.wrapperStyles = wrapperStyles;
+                    /**
+                     * Calc width.
+                     */
                     function calcWidth(columns) {
                         var width = 0;
                         columns.forEach(function (c, i) {
@@ -23230,6 +23343,9 @@ var nts;
                         return width;
                     }
                     v_1.calcWidth = calcWidth;
+                    /**
+                     * Create wrapper.
+                     */
                     function createWrapper(top, left, options, newOpt) {
                         var style, width, maxWidth;
                         if (options.containerClass === FREE) {
@@ -23273,14 +23389,14 @@ var nts;
                     aho.TOP_SPACE = "top-space";
                     aho.BOTTOM_SPACE = "bottom-space";
                     aho.NULL = null;
-                    var Cloud = /** @class */ (function () {
-                        function Cloud(containers, options) {
+                    var Platrer = (function () {
+                        function Platrer(containers, options) {
                             this.$fixedContainer = containers[0];
                             this.$container = containers[1];
                             this.options = options;
                             this.primaryKey = options.primaryKey;
-                            this.rowsOfBlock = options.rowsOfBlock || 30;
-                            this.blocksOfCluster = options.blocksOfCluster || 3;
+                            this.rowsOfBlock = options.noBlocRangee || 30;
+                            this.blocksOfCluster = options.noGrappeBloc || 3;
                             this.rowHeight = parseInt(BODY_ROW_HEIGHT);
                             this.blockHeight = this.rowsOfBlock * this.rowHeight;
                             this.clusterHeight = this.blockHeight * this.blocksOfCluster;
@@ -23297,13 +23413,13 @@ var nts;
                         /**
                          * Get cluster no.
                          */
-                        Cloud.prototype.getClusterNo = function () {
+                        Platrer.prototype.getClusterNo = function () {
                             return Math.floor(this.$container.scrollTop / (this.clusterHeight - this.blockHeight));
                         };
                         /**
                          * Render rows.
                          */
-                        Cloud.prototype.renderRows = function (manual) {
+                        Platrer.prototype.renderRows = function (manual) {
                             var self = this;
                             var clusterNo = self.getClusterNo();
                             if (manual)
@@ -23361,7 +23477,7 @@ var nts;
                                     res.colIdxes = rowElms.colIdxes;
                                 }
                             }
-                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT + 2 : self.bottomOffset);
                             tbody.appendChild(bottomSpace);
                             containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                             if (self.$fixedContainer) {
@@ -23384,7 +23500,7 @@ var nts;
                         /**
                          * OnScroll.
                          */
-                        Cloud.prototype.onScroll = function () {
+                        Platrer.prototype.onScroll = function () {
                             var self = this;
                             self.$container.removeXEventListener(ssk.SCROLL_EVT + ".detail");
                             self.$container.addXEventListener(ssk.SCROLL_EVT + ".detail", function () {
@@ -23422,7 +23538,10 @@ var nts;
                                 }
                             });
                         };
-                        Cloud.prototype.renderSideRows = function (manual) {
+                        /**
+                         * RenderSideRows.
+                         */
+                        Platrer.prototype.renderSideRows = function (manual) {
                             var self = this;
                             var clusterNo = self.getClusterNo();
                             if (manual)
@@ -23462,7 +23581,7 @@ var nts;
                                     res.colIdxes = rowElms.colIdxes;
                                 }
                             }
-                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                            var bottomSpace = v.extra(aho.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT + 2 : self.bottomOffset);
                             tbody.appendChild(bottomSpace);
                             containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
                             if (rows.length === 0)
@@ -23476,9 +23595,9 @@ var nts;
                             }, 0);
                             return res;
                         };
-                        return Cloud;
+                        return Platrer;
                     }());
-                    aho.Cloud = Cloud;
+                    aho.Platrer = Platrer;
                 })(aho || (aho = {}));
                 var tc;
                 (function (tc) {
@@ -23574,6 +23693,9 @@ var nts;
                         });
                     }
                     tc.syncVerticalScroll = syncVerticalScroll;
+                    /**
+                     * VisualJumpTo.
+                     */
                     function visualJumpTo($grid, index) {
                         if (index >= _cloud.startIndex && index < _cloud.endIndex)
                             return;
@@ -23596,7 +23718,7 @@ var nts;
                     kt.STAY_CLS = "mgrid-stay";
                     kt._widths = {};
                     kt._columnWidths = {};
-                    var ColumnAdjuster = /** @class */ (function () {
+                    var ColumnAdjuster = (function () {
                         function ColumnAdjuster(widths, height, sizeUi, unshift) {
                             var _this = this;
                             this.headerColGroup = [];
@@ -23632,6 +23754,9 @@ var nts;
                             kt._widths._fixed = parseFloat(widths[0]);
                             kt._widths._unfixed = parseFloat(widths[1]);
                         }
+                        /**
+                         * Nostal.
+                         */
                         ColumnAdjuster.prototype.nostal = function (headerColGroup, bodyColGroup, sumColGroup, fixed) {
                             var i = _hasFixed && !fixed ? 1 : 0;
                             this.headerColGroup[i] = headerColGroup.filter(function (c) { return c.style.display !== "none"; });
@@ -24097,9 +24222,15 @@ var nts;
                         return ColumnAdjuster;
                     }());
                     kt.ColumnAdjuster = ColumnAdjuster;
+                    /**
+                     * Get cursorX.
+                     */
                     function getCursorX(event) {
                         return event.pageX;
                     }
+                    /**
+                     * ReplenLargeur.
+                     */
                     function replenLargeur(column, width, sht) {
                         var storeKey = getStoreKey(), wdec = uk.localStorage.getItem(storeKey);
                         if (!wdec.isPresent())
@@ -24111,6 +24242,9 @@ var nts;
                         uk.localStorage.setItemAsJson(storeKey, wdec);
                     }
                     kt.replenLargeur = replenLargeur;
+                    /**
+                     * TurfSurf.
+                     */
                     function turfSurf(cols, reparer) {
                         var newly, size, key = reparer ? "reparer" : _currentSheet, storeKey = getStoreKey(), wdef = uk.localStorage.getItem(storeKey);
                         if (!wdef.isPresent()) {
@@ -24162,22 +24296,33 @@ var nts;
                         }
                     }
                     kt.turfSurf = turfSurf;
-                    function screenLargeur() {
+                    /**
+                     * ScreenLargeur.
+                     */
+                    function screenLargeur(noRowsMin, noRowsMax) {
                         if (!_headerWrappers || _headerWrappers.length === 0)
                             return;
                         var width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
                         var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
-                            width = window.innerWidth - 240 - _maxFixedWidth;
+                            width = window.innerWidth - _remainWidth - _maxFixedWidth;
                             _flexFitWidth = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[1].style.maxWidth));
-                            btmw = _maxFixedWidth + _flexFitWidth;
+                            btmw = _maxFixedWidth + _flexFitWidth + 2;
                             _headerWrappers[1].style.width = width + "px";
                             _bodyWrappers[1].style.width = (width + ti.getScrollWidth()) + "px";
                             height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
+                            if (!_.isNil(noRowsMin) && !_.isNil(noRowsMax)) {
+                                noRowsMin = parseFloat(noRowsMin);
+                                noRowsMax = parseFloat(noRowsMax);
+                                var size = _dataSource.length, no = Math.min(Math.max(size, noRowsMin), noRowsMax);
+                                height = no * BODY_ROW_HEIGHT + 19;
+                            }
                             var vari_1 = height - parseFloat(_bodyWrappers[0].style.height);
                             if (_sumWrappers && _sumWrappers.length > 1) {
                                 _sumWrappers[1].style.width = width + "px";
+                                height += SUM_HEIGHT;
+                                vari_1 += SUM_HEIGHT;
                                 _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari_1) + "px";
                                 _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari_1) + "px";
                             }
@@ -24200,15 +24345,23 @@ var nts;
                             _bodyWrappers[1].style.height = height + "px";
                             return;
                         }
-                        width = window.innerWidth - 240;
+                        width = window.innerWidth - _remainWidth;
                         btmw = Math.min(width + ti.getScrollWidth(), parseFloat(_bodyWrappers[0].style.maxWidth));
                         _flexFitWidth = btmw;
                         _headerWrappers[0].style.width = width + "px";
                         _bodyWrappers[0].style.width = (width + ti.getScrollWidth()) + "px";
                         height -= ((pageDiv ? gp.PAGE_HEIGHT : 0) + (sheetDiv ? gp.SHEET_HEIGHT : 0));
+                        if (!_.isNil(noRowsMin) && !_.isNil(noRowsMax)) {
+                            noRowsMin = parseFloat(noRowsMin);
+                            noRowsMax = parseFloat(noRowsMax);
+                            var size = _dataSource.length, no = Math.min(Math.max(size, noRowsMin), noRowsMax);
+                            height = no * BODY_ROW_HEIGHT + 19;
+                        }
                         var vari = height - parseFloat(_bodyWrappers[0].style.height);
                         if (_sumWrappers && _sumWrappers.length > 0) {
                             _sumWrappers[0].style.width = width + "px";
+                            height += SUM_HEIGHT;
+                            vari += SUM_HEIGHT;
                             _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
                         }
                         if (pageDiv) {
@@ -24222,6 +24375,9 @@ var nts;
                         _bodyWrappers[1].style.height = height + "px";
                     }
                     kt.screenLargeur = screenLargeur;
+                    /**
+                     * Get storeKey.
+                     */
                     function getStoreKey() {
                         return uk.request.location.current.rawUrl + "/" + _$grid.attr("id");
                     }
@@ -24687,6 +24843,8 @@ var nts;
                                 if (!st)
                                     return;
                                 _.forEach(st.desc[fixed ? "fixedRows" : "rows"], function (r) {
+                                    if (!r)
+                                        return;
                                     var cell = r[i];
                                     if (cell) {
                                         var check = cell.querySelector("input[type='checkbox']");
@@ -24722,6 +24880,8 @@ var nts;
                                 if (!st)
                                     return;
                                 _.forEach(st.desc[fixed ? "fixedRows" : "rows"], function (r) {
+                                    if (!r)
+                                        return;
                                     var cell = r[i];
                                     if (cell) {
                                         var check = cell.querySelector("input[type='checkbox']");
@@ -24878,6 +25038,9 @@ var nts;
                             this.element[0].parentNode.replaceChild(this.element[0].cloneNode(), this.element[0]);
                         }
                     });
+                    /**
+                     * Change zero.
+                     */
                     function changeZero(hide) {
                         var ves, desc, realVal;
                         if (_zeroHidden === hide)
@@ -24907,7 +25070,10 @@ var nts;
                 var su;
                 (function (su) {
                     su.EDITOR = "meditor";
-                    function binding($grid, fitWindow) {
+                    /**
+                     * Binding.
+                     */
+                    function binding($grid, fitWindow, noRowsMin, noRowsMax) {
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $tCell = evt.target;
                             if (!$tCell || !selector.is($tCell, "." + v.CELL_CLS)
@@ -24938,6 +25104,14 @@ var nts;
                                 setTimeout(function () {
                                     $input.select();
                                 }, 0);
+                                var coord_1 = ti.getCellCoord($tCell);
+                                $input.style.imeMode = "inactive";
+                                if (coord_1) {
+                                    var column = _columnsMap[coord_1.columnKey];
+                                    if (column && column[0].japanese) {
+                                        $input.style.imeMode = "active";
+                                    }
+                                }
                             }
                             else if (control.type === dkn.COMBOBOX && !$tCell.querySelector(".mcombo-wrapper")) {
                                 endEdit($grid);
@@ -25073,8 +25247,16 @@ var nts;
                                         $input.value = !_.isNil(data) ? data : "";
                                         $input.select();
                                     }
-                                    $input.focus();
                                     cType.type = dkn.TEXTBOX;
+                                    var coord_2 = ti.getCellCoord($tCell);
+                                    $input.style.imeMode = "inactive";
+                                    if (coord_2) {
+                                        var column = _columnsMap[coord_2.columnKey];
+                                        if (column && column[0].japanese) {
+                                            $input.style.imeMode = "active";
+                                        }
+                                    }
+                                    $input.focus();
                                 }
                                 _mEditor = _.assignIn(coord, cType);
                             }
@@ -25090,6 +25272,7 @@ var nts;
                                 copieData(true);
                             }
                             else if (evt.ctrlKey && evt.keyCode === 90) {
+                                annuler();
                             }
                         });
                         if (_copie) {
@@ -25116,11 +25299,14 @@ var nts;
                         }
                         if (fitWindow) {
                             window.addXEventListener(ssk.RESIZE, function (evt) {
-                                kt.screenLargeur();
+                                kt.screenLargeur(noRowsMin, noRowsMax);
                             });
                         }
                     }
                     su.binding = binding;
+                    /**
+                     * EndEdit.
+                     */
                     function endEdit($grid) {
                         var editor = _mEditor;
                         if (!editor)
@@ -25213,6 +25399,9 @@ var nts;
                         _mEditor = null;
                     }
                     su.endEdit = endEdit;
+                    /**
+                     * WedgeCell.
+                     */
                     function wedgeCell($grid, coord, cellValue, reset) {
                         var res, valueType = hpl.getValueType($grid, coord.columnKey);
                         if (!_.isNil(cellValue) && !_.isEmpty(cellValue)) {
@@ -25243,7 +25432,7 @@ var nts;
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
                         }
                         var $cell, sumDone, origVal = origDs[coord.rowIdx][coord.columnKey];
-                        var transe = function (sheet, zeroHidden, dirties, desc) {
+                        var transe = function (sheet, zeroHidden, dirties, desc, main) {
                             var colour, before, after, total, calcCell = lch.cellAt(_$grid[0], coord.rowIdx, coord.columnKey, desc), sum = _summaries[coord.columnKey];
                             if (sum && sum.calculator === "Time" && calcCell) {
                                 if (!sumDone) {
@@ -25263,7 +25452,7 @@ var nts;
                                     sum[_currentPage] = total;
                                     sumDone = true;
                                 }
-                                sum[sheet].textContent = sum[_currentPage];
+                                sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
                             if (zeroHidden && ti.isZero(origVal)
                                 && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))) {
@@ -25276,9 +25465,14 @@ var nts;
                                 }
                                 $cell.classList.remove(color.ManualEditTarget);
                                 $cell.classList.remove(color.ManualEditOther);
+                                if (main) {
+                                    color.popState(id, coord.columnKey, [color.ManualEditTarget, color.ManualEditOther]);
+                                }
                                 var initManEdit = $.data($cell, v.INIT_MAN_EDIT);
                                 if (initManEdit) {
                                     $cell.classList.add(initManEdit);
+                                    if (main)
+                                        color.pushState(id, coord.columnKey, [initManEdit]);
                                 }
                                 if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                     delete dirties[id][coord.columnKey];
@@ -25295,10 +25489,16 @@ var nts;
                                     }
                                     $cell.classList.remove(color.ManualEditTarget);
                                     $cell.classList.remove(color.ManualEditOther);
+                                    if (main) {
+                                        color.popState(id, coord.columnKey, [color.ManualEditTarget, color.ManualEditOther]);
+                                    }
                                     rData[coord.columnKey] = cellValue;
                                     var initManEdit = $.data($cell, v.INIT_MAN_EDIT);
                                     if (initManEdit) {
                                         $cell.classList.add(initManEdit);
+                                        if (main) {
+                                            color.pushState(id, coord.columnKey, [initManEdit]);
+                                        }
                                     }
                                     if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
                                         delete dirties[id][coord.columnKey];
@@ -25322,6 +25522,8 @@ var nts;
                                     else {
                                         colour = color.ManualEditOther;
                                     }
+                                    if (main)
+                                        color.pushState(id, coord.columnKey, [colour], true);
                                     if (!$cell_1)
                                         return { colour: colour };
                                     $cell_1.classList.add(colour);
@@ -25329,9 +25531,24 @@ var nts;
                                 }
                             }
                         };
-                        res = transe(_currentSheet, _zeroHidden, _dirties);
+                        res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
+                        var some = function (arr) {
+                            var exist = false;
+                            _.forEach(arr, function (c) {
+                                if (c.group) {
+                                    exist = some(c.group);
+                                    if (exist)
+                                        return false;
+                                }
+                                if (c.key === coord.columnKey) {
+                                    exist = true;
+                                    return false;
+                                }
+                            });
+                            return exist;
+                        };
                         _.forEach(_.keys(_mafollicle[SheetDef]), function (s) {
-                            if (s === _currentSheet)
+                            if (s === _currentSheet || !some(_mafollicle[SheetDef][s].columns))
                                 return;
                             var t, formatted, disFormat, maf = _mafollicle[_currentPage][s];
                             if (maf && maf.desc) {
@@ -25345,10 +25562,31 @@ var nts;
                                 if (t.colour)
                                     t.c.classList.add(t.colour);
                             }
+                            if (maf && maf.zeroHidden && ti.isZero(origVal)
+                                && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))
+                                && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                                delete maf.dirties[id][coord.columnKey];
+                            }
+                            else if (maf && cellValue === origVal
+                                && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                                delete maf.dirties[id][coord.columnKey];
+                            }
+                            else if (cellValue !== origVal) {
+                                if (!maf) {
+                                    _mafollicle[_currentPage][s] = { dirties: {} };
+                                    maf = _mafollicle[_currentPage][s];
+                                }
+                                if (!maf.dirties[id])
+                                    maf.dirties[id] = {};
+                                maf.dirties[id][coord.columnKey] = cellValue;
+                            }
                         });
                         return res ? res.colour : null;
                     }
                     su.wedgeCell = wedgeCell;
+                    /**
+                     * WedgeShtCell.
+                     */
                     function wedgeShtCell(rowIdx, key, value, sht) {
                         var rd = _dataSource[rowIdx];
                         if (!rd)
@@ -25379,6 +25617,9 @@ var nts;
                         }
                     }
                     su.wedgeShtCell = wedgeShtCell;
+                    /**
+                     * WedgePrelimShtCell.
+                     */
                     function wedgePrelimShtCell($cell, rowIdx, key, value, sht, reset) {
                         var res, valueType = hpl.getValueType(_$grid[0], key);
                         if (!_.isNil(value) && !_.isEmpty(value)) {
@@ -25421,8 +25662,9 @@ var nts;
                             before = parseFloat(rData[key]);
                             total = sum[_currentPage] + ((isNaN(after) ? 0 : after) - (isNaN(before) ? 0 : before));
                             sum[_currentPage] = total;
-                            if (sum[sht])
-                                sum[sht].textContent = sum[_currentPage];
+                            if (sum[sht]) {
+                                sum[sht].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
+                            }
                         }
                         if (_zeroHidden && ti.isZero(origVal)
                             && (value === "" || _.isNil(value) || parseFloat(value) === 0)) {
@@ -25474,7 +25716,7 @@ var nts;
                                 else {
                                     res = color.ManualEditOther;
                                 }
-                                color.pushState(id, key, res);
+                                color.pushState(id, key, res, true);
                                 if (!$cell)
                                     return res;
                                 $cell.classList.add(res);
@@ -25482,9 +25724,9 @@ var nts;
                         }
                     }
                     su.wedgePrelimShtCell = wedgePrelimShtCell;
-                    function deleteRow() {
-                    }
-                    su.deleteRow = deleteRow;
+                    /**
+                     * Format.
+                     */
                     function format(column, value, spl) {
                         if (uk.util.isNullOrEmpty(_.trim(value)))
                             return value;
@@ -25525,7 +25767,7 @@ var nts;
                                 else if (valueType === "Currency") {
                                     var currencyOpts = new ui.option.CurrencyEditorOption();
                                     currencyOpts.grouplength = constraint.groupLength | 3;
-                                    currencyOpts.decimallength = constraint.decimalLength | 2;
+                                    currencyOpts.decimallength = _.isNil(constraint.decimalLength) ? 0 : constraint.decimalLength;
                                     currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
                                     var groupSeparator = constraint.groupSeparator || ",";
                                     var rawValue = uk.text.replaceAll(value, groupSeparator, "");
@@ -25546,6 +25788,9 @@ var nts;
                         return value;
                     }
                     su.format = format;
+                    /**
+                     * Format save.
+                     */
                     function formatSave(column, value) {
                         if (column.constraint && !uk.util.isNullOrEmpty(value)) {
                             var parsed = void 0, constraint = column.constraint;
@@ -25561,6 +25806,9 @@ var nts;
                         return value;
                     }
                     su.formatSave = formatSave;
+                    /**
+                     * CollerData.
+                     */
                     function collerData(evt) {
                         var data;
                         var key, keys = _.keys(_selected);
@@ -25641,6 +25889,7 @@ var nts;
                             formatted = su.format(col[0], data);
                             target.innerHTML = formatted;
                             disFormat = su.formatSave(col[0], data);
+                            _histoire.push({ tx: uk.util.randomId(), o: [{ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] }] });
                             su.wedgeCell(_$grid[0], coord, disFormat);
                             $.data(target, v.DATA, disFormat);
                             collerRidd(coord.rowIdx, coord.columnKey, disFormat);
@@ -25663,6 +25912,7 @@ var nts;
                         }
                         if (_.isNil(eIdx))
                             return;
+                        var sess = { tx: uk.util.randomId(), o: [] };
                         _.forEach(dataRows, function (r) {
                             cArr = lch.rowAt(_$grid[0], rPoint++);
                             cPoint = eIdx;
@@ -25686,20 +25936,25 @@ var nts;
                                 formatted = su.format(pointCol[0], c);
                                 e.innerHTML = formatted;
                                 disFormat = su.formatSave(pointCol[0], c);
+                                sess.o.push({ coord: pointCoord, value: _dataSource[pointCoord.rowIdx][pointCoord.columnKey] });
                                 su.wedgeCell(_$grid[0], pointCoord, disFormat);
                                 $.data(e, v.DATA, disFormat);
                                 collerRidd(pointCoord.rowIdx, pointCoord.columnKey, disFormat);
                             });
                         });
+                        _histoire.push(sess);
                     }
                     su.collerData = collerData;
+                    /**
+                     * CopieData.
+                     */
                     function copieData(coupe) {
                         var keys = Object.keys(_selected);
                         if (!_selected || keys.length === 0)
                             return;
-                        var coord, key, struct = "", ds = _dataSource, tx;
+                        var coord, key, struct = "", ds = _dataSource, sess;
                         if (coupe) {
-                            tx = { txId: uk.util.randomId(), items: [] };
+                            sess = { tx: uk.util.randomId(), o: [] };
                         }
                         if (keys.length === 1 && _selected[keys[0]].length === 1) {
                             su._copieMode = 0;
@@ -25710,8 +25965,10 @@ var nts;
                                 if (cell) {
                                     coord = ti.getCellCoord(cell);
                                     cell.innerHTML = "";
+                                    sess.o.push({ coord: coord, value: _dataSource[coord.rowIdx][coord.columnKey] });
                                     su.wedgeCell(_$grid[0], coord, "");
                                     $.data(cell, v.DATA, "");
+                                    _histoire.push(sess);
                                 }
                             }
                             if (_copieer) {
@@ -25737,6 +25994,9 @@ var nts;
                                     idx = desc.colIdxes[c];
                                     isFixed = false;
                                 }
+                                if (coupe) {
+                                    sess.o.push({ coord: { rowIdx: r, columnKey: c }, value: _dataSource[r][c] });
+                                }
                                 return isFixed ? idx : idx + fixedCount;
                             });
                             var minVal = _.min(idxArr);
@@ -25746,6 +26006,9 @@ var nts;
                             if (_.isNil(max) || max < maxVal)
                                 max = maxVal;
                         });
+                        if (coupe && sess.o.length > 0) {
+                            _histoire.push(sess);
+                        }
                         for (var i = parseFloat(sortedKeys[0]); i <= parseFloat(sortedKeys[sortedKeys.length - 1]); i++) {
                             elms = lch.rowAt(_$grid[0], i);
                             for (var c = min; c <= max; c++) {
@@ -25779,8 +26042,85 @@ var nts;
                         }
                     }
                     su.copieData = copieData;
-                    function extraitSkel() {
+                    /**
+                     * Annuler.
+                     */
+                    function annuler() {
+                        if (!_histoire || _histoire.length === 0)
+                            return;
+                        var sess = _histoire.pop();
+                        if (sess) {
+                            var afterAnnulerRidd_1 = function (el, c, column, disFormat) {
+                                if (el.classList.contains(khl.ERROR_CLS))
+                                    return;
+                                var ridd = column[0].inputProcess;
+                                if (ridd) {
+                                    var rData = _dataSource[parseFloat(c.rowIdx)];
+                                    var rId = void 0;
+                                    if (rData)
+                                        rId = rData[_pk];
+                                    ridd(rId, c.columnKey, disFormat).done(function (sData) {
+                                        _.forEach(sData, function (sd) {
+                                            var res = _$grid.mGrid("updateCell", sd.id, sd.item, sd.value);
+                                            if (!_.isNil(res) && res >= 0) {
+                                                var sht = _.filter(_.keys(_mafollicle[SheetDef]), function (k) {
+                                                    if (k === _currentSheet)
+                                                        return;
+                                                    var sCols = _mafollicle[SheetDef][k].columns;
+                                                    return _.find(sCols, function (c) { return c.key === sd.item; });
+                                                });
+                                                _.forEach(sht, function (s) {
+                                                    wedgeShtCell(res, sd.item, sd.value, s);
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                            };
+                            sess.o.forEach(function (c) {
+                                var failed, spl = {}, el = lch.cellAt(_$grid[0], c.coord.rowIdx, c.coord.columnKey), column = _columnsMap[c.coord.columnKey], formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value) ? "" : format(column[0], c.value, spl));
+                                var validator = _validators[c.coord.columnKey];
+                                if (validator) {
+                                    var result = validator.probe(c.value);
+                                    var cell = { id: _dataSource[c.coord.rowIdx][_pk], index: c.coord.rowIdx, columnKey: c.coord.columnKey, element: el };
+                                    khl.clear(cell);
+                                    if (!result.isValid) {
+                                        khl.set(cell, result.errorMessage);
+                                        failed = true;
+                                    }
+                                }
+                                el.textContent = formatted;
+                                var disFormat = c.value === "" || failed ? c.value : (spl.padded ? formatted : formatSave(column[0], c.value));
+                                wedgeCell(_$grid[0], c.coord, disFormat);
+                                $.data(el, v.DATA, disFormat);
+                                var sCol = _specialColumn[c.coord.columnKey];
+                                if (sCol) {
+                                    var cbx = dkn.controlType[sCol];
+                                    wedgeCell(_$grid[0], { rowIdx: c.coord.rowIdx, columnKey: sCol }, c.value);
+                                    var selectedOpt = _.find(cbx.options, function (o) { return o.code === c.value; });
+                                    if (!_.isNil(selectedOpt)) {
+                                        var $cbxCell = lch.cellAt(_$grid[0], c.coord.rowIdx, sCol);
+                                        $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
+                                        $.data($cbxCell, lo.CBX_SELECTED_TD, c.value);
+                                    }
+                                }
+                                else if ((sCol = _specialLinkColumn[c.coord.columnKey]) && sCol.changed) {
+                                    var data = _mafollicle[_currentPage].origDs[c.coord.rowIdx];
+                                    sCol.changed(c.coord.columnKey, data[_pk], formatted, data[c.coord.columnKey]).done(function (res) {
+                                        var $linkCell = lch.cellAt(_$grid[0], c.coord.rowIdx, sCol.column);
+                                        if ($linkCell) {
+                                            $linkCell.querySelector("a").textContent = res;
+                                            wedgeCell(_$grid[0], { rowIdx: c.coord.rowIdx, columnKey: sCol.column }, res);
+                                        }
+                                        afterAnnulerRidd_1(el, c.coord, column, disFormat);
+                                    });
+                                }
+                                else
+                                    afterAnnulerRidd_1(el, c.coord, column, disFormat);
+                            });
+                        }
                     }
+                    su.annuler = annuler;
                 })(su || (su = {}));
                 var ssk;
                 (function (ssk) {
@@ -25835,6 +26175,9 @@ var nts;
                         $target.dispatchEvent(event);
                     }
                     ssk.trigger = trigger;
+                    /**
+                     * Add event listener.
+                     */
                     function addEventListener(event, cb, opts) {
                         var self = this;
                         if (!self.ns)
@@ -25846,6 +26189,9 @@ var nts;
                         self.addEventListener(event.split(".")[0], cb, opts);
                     }
                     ;
+                    /**
+                     * Remove event listener.
+                     */
                     function removeEventListener(event, cb) {
                         var self = this;
                         if (!self.ns)
@@ -25879,6 +26225,9 @@ var nts;
                     gp.SHEET_CLS = "mgrid-sheet";
                     gp.PAGE_HEIGHT = 44;
                     gp.SHEET_HEIGHT = 30;
+                    /**
+                     * ImiPages.
+                     */
                     function imiPages($container, top, width) {
                         if (!_paging)
                             return;
@@ -25963,6 +26312,9 @@ var nts;
                         $lastPage.appendChild($arrowStopEImg);
                     }
                     gp.imiPages = imiPages;
+                    /**
+                     * ImiSheets.
+                     */
                     function imiSheets($container, top, width) {
                         if (!_sheeting)
                             return;
@@ -26013,6 +26365,9 @@ var nts;
                         });
                     }
                     gp.imiSheets = imiSheets;
+                    /**
+                     * Lungeto.
+                     */
                     function lungeto(index) {
                         var sheetDef = _mafollicle[SheetDef][_currentSheet];
                         //            _mafollicle[_currentPage].dataSource = _.cloneDeep(_dataSource);
@@ -26022,12 +26377,13 @@ var nts;
                         lch.clearAll(_$grid[0]);
                         _.filter(_bodyWrappers, function (w) { return w.classList.contains(FREE); })[0].scrollTop = 0;
                         if (!_vessel()) {
-                            _mafollicle[_currentPage][_currentSheet] = { errors: [], desc: {}, dirties: {}, zeroHidden: _zeroHidden, selected: {} };
+                            _mafollicle[_currentPage][_currentSheet] = { errors: [], desc: {}, dirties: {}, zeroHidden: _zeroHidden, selected: {}, histoire: [] };
                         }
                         _mDesc = _vessel().desc;
                         _errors = _vessel().errors;
                         _dirties = _vessel().dirties;
                         _selected = _vessel().selected;
+                        _histoire = _vessel().histoire;
                         var sum, res = _cloud.renderRows(true);
                         ti.calcTotal();
                         _.forEach(_.keys(_summaries), function (k) {
@@ -26035,7 +26391,7 @@ var nts;
                             if (!sum[_currentSheet])
                                 return;
                             if (sum.calculator === "Number") {
-                                sum[_currentSheet].textContent = sum[_currentPage];
+                                sum[_currentSheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
                             else if (sum.calculator === "Time") {
                                 sum[_currentSheet].textContent = ti.momentToString(sum[_currentPage]);
@@ -26077,6 +26433,9 @@ var nts;
                             _zeroHidden = _vessel().zeroHidden;
                     }
                     gp.lungeto = lungeto;
+                    /**
+                     * Hopto.
+                     */
                     function hopto(place) {
                         var bfPainter;
                         if (_currentSheet === place)
@@ -26124,7 +26483,7 @@ var nts;
                                     }
                                 });
                             }
-                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_2 };
+                            _mafollicle[_currentPage][_currentSheet] = { desc: desc, errors: [], dirties: dirties_1, zeroHidden: _zeroHidden, selected: selected_2, histoire: [] };
                         }
                         else if (!_vessel().desc && _vessel().dirties) {
                             var desc = {
@@ -26161,6 +26520,7 @@ var nts;
                             _vessel().selected = selected_3;
                             _vessel().zeroHidden = _zeroHidden;
                             _vessel().errors = [];
+                            _vessel().histoire = [];
                         }
                         else {
                             _.forEach(_.keys(_selected), function (r) {
@@ -26190,6 +26550,7 @@ var nts;
                         _errors = _vessel().errors;
                         _dirties = _vessel().dirties;
                         _selected = _vessel().selected;
+                        _histoire = _vessel().histoire;
                         var $header = _$grid[0].querySelector("." + FREE + "." + HEADER);
                         var $headerTbl = $header.querySelector("table");
                         var bhGroup = $header.querySelector("colgroup");
@@ -26210,7 +26571,7 @@ var nts;
                             $header.style.maxWidth = _maxFreeWidth + "px";
                             var bw_1 = (_maxFreeWidth + ti.getScrollWidth()) + "px";
                             _bodyWrappers[1].style.maxWidth = bw_1;
-                            var btmw_1 = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth()) + "px";
+                            var btmw_1 = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth() + 2) + "px";
                             if (sumWrap) {
                                 sumWrap.style.maxWidth = _maxFreeWidth + "px";
                                 sumWrap.style.width = $header.style.width;
@@ -26274,7 +26635,7 @@ var nts;
                                     sum[_currentSheet] = $td;
                                 }
                                 else if (sum.calculator === "Number") {
-                                    $td.textContent = sum[_currentPage];
+                                    $td.textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                                     sum[_currentSheet] = $td;
                                 }
                                 else {
@@ -26296,7 +26657,7 @@ var nts;
                         $header.style.maxWidth = _maxFreeWidth + "px";
                         var bw = (_maxFreeWidth + ti.getScrollWidth()) + "px";
                         _bodyWrappers[1].style.maxWidth = bw;
-                        var btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth()) + "px";
+                        var btmw = (Math.min(parseFloat($header.style.width), parseFloat($header.style.maxWidth)) + _maxFixedWidth + ti.getScrollWidth() + 2) + "px";
                         if (sumWrap) {
                             sumWrap.style.maxWidth = _maxFreeWidth + "px";
                             sumWrap.style.width = $header.style.width;
@@ -26344,7 +26705,7 @@ var nts;
                     dkn.CBX_CLS = "mcombo";
                     dkn.CBX_ACTIVE_CLS = "mcombo-state-active";
                     /**
-                     * Get control
+                     * Get control.
                      */
                     function getControl(name) {
                         switch (name) {
@@ -26371,6 +26732,9 @@ var nts;
                         }
                     }
                     dkn.getControl = getControl;
+                    /**
+                     * Textbox.
+                     */
                     function textBox(key) {
                         var control = dkn.controlType[dkn.TEXTBOX];
                         dkn.controlType[key] = dkn.TEXTBOX;
@@ -26407,6 +26771,9 @@ var nts;
                         });
                     }
                     dkn.textBox = textBox;
+                    /**
+                     * Checkbox.
+                     */
                     function checkBox(data) {
                         var checkBoxText;
                         var setChecked = data.update;
@@ -26420,6 +26787,12 @@ var nts;
                         $checkBox.setAttribute("type", "checkbox");
                         $checkBox.addXEventListener("change", function (evt) {
                             var checked = $checkBox.checked || evt.checked ? true : false;
+                            if (checked) {
+                                $checkBox.setAttribute("checked", "checked");
+                            }
+                            else {
+                                $checkBox.removeAttribute("checked");
+                            }
                             setChecked(checked, null, evt.resetValue);
                         });
                         $checkBoxLabel.appendChild($checkBox);
@@ -26447,6 +26820,9 @@ var nts;
                         }
                         return $wrapper;
                     }
+                    /**
+                     * Combobox.
+                     */
                     function comboBox(data) {
                         var result = "", control = dkn.controlType[data.columnKey];
                         if (control) {
@@ -26563,6 +26939,9 @@ var nts;
                         return result;
                     }
                     dkn.comboBox = comboBox;
+                    /**
+                     * OpenDD.
+                     */
                     function openDD($dd, $w) {
                         var offset = selector.offset($w);
                         $dd.style.top = (offset.top + BODY_ROW_HEIGHT - 2) + "px";
@@ -26572,6 +26951,9 @@ var nts;
                     }
                     dkn.openDD = openDD;
                     ;
+                    /**
+                     * CloseDD.
+                     */
                     function closeDD($dd) {
                         $dd.style.height = "0px";
                         //            setTimeout(() => {
@@ -26580,6 +26962,9 @@ var nts;
                         //            }, 120);
                     }
                     dkn.closeDD = closeDD;
+                    /**
+                     * Create item.
+                     */
                     function createItem(comboDiv, code, name, $item) {
                         var $comboItem = comboDiv.cloneNode();
                         $comboItem.classList.add("mcombo-item");
@@ -26598,6 +26983,9 @@ var nts;
                         $comboItem.appendChild($itemName);
                         return $comboItem;
                     }
+                    /**
+                     * Button.
+                     */
                     function button(data) {
                         var $container = document.createDocumentFragment();
                         var $button = document.createElement("button");
@@ -26616,6 +27004,9 @@ var nts;
                         }
                         return $container;
                     }
+                    /**
+                     * Delete button.
+                     */
                     function deleteButton(data) {
                         var btnContainer = button(data);
                         var btn = btnContainer.querySelector("button");
@@ -26623,6 +27014,9 @@ var nts;
                         btn.addXEventListener("click", data.deleteRow);
                         return btnContainer;
                     }
+                    /**
+                     * LinkLabel.
+                     */
                     function linkLabel(data) {
                         var $container = document.createDocumentFragment();
                         var $link = document.createElement("a");
@@ -26641,6 +27035,9 @@ var nts;
                         }
                         return $container;
                     }
+                    /**
+                     * FlexImage.
+                     */
                     function flexImage(data) {
                         var $container = document.createDocumentFragment();
                         if (_.isNil(data.initValue) || _.isEmpty(data.initValue)) {
@@ -26665,6 +27062,9 @@ var nts;
                         }
                         return $container;
                     }
+                    /**
+                     * Image.
+                     */
                     function image(data) {
                         var $container = document.createDocumentFragment();
                         var $span = document.createElement("span");
@@ -26679,7 +27079,7 @@ var nts;
                 var lch;
                 (function (lch) {
                     lch.CELL_SELECTED_CLS = "cell-selected";
-                    var Cell = /** @class */ (function () {
+                    var Cell = (function () {
                         function Cell(rowIdx, columnKey, value) {
                             this.rowIndex = rowIdx;
                             this.columnKey = columnKey;
@@ -26688,6 +27088,9 @@ var nts;
                         return Cell;
                     }());
                     lch.Cell = Cell;
+                    /**
+                     * Checkup.
+                     */
                     function checkUp($grid) {
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
@@ -26842,6 +27245,9 @@ var nts;
                         return getCellInRow(rowArr, columnKey);
                     }
                     lch.cellAt = cellAt;
+                    /**
+                     * Row at.
+                     */
                     function rowAt($grid, rowIdx, desc) {
                         if (!desc)
                             desc = _mDesc;
@@ -26927,6 +27333,9 @@ var nts;
                         return cells;
                     }
                     lch.getSelectedCells = getSelectedCells;
+                    /**
+                     * Select next.
+                     */
                     function selectNext($grid, direct) {
                         var selectedCells = _selected;
                         var keys = Object.keys(selectedCells);
@@ -26992,6 +27401,9 @@ var nts;
                             selectNext($grid, direct);
                     }
                     lch.selectNext = selectNext;
+                    /**
+                     * Select prev.
+                     */
                     function selectPrev($grid, direct) {
                         var selectedCells = _selected;
                         var keys = Object.keys(selectedCells);
@@ -27061,8 +27473,9 @@ var nts;
                     hpl.VALIDATORS = "mValidators";
                     hpl.CURRENCY_CLS = "currency-symbol";
                     var H_M_MAX = 60;
-                    var ColumnFieldValidator = /** @class */ (function () {
-                        function ColumnFieldValidator(name, primitiveValue, options) {
+                    var ColumnFieldValidator = (function () {
+                        function ColumnFieldValidator(parentName, name, primitiveValue, options) {
+                            this.parentName = parentName;
                             this.name = name;
                             this.primitiveValue = primitiveValue;
                             this.options = options;
@@ -27077,12 +27490,12 @@ var nts;
                                 case "Integer":
                                 case "Decimal":
                                 case "HalfInt":
-                                    return new NumberValidator(this.name, valueType, this.primitiveValue, this.options)
+                                    return new NumberValidator(this.name, valueType, this.primitiveValue, this.options, this.parentName)
                                         .validate(value);
                                 case "Currency":
                                     var opts = new ui.option.CurrencyEditorOption();
                                     opts.grouplength = this.options.groupLength | 3;
-                                    opts.decimallength = this.options.decimalLength | 2;
+                                    opts.decimallength = _.isNil(this.options.decimalLength) ? 0 : this.options.decimalLength;
                                     opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
                                     return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                         .validate(value);
@@ -27118,8 +27531,9 @@ var nts;
                         return ColumnFieldValidator;
                     }());
                     hpl.ColumnFieldValidator = ColumnFieldValidator;
-                    var NumberValidator = /** @class */ (function () {
-                        function NumberValidator(name, displayType, primitiveValue, options) {
+                    var NumberValidator = (function () {
+                        function NumberValidator(name, displayType, primitiveValue, options, parentName) {
+                            this.parentName = parentName;
                             this.name = name;
                             this.displayType = displayType;
                             this.primitiveValue = primitiveValue;
@@ -27157,6 +27571,10 @@ var nts;
                             }
                             var min = 0, max = 999999999;
                             var value = parseFloat(text);
+                            if (self.options.values && !_.some(self.options.values, function (v) { return v === value; })) {
+                                result.fail(uk.resource.getMessage("Msg_1443", [self.parentName]), "Msg_1443");
+                                return result;
+                            }
                             if (!uk.util.isNullOrUndefined(self.options.min)) {
                                 min = self.options.min;
                                 if (value < min)
@@ -27179,7 +27597,7 @@ var nts;
                         return NumberValidator;
                     }());
                     var MAX_VALUE = uk.time.minutesBased.duration.parseString("71:59"), MIN_VALUE = uk.time.minutesBased.duration.parseString("-12:00");
-                    var TimeWithDayValidator = /** @class */ (function () {
+                    var TimeWithDayValidator = (function () {
                         function TimeWithDayValidator(name, primitiveValueName, option) {
                             this.name = name;
                             this.constraint = ui.validation.getConstraint(primitiveValueName);
@@ -27234,7 +27652,7 @@ var nts;
                         };
                         return TimeWithDayValidator;
                     }());
-                    var Result = /** @class */ (function () {
+                    var Result = (function () {
                         function Result(isValid, formatted, messageId) {
                             this.onSuccess = $.noop;
                             this.onFail = $.noop;
@@ -27268,6 +27686,9 @@ var nts;
                         return Result;
                     }());
                     hpl.Result = Result;
+                    /**
+                     * Parse time.
+                     */
                     function parseTime(value, format) {
                         if (uk.ntsNumber.isNumber(value, false)) {
                             if (value <= H_M_MAX)
@@ -27284,6 +27705,9 @@ var nts;
                         return Result.OK(formatRes);
                     }
                     hpl.parseTime = parseTime;
+                    /**
+                     * Get value type.
+                     */
                     function getValueType(columnKey) {
                         if (!_validators || !_validators[columnKey])
                             return;
@@ -27292,6 +27716,9 @@ var nts;
                             : column.options.cDisplayType;
                     }
                     hpl.getValueType = getValueType;
+                    /**
+                     * Get group separator.
+                     */
                     function getGroupSeparator(columnKey) {
                         if (!_validators || !_validators[columnKey])
                             return;
@@ -27302,7 +27729,7 @@ var nts;
                 var khl;
                 (function (khl) {
                     khl.ERROR_CLS = "merror";
-                    var GridCellError = /** @class */ (function () {
+                    var GridCellError = (function () {
                         function GridCellError(index, rowId, columnKey, message) {
                             this.grid = _$grid;
                             this.index = index;
@@ -27325,6 +27752,9 @@ var nts;
                         return GridCellError;
                     }());
                     khl.GridCellError = GridCellError;
+                    /**
+                     * Add error.
+                     */
                     function addCellError(error) {
                         if (_errors.some(function (e) {
                             return e.equals(error);
@@ -27332,11 +27762,17 @@ var nts;
                             return;
                         _errors.push(error);
                     }
+                    /**
+                     * Remove error.
+                     */
                     function removeCellError(rowId, key) {
                         _.remove(_errors, function (e) {
                             return rowId === e.rowId && key === e.columnKey;
                         });
                     }
+                    /**
+                     * Set.
+                     */
                     function set(cell, message) {
                         if (!cell || !cell.element || any(cell))
                             return;
@@ -27349,6 +27785,9 @@ var nts;
                         addCellError(errorDetails);
                     }
                     khl.set = set;
+                    /**
+                     * Create error infos.
+                     */
                     function createErrorInfos(cell, message) {
                         var record = _dataSource[cell.index];
                         var error = new GridCellError(cell.index, cell.id, cell.columnKey, message);
@@ -27371,6 +27810,9 @@ var nts;
                         });
                         return error;
                     }
+                    /**
+                     * Clear.
+                     */
                     function clear(cell) {
                         if (!cell || !cell.element || !any(cell))
                             return;
@@ -27382,10 +27824,16 @@ var nts;
                         removeCellError(cell.id, cell.columnKey);
                     }
                     khl.clear = clear;
+                    /**
+                     * Any.
+                     */
                     function any(cell) {
                         return cell.element && cell.element.classList.contains(khl.ERROR_CLS);
                     }
                     khl.any = any;
+                    /**
+                     * Cell equals.
+                     */
                     function cellEquals(one, other) {
                         if (one.columnKey !== other.columnKey)
                             return false;
@@ -27396,14 +27844,23 @@ var nts;
                 })(khl || (khl = {}));
                 var selector;
                 (function (selector) {
+                    /**
+                     * Find.
+                     */
                     function find(p, sel) {
                         return new Manipulator().addNodes(p.querySelectorAll(sel));
                     }
                     selector.find = find;
+                    /**
+                     * Create.
+                     */
                     function create(str) {
                         return new Manipulator().addElement(document.createElement(str));
                     }
                     selector.create = create;
+                    /**
+                     * Is.
+                     */
                     function is(el, sel) {
                         var matches = el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector;
                         if (matches)
@@ -27411,14 +27868,23 @@ var nts;
                         return $(el).is(sel);
                     }
                     selector.is = is;
+                    /**
+                     * Index.
+                     */
                     function index(el) {
                         return Array.prototype.slice.call(el.parentNode.children).indexOf(el);
                     }
                     selector.index = index;
+                    /**
+                     * Query all.
+                     */
                     function queryAll(el, sel) {
                         return Array.prototype.slice.call(el.querySelectorAll(sel));
                     }
                     selector.queryAll = queryAll;
+                    /**
+                     * Offset.
+                     */
                     function offset(el) {
                         var rect = el.getBoundingClientRect();
                         return {
@@ -27427,6 +27893,9 @@ var nts;
                         };
                     }
                     selector.offset = offset;
+                    /**
+                     * Class siblings.
+                     */
                     function classSiblings(node, clazz) {
                         var parent = node.parentElement;
                         if (!parent)
@@ -27447,6 +27916,9 @@ var nts;
                         return results;
                     }
                     selector.classSiblings = classSiblings;
+                    /**
+                     * Sibling lt.
+                     */
                     function siblingsLt(el, index) {
                         var parent = el.parentNode;
                         if (!parent)
@@ -27463,7 +27935,7 @@ var nts;
                         }
                     }
                     selector.siblingsLt = siblingsLt;
-                    var Manipulator = /** @class */ (function () {
+                    var Manipulator = (function () {
                         function Manipulator() {
                         }
                         Manipulator.prototype.addNodes = function (nodes) {
@@ -27549,13 +28021,17 @@ var nts;
                     color.Disable = "mgrid-disable";
                     color.HOVER = "ui-state-hover";
                     color.ALL = [color.Error, color.Alarm, color.ManualEditTarget, color.ManualEditOther, color.Reflect, color.Calculation, color.Disable];
-                    function pushState(id, key, state) {
+                    /**
+                     * Push state.
+                     */
+                    function pushState(id, key, state, suivant) {
                         if (!_cellStates[id]) {
-                            _cellStates[id] = { key: [{ rowId: id, columnKey: key, state: _.concat([], state) }] };
+                            _cellStates[id] = {};
+                            _cellStates[id][key] = [{ rowId: id, columnKey: key, state: _.concat([], state), suivant: suivant }];
                             return;
                         }
                         if (!_cellStates[id][key]) {
-                            _cellStates[id][key] = [{ rowId: id, columnKey: key, state: _.concat([], state) }];
+                            _cellStates[id][key] = [{ rowId: id, columnKey: key, state: _.concat([], state), suivant: suivant }];
                             return;
                         }
                         if (_.isArray(state)) {
@@ -27565,8 +28041,14 @@ var nts;
                         }
                         else
                             _cellStates[id][key][0].state.push(state);
+                        if (suivant) {
+                            _cellStates[id][key][0].suivant = suivant;
+                        }
                     }
                     color.pushState = pushState;
+                    /**
+                     * Pop state.
+                     */
                     function popState(id, key, states) {
                         if (!states)
                             return;
@@ -27671,6 +28153,9 @@ var nts;
                             || obj.constructor === HTMLTableDataCellElement;
                     }
                     ti.isTableCell = isTableCell;
+                    /**
+                     * Equal.
+                     */
                     function isEqual(one, two, fields) {
                         if (_.isObject(one) && _.isObject(two)) {
                             return (fields && fields.length > 0)
@@ -27695,6 +28180,9 @@ var nts;
                         return _scrollWidth;
                     }
                     ti.getScrollWidth = getScrollWidth;
+                    /**
+                     * First sibling.
+                     */
                     function firstSibling(node, clazz) {
                         var parent = node.parentElement;
                         if (!parent)
@@ -27766,6 +28254,9 @@ var nts;
                         }
                     }
                     ti.closest = closest;
+                    /**
+                     * Add class.
+                     */
                     function addClass1n(node, clazz) {
                         if (node && node.constructor !== HTMLCollection) {
                             var children = node.querySelectorAll("." + v.CHILD_CELL_CLS);
@@ -27835,6 +28326,9 @@ var nts;
                         }
                     }
                     ti.removeClass = removeClass;
+                    /**
+                     * Remove.
+                     */
                     function remove(node) {
                         if (isIE() && node && node.parentNode) {
                             node.parentNode.removeChild(node);
@@ -27843,6 +28337,9 @@ var nts;
                         node.remove();
                     }
                     ti.remove = remove;
+                    /**
+                     * Classify columns.
+                     */
                     function classifyColumns(options) {
                         var visibleColumns = [];
                         var hiddenColumns = [];
@@ -27854,10 +28351,16 @@ var nts;
                         };
                     }
                     ti.classifyColumns = classifyColumns;
+                    /**
+                     * Get columns map.
+                     */
                     function getColumnsMap(columns) {
                         return _.groupBy(columns, "key");
                     }
                     ti.getColumnsMap = getColumnsMap;
+                    /**
+                     * Filter columns.
+                     */
                     function filterColumns(columns, visibleColumns, hiddenColumns) {
                         var cols = [];
                         _.forEach(columns, function (col) {
@@ -27876,6 +28379,9 @@ var nts;
                         });
                         return cols;
                     }
+                    /**
+                     * Columns map.
+                     */
                     function columnsMapFromStruct(levelStruct) {
                         var map = {};
                         _.forEach(Object.keys(levelStruct), function (nth) {
@@ -27888,6 +28394,9 @@ var nts;
                         return map;
                     }
                     ti.columnsMapFromStruct = columnsMapFromStruct;
+                    /**
+                     * Calc total.
+                     */
                     function calcTotal() {
                         _.forEach(_.keys(_summaries), function (k) {
                             var sum = _summaries[k];
@@ -27906,22 +28415,38 @@ var nts;
                                         if (_.isNil(sum[_currentPage])) {
                                             sum[_currentPage] = 0;
                                         }
-                                        sum[_currentPage] += (!_.isNil(d[k]) ? parseFloat(d[k]) : 0);
+                                        sum[_currentPage] += (!_.isNil(d[k]) && d[k] !== "" ? parseFloat(d[k]) : 0);
                                         break;
                                 }
                             });
                         });
                     }
                     ti.calcTotal = calcTotal;
+                    /**
+                     * Moment to string.
+                     */
                     function momentToString(total) {
-                        var time = total.asHours();
-                        var hour = Math.floor(time);
-                        var minute = (time - hour) * 60;
-                        var roundMin = Math.round(minute);
-                        var minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
+                        var time = total.asHours(), hour = Math.floor(time), minute = (time - hour) * 60, roundMin = Math.round(minute), minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
                         return hour + ":" + minuteStr;
                     }
                     ti.momentToString = momentToString;
+                    /**
+                     * As currency.
+                     */
+                    function asCurrency(value) {
+                        var currencyOpts = new ui.option.CurrencyEditorOption();
+                        currencyOpts.grouplength = 3;
+                        currencyOpts.decimallength = 0;
+                        currencyOpts.currencyformat = "JPY";
+                        var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                        if (!isNaN(value))
+                            return formatter.format(value);
+                        return value;
+                    }
+                    ti.asCurrency = asCurrency;
+                    /**
+                     * Get cell coord.
+                     */
                     function getCellCoord($cell) {
                         if (!$cell)
                             return;
@@ -28013,7 +28538,7 @@ var nts;
         (function (ui) {
             var file;
             (function (file_1) {
-                var FileDownload = /** @class */ (function () {
+                var FileDownload = (function () {
                     function FileDownload(servicePath, data) {
                         var self = this;
                         self.servicePath = servicePath;
@@ -28282,7 +28807,7 @@ var nts;
                         $element.data("builder", builder);
                         return;
                     };
-                    var TableBuildingConstructor = /** @class */ (function () {
+                    var TableBuildingConstructor = (function () {
                         function TableBuildingConstructor(container, option) {
                             this.container = container;
                             this.mode = option.mode;
@@ -28487,7 +29012,7 @@ var nts;
                         };
                         return TableBuildingConstructor;
                     }());
-                    var TableButtonEntity = /** @class */ (function () {
+                    var TableButtonEntity = (function () {
                         function TableButtonEntity(rowId, columnId, viewText, tooltipText) {
                             this.rowId = rowId;
                             this.columnId = columnId;
@@ -29924,7 +30449,7 @@ var nts;
                             }
                         }
                         dist.query = query;
-                        var Local = /** @class */ (function () {
+                        var Local = (function () {
                             function Local() {
                             }
                             /**
@@ -29947,7 +30472,7 @@ var nts;
                             return Local;
                         }());
                         dist.Local = Local;
-                        var Remote = /** @class */ (function () {
+                        var Remote = (function () {
                             function Remote(loadPath, savePath) {
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
@@ -31209,7 +31734,7 @@ var nts;
                             if (!uk.util.isNullOrUndefined($targetGrid) && utils.selectable($targetGrid))
                                 $targetGrid.igGridSelection("clearSelection");
                         }
-                        var Direction = /** @class */ (function () {
+                        var Direction = (function () {
                             function Direction() {
                             }
                             Direction.prototype.bind = function (evt) {
@@ -32047,13 +32572,13 @@ var nts;
                             };
                         }
                         ntsControls.bindCbHeaderColumns = bindCbHeaderColumns;
-                        var NtsControlBase = /** @class */ (function () {
+                        var NtsControlBase = (function () {
                             function NtsControlBase() {
                                 this.readOnly = false;
                             }
                             return NtsControlBase;
                         }());
-                        var CheckBox = /** @class */ (function (_super) {
+                        var CheckBox = (function (_super) {
                             __extends(CheckBox, _super);
                             function CheckBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32109,7 +32634,7 @@ var nts;
                             };
                             return CheckBox;
                         }(NtsControlBase));
-                        var SwitchButtons = /** @class */ (function (_super) {
+                        var SwitchButtons = (function (_super) {
                             __extends(SwitchButtons, _super);
                             function SwitchButtons() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32195,7 +32720,7 @@ var nts;
                             };
                             return SwitchButtons;
                         }(NtsControlBase));
-                        var ComboBox = /** @class */ (function (_super) {
+                        var ComboBox = (function (_super) {
                             __extends(ComboBox, _super);
                             function ComboBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32351,7 +32876,7 @@ var nts;
                             };
                             return ComboBox;
                         }(NtsControlBase));
-                        var Button = /** @class */ (function (_super) {
+                        var Button = (function (_super) {
                             __extends(Button, _super);
                             function Button() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32377,7 +32902,7 @@ var nts;
                             };
                             return Button;
                         }(NtsControlBase));
-                        var DeleteButton = /** @class */ (function (_super) {
+                        var DeleteButton = (function (_super) {
                             __extends(DeleteButton, _super);
                             function DeleteButton() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32391,7 +32916,7 @@ var nts;
                             };
                             return DeleteButton;
                         }(Button));
-                        var TextEditor = /** @class */ (function (_super) {
+                        var TextEditor = (function (_super) {
                             __extends(TextEditor, _super);
                             function TextEditor() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32521,7 +33046,7 @@ var nts;
                             };
                             return TextEditor;
                         }(NtsControlBase));
-                        var Label = /** @class */ (function (_super) {
+                        var Label = (function (_super) {
                             __extends(Label, _super);
                             function Label(action) {
                                 var _this = _super.call(this) || this;
@@ -32551,7 +33076,7 @@ var nts;
                             };
                             return Label;
                         }(NtsControlBase));
-                        var LinkLabel = /** @class */ (function (_super) {
+                        var LinkLabel = (function (_super) {
                             __extends(LinkLabel, _super);
                             function LinkLabel() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32575,7 +33100,7 @@ var nts;
                             };
                             return LinkLabel;
                         }(NtsControlBase));
-                        var FlexImage = /** @class */ (function (_super) {
+                        var FlexImage = (function (_super) {
                             __extends(FlexImage, _super);
                             function FlexImage() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32604,7 +33129,7 @@ var nts;
                             };
                             return FlexImage;
                         }(NtsControlBase));
-                        var Image = /** @class */ (function (_super) {
+                        var Image = (function (_super) {
                             __extends(Image, _super);
                             function Image() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -32753,7 +33278,7 @@ var nts;
                             PasteMode[PasteMode["NEW"] = 0] = "NEW";
                             PasteMode[PasteMode["UPDATE"] = 1] = "UPDATE";
                         })(PasteMode || (PasteMode = {}));
-                        var Processor = /** @class */ (function () {
+                        var Processor = (function () {
                             function Processor(options) {
                                 this.pasteInMode = PasteMode.UPDATE;
                                 this.options = options;
@@ -33175,7 +33700,7 @@ var nts;
                     })(copyPaste || (copyPaste = {}));
                     var events;
                     (function (events) {
-                        var Handler = /** @class */ (function () {
+                        var Handler = (function () {
                             function Handler($grid, options) {
                                 this.$grid = $grid;
                                 this.options = options;
@@ -33329,22 +33854,22 @@ var nts;
                                 });
                                 return this;
                             };
-                            Handler.KEY_DOWN = "keydown";
-                            Handler.KEY_UP = "keyup";
-                            Handler.FOCUS_IN = "focusin";
-                            Handler.BLUR = "blur";
-                            Handler.CLICK = "click";
-                            Handler.MOUSE_DOWN = "mousedown";
-                            Handler.SCROLL = "scroll";
-                            Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
-                            Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
-                            Handler.RECORDS = "iggridvirtualrecordsrender";
-                            Handler.CELL_CLICK = "iggridcellclick";
-                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
-                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
+                        Handler.KEY_DOWN = "keydown";
+                        Handler.KEY_UP = "keyup";
+                        Handler.FOCUS_IN = "focusin";
+                        Handler.BLUR = "blur";
+                        Handler.CLICK = "click";
+                        Handler.MOUSE_DOWN = "mousedown";
+                        Handler.SCROLL = "scroll";
+                        Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
+                        Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
+                        Handler.RECORDS = "iggridvirtualrecordsrender";
+                        Handler.CELL_CLICK = "iggridcellclick";
+                        Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                        Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
+                        Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                         events.Handler = Handler;
                         /**
                          * Post render process
@@ -33424,7 +33949,7 @@ var nts;
                     (function (validation) {
                         validation.VALIDATORS = "ntsValidators";
                         var H_M_MAX = 60;
-                        var ColumnFieldValidator = /** @class */ (function () {
+                        var ColumnFieldValidator = (function () {
                             function ColumnFieldValidator(name, primitiveValue, options) {
                                 this.name = name;
                                 this.primitiveValue = primitiveValue;
@@ -33472,7 +33997,7 @@ var nts;
                             return ColumnFieldValidator;
                         }());
                         validation.ColumnFieldValidator = ColumnFieldValidator;
-                        var NumberValidator = /** @class */ (function () {
+                        var NumberValidator = (function () {
                             function NumberValidator(name, displayType, primitiveValue, options) {
                                 this.name = name;
                                 this.displayType = displayType;
@@ -33532,7 +34057,7 @@ var nts;
                             };
                             return NumberValidator;
                         }());
-                        var Result = /** @class */ (function () {
+                        var Result = (function () {
                             function Result(isValid, formatted, messageId) {
                                 this.onSuccess = $.noop;
                                 this.onFail = $.noop;
@@ -33620,7 +34145,7 @@ var nts;
                         errors.ERROR_STL = { "border-color": "#ff6666" };
                         errors.NO_ERROR_STL = { "border-color": "" };
                         errors.EDITOR_SELECTOR = "div.ui-igedit-container";
-                        var GridCellError = /** @class */ (function () {
+                        var GridCellError = (function () {
                             function GridCellError(grid, rowId, columnKey, message) {
                                 this.grid = grid;
                                 this.rowId = rowId;
@@ -33855,7 +34380,7 @@ var nts;
                         color.Reflect = "ntsgrid-reflect";
                         color.Calculation = "ntsgrid-calc";
                         color.Disable = "ntsgrid-disable";
-                        var CellFormatter = /** @class */ (function () {
+                        var CellFormatter = (function () {
                             function CellFormatter($grid, features, ntsFeatures, flatCols) {
                                 this.$grid = $grid;
                                 // Cell
@@ -34381,7 +34906,7 @@ var nts;
                     (function (sheet_1) {
                         var normalStyles = { backgroundColor: '', color: '' };
                         var selectedStyles = { backgroundColor: '#00B050', color: '#fff' };
-                        var Configurator = /** @class */ (function () {
+                        var Configurator = (function () {
                             function Configurator(currentSheet, sheets) {
                                 this.currentSheet = currentSheet;
                                 this.sheets = sheets;
@@ -34689,7 +35214,7 @@ var nts;
                     })(sheet || (sheet = {}));
                     var onDemand;
                     (function (onDemand) {
-                        var Loader = /** @class */ (function () {
+                        var Loader = (function () {
                             function Loader(allKeysPath, pageRecordsPath) {
                                 this.allKeysPath = allKeysPath;
                                 this.pageRecordsPath = pageRecordsPath;
@@ -34876,7 +35401,7 @@ var nts;
                     (function (settings) {
                         settings.USER_M = "M";
                         settings.USER_O = "O";
-                        var Descriptor = /** @class */ (function () {
+                        var Descriptor = (function () {
                             function Descriptor(startRow, rowCount, elements, keyIdxes) {
                                 this.startRow = startRow;
                                 this.rowCount = rowCount;
@@ -35581,7 +36106,7 @@ var nts;
                         }
                         return control;
                     }
-                    var NtsPopupPanel = /** @class */ (function () {
+                    var NtsPopupPanel = (function () {
                         function NtsPopupPanel($panel, option) {
                             var parent = $panel.parent();
                             this.$panel = $panel
@@ -36662,7 +37187,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsAccordionBindingHandler = /** @class */ (function () {
+                var NtsAccordionBindingHandler = (function () {
                     function NtsAccordionBindingHandler() {
                     }
                     /**
@@ -36757,7 +37282,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsTableButtonBindingHandler = /** @class */ (function () {
+                var NtsTableButtonBindingHandler = (function () {
                     function NtsTableButtonBindingHandler() {
                     }
                     /**
@@ -36837,7 +37362,7 @@ var nts;
             (function (koExtentions) {
                 var originalClick = ko.bindingHandlers.click;
                 // override click binding with timeClick (default: 500)
-                var SafeClickBindingHandler = /** @class */ (function () {
+                var SafeClickBindingHandler = (function () {
                     function SafeClickBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
@@ -36873,7 +37398,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsColorPickerBindingHandler = /** @class */ (function () {
+                var NtsColorPickerBindingHandler = (function () {
                     function NtsColorPickerBindingHandler() {
                     }
                     /**
@@ -37042,7 +37567,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateRangePickerBindingHandler = /** @class */ (function () {
+                var NtsDateRangePickerBindingHandler = (function () {
                     function NtsDateRangePickerBindingHandler() {
                     }
                     /**
@@ -37335,7 +37860,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateTimePairEditorBindingHandler = /** @class */ (function () {
+                var NtsDateTimePairEditorBindingHandler = (function () {
                     function NtsDateTimePairEditorBindingHandler() {
                     }
                     /**
@@ -37363,7 +37888,7 @@ var nts;
                     };
                     return NtsDateTimePairEditorBindingHandler;
                 }());
-                var EditorConstructSite = /** @class */ (function () {
+                var EditorConstructSite = (function () {
                     function EditorConstructSite($root) {
                         this.dateFormat = "YYYY/MM/DD";
                         this.timeFormat = "H:mm:ss";
@@ -37495,7 +38020,7 @@ var nts;
                             enable: allBindData.enable,
                             disabled: allBindData.disabled,
                             option: { width: "70" },
-                            constraint: 'AttendanceClock' };
+                            constraint: 'TimeClockWithSeconds' };
                     };
                     return EditorConstructSite;
                 }());
@@ -37516,7 +38041,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateTimePairRangeEditorBindingHandler = /** @class */ (function () {
+                var NtsDateTimePairRangeEditorBindingHandler = (function () {
                     function NtsDateTimePairRangeEditorBindingHandler() {
                     }
                     /**
@@ -37544,7 +38069,7 @@ var nts;
                     };
                     return NtsDateTimePairRangeEditorBindingHandler;
                 }());
-                var EditorConstructSite = /** @class */ (function () {
+                var EditorConstructSite = (function () {
                     function EditorConstructSite($root) {
                         this.format = "YYYY/MM/DD H:mm:ss";
                         this.$root = $root;
@@ -37682,7 +38207,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFileUploadBindingHandler = /** @class */ (function () {
+                var NtsFileUploadBindingHandler = (function () {
                     /**
                      * Constructor..
                      */
@@ -37846,7 +38371,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFunctionPanelBindingHandler = /** @class */ (function () {
+                var NtsFunctionPanelBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -37947,7 +38472,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsHelpButtonBindingHandler = /** @class */ (function () {
+                var NtsHelpButtonBindingHandler = (function () {
                     function NtsHelpButtonBindingHandler() {
                     }
                     NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -38072,7 +38597,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsIconBindingHandler = /** @class */ (function () {
+                var NtsIconBindingHandler = (function () {
                     function NtsIconBindingHandler() {
                     }
                     NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -38087,7 +38612,7 @@ var nts;
                             .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
                             .mergeRelativePath(iconFileName)
                             .serialize();
-                        var $icon = $(element);
+                        var $icon = $(element), $parent = $icon.closest("td[role='gridcell']");
                         $icon.addClass("img-icon");
                         $icon.css({
                             "background-image": "url(" + iconPath + ")",
@@ -38095,6 +38620,9 @@ var nts;
                             width: width,
                             height: height
                         });
+                        if (!_.isNil($parent)) {
+                            $parent.css("white-space", "nowrap");
+                        }
                     };
                     NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
@@ -38119,7 +38647,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsImageEditorBindingHandler = /** @class */ (function () {
+                var NtsImageEditorBindingHandler = (function () {
                     function NtsImageEditorBindingHandler() {
                     }
                     /**
@@ -38179,7 +38707,7 @@ var nts;
                     };
                     return NtsImageEditorBindingHandler;
                 }());
-                var ImageEditorConstructSite = /** @class */ (function () {
+                var ImageEditorConstructSite = (function () {
                     function ImageEditorConstructSite($root, helper) {
                         this.$root = $root;
                         this.helper = helper;
@@ -38255,7 +38783,8 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.buildImageLoadedHandler = function (zoomble, customOption) {
                         var self = this;
-                        self.$root.data("img-status", self.buildImgStatus("not init", 0));
+                        //self.$root.data("img-status", self.buildImgStatus("not init", 0));
+                        self.changeStatus(ImageStatus.NOT_INIT);
                         self.$imagePreview.on('load', function () {
                             var image = new Image();
                             image.src = self.$imagePreview.attr("src");
@@ -38282,7 +38811,8 @@ var nts;
                                 jQuery.extend(option, customOption);
                                 self.cropper = new Cropper(self.$imagePreview[0], option);
                                 self.$root.data("cropper", self.cropper);
-                                self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                                //self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                                self.changeStatus(ImageStatus.LOADED);
                                 var evtData = {
                                     size: self.$root.data("size"),
                                     height: this.height,
@@ -38293,20 +38823,37 @@ var nts;
                                 self.$root.trigger("imgloaded", evtData);
                             };
                         }).on("error", function () {
-                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                            //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                            self.changeStatus(ImageStatus.FAIL);
                         });
                     };
-                    ImageEditorConstructSite.prototype.buildImgStatus = function (status, statusCode) {
-                        return {
-                            imgOnView: statusCode === 4 ? true : false,
-                            imgStatus: status,
-                            imgStatusCode: statusCode
-                        };
+                    ImageEditorConstructSite.prototype.changeStatus = function (status) {
+                        var self = this;
+                        var dataStatus = self.$root.data("img-status");
+                        var imgOnView = false;
+                        if (dataStatus) {
+                            imgOnView = dataStatus.imgOnView;
+                        }
+                        if (status == ImageStatus.LOADED) {
+                            imgOnView = true;
+                        }
+                        self.$root.data("img-status", {
+                            imgOnView: imgOnView,
+                            status: status
+                        });
                     };
+                    //        buildImgStatus(status: string, statusCode: number, imgOnView: boolean){
+                    //            return {
+                    //                imgOnView: imgOnView,
+                    //                imgStatus: status,
+                    //                imgStatusCode: statusCode    
+                    //            };
+                    //        }
                     ImageEditorConstructSite.prototype.buildSrcChangeHandler = function () {
                         var self = this;
                         self.$root.bind("srcchanging", function (evt, query) {
-                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                            //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
+                            self.changeStatus(ImageStatus.lOADING);
                             var target = self.helper.getUrl(query);
                             var xhr = self.getXRequest();
                             if (xhr === null) {
@@ -38344,7 +38891,8 @@ var nts;
                     ImageEditorConstructSite.prototype.destroyImg = function (query) {
                         var self = this;
                         nts.uk.ui.dialog.alert("画像データが正しくないです。。").then(function () {
-                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                            //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                            self.changeStatus(ImageStatus.FAIL);
                             self.backupData(null, "", "", 0);
                             self.$imagePreview.attr("src", "");
                             self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
@@ -38363,14 +38911,16 @@ var nts;
                     ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
                         var self = this;
                         self.$inputFile.change(function () {
-                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                            //self.$root.data("img-status", self.buildImgStatus("img loading", 2));
+                            self.changeStatus(ImageStatus.lOADING);
                             if (nts.uk.util.isNullOrEmpty(this.files)) {
-                                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+                                self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
                             if (!self.validateFilesSize(this.files[0])) {
                                 // if file's size > maxSize, remove that file                    
                                 $(this).val('');
+                                self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
                             self.validateFile(this.files);
@@ -38423,7 +38973,7 @@ var nts;
                     };
                     return ImageEditorConstructSite;
                 }());
-                var ImageEditorHelper = /** @class */ (function () {
+                var ImageEditorHelper = (function () {
                     function ImageEditorHelper(extensions, msgIdForUnknownFile, query, maxSize) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
@@ -38496,6 +39046,13 @@ var nts;
                     };
                     return ImageEditorHelper;
                 }());
+                var ImageStatus;
+                (function (ImageStatus) {
+                    ImageStatus[ImageStatus["NOT_INIT"] = 0] = "NOT_INIT";
+                    ImageStatus[ImageStatus["lOADING"] = 1] = "lOADING";
+                    ImageStatus[ImageStatus["FAIL"] = 2] = "FAIL";
+                    ImageStatus[ImageStatus["LOADED"] = 3] = "LOADED";
+                })(ImageStatus || (ImageStatus = {}));
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
             })(koExtentions = ui_32.koExtentions || (ui_32.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -38513,7 +39070,7 @@ var nts;
                 /**
                  * Let binding handler
                  */
-                var NtsLetBindingHandler = /** @class */ (function () {
+                var NtsLetBindingHandler = (function () {
                     function NtsLetBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
@@ -38542,7 +39099,7 @@ var nts;
                 /**
                  * LinkButton
                  */
-                var NtsLinkButtonBindingHandler = /** @class */ (function () {
+                var NtsLinkButtonBindingHandler = (function () {
                     function NtsLinkButtonBindingHandler() {
                     }
                     /**
@@ -38587,7 +39144,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsMonthDaysBindingHandler = /** @class */ (function () {
+                var NtsMonthDaysBindingHandler = (function () {
                     function NtsMonthDaysBindingHandler() {
                     }
                     /**
@@ -38679,7 +39236,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var NtsSortableBindingHandler = /** @class */ (function () {
+var NtsSortableBindingHandler = (function () {
     function NtsSortableBindingHandler() {
         var _this = this;
         this.ITEMKEY = "ko_sortItem";
@@ -39010,7 +39567,7 @@ var nts;
                 /**
                  * Tree binding handler
                  */
-                var NtsTreeDragAndDropBindingHandler = /** @class */ (function () {
+                var NtsTreeDragAndDropBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
@@ -39218,14 +39775,15 @@ var nts;
         (function (ui) {
             var sharedvm;
             (function (sharedvm) {
-                var KibanTimer = /** @class */ (function () {
-                    function KibanTimer(target) {
+                var KibanTimer = (function () {
+                    function KibanTimer(target, timeUnit) {
                         var self = this;
                         self.elapsedSeconds = 0;
                         self.formatted = ko.observable(uk.time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
                         self.targetComponent = target;
                         self.isTimerStart = ko.observable(false);
                         self.oldDated = ko.observable(undefined);
+                        self.timeUnit = nts.uk.util.isNullOrUndefined(timeUnit) ? 1000 : timeUnit;
                         document.getElementById(self.targetComponent).innerHTML = self.formatted();
                     }
                     KibanTimer.prototype.run = function (timer) {
@@ -39240,7 +39798,7 @@ var nts;
                         if (!self.isTimerStart()) {
                             self.oldDated(new Date());
                             self.isTimerStart(true);
-                            self.interval = setInterval(self.run, 1000, self);
+                            self.interval = setInterval(self.run, self.timeUnit, self);
                         }
                     };
                     KibanTimer.prototype.end = function () {

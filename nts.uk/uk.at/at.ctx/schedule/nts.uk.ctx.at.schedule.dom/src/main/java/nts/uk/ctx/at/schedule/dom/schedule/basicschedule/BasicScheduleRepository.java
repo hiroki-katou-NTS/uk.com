@@ -106,8 +106,6 @@ public interface BasicScheduleRepository {
 	 */
 	void delete(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule);
 	
-	void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule);
-
 	/**
 	 * Find child care by id.
 	 *
@@ -160,7 +158,6 @@ public interface BasicScheduleRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 	void insertAllScheduleState(List<WorkScheduleState> listWorkScheduleState);
 	/**
 	 * 検索

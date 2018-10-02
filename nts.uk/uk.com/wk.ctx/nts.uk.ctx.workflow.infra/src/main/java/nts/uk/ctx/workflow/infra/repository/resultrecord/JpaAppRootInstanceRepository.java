@@ -41,7 +41,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAppRootInstanceRepository extends JpaRepository implements AppRootInstanceRepository {
 	
 	private final String BASIC_SELECT = 
-			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, " +
+			/*"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, " +
 			"phaseJoin.PHASE_ORDER, phaseJoin.APPROVAL_FORM, " +
 			"phaseJoin.FRAME_ORDER, phaseJoin.CONFIRM_ATR, phaseJoin.APPROVER_CHILD_ID " +
 			"FROM WWFDT_APP_ROOT_INSTANCE appRoot LEFT JOIN " +
@@ -52,7 +52,19 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			"FROM WWFDT_APP_FRAME_INSTANCE frame LEFT JOIN WWFDT_APP_APPROVE_INSTANCE a " +
 			"ON frame.ROOT_ID = a.ROOT_ID AND frame.PHASE_ORDER = a.PHASE_ORDER AND frame.FRAME_ORDER = a.FRAME_ORDER) frameJoin " +
 			"ON phase.ROOT_ID = frameJoin.ROOT_ID AND phase.PHASE_ORDER = frameJoin.PHASE_ORDER) phaseJoin " +
-			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";
+			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
+			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, "+
+			"phase.PHASE_ORDER, phase.APPROVAL_FORM, frame.FRAME_ORDER, frame.CONFIRM_ATR, appApprover.APPROVER_CHILD_ID "+
+			"FROM WWFDT_APP_ROOT_INSTANCE appRoot "+
+			"LEFT JOIN WWFDT_APP_PHASE_INSTANCE phase "+
+			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
+			"LEFT JOIN WWFDT_APP_FRAME_INSTANCE frame "+
+			"ON phase.ROOT_ID = frame.ROOT_ID "+
+			"AND phase.PHASE_ORDER = frame.PHASE_ORDER "+
+			"LEFT JOIN WWFDT_APP_APPROVE_INSTANCE appApprover "+
+			"ON frame.ROOT_ID = appApprover.ROOT_ID "+
+			"AND frame.PHASE_ORDER = appApprover.PHASE_ORDER "+
+			"AND frame.FRAME_ORDER = appApprover.FRAME_ORDER";
 	
 	private final String FIND_BY_ID = BASIC_SELECT + " WHERE appRoot.ROOT_ID = 'rootID'";
 	
@@ -62,39 +74,51 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.START_DATE <= 'recordDate'";
 	
-	private final String FIND_BY_EMP_DATE_NEWEST = BASIC_SELECT +
+	private final String FIND_BY_EMP_FROM_DATE = BASIC_SELECT +
 			" WHERE appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.CID = 'companyID'" +
 			" AND appRoot.ROOT_TYPE = rootType" +
-			" order by appRoot.START_DATE desc";
+			" AND appRoot.START_DATE >= 'recordDate'";
+	
+	private final String FIND_BY_EMP_DATE_NEWEST = BASIC_SELECT +
+			" WHERE appRoot.ROOT_ID IN (" +
+			" SELECT TOP 1 ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE" +
+			" WHERE EMPLOYEE_ID = 'employeeID'" +
+			" AND CID = 'companyID'" +
+			" AND ROOT_TYPE = rootType " +
+			"order by START_DATE desc)";
+	
+	private final String FIND_BY_EMP_DATE_NEWEST_BELOW = BASIC_SELECT +
+			" WHERE appRoot.ROOT_ID IN (" +
+			" SELECT TOP 1 ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE" +
+			" WHERE EMPLOYEE_ID = 'employeeID'" +
+			" AND CID = 'companyID'" +
+			" AND ROOT_TYPE = rootType " +
+			" AND START_DATE < 'recordDate' " +
+			"order by START_DATE desc)";
 	
 	private final String FIND_BY_EMPS_PERIOD = BASIC_SELECT + 
 			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE > 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'"+
-			" UNION"+
-			" SELECT TOP 1 * FROM ("+
-			BASIC_SELECT + 
-			" WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
+			" AND appRoot.END_DATE >= 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate'";
 	
 	private final String FIND_BY_APPROVER_PERIOD = BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
+			" WHERE appRoot.ROOT_ID IN (SELECT ROOT_ID FROM (" +
+			BASIC_SELECT +
+			" WHERE appApprover.APPROVER_CHILD_ID = 'approverID'"+
 			" AND appRoot.CID = 'companyID'"+
 			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE > 'startDate'"+
-			" AND appRoot.START_DATE <= 'endDate'"+
-			" UNION"+
-			" SELECT TOP 1 * FROM ("+
-			BASIC_SELECT + 
-			" WHERE phaseJoin.APPROVER_CHILD_ID = 'approverID'"+
-			" AND appRoot.CID = 'companyID'"+
-			" AND appRoot.ROOT_TYPE = rootType"+
-			" AND appRoot.START_DATE <= 'startDate') result order by START_DATE desc";
+			" AND appRoot.END_DATE >= 'startDate'"+
+			" AND appRoot.START_DATE <= 'endDate') result)";
+	
+	private final String FIND_BY_CONTAIN_DATE = BASIC_SELECT +
+			" WHERE appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.START_DATE <= 'recordDate'" +
+			" AND appRoot.END_DATE >= 'recordDate'";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -330,6 +354,78 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public List<AppRootInstance> findByEmpFromDate(String companyID, String employeeID, GeneralDate recordDate,
+			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_FROM_DATE;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Collections.emptyList();
+			} else {
+				return listResult;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public Optional<AppRootInstance> findByEmpDateNewestBelow(String companyID, String employeeID,
+			GeneralDate recordDate, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_DATE_NEWEST_BELOW;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<AppRootInstance> findByContainDate(String companyID, String employeeID, GeneralDate recordDate,
+			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_CONTAIN_DATE;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
 		}
 	}
 

@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailAttachedFile;
 import nts.gul.mail.send.MailContents;
@@ -19,8 +24,8 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.MailDestinationAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
+import nts.uk.shr.com.mail.SendMailFailedException;
 
 @Stateless
 public class AlarmSendEmailService implements SendEmailService {
@@ -39,63 +44,75 @@ public class AlarmSendEmailService implements SendEmailService {
 	@Inject
 	private AlarmListGenerator alarmListGenerator;
 	
-	public String alarmSendEmail(SendEmailParamDto sendEmailParamDto) {
+	public String alarmSendEmail(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
+			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
+			MailSettingsParamDto mailSettingsParamDto) {
+		return process(companyID, executeDate, employeeTagetIds, managerTagetIds, valueExtractAlarmDtos,mailSettingsParamDto);
+	}
+	
+	private String process(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
+			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
+			MailSettingsParamDto mailSettingsParamDto){
 		List<String> errors = new ArrayList<>();
-		FileGeneratorContext generatorContext = new FileGeneratorContext();
-		String companyID = AppContexts.user().companyId(); // get company Id of user login
+		Integer functionID = 9; //function of Alarm list = 9
+		
 		boolean isErrorSendMailEmp = false;
 		//Send mail for employee
 		// get address email
-		if (!CollectionUtil.isEmpty(sendEmailParamDto.getEmployeeTagetIds())) {
-			for (String employeeId : sendEmailParamDto.getEmployeeTagetIds()) {
+		if (!CollectionUtil.isEmpty(employeeTagetIds)) {
+
+			for (String employeeId : employeeTagetIds) {
+				// 本人送信対象のアラーム抽出結果を抽出する
+				List<ValueExtractAlarmDto> valueExtractAlarmEmpDtos = valueExtractAlarmDtos.stream()
+						.filter(c -> employeeId.equals(c.getEmployeeID())).collect(Collectors.toList());
 				try {
 					// Do send email
-					boolean isError = sendMail(companyID, employeeId, sendEmailParamDto.getFunctionID(),
-							sendEmailParamDto.getValueExtractAlarmDtos(), generatorContext,
-							sendEmailParamDto.getMailSettingsParamDto().getSubject(),
-							sendEmailParamDto.getMailSettingsParamDto().getText());
+					boolean isError = sendMail(companyID, employeeId, functionID,
+							valueExtractAlarmEmpDtos, mailSettingsParamDto.getSubject(),
+							mailSettingsParamDto.getText());
 					if (isError) {
 						errors.add(employeeId);
 					}
-				} catch (Exception e) {
-					errors.add(employeeId);
-					isErrorSendMailEmp = true;
-					break;
+				} catch (SendMailFailedException e) {
+					throw e;
 				}
 			}
 		}
 		// Send mail for Manager
 		// get list employeeId of manager
-		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(sendEmailParamDto.getManagerTagetIds())) {
-			for (String workplaceId : sendEmailParamDto.getManagerTagetIds()) {
+		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
+			// 管理者送信対象のアラーム抽出結果を抽出する
+			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = new ArrayList<>();
+			Map<String, String> mapCheck = new HashMap<>();
+			for (ValueExtractAlarmDto obj : valueExtractAlarmDtos) {
+				if(managerTagetIds.contains(obj.getEmployeeID())){
+					valueExtractAlarmManagerDtos.add(obj);
+					// 管理者送信対象のアラーム抽出結果を職場でグループ化する
+					String key = obj.getWorkplaceID()+obj.getEmployeeID();
+					if(!mapCheck.containsKey(key)){
+						mapCheck.put(key, obj.getWorkplaceID());
+					}
+				}
+			}
+			// Get list workplace to send
+			List<String> workplaceIds = new ArrayList<String>(mapCheck.values());
+			for (String workplaceId : workplaceIds) {
 				// call request list 218 return list employee Id
-				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId);
+				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
 
 				if (!CollectionUtil.isEmpty(listEmployeeId)) {
-					// get list data alarm by list employee id
-					List<ValueExtractAlarmDto> listDataAlarmExport = new ArrayList<>();
-					for (String employeeId : listEmployeeId) {
-						List<ValueExtractAlarmDto> listValueExtractAlarmDtoTemp = sendEmailParamDto
-								.getValueExtractAlarmDtos().stream().filter(e -> e.getEmployeeID() == employeeId)
-								.collect(Collectors.toList());
-						if (!CollectionUtil.isEmpty(listValueExtractAlarmDtoTemp)) {
-							listDataAlarmExport.add(listValueExtractAlarmDtoTemp.get(0));
-						}
-					}
 					// loop send mail
 					for (String employeeId : listEmployeeId) {
 						try {
 							// Get subject , body mail
-							boolean isError = sendMail(companyID, employeeId, sendEmailParamDto.getFunctionID(),
-									listDataAlarmExport, generatorContext,
-									sendEmailParamDto.getMailSettingsParamDto().getSubjectAdmin(),
-									sendEmailParamDto.getMailSettingsParamDto().getTextAdmin());
+							boolean isError = sendMail(companyID, employeeId, functionID,
+									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
+									mailSettingsParamDto.getTextAdmin());
 							if (isError) {
 								errors.add(employeeId);
 							}
-						} catch (Exception e) {
-							errors.add(employeeId);
-							break;
+						} catch (SendMailFailedException e) {
+							throw e;
 						}
 					}
 				}
@@ -117,7 +134,7 @@ public class AlarmSendEmailService implements SendEmailService {
                 }   
 			}
 		}
-
+		
 		return empployeeNameError;
 	}
 	
@@ -133,9 +150,9 @@ public class AlarmSendEmailService implements SendEmailService {
 	 * @return true/false
 	 */
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
-			List<ValueExtractAlarmDto> listDataAlarmExport, FileGeneratorContext generatorContext, String subjectEmail,
+			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
 			String bodyEmail) throws BusinessException {
-				
+		FileGeneratorContext generatorContext = new FileGeneratorContext();		
 		// call request list 397 return email address
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(companyID, employeeId, functionID);
@@ -143,7 +160,9 @@ public class AlarmSendEmailService implements SendEmailService {
 			String subject = subjectEmail;
 			String body = bodyEmail;
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (!CollectionUtil.isEmpty(emails) && !"".equals(subject) && !"".equals(body)) {
+			if (CollectionUtil.isEmpty(emails) || StringUtils.isEmpty(subject) || StringUtils.isEmpty(body)) {
+				return true;
+			} else {
 				// Genarate excel
 				AlarmExportDto alarmExportDto = alarmListGenerator.generate(generatorContext, listDataAlarmExport);
 				// Get all mail address
@@ -153,13 +172,17 @@ public class AlarmSendEmailService implements SendEmailService {
 							.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
 					MailContents mailContent = new MailContents(subject, body, attachedFiles);
 					try {
-						mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
-					} catch (Exception e) {
-						throw new BusinessException("Msg_965");
+						if (StringUtils.isEmpty(outGoingMailAlarm.getEmailAddress())) {
+							return true;
+						}
+						else{
+							mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
+						}
+						
+					} catch (SendMailFailedException e) {
+						throw  e ;
 					}
 				}
-			} else {
-				return true;
 			}
 		}
 		return false;

@@ -93,9 +93,8 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			});
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return Optional.empty();
 //		Optional<EmploymentInfo> employee = this.queryProxy().query(SEL_HIS_ITEM, Object[].class)
 //				.setParameter("sid", sid).setParameter("date", date).setParameter("companyId", companyId)
 //				.getSingle(c -> toDomainEmployee(c));

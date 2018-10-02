@@ -23,9 +23,9 @@ import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -42,7 +42,7 @@ public class AnyItemOfMonthlyFinder extends MonthlyFinderFacade {
 	public AnyItemOfMonthlyDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		List<AnyItemOfMonthly> domains = this.repo.findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
-		List<Integer> itemIds = domains.stream().map(i -> i.getAnyItemId()).collect(Collectors.toList());
+		List<Integer> itemIds = domains.stream().map(i -> i.getAnyItemId()).distinct().collect(Collectors.toList());
 		if(!itemIds.isEmpty()){
 			Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 					.findByListNos(AppContexts.user().companyId(), itemIds).stream()

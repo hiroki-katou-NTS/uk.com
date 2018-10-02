@@ -31,5 +31,9 @@ public class UpdateMonthDailyParam {
 	private DatePeriod datePeriod;
 	
 	private String messageRed;
+	
+	private Boolean hasFlex;
+	
+	private Boolean needCallCalc;
 
 }

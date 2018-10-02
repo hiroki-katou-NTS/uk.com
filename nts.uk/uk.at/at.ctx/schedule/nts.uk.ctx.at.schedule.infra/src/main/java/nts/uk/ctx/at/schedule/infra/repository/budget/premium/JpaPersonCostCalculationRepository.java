@@ -279,7 +279,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 						premiumSetting.getCompanyID(), 
 						premiumSetting.getDisplayNumber()), 
 				premiumSetting.getName().v(), 
-				premiumSetting.getUseAtr().value);
+				premiumSetting.getUseAtr().value,
+				null);
 	}
 
 	@Override
@@ -358,8 +359,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			}).collect(Collectors.toList());
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -409,8 +409,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			
 			return krcdtTimeLeaveWorks;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return new ArrayList<>();
+			throw new RuntimeException(e);
 		}
 	}
 	

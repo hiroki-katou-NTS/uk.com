@@ -273,7 +273,8 @@ module nts.uk.at.view.kmk002.a {
 
                 // Event on optionalItemAtr value changed
                 self.optionalItemAtr.subscribe(value => {
-
+                    
+                    self.unit(value == 0 ? '' : self.optionalItemDtoStash.unit);
                     // if value change because of select new optional item
                     // or new value == value in stash
                     // then do nothing
@@ -783,7 +784,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
                 dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
-                dto.unit = self.enableUnit() ? self.unit() : self.optionalItemDtoStash.unit;
+                dto.unit = self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                 return dto;
@@ -1209,6 +1210,9 @@ module nts.uk.at.view.kmk002.a {
                 // call webservice to save optional item
                 service.saveOptionalItem(command)
                     .done(() => {
+                        // update stash
+                        self.optionalItem.optionalItemDtoStash = _.cloneDeep(command);
+
                         // reload optional item list.
                         self.loadOptionalItemHeaders();
 
@@ -1748,7 +1752,7 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
                 param.performanceAtr = self.performanceAtr();
-                param.formulaAtr = dto.formulaAtr;
+                param.formulaAtr = self.formulaAtr();
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = dto.itemSelection;

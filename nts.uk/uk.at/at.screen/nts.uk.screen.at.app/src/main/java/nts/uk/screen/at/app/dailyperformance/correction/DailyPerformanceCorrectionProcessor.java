@@ -4,8 +4,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -78,6 +74,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -196,9 +193,6 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private ShowDialogError showDialogError;
 	
-	@Inject
-	private DisplayRemainingHolidayNumber remainHolidayService;
-	
 	@Resource
 	private ManagedExecutorService executorService;
 	
@@ -246,6 +240,7 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
+		Boolean needSortEmp = Boolean.FALSE;
 		
 		//起動に必要な情報の取得(Lấy các thông tin cần thiết cho khởi động)
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -292,10 +287,13 @@ public class DailyPerformanceCorrectionProcessor {
 			val employeeIds = objectShare == null
 					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 					: objectShare.getLstEmployeeShare();
+			if(employeeIds.isEmpty()) needSortEmp = true;
 			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
+		
+		List<String> employeeIdsOri = changeEmployeeIds;
 		
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
@@ -373,6 +371,17 @@ public class DailyPerformanceCorrectionProcessor {
 			screenDto.setLstData(screenDto.getLstData().stream()
 					.filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
 		}
+		
+		List<DPDataDto> listData = new ArrayList<>();
+		for (String employeeId : employeeIdsOri) {
+			screenDto.getLstData().stream().forEach(item -> {
+				if(item.getEmployeeId().equals(employeeId)){
+					listData.add(item);
+				}				
+			});
+			
+		}
+		screenDto.setLstData(needSortEmp ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
@@ -1389,7 +1398,17 @@ public class DailyPerformanceCorrectionProcessor {
 		List<Integer> lstAtdItemUnique = disItem.getLstAtdItemUnique();
 		List<FormatDPCorrectionDto> lstFormat = disItem.getLstFormat();
 		if (!lstAtdItemUnique.isEmpty()) {
-			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(lstAtdItemUnique)
+			Set<Integer> lstGroupInput = new HashSet<>();
+			lstAtdItemUnique.stream().forEach(x -> {
+				val item = ValidatorDataDailyRes.INPUT_CHECK_MAP.get(x.intValue());
+				if(item != null) {
+					lstGroupInput.add(item);
+					lstGroupInput.add(x);
+				}else{
+					lstGroupInput.add(x);
+				}
+			});
+			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(lstGroupInput))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
 							x -> x.getAttendanceItemName())); // 9s
 			lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
@@ -1397,6 +1416,7 @@ public class DailyPerformanceCorrectionProcessor {
 						x.setName(itemName.get(x.getId()));
 						return x;
 					}).collect(Collectors.toList());
+			result.setItemInputName(itemName);
 		}
 		
 		//set item atr from optional
@@ -1411,7 +1431,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<Integer, DPAttendanceItem> mapDP = lstAttendanceItem.stream().filter(x -> x.getAttendanceAtr().intValue() != DailyAttendanceAtr.ReferToMaster.value).collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setMapDPAttendance(mapDP);
 		result.setLstAttendanceItem(new ArrayList<>(mapDP.values()));
-		lstFormat = lstFormat.stream().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
+		lstFormat = lstFormat.stream().distinct().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
 		result.addColumnsToSheet(lstFormat, mapDP, showButton);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
 		for (FormatDPCorrectionDto dto : lstFormat) {
@@ -1468,6 +1488,8 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setComboItemCalc(EnumCodeName.getCalcHours());
 		result.setComboItemDoWork(EnumCodeName.getDowork());
 		result.setComboItemReason(EnumCodeName.getReasonGoOut());
+		result.setComboItemCalcCompact(EnumCodeName.getCalcCompact());
+		result.setComboTimeLimit(EnumCodeName.getComboTimeLimit());
 		result.setItemIds(lstAtdItemUnique);
 		return result;
 	}

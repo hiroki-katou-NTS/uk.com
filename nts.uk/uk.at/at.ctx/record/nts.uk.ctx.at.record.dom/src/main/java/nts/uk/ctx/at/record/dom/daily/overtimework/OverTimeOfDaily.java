@@ -317,15 +317,19 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
-														   String searchWord,
 														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
 			if(frameTime.isOverLimitDivergenceTime()) {
-				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
-				if(itemId.isPresent())
-					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+				//残業時間
+				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
+				//振替時間
+				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
 			}
 		}
 		return returnErrorList;
@@ -336,15 +340,19 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
-														   String searchWord,
 														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
 			if(frameTime.isPreOverLimitDivergenceTime()) {
-				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
-				if(itemId.isPresent())
-					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+				//残業時間
+				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
+				//振替時間
+				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
 			}
 		}
 		return returnErrorList;
@@ -469,9 +477,10 @@ public class OverTimeOfDaily {
 		//実働就業>法定労働(法定外)
 		else {
 			//法内
+			val calcUnbreakTime = unUseBreakTime.minusMinutes(actualWorkTime.valueAsMinutes() - statutoryTime.valueAsMinutes()).valueAsMinutes();
 			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()))) {
 				this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v())) 
-					 									     tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(tc.getOverTimeWork().getTime().addMinutes(unUseBreakTime.minusMinutes(actualWorkTime.valueAsMinutes() - statutoryTime.valueAsMinutes()).valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
+					 									     tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(tc.getOverTimeWork().getTime().addMinutes(calcUnbreakTime), tc.getOverTimeWork().getCalcTime()));
 														 });
 			}
 			else {
@@ -482,16 +491,16 @@ public class OverTimeOfDaily {
 																     new AttendanceTime(0)));
 			}
 			frameNoList.add(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()));
-			
 			//法外
+			int excessOverTime = actualWorkTime.minusMinutes(statutoryTime.valueAsMinutes()).valueAsMinutes() > calcUnbreakTime ? unUseBreakTime.valueAsMinutes() : actualWorkTime.minusMinutes(statutoryTime.valueAsMinutes()).valueAsMinutes();
 			if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getNotInLawOT().v()))) {
 				this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getNotInLawOT().v())) 
-															tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(tc.getOverTimeWork().getTime().addMinutes(actualWorkTime.minusMinutes(statutoryTime.valueAsMinutes()).valueAsMinutes()), tc.getOverTimeWork().getCalcTime()));
+															tc.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(tc.getOverTimeWork().getTime().addMinutes(excessOverTime), tc.getOverTimeWork().getCalcTime()));
 														 });
 			}
 			else {
 				this.overTimeWorkFrameTime.add(new OverTimeFrameTime(new OverTimeFrameNo(ootsukaFixedCalcSet.getNotInLawOT().v()), 
-																	 TimeDivergenceWithCalculation.sameTime( actualWorkTime.minusMinutes(statutoryTime.valueAsMinutes())),
+																	 TimeDivergenceWithCalculation.sameTime( unUseBreakTime.valueAsMinutes() - excessOverTime < 0 ? new AttendanceTime(0) : new AttendanceTime(unUseBreakTime.valueAsMinutes() - excessOverTime)),
 																	 TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), 
 																     new AttendanceTime(0), 
 																     new AttendanceTime(0)));

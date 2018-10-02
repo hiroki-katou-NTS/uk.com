@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata;
 
 
+import javax.persistence.EnumType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -43,38 +46,5 @@ public class MonthlyDayoffRemainData extends AggregateRoot{
 	private DayOffRemainDayAndTimes carryForWardDayTimes;	
 	/**	未消化日数, 未消化時間 */
 	private DayOffDayAndTimes unUsedDayTimes;
-
-	/**
-	 * for using table merge KrcdtMonRemainMerge
-	 * @param sId
-	 * @param ym
-	 * @param closureId
-	 * @param closureDay
-	 * @param lastDayis
-	 * @param startDate
-	 * @param endDate
-	 * @param occurrenceDayTimes
-	 * @param useDayTimes
-	 * @param remainingDayTimes
-	 * @param carryForWardDayTimes
-	 * @param unUsedDayTimes
-	 */
-	public MonthlyDayoffRemainData(String sId, YearMonth ym, int closureId, int closureDay, boolean lastDayis,
-			GeneralDate  startDate, GeneralDate endDate, DayOffDayAndTimes occurrenceDayTimes,
-			DayOffDayAndTimes useDayTimes, DayOffRemainDayAndTimes remainingDayTimes,
-			DayOffRemainDayAndTimes carryForWardDayTimes, DayOffDayAndTimes unUsedDayTimes) {
-		this.sId = sId;
-		this.closureId = closureId;
-		this.ym = ym;
-		this.closureDay = closureDay;
-		this.lastDayis = lastDayis;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.occurrenceDayTimes = occurrenceDayTimes;
-		this.useDayTimes = useDayTimes;
-		this.remainingDayTimes = remainingDayTimes;
-		this.carryForWardDayTimes = carryForWardDayTimes;
-		this.unUsedDayTimes = unUsedDayTimes;
-	}
 
 }

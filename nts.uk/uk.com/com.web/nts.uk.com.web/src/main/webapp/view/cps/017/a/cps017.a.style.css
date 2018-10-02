@@ -13,9 +13,9 @@ body {
 	margin-right: 30px;
 }
 
-/* #contents-area {
-	min-height: 800px;
-} */
+#contents-area {
+	min-width: 1333px;
+}
 
 .pull-left {
 	float: left;
@@ -26,7 +26,7 @@ body {
 	margin-top: 10px;
 	margin-left: 10px !important;
 	width: 350px;
-	height: 580px;
+	height: 540px;
 }
 
 #caret {
@@ -56,7 +56,7 @@ body {
 #content-center {
 	margin-top: 10px;
 	width: 435px !important;
-	height: 580px;
+	height: 540px;
 }
 
 .col1 {
@@ -82,10 +82,10 @@ body {
 
 /* ---------------------------------------- content-right -----------------------------------------------------------*/
 #content-right {
-/* 	margin-left: 15px;
-	margin-top: 115px; */
+	margin-left: 15px;
+	margin-top: 115px; 
 	width: 425px !important;
-	height: 580px;
+	height: 380px;
 }
 
 .form-input {

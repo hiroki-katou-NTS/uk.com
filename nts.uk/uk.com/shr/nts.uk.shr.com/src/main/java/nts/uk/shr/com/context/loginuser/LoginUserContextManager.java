@@ -41,6 +41,22 @@ public interface LoginUserContextManager {
 			String employeeCode);
 	
 	/**
+	 * User logged in as user.
+	 * 
+	 * @param userId
+	 * @param personId
+	 * @param contractCode
+	 * @param companyId
+	 * @param companyCode
+	 */
+	void loggedInAsUser(
+			String userId,
+			String personId,
+			String contractCode,
+			String companyId,
+			String companyCode);
+	
+	/**
 	 * Change company.
 	 * @param userId
 	 * @param personId

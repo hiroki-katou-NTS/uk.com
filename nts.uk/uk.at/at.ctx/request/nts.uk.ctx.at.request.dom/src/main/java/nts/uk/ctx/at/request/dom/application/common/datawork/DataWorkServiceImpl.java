@@ -170,7 +170,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			Optional<WorkType> workType = workTypeRepository.findByPK(companyId,
 					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
 			selectedData.setSelectedWorkTypeCd(
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().v());
+					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().map(item ->item.v()).orElse(null));
 			if (workType.isPresent()) {
 				selectedData.setSelectedWorkTypeName(workType.get().getName().v());
 			}

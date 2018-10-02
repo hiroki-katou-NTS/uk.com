@@ -27,6 +27,9 @@ import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.employee.StatusOfEmployment;
+import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusEmploymentAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.status.employment.StatusOfEmploymentImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
@@ -160,6 +163,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	
 	@Inject
 	private EmployeeGeneralInfoAdapter employeeGeneralInfoAdapter;
+	
+	@Inject
+	private StatusEmploymentAdapter statusEmploymentAdapter;
 	
 	private static final boolean IS_EMPLOYMENT = true;
 	private static final boolean IS_CLASSIFICATION = false;
@@ -315,8 +321,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-					null, null, null, null);
+			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
@@ -330,15 +335,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(lstCompanyId.get(FIST_COMPANY));
-			if (opEm.isPresent()) {
-				// set info to session if em # null
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
 						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
 			} else {
 				// set info to session
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode(), null, null);
+				manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
+						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
 			}
 		}
 		this.setRoleId(user.getUserId());
@@ -699,6 +703,28 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_281");
 		}
+		
+		//アルゴリズム「在職状態を取得」を実行する
+		//Request No.280
+		StatusOfEmploymentImport employmentStatus = this.statusEmploymentAdapter.getStatusOfEmployment(employeeId,
+				GeneralDate.today());
+
+		// check status = before_join
+		if (employmentStatus == null
+				|| employmentStatus.getStatusOfEmployment() == StatusOfEmployment.BEFORE_JOINING.value) {
+			Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+			if (isSignon) {
+				loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+			}
+			ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail.value,
+					TextResource.localize("Msg_286"), employeeId);
+
+			// アルゴリズム「ログイン記録」を実行する１
+			this.service.callLoginRecord(param);
+
+			throw new BusinessException("Msg_286");
+		}
+		
 		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
 		
 		if (!message.isEmpty()) {
@@ -732,7 +758,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			}
 		}
 	}
-
+	
 	/**
 	 * Gets the list company.
 	 *

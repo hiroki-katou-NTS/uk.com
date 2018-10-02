@@ -43,6 +43,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimitRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -61,12 +62,15 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpRegularLaborT
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplaceNew.WkpTransLaborTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
@@ -143,6 +147,8 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	ActualLockRepository getActualLock();
 	/** 締め状態管理 */
 	ClosureStatusManagementRepository getClosureStatusMng();
+	/** 雇用に紐づく就業締めの取得 */
+	ClosureEmploymentRepository getClosureEmployment();
 
 	/** 日の法定労働時間の取得 */
 	DailyStatutoryWorkingHours getDailyStatutoryWorkingHours();
@@ -199,6 +205,7 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	/** フレックス不足の年休補填管理 */
 	InsufficientFlexHolidayMntRepository getInsufficientFlex();
 	/** フレックス不足の繰越上限管理 */
+	FlexShortageLimitRepository getFlexShortageLimit();
 	/** 残業・振替の処理順序を取得する */
 	GetOverTimeAndTransferOrder getOverTimeAndTransferOrder();
 	/** 休出・振替の処理順序を取得する */
@@ -227,6 +234,10 @@ public interface RepositoriesRequiredByMonthlyAggr {
 	RetentionYearlySettingRepository getRetentionYearlySet();
 	/** 雇用積立年休設定 */
 	EmploymentSettingRepository getEmploymentSet();
+	/** 振休管理設定 */
+	ComSubstVacationRepository getSubstVacationMng();
+	/** 代休管理設定 */
+	CompensLeaveComSetRepository getCompensLeaveMng();
 
 	/** 週開始の取得 */
 	GetWeekStart getWeekStart();

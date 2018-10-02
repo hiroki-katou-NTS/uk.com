@@ -13,7 +13,7 @@ module CPS009Constraint {
             constraint: any = {
                 itemName: data.itemName,
                 itemCode: data.itemCode,
-                required: data.isRequired// !!x.isRequired
+                required: !!data.isRequired// !!x.isRequired
             },
             constraints: any,
             itemSpecial: Array<string> = [];
@@ -27,7 +27,7 @@ module CPS009Constraint {
                 case ITEM_SINGLE_TYPE.STRING:
                     constraint.valueType = "String";
                     constraint.maxLength = dts.stringItemLength || undefined;
-                    constraint.stringExpression = '';
+                     constraint.stringExpression = /(?:)/;
                     switch (dts.stringItemType) {
                         default:
                         case ITEM_STRING_TYPE.ANY:

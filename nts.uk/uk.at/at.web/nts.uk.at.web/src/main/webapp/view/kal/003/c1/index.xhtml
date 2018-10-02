@@ -11,7 +11,7 @@
 			<script>
 				var dialogSize = {
 					width : 1030,
-					height : 300
+					height : 315
 				};
 			</script>
 			<com:ValidatorScript>
@@ -71,16 +71,22 @@
 						bind="currentAtdItemCondition.conditionType() == 0 || currentAtdItemCondition.conditionType() == 1">
 						<div id="compareOperator-cbb"
 							data-bind="ntsComboBox: {
-							options: enumCompareOperator,
+							options: function(){
+                                 if(currentAtdItemCondition.conditionType() == 0){
+                                     return enumlistCompareTypes;
+                                 } else {
+                                     return enumSingleValueCompareTypes;
+                                 }
+                            }(),
 							optionsValue: 'code',
 							value: currentAtdItemCondition.compareOperator,
 							optionsText: 'name',
 							enable: true,
-							width: '265px',
-							visibleItemsCount: 6,
+							width : 280,
+							visibleItemsCount: 4,
 							dropDownAttachedToBody: true,
 							columns: [
-								{ prop: 'name', length: 10 },
+								{ prop: 'name', length: 18 },
 							],
 						dropDownAttachedToBody: true}"></div>
 					</com:ko-if>
@@ -104,7 +110,7 @@
 						<input id="display-compare-item"
 							class="display-list-label need-check"
 							data-bind="ntsTextEditor: {
-					 					name: '#[KAL003_40]', 
+					 					name: '#[KAL003_43]', 
 									 	value: displayCompareAtdItems, 
 									 	readonly: true, 
 									 	required: currentAtdItemCondition.conditionType() == 1
@@ -113,14 +119,14 @@
 					<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
 						<div style = "margin-right: 20px; margin-top: 7px">#{i18n.getText('KAL003_44')}</div>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 0">
-							<input id="startValue" style = "margin-right: 5px" class="value-input needcheck"
+							<input id="startValue" style = "margin-right: 5px; width : 100px ! important" class="value-input needcheck"
 								data-bind="ntsNumberEditor: {
 						 				name: '#[KAL003_44]', 
 						 				value: currentAtdItemCondition.compareStartValue, 
 						 				required: true, 
 						 				constraint: 'CheckedTimesValue',
 										option: {decimallength: 0}}" />
-							<input id="endValue" class="value-input needcheck"
+							<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 								data-bind="ntsNumberEditor: {
 				 						name: '#[KAL003_44]', 
 				 						value: currentAtdItemCondition.compareEndValue,
@@ -131,13 +137,18 @@
 									}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 3">
-							<input id="startValue" style = "margin-right: 5px" class="value-input needcheck"
+							<input id="startValue" style = "margin-right: 5px"  class="value-input needcheck"
 								data-bind="ntsNumberEditor: {
 						 				name: '#[KAL003_44]', 
 						 				value: currentAtdItemCondition.compareStartValue, 
 						 				required: true, 
 						 				constraint: 'CheckedAmountValue',
-										option: {decimallength: 0}}" />
+						 				option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: '', 
+                											width : '100'
+            												})}" />
 							<input id="endValue" class="value-input needcheck"
 								data-bind="ntsNumberEditor: {
 				 						name: '#[KAL003_44]', 
@@ -145,12 +156,17 @@
 										enable: currentAtdItemCondition.compareOperator() > 5,
 										required: currentAtdItemCondition.conditionType() == 0,
 										constraint: 'CheckedAmountValue',
-										option: {decimallength: 0}
+										option: new nts.uk.ui.option.NumberEditorOption({
+                											grouplength: 3,
+                											decimallength: 0,
+                											placeholder: '', 
+                											width : '100'
+            												})
 										
 									}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 4">
-							<input id="startValue" style = "margin-right: 5px" class="value-input needcheck"
+							<input id="startValue" style = "margin-right: 5px width : 100px ! important" class="value-input needcheck"
 								data-bind="ntsNumberEditor: {
 						 				name: '#[KAL003_44]', 
 						 				value: currentAtdItemCondition.compareStartValue, 
@@ -158,7 +174,7 @@
 						 				constraint: 'CheckedTimesValueDay',
 						 				option: {decimallength: 1}
 						 				}" />
-							<input id="endValue" class="value-input needcheck"
+							<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 								data-bind="ntsNumberEditor: {
 				 						name: '#[KAL003_44]', 
 				 						value: currentAtdItemCondition.compareEndValue,
@@ -169,7 +185,7 @@
 									}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 1">
-							<input id="startValue" style = "margin-right: 5px" class="value-input needcheck"
+							<input id="startValue" style = "margin-right: 5px ; width : 100px ! important" class="value-input needcheck"
 								data-bind="ntsTimeEditor: {
 						 				value: currentAtdItemCondition.compareStartValue,
 						 				name: '#[KAL003_44]',
@@ -179,7 +195,7 @@
 						 				required: currentAtdItemCondition.conditionType() == 0,
 										option: {decimallength: 0}
 				 					}" />
-							<input id="endValue" class="value-input needcheck"
+							<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 								data-bind="ntsTimeEditor: {value: currentAtdItemCondition.compareEndValue, 
 																			 	enable: currentAtdItemCondition.compareOperator() > 5, 
 																			 	name: '#[KAL003_44]', 
@@ -190,14 +206,14 @@
 										option: {decimallength: 0}}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 2">
-							<input id="startValue" style = "margin-right: 5px" class="value-input needcheck"
+							<input id="startValue" style = "margin-right: 5px; width : 100px ! important" class="value-input needcheck"
 								data-bind="ntsTimeWithDayEditor: { 
 						 		name: '#[KAL003_44]', 
 						 		constraint:'TimeWithDayAttr', 
 								value: currentAtdItemCondition.compareStartValue, 
 								required: currentAtdItemCondition.conditionType() == 0,
 										option: {decimallength: 0} }" />
-							<input id="endValue" class="value-input needcheck"
+							<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 								data-bind="ntsTimeWithDayEditor: { 
 						 		name: '#[KAL003_44]', 
 						 		constraint:'TimeWithDayAttr', 

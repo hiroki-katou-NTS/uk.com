@@ -96,7 +96,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 				return Optional.of(new DateHistoryItem(entity.hisId, new DatePeriod(entity.strDate, entity.endDate)));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return Optional.empty();
 	}

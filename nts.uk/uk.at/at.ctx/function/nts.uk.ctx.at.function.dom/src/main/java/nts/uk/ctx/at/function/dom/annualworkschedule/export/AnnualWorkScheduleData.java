@@ -385,7 +385,7 @@ public class AnnualWorkScheduleData {
 	}
 
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemOutTblBook itemOut,
-			List<MonthlyAttendanceResultImport> monthlyAttendanceResult, YearMonth startYm, int numMonth) {
+			List<MonthlyAttendanceResultImport> monthlyAttendanceResult, YearMonth startYm) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
 				.collect(Collectors.toMap(CalcFormulaItem::getAttendanceItemId, CalcFormulaItem::getOperation));
 
@@ -393,7 +393,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(monthlyAttendanceResult.size());
+		annualWorkScheduleData.calcNumMonthFromAttendance(monthlyAttendanceResult);
 		annualWorkScheduleData.setAgreementTime(false);
 		monthlyAttendanceResult.forEach(m -> {
 			annualWorkScheduleData.setMonthlyData(
@@ -429,13 +429,13 @@ public class AnnualWorkScheduleData {
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
 			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
 			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
-			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, int numMonth, Integer monthsExceeded,
+			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
 			Integer monthLimit) {
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.setNumMonth(listAgreementTimeBymonth.size());
+		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
 		annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 		annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
 		annualWorkScheduleData.setAgreementTime(true);
@@ -467,6 +467,16 @@ public class AnnualWorkScheduleData {
 			periodIndex = periodIndex + 1;
 		}
 		return annualWorkScheduleData;
+	}
+	
+	private void calcNumMonthFromAttendance(List<MonthlyAttendanceResultImport> listMonthlyAttendance) {
+		this.numMonth = listMonthlyAttendance.stream().map(x -> x.getYearMonth().v()).distinct()
+				.collect(Collectors.toList()).size();
+	}
+
+	private void calcNumMonthFromAgreement(List<AgreementTimeByPeriodImport> listAgreementTime) {
+		this.numMonth = listAgreementTime.stream().map(x -> x.getStartMonth().v()).distinct()
+				.collect(Collectors.toList()).size();
 	}
 
 	public boolean hasItemData() {

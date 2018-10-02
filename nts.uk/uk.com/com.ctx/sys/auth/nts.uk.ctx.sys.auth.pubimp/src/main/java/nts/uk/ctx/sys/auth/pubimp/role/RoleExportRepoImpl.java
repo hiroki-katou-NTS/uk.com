@@ -74,9 +74,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	 */
 	@Override
 	// ロールIDから参�可能な職場リストを取得す�
-	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType) {
+	public WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType, GeneralDate baseDate) {
 
-		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType);
+		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceId(systemType, baseDate);
 
 		WorkplaceIdExport workplaceIdExport = new WorkplaceIdExport();
 		workplaceIdExport.setIsAllEmp(workplaceIdDto.getIsAllEmp());
@@ -227,6 +227,21 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		return Optional
 				.of(new RoleExport(role.getCompanyId(), role.getRoleId(), role.getRoleCode().v(),
 						role.getName().v(), role.getAssignAtr().value));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.pub.role.RoleExportRepo#getCurrentLoginerRole()
+	 */
+	@Override
+	public RoleWhetherLoginPubExport getCurrentLoginerRole() {
+		RoleWhetherLoginDto data = app.getWhetherLoginerCharge();
+		RoleWhetherLoginPubExport exData = new RoleWhetherLoginPubExport(
+				data.isEmployeeCharge(),
+				data.isSalaryProfessional(),
+				data.isHumanResOfficer(),
+				data.isOfficeHelperPersonne(),
+				data.isPersonalInformation());
+		return exData;
 	}
 
 }

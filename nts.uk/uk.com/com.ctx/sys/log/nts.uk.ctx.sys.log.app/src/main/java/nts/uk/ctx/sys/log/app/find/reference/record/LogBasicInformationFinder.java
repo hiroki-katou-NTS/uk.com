@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
@@ -77,6 +76,7 @@ public class LogBasicInformationFinder {
 
 	public List<LogBasicInfoDto> findByOperatorsAndDate(LogParams logParams) {
 		List<LogBasicInfoDto> lstLogBacsicInfo = new ArrayList<>();
+		Map<String, String> mapEmployeeCodes;
 		// get login info
 		LoginUserContext loginUserContext = AppContexts.user();
 		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());
@@ -85,7 +85,7 @@ public class LogBasicInformationFinder {
 		/* DatePeriod datePeriodOperator = new DatePeriod(logParams.getStartDateOperator(),
 		logParams.getEndDateOperator());*/
 		DatePeriod datePeriodTaget = new DatePeriod(logParams.getStartDateTaget(), logParams.getEndDateTaget());
-		List<LogBasicInformation> lstLogBasicInformation=new ArrayList<>();
+		List<LogBasicInformation> lstLogBasicInformation = new ArrayList<>();
 		if(recordTypeEnum.code != RecordTypeEnum.START_UP.code){
 		 lstLogBasicInformation = this.logBasicInfoRepository.findByOperatorsAndDate(cid,
 					logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
@@ -103,15 +103,15 @@ public class LogBasicInformationFinder {
 				}
 				return x.getOperationId();
 			}).collect(Collectors.toList());
-			// Get list employee code
-			Map<String, String> mapEmployeeCodes = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeeIds);
-			
-			
+
 			switch (recordTypeEnum) {
 			case LOGIN:
 					// Set data of login record
 					List<LoginRecord> loginRecords = this.loginRecordRepository.logRecordInfor(operationIds);
 					if(!CollectionUtil.isEmpty(loginRecords)){
+						// Get list employeeCode operator by list information operator
+						mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,loginRecords,null,null,null);
+						
 						for (LoginRecord loginRecord : loginRecords) {
 							// Convert log basic info to DTO
 							LogBasicInformation logBasicInformation = mapLogBasicInfo.get(loginRecord.getOperationId());
@@ -178,6 +178,10 @@ public class LogBasicInformationFinder {
 				// Get persion info log
 				List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
 						.findByTargetAndDate(operationIds,logParams.getListTagetEmployeeId(), datePeriodTaget);
+				
+				// Get list employeeCode operator by list information operator
+				mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,null,listPersonInfoCorrectionLog,null,null);
+				
 				// Get Map Order list
 				List<String> itemDefinitionIds = new ArrayList<>();
 				List<String> categoryIds = new ArrayList<>();
@@ -260,6 +264,9 @@ public class LogBasicInformationFinder {
 					List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(
 							operationIds, logParams.getListTagetEmployeeId(), datePeriodTaget,targetDataType);
 					if (!CollectionUtil.isEmpty(lstDataCorectLog)) {
+						// Get list employeeCode operator by list information operator
+						mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo,null,null,lstDataCorectLog,null);
+						
 						// convert list data corect log to DTO
 						List<LogDataCorrectRecordRefeDto> lstLogDataCorecRecordRefeDto = new ArrayList<>();
 						for (DataCorrectionLog dataCorrectionLog : lstDataCorectLog) {
@@ -309,7 +316,7 @@ public class LogBasicInformationFinder {
 			if(recordTypeEnum.code == RecordTypeEnum.START_UP.code){
 				Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
 				// get start page log
-				List<StartPageLog> startPageLogs=this.startPageLogRepository.findBy(cid,
+				List<StartPageLog> startPageLogs = this.startPageLogRepository.findBy(cid,
 						logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
 						logParams.getEndDateOperator());
 				if (!CollectionUtil.isEmpty(startPageLogs)) {
@@ -323,7 +330,7 @@ public class LogBasicInformationFinder {
 						}
 					}
 					// Get list employee code
-					Map<String, String> mapEmployeeCodes = personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeeIds);
+					mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,null,null,null,null,startPageLogs);
 					for (StartPageLog startPageLog : startPageLogs) {
 						
 						// Convert log basic info to DTO
@@ -333,20 +340,24 @@ public class LogBasicInformationFinder {
 						UserInfo userDto = logBasicInformation.getUserInfo();
 						
 						// convert log basic info to DTO
-						String programName = "";
-						if (startPageLog.getStartPageBeforeInfo().isPresent()) {
+					//	String programName = "";
+						/*if (startPageLog.getStartPageBeforeInfo().isPresent()) {
 							ScreenIdentifier screenIdentifier = startPageLog.getStartPageBeforeInfo().get();
 							String key = screenIdentifier.getProgramId() + screenIdentifier.getScreenId()
 									+ screenIdentifier.getQueryString();
 							programName = mapProgramNames.get(key);
-						}
+						}*/
+						String key = logBasicInformation.getTargetProgram().getProgramId()
+								+ logBasicInformation.getTargetProgram().getScreenId()
+								+ logBasicInformation.getTargetProgram().getQueryString();
+						logBasicInfoDto.setMenuName(mapProgramNames.get(key));
 						// Get employee code user login
 						if (userDto != null) {
 							logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()));
 						}
 						// get user login name
 						logBasicInfoDto.setUserNameLogin(userDto.getUserName());
-						logBasicInfoDto.setMenuName(programName);
+					//	logBasicInfoDto.setMenuName(programName);
 						logBasicInfoDto.setNote(
 								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
 						// add to list
@@ -395,6 +406,46 @@ public class LogBasicInformationFinder {
 		return lstHeader;
 	}
 	
-
+	public Map<String, String> getEmployeeCodes(RecordTypeEnum recordTypeEnum,Map<String, LogBasicInformation> mapLogBasicInfo,
+			List<LoginRecord> loginRecords, List<PersonInfoCorrectionLog> persionLogs, List<DataCorrectionLog> dataCorectLogs,
+			List<StartPageLog> startPageLogs){
+		List<String> employeeIds = new ArrayList<>();
+		switch (recordTypeEnum) {
+		case LOGIN:
+			for (LoginRecord loginRecord : loginRecords) {
+				if(mapLogBasicInfo.containsKey(loginRecord.getOperationId())){
+					employeeIds.add(mapLogBasicInfo.get(loginRecord.getOperationId()).getUserInfo().getEmployeeId()) ;
+				}
+			}
+			break;
+		case START_UP:
+			for (StartPageLog startPageLog : startPageLogs) {
+				if (startPageLog.getBasicInfo() != null) {
+					employeeIds.add(startPageLog.getBasicInfo().getUserInfo().getEmployeeId());
+				}
+			}
+			break;
+		case UPDATE_PERSION_INFO:
+			for (PersonInfoCorrectionLog persionlog : persionLogs) {
+				if(mapLogBasicInfo.containsKey(persionlog.getOperationId())){
+					employeeIds.add(mapLogBasicInfo.get(persionlog.getOperationId()).getUserInfo().getEmployeeId()) ;
+				}
+			}
+			break;
+		case DATA_CORRECT:
+			for (DataCorrectionLog dataCorrectionLog : dataCorectLogs) {
+				if(mapLogBasicInfo.containsKey(dataCorrectionLog.getOperationId())){
+					employeeIds.add(mapLogBasicInfo.get(dataCorrectionLog.getOperationId()).getUserInfo().getEmployeeId()) ;
+				}
+			}
+			break;
+			
+		default:
+			break;
+		}
+		
+		// Get list employee code by list id
+		return personEmpBasicInfoAdapter.getEmployeeCodesByEmpIds(employeeIds);
+	}
 
 }

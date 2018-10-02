@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.app.command.holidaysremaining.UpdateHdRemainManage
 import nts.uk.ctx.at.function.app.find.holidaysremaining.DateHolidayRemainingDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
-import nts.uk.ctx.at.function.app.find.holidaysremaining.PermissionOfEmploymentFormDto;
+import nts.uk.ctx.at.function.app.find.holidaysremaining.RoleWhetherLoginDto;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.VariousVacationControlDto;
 import nts.uk.ctx.at.function.dom.holidaysremaining.BreakSelection;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -80,9 +80,9 @@ public class HolidaysRemainingWebService extends WebService {
 	}
 
 	@POST
-	@Path("getPermissionOfEmploymentForm")
-	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
-		return this.hdRemainManageFinder.getPermissionOfEmploymentForm();
+	@Path("getCurrentLoginerRole")
+	public RoleWhetherLoginDto getCurrentLoginerRole() {
+		return this.hdRemainManageFinder.getCurrentLoginerRole();
 	}
 
 	@POST

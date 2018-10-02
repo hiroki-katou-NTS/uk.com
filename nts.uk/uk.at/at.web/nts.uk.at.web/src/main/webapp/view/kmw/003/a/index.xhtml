@@ -34,6 +34,30 @@
 					nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode
 					nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
 					nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+					nts.uk.ctx.at.record.dom.monthly.remarks.RecordRemarks
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+					nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus
+					nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth
+					nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth
+					nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes
+					nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes
+					nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
+					nts.uk.ctx.at.shared.dom.common.days.YearlyDays
+					nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
+					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.DayNumberOfGrant
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse
+					nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse
+					
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -54,7 +78,8 @@
 					<!--A1_5 表示項目の選択ボタン--> 
 					<button data-bind="{click: displayItem, visible:showButton().enable_A1_5'">#{i18n.getText('KMW003_6')}</button>
 					<!--  対象外 --> 
-					<!--A1_6 修正履歴ボタン-->					
+					<!--A1_6 修正履歴ボタン-->
+					<button data-bind="click: openCDL027">#{i18n.getText('KMW003_7')}</button>					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
 					<!-- class = "visibility: hidden" -->
