@@ -2125,7 +2125,7 @@ public class ProgramsManager {
 			"/view/kdp/003/c/index.xhtml");
 
 	/**
-	* QMM005
+	* QMM005 
 	*/
 	 public static final Program QMM005A = new Program(WebAppId.PR, ProgramIdConsts.QMM005A, "QMM005_1",
 	 "view/qmm/005/a/index.xhtml");
