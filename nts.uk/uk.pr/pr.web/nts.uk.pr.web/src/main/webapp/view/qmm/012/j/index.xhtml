@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/sidebarpage.xhtml">
+		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.EnglishName
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.OtherLanguageName
+            </com:ValidatorScript>
+			<script type='text/javascript'>
+	            var dialogSize = {
+	                width: 950,
+	                height: 628
+	            };
+	        </script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="qmm012.j.style.css" />
+			<com:scriptfile path="qmm012.j.service.js" />
+			<com:scriptfile path="qmm012.j.vm.js" />
+			<com:scriptfile path="qmm012.j.start.js" />
+		</ui:define>
+		<!-- J1_1 -->
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<!-- J1_2 -->
+				<li data-bind="click: onSelectTabB"><a href="#tabpanel-1"
+					role="tab-navigator">#{i18n.getText('QMM012_3')}</a></li>
+				<!-- J1_3 -->
+				<li data-bind="click: onSelectTabC"><a href="#tabpanel-2"
+					role="tab-navigator">#{i18n.getText('QMM012_4')}</a></li>
+				<!-- J1_4 -->
+				<li data-bind="click: onSelectTabD"><a href="#tabpanel-3"
+					role="tab-navigator">#{i18n.getText('QMM012_5')}</a></li>
+				<!-- J1_5 -->
+				<li data-bind="click: onSelectTabE"><a href="#tabpanel-4"
+					role="tab-navigator">#{i18n.getText('QMM012_6')}</a></li>
+				<!-- J1_6 -->
+				<li data-bind="click: onSelectTabF"><a href="#tabpanel-5"
+					role="tab-navigator">#{i18n.getText('QMM012_7')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-1" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_3')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_4')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_5')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-4" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_6')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<div id="tabpanel-5" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('QMM012_7')}</span>
+					<!-- J2_1 -->
+					<button id="J2_1" tabindex="1" class="proceed"
+						data-bind="click: updateStatelmentItemName, enable: !isNewMode()"
+						style="margin-left: 120px;">#{i18n.getText('QMM012_21')}</button>
+					<!-- J2_2 -->
+					<button tabindex="2" data-bind="click: cancel"
+						style="margin-left: 15px;">#{i18n.getText('QMM012_115')}</button>
+				</div>
+			</div>
+			<ui:include src="../j/contents.xhtml" />
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

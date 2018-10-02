@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemCode
+                    nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemShortName
+            </com:ValidatorScript>
+			<script type='text/javascript'>
+            var dialogSize = {
+                width: 1000,
+                height: 600
+            };
+        </script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="qmm012.i.service.js" />
+			<com:scriptfile path="qmm012.i.start.js" />
+			<com:scriptfile path="qmm012.i.vm.js" />
+			<com:stylefile path="qmm012.i.style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- I1_1 -->
+				<button data-bind="click: createItemSet, enable: !isNewMode()"
+					tabindex="1">#{i18n.getText('QMM012_20')}</button>
+				<!-- I1_2 -->
+				<button data-bind="click: saveItemSet, enable: $root.errors.isEmpty"
+					tabindex="2" class="proceed">#{i18n.getText('QMM012_21')}</button>
+				<!-- I1_3 -->
+				<button data-bind="click: deleteItemSet, enable: !isNewMode()"
+					tabindex="3" class="danger" style="margin-left: 200px;">#{i18n.getText('QMM012_23')}</button>
+				<!-- I1_4 -->
+				<button data-bind="click: close" tabindex="4"
+					style="margin-left: 50px;">#{i18n.getText('QMM012_115')}</button>
+			</div>
+			<div id="contents-area" style="display: flex; margin-left: 20px;">
+				<div class="selectionItemSet" style="padding: 10px; width: 650px;">
+					<!-- I2_1 -->
+					<div class="panel"
+						data-bind="ntsPanel:{width: '420px', height: '450px', direction: 'right',  visible: true, showIcon: true}">
+						<div style="width: 100%">
+							<!-- I2_2 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_27')}</div>
+							<!-- I2_3 -->
+							<div class="label" style="margin-left: 20px; width: 100px;" data-bind="text: bindAtr"></div>
+						</div>
+						<div style="width: 100%; margin-top: 5px;">
+							<!-- I2_4 -->
+							<div style="float: left;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_29')}</div>
+							<!-- I2_5_6 -->
+							<div style="float: left;" tabindex="5"
+								data-bind="ntsSearchBox: {
+							searchMode: 'highlight', 
+							targetKey: 'breakdownItemCode', 
+							comId: 'I2_7', 
+							items: lstBreakdownItemSet, 
+							selected: currentBreakdownItemSet,  
+							selectedKey: 'breakdownItemCode', 
+							fields: ['breakdownItemCode','breakdownItemName'], 
+							name: '#[QMM012_29]',
+							mode: 'igGrid'}" />
+						</div>
+						<!-- I2_7 -->
+						<table id="I2_7"
+							data-bind="ntsGridList: {
+								name: '#[QMM012_118]',
+							    multiple: false,
+								options: lstBreakdownItemSet,
+								optionsValue: 'breakdownItemCode',
+								rows: 15,
+								columns: [
+										{ headerText: '#{i18n.getText('QMM012_32')}', key: 'breakdownItemCode', width: 90, formatter: _.escape },
+										{ headerText: '#{i18n.getText('QMM012_33')}', key: 'breakdownItemName', width: 310, formatter: _.escape }
+										], 
+								
+								value: currentCode
+					}"></table>
+					</div>
+				</div>
+				<div class="fixed-flex-layout-right padding-item"
+					style="width: 600px; margin-left: 20px;">
+					<div style="display: flex;">
+						<!-- I3_1 -->
+						<div style="margin-top: 20px;"
+							data-bind="ntsFormLabel: { constraint: ['BreakdownItemCode','ItemShortName'], required: true }">#{i18n.getText('QMM012_29')}</div>
+						<!-- I3_2 -->
+						<input id="breakdownItemCode"
+							style="margin-left: 20px; margin-top: 25px;"
+							data-bind="ntsTextEditor: {
+													option: {width: '30px'},
+													value: breakdownItemCode,
+													name:'#[QMM012_32]',
+													required: true,
+													constraint: 'BreakdownItemCode',
+													enable: !enableCode()
+												}"
+							tabindex="8" />
+						<!-- I3_3 -->
+						<input id="breakdownItemName"
+							style="margin-left: 10px; margin-top: 25px;"
+							data-bind="ntsTextEditor: {
+													option: {width: '120px'},
+													value: breakdownItemName,
+													name:'#[QMM012_33]',
+													required: true,
+													constraint: 'ItemShortName'
+												}"
+							tabindex="9" />
+					</div>
+
+					<!-- I3_4 -->
+					<div style="margin-top: 20px;"
+						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM012_27')}</div>
+					<!-- I3_5 -->
+					<div class="label" data-bind="text: bindAtr"
+						style="margin-left: 110px; width: 150px;"></div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

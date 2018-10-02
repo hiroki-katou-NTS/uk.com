@@ -1,0 +1,120 @@
+#functions-area {
+	width: 1200px;
+}
+
+#contents-area {
+	width: 1200px;
+	overflow-y: inherit !important;
+}
+
+.fixed-flex-layout-left {
+	padding: 10px;
+	float: left;
+	width: 460px;
+}
+
+.fixed-flex-layout-right {
+	width: 700px;
+	padding: 10px;
+	float: left;
+}
+
+.space1, .space2, .space3 {
+	display: inline-block;
+}
+
+.space2, #C1_13 .ntsRadioBox {
+	width: 230px;
+}
+
+.space3 {
+	margin-left: 24px;
+	width: 120px;
+}
+
+#B1_2 {
+	margin-right: 100px;
+}
+
+#B1_4 {
+	margin-right: 0px !important;
+}
+
+#B1_6 {
+	margin-right: 100px;
+}
+
+#B2_1 {
+	margin-right: 30px;
+}
+
+#B2_2 {
+	margin-right: 3px;
+}
+
+#B2_3 {
+	width: 150px;
+}
+
+#B2_7 input {
+	width: 128px;
+}
+
+#B3_1, #B3_4, #B3_6,
+#C1_1, #C1_4, #C1_8, #C1_12,
+#C2_1, #C2_5, #C2_10, #C2_17,
+#C3_1, #C3_4, #C3_10,
+#C4_1, #C4_7, #C4_9, #C5_1,
+#D1_1, #E1_1, #E1_5, #E1_9,
+.space1 {
+	width: 180px;
+}
+
+#C3_1 label, #C2_24 {
+	white-space: pre;
+    line-height: 25px;
+}
+
+#C2_24 {
+	width: 400px;
+    display: inline-block;
+}
+
+#B3_12 {
+	margin-left: 20px;
+}
+
+#C1_16 {
+	margin-left: 25px;
+	margin-right: 95px;
+	width: 110px;
+}
+
+#C2_9 {
+	margin-left: 30px;
+}
+
+#C3_11 {
+	height: 100px;
+}
+
+#C4_2 button {
+	white-space: normal;
+    line-height: 25px;
+	height: 75px;
+	width: 130px;
+	float: left;
+}
+
+#C4_2 button:first-child {
+	width: 80px;
+}
+
+#C4_2 button:nth-child(2) {
+	width: 120px;
+}
+
+#C4_10 .ntsRadioBox:first-child {
+	display: block;
+	margin-bottom: 10px;
+}

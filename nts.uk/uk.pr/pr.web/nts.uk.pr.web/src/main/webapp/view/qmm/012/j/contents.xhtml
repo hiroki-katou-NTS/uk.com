@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<div style="padding: 19px;">
+		<table id="fixed-table">
+			<colgroup>
+				<col width="30px" />
+				<col width="50px" />
+				<col width="200px" />
+				<col width="120px" />
+				<col width="190px" />
+				<col width="190px" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="ui-widget-header"></th>
+					<th class="ui-widget-header">#{i18n.getText('QMM012_32')}</th>
+					<th class="ui-widget-header">#{i18n.getText('QMM012_33')}</th>
+					<th class="ui-widget-header">#{i18n.getText('QMM012_35')}</th>
+					<th class="ui-widget-header">#{i18n.getText('QMM012_120')}</th>
+					<th class="ui-widget-header">#{i18n.getText('QMM012_121')}</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: lstCustomes">
+				<tr>
+					<td data-bind="text: $index() + 1 "></td>
+					<td><span class="label"
+						data-bind="text: itemNameCd, enable: false"></span></td>
+					<td><span class="label" data-bind="text: name, enable: false"></span></td>
+					<td><span class="label"
+						data-bind="text: shortName, enable: false"></span></td>
+					<td class="control-group valign-center">
+						<div class="cell">
+							<input class="validate_form"
+								data-bind="ntsTextEditor: {
+												constraint: 'EnglishName',
+												option: {width: '163px'},
+												value: englishName,
+												enable: true}" />
+						</div>
+					</td>
+					<td class="control-group valign-center">
+						<div class="cell">
+							<input class="validate_form"
+								data-bind="ntsTextEditor: {
+												constraint: 'OtherLanguageName',
+												option: {width: '163px'},
+												value: otherLanguageName,
+												enable: true}" />
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+</ui:composition>

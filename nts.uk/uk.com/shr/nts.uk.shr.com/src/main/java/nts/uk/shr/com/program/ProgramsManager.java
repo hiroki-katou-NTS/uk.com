@@ -1751,6 +1751,20 @@ public class ProgramsManager {
 	/** KAF011C */
 	public static final Program KAF011C = new Program(WebAppId.AT, ProgramIdConsts.KAF011C, "KAF011_62",
 			"/view/kaf/011/c/index.xhtml");
+	
+	public static final Program QMM012A = new Program(WebAppId.PR, ProgramIdConsts.QMM012A, "QMM012_1",
+			"/view/qmm/012/a/index.xhtml");
+	public static final Program QMM012B = new Program(WebAppId.PR, ProgramIdConsts.QMM012B, "QMM012_2",
+			"/view/qmm/012/b/index.xhtml");
+	public static final Program QMM012H = new Program(WebAppId.PR, ProgramIdConsts.QMM012H, "QMM012_8",
+			"/view/qmm/012/h/index.xhtml");
+	public static final Program QMM012I = new Program(WebAppId.PR, ProgramIdConsts.QMM012I, "QMM012_9",
+			"/view/qmm/012/i/index.xhtml");
+	public static final Program QMM012J = new Program(WebAppId.PR, ProgramIdConsts.QMM012J, "QMM012_10",
+			"/view/qmm/012/j/index.xhtml");
+	public static final Program QMM012K = new Program(WebAppId.PR, ProgramIdConsts.QMM012K, "QMM012_11",
+			"/view/qmm/012/k/index.xhtml");
+	
 	// TODO: Define new programs here.
 	/**
 	 * CMM051A
