@@ -45,17 +45,16 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
  */
 @Getter
 public class SchedulePerformance {
+	//勤務情報
 	private WorkInformation workInformation;
+	//日別実績の予定時間
 	private WorkScheduleTimeOfDaily actualTime;
-	//private  出退勤
 	
 	public static IntegrationOfDaily createScheduleTimeSheet(IntegrationOfDaily integrationOfDaily) {
 		/*勤務予定を日別実績に変換*/
 		val changedShedule = convertScheduleToRecord(integrationOfDaily);
 		/*計算区分を変更*/
 		val changedCalcAtr = changeCalcAtr(changedShedule);
-		/*休憩情報を変更*/
-		//changeBreakSet(fixRestSetting ,flowWorkRestSetting);
 		return changedCalcAtr;
 	}
 	

@@ -14,6 +14,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDail
 @AllArgsConstructor
 @Getter
 public class ManageProcessAndCalcStateResult {
+		//中断ステータス
 		ProcessState ps;
+		//計算ステータス&実績
 		List<ManageCalcStateAndResult> lst;
 }

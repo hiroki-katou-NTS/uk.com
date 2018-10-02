@@ -66,6 +66,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements LateLeaveEarlyManagementTimeFrame {
 
+	//就業時間枠No
 	private final EmTimeFrameNo workingHoursTimeNo;
 	
 	//遅刻時間帯・・・deductByLateLeaveEarlyを呼ぶまでは値が無い

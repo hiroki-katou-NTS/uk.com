@@ -131,7 +131,12 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
 		GrantTime grantTime = speHoliday.getGrantRegular().getGrantTime();
+		//取得している「特別休暇．付与情報．固定付与日．周期」
 		int interval = grantTime.getFixGrantDate().getInterval().v();
+		//取得している「特別休暇．付与情報．固定付与日．周期」をチェックする
+		if(interval == 0) {
+			return null;
+		}
 		GeneralDate nextTime = grantDate;
 		double grantDays = 0;
 		//　◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合

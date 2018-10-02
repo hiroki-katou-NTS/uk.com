@@ -27,6 +27,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 
 	//sheet id
+	//加給時間項目No
 	private RaisingSalaryTimeItemNo raiseSalaryTimeItemNo;
 	
 	/**

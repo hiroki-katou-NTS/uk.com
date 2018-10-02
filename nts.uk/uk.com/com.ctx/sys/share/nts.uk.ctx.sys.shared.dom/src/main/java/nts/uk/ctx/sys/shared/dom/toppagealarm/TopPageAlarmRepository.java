@@ -28,7 +28,7 @@ public interface TopPageAlarmRepository {
 	
 	void updateRoger(String executionLogId, int rogerFlag);
 	
-	void insertTopPage(String executionLogId, String managerId);
+	void insertTopPage(String executionLogId, String managerId, int executionContent, int isCancelled);
 	
 	void insertDetail(TopPageAlarmDetail domain);
 	

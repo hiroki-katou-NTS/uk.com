@@ -28,8 +28,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @AllArgsConstructor
 public class DeductionTotalTimeForFluidCalc {
-
+	//合計時間
 	private AttendanceTime totalTime;
+	//外出相殺残時間
 	private AttendanceTime goOutTimeOffsetRemainingTime;
 	
 	
