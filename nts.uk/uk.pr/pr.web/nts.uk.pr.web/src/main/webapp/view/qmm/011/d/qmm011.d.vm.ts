@@ -62,9 +62,13 @@ module nts.uk.com.view.qmm011.d.viewmodel {
                 if (res)
                     dialog.alertError(res);
             }).always(() => {
-                $('#D2_3').focus();
                 block.clear();
             });
+            if (!self.businessType1().toUse()){
+                $('#D2_25').focus();
+            } else {
+                $('#D2_3').focus();
+            }
         }
 
         update(){

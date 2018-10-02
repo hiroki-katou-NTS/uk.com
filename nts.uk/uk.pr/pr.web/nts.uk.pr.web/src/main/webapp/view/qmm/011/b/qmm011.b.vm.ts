@@ -40,26 +40,28 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
 
 
         // 初期データ取得処理
-        initScreen(hisId: string) {
+        initScreen(hisId: string) :JQueryPromise<any>{
             let self = this;
             block.invisible();
-            service.getEmpInsHis().done((listEmpInsHis: Array<IEmplInsurHis>) => {
-                if (listEmpInsHis && listEmpInsHis.length > 0) {
-                    self.listEmpInsHis(EmplInsurHis.convertToDisplayHis(listEmpInsHis));
-                    self.index(0);
-                    if (hisId != null) {
-                        self.index(self.getIndex(hisId));
+            $.when(
+                service.getEmpInsHis())
+                .done((listEmpInsHis: Array<IEmplInsurHis>) => {
+                    if (listEmpInsHis && listEmpInsHis.length > 0) {
+                        self.listEmpInsHis(EmplInsurHis.convertToDisplayHis(listEmpInsHis));
+                        self.index(0);
+                        if (hisId != null) {
+                            self.index(self.getIndex(hisId));
+                        }
+                        self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
+                        self.selectedEmpInsHis(self.listEmpInsHis()[self.index()]);
+                        self.setEmplInsurHis(self.selectedEmpInsHis());
+
+                    } else {
+                        self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                     }
-                    self.selectedEmpInsHisId(self.listEmpInsHis()[self.index()].hisId);
-                    self.selectedEmpInsHis(self.listEmpInsHis()[self.index()]);
-                    self.setEmplInsurHis(self.selectedEmpInsHis());
-                    
-                } else {
-                    self.listEmpInsurPreRate(self.addEmpInsurPreRate());
-                }
-            }).always(() => {
-                block.clear();
-            });
+                }).always(() => {
+                    block.clear();
+                });
         }
         
         getEmpInsurPreRate() {

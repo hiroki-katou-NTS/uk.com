@@ -36,7 +36,7 @@
             <tbody>
               <tr data-bind = "with: businessType1">
                   <td><span id="D2_2">#{i18n.getText('QMM011_21')}</span></td>
-                  <td><div id="D2_25" data-bind="ntsCheckBox: { checked: $parent.hasChecked(toUse,'#D2_3')}"></div></td>
+                  <td><div id="D2_25" tabIndex="2" data-bind="ntsCheckBox: { checked: $parent.hasChecked(toUse,'#D2_3')}"></div></td>
                   <td><input id="D2_3" data-bind="ntsTextEditor: {value: name,
                                                         enable:toUse,option : {textalign: 'left'},
                                                         constraint: 'OccAccInsurBusinessName',
