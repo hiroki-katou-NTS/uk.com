@@ -9,7 +9,7 @@
 		
         <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
-            	<script>var dialogSize = { width: 1200, height: 600 };</script>
+            	<script>var dialogSize = { width: 1100, height: 600 };</script>
 				<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 					nts.arc.time.YearMonth
@@ -25,7 +25,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div style="margin-bottom: 15px;margin-left: 5px;">
+				<div style="margin-bottom: 15px;margin-left: 60px;">
 					<button class="proceed" id="F1_1" tabindex="1"
 						data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 					<button id="F1_2" tabindex="2" data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
@@ -33,7 +33,7 @@
 					<button id="F1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
 				</div>
 			</div>
-			<div id="contents-area" style="margin-left: 15px;">
+			<div id="contents-area" style="margin-left: 70px;">
 				<div>
 					<div id="F2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
 					<span style="margin-bottom: 15px;" id="F2_2"
@@ -47,66 +47,66 @@
 						style="margin-bottom: 15px;" id="F2_7"
 						data-bind="text: displayEnd"></span>
 				</div>
-
-				<table id="fixed-table">
-					<colgroup>
-						<col width="30px" />
-						<col width="60px" />
-						<col width="70px" />
-						<col width="70px" />
-						<col width="90px" />
-						<col width="90px" />
-						<col width="90px" />
-						<col width="90px" />
-						<col width="90px" />
-						<col width="90px" />
-						<col width="90px" />
-						<col width="90px" />
-					</colgroup>
-					<thead>
+				<div data-bind="if: !display()">
+					<table id="fixed-table1" >
+						<colgroup>
+							<col width="30px" />
+							<col width="60px" />
+							<col width="70px" />
+							<col width="70px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+						</colgroup>
+						<thead>
 						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								rowspan="4" id="F3_2">#{i18n.getText('QMM008_145')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								rowspan="4" id="F3_3">#{i18n.getText('QMM008_146')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								colspan="2" rowspan="2" id="E3_4">#{i18n.getText('QMM008_147')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								colspan="4" id="F3_7">#{i18n.getText('QMM008_7')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								colspan="4" id="F3_23" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_165')}</th>
 						</tr>
 						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								colspan="2" id="F3_8">#{i18n.getText('QMM008_151')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								colspan="2" id="F3_9">#{i18n.getText('QMM008_152')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								colspan="2" id="F3_24" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_151')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
+								colspan="2" id="F3_24" data-bind="css: { hidden: display()  }">#{i18n.getText('QMM008_151')}</th>
+							<th class="td-widget" style="text-align: center;"
 								colspan="2" id="F3_25" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_152')}</th>
 
 						</tr>
 						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								rowspan="2" id="F3_5">#{i18n.getText('QMM008_148')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								rowspan="2" id="E3_6">#{i18n.getText('QMM008_149')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_10">#{i18n.getText('QMM008_180')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_11">#{i18n.getText('QMM008_181')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_13">#{i18n.getText('QMM008_180')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_14">#{i18n.getText('QMM008_181')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_26" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_180')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_27" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_181')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_29" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_180')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
+							<th class="td-widget" style="text-align: center;"
 								id="F3_30" data-bind="css: { hidden: display() }">#{i18n.getText('QMM008_181')}</th>
 						</tr>
 						<tr>
@@ -132,126 +132,260 @@
 								data-bind="text: header().femployeeExemptionRate, css: { hidden: display() }"></th>
 						</tr>
 
-					</thead>
-					<tbody data-bind="foreach: dataList">
+						</thead>
+						<tbody data-bind="foreach: dataList">
 						<tr>
 							<td class="td-widget"><span class="limited-label"
-								data-bind="text: welfarePensionGrade()"
-								style="text-align: right;"></span></td>
+														data-bind="text: welfarePensionGrade()"
+														style="text-align: right;"></span></td>
 							<td class="td-widget"><span class="limited-label"
-								data-bind="text: $parent.genNumber(standardMonthlyFee(),0)"
-								style="text-align: right;"></span></td>
+														data-bind="text: $parent.genNumber(standardMonthlyFee(),0)"
+														style="text-align: right;"></span></td>
 							<td class="td-widget"><span class="limited-label"
-								data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)"
-								style="text-align: right;"></span></td>
+														data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)"
+														style="text-align: right;"></span></td>
 							<td class="td-widget"><span class="limited-label"
-								data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)"
-								style="text-align: right;"></span></td>
+														data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)"
+														style="text-align: right;"></span></td>
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
 													name: '#[QMM008_167]',
- 													value: inMaleInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />	
-								
+ 													value: inMaleInsurancePremium,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
 							</td>
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
 													name: '#[QMM008_168]',
- 													value: emMaleInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-							
+ 													value: emMaleInsurancePremium,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
 							</td>
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
 													name: '#[QMM008_170]',
- 													value: inMaleExemptionInsurance, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-								
+ 													value: inMaleExemptionInsurance,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
 							</td>
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
 													name: '#[QMM008_171]',
- 													value: emMaleExemptionInsurance, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-								
+ 													value: emMaleExemptionInsurance,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
 							</td>
 							<td data-bind="css: { hidden: $parent.display() }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
 													name: '#[QMM008_173]',
- 													value: inFemaleInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />	
-									
+ 													value: inFemaleInsurancePremium,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
 							</td>
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
 													name: '#[QMM008_174]',
- 													value: emFemaleInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />	
-								</td>
-							<td data-bind="css: { hidden: $parent.display()  }">
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '69px',
-														decimallength: 0,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_176]',
- 													value: inFemaleExemptionInsurance, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-							
+ 													value: emFemaleInsurancePremium,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
 							</td>
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '69px',
+ 														width: '71px',
 														decimallength: 0,
 														grouplength: 3
-													}, 
+													},
+													name: '#[QMM008_176]',
+ 													value: inFemaleExemptionInsurance,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
+							</td>
+							<td data-bind="css: { hidden: $parent.display()  }">
+								<input data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '71px',
+														decimallength: 0,
+														grouplength: 3
+													},
 													name: '#[QMM008_177]',
- 													value: emFemaleExemptionInsurance, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />			
+ 													value: emFemaleExemptionInsurance,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
 							</td>
 						</tr>
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				</div>
+
+
+				<div data-bind="if: display()">
+					<table id="fixed-table"  >
+						<colgroup>
+							<col width="30px" />
+							<col width="60px" />
+							<col width="70px" />
+							<col width="70px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+
+						</colgroup>
+						<thead>
+						<tr>
+							<th class="ui-widget-header" style="text-align: center;"
+								rowspan="4" id="F3_2">#{i18n.getText('QMM008_145')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								rowspan="4" id="F3_3">#{i18n.getText('QMM008_146')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								colspan="2" rowspan="2" id="E3_4">#{i18n.getText('QMM008_147')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								colspan="4" id="F3_7">#{i18n.getText('QMM008_7')}</th>
+
+						</tr>
+						<tr>
+							<th class="ui-widget-header" style="text-align: center;"
+								colspan="2" id="F3_8">#{i18n.getText('QMM008_151')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								colspan="2" id="F3_9">#{i18n.getText('QMM008_152')}</th>
+						</tr>
+						<tr>
+							<th class="ui-widget-header" style="text-align: center;"
+								rowspan="2" id="F3_5">#{i18n.getText('QMM008_148')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								rowspan="2" id="E3_6">#{i18n.getText('QMM008_149')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_10">#{i18n.getText('QMM008_180')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_11">#{i18n.getText('QMM008_181')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_13">#{i18n.getText('QMM008_180')}</th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_14">#{i18n.getText('QMM008_181')}</th>
+
+						</tr>
+						<tr>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_16" data-bind="text: header().mindividualBurdenRatio"></th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_17" data-bind="text: header().findividualBurdenRatio"></th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_19" data-bind="text: header().memployeeContributionRatio"></th>
+							<th class="ui-widget-header" style="text-align: center;"
+								id="F3_21" data-bind="text: header().femployeeContributionRatio"></th>
+
+						</tr>
+
+						</thead>
+						<tbody data-bind="foreach: dataList">
+						<tr>
+							<td class="td-widget"><span class="limited-label"
+														data-bind="text: welfarePensionGrade()"
+														style="text-align: right;"></span></td>
+							<td class="td-widget"><span class="limited-label"
+														data-bind="text: $parent.genNumber(standardMonthlyFee(),0)"
+														style="text-align: right;"></span></td>
+							<td class="td-widget"><span class="limited-label"
+														data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)"
+														style="text-align: right;"></span></td>
+							<td class="td-widget"><span class="limited-label"
+														data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)"
+														style="text-align: right;"></span></td>
+							<td>
+								<input data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '131px',
+														decimallength: 0,
+														grouplength: 3
+													},
+													name: '#[QMM008_167]',
+ 													value: inMaleInsurancePremium,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
+							</td>
+							<td>
+								<input data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '131px',
+														decimallength: 0,
+														grouplength: 3
+													},
+													name: '#[QMM008_168]',
+ 													value: emMaleInsurancePremium,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
+							</td>
+							<td>
+								<input data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '131px',
+														decimallength: 0,
+														grouplength: 3
+													},
+													name: '#[QMM008_170]',
+ 													value: inMaleExemptionInsurance,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
+							</td>
+							<td>
+								<input data-bind="ntsNumberEditor: {
+ 													option: {
+ 														width: '131px',
+														decimallength: 0,
+														grouplength: 3
+													},
+													name: '#[QMM008_171]',
+ 													value: emMaleExemptionInsurance,
+ 													constraint: 'InsuranceFee',
+ 													required: true}" />
+
+							</td>
+
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>

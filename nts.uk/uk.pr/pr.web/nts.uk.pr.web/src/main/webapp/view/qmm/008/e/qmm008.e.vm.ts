@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm008.e {
                    }
                    self.header(response.premiumRate);
                });
-               $("#fixed-table").ntsFixedTable({ height: 300, width: 900 });
+               $("#fixed-table").ntsFixedTable({ height: 349, width: 900 });
            }
            
            genNumber(itemNumber: any, decimalPart: any) {
@@ -61,7 +61,7 @@ module nts.uk.pr.view.qmm008.e {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                        block.clear();
                    });
-               }
+               });
                
            }
            
@@ -89,7 +89,7 @@ module nts.uk.pr.view.qmm008.e {
                    }
                    self.header(response.premiumRate);
                    block.clear();
-               }
+               });
            }
            
        }
