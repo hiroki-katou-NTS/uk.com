@@ -74,10 +74,11 @@
                                             data-bind="text: processInfomation.processDivisionName()"></label>
                                 </div>
                                 <!--A2_9 編集-->
-                                <button tabindex="-1" class="small" id="button_" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
+                                <button tabindex="-1" class="small" id="button_update" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
                             </div>
                             <com:ko-if bind="processInfomation.processDivisionName() == ''">
-                            <button tabindex="-1" style="width: 150px; margin-left: 2px " class="small"
+                                <!--A4_1-->
+                            <button id="button_register" tabindex="-1" style="width: 150px; margin-left: 2px " class="small"
                                     data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
                             </com:ko-if>
                         </td>
@@ -150,7 +151,7 @@
                             <button tabindex="-1" class="small"
                             data-bind=" click: function (){$vm.showDialogF(processInfomation.processCateNo, employeeList)}, enable: isNotAbolition() ">#{i18n.getText('QMM005_20')}</button>
                             <!--A3_4 対象雇用-->
-                            <input style="width: 285px;margin-left: 10px;"
+                            <input id="EmployeeString" style="width: 285px;margin-left: 10px;"
                                     data-bind="ntsTextEditor: {
                                 value: employeeString,
                                 readonly: true,

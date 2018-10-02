@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import CurrentProcessDate = nts.uk.pr.view.qmm005.share.model.CurrentProcessDate;
+
     import modal = nts.uk.ui.windows.sub.modal;
     import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
     import current = nts.uk.request.location.current;
@@ -67,22 +67,24 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                             self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(false);
                             nts.uk.ui.dialog.info({ messageId: "MsgQ_158" });
                         });
-
-
                     }
-
-
-
+                    $('#A2_2 #button_register').focus();
                 }
                 if (action == 1) {
                     self.itemBinding.removeAll();
-                    self.startPage();
-                    $('#button_').focus();
+                    self.startPage().done(function () {
+                        setTimeout(function () {
+                            $('#A2_2 #processYears').focus();
+                        },100);
+                    })
+
                 }
+
             })
         }
 
         showDialogB(param): void {
+            $('#A2_2 #processYears').eq(param-1).focus();
             setShared("QMM005_output_B", param);
             modal('/view/qmm/005/b/index.xhtml', {title: '',}).onClosed(function (): any {
             })
@@ -90,6 +92,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         showDialogF(processCateNo, employeeList): void {
             let self = this;
+            $('#A3_1 #EmployeeString').eq(processCateNo-1).focus();
             let existList = [];
             for (let i = 0; i < self.itemBinding().length; i++) {
                 existList = existList.concat(self.itemBinding()[i].employeeList());
@@ -232,16 +235,19 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 }
                 console.log(self.itemBinding());
                 console.log(self.itemTable);
-                $('#A2_2 button').eq(0).focus();
 
+                dfd.resolve();
+                $('#A2_2 #button_update').eq(0).focus();
 
             });
-            dfd.resolve();
+
+
             return dfd.promise();
         }
 
         registerProcessing() {
             let self = this;
+            $('#A2_2 #button_update').eq(0).focus();
             let commandData = {currProcessDateCommand: [], empTiedProYearCommand: []};
             for (let i = 0; i < MAX_NUMBER_SETTING; i++) {
                 if (self.itemBinding()[i].isNotAbolition()) {
@@ -250,7 +256,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if (codeList.length > 0) {
                         commandData.empTiedProYearCommand.push({employmentCodes: codeList});
                     } else {
-                        nts.uk.ui.dialog.error({messageId: "MsgQ_217"});
+
+                        nts.uk.ui.dialog.error(nts.uk.resource.getMessage("MsgQ_217",[i+1]));
+                      //  nts.uk.resource.getText("MsgQ_217",[i+1]);
                         return;
                     }
                 }
@@ -259,7 +267,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"});
             }).fail(function (error) {
             });
-            $('#A2_2 button').eq(0).focus();
+
+
         }
     }
 

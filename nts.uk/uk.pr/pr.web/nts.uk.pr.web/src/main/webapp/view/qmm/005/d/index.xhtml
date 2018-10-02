@@ -27,7 +27,7 @@
                  data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>
 
             <!-- D2_2  処理区分名称 -->
-            <input  id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessDivisionName', name: '#[QMM005_23]'}"
+            <input  id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessDivisionName', name: '#[QMM005_48]'}"
                    style="width: 150px"/>
 
             <span data-bind="if : mode==0" style="margin-left: 30px">
@@ -68,7 +68,7 @@
                     <td>
                         <!-- D3_3 毎月の支払日 -->
                         <div data-bind="ntsComboBox: {
-										name: 'Sample List', width:100 ,
+										 name:'#[QMM005_49]', width:100 ,
 										options: datePayment,
 										optionsValue: 'code',
 										visibleItemsCount: 8,
@@ -96,7 +96,7 @@
                     <td>
                         <!-- D3_8 個人情報の履歴参照月 -->
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_30]', width:100 ,
 											options: refeMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -115,7 +115,7 @@
                     <td>
                         <!--D3_11-->
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_30]', width:100 ,
 											options: refeDate,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -166,7 +166,7 @@
                     <!-- D3_17 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List',
+											name:'#[QMM005_57]',
 											 width:100 ,
 											options: processingMonth,
 											optionsValue: 'code',
@@ -184,7 +184,7 @@
                     <!-- D3_20 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_57]', width:100 ,
 											options: disposalDay,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -231,7 +231,7 @@
                     <!-- D4_3 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_32]', width:100 ,
 											options: printingMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 2,
@@ -261,7 +261,7 @@
                     <!-- D4_9 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_64]', width:100 ,
 											options: monthsCollected,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -307,7 +307,7 @@
                     <!-- D4_15 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_69]', width:100 ,
 											options: guaranteedBaseYear,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -320,7 +320,7 @@
                     <!-- D4_17 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_70]', width:100 ,
 											options: guaranteedBaseMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -333,7 +333,7 @@
                     <!-- D4_19 -->
                     <td>
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_44]', width:100 ,
 											options: guaranteedBaseDate,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -368,7 +368,7 @@
                     <td><!--  D4_23 -->
 
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_73]', width:100 ,
 											options: employmentInsuranceStandardMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -382,7 +382,7 @@
                     <td><!--  D4_24 -->
 
                         <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_45]', width:100 ,
 											options: employmentInsuranceStandardDate,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -420,6 +420,7 @@
                 <!-- D4_30 -->
 
                 <div data-bind="ntsRadioBoxGroup: {
+                                    name:'#[QMM005_116]',
 									options: timeCloseDate,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -435,7 +436,7 @@
                 <!--  D4_34 -->
 
                 <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_113]', width:100 ,
 											options:  timeBaseYear,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -450,7 +451,7 @@
                 <!--  D4_36 -->
 
                 <div class="item-padding" data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_114]', width:100 ,
 											options: timeClosingStandardMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -465,7 +466,7 @@
                 <!--  D4_38 -->
 
                 <div class="item-padding" data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_115]', width:100 ,
 											options: timeReferenceStandardDay,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -488,7 +489,7 @@
                 <!--  D4_42 -->
 
                 <div data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_77]', width:100 ,
 											options: yearSelectClassification,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -503,7 +504,7 @@
                 <!--  D4_44 -->
 
                 <div class="item-padding" data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_78]', width:100 ,
 											options: incomeTaxBaseMonth,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
@@ -518,7 +519,7 @@
                 <!--  D4_46 -->
 
                 <div class="item-padding" data-bind="ntsComboBox: {
-											name: 'Sample List', width:100 ,
+											name:'#[QMM005_46]', width:100 ,
 											options: incomeTaxBaseDate,
 											optionsValue: 'code',
 											visibleItemsCount: 8,
