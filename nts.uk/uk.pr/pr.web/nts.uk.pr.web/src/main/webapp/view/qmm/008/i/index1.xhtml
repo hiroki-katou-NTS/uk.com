@@ -7,7 +7,7 @@
 			<button id="A1_1" class="proceed" tabindex="1"
 				data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
 			<button id="A1_2" tabindex="1"
-				data-bind="click: printPDF,  enable: isSelectedHistory()">#{i18n.getText('QMM008_2')}</button>
+				data-bind="click: printPDF,  enable: false">#{i18n.getText('QMM008_2')}</button>
 			<button id="A1_3" tabindex="1"
 				data-bind="click: standardRemunerationMonthlyAmount, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
 			<button id="A1_4" tabindex="1"
