@@ -99,12 +99,13 @@ module nts.uk.com.view.cmm001.e {
             openFDialog() {
                 var self = this;
                 var selectedItems: model.CopyItem[];
+                let companyName = nts.uk.ui.windows.getShared('companyName');
                 selectedItems = self.selectedCopyItems();
                 if (selectedItems.length == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1145" })
                 }
                 else {
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_1162" }).ifYes(() => {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_1162",messageParams: [companyName] }).ifYes(() => {
                         var cid = nts.uk.ui.windows.getShared('companyId');
                         var IMasterDataList: model.MasterCopyCategoryDto[] = [];
                         var copyMethod : number;
