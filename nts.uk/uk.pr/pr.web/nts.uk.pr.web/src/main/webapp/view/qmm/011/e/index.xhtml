@@ -38,52 +38,57 @@
 																dateFormat: 'yearmonth',
 																valueFormat: 'YYYYMM',
 																required: true
-																}"></div>
+																}" tabindex="1"></div>
 					<!-- E1_6 ～ 9999/12 -->
 					<span id="E1_6" class="label" style="margin-left: 10px">#{i18n.getText('QMM011_46')}</span>
 				</div>
 				<!-- E1_7 履歴の引継ぎ -->
 				<div id="E1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
-					<span class="label">#{i18n.getText('QMM011_47')}</span>
-					<com:ko-if bind="flag()">
+				<com:ko-if bind="flag()">
+					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM011_47')}</span>
+					<div id = "E1_8" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
 						<!-- E1_8 履歴の引継ぎ -->
-						<div id="E1_9" class="cell" style="margin-left: 30px"
-							 data-bind="ntsRadioButton: {
+						
+							<div id="E1_9" class="cell" 
+							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[0],
 										optionValue: 'code',
 										optionText: 'name',
 										group: 'periodOption'}" >
-						</div>
-						<br/>
-						<div id="E1_10"  class="cell" style="margin-left: 113px"
-							 data-bind="ntsRadioButton: {
+							</div>
+							<br/>
+							<div id="E1_10"  class="cell" 
+							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],
 										optionValue: 'code',
 										optionText: 'name',
 										group: 'periodOption'}" >
-						</div>
+							</div>
+					</div>
 					</com:ko-if>
 					<com:ko-if bind="!flag()">
-						<div id="E1_10"  class="cell" style="margin-left: 30px"
-							 data-bind="ntsRadioButton: {
+					<span class="label" >#{i18n.getText('QMM011_47')}</span>
+						<div id = "E1_8" tabIndex = "2" style= "display: inline-block;text-align: left; margin-left:30px;">
+							<div id="E1_10"  class="cell"
+								data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],
 										optionValue: 'code',
 										optionText: 'name',
 										group: 'periodOption'}" >
+							</div>
 						</div>
 					</com:ko-if>
 				</div>
-
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E2_1 登録 -->
-				<button id="E2_1" tabindex="7" class="proceed large"
+				<button id="E2_1" tabindex="3" class="proceed large"
 					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM011_50')}</button>
 				<!-- E2_2 削除 -->
-				<button id="E2_2" tabindex="8"
+				<button id="E2_2" tabindex="4"
 					data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
 			</div>
 		</ui:define>
