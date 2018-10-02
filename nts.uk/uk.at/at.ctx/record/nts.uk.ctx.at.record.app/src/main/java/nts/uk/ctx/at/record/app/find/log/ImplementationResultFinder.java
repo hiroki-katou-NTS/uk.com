@@ -43,8 +43,8 @@ public class ImplementationResultFinder {
 		// Get distinct list EmployeeID
 		List<String> listEmployeeID = listErrMessageInfo.keySet().stream().collect(Collectors.toList());
 		
-		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 500 ? listEmployeeID.subList(0, 500) : listEmployeeID;
-		List<String> listEmployeeIDToUI = listEmployeeID.size() > 500 ? listEmployeeID.subList(500, listEmployeeID.size()) : new ArrayList<>();
+		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 5 ? listEmployeeID.subList(0, 5) : listEmployeeID;
+		List<String> listEmployeeIDToUI = listEmployeeID.size() > 5 ? listEmployeeID.subList(5, listEmployeeID.size()) : new ArrayList<>();
 		
 		personInfoErrMessageLogResultDto.setListEmployee(listEmployeeIDToUI);
 				
@@ -84,8 +84,8 @@ public class ImplementationResultFinder {
 		// Get distinct list EmployeeID
 		List<String> listEmployeeID = screenImplementationResultDto.getEmployeeID();
 		
-		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 500 ? listEmployeeID.subList(0, 500) : listEmployeeID;
-		List<String> listEmployeeIDToUI = listEmployeeID.size() > 500 ? listEmployeeID.subList(500, listEmployeeID.size()) : new ArrayList<>();
+		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 5 ? listEmployeeID.subList(0, 5) : listEmployeeID;
+		List<String> listEmployeeIDToUI = listEmployeeID.size() > 5 ? listEmployeeID.subList(5, listEmployeeID.size()) : new ArrayList<>();
 		
 		personInfoErrMessageLogResultDto.setListEmployee(listEmployeeIDToUI);
 				
