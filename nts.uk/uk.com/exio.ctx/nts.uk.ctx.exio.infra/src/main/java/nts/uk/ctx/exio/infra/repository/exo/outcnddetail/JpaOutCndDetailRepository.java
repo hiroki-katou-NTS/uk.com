@@ -17,8 +17,6 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutCndDetail f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.outCndDetailPk.cid =:cid AND  f.outCndDetailPk.conditionSettingCd =:conditionSettingCd ";
-	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.outCndDetailPk.conditionSettingCd =:conditionSettingCd ";
 
 	@Override
 	public List<OutCndDetail> getAllOutCndDetail() {
@@ -30,12 +28,6 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 	public Optional<OutCndDetail> getOutCndDetailById(String cid, String conditionSettingCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtOutCndDetail.class).setParameter("cid", cid)
 				.setParameter("conditionSettingCd", conditionSettingCd).getSingle(c -> toDomain(c));
-	}
-
-	@Override
-	public Optional<OutCndDetail> getOutCndDetailByCode(String code) {
-		return this.queryProxy().query(SELECT_BY_CODE, OiomtOutCndDetail.class).setParameter("conditionSettingCd", code)
-				.getSingle(c -> toDomain(c));
 	}
 
 	@Override

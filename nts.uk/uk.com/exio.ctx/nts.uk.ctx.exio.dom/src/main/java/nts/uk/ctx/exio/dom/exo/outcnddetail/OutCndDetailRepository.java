@@ -10,8 +10,6 @@ public interface OutCndDetailRepository
 {
 
     List<OutCndDetail> getAllOutCndDetail();
-    
-    Optional<OutCndDetail> getOutCndDetailByCode(String code);
 
     Optional<OutCndDetail> getOutCndDetailById(String cid, String conditionSettingCd);
 
