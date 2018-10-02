@@ -231,7 +231,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             // 外部出力実行社員選択チェック
             self.dataEmployeeId = self.findListId(self.selectedCode());
             if (self.dataEmployeeId.length == 0) {
-                alertError({ messageId: 'Msg_657'});
+                // alertError({ messageId: 'Msg_657'});
+                $('#component-items-list').ntsError('set', {messageId:"Msg_657"});
             }
             else {
                 self.next();
@@ -309,7 +310,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.conditionSettingName(self.selectedConditionCd().toString() + ' ' + self.selectedConditionName().toString());
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 1, // システム区分
+                systemType: 5, // システム区分 - 管理者
                 showEmployeeSelection: true, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
@@ -343,6 +344,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     self.dataCcg001 = data.listEmployee;
                     self.applyKCP005ContentSearch(data.listEmployee);
                     self.referenceDate(data.baseDate);
+                    $('#component-items-list').ntsError('clear');
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
