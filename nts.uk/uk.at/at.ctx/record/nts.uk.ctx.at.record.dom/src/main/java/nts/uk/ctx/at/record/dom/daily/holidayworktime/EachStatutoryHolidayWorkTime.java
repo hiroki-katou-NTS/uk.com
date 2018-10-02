@@ -13,8 +13,11 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 @NoArgsConstructor
 @Getter
 public class EachStatutoryHolidayWorkTime {
+	//法内
 	private AttendanceTime statutory = new AttendanceTime(0);
+	//法外
 	private AttendanceTime excess = new AttendanceTime(0);
+	//祝日
 	private AttendanceTime publicholiday = new AttendanceTime(0);
 	
 	/**

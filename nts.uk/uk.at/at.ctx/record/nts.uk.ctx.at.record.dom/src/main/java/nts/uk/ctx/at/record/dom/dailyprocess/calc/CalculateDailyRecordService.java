@@ -19,7 +19,7 @@ public interface CalculateDailyRecordService {
 	 * @param tomorrowDayInfo 翌日の勤務情報
 	 * @return 日別実績(Work)
 	 */
-	default public IntegrationOfDaily calculate(
+	default public ManageCalcStateAndResult calculate(
 			IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet managePerPersonDailySet,
@@ -42,7 +42,7 @@ public interface CalculateDailyRecordService {
 	 * @param tomorrowDayInfo 翌日の勤務情報
 	 * @return 日別実績(Work)
 	 */
-	public IntegrationOfDaily calculate(
+	public ManageCalcStateAndResult calculate(
 			CalculateOption option,
 			IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting,

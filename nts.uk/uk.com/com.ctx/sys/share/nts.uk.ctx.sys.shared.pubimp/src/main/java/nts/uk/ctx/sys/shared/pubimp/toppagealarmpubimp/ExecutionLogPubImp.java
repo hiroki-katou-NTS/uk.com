@@ -35,13 +35,13 @@ public class ExecutionLogPubImp implements ExecutionLogPub{
 		if(param.getExistenceError() == 0){
 			for(String item : param.getManagerId()){
 				String executionLogId = UUID.randomUUID().toString();
-				topPageAlarmRepository.insertTopPage(executionLogId, item, param.getExecutionContent(), param.getIsCancelled());
+				topPageAlarmRepository.insertTopPage(executionLogId, item, param.getExecutionContent(), param.getIsCancelled(), param.getExistenceError());
 			}
 		}else{
 			for(String item : param.getManagerId()){
 				String executionLogId = UUID.randomUUID().toString();
 				int countUp = param.getTargerEmployee().size();
-				topPageAlarmRepository.insertTopPage(executionLogId, item, param.getExecutionContent(), param.getIsCancelled());
+				topPageAlarmRepository.insertTopPage(executionLogId, item, param.getExecutionContent(), param.getIsCancelled(), param.getExistenceError());
 				for(ExecutionLogErrorDetail obj: param.getTargerEmployee()){
 					TopPageAlarmDetail domainInsert = TopPageAlarmDetail.createFromJavaType(executionLogId, countUp, obj.getErrorMessage(), obj.getTargerEmployee());
 					topPageAlarmRepository.insertDetail(domainInsert);

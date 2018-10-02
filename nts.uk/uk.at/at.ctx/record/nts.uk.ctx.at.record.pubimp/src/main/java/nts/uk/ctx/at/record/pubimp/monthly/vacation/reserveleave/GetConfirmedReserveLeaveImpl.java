@@ -49,7 +49,7 @@ public class GetConfirmedReserveLeaveImpl implements GetConfirmedReserveLeave {
 		for (val data : datas){
 			
 			// 「締め済」でないデータは、除く
-			if (data.getClosureStatus() != ClosureStatus.PROCESSED) continue;
+			//if (data.getClosureStatus() != ClosureStatus.PROCESSED) continue;
 			
 			val yearMonth = data.getYearMonth();
 			val reserveLeave = data.getReserveLeave();

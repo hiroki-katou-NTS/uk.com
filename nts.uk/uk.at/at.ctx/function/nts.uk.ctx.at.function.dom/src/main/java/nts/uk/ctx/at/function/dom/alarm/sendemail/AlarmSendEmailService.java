@@ -121,13 +121,14 @@ public class AlarmSendEmailService implements SendEmailService {
 		String empployeeNameError = isErrorSendMailEmp + ";";// return status check display alert error
 
 		if (!CollectionUtil.isEmpty(errors)) {
-			String empNames = "";
 			int index = 0;
 			int errorsSize = errors.size();
 			for (String sId : errors) {
 				// save using request list 346
-				empNames = empNames + employeeSprPubAlarmAdapter.getEmployeeNameBySId(sId);
-				empployeeNameError += empNames;
+				String empNames =  employeeSprPubAlarmAdapter.getEmployeeNameBySId(sId);
+				if (!StringUtils.isEmpty(empNames)) {
+					empployeeNameError += empNames;
+				}
 				index++;
 				if(index != errorsSize){
 					empployeeNameError += "<br/>";        

@@ -35,32 +35,31 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Stateless
 public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpService {
 
+	/*日別実績の勤怠時間*/
 	@Inject
 	private AttendanceTimeRepository attendanceTimeRepository;
 	
+	/*任意項目リポジトリ*/
 	@Inject
 	private AnyItemValueOfDailyRepo anyItemValueOfDailyRepo;
 	
 //	@Inject
 //	private AdTimeAnyItemStoredForDailyCalc adTimeAnyItemStoredForDailyCalc;
-	
+	/*ストアド実行*/
 	@Inject
 	private StoredProcdureProcess storedProcedureProcess;
-	
+	/*日別実績の勤務情報*/
 	@Inject
 	private WorkInformationRepository workInfo;
-	
+	/*日別実績のPCログオンログオフ*/
 	@Inject
 	private PCLogOnInfoOfDailyRepo pcLogon;
-	
+	/*日別実績の入退門*/
 	@Inject
 	private AttendanceLeavingGateOfDailyRepo attendanceGate;
-	
+	/*日別実績の出退勤*/
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
-	
-	@Inject
-	private WorkInformationRepository workInformationRepository;
 	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
@@ -76,29 +75,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			
 			addAndUpdate(daily);
 		});
-//		//勤怠時間更新
-//		if(attendanceTime.isPresent()) {
-//			if(attendanceTimeRepository.find(empId, ymd).isPresent()) {
-//				attendanceTimeRepository.update(attendanceTime.get());
-//			}
-//			else {
-//				attendanceTimeRepository.add(attendanceTime.get());
-//			}
-//		}
-//		//任意項目更新
-//		if(anyItem.isPresent()) {
-//			if(anyItemValueOfDailyRepo.find(anyItem.get().getEmployeeId(), anyItem.get().getYmd()).isPresent()){
-//				anyItemValueOfDailyRepo.update(anyItem.get());
-//			}
-//			else {
-//				anyItemValueOfDailyRepo.add(anyItem.get());
-//			}
-//					
-//		}
-//		//ストアド実行
-//		if(empId != null && ymd != null)
-//			adTimeAnyItemStoredForDailyCalc.storeAd(empId, ymd);
-		
 	}
 	
 	@Override
@@ -121,9 +97,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					anyItemValueOfDailyRepo.add(ai);
 				}
 			});
-			
-			//勤務情報の更新
-			workInformationRepository.updateByKeyFlush(d.getWorkInformation());
 		});
 	}
 	

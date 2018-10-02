@@ -18,6 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface CalculateDailyRecordServiceCenter{//
 
 	//計算
+	//old_process. Don't use!
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily);
 
 	//計算(会社共通のマスタを渡せる場合)
@@ -29,12 +30,15 @@ public interface CalculateDailyRecordServiceCenter{//
 	public List<IntegrationOfDaily> calculatePassCompanySetting(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,Optional<ManagePerCompanySet> companySet,ExecutionType reCalcAtr);
 	
 	//計算(就業計算と集計用)
-	public CalcStatus calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, Optional<Consumer<ProcessState>> counter, List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr);
+	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,Optional<AsyncCommandHandlerContext> asyncContext, Optional<Consumer<ProcessState>> counter, List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr);
 	
 	//エラーチェック
 	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
 
 	//計算(更新処理自動実行用)
 	public CalcStatus calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList);
+
+	//計算(スケジュールからの窓口)
+	List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);
 	
 }
