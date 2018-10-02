@@ -12,9 +12,11 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 @Value
 public class VacationAddTime {
-	
+	//年休
 	private AttendanceTime AnnualLeave;
+	//積立休暇
 	private AttendanceTime AccumulationVacation;
+	//特別休暇
 	private AttendanceTime SpecialHoliday;
 	
 	

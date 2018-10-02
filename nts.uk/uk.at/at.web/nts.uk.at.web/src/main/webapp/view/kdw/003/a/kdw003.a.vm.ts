@@ -3057,8 +3057,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (header.constraint.cDisplayType != "Primitive" && header.constraint.cDisplayType != "Combo") {
                             if (header.constraint.cDisplayType.indexOf("Currency") != -1) {
                                 header["columnCssClass"] = "currency-symbol";
-                                header.constraint["min"] = "0";
-                                header.constraint["max"] = "9999999999"
+                                header.constraint["min"] = header.constraint.min;
+                                header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "halign-right";
                                 header.constraint["min"] = header.constraint.min;
@@ -3078,8 +3078,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                     if (header.constraint.primitiveValue.indexOf("AttendanceTime") != -1) {
                                         header["columnCssClass"] = "halign-right";
                                     }
-                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes") {
+                                    if (header.constraint.primitiveValue == "BreakTimeGoOutTimes" || header.constraint.primitiveValue == "WorkTimes" || "AnyItemTimes" || "AnyTimesMonth") {
                                         header["columnCssClass"] = "halign-right";
+                                        header.constraint["decimallength"] = 2;
                                     }
                                 } else {
                                     delete header.group[0].constraint.cDisplayType;

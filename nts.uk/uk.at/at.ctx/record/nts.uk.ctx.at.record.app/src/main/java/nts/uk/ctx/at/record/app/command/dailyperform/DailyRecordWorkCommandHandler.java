@@ -392,7 +392,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			domainDailyNew = calcService.calculate(domainDailyNew);
 
 		}
-		if (mode == 0 && month.getNeedCallCalc()) {
+		if (mode == 0 && month.getNeedCallCalc() != null && month.getNeedCallCalc()) {
 			lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew,
 					(month == null || !month.getDomainMonth().isPresent()) ? domainDailyNew : Collections.emptyList(),
 					(month == null || !month.getDomainMonth().isPresent()) ? Optional.empty() : month.getDomainMonth(),

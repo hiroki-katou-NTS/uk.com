@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Getter
 public class SubHolOccurrenceInfo {
 
+	//時間
 	private AttendanceTime time;
 	
 	//代休発生日数

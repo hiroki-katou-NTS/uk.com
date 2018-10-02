@@ -51,8 +51,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Getter
 public class OutsideWorkTimeSheet {
 
+	//残業時間帯
 	private Optional<OverTimeSheet> overTimeWorkSheet;
 
+	//休出時間帯
 	private Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet;
 
 	/**

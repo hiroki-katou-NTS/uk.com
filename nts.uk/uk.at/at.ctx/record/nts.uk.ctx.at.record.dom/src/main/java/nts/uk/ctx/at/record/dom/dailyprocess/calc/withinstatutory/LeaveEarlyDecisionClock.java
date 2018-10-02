@@ -27,7 +27,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 @Value
 public class LeaveEarlyDecisionClock {
+	//早退判断時刻
 	private  TimeWithDayAttr leaveEarlyDecisionClock;
+	//勤務No
 	private int workNo;
 	
 	
