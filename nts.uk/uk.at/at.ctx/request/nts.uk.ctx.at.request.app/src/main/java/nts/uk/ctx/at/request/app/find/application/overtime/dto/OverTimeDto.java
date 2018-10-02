@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReferen
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 
 @Data
 @AllArgsConstructor
@@ -241,6 +242,11 @@ public class OverTimeDto {
 	
 	private Integer appOvertimeDetailStatus;
 	
+	/**
+	 * 控除時間帯(丸め付き)
+	 */
+	private List<DeductionTimeDto> timezones;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -298,7 +304,9 @@ public class OverTimeDto {
 				false,
 				null,
 				null,
-				null);
+				null,
+				Collections.emptyList()
+				);
 	}
 	
 }

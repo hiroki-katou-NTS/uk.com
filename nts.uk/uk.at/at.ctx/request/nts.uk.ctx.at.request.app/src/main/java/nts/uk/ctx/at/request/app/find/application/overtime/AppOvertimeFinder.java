@@ -78,6 +78,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneService;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
@@ -717,6 +718,11 @@ public class AppOvertimeFinder {
 								workTypeOvertimes, siftTypes);
 						result.setWorkType(workTypeAndSiftType.getWorkType());
 						result.setSiftType(workTypeAndSiftType.getSiftType());
+						result.setTimezones(workTypeAndSiftType.getBreakTimes().stream().map(domain->{
+							DeductionTimeDto dto = new DeductionTimeDto();
+							domain.saveToMemento(dto);
+							return dto;
+						}).collect(Collectors.toList()));
 					}else{
 						result.setDisplayCaculationTime(false);
 					}
@@ -810,6 +816,11 @@ public class AppOvertimeFinder {
 						Strings.isBlank(appDate) ? baseDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), workTypeOvertimes, siftTypes);
 				result.setWorkType(workTypeAndSiftType.getWorkType());
 				result.setSiftType(workTypeAndSiftType.getSiftType());
+				result.setTimezones(workTypeAndSiftType.getBreakTimes().stream().map(domain->{
+					DeductionTimeDto dto = new DeductionTimeDto();
+					domain.saveToMemento(dto);
+					return dto;
+				}).collect(Collectors.toList()));
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
 				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null? "" :result.getSiftType().getSiftCode());
 				result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));

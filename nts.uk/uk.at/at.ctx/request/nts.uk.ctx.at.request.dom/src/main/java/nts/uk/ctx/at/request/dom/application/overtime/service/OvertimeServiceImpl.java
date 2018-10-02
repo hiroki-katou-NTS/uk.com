@@ -258,6 +258,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();
 		String siftCD = workTypeAndSiftType.getSiftType().getSiftCode();
 		BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID, workTypeCode, siftCD);
+		workTypeAndSiftType.setBreakTimes(breakTime.getLstTimezone());
 		return workTypeAndSiftType;
 	}
 	
