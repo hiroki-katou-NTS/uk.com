@@ -1990,26 +1990,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	// Column 4, 6, 8,...
 				            	ActualValue actualValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
-				            	Style style = cell.getStyle();
-				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-				            	if (valueTypeEnum.isTime()) {
-									String value = actualValue.getValue();
-									if (value != null) {
-										if (valueTypeEnum == ValueType.TIME) {
-											cell.setValue(getTimeAttr(value, false));
-										} else {
-											cell.setValue(getTimeAttr(value, true));
-										}
-									} else
-										cell.setValue(getTimeAttr("0", true));
-									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-				            	}
-				            	else {
-									cell.setValue(actualValue.getValue());
-									style.setHorizontalAlignment(TextAlignmentType.LEFT);
-								}
-				            	setFontStyle(style);
-				            	cell.setStyle(style);
+				            	writeDetailValue(actualValue, cell);
 				            }
 				            
 				            curRow++;
@@ -2086,33 +2067,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            length = Math.min(mapPersonalTotal.size() - start, CHUNK_SIZE);
 			            
 			            lstItemRow = mapPersonalTotal.values().stream().collect(Collectors.toList()).subList(start, start + length);
-			            int valueType;
 			            
 			            for (int j = 0; j < length; j++) {
 			            	TotalValue totalValue = lstItemRow.get(j);
-			            	String value = totalValue.getValue();
-			            	valueType = totalValue.getValueType();
-
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-			            	Style style = cell.getStyle();
-			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-			            	if (valueTypeEnum.isIntegerCountable()) {
-			            		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
-			            			cell.putValue(value, true);
-			            		}
-			            		else {
-			            			if (value != null)
-										cell.setValue(getTimeAttr(value, false));
-									else
-										cell.setValue(getTimeAttr("0", false));
-			            		}
-								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-							}
-			            	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-			            		cell.putValue(value, true);
-			            	}
-			            	setFontStyle(style);
-			            	cell.setStyle(style);
+			            	writeTotalValue(totalValue, cell);
 			            }
 			            currentRow++;
 			        }
@@ -2208,27 +2167,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            
 	            for (int j = 0; j < length; j++) {
 	            	TotalValue totalValue = lstItemRow.get(j);
-	            	String value = totalValue.getValue();
 	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-	            	Style style = cell.getStyle();
-	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-	            	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
-	            			cell.putValue(value, true);
-	            		}
-	            		else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value, false));
-							else
-								cell.setValue(getTimeAttr("0", false));
-	            		}
-						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            		cell.putValue(value, true);
-	            	}
-	            	setFontStyle(style);
-	            	cell.setStyle(style);
+	            	writeTotalValue(totalValue, cell);
 	            }
 	            currentRow++;
 	        }
@@ -2338,27 +2278,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            
 				            for (int j = 0; j < length; j++) {
 				            	TotalValue totalValue = lstItemRow.get(j);
-				            	String value = totalValue.getValue();
 				            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-				            	Style style = cell.getStyle();
-				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-				            	if (valueTypeEnum.isIntegerCountable()) {
-				            		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
-				            			cell.putValue(value, true);
-				            		}
-				            		else {
-				            			if (value != null)
-											cell.setValue(getTimeAttr(value, false));
-										else
-											cell.setValue(getTimeAttr("0", false));
-				            		}
-									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-								}
-				            	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-				            		cell.putValue(value, true);
-				            	}
-				            	setFontStyle(style);
-				            	cell.setStyle(style);
+				            	writeTotalValue(totalValue, cell);
 				            }
 				        }
 				        currentRow += dataRowCount;
@@ -2368,6 +2289,35 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		return currentRow;
+	}
+
+	/**
+	 * Write detail value.
+	 *
+	 * @param actualValue the actual value
+	 * @param cell the cell
+	 */
+	private void writeDetailValue(ActualValue actualValue, Cell cell) {
+		Style style = cell.getStyle();
+		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+		if (valueTypeEnum.isTime()) {
+			String value = actualValue.getValue();
+			if (value != null) {
+				if (valueTypeEnum == ValueType.TIME) {
+					cell.setValue(getTimeAttr(value, false));
+				} else {
+					cell.setValue(getTimeAttr(value, true));
+				}
+			} else
+				cell.setValue(getTimeAttr("0", true));
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		}
+		else {
+			cell.setValue(actualValue.getValue());
+			style.setHorizontalAlignment(TextAlignmentType.LEFT);
+		}
+		setFontStyle(style);
+		cell.setStyle(style);
 	}
 	
 	/**
@@ -2542,24 +2492,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	ActualValue actualValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
-			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-			            	if (valueTypeEnum.isTime()) {
-								String value = actualValue.getValue();
-								if (value != null) {
-									if (valueTypeEnum == ValueType.TIME) {
-										cell.setValue(getTimeAttr(value, false));
-									} else {
-										cell.setValue(getTimeAttr(value, true));
-									}
-								} else {
-									cell.setValue(getTimeAttr("0", true));
-								}
-								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-			            	}
-			            	else {
-								cell.setValue(actualValue.getValue());
-								style.setHorizontalAlignment(TextAlignmentType.LEFT);
-							}
+			            	writeDetailValue(actualValue, cell);
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
 			            }
@@ -2748,27 +2681,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    
 			    for (int j = 0; j < length; j++) {
 			    	totalValue = lstItemRow.get(j);
-			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	Style style = cell.getStyle();
-		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-		        	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.putValue(value, true);
-	            		}
-	            		else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value, false));
-							else
-								cell.setValue(getTimeAttr("0", false));
-	            		}
-						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.putValue(value, true);
-	            	}
-	            	setFontStyle(style);
-	            	cell.setStyle(style);
+		        	writeTotalValue(totalValue, cell);
 			    }
 			    currentRow++;
 			}
@@ -2777,6 +2691,29 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		return currentRow;
+	}
+
+	private void writeTotalValue(TotalValue totalValue, Cell cell) {
+		Style style = cell.getStyle();
+		String value = totalValue.getValue();
+    	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+    	if (valueTypeEnum.isIntegerCountable()) {
+    		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
+    			cell.putValue(value, true);
+    		}
+    		else {
+    			if (value != null)
+					cell.setValue(getTimeAttr(value, false));
+				else
+					cell.setValue(getTimeAttr("0", false));
+    		}
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		}
+    	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+    		cell.putValue(value, true);
+    	}
+    	setFontStyle(style);
+    	cell.setStyle(style);
 	}
 	
 	/**
@@ -2811,25 +2748,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    	totalValue =lstItemRow.get(j);
 			    	String value = totalValue.getValue();
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	Style style = cell.getStyle();
-		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-		        	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.putValue(value, true);
-	            		}
-	            		else {
-	            			if (value != null)
-								cell.setValue(getTimeAttr(value, false));
-							else
-								cell.setValue(getTimeAttr("0", false));
-	            		}
-						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.putValue(value, true);
-	            	}
-	            	setFontStyle(style);
-	            	cell.setStyle(style);
+		        	writeTotalValue(totalValue, cell);
 			    }
 			    currentRow++;
 			}
