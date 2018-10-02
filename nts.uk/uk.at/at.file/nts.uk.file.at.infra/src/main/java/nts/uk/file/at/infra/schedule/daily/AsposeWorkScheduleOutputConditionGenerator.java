@@ -882,20 +882,27 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								}
 								// Workaround for optional attendance item from KMK002
 								if (attendanceId >= ATTENDANCE_ID_OPTIONAL_START && attendanceId <= ATTENDANCE_ID_OPTIONAL_END) {
-									Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
-									optOptionalItem.ifPresent(optionalItem -> {
-										switch(optionalItem.getOptionalItemAtr()) {
-										case TIME:
-											itemValue.setValueType(ValueType.TIME.value);
-											break;
-										case NUMBER:
-											itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
-											break;
-										case AMOUNT:
-											itemValue.setValueType(ValueType.AMOUNT.value);
-											break;
-										}
-									});
+//									Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
+//									optOptionalItem.ifPresent(optionalItem -> {
+//										switch(optionalItem.getOptionalItemAtr()) {
+//										case TIME:
+//											itemValue.setValueType(ValueType.TIME.value);
+//											break;
+//										case NUMBER:
+//											itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
+//											break;
+//										case AMOUNT:
+//											itemValue.setValueType(ValueType.AMOUNT.value);
+//											break;
+//										}
+//									});
+									
+									try {
+										int val = Integer.parseInt(itemValue.getValue());
+										itemValue.setValueType(ValueType.TIME.value);
+									} catch (Exception e) {
+										itemValue.setValueType(ValueType.AMOUNT.value);
+									}
 								}
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 							}
@@ -1094,20 +1101,27 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 					// Workaround for optional attendance item from KMK002
 					if (attendanceId >= ATTENDANCE_ID_OPTIONAL_START && attendanceId <= ATTENDANCE_ID_OPTIONAL_END) {
-						Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
-						optOptionalItem.ifPresent(optionalItem -> {
-							switch(optionalItem.getOptionalItemAtr()) {
-							case TIME:
-								itemValue.setValueType(ValueType.TIME.value);
-								break;
-							case NUMBER:
-								itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
-								break;
-							case AMOUNT:
-								itemValue.setValueType(ValueType.AMOUNT.value);
-								break;
-							}
-						});
+//						Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
+//						optOptionalItem.ifPresent(optionalItem -> {
+//							switch(optionalItem.getOptionalItemAtr()) {
+//							case TIME:
+//								itemValue.setValueType(ValueType.TIME.value);
+//								break;
+//							case NUMBER:
+//								itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
+//								break;
+//							case AMOUNT:
+//								itemValue.setValueType(ValueType.AMOUNT.value);
+//								break;
+//							}
+//						}); 
+						
+						try {
+							int val = Integer.parseInt(itemValue.getValue());
+							itemValue.setValueType(ValueType.TIME.value);
+						} catch (Exception e) {
+							itemValue.setValueType(ValueType.AMOUNT.value);
+						}
 					}
 					
 					detailedDate.actualValue.add(new ActualValue(attendanceId, itemValue.getValue(), itemValue.getValueType()));
@@ -1980,9 +1994,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
 				            	if (valueTypeEnum.isTime()) {
 									String value = actualValue.getValue();
-									if (value != null)
-										cell.setValue(getTimeAttr(value, true));
-									else
+									if (value != null) {
+										if (valueTypeEnum == ValueType.TIME) {
+											cell.setValue(getTimeAttr(value, false));
+										} else {
+											cell.setValue(getTimeAttr(value, true));
+										}
+									} else
 										cell.setValue(getTimeAttr("0", true));
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
@@ -2079,7 +2097,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	Style style = cell.getStyle();
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 			            	if (valueTypeEnum.isIntegerCountable()) {
-			            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+			            		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
 			            			cell.putValue(value, true);
 			            		}
 			            		else {
@@ -2090,7 +2108,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            		}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
-			            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+			            	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
 			            		cell.putValue(value, true);
 			            	}
 			            	setFontStyle(style);
@@ -2195,7 +2213,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            	Style style = cell.getStyle();
 	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 	            	if (valueTypeEnum.isIntegerCountable()) {
-	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+	            		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
 	            			cell.putValue(value, true);
 	            		}
 	            		else {
@@ -2206,7 +2224,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
-	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
 	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
@@ -2325,7 +2343,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	Style style = cell.getStyle();
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 				            	if (valueTypeEnum.isIntegerCountable()) {
-				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+				            		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
 				            			cell.putValue(value, true);
 				            		}
 				            		else {
@@ -2336,7 +2354,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
-				            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+				            	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
 				            		cell.putValue(value, true);
 				            	}
 				            	setFontStyle(style);
@@ -2527,10 +2545,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
 			            	if (valueTypeEnum.isTime()) {
 								String value = actualValue.getValue();
-								if (value != null)
-									cell.setValue(getTimeAttr(value, true));
-								else
+								if (value != null) {
+									if (valueTypeEnum == ValueType.TIME) {
+										cell.setValue(getTimeAttr(value, false));
+									} else {
+										cell.setValue(getTimeAttr(value, true));
+									}
+								} else {
 									cell.setValue(getTimeAttr("0", true));
+								}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
 			            	else {
