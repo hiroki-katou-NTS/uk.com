@@ -143,8 +143,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     lstEmployee: _.map(self.lstData, data => data.employeeId),
                     //エラー参照を起動する
                     errorRefStartAtr: false,
+                    // fix bug 101435
                     //期間を変更する
-                    changePeriodAtr: false,
+                    changePeriodAtr: true,
                     //処理締め
                     targetClosue: self.selectedClosure(),
                     //Optional
@@ -179,7 +180,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     lstEmployee: [employeeId],
                     errorRefStartAtr: false,
-                    changePeriodAtr: false,
+                    // fix bug 101435
+                    //期間を変更する
+                    changePeriodAtr: true,
                     targetClosue: self.selectedClosure(),
                     initClock: undefined,
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
@@ -208,8 +211,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     lstEmployee: _.map(self.lstData, data => data.employeeId),
                     //エラー参照を起動する
                     errorRefStartAtr: false,
+                    // fix bug 101435
                     //期間を変更する
-                    changePeriodAtr: false,
+                    changePeriodAtr: true,
                     //処理締め
                     targetClosue: self.selectedClosure(),
                     //Optional
