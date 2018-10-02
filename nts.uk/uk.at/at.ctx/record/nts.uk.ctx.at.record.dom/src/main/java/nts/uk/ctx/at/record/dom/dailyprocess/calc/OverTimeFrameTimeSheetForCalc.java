@@ -326,7 +326,9 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         	AttendanceTime workTime = new AttendanceTime(0);
         	if(createWithinWorkTimeSheet != null)
         	{
-        		
+        		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()
+        																	?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
+        																	:commonSetting;
         		workTime = createWithinWorkTimeSheet.calcWorkTime(PremiumAtr.RegularWork, 
         														  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), 
         														  vacationClass, 
@@ -343,7 +345,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  regularAddSetting, 
         														  holidayAddtionSet, 
         														  holidayCalcMethodSet,
-        														  dailyUnit,commonSetting,
+        														  dailyUnit,
+        														  leaveLatesetForWorkTime,
         														  conditionItem,
         														  predetermineTimeSetByPersonInfo,coreTimeSetting
         														  ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
