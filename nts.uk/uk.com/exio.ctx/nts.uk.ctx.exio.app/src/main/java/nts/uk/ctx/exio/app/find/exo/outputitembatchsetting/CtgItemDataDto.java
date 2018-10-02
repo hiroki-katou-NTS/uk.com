@@ -20,7 +20,7 @@ public class CtgItemDataDto {
     private int itemType;
     
     public static CtgItemDataDto fromdomain(CtgItemData domain){
-    	return new CtgItemDataDto(domain.getItemNo().v(),domain.getItemName(), domain.getCategoryId().v(), domain.getDataType().value);
+    	return new CtgItemDataDto(domain.getItemNo().v(),domain.getItemName().v(), domain.getCategoryId().v(), domain.getDataType().value);
     }
     
 }

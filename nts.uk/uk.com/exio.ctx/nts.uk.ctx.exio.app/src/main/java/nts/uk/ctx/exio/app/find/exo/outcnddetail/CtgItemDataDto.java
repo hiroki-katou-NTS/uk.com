@@ -44,7 +44,7 @@ public class CtgItemDataDto {
 
 	public static CtgItemDataDto fromDomain(CtgItemData domain) {
 		CtgItemDataDto dto = new CtgItemDataDto(domain.getCategoryId().v(), domain.getItemNo().v(),
-				domain.getTableName(), domain.getDisplayTableName(), domain.getItemName(), domain.getDataType().value,
+				domain.getTableName(), domain.getDisplayTableName(), domain.getItemName().v(), domain.getDataType().value,
 				domain.getSearchValueCd().orElse(null));
 		return dto;
 	}
