@@ -98,13 +98,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueField(false);
-//                         $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
-                            setTimeout(() => {
-                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                                }
-                            }, 25);
+                             $(".nts-input").ntsError("clear");
+                            if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator()==9){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                            if(self.comparisonRange().comparisonOperator()==6 || self.comparisonRange().comparisonOperator() ==8){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
                         } else {
                             $(".nts-input").ntsError("clear");
                         }
@@ -152,11 +161,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.comparisonRange().maxAmountOfMoneyValue(null);
                         self.comparisonRange().minTimeValue(null);
                         self.comparisonRange().maxTimeValue(null);
-                        //回数
                         self.comparisonRange().minTimesValue(null);
                         self.comparisonRange().maxTimesValue(null);
-                        
-                        
                         //check typeCheckItem initialization times = 0 
                         self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
@@ -171,13 +177,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
-                        $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
-                            setTimeout(() => {
-                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                                }
-                            }, 25);
+                            $(".nts-input").ntsError("clear");
+                            if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator() ==9){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                            if(self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() ==8){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                        } else {
+                            $(".nts-input").ntsError("clear");
                         }
                     });
                     break;
