@@ -61,7 +61,12 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
                     && self.currentSetting().yearPeriodStart() > self.currentSetting().yearPeriodEnd()) {
                     $('#validityPeriod').ntsError('set', { messageId: "MsgQ_3" });
                     isValid = false;
+                } else {
+                    $('#validityPeriod').ntsError('clear');
                 }
+            } else {
+                $('#validityPeriod').ntsError('clear');
+                $('#validityPeriod .ntsDatepicker').ntsError('clear');
             }
 
             if (self.isEnableCycleSetting()) {
@@ -73,7 +78,11 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
                     && self.currentSetting().november() == false && self.currentSetting().december() == false) {
                     $('#cycleSetting').ntsError('set', { messageId: "MsgQ_4" });
                     isValid = false;
+                } else {
+                    $('#cycleSetting').ntsError('clear');
                 }
+            } else {
+                $('#cycleSetting').ntsError('clear');
             }
             return isValid;
         }

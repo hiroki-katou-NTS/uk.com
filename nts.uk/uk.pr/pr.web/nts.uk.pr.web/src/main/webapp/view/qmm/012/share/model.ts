@@ -305,6 +305,21 @@ module nts.uk.pr.view.qmm012.share.model {
             self.periodAtr(data ? data.periodAtr : ValidityPeriodAtr.NOT_SETUP);
             self.yearPeriodStart(data ? data.yearPeriodStart : null);
             self.yearPeriodEnd(data ? data.yearPeriodEnd : null);
+
+            self.periodAtr.subscribe(x => {
+                if ((x == "1") || (x == 1) ) {
+                    if (self.yearPeriodStart() && self.yearPeriodEnd()
+                        && self.yearPeriodStart() > self.yearPeriodEnd()) {
+                        $('#validityPeriod').ntsError('set', { messageId: "MsgQ_3" });
+                        isValid = false;
+                    } else {
+                        $('#validityPeriod').ntsError('clear');
+                    }
+                } else {
+                    $('#validityPeriod').ntsError('clear');
+                    $('#validityPeriod .ntsDatepicker').ntsError('clear');
+                }
+            });
         }
     }
 }
