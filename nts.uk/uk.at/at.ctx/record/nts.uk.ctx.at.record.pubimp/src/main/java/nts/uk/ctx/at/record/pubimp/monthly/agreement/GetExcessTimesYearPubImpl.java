@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * 実装：年間超過回数の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetExcessTimesYearPubImpl implements GetExcessTimesYearPub {

@@ -309,7 +309,6 @@
 										optionsText: 'reasonTemp',
 										editable: false,
 										enable: true,
-										dropDownAttachedToBody:true,
 										columns:[
 											{ prop: 'reasonTemp', length: 10 },
 										]}">
@@ -324,7 +323,7 @@
 					<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF011_17')}</div>
 				</div>
 				<div class="div_line_col_2">
-					<textarea style="height: 100px" id="appReason"
+					<textarea style="height: 100px ;position: relative;" id="appReason"
 						data-bind="ntsMultilineEditor: {
 									constraint: 'AppReason',
 									value: reason ,

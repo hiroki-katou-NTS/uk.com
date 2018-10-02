@@ -16,9 +16,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public class TimevacationUseTimeOfDaily {
 	
+	//時間年休使用時間
 	private AttendanceTime TimeAnnualLeaveUseTime;
+	//時間代休使用時間
 	private AttendanceTime TimeCompensatoryLeaveUseTime;
+	//超過有休使用時間
 	private AttendanceTime sixtyHourExcessHolidayUseTime;
+	//特別休暇使用時間
 	private AttendanceTime TimeSpecialHolidayUseTime;
 	
 	/**
@@ -34,6 +38,9 @@ public class TimevacationUseTimeOfDaily {
 		TimeSpecialHolidayUseTime = timeSpecialHolidayUseTime;
 	}
 	
+	public static TimevacationUseTimeOfDaily defaultValue(){
+		return new TimevacationUseTimeOfDaily(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0));
+	}
 	
 	/**
 	 * 各使用時間から相殺時間を控除する

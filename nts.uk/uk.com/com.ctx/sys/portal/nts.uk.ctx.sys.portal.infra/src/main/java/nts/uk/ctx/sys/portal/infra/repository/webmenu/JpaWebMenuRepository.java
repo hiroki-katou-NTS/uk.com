@@ -86,6 +86,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	@Override
 	public void add(WebMenu webMenu) {
 		this.commandProxy().insert(toEntity(webMenu));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -103,6 +104,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	public void remove(String companyId, String webMenuCode) {
 		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		this.commandProxy().remove(CcgstWebMenu.class, key);
+		this.getEntityManager().flush();
 	}
 
 	@Override

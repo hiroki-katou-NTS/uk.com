@@ -129,8 +129,8 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 					para.getYmd(),
 					closureData.getClosureId().value,
 					PerformanceType.DAILY);
-			if(lockStatus == LockStatus.UNLOCK) {
-				return output;
+			if(lockStatus == LockStatus.LOCK) {
+				return false;
 			}
 			//確定状態によるチェック
 			ConfirmStatusCheck chkParam = new ConfirmStatusCheck(para.getCid(), 

@@ -86,6 +86,7 @@ public class CreateEmployeeDailyPerError {
 	 * @param date
 	 * @param errorCode
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void removeByCidSidDateAndErrorCode(String companyID, String employeeID, GeneralDate date, String errorCode){
 		this.employeeDailyPerErrorRepository.removeByCidSidDateAndCode(companyID, employeeID, date, errorCode);
 	}

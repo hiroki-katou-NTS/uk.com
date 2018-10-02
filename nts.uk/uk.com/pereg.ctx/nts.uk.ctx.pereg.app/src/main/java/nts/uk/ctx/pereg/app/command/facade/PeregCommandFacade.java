@@ -586,7 +586,7 @@ public class PeregCommandFacade {
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(), input.getCategoryName(), 
 						infoOperateAttr, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null,
-						code.equals(specialItemCode.get(0)) == true  || code.equals(specialItemCode.get(1)) == true? stringKey : code), Optional.ofNullable(reviseInfo));
+						code == null? null: (code.equals(specialItemCode.get(0)) == true  || code.equals(specialItemCode.get(1)) == true? stringKey : code)), Optional.ofNullable(reviseInfo));
 			}
 			return ctgTarget;
 

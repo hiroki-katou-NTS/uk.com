@@ -41,19 +41,19 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//エラーアラーム設定
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
-	
+	//加給設定の利用単位
 	@Inject
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository; 
-	
+	//0時跨ぎ
 	@Inject
 	private ZeroTimeRepository zeroTimeRepository;
-	
+	//任意項目
 	@Inject
 	private OptionalItemRepository optionalItemRepository;
-	
+	//計算式
 	@Inject
 	private FormulaRepository formulaRepository;
-	
+	//労働条件
 	@Inject
 	private EmpConditionRepository empConditionRepository;
 	
