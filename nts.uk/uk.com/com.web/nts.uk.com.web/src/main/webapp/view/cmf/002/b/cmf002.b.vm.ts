@@ -33,7 +33,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             stringFormat: 0,
             itemOutputName: 0
         }));
-        
+        checkFocusWhenCopy: boolean = false;
 
         constructor() {
             block.invisible();
@@ -50,7 +50,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                     self.getOutItem(data);
                     self.settingCurrentCondition();
-                    self.isNewMode(false);
                     block.clear();
                 } else {
                     self.createNewCondition();
@@ -58,15 +57,30 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
             
             self.isNewMode.subscribe((data) => {
+               let self = this;
+               if(self.checkFocusWhenCopy){
+                   $("#B5_2").focus();
+                   self.checkFocusWhenCopy = false;
+                   return;
+               }
                if (data) {
                    $("#B5_1").focus();
                } else {
                    $("#B3_3_container").focus();
                }
             });
-            
+
         }
-        
+
+        setNewMode(mode: boolean) {
+            let self = this;
+            if (self.isNewMode() == mode) {
+                self.isNewMode.valueHasMutated();
+            } else {
+                self.isNewMode(mode);
+            }
+        }
+
         /**
          * 起動する
          * アルゴリズム「外部出力条件設定一覧」を実行する
@@ -84,11 +98,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     if (conditionSetCode) {
                         self.index(self.getIndex(conditionSetCode));
                     }
-                    self.isNewMode(false);
+                    self.setNewMode(false);
                     self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                     self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);  
                 } else {
-                    self.isNewMode(true);
                     self.createNewCondition();
                     self.conditionSettingList(itemList);
                 }
@@ -216,8 +229,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             if (destinationCode == self.selectedConditionSettingCode()){
                                 self.conditionSetData().conditionSetName(destinationName);
                             }
+                            self.checkFocusWhenCopy = true;
                             self.initScreen(destinationCode);
-                            $("#B5_2").focus();
                         });  
                     });
                 }
@@ -295,8 +308,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().delimiter(1);
             self.conditionSetData().stringFormat(0);
             self.conditionSetData().itemOutputName(0);
-            self.isNewMode(true);
-            $("#B5_1").focus();
+            self.setNewMode(true);
         }
            
     
@@ -327,7 +339,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.isNewMode(false);
                     self.initScreen(data.conditionSetCd);
                     if(self.outputItemList() && self.outputItemList().length > 0) {
                         self.getOutItem(data.conditionSetCd);
@@ -362,12 +373,22 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 dialog.alertError(error);
                 dfd.reject();
             }).always(() => {
+                self.focusUpDown();
                 block.clear();
             });
 
             return dfd.promise();
         }
-        
+
+        focusUpDown() {
+            $("#B14_2-up").click(() => {
+                $("#B13_2_container").focus();
+            })
+            $("#B14_2-down").click(() => {
+                $("#B13_2_container").focus();
+            })
+        }
+
     }
     //条件名出力選択, 項目名出力選択
     export function getNotUseAtrItems(): Array<model.ItemModel> {
