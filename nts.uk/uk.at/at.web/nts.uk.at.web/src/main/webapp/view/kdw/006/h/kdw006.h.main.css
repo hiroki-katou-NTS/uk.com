@@ -6,3 +6,7 @@
 #listmulti{
 	margin-left: 20px ;
 }
+
+#contents-area{
+	overflow-y : hidden !important;
+}

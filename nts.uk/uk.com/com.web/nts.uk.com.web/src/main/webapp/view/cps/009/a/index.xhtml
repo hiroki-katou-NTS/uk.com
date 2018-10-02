@@ -36,11 +36,9 @@
 				<button id="closeBtn" style="visibility: hidden;"
 					data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CPS016_4')}</button>
 				<!-- A1_005: link label 個人情報定義へ -->
-				<div class='float-right'>
-					<a class='goout'
+				<a class='goout link-button' style='margin-left:637px;'
 						data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }"
 						tabindex="5">#{i18n.getText('CPS009_7')}</a>
-				</div>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
@@ -169,7 +167,7 @@
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 									</thead>
-									<tbody data-bind="foreach: currentCategory().itemList()">
+									<tbody data-bind="foreach: currentCategory().itemList(), style: { 'overflow-y': _.size(currentCategory().itemList()) &lt; 15 ? 'hidden' : 'scroll'}">
 										<tr>
 											<td class="input-units-1" data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}">
 											<span class="months-input limited-label" data-bind='text: itemName,attr: {
@@ -213,7 +211,7 @@
 																	name:  itemName ,
 																	value: stringValue , 
 																	constraint: itemCode,
-																	required: isRequired},
+																	required: false},
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 															</com:ko-if>
 	
@@ -223,7 +221,7 @@
 																	name:  itemName ,
 																	value: stringValue , 
 																	constraint: itemCode,
-																	required: isRequired},
+																	required: false},
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 															</com:ko-if>
 													</com:ko-if> 
@@ -238,7 +236,7 @@
 																	 value: dateValue, 
 																	 dateFormat: 'YYYY/MM/DD',
 																	 valueFormat: 'YYYY/MM/DD',
-																	 required: isRequired
+																	 required: false
 																	 }, attr: {  id: perInfoItemDefId, NameID: itemName }">
 																</div>
 														</com:ko-if>
@@ -251,7 +249,7 @@
 				                   									value: dateValue, 
 				                   									dateFormat: 'YYYY/MM', 
 				                   									valueFormat: 'YYYY/MM',
-				                   									required: isRequired
+				                   									required: false
 				                   									}, attr: { id: perInfoItemDefId, NameID: itemName }">
 																</div>
 														</com:ko-if>
@@ -264,7 +262,7 @@
 																	value: dateValue, 
 																	dateFormat: 'YYYY', 
 																	valueFormat: 'YYYY',
-																	required: isRequired},
+																	required: false},
 																	attr: { id: perInfoItemDefId, NameID: itemName }">
 																</div>
 														</com:ko-if>
@@ -278,7 +276,7 @@
 																	constraint: itemCode,
 																	inputFormat: 'time', 
 															 		mode: 'time',
-																	required: isRequired,
+																	required: false,
 																	enable: true,
 																	readonly: false},attr: { id: perInfoItemDefId, NameID: itemName }" />
 													</com:ko-if> 
@@ -291,7 +289,7 @@
 																	value: dateWithDay, 
 																	enable: enableControl, 
 																	readonly: false,
-																	required: isRequired },
+																	required: false },
 																	attr: { id: perInfoItemDefId, NameID: itemName }" />
 													</com:ko-if> 
 													<!--   list box  --> 
@@ -307,7 +305,7 @@
 																	enable: true,
 																	dropDownAttachedToBody:true,
 																	selectFirstIfNull: false,
-																	required: isRequired,
+																	required: false,
 																	columns: [
 																		{ prop: 'optionText', length: 10 },
 																	]},
@@ -326,7 +324,7 @@
 																		option: option,
 																		enable: enable,
 																		readonly: readonly,
-																		required: $parent.isRequired},
+																		required: false},
 																		attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
 																</div>
 														</com:ko-if>
@@ -342,7 +340,7 @@
 																		enable: enable,
 																		readonly: readonly,
 																		immediate: false,
-																		required: $parent.isRequired},
+																		required: false},
 																		attr: { id: $parent.perInfoItemDefId, NameID: $parent.itemName }" />
 																</div>
 														</com:ko-if>
@@ -368,7 +366,7 @@
 							                                    "data-title": itemName,
 							                                    "data-code": itemCode,
 							                                    "data-category": ctgCode,
-	                                							"data-required": isRequired,
+	                                							"data-required": false,
 	                                							"data-defv": selectionName}'>#{i18n.getText('CPS009_37')}</button>
 														<span class="caret-right caret-inline"></span>
 														<span class="limited-label selectionName" data-bind="text: selectionName"></span>
