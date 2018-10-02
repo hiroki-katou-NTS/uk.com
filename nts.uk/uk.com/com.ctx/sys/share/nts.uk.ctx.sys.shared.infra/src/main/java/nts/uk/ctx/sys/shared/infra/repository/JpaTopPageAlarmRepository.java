@@ -37,15 +37,15 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	}
 	
 	// convert from domain to entity, this function created for request list No.477
-	private KrcstToppageAlarm toEntity(String executionLogId, String managerId){
+	private KrcstToppageAlarm toEntity(String executionLogId, String managerId, int executionContent, int isCancelled){
 		val entity = new KrcstToppageAlarm();
 		entity.executionLogId = executionLogId;
 		entity.companyId = AppContexts.user().companyId();
-		entity.executionContent = 1;
-		entity.existenceError = 0;
-		entity.finishDateTime = GeneralDateTime.now();
-		entity.isCancelled = 0;
 		entity.managerId = managerId;
+		entity.executionContent = executionContent;
+		entity.existenceError = 1;
+		entity.finishDateTime = GeneralDateTime.now();
+		entity.isCancelled = isCancelled;
 		entity.rogerFlag = 0;
 		return entity;
 	}
@@ -122,8 +122,8 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 
 	// function insert for request list 477
 	@Override
-	public void insertTopPage(String executionLogId, String managerId) {
-		KrcstToppageAlarm entity = toEntity(executionLogId, managerId);
+	public void insertTopPage(String executionLogId, String managerId, int executionContent, int isCancelled) {
+		KrcstToppageAlarm entity = toEntity(executionLogId, managerId, executionContent, isCancelled);
 		this.commandProxy().insert(entity);
 	}
 
