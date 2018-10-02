@@ -233,6 +233,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         itemInputName: any = [];
 
+        periodCdl027: KnockoutObservable<any> = ko.observable({});
         constructor(dataShare: any) {
             var self = this;
 
@@ -2029,6 +2030,74 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         });
                     }
                 });
+            }
+        }
+        
+        historyModification(){
+            let self = this;
+            if (self.displayFormat() == 0) {
+                let listEmployee = [];
+                listEmployee.push(self.selectedEmployee());
+                let params: Params = { 
+                    pgid: __viewContext.program.programId, 
+                    functionId: 2, 
+                    listEmployeeId: listEmployee, 
+                    period: self.dateRanger(), 
+                    displayFormat: self.displayFormat(),
+                };
+                setShared("CDL027Params", params);
+                modal("com", "/view/cdl/027/a/index.xhtml");
+            }else if(self.displayFormat() == 1){
+                let listEmployee = [];
+                for(let i = 0; i < self.dailyPerfomanceData().length;i++){
+                    let check =false;
+                    for(let j = 0;j<listEmployee.length;j++){
+                        if(self.dailyPerfomanceData()[i].employeeId == listEmployee[j]){
+                            check = true;
+                            break;    
+                        }    
+                    }
+                    if(!check){
+                         listEmployee.push(self.dailyPerfomanceData()[i].employeeId);   
+                    }    
+                }
+                
+                let params: Params = { 
+                    pgid: __viewContext.program.programId, 
+                    functionId: 2, 
+                    listEmployeeId: listEmployee, 
+                    period: self.periodCdl027(),  
+                    displayFormat: self.displayFormat(),
+                };
+                params.period = { startDate: moment(self.selectedDate()).format("YYYY/MM/DD"),
+                                              endDate: moment(self.selectedDate()).format("YYYY/MM/DD")};
+                setShared("CDL027Params", params);
+                modal("com", "/view/cdl/027/a/index.xhtml");
+            }else{
+                let listEmployee = [];
+                for(let i = 0; i < self.dailyPerfomanceData().length;i++){
+                    let check =false;
+                    for(let j = 0;j<listEmployee.length;j++){
+                        if(self.dailyPerfomanceData()[i].employeeId == listEmployee[j]){
+                            check = true;
+                            break;    
+                        }    
+                    }
+                    if(!check){
+                         listEmployee.push(self.dailyPerfomanceData()[i].employeeId);   
+                    }    
+                }
+                
+                let params: Params = { 
+                    pgid: __viewContext.program.programId, 
+                    functionId: 2, 
+                    listEmployeeId: listEmployee, 
+                    period: self.dateRanger(),
+                    displayFormat: self.displayFormat(),
+                };
+                setShared("CDL027Params", params);
+                modal("com", "/view/cdl/027/a/index.xhtml");
+            
             }
         }
 
@@ -4383,4 +4452,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.clickErrorRefer = false;
         } 
     } 
+    
+    interface Params {
+        pgid: string; //__viewContext.program.programId
+        functionId: number;
+        listEmployeeId: Array<string>;
+        period: any; // {startDate: string, endDate: string};  {startDate: string 'YYYYMM', endDate: string 'YYYYMMDD'} only from the monthly correction to calling
+        displayFormat: number;
+    }
 }
