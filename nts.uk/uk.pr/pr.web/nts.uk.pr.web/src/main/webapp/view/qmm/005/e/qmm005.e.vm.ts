@@ -87,6 +87,11 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                 }
                 self.mapLabel(tranferModel);
                 dfd.resolve();
+                if ($('#E2_3')){
+                    setTimeout(function () {
+                        $('#E2_3').focus();
+                    }, 350);
+                }
             });
             return dfd.promise();
         }

@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
+    import hasError = nts.uk.ui.errors.hasError;
     const SOCIAL_INSU_COLLE_MONTH_INDEX = 2;
     const DETAIL_PRINTING_MON_INDEX = 0;
     const SOCI_INSU_BASE_YEAR_INDEX = 1;
@@ -50,6 +51,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
+                    nts.uk.ui.errors.clearAll();
                 }
             });
         }
@@ -104,7 +106,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     _.forEach(setDaySupport, function (value, key) {
                         if (key == "processDate") {
                             let year = value.toString().substr(0, 4);
-                            array.push(new model.ItemModel(year, year + '(' + nts.uk.time.yearInJapanEmpire(year).toString().split(' ').join('') + ')'));
+                            array.push(new model.ItemModel(year, year + '(' + nts.uk.time.yearInJapanEmpire(value.toString()).toString().split(' ').slice(0, 3).join('') + ')'));
                         }
                     });
                 });
@@ -188,7 +190,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         //screen E in insert reflect
         reflectionPressingProcess() {
             var self = this;
-            // check processingYear valid
+            nts.uk.ui.errors.clearAll();
+            $('input#B3_4').ntsError('check');
+            if(hasError()){
+                return;
+            }
             if (self.processingYear()) {
                 var array = [];
                 service.getValPayDateSet(self.processCateNo).done(function (data) {
@@ -369,6 +375,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         registration() {
             let self = this;
+            $('.nts-input').trigger("validate");
+            if(hasError()){
+                return;
+            }
             //    check input year valid
             let arrayItem = [];
             let index = 0;
