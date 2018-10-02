@@ -6,21 +6,3 @@
     text-align: center;
     padding-top: 10px;
 }
-
-#f-swap-list .ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header {
-    text-align: center;
-}
-
-#f-swap-list .ui-iggrid-rowselector-header .ui-igcheckbox-normal {
-    float: none;
-    margin-top: 3px;
-}
-
-#f-swap-list .ui-iggrid-rowselector-class .ui-igcheckbox-normal {
-    float: none;
-    margin-top: 3px;
-}
-
-#f-swap-list .ui-igcheckbox-normal-on {
-    margin-left: -8px;
-}

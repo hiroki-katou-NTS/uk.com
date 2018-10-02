@@ -16,10 +16,15 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
             self.itemShared = getShared("QMM005_output_F");
             this.itemsSwap(self.itemShared.employeeList);
             this.columns = ko.observableArray([
-                { headerText: resource.getText('QMM005_93'), key: 'code', width: 90 },
-                { headerText: resource.getText('QMM005_94'), key: 'name', width: 200  }
+                {headerText: resource.getText('QMM005_93'), key: 'code', width: 90},
+                {headerText: resource.getText('QMM005_94'), key: 'name', width: 200}
             ]);
             this.currentCodeListSwap = ko.observableArray(self.itemShared.employeeSelectedList);
+            if ($('#F1_2-grid1_container')) {
+                setTimeout(function () {
+                    $('#F1_2-grid1_container').focus();
+                }, 550);
+            }
         }
 
         startPage(): JQueryPromise<any> {
@@ -34,7 +39,10 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
 
         submit() {
             var self = this;
-            setShared("QMM005F_outParams", {processCateNo: self.itemShared.processCateNo, returnList: self.currentCodeListSwap()});
+            setShared("QMM005F_outParams", {
+                processCateNo: self.itemShared.processCateNo,
+                returnList: self.currentCodeListSwap()
+            });
             close();
 
         }
