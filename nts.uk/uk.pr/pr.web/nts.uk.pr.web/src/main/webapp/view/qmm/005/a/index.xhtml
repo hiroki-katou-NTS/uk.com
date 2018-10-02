@@ -89,7 +89,7 @@
                         <td>
                             <div class="flex valign-center">
                             <!--A2_11 処理年一覧-->
-                            <div tabindex="6" id="combo-box" data-bind="ntsComboBox: {
+                            <div tabindex="6" id="processYears" data-bind="ntsComboBox: {
                                 name: '#[#QMM005_30]',
                                  width:78,
                                 options: years,
@@ -106,7 +106,7 @@
                             <span
                                 class="caret-right caret-inline"></span>
                             <!--A2_14 次回給与支払日-->
-                            <div tabindex="7" data-bind="ntsComboBox: {
+                            <div tabindex="7" id="yearMonthProcess" data-bind="ntsComboBox: {
                             name: '#[#QMM005_47]',
                             width:270,
                             options: monthsSubcriceYear,
