@@ -101,6 +101,16 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     self.getLogData();    
                 }
             });
+            
+            self.employeeIDS.subscribe(value => {
+                if(value != null && value.length > 0) {
+                    self.getLogDataAgain(value).done(employeeIDS => {
+                        if(employeeIDS.length > 0) {
+                             self.employeeIDS(employeeIDS);
+                            } 
+                        });
+                    }
+                });
         }
 
         startPage(): JQueryPromise<any> {
@@ -268,7 +278,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.monthlyAggregateEndTime(self.getAsyncData(info.taskDatas, "monthlyAggregateEndTime").valueAsString);
                             
                             // Get Log data
-                            self.getLogData();
+                            //self.getLogData();
                             self.enableCancelTask(false);
                             
                             let stopped = 0;
@@ -331,15 +341,15 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                    return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
                 });
                 self.errorMessageInfo(data);
-                self.dataExport(res);
-                if(res.listEmployee.lenght > 0) {
+                self.dataExport(data);
+                if(res.listEmployee.length > 0) {
                    self.employeeIDS(res.listEmployee);
-                   LabelGetLogDataAgain : getLogDataAgain(res.listEmployee).done((EmpIDS) => {
-                       if(EmpIDS.lenght > 0){
-                           self.employeeIDS(EmpIDS);
-                           continue LabelGetLogDataAgain;
-                       } 
-                    });
+//                   LabelGetLogDataAgain : getLogDataAgain(res.listEmployee).done((EmpIDS) => {
+//                       if(EmpIDS.lenght > 0){
+//                           self.employeeIDS(EmpIDS);
+//                           continue LabelGetLogDataAgain;
+//                       } 
+//                    });
                 }
             });
         }
@@ -359,7 +369,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 });
                 self.errorMessageInfo.push(data);
                 self.dataExport.push(data);
-                dfd.resolve(res.listEmployee);  
+                dfd.resolve(res.listEmployee);
             });
             return dfd.promise();
         }
