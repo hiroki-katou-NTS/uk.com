@@ -2864,10 +2864,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			RemarksContentChoice choice, List<ErrorAlarmWorkRecordCode> lstOutputErrorCode, RemarkQueryDataContainer remarkDataContainer) {
 		PrintRemarksContent printRemarksContent = null;
 		List<EmployeeDailyPerError> errorList = remarkDataContainer.getErrorList();
-		List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
+		//List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());
 		
 		// 遅刻早退
-		if (errorList.size() > 0 && (errorCodeList.contains(SystemFixedErrorAlarm.LEAVE_EARLY.value) || errorCodeList.contains(SystemFixedErrorAlarm.LATE.value))) {
+		if (errorList.size() > 0) {
 			// Late come
 			boolean isLateCome = false, isEarlyLeave = false;
 			Optional<EmployeeDailyPerError> optErrorLateCome = errorList.stream()
@@ -2929,58 +2929,42 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		// 事前申請超過
-		if (errorList.isEmpty() && (errorCodeList.contains(SystemFixedErrorAlarm.PRE_OVERTIME_APP_EXCESS.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PRE_HOLIDAYWORK_APP_EXCESS.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PRE_FLEX_APP_EXCESS.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PRE_MIDNIGHT_EXCESS.value))) {
-			Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_OVERTIME_APP_EXCESS.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_HOLIDAYWORK_APP_EXCESS.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_FLEX_APP_EXCESS.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_MIDNIGHT_EXCESS.value)).findFirst();
-			if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.EXCEED_BY_APPLICATION)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.EXCEED_BY_APPLICATION.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorExceedByApplication = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_OVERTIME_APP_EXCESS.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_HOLIDAYWORK_APP_EXCESS.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_FLEX_APP_EXCESS.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_MIDNIGHT_EXCESS.value)).findFirst();
+		if (optErrorExceedByApplication.isPresent() && (choice == RemarksContentChoice.EXCEED_BY_APPLICATION)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.EXCEED_BY_APPLICATION.value);
 		}
 		
 		// 打刻順序不正
-		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)) {
-			Optional<EmployeeDailyPerError> optErrorIncorrectStamp = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)).findFirst();
-			if (optErrorIncorrectStamp.isPresent() && (choice == RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorIncorrectStamp = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)).findFirst();
+		if (optErrorIncorrectStamp.isPresent() && (choice == RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.IMPRINTING_ORDER_NOT_CORRECT.value);
 		}
 		
 		// 打刻漏れ
-		if (errorList.isEmpty() && (errorCodeList.contains(SystemFixedErrorAlarm.TIME_LEAVING_STAMP_LEAKAGE.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PCLOG_STAMP_LEAKAGE.value)
-								 ||  errorCodeList.contains(SystemFixedErrorAlarm.ENTRANCE_STAMP_LACKING.value))) {
-			Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PCLOG_STAMP_LEAKAGE.value)
-							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.ENTRANCE_STAMP_LACKING.value)).findFirst();
-			if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.ENGRAVING)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.ENGRAVING.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PCLOG_STAMP_LEAKAGE.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.ENTRANCE_STAMP_LACKING.value)).findFirst();
+		if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.ENGRAVING)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.ENGRAVING.value);
 		}
 		
 		// 二重打刻
-		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.DOUBLE_STAMP.value)) {
-			Optional<EmployeeDailyPerError> optErrorDoubleStamp = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DOUBLE_STAMP.value)).findFirst();
-			if (optErrorDoubleStamp.isPresent() && (choice == RemarksContentChoice.DOUBLE_ENGRAVED)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DOUBLE_ENGRAVED.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorDoubleStamp = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DOUBLE_STAMP.value)).findFirst();
+		if (optErrorDoubleStamp.isPresent() && (choice == RemarksContentChoice.DOUBLE_ENGRAVED)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DOUBLE_ENGRAVED.value);
 		}
 		
 		// 休日打刻
-		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.HOLIDAY_STAMP.value)) {
-			Optional<EmployeeDailyPerError> optErrorDoubleStamp = errorList.stream()
-					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.HOLIDAY_STAMP.value)).findFirst();
-			if (optErrorDoubleStamp.isPresent() && (choice == RemarksContentChoice.HOLIDAY_STAMP)) {
-				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.HOLIDAY_STAMP.value);
-			}
+		Optional<EmployeeDailyPerError> optErrorHolidayStamp = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.HOLIDAY_STAMP.value)).findFirst();
+		if (optErrorHolidayStamp.isPresent() && (choice == RemarksContentChoice.HOLIDAY_STAMP)) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.HOLIDAY_STAMP.value);
 		}
 		
 		return Optional.ofNullable(printRemarksContent);
