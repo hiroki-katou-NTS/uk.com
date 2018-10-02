@@ -51,6 +51,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
+                    nts.uk.ui.errors.clearAll();
                 }
             });
         }
