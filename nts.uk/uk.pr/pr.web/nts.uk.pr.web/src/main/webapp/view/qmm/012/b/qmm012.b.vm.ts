@@ -266,6 +266,15 @@ module nts.uk.pr.view.qmm012.b {
                         command.itemRangeSet.alarmLowerRangeValueTime = null;
                         command.itemRangeSet.alarmLowerRangeValueNum = null;
                     }
+
+                    // set value cho ValueAtr
+                    if((command.statementItem.categoryAtr == model.CategoryAtr.ATTEND_ITEM) || (command.statementItem.categoryAtr == model.CategoryAtr.ATTEND_ITEM.toString())) {
+                        if((command.timeItemSet.timeCountAtr == model.TimeCountAtr.TIMES) || (command.timeItemSet.timeCountAtr == model.TimeCountAtr.TIMES.toString())) {
+                            command.statementItem.valueAtr = 3;
+                        } else {
+                            command.statementItem.valueAtr = 2;
+                        }
+                    }
                     
                     block.invisible();
                     service.registerStatementItemData(command).done(function() {
