@@ -1,0 +1,16 @@
+.padding-item {
+    padding: 10px 0 0 10px;
+}
+
+#C1_8 {
+    margin-left: 175px;
+    margin-top:10px;
+}
+
+#C1_7 {
+    margin-left: 90px;
+}
+
+.datepicker-container {
+    z-index: 10010;
+}

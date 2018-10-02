@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 430, height: 400 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm007.a.vm.js" />
+        <com:scriptfile path="qmm007.a.start.js" />
+        <com:scriptfile path="qmm007.a.service.js" />
+        <com:stylefile path="qmm007.a.style.css" />
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div id= "functions-area-bottom">
+            <!-- F2_1 登録 -->
+            <button id="F2_1" tabindex="3" class="proceed large"
+                    data-bind="click: openFscreen,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_44')}</button>
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
