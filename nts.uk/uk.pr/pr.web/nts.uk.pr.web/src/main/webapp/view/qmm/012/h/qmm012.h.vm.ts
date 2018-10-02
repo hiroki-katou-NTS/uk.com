@@ -90,7 +90,10 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
         execution() {
             let self = this;
             errors.clearAll();
-            $('.nts-input').trigger("validate");
+
+            if (self.isEnableYearPeriod()) {
+                $('.nts-input').trigger("validate");
+            }
 
             if (errors.hasError() === false && self.isValidForm()) {
                 block.invisible();
