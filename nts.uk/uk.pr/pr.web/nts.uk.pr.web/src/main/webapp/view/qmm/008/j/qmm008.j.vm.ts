@@ -28,9 +28,14 @@ module nts.uk.pr.view.qmm008.j {
                     for (var i = 0; i < response.length; i++) {
                             self.dataList.push(new RowData(response[i]));
                      }
+                   setTimeout(function () {
+                       $(".nts-fixed-table").attr('tabindex', '0');
+                       $(".nts-fixed-table").focus();
+                   }, 1000);
                 });
-                $(".focusTest").focus();
-               $("#fixed-table").ntsFixedTable({ height: 349, width: 900 });
+
+               $("#J3_12").ntsFixedTable({ height: 349, width: 500 });
+
            }
            
             

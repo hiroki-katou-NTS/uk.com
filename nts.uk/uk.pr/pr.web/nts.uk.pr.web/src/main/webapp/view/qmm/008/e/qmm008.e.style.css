@@ -19,18 +19,8 @@
 	margin-left: 445px;
 }
 
-.nts-fixed-header-wrapper, .nts-fixed-body-wrapper {
-	width: 1017px !important;
-}
-
 .td-widget {
     color: #000;
     background-color: #CFF1A5;
 }
 
-.nts-fixed-body-container {
-	max-width: none !important;
-}
-.nts-fixed-header-container {
-	max-width: none !important;
-}

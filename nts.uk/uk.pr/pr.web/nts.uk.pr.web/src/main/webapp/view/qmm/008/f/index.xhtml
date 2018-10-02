@@ -25,7 +25,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div style="margin-bottom: 15px;margin-left: 60px;">
+				<div style="margin-bottom: 15px;margin-left: 40px;">
 					<button class="proceed" id="F1_1" tabindex="1"
 						data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 					<button id="F1_2" tabindex="2" data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
@@ -33,7 +33,7 @@
 					<button id="F1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
 				</div>
 			</div>
-			<div id="contents-area" style="margin-left: 70px;">
+			<div id="contents-area" style="margin-left: 50px;">
 				<div>
 					<div id="F2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
 					<span style="margin-bottom: 15px;" id="F2_2"
@@ -47,21 +47,22 @@
 						style="margin-bottom: 15px;" id="F2_7"
 						data-bind="text: displayEnd"></span>
 				</div>
-				<div data-bind="if: !display()">
-					<table id="fixed-table1" >
+				<div data-bind="if: !display()" id="test">
+					<div class="flex">
+						<table id="fixed-table1" >
 						<colgroup>
 							<col width="30px" />
 							<col width="60px" />
 							<col width="70px" />
 							<col width="70px" />
-							<col width="90px" />
-							<col width="90px" />
-							<col width="90px" />
-							<col width="90px" />
-							<col width="90px" />
-							<col width="90px" />
-							<col width="90px" />
-							<col width="90px" />
+							<col width="92px" />
+							<col width="92px" />
+							<col width="92px" />
+							<col width="92px" />
+							<col width="92px" />
+							<col width="92px" />
+							<col width="92px" />
+							<col width="92px" />
 						</colgroup>
 						<thead>
 						<tr>
@@ -150,7 +151,7 @@
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -163,7 +164,7 @@
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -176,7 +177,7 @@
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -189,7 +190,7 @@
 							<td>
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -202,7 +203,7 @@
 							<td data-bind="css: { hidden: $parent.display() }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -215,7 +216,7 @@
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -227,7 +228,7 @@
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -240,7 +241,7 @@
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input data-bind="ntsNumberEditor: {
  													option: {
- 														width: '71px',
+ 														width: '65px',
 														decimallength: 0,
 														grouplength: 3
 													},
@@ -252,10 +253,12 @@
 						</tr>
 						</tbody>
 					</table>
+					</div>
 				</div>
 
 
 				<div data-bind="if: display()">
+					<div class="flex">
 					<table id="fixed-table"  >
 						<colgroup>
 							<col width="30px" />
@@ -384,6 +387,7 @@
 						</tr>
 						</tbody>
 					</table>
+					</div>
 				</div>
 
 			</div>

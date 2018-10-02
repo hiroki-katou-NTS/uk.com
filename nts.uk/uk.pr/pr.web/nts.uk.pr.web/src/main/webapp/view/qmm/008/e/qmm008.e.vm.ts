@@ -29,8 +29,15 @@ module nts.uk.pr.view.qmm008.e {
                        self.dataList.push(new RowData(response.cusDataDtos[i]));
                    }
                    self.header(response.premiumRate);
+                   setTimeout(function () {
+                       $(".flex").attr('tabindex', '0');
+                       $(".flex").focus();
+                   }, 1000);
+
                });
-               $("#fixed-table").ntsFixedTable({ height: 349, width: 900 });
+               // $("#fixed-table").ntsFixedTable({ height: 349, width: 1220 });
+               $("#fixed-table").ntsFixedTable({ height: 349, width: 1020 });
+
            }
            
            genNumber(itemNumber: any, decimalPart: any) {
