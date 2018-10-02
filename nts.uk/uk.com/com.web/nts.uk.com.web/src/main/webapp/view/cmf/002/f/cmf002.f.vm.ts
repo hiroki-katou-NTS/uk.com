@@ -136,7 +136,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                         block.clear();
                     });
                     } else {
-                    alertError({ messageId: 'MAX 999 dang QA' });
+                    alertError({ messageId: 'Msg_1444' });
                     block.clear();
                 }
             } else {
