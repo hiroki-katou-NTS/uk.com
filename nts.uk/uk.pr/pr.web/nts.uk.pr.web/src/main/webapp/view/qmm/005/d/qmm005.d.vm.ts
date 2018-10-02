@@ -380,6 +380,10 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
         saveCharacterSetting(): void {
             let self = this;
+            $('.nts-input').trigger("validate");
+            if(nts.uk.ui.errors.hasError()){
+                return;
+            }
             this.saveToDB();
         }
 

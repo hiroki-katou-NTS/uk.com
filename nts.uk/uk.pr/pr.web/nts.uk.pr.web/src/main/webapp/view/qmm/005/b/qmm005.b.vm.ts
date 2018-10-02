@@ -117,6 +117,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         self.selectProcessingYear(self.processingYearList()[0].code);
                     }
                 }
+                if ($('#B2_2_container')) {
+                    $('#B2_2_container').focus();
+                }
             });
         }
 

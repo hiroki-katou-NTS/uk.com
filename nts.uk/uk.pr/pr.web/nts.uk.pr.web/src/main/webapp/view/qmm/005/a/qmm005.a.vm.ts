@@ -232,6 +232,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 }
                 console.log(self.itemBinding());
                 console.log(self.itemTable);
+                $('#A2_2 button').eq(0).focus();
+
+
             });
             dfd.resolve();
             return dfd.promise();
@@ -256,6 +259,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"});
             }).fail(function (error) {
             });
+            $('#A2_2 button').eq(0).focus();
         }
     }
 

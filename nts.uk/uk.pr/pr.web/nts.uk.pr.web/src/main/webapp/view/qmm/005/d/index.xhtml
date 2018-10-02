@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
 
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 720, height: 450};</script>
+        <script>var dialogSize = {width: 750, height: 450};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm005.d.start.js"/>
@@ -27,7 +27,7 @@
                  data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>
 
             <!-- D2_2  処理区分名称 -->
-            <input id="D2_2" data-bind="ntsTextEditor: {value: processName ,constraint: 'ProcessDivisionName'}"
+            <input  id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessDivisionName', name: '#[QMM005_23]'}"
                    style="width: 150px"/>
 
             <span data-bind="if : mode==0" style="margin-left: 30px">
@@ -141,13 +141,13 @@
                     <!-- D5_2 -->
                     <td style="text-align: right;">
                         <span style="width: 45px"><input
-                                data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint:'ReqStandardWorkingDays' }"
+                                data-bind="ntsNumberEditor: {value: numberOfWorkingDays,required:true, constraint:'ReqStandardWorkingDays' name:'#[QMM005_23]' }"
                                 style="width: 45px; text-align: left !important;"/></span>
 
                     </td>
                     <td>
                         <!--D5_3-->
-                        <span class="label">#{i18n.getText('QMM005_40')}</span>
+                        <span class="label" style="margin-left: 10px;">#{i18n.getText('QMM005_40')}</span>
                     </td>
 
 
@@ -537,7 +537,7 @@
         </div>
         <div id="functions-area-bottom">
             <button class="x-large proceed "
-                    data-bind="click: saveCharacterSetting">#{i18n.getText('QMM005_1')}</button>
+                    data-bind="click: saveCharacterSetting,enable: $root.errors.isEmpty" >#{i18n.getText('QMM005_1')}</button>
             <button class="large"
                     data-bind="click: cancelCharacterSetting">#{i18n.getText('QMM005_23')}</button>
         </div>
