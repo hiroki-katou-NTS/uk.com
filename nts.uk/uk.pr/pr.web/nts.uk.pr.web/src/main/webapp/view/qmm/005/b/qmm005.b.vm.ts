@@ -68,6 +68,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         toggle(): void {
             this.show(!this.show());
+            if ($('#B5_1')) {
+                $('#B5_1').focus();
+            }
         }
 
         cancel() {
@@ -162,8 +165,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         firstArray[i]["specificationPrintDate"] = secondArray[i]["specificationPrintDate"];
                     }
                     self.settingPaymentList(firstArray);
-                    if ($("#B2_2  tbody  tr:nth-child(1)  td")[0]) {
-                        $("#B2_2  tbody  tr:nth-child(1)  td")[0].focus();
+                    if ($('#B2_2_container')) {
+                        $('#B2_2_container').focus();
                     }
                 } else {
                     self.blankData();
@@ -206,6 +209,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             array.push(objItem);
                         }
                         self.settingPaymentList(array);
+                    if ($('#B3_6')) {
+                        $('#B3_6').focus();
+                    }
                     }
                 );
             }
@@ -234,6 +240,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             });
             modal("/view/qmm/005/e/index.xhtml").onClosed(() => {
                 self.eScreenReflect();
+                if ($('#B3_7')) {
+                    $('#B3_7').focus();
+                }
             });
         }
 
