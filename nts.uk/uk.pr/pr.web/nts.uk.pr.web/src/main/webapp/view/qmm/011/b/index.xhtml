@@ -20,13 +20,13 @@
 				data-bind="ntsPanel:{width: '220px', height: '420px', direction: 'none', visible: true}">
 					<div id="action">
 						<!-- B1_2 履歴追加 -->
-						<button id ="B1_2"  tabindex="1" data-bind="click: openEscreen , enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
+						<button id ="B1_2"  tabindex="4" data-bind="click: openEscreen , enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
 						<!-- B1_3 履歴編集 -->
-						<button id ="B1_3"  tabindex="2" data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
+						<button id ="B1_3"  tabindex="5" data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
 					</div>
 					<div class = "flex">
 						<!--B1_4 雇用保険料率一覧 -->
-						<table id="B1_4" tabindex="3"
+						<table id="B1_4" tabindex="6"
 								data-bind="ntsGridList: {
 												name: '#QMM011_8',
 												height: 300,
@@ -63,7 +63,7 @@
 				<div id ="B2_6" class="set-row" style="width: 103%">
 					<hr />
 				</div>
-				<table id="B3_1" tabindex="-1" style="margin-top: 20px;">
+				<table id="B3_1" tabindex="7" style="margin-top: 20px;">
 					<colgroup>
 					<col width="120px" />
 					<col width="150px"/>

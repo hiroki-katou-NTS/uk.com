@@ -99,18 +99,18 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         }
         
         setTabIndex(id: number, stt: number){
-                if (id == 2 && stt == 2) return 5;
-                if (id == 1 && stt == 2) return 9;
-                if (id == 0 && stt == 2) return 13;
-                if (id == 2 && stt == 1) return 4;
-                if (id == 1 && stt == 1) return 8;
-                if (id == 0 && stt == 1) return 12;
-                if (id == 2 && stt == 3) return 6;
-                if (id == 1 && stt == 3) return 10;
-                if (id == 0 && stt == 3) return 14;
-                if (id == 2 && stt == 4) return 7;
-                if (id == 1 && stt == 4) return 11;
-                if (id == 0 && stt == 4) return 15;
+                if (id == 2 && stt == 2) return 9;
+                if (id == 1 && stt == 2) return 13;
+                if (id == 0 && stt == 2) return 17;
+                if (id == 2 && stt == 1) return 8;
+                if (id == 1 && stt == 1) return 12;
+                if (id == 0 && stt == 1) return 16;
+                if (id == 2 && stt == 3) return 10;
+                if (id == 1 && stt == 3) return 14;
+                if (id == 0 && stt == 3) return 18;
+                if (id == 2 && stt == 4) return 11;
+                if (id == 1 && stt == 4) return 15;
+                if (id == 0 && stt == 4) return 19;
         }
         
         convertToCommand(dto :Array<EmpInsurPreRate>){

@@ -301,6 +301,19 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             yearMonth = yearMonth.slice(0, 4) + yearMonth.slice(5, 7);
             return yearMonth;
         }
+        
+        setTabIndex(id: number) {
+            if (id == 1) return 24;
+            if (id == 2) return 25;
+            if (id == 3) return 26;
+            if (id == 4) return 27;
+            if (id == 5) return 28;
+            if (id == 6) return 29;
+            if (id == 7) return 30;
+            if (id == 8) return 31;
+            if (id == 9) return 32;
+            if (id == 10) return 33;
+        }
 
         setOccAccIsHis(emplInsurHis: IOccAccIsHis) {
             let self = this;
