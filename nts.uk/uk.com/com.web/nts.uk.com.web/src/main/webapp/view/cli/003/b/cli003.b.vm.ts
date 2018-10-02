@@ -722,6 +722,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -775,6 +777,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                         filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -862,6 +866,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -925,7 +931,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var header = ui.element.find("th[role='columnheader']");
                 ui.element.parent().addClass("default-overflow");
                 ui.element.parent().css("overflow-x","");
-                let screenModel = new viewmodel.ScreenModel();
+
                 let helpButton = $('<button>', {
                     text: getText('?'),
                     'data-bind': 'ntsHelpButton: { textId: "CLI003_68", textParams: ["{#CLI003_68}"], position: "right center" }'
@@ -936,9 +942,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     var currentSetting = headerSetting[i];
 
                     if (currentSetting.headerText == textHeaderCheck) {
-                        var x = header.filter("th[aria-label='" + currentSetting.key + "']")
-                            .find(".ui-iggrid-headertext").text(currentSetting.headerText);
+                        var xHeader = header.filter("th[aria-label='" + currentSetting.key + "']").find(".ui-iggrid-headertext");
+                        var x = xHeader.text(currentSetting.headerText);
                         x.append(helpButton);
+                        xHeader.attr("id","help-button-id");
                     } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
@@ -947,6 +954,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 helpButton.click(function() {
                     var container = helpButton.closest(".igscroll-touchscrollable");
                     var tooltip = helpButton.parent().find(".nts-help-button-image");
+                    $(".ui-iggrid-header.ui-widget-header").css("overflow", "visible");
+                    $("#help-button-id").css({"overflow":"visible"});
+                    tooltip.css("width","350px");
                     if (tooltip.css("display") !== "none") {
                         container.addClass("default-overflow");
                         container.removeClass("overflow-show");
@@ -958,7 +968,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         container.css("overflow-x","auto");
                         $("#igGridLog").data("icon-showed", null);
                     }
-                })
+                });
                 //  binding new viewmodel for only button help
                 ko.applyBindings({}, helpButton[0]);
             });
@@ -990,6 +1000,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
             $(document).delegate("#igGridLog", "iggridresizingcolumnresizing", function(evt, ui) {
                 $(".ui-iggrid-scrolldiv.ui-widget-content.igscroll-touchscrollable.default-overflow").css("overflow-x", "auto");
+                $(".ui-iggrid-header.ui-widget-header").css({"width":"100% !important"}); // th
+                $(".ui-iggrid-headertext").css({"white-space":"nowrap","overflow":"hidden","display":"block"}); // span
             });
         }
 

@@ -252,10 +252,10 @@
 						<td data-bind="">#{i18n.getText('KTG029_44')}<span data-bind="text: yearlyHoliday.nextGrantDateInfo.remaining"></span>#{i18n.getText('KTG029_45')}</td>
 					</tr>
 				</table>
-				<table class="widget-table fix" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHaftDayOff, with:dataRecord()">					
+				<table class="widget-table fix" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHoursOfHoliday, with:dataRecord()">					
 					<!-- A17_8 -->
 					<tr>
-						<td data-bind="" class="tab limited-label" >#{i18n.getText('KTG029_52')}</td>
+						<td data-bind="" class="tab limited-label" >#{i18n.getText('KTG029_52')}<span data-bind="visible: yearlyHoliday.showGrantDate">#{i18n.getText('KTG029_65')}</span></td>
 						<td data-bind="">#{i18n.getText('KTG029_47')}<span data-bind="text: yearlyHoliday.nextGrantDateInfo.timeYearLimit"></span>#{i18n.getText('KTG029_48')}</td>
 					</tr>
 				</table>
@@ -266,7 +266,7 @@
 						<td data-bind="" class="limited-label"><span data-bind="text: yearlyHoliday.afterGrantDateInfo.day"></span>#{i18n.getText('KTG029_60')}<span data-bind="visible: yearlyHoliday.afterGrantDateInfo.displayHours">#{i18n.getText('KTG029_42')}<span data-bind="text: yearlyHoliday.afterGrantDateInfo.hours"></span></span></td>
 					</tr>
 				</table>
-				<table class="widget-table fix3" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHoursOfHoliday, with:dataRecord()">
+				<table class="widget-table fix3" data-bind="visible: displayYearlyHoliDay &amp;&amp; displayHaftDayOff, with:dataRecord()">
 					<!-- A17_10 -->
 					<tr data-bind="visible: yearlyHoliday.showGrantDate">
 						<td data-bind="" class="tab" >#{i18n.getText('KTG029_54')}</td>

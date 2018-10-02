@@ -23,5 +23,7 @@ public interface CompanyMonthlyItemService {
 	 */
 	List<AttItemName> getMonthlyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
 			List<MonthlyAttendanceItemAtr> itemAtrs);
+	
+	List<AttItemName> getMonthlyItemsNew(String cid, Optional<String> authorityId);
 
 }

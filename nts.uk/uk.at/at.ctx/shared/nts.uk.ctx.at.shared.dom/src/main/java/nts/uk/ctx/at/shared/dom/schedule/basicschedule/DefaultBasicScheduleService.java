@@ -9,6 +9,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
@@ -28,7 +30,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 
  * @author sonnh1
  *
- */
+ */	
+@Transactional(value = TxType.NOT_SUPPORTED)
 @Stateless
 public class DefaultBasicScheduleService implements BasicScheduleService {
 
@@ -278,8 +281,6 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 
 	/*
-	 * 勤務種類と職業時間帯のペアチェック
-	 * 
 	 * (non-Javadoc)
 	 * 
 	 * 

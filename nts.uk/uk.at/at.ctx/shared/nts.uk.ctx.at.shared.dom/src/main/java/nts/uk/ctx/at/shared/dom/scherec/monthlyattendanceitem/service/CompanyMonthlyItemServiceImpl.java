@@ -35,8 +35,8 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 	private AtItemNameAdapter atItemNameAdapter;
 
 	@Override
-	public List<AttItemName> getMonthlyItems(String cid, Optional<String> authorityId,
-			List<Integer> attendanceItemIds, List<MonthlyAttendanceItemAtr> itemAtrs) {
+	public List<AttItemName> getMonthlyItems(String cid, Optional<String> authorityId, List<Integer> attendanceItemIds,
+			List<MonthlyAttendanceItemAtr> itemAtrs) {
 		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
 		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
 		List<Integer> monthlyAttendanceItemIds = new ArrayList<>();
@@ -76,6 +76,32 @@ public class CompanyMonthlyItemServiceImpl implements CompanyMonthlyItemService 
 			}
 		}
 		return monthlyAttItem;
+	}
+
+	@Override
+	public List<AttItemName> getMonthlyItemsNew(String cid, Optional<String> authorityId) {
+		List<AttItemName> listAttItemName = new ArrayList<>();
+		if (authorityId.isPresent()) {
+			Optional<MonthlyItemControlByAuthority> itemAuthority = monthlyItemControlByAuthRepository
+					.getMonthlyAttdItem(cid, authorityId.get());
+			if (!itemAuthority.isPresent()) {
+				return Collections.emptyList();
+			}
+			for(DisplayAndInputMonthly displayAndInputMonthly : itemAuthority.get().getListDisplayAndInputMonthly()) {
+				AttItemName attItemName = new AttItemName();
+				attItemName.setAttendanceItemId(displayAndInputMonthly.getItemMonthlyId());
+				AttItemAuthority auth = new AttItemAuthority();
+				auth.setToUse(displayAndInputMonthly.isToUse());
+				auth.setYouCanChangeIt(displayAndInputMonthly.getInputControlMonthly().isYouCanChangeIt());
+				auth.setCanBeChangedByOthers(displayAndInputMonthly.getInputControlMonthly().isCanBeChangedByOthers());
+				attItemName.setAuthority(auth);
+				
+				listAttItemName.add(attItemName);
+			}
+			return listAttItemName;
+
+		}
+		return Collections.emptyList();
 	}
 
 }

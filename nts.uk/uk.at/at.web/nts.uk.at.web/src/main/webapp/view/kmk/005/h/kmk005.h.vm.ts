@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk005.h {
                 tree.alreadySettingList.removeAll();
 
                 model.wid.subscribe(x => {
-                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs'),
+                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
                         item = _.find(data, m => m.workplaceId == x);
 
                     if (item) {

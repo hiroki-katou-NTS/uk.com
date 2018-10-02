@@ -21,6 +21,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.ParamRegisterConfirmMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
@@ -29,11 +30,14 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommand;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommandHandler;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthlyPerformanceDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemCheckBox;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemDetail;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author sonnh1
@@ -45,8 +49,8 @@ public class MonModifyCommandFacade {
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 
-//	@Inject
-//	private MonthlyPerformanceCorrectionUpdateCommand monthlyPerformanceCorrectionUpdateCommand;
+	@Inject
+	private MonthlyPerformanceCorrectionUpdateCommand monthlyPerformanceCorrectionUpdateCommand;
 	
 	@Inject
 	private RegisterConfirmationMonth registerConfirmationMonth;
@@ -64,7 +68,7 @@ public class MonModifyCommandFacade {
 		Map<String, List<MPItemDetail>> mapItemDetail = dataParent.getMPItemDetails().stream()
 				.collect(Collectors.groupingBy(x -> x.getEmployeeId()));
 		List<MonthlyModifyQuery> listQuery = new ArrayList<>();
-		// new
+		// insert value
 		mapItemDetail.entrySet().forEach(item -> {
 			List<MPItemDetail> rowDatas = item.getValue();
 			listQuery.add(new MonthlyModifyQuery(rowDatas.stream().map(x -> {
@@ -76,38 +80,40 @@ public class MonModifyCommandFacade {
 		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery);
 		monthModifyCommandFacade.handleUpdate(listQuery);
 
-		// old
-//		dataParent.getMPItemDetails().forEach(item -> {
-//			ClosureDateDto closureDate = dataParent.getClosureDate();
-//			EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto = new EditStateOfMonthlyPerformanceDto(
-//					item.getEmployeeId(), new Integer(item.getItemId()),
-//					new DatePeriod(dataParent.getStartDate(), dataParent.getEndDate()),
-//					dataParent.getYearMonth().intValue(), dataParent.getClosureId(),
-//					new nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto(
-//							closureDate.getClosureDay().intValue(),
-//							closureDate.getLastDayOfMonth().booleanValue() ? 1 : 0),
-//					new Integer(0));
-//			this.monthlyPerformanceCorrectionUpdateCommand.handleAddOrUpdate(editStateOfMonthlyPerformanceDto);
-//		});
+		// insert edit state
+		dataParent.getMPItemDetails().forEach(item -> {
+			ClosureDateDto closureDate = dataParent.getClosureDate();
+			EditStateOfMonthlyPerformanceDto editStateOfMonthlyPerformanceDto = new EditStateOfMonthlyPerformanceDto(
+					item.getEmployeeId(), new Integer(item.getItemId()),
+					new DatePeriod(dataParent.getStartDate(), dataParent.getEndDate()),
+					dataParent.getYearMonth().intValue(), dataParent.getClosureId(),
+					new nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureDateDto(
+							closureDate.getClosureDay().intValue(),
+							closureDate.getLastDayOfMonth().booleanValue() ? 1 : 0),
+					new Integer(0));
+			this.monthlyPerformanceCorrectionUpdateCommand.handleAddOrUpdate(editStateOfMonthlyPerformanceDto);
+		});
 		
 		// insert sign
 		this.insertSign(dataParent);
 		
-		List<MPItemCheckBox> listRegister = new ArrayList<>();
-		List<MPItemCheckBox> listRemove = new ArrayList<>();
+		List<EmpPerformMonthParamImport> listRegister = new ArrayList<>();
+		List<EmpPerformMonthParamImport> listRemove = new ArrayList<>();
 		for(MPItemCheckBox mpi :dataParent.getDataCheckApproval()) {
+			EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(new YearMonth(dataParent.getYearMonth()), dataParent.getClosureId(),
+					dataParent.getClosureDate().toDomain(), dataParent.getEndDate(), mpi.getEmployeeId());
 			if(mpi.isValue()) {
-				listRegister.add(mpi);
+				listRegister.add(p);
 			}else {
-				listRemove.add(mpi);
+				listRemove.add(p);
 			}
 		}
 		
-		// insert approval
-		this.insertApproval(listRegister,dataParent.getEndDate());
-		// remove approval		
-		this.removeMonApproval(listRemove,dataParent.getEndDate());
-
+		// remove approval	- no. 529	
+		this.removeMonApproval(listRemove);
+		// insert approval - no. 528
+		this.insertApproval(listRegister);
+		
 		// add correction log
 //		ExecutorService executorService = Executors.newFixedThreadPool(1);
 //		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
@@ -164,24 +170,14 @@ public class MonModifyCommandFacade {
 		return listDtos;
 	}
 	
-	private void insertApproval(List<MPItemCheckBox> dataCheckApprovals,GeneralDate endDate) {
+	private void insertApproval(List<EmpPerformMonthParamImport> dataCheckApprovals) {
 		if(dataCheckApprovals.isEmpty()) return;
-		Set<Pair<String, GeneralDate>> empAndDates = new HashSet<>();
-		for(MPItemCheckBox dataCheckApproval : dataCheckApprovals) {
-			empAndDates.add(Pair.of(dataCheckApproval.getEmployeeId(), endDate));
-		}
-		registerDayApproval.registerMonApproval(AppContexts.user().employeeId(), 
-				new ArrayList<>(empAndDates), 2, AppContexts.user().companyId());
+		registerDayApproval.registerMonApproval(AppContexts.user().employeeId(), dataCheckApprovals);
 	}
 
-	public void removeMonApproval(List<MPItemCheckBox> dataCheckApprovals,GeneralDate endDate) {
+	public void removeMonApproval(List<EmpPerformMonthParamImport> dataCheckApprovals) {
 		if(dataCheckApprovals.isEmpty()) return;
-		Set<Pair<String, GeneralDate>> empAndDates = new HashSet<>();
-		for(MPItemCheckBox dataCheckApproval : dataCheckApprovals) {
-			empAndDates.add(Pair.of(dataCheckApproval.getEmployeeId(), endDate));
-		}
-		registerDayApproval.removeMonApproval(AppContexts.user().employeeId(), 
-				new ArrayList<>(empAndDates), 2, AppContexts.user().companyId());
+		registerDayApproval.removeMonApproval(AppContexts.user().employeeId(), dataCheckApprovals);
 	}
 	
 }

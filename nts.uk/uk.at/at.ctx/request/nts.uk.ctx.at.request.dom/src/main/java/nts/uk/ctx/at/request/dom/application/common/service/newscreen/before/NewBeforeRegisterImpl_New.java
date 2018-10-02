@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -319,7 +320,12 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		AppLimitSetting appLimitSetting = applicationSetting.getAppLimitSetting();
 		// ドメインモデル「申請制限設定」．日別実績が確認済なら申請できないをチェックする(check domain 「申請制限設定」．日別実績が確認済なら申請できない)
 		if (!appLimitSetting.getCanAppAchievementConfirm()) {
-			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 1);
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
+			try {
+				approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 1);
+			} catch (Exception e) {
+				approveRootStatus = Collections.emptyList();
+			}
 			if(CollectionUtil.isEmpty(approveRootStatus)){
 				return;
 			}
@@ -370,7 +376,12 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		if (!appLimitSetting.getCanAppAchievementMonthConfirm()) {
 			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする(check
 			// 「Imported(申請承認)「実績確定状態」．月別実績が確認済)
-			List<ApproveRootStatusForEmpImPort> approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+			List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
+			try {
+				approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 2);
+			} catch (Exception e) {
+				approveRootStatus = Collections.emptyList();
+			}
 			if(CollectionUtil.isEmpty(approveRootStatus)){
 				return;
 			}

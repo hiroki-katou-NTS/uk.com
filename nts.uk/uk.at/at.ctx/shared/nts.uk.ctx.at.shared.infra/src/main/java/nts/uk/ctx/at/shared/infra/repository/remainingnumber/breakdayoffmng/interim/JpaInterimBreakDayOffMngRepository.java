@@ -160,7 +160,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.unUsedDays = domain.getUnUsedDays().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.unOffsetDays = domain.getUnOffsetDay().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -230,7 +230,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			entity.selectedAtr = domain.getSelectedAtr().value;
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override

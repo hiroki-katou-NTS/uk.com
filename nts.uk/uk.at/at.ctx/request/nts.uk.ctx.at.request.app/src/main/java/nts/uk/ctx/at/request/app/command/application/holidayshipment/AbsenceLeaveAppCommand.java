@@ -16,7 +16,7 @@ public class AbsenceLeaveAppCommand {
 	private String wkTypeCD;
 	private int changeWorkHoursType;
 	private WkTimeCommand wkTime1;
-	private WkTimeCommand wkTime2;
+	//private WkTimeCommand wkTime2;
 	private String appID;
 	private String wkTimeCD;
 	private List<SubDigestionCmd> SubDigestions;

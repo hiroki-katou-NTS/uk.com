@@ -317,15 +317,19 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
-														   String searchWord,
 														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
 			if(frameTime.isOverLimitDivergenceTime()) {
-				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
-				if(itemId.isPresent())
-					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+				//残業時間
+				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
+				//振替時間
+				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
 			}
 		}
 		return returnErrorList;
@@ -336,15 +340,19 @@ public class OverTimeOfDaily {
 	 */
 	public List<EmployeeDailyPerError> checkPreOverTimeExcess(String employeeId,
 														   GeneralDate targetDate,
-														   String searchWord,
 														   AttendanceItemDictionaryForCalc attendanceItemDictionary,
 														   ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(OverTimeFrameTime frameTime:this.getOverTimeWorkFrameTime()) {
 			if(frameTime.isPreOverLimitDivergenceTime()) {
-				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getOverWorkFrameNo().v());
-				if(itemId.isPresent())
-					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
+				//残業時間
+				attendanceItemDictionary.findId("残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
+				//振替時間
+				attendanceItemDictionary.findId("振替残業時間"+frameTime.getOverWorkFrameNo().v()).ifPresent( itemId -> 
+						returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId))
+				);
 			}
 		}
 		return returnErrorList;

@@ -68,8 +68,8 @@ module ccg013.a.viewmodel {
                     webmenu.webMenuName(res.webMenuName);
                     webmenu.defaultMenu(res.defaultMenu);
                     self.isDefaultMenu(!!res.defaultMenu);
-                    webmenu.menuBars.removeAll();
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
+                        webmenu.menuBars.removeAll();
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
                             x.menuNames = menuNames;
                             webmenu.menuBars.push(new MenuBar(x));
@@ -465,7 +465,7 @@ module ccg013.a.viewmodel {
                 let id = randomId();
                 let data = getShared("CCG013B_MenuBar");
                 if (data) {
-                    webmenu.menuBars.push(new MenuBar({
+                    var newMenubar = new MenuBar({
                         menuBarId: id,
                         code: data.code,
                         menuBarName: data.nameMenuBar,
@@ -476,7 +476,9 @@ module ccg013.a.viewmodel {
                         textColor: data.letterColor,
                         displayOrder: self.currentWebMenu().menuBars().length + 1,
                         titleMenu: []
-                    }));
+                    });
+                    webmenu.menuBars.push(newMenubar);
+                    self.currentMenuBar(newMenubar);
                     self.setupMenuBar();
                     $("#menubar-tabs li#" + id + " a").trigger('click');
                 }
@@ -564,7 +566,7 @@ module ccg013.a.viewmodel {
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode(newWebMenuCode);
-                        self.currentWebMenuCode.valueHasMutated();
+                     //   self.currentWebMenuCode.valueHasMutated();
                     }
                 });
             });
@@ -598,12 +600,12 @@ module ccg013.a.viewmodel {
 
         openJdialog(id): any {
             var self = this;
-            var activeid = id;
+            var activeid = self.currentMenuBar().menuBarId();   
             var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
             var menu = _.find(datas, x => x.menuBarId == activeid);
-            //var dataTitleMenu: Array<any> = menu.titleMenu;
-            var titleMenu = _.find(datas, y => y.titleMenuId == id);
-            setShared("CCG013A_ToChild_TitleBar", titleMenu);
+            var dataTitleMenu: Array<any> = menu.titleMenu;
+            var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
+            setShared("CCG013A_ToChild_TitleBar", titleMenu);    
             modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013J_ToMain_TitleBar");
                 if (data) {
