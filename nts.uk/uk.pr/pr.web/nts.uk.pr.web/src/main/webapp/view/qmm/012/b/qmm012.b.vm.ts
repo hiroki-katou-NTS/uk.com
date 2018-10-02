@@ -229,10 +229,26 @@ module nts.uk.pr.view.qmm012.b {
                          oldSalaryId = nts.uk.util.randomId();
                          command.salaryItemId = oldSalaryId;
                     }
-                    
-                    // clear limitAmount value if not visible
-                    if((command.paymentItemSet.limitAmount != null) && (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT)) {
+
+                    // clear all tax value if not visible
+                    if((command.paymentItemSet.taxAtr == model.TaxAtr.LIMIT_TAX_EXEMPTION) ||
+                        (command.paymentItemSet.taxAtr == model.TaxAtr.LIMIT_TAX_EXEMPTION.toString()) ||
+                        (command.paymentItemSet.taxAtr == model.TaxAtr.COMMUTING_EXPENSES_MANUAL) ||
+                        (command.paymentItemSet.taxAtr == model.TaxAtr.COMMUTING_EXPENSES_MANUAL.toString())) {
+
+                        if((command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT) &&
+                            (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT.toString())) {
+                            command.paymentItemSet.limitAmount = null;
+                        }
+
+                        if((command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.TAX_EXEMPTION_LIMIT_MASTER) &&
+                            (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.TAX_EXEMPTION_LIMIT_MASTER.toString())) {
+                            command.paymentItemSet.taxLimitAmountCode = null;
+                        }
+                    } else {
+                        command.paymentItemSet.limitAmountAtr = null;
                         command.paymentItemSet.limitAmount = null;
+                        command.paymentItemSet.taxLimitAmountCode = null;
                     }
 
                     // clear phần thập phân
@@ -720,7 +736,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxAtr = ko.observable(data.taxAtr);
                     self.taxableAmountAtr = ko.observable(data.taxableAmountAtr);
                     self.limitAmount = ko.observable(data.limitAmount);
-                    self.limitAmountAtr = ko.observable(data.limitAmountAtr);
+                    self.limitAmountAtr = ko.observable((data.limitAmountAtr != null) ? data.limitAmountAtr : model.LimitAmountClassification.FIXED_AMOUNT);
                     self.taxLimitAmountCode = ko.observable(data.taxLimitAmountCode);
                     self.taxExemptionName = ko.observable(data.taxExemptionName);
                     self.note = ko.observable(data.note);
