@@ -36,8 +36,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class OverDayEnd {
 	
+	//日跨ぎ処理後に存在している残業時間帯
 	private List<OverTimeFrameTimeSheetForCalc> overTimeList; 
 	
+	//日跨ぎ処理後に存在している休出時間帯
 	private List<HolidayWorkFrameTimeSheetForCalc> holList; 
 
 	/**
@@ -309,11 +311,11 @@ public class OverDayEnd {
 						//翌日０時以降の残業時間帯を一度作成
 						OverTimeFrameTimeSheetForCalc afteritem = new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(baseTime,overTimeSheet.getTimeSheet().getEnd(),overTimeSheet.getTimeSheet().getRounding()),
 																								 new TimeSpanForCalc(baseTime,overTimeSheet.getTimeSheet().getEnd()),
-																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate),
-																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction),
-																								 overTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
-																								 overTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, true),
-																								 overTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, true),
+																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate),
+																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction),
+																								 overTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
+																								 overTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, false),
+																								 overTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, false),
 																								 overTimeSheet.getFrameTime(),
 																								 overTimeSheet.getWithinStatutryAtr(),
 																								 overTimeSheet.isGoEarly(),

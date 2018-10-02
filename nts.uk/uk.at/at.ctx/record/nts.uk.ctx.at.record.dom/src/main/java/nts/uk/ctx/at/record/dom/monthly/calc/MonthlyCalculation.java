@@ -1315,6 +1315,12 @@ public class MonthlyCalculation {
 	 */
 	public void sum(MonthlyCalculation target){
 		
+		GeneralDate startDate = this.procPeriod.start();
+		GeneralDate endDate = this.procPeriod.end();
+		if (startDate.after(target.procPeriod.start())) startDate = target.procPeriod.start();
+		if (endDate.before(target.procPeriod.end())) endDate = target.procPeriod.end();
+		this.procPeriod = new DatePeriod(startDate, endDate);
+		
 		this.actualWorkingTime.sum(target.actualWorkingTime);
 		this.flexTime.sum(target.flexTime);
 		this.aggregateTime.sum(target.aggregateTime);

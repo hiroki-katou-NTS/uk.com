@@ -69,6 +69,7 @@ module nts.uk.pr.view.ccg015.b {
             private loadDataToScreen(data: MyPageSettingDto): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                var dataSort = _.sortBy(data.topPagePartUseSettingDto, ['partType', 'partItemCode', 'partItemName']);
                 //reset item
                 self.myPageSettingModel().topPagePartSettingItems()[0].settingItems([]);
                 self.myPageSettingModel().topPagePartSettingItems()[1].settingItems([]);
@@ -82,8 +83,7 @@ module nts.uk.pr.view.ccg015.b {
                 self.myPageSettingModel().topPagePartSettingItems()[2].usePart(data.useDashboard);
                 self.myPageSettingModel().topPagePartSettingItems()[3].usePart(data.useFlowMenu);
                 self.myPageSettingModel().topPagePartSettingItems()[4].usePart(data.externalUrlPermission);
-
-                data.topPagePartUseSettingDto.forEach(function(item, index) {
+                dataSort.forEach(function(item, index) {
                     if (item.partType == TopPagePartsEnum.StandarWidget) {
                         self.myPageSettingModel().topPagePartSettingItems()[0].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }

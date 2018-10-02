@@ -191,8 +191,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 				/** 並列処理、AsyncTask */
 				// Create thread pool.
-				ExecutorService executorService = Executors.newFixedThreadPool(20);
-				CountDownLatch countDownLatch = new CountDownLatch(emloyeeIds.size());
+//				ExecutorService executorService = Executors.newFixedThreadPool(20);
+//				CountDownLatch countDownLatch = new CountDownLatch(emloyeeIds.size());
 
 				this.managedParallelWithContext.forEach(emloyeeIds, employeeId -> {
 					if (asyncContext.hasBeenRequestedToCancel()) {
@@ -202,12 +202,12 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 						return;
 						//return ProcessState.INTERRUPTION;
 					}
-					AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).setDataSetter(dataSetter)
-							.threadName(this.getClass().getName()).build(() -> {
+					//AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).setDataSetter(dataSetter)
+							//.threadName(this.getClass().getName()).build(() -> {
 								// 社員の日別実績を計算
 								if (stateHolder.isInterrupt()) {
 									// Count down latch.
-									countDownLatch.countDown();
+									//countDownLatch.countDown();
 									return;
 								}
 								// 対象期間 = periodTime
@@ -285,34 +285,34 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 									stateHolder.add(cStatus);
 									dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 									// Count down latch.
-									countDownLatch.countDown();
+									//countDownLatch.countDown();
 									return;
 								} 
 								
 								stateHolder.add(cStatus);
-								// Count down latch.
-								countDownLatch.countDown();
-								return;
-							});
+//								// Count down latch.
+//								//countDownLatch.countDown();
+//								return;
+							//});
 					if(stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).count() > 0) {
 						dataSetter.updateData("dailyCreateStatus", ExeStateOfCalAndSum.STOPPING.nameId);
 						// Count down latch.
-						countDownLatch.countDown();
+						//countDownLatch.countDown();
 						stateHolder.add(ProcessState.INTERRUPTION);
 						return;
 						//return ProcessState.INTERRUPTION;
 					}
-					executorService.submit(task);
+					//executorService.submit(task);
 				});
 				// Wait for latch until finish.
-				try {
-					countDownLatch.await();
-				} catch (InterruptedException ie) {
-					throw new RuntimeException(ie);
-				} finally {
-					// Force shut down executor services.
-					executorService.shutdown();
-				}
+//				try {
+//					countDownLatch.await();
+//				} catch (InterruptedException ie) {
+//					throw new RuntimeException(ie);
+//				} finally {
+//					// Force shut down executor services.
+//					executorService.shutdown();
+//				}
 				status = stateHolder.status.stream().filter(c -> c == ProcessState.INTERRUPTION).findFirst()
 						.orElse(ProcessState.SUCCESS);
 				if (status == ProcessState.SUCCESS) {

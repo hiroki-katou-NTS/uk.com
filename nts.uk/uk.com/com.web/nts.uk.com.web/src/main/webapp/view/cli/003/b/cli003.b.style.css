@@ -134,13 +134,14 @@ div#list-box_b1 {
 }
 .ui-iggrid-headertext{
 	font-weight: normal;
+	text-overflow : ellipsis;
 }
 
 .ui-iggrid-childarea{
 	overflow :visible !important;
 }
 .ui-iggrid-header.ui-widget-header{
-	overflow :visible;
+	overflow :hidden;
 	text-overflow : ellipsis;
 }
 
@@ -160,6 +161,10 @@ div#list-box_b1 {
 	max-width: 800px !important;
 }
 
+#master-wrapper div#contents-area {  
+    overflow-y: hidden !important;
+}
+
 #igGridLog_tooltips.ui-tooltip .ui-tooltip-content {
 	white-space: nowrap;
 	background: #ffc;
@@ -171,4 +176,13 @@ div#list-box_b1 {
 
 .ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
 	z-index: 99999999;
+}
+
+#ui-iggrid-headertext{
+	font-weight: normal;
+	text-overflow : ellipsis;
+}
+
+#help-button-id{
+	overflow: visible;
 }

@@ -1392,21 +1392,33 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				// 日別実績の作成
 //				boolean dailyPerformanceCreation = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
 //						calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
-				boolean dailyPerformanceCreation = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
-						calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
-				
-				if(dailyPerformanceCreation){
-					return false;
+				try {
+					boolean dailyPerformanceCreation = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
+							calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
+					
+					if(dailyPerformanceCreation){
+						return false;
+					}
+				}catch (CreateDailyException ex) {
+					isHasCreateDailyException=true;
 				}
+//				boolean dailyPerformanceCreation = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
+//						calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
+//				
+//				if(dailyPerformanceCreation){
+//					return false;
+//				}
 			
 				typeExecution = "日別計算";
 				// 日別実績の計算
-//				boolean dailyPerformanceCreation2 = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, createProcessForChangePerOrWorktype.getNoLeaderEmpIdList(),
-//						calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
-				boolean dailyPerformanceCreation2 = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
-						calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
-				if(dailyPerformanceCreation2){
-					return false;
+				try {
+					boolean dailyPerformanceCreation2 = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
+							calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
+					if(dailyPerformanceCreation2){
+						return false;
+					}
+				}catch (DailyCalculateException ex) {
+					isHasDailyCalculateException=true;
 				}
 				
 			}else {
@@ -1428,10 +1440,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			 
 			//throw new CreateDailyException();
 		}
-		} catch (CreateDailyException ex) {
-			isHasCreateDailyException=true;
-		}catch (DailyCalculateException ex) {
-			isHasDailyCalculateException=true;
+//		} catch (CreateDailyException ex) {
+//			isHasCreateDailyException=true;
+//		}catch (DailyCalculateException ex) {
+//			isHasDailyCalculateException=true;
 		}catch (Exception ex) {
 			ex.printStackTrace();
 		}
