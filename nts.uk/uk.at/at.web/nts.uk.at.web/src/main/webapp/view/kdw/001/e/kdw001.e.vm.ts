@@ -341,9 +341,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                    return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
                 });
                 self.errorMessageInfo(data);
+                self.errorMessageInfo.valueHasMutated();
                 self.dataExport(data);
+                self.dataExport.valueHasMutated();
                 if(res.listEmployee.length > 0) {
                    self.employeeIDS(res.listEmployee);
+                   self.errorMessageInfo.valueHasMutated();
 //                   LabelGetLogDataAgain : getLogDataAgain(res.listEmployee).done((EmpIDS) => {
 //                       if(EmpIDS.lenght > 0){
 //                           self.employeeIDS(EmpIDS);
@@ -363,12 +366,14 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 employeeID : self.employeeIDS()
             };
             service.getErrorMessageInfo(params).done((res) => {
-                let i = 0;
+                let i = self.errorMessageInfo().length;
                 let data = _.map(res.listResult,function(item:any){
                    return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
                 });
-                self.errorMessageInfo.push(data);
+                ko.utils.arrayPushAll(self.errorMessageInfo, data);
+                self.errorMessageInfo.valueHasMutated();
                 self.dataExport.push(data);
+                self.dataExport.valueHasMutated();
                 dfd.resolve(res.listEmployee);
             });
             return dfd.promise();
