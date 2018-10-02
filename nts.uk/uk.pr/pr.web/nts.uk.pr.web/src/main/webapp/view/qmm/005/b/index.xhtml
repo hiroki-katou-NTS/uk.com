@@ -74,7 +74,7 @@
                             <!--B3_3	処理年-->
                             <div class="form_label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
                             <!--B3_4	処理年-->
-                            <div data-bind="ntsDatePicker: {value: processingYear, dateFormat: 'YYYY', enable: isNewMode()}"></div>
+                            <div id="B3_4" data-bind="ntsDatePicker: {name: '#[QMM005_25]', value: processingYear, dateFormat: 'YYYY', enable: isNewMode(), required: true}"></div>
                             <!--B3_6	反映-->
                             <button id="B3_6" class="small" style="margin-left: 20px" data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
                             <!--B3_7	システム基準日情報反映-->
@@ -127,52 +127,52 @@
                                     </td>
                                     <td>
                                         <!--B4_10	支払年月日-->
-                                        <div data-bind="ntsDatePicker: {value: paymentDate, dateFormat: 'YYYY/MM/DD ddd', required: true}"></div>
+                                        <div data-bind="ntsDatePicker: {name: '#[QMM005_29]', value: paymentDate, dateFormat: 'YYYY/MM/DD ddd', required: true}"></div>
                                         <!--B4_11	支払曜日-->
                                     </td>
                                     <td>
                                         <!--B4_12	社員抽出基準日-->
-                                        <div tabindex="5" data-bind="ntsDatePicker: {value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                        <div tabindex="5" data-bind="ntsDatePicker: {name: '#[QMM005_30]', value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
                                     </td>
                                     <td>
                                         <div style="width: 150px">
                                             <!--B4_13	社会保険徴収月-->
-                                            <span tabindex="6" data-bind="ntsDatePicker: {value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth', required: true}"></span>
+                                            <span tabindex="6" data-bind="ntsDatePicker: {name: '#[QMM005_31]', value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth', required: true}"></span>
                                             <!--B4_14	分を徴収-->
                                             <span class="label" data-bind="if: socialInsuranceCollectionMonth">#{i18n.getText('QMM005_37')}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <!--B4_15	明細書印字年月-->
-                                        <div tabindex="7" data-bind="ntsDatePicker: {value: specificationPrintDate, dateFormat: 'yearmonth', required: true}"></div>
+                                        <div tabindex="7" data-bind="ntsDatePicker: {name: '#[QMM005_32]', value: specificationPrintDate, dateFormat: 'yearmonth', required: true}"></div>
                                     </td>
                                     <td>
                                         <div style="width: 85px;">
                                             <!--B4_16	要勤務日数-->
-                                            <input tabindex="8" data-bind="ntsNumberEditor: {value: numberOfWorkingDays, constraint: 'ReqStandardWorkingDays', required: true,}"
+                                            <input tabindex="8" data-bind="ntsNumberEditor: {name: '#[QMM005_33]', value: numberOfWorkingDays, constraint: 'ReqStandardWorkingDays', required: true,}"
                                                    class="number-editor"/>
                                             <!--B4_17	日-->
                                             <span>#{i18n.getText('QMM005_40')}</span></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_7	社会保険基準日-->
-                                        <div tabindex="11" data-bind="ntsDatePicker: {value: socialInsuranceStandardDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                        <div tabindex="11" data-bind="ntsDatePicker: {name: '#[QMM005_44]', value: socialInsuranceStandardDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_8	雇用保険基準日-->
-                                        <div tabindex="12" data-bind="ntsDatePicker: {value: employmentInsuranceStandardDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                        <div tabindex="12" data-bind="ntsDatePicker: {name: '#[QMM005_45]', value: employmentInsuranceStandardDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_9	勤怠締め日-->
-                                        <div tabindex="13" data-bind="ntsDatePicker: {value: timeClosingDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                        <div tabindex="13" data-bind="ntsDatePicker: {name: '#[QMM005_112]', value: timeClosingDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_10	所得税基準日-->
-                                        <div tabindex="14" data-bind="ntsDatePicker: {value: incomeTaxReferenceDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                        <div tabindex="14" data-bind="ntsDatePicker: {name: '#[QMM005_46]', value: incomeTaxReferenceDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
                                     </td>
                                     <td data-bind="css: { hidden: !$parent.show() }">
                                         <!--B6_11	経理締め日-->
-                                        <div tabindex="15" data-bind="ntsDatePicker: {value: accountingClosureDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                        <div tabindex="15" data-bind="ntsDatePicker: {name: '#[QMM005_47]', value: accountingClosureDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
                                     </td>
                                 </tr>
                             </com:ko-foreach>
