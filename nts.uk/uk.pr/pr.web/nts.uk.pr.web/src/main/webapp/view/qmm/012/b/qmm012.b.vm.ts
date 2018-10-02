@@ -237,7 +237,7 @@ module nts.uk.pr.view.qmm012.b {
 
                     // clear phần thập phân
                     if((command.paymentItemSet.limitAmountAtr == model.LimitAmountClassification.FIXED_AMOUNT) && (command.paymentItemSet.limitAmount != null)) {
-                        let limitAmount = command.paymentItemSet.limitAmount;
+                        let limitAmount = command.paymentItemSet.limitAmount.toString();
                         let index = limitAmount.indexOf(".");
 
                         if(index >= 0) {
