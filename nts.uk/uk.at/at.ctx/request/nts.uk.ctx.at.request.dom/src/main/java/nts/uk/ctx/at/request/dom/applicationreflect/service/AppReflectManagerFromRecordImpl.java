@@ -111,27 +111,23 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		Optional<DatePeriod> optClosureStatus = closureStatusImport.closureDatePeriod(sid);
 		//「申請期間」を作成する
 		//申請期間　←　パラメータ.期間のうちドメインモデル「締め状態管理.期間」に含まれている期間を削除した期間
-		if(!optClosureStatus.isPresent()) {
-			return true;
-		}
-		DatePeriod closureDatePeriod = optClosureStatus.get();
-		DatePeriod appDatePeriod = null;
-		if(datePeriod.start().beforeOrEquals(closureDatePeriod.end())
-				&& closureDatePeriod.end().before(datePeriod.end())) {
-			appDatePeriod = new DatePeriod(closureDatePeriod.end().addDays(1), datePeriod.end());
-		} else if (closureDatePeriod.end().beforeOrEquals(datePeriod.start())
-				&& datePeriod.end().after(closureDatePeriod.end())) {
-			GeneralDate sDate = datePeriod.start();
-			if(closureDatePeriod.end().equals(datePeriod.start())) {
-				sDate = datePeriod.start().addDays(1);
-			}
-			appDatePeriod = new DatePeriod(sDate, datePeriod.end());
-		}
-		if(appDatePeriod == null) {
-			return true;
-		}
+		DatePeriod appDatePeriod = datePeriod;
+		if(optClosureStatus.isPresent()) {
+			DatePeriod closureDatePeriod = optClosureStatus.get();
+			if(datePeriod.start().beforeOrEquals(closureDatePeriod.end())
+					&& closureDatePeriod.end().before(datePeriod.end())) {
+				appDatePeriod = new DatePeriod(closureDatePeriod.end().addDays(1), datePeriod.end());
+			} else if (closureDatePeriod.end().beforeOrEquals(datePeriod.start())
+					&& datePeriod.end().after(closureDatePeriod.end())) {
+				GeneralDate sDate = datePeriod.start();
+				if(closureDatePeriod.end().equals(datePeriod.start())) {
+					sDate = datePeriod.start().addDays(1);
+				}
+				appDatePeriod = new DatePeriod(sDate, datePeriod.end());
+			}	
+		}		
 		
-		List<Application_New> lstApp = this.getApps(sid, datePeriod, refAppResult);
+		List<Application_New> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
 		if(lstApp.isEmpty()) {
 			return true;
 		}
