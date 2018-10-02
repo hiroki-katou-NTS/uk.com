@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import model = qmm011.share.model;
+    import block = nts.uk.ui.block;
     import error = nts.uk.ui.errors;
     export class ScreenModel {
         startYearMonth:              KnockoutObservable<number> = ko.observable();
@@ -15,6 +16,7 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
         flag:                        KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
+            block.invisible();
             let self = this;
             let params = getShared('QMM011_E_PARAMS_INPUT');
             self.insuranceName(params.insuranceName);
@@ -23,10 +25,11 @@ module nts.uk.pr.view.qmm011.e.viewmodel {
                 self.startYearMonth(Number(self.startLastYearMonth()));
                 self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM011_48', [self.convertMonthYearToString(self.startYearMonth())]));
                 self.flag(true);
-            }else{
+            } else {
                 self.takeOver(1);
                 self.flag(false);
             }
+            block.clear();
         }
 
         register(){

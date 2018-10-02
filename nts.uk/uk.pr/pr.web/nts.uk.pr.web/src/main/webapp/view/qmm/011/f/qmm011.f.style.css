@@ -11,3 +11,6 @@
 	margin-left: 90px;
 }
 
+.datepicker-container {
+ z-index: 10010;
+}
