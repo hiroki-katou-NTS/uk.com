@@ -1390,6 +1390,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 isrestrictionOfReferenceRange: false
             }, true);
 
+            if(error.hasError()) return;
+            
             modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                 // Check is cancel.
                 if (getShared('CDL008Cancel')) {
