@@ -72,7 +72,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
                     self.loadDetaiItemGrid();
-                    $('#D5_2').focus();
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
@@ -184,7 +183,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             service.register(command).done(() => {
                 info({ messageId: "Msg_15" }).then(() => {
                     self.focusFirstRowD5_2();
-                    $('#D5_2').focus();
+                    $('#D5_2_container').focus();   
                 });
             }).fail(res => {
                 alertError(res);
