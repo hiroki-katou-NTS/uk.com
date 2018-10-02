@@ -208,7 +208,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //画面モード
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     //社員一覧
-                    lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    //fix bug 
+                    //lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    lstEmployee:[employeeId],
                     //エラー参照を起動する
                     errorRefStartAtr: false,
                     // fix bug 101435
