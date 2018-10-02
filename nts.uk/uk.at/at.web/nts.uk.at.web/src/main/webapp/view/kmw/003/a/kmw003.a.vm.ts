@@ -856,6 +856,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     else
                         return _.assign(a, { state: [] });
                 });
+                self.cellStates(self.dataAll().lstCellState);
             }
             let dataSource = self.formatDate(self.dpData);
 
