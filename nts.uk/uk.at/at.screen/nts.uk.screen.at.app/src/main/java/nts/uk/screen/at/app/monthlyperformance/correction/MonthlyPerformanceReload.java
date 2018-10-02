@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
@@ -180,6 +181,7 @@ public class MonthlyPerformanceReload {
 		
 		param.setLstLockStatus(lstLockStatus);
 		screenDto.setParam(param);
+		screenDto.setLstEmployee(param.getLstEmployees());
 
 		// アルゴリズム「月別実績を表示する」を実行する(Hiển thị monthly actual result)
 		displayMonthlyResult(screenDto, param.getYearMonth(), param.getClosureId(), optApprovalProcessingUseSetting.get(), companyId);
@@ -278,16 +280,19 @@ public class MonthlyPerformanceReload {
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
 		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
 			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
-				// *10 request list 155
-				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter
-						.getApprovalByListEmplAndListApprovalRecordDateNew(
-								Arrays.asList(param.getActualTime().getEndDate()), listEmployeeIds,
-								Integer.valueOf(2));
+				// *10 request list 533
+				List<EmpPerformMonthParamImport> params = new ArrayList<>();
+				for (MonthlyPerformanceEmployeeDto emp : screenDto.getLstEmployee()) {
+					EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(new YearMonth(yearMonth), closureId,
+							screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate(), emp.getId());
+					params.add(p);
+				}
+				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(params);
 			} else if (param.getInitMenuMode() == 2) {
-				// *8 request list 133
-				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(
-						param.getActualTime().getEndDate(), param.getActualTime().getEndDate(),
-						AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+				// *8 request list 534
+				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
+						AppContexts.user().userId(), new YearMonth(yearMonth), closureId,
+						screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 			}
 		}
 

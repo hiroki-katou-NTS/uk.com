@@ -38,12 +38,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
+	//勤務間区分
 	private WorkingBreakTimeAtr workingBreakAtr;
+	//外出理由
 	private Finally<GoingOutReason> goOutReason;
+	//休憩種別
 	private Finally<BreakClassification> breakAtr;
-	private Optional<ShortTimeSheetAtr> shortTimeSheetAtr; 
+	//短時間勤務時間帯区分
+	private Optional<ShortTimeSheetAtr> shortTimeSheetAtr;
+	//控除区分
 	private final DeductionClassification deductionAtr;
-	//↓育児の計算に必要なので追加しました　高須　2018/8/2
+	//育児介護区分
 	private Optional<ChildCareAtr> childCareAtr;
 	
 	

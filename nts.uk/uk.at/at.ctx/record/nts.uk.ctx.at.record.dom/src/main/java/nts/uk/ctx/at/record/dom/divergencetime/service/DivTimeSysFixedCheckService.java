@@ -612,7 +612,7 @@ public class DivTimeSysFixedCheckService {
 		if(!isUse || standard == null){
 			return evaluateReasonOnNoError(divTime);
 		}
-		DivergenceReferenceTime sdTime = isAlarm ? standard.getAlarmTime().orElse(null) : standard.getErrorTime().orElse(null);
+		DivergenceReferenceTime sdTime = getReferTime(isAlarm, standard);
 		if(sdTime != null && sdTime.v() > 0){
 			if(divergenceTime >= sdTime.valueAsMinutes()) {
 				// パラメータ「エラーの解除方法．乖離理由が選択された場合，エラーを解除する」をチェックする
@@ -631,6 +631,13 @@ public class DivTimeSysFixedCheckService {
 			}
 		}
 		return evaluateReasonOnNoError(divTime);
+	}
+	
+	private DivergenceReferenceTime getReferTime(boolean isAlarm, DivergenceReferenceTimeValue standard){
+		if(isAlarm && standard.getAlarmTime().isPresent()){
+			return standard.getAlarmTime().get();
+		}
+		return standard.getErrorTime().orElse(null);
 	}
 
 	private boolean isReasonSelected(nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime) {

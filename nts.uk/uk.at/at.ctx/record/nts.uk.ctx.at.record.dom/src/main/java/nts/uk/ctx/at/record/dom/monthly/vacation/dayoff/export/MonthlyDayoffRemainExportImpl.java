@@ -21,7 +21,7 @@ public class MonthlyDayoffRemainExportImpl implements MonthlyDayoffRemainExport{
 		//年月期間．開始年月から終了年月まで1か月ずつループ
 		for (YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)) {			
 			//ドメインモデル「代休月別残数データ」を取得
-			List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus = remainDataRepos.getDayOffDataBySidYmStatus(employeeId, ym, ClosureStatus.PROCESSED);
+			List<MonthlyDayoffRemainData> getDayOffDataBySidYmStatus = remainDataRepos.findByYearMonthOrderByStartYmd(employeeId, ym);
 			if(getDayOffDataBySidYmStatus.isEmpty()) {
 				continue;
 			}

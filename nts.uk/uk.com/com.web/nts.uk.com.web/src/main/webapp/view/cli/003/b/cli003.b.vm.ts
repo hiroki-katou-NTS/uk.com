@@ -722,7 +722,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
-                        filterDialogHeight : "383px",
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -776,7 +777,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
-                        filterDialogHeight : "383px",
+                         filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -864,7 +866,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         type: "local",
                         filterDropDownItemIcons: false,
                         filterDropDownWidth: 200,
-                        filterDialogHeight : "383px",
+                        filterDialogHeight : "390px",
+                        filterDialogWidth : "515px",
                         columnSettings: [
                             { columnKey: "parentKey", allowFiltering: false },
                             { columnKey: "operationId", allowFiltering: false }
@@ -939,9 +942,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     var currentSetting = headerSetting[i];
 
                     if (currentSetting.headerText == textHeaderCheck) {
-                        var x = header.filter("th[aria-label='" + currentSetting.key + "']")
-                            .find(".ui-iggrid-headertext").text(currentSetting.headerText);
+                        var xHeader = header.filter("th[aria-label='" + currentSetting.key + "']").find(".ui-iggrid-headertext");
+                        var x = xHeader.text(currentSetting.headerText);
                         x.append(helpButton);
+                        xHeader.attr("id","help-button-id");
                     } else {
                         header.filter("th[aria-label='" + currentSetting.key + "']")
                             .find(".ui-iggrid-headertext").text(currentSetting.headerText)
@@ -951,6 +955,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     var container = helpButton.closest(".igscroll-touchscrollable");
                     var tooltip = helpButton.parent().find(".nts-help-button-image");
                     $(".ui-iggrid-header.ui-widget-header").css("overflow", "visible");
+                    $("#help-button-id").css({"overflow":"visible"});
                     tooltip.css("width","350px");
                     if (tooltip.css("display") !== "none") {
                         container.addClass("default-overflow");
@@ -995,6 +1000,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
             $(document).delegate("#igGridLog", "iggridresizingcolumnresizing", function(evt, ui) {
                 $(".ui-iggrid-scrolldiv.ui-widget-content.igscroll-touchscrollable.default-overflow").css("overflow-x", "auto");
+                $(".ui-iggrid-header.ui-widget-header").css({"width":"100% !important"}); // th
+                $(".ui-iggrid-headertext").css({"white-space":"nowrap","overflow":"hidden","display":"block"}); // span
             });
         }
 

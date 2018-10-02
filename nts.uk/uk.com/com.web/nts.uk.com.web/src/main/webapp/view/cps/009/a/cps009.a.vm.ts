@@ -431,7 +431,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return item.selectedRuleCode() == 2;
                 });
             $('#date1').trigger('validate');
-            $('.sub-input-units ').trigger('validate');
+            $('.ntsDatepicker.nts-input.reset-element.sub-input-units:not(:disabled)').trigger('validate');
+            $('.sub-input-units:not(:disabled)').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
@@ -546,7 +547,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
             { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
         ]);
-        itemList: KnockoutObservableArray<any>;
+        itemList: KnockoutObservableArray<PerInfoInitValueSettingItemDto>;
         constructor(params: IInitValueSettingDetail) {
             let self = this;
             self.settingCode = ko.observable(params.settingCode);
@@ -1389,6 +1390,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 isrestrictionOfReferenceRange: false
             }, true);
 
+            if(error.hasError()) return;
+            
             modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
                 // Check is cancel.
                 if (getShared('CDL008Cancel')) {

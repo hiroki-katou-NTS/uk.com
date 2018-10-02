@@ -17,7 +17,6 @@ public class LateLeaveEarlyTimeSheet extends CalculationTimeSheet{
 
 	public LateLeaveEarlyTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange) {
 		super(timeSheet, calcrange);
-		// TODO Auto-generated constructor stub
 	}
 	
 	//遅刻再度補正
