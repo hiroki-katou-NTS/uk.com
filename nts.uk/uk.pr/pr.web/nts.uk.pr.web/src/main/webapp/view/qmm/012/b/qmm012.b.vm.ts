@@ -234,6 +234,16 @@ module nts.uk.pr.view.qmm012.b {
                     if((command.paymentItemSet.limitAmount != null) && (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT)) {
                         command.paymentItemSet.limitAmount = null;
                     }
+
+                    // clear phần thập phân
+                    if((command.paymentItemSet.limitAmountAtr == model.LimitAmountClassification.FIXED_AMOUNT) && (command.paymentItemSet.limitAmount != null)) {
+                        let limitAmount = command.paymentItemSet.limitAmount;
+                        let index = limitAmount.indexOf(".");
+
+                        if(index >= 0) {
+                            command.paymentItemSet.limitAmount = limitAmount.substring(0, index);
+                        }
+                    }
                     
                     // clear rangeSet value if disable
                     if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
