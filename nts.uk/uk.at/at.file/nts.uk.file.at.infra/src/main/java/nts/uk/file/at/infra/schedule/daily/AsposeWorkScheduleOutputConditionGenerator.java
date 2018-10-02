@@ -2929,6 +2929,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		// 事前申請超過
+		if (errorList.isEmpty() && (errorCodeList.contains(SystemFixedErrorAlarm.PRE_OVERTIME_APP_EXCESS.value)
+								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PRE_HOLIDAYWORK_APP_EXCESS.value)
+								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PRE_FLEX_APP_EXCESS.value)
+								 ||  errorCodeList.contains(SystemFixedErrorAlarm.PRE_MIDNIGHT_EXCESS.value))) {
+			Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
+					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_OVERTIME_APP_EXCESS.value)
+							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_HOLIDAYWORK_APP_EXCESS.value)
+							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_FLEX_APP_EXCESS.value)
+							  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PRE_MIDNIGHT_EXCESS.value)).findFirst();
+			if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.EXCEED_BY_APPLICATION)) {
+				printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.EXCEED_BY_APPLICATION.value);
+			}
+		}
+		
+		// 打刻順序不正
 		if (errorList.isEmpty() && errorCodeList.contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)) {
 			Optional<EmployeeDailyPerError> optErrorIncorrectStamp = errorList.stream()
 					.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.INCORRECT_STAMP.value)).findFirst();
