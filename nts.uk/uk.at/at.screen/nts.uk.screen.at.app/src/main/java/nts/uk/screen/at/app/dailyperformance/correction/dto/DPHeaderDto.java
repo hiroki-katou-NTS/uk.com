@@ -158,7 +158,7 @@ public class DPHeaderDto {
 				dto.setConstraint(new Constraint("Clock", false, "").createMinMax("00:00", "48:00"));
 			}else if(item.getPrimitive() != null && (item.getPrimitive() == 56 || item.getPrimitive() == 57)){
 				if(item.getPrimitive() == 56){
-					dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-999:59", "999:59"));
+					dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-99:59", "99:59"));
 				}else{
 					dto.setConstraint(new Constraint("Clock", false, "").createMinMax("-999999:59", "999999:59"));
 				}
