@@ -2991,6 +2991,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				else
 					return workType.getAbbreviationName().v();
 			}
+			else {
+				return MASTER_UNREGISTERED;
+			}
 		}
 		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
 			Optional<WorkTimeSetting> optWorkTime = lstWorkTime.stream().filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
@@ -3001,12 +3004,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				else
 					return workTime.getWorkTimeDisplayName().getWorkTimeAbName().v();
 			}
+			else {
+				return MASTER_UNREGISTERED;
+			}
 		}
 		if (IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(id -> id == attendanceId)) {
 			Optional<CodeName> optWorkLocation = lstWorkLocation.stream().filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
 			if (optWorkLocation.isPresent()) {
 				CodeName workLocation = optWorkLocation.get();
 				return workLocation.getName();
+			}
+			else {
+				return MASTER_UNREGISTERED;
 			}
 		}
 		if (attendanceId == ATTENDANCE_ID_WORKPLACE) {
@@ -3025,12 +3034,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				CodeName reason = optReason.get();
 				return reason.getName();
 			}
+			else {
+				return MASTER_UNREGISTERED;
+			}
 		}
 		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
 			Optional<CodeName> optClassification = lstClassification.stream().filter(classification -> classification.getCode().equalsIgnoreCase(code)).findFirst();
 			if (optClassification.isPresent()) {
 				CodeName classification = optClassification.get();
 				return classification.getName();
+			}
+			else {
+				return MASTER_UNREGISTERED;
 			}
 		}
 		if (attendanceId == ATTENDANCE_ID_POSITION) {
@@ -3039,12 +3054,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				CodeName position = optPosition.get();
 				return position.getName();
 			}
+			else {
+				return MASTER_UNREGISTERED;
+			}
 		}
 		if (attendanceId == ATTENDANCE_ID_EMPLOYMENT) {
 			Optional<CodeName> optEmployment = lstEmployment.stream().filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
 			if (optEmployment.isPresent()) {
 				CodeName employment = optEmployment.get();
 				return employment.getName();
+			}
+			else {
+				return MASTER_UNREGISTERED;
 			}
 		}
 		
