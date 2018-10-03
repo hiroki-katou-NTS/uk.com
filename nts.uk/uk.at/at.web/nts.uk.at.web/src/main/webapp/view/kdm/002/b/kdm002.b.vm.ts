@@ -230,7 +230,7 @@ module nts.uk.at.view.kdm002.b {
                                         position: {
                                             my: "top+40",
                                             at: "left+($(window).width() / 2)",
-                                            of: $("#content_dialog")
+                                            of: $("#contents-area")
                                         },
                                         width: 650,
                                         height: 550

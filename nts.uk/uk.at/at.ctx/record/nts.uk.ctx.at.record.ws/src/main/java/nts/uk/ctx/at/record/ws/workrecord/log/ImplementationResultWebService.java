@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeComman
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
 import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
+import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogResultDto;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
 
 /**
@@ -59,8 +60,13 @@ public class ImplementationResultWebService extends WebService {
 
 	@POST
 	@Path("getErrorMessageInfo")
-	public List<PersonInfoErrMessageLogDto> getByEmpCalAndSumExecLogID(ScreenImplementationResultDto screenImplementationResultDto) {
-		List<PersonInfoErrMessageLogDto> data = implementationResultFinder.getScreenImplementationResult(screenImplementationResultDto); 
+	public PersonInfoErrMessageLogResultDto getByEmpCalAndSumExecLogID(ScreenImplementationResultDto screenImplementationResultDto) {
+		PersonInfoErrMessageLogResultDto data = null;
+		if(screenImplementationResultDto.getEmployeeID() == null || screenImplementationResultDto.getEmployeeID().isEmpty()) {
+			data = implementationResultFinder.getScreenImplementationResult(screenImplementationResultDto); 
+		} else {
+			data = implementationResultFinder.getScreenImplementationResultWithEmployees(screenImplementationResultDto); 			
+		}
 		return data;
 	}
 	
