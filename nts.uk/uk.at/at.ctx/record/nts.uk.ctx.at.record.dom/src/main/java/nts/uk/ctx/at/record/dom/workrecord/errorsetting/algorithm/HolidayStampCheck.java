@@ -43,7 +43,8 @@ public class HolidayStampCheck {
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().isPresent())
 								|| (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent())))
-						|| (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1) != null
+						|| (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() > 1 
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1) != null
 								&& ((timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
 								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().isPresent())
 								|| (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
