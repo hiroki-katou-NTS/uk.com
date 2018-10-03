@@ -103,12 +103,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     if (conditionSetCode) {
                         self.setCondSetCode(conditionSetCode);
                         self.index(self.getIndex(conditionSetCode));
-                    }
-                    self.setNewMode(false);
+                    }                    
                     let code = self.conditionSettingList()[self.index()].conditionSetCode;
                     self.setCondSetCode(code);
                     setTimeout(function(){ 
                         $("tr[data-id='" + code + "'] ").focus();
+                        self.setNewMode(false);
                     }, 500);
                 } else {
                     self.createNewCondition();

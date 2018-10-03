@@ -30,10 +30,10 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             ]);
 
             self.selectedCodeConvert.subscribe(function(convertCode: string) {
-                nts.uk.ui.errors.clearAll();
                 if (convertCode) {
                     block.invisible();
                     self.enableBtn(true);
+                    nts.uk.ui.errors.clearAll();
                     service.getOutputCodeConvertByConvertCode(convertCode).done(function(data) {
                         if (data) {
                             self.codeConvertCurrent().listCdConvertDetail.removeAll();
