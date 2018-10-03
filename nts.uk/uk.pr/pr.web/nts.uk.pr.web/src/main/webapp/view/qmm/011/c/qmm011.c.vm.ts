@@ -71,6 +71,9 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
 
                 }
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
             }).always(() => {
                 block.clear();
             });
