@@ -483,4 +483,21 @@ public class WithinStatutoryTimeOfDaily {
 		return new WithinStatutoryTimeOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, 
 				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue()));
 	}
+	
+	/**
+	 * 所定内休憩未取得時間を計算
+	 * @param unUseBreakTime 休憩未取得時間
+	 * @param attendanceTime 
+	 * @return 休憩未取得時間
+	 */
+	public AttendanceTime calcUnUseWithinBreakTime(AttendanceTime unUseBreakTime, AttendanceTime predTime) {
+		//所定内時間
+		AttendanceTime withinPredTime = predTime.minusMinutes(this.getActualWorkTime().valueAsMinutes());
+		if(withinPredTime.greaterThan(unUseBreakTime.valueAsMinutes())) {
+			return withinPredTime;
+		}
+		else {
+			return unUseBreakTime;
+		}
+	}
 }

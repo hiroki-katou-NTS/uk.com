@@ -70,6 +70,7 @@ import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -96,12 +97,14 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
@@ -794,19 +797,35 @@ public class TotalWorkingTime {
 	
 	/**
 	 * 大塚モードの計算（遅刻早退）
+	 * @param fixRestTimeZoneSet 
+	 * @param fixWoSetting 
+	 * @param attendanceLeave 
 	 * @return
 	 */
-	public TotalWorkingTime reCalcLateLeave(HolidayCalculation holidayCalculation) {
+	public TotalWorkingTime reCalcLateLeave(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
 		TotalWorkingTime result = this;
 		//休暇時に計算する設定かどうか判断
-		if(holidayCalculation.getIsCalculate().isNotUse()) {
+		if(!workTimeZone.isPresent()
+		|| workTimeZone.get().getHolidayCalculation().getIsCalculate().isNotUse()) {
 			return result;
 		}
+
+		AttendanceTime unBreakTime = new AttendanceTime(0);
+		//休憩未取得を計算するためのチェック
+		if(fixRestTimeZoneSet.isPresent()
+		&& attendanceLeave != null
+		&& attendanceLeave.isPresent()) {
+			//休憩未取得時間の計算
+			unBreakTime = this.getBreakTimeOfDaily().calcUnUseBrekeTime(fixRestTimeZoneSet.get(), fixWoSetting, attendanceLeave.get());
+		}
+
+		
+		
+		
 		//遅刻早退の合計時間を取得
 		TimeWithCalculation lateLeaveTotalTime = this.calcLateLeaveTotalTime();
 		//欠勤控除時間の計算
-		TimeWithCalculation absenteeismDeductionTime = this.calcAbsenteeismDeductionTime(lateLeaveTotalTime);
-		
+		TimeWithCalculation absenteeismDeductionTime = this.calcAbsenteeismDeductionTime(lateLeaveTotalTime,unBreakTime);
 		if(!this.lateTimeOfDaily.isEmpty()) {
 			//勤務NOの昇順でソート
 			this.lateTimeOfDaily.sort((c1, c2) -> c1.getWorkNo().compareTo(c2.getWorkNo()));
@@ -858,11 +877,11 @@ public class TotalWorkingTime {
 	 * 欠勤控除時間の計算
 	 * @return
 	 */
-	public TimeWithCalculation calcAbsenteeismDeductionTime(TimeWithCalculation lateLeaveTotalTime) {
+	public TimeWithCalculation calcAbsenteeismDeductionTime(TimeWithCalculation lateLeaveTotalTime,AttendanceTime unBreakTime) {
 
 		//時間、計算時間から休暇加算時間を減算
-		AttendanceTime time = lateLeaveTotalTime.getTime().minusMinutes(this.vacationAddTime.valueAsMinutes());;
-		AttendanceTime calcTime = lateLeaveTotalTime.getCalcTime().minusMinutes(this.vacationAddTime.valueAsMinutes());
+		AttendanceTime time = lateLeaveTotalTime.getTime().minusMinutes(this.vacationAddTime.valueAsMinutes()).minusMinutes(unBreakTime.valueAsMinutes());
+		AttendanceTime calcTime = lateLeaveTotalTime.getCalcTime().minusMinutes(this.vacationAddTime.valueAsMinutes()).minusMinutes(unBreakTime.valueAsMinutes());
 		
 		//0:00以下なら0：00に補正
 		if(time.valueAsMinutes()<0) {
