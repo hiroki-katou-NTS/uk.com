@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm008.f {
                     self.header(response.insuranceRate);
                     self.display(response.display);
                     let currentScreen = nts.uk.ui.windows.getSelf();
-                    $("#fixed-table").ntsFixedTable({height: 350, width: 1040});
+
                     setTimeout(function () {
                         $(".nts-fixed-table").attr('tabindex', '0');
                         $(".nts-fixed-table").focus();
@@ -47,7 +47,17 @@ module nts.uk.pr.view.qmm008.f {
                         currentScreen.setWidth(900);
                     }
 
-                    $("#fixed-table1").ntsFixedTable({height: 350, width: 1040});
+                    //Fixed table
+                    if (/Chrome/.test(navigator.userAgent)) {
+                        $("#fixed-table1").ntsFixedTable({height: 412, width: 1040});
+                        $("#fixed-table").ntsFixedTable({height: 412, width: 1040});
+                    } else {
+                        $("#fixed-table1").ntsFixedTable({height: 410, width: 1040});
+                        $("#fixed-table").ntsFixedTable({height: 410, width: 1040});
+                    }
+
+
+
 
 
                  });

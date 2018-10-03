@@ -32,11 +32,20 @@ module nts.uk.pr.view.qmm008.e {
                    setTimeout(function () {
                        $(".flex").attr('tabindex', '0');
                        $(".flex").focus();
-                   }, 1000);
+                       if(self.dataList().length > 8) {
+                           $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+
+                       }
+                   }, 500);
 
                });
-               // $("#fixed-table").ntsFixedTable({ height: 349, width: 1220 });
-               $("#fixed-table").ntsFixedTable({ height: 349, width: 1000 });
+
+               //Fixed table
+               if (/Chrome/.test(navigator.userAgent)) {
+                   $("#fixed-table").ntsFixedTable({height: 350, width: 1040});
+               } else {
+                   $("#fixed-table").ntsFixedTable({height: 377, width: 1040});
+               }
 
            }
            

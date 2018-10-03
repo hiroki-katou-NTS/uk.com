@@ -31,10 +31,14 @@ module nts.uk.pr.view.qmm008.j {
                    setTimeout(function () {
                        $(".nts-fixed-table").attr('tabindex', '0');
                        $(".nts-fixed-table").focus();
-                   }, 1000);
+                       if(self.dataList().length > 10) {
+                           $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                       }
+                   }, 500);
 
                });
-               $("#J3_12").ntsFixedTable({ height: 380, width: 1000 });
+
+               $("#fixed-table").ntsFixedTable({ height: 363, width: 790 });
 
 
            }
