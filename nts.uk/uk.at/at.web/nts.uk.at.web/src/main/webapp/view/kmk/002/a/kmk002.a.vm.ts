@@ -271,6 +271,13 @@ module nts.uk.at.view.kmk002.a {
                     }
                 });
 
+                // update unit stash value if not exists
+                self.unit.subscribe(value => {
+                    if (_.isEmpty(self.optionalItemDtoStash.unit)) {
+                        self.optionalItemDtoStash.unit = value;
+                    }
+                });
+
                 // Event on optionalItemAtr value changed
                 self.optionalItemAtr.subscribe(value => {
                     
@@ -771,6 +778,8 @@ module nts.uk.at.view.kmk002.a {
                     // set updated name & useAtr
                     dto.usageAtr = self.usageAtr();
                     dto.optionalItemName = self.optionalItemName();
+                    dto.optionalItemAtr = self.optionalItemAtr();
+                    dto.unit = self.unit();
 
                     // return dto
                     return dto;
