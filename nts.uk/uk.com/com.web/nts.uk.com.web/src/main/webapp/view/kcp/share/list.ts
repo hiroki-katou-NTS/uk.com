@@ -291,6 +291,9 @@ module kcp.share.list {
             if ($input.children().length != 0) {
                 self.triggerReload = true;
                 data.selectedCode.valueHasMutated();
+                // Minh_Anh fix performance
+                dfd.resolve();
+                return dfd.promise();
             }
 
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
@@ -484,6 +487,7 @@ module kcp.share.list {
             });
 
             self.selectedCodes.subscribe(() => {
+                $('#' + self.componentGridId).ntsGridList('setSelected', self.selectedCodes());
                 if (self.triggerReload) {
                     self.reload();
                     self.triggerReload = false;
