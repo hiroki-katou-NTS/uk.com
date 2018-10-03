@@ -24,9 +24,9 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             $("#J2_1").focus();
             //Fixed table
             if (/Chrome/.test(navigator.userAgent)) {
-                $("#fixed-table").ntsFixedTable({ height: 503, width: 780 });
+                $("#fixed-table").ntsFixedTable({ height: 505, width: 785 });
             } else {
-                $("#fixed-table").ntsFixedTable({ height: 499, width: 780 });
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 785 });
             }
             let categoryAtrScreenB = getShared('QMM012_B');
             if (categoryAtrScreenB != null) {
