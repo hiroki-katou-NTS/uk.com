@@ -49,10 +49,12 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
 
 
         // 初期データ取得処理
-        initScreen(hisId: string) {
+        initScreen(hisId: string) :JQueryPromise<any>{
             let self = this;
             block.invisible();
-            service.getListOccAccIsHis().done((listOccAccIsHis: Array<IOccAccIsHis>) => {
+            $.when(
+                service.getListOccAccIsHis())
+            .done((listOccAccIsHis: Array<IOccAccIsHis>) => {
                 if (listOccAccIsHis && listOccAccIsHis.length > 0) {
                     self.listHisTemp = listOccAccIsHis;
                     self.listOccAccIsHis(OccAccIsHis.convertToDisplayHis(listOccAccIsHis));

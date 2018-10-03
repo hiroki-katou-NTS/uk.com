@@ -23,52 +23,55 @@ module nts.uk.com.view.qmm011.d.viewmodel {
             var self = this;
             self.init();
         }
-        init(){
+        init(): JQueryPromise<any> {
             var self = this;
             block.invisible();
-            service.getOccAccInsurBus().done( (listNameOfEachBusiness: Array<INameOfEachBusiness>) => {
-                if (listNameOfEachBusiness && listNameOfEachBusiness.length > 0) {
-                    self.listNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
-                    self.templistNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
-                    if(self.listNameOfEachBusiness().length > 0){
-                        _.each(self.listNameOfEachBusiness(),(value) => {
-                            value.flagReg = true;
-                            if(value.occAccInsurBusNo === 1){
-                                self.businessType1(value);
-                            }else if(value.occAccInsurBusNo === 2){
-                                self.businessType2(value);
-                            }else if(value.occAccInsurBusNo === 3){
-                                self.businessType3(value);
-                            }else if(value.occAccInsurBusNo === 4){
-                                self.businessType4(value);
-                            }else if(value.occAccInsurBusNo === 5){
-                                self.businessType5(value);
-                            }else if(value.occAccInsurBusNo === 6){
-                                self.businessType6(value);
-                            }else if(value.occAccInsurBusNo === 7){
-                                self.businessType7(value);
-                            }else if(value.occAccInsurBusNo === 8){
-                                self.businessType8(value);
-                            }else if(value.occAccInsurBusNo === 9){
-                                self.businessType9(value);
-                            }else if(value.occAccInsurBusNo === 10){
-                                self.businessType10(value);
-                            }
-                        });
+            $.when(
+                service.getOccAccInsurBus())
+                .done((listNameOfEachBusiness: Array<INameOfEachBusiness>) => {
+                    if (listNameOfEachBusiness && listNameOfEachBusiness.length > 0) {
+                        self.listNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
+                        self.templistNameOfEachBusiness(NameOfEachBusiness.fromData(listNameOfEachBusiness));
+                        if (self.listNameOfEachBusiness().length > 0) {
+                            _.each(self.listNameOfEachBusiness(), (value) => {
+                                value.flagReg = true;
+                                if (value.occAccInsurBusNo === 1) {
+                                    self.businessType1(value);
+                                } else if (value.occAccInsurBusNo === 2) {
+                                    self.businessType2(value);
+                                } else if (value.occAccInsurBusNo === 3) {
+                                    self.businessType3(value);
+                                } else if (value.occAccInsurBusNo === 4) {
+                                    self.businessType4(value);
+                                } else if (value.occAccInsurBusNo === 5) {
+                                    self.businessType5(value);
+                                } else if (value.occAccInsurBusNo === 6) {
+                                    self.businessType6(value);
+                                } else if (value.occAccInsurBusNo === 7) {
+                                    self.businessType7(value);
+                                } else if (value.occAccInsurBusNo === 8) {
+                                    self.businessType8(value);
+                                } else if (value.occAccInsurBusNo === 9) {
+                                    self.businessType9(value);
+                                } else if (value.occAccInsurBusNo === 10) {
+                                    self.businessType10(value);
+                                }
+                            });
+                        }
                     }
-                }
 
-            }).fail(function(res: any) {
-                if (res)
-                    dialog.alertError(res);
-            }).always(() => {
-                block.clear();
-            });
-            if (!self.businessType1().toUse()){
-                $('#D2_25').focus();
-            } else {
-                $('#D2_3').focus();
-            }
+                }).fail(function(res: any) {
+                    if (res)
+                        dialog.alertError(res);
+                }).always(() => {
+                    block.clear();
+                    if (this.businessType1().toUse()) {
+                        _.defer(() => { $('#D2_3').focus() });
+
+                    } else {
+                        _.defer(() => { $('#D2_25').focus() });
+                    }
+                });
         }
 
         update(){

@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm011.a.viewmodel {
         }
         
         onSelectedScreenB(){
+            __viewContext.viewModel.viewmodelB.initScreen(null);
             let hisId = __viewContext.viewModel.viewmodelB.selectedEmpInsHisId();
             __viewContext.viewModel.viewmodelB.getEmpInsurPreRate(hisId);
             error.clearAll();
@@ -16,8 +17,8 @@ module nts.uk.pr.view.qmm011.a.viewmodel {
         }
         
         onSelectedScreenC(){
-            let hisId = __viewContext.viewModel.viewmodelC.selectedEmpInsHisId();
-            __viewContext.viewModel.viewmodelC.getAccInsurPreRate(hisId);
+            __viewContext.viewModel.viewmodelC.initScreen(null);
+            __viewContext.viewModel.viewmodelC.getAccInsurPreRate();
             error.clearAll();
             setTimeout(()=>{
                 $("#C1_4_container").focus();
