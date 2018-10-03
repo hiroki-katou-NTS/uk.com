@@ -95,7 +95,7 @@ public class OverTimeFrameTime {
 	
 	/**
 	 * 実績超過乖離時間の計算
-	 * @return
+	 * @return　
 	 */
 	public int calcOverLimitDivergenceTime() {
 		AttendanceTime overTime = new AttendanceTime(0);
@@ -121,7 +121,7 @@ public class OverTimeFrameTime {
 	
 	/**
 	 * 申請超過時間の計算
-	 * @return
+	 * @return 残業＋振替時間
 	 */
 	public int calcOverLimitTime() {
 		AttendanceTime overTime = new AttendanceTime(0);
@@ -139,7 +139,7 @@ public class OverTimeFrameTime {
 	
 	/**
 	 * 事前申請超過時間の計算
-	 * @return
+	 * @return 超過分の時間
 	 */
 	public int calcPreOverLimitDivergenceTime() {
 		if(this.BeforeApplicationTime != null) {

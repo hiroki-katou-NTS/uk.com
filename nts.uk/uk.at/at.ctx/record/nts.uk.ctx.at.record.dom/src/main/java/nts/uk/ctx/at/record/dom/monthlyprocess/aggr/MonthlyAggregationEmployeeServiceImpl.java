@@ -17,7 +17,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
@@ -67,7 +68,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	
 	/** リポジトリ：月別実績の勤怠時間 */
 	@Inject
-	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;
+	private TimeOfMonthlyRepository timeOfMonthlyRepo;
+//	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;		// 旧版
 	/** リポジトリ：週別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeOfWeeklyRepository attendanceTimeWeekRepo;
@@ -238,10 +240,12 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
 			
 			// 計算結果と同月データ・締めID違い かつ 期間重複データの削除
-			val attendanceTimeOlds = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : attendanceTimeOlds){
+			val timeOlds = this.timeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			for (val oldData : timeOlds){
+				if (!oldData.getAttendanceTime().isPresent()) continue;
 				val oldClosureId = oldData.getClosureId();
 				val oldClosureDate = oldData.getClosureDate();
+				val oldAttendanceTime = oldData.getAttendanceTime().get();
 				
 				MonthMergeKey oldDomainsKey = new MonthMergeKey();
 				oldDomainsKey.setEmployeeId(employeeId);
@@ -249,14 +253,14 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				oldDomainsKey.setClosureId(oldClosureId);
 				oldDomainsKey.setClosureDate(oldClosureDate);
 				
-				if (!this.periodCompareEx(oldData.getDatePeriod(), datePeriod)) continue;
+				if (!this.periodCompareEx(oldAttendanceTime.getDatePeriod(), datePeriod)) continue;
 				boolean isTarget = false;
 				if (oldClosureId.value != closureId.value) isTarget = true;
 				if (oldClosureDate.getClosureDay().v() != closureDate.getClosureDay().v()) isTarget = true;
 				if (oldClosureDate.getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
 				if (!isTarget) continue;
-				this.attendanceTimeRepository.remove(
-						employeeId, yearMonth, oldClosureId, oldClosureDate);
+				
+				this.timeOfMonthlyRepo.remove(employeeId, yearMonth, oldClosureId, oldClosureDate);
 				
 				if (this.attendanceTimeWeekRepo.findByClosure(
 						employeeId, yearMonth, oldClosureId, oldClosureDate).size() > 0){
@@ -282,7 +286,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			domainsKey.setClosureId(closureId);
 			domainsKey.setClosureDate(closureDate);
 			if (value.getAttendanceTime().isPresent()){
-				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get(), value.getAffiliationInfo() );
+				this.timeOfMonthlyRepo.persistAndUpdate(new TimeOfMonthly(
+						value.getAttendanceTime(), value.getAffiliationInfo()));
 			}
 			if (value.getAttendanceTimeWeeks().size() > 0){
 				for (val attendanceTimeWeek : value.getAttendanceTimeWeeks()){

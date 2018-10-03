@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -22,4 +23,6 @@ public interface DailyRecordCreateErrorAlermService {
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithm(IntegrationOfDaily integrationOfDaily);
 	//打刻二重チェック
 	public List<EmployeeDailyPerError> doubleStampAlgorithm(IntegrationOfDaily integrationOfDaily);
+	//休日打刻チェック
+	public Optional<EmployeeDailyPerError> checkHolidayStamp(IntegrationOfDaily integration);
 }

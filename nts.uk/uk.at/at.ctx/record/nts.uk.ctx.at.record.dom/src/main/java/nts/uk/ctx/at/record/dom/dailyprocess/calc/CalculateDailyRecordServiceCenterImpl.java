@@ -64,12 +64,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
 	
+	//計算処理
 	@Inject
 	private CalculateDailyRecordService calculate;
 	
+	//エラーチェック処理
 	@Inject
 	private CalculationErrorCheckService calculationErrorCheckService;
 	
+	//リポジトリ：勤務情報
 	@Inject
 	private WorkInformationRepository workInformationRepository;
 	
@@ -77,6 +80,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
 	
+	//計算を動かすための会社共通設定取得
 	@Inject
 	private CommonCompanySettingForCalc commonCompanySettingForCalc;
 	
@@ -94,8 +98,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Override
 	//old_process. Don't use!
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
-										.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+//		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList()).getIntegrationOfDailyList();
+		return calculatePassCompanySetting(CalculateOption.asDefault(), integrationOfDaily, Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 	}
 	
 	@Override
@@ -134,7 +138,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 	
 	@Override
-	//スケジュールから呼び出す窓口
+	//スケジュール・申請から呼び出す窓口
 	public List<IntegrationOfDaily> calculateForSchedule(
 			CalculateOption calcOption,
 			List<IntegrationOfDaily> integrationOfDaily,
@@ -272,8 +276,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 								  			.sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd()))
 								  			.map(tc -> tc.getAffiliationInfor().getYmd())
 								  			.collect(Collectors.toList());
-		
+		//開始日
 		val minGeneralDate = sortedymd.get(0);
+		//終了日
 		val maxGeneralDate = sortedymd.get(sortedymd.size() - 1);
 		
 		
@@ -317,7 +322,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				returnList.add(ManageCalcStateAndResult.successCalc(record));
 			}
 		}
-
 		return returnList;
 	}
 	
@@ -434,8 +438,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 								  					 	.map(tc -> tc.getAffiliationInfor().getYmd())
 								  					 	.collect(Collectors.toList());
 		
-		val maxGeneralDate = sortedymd.get(0);
-		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		val minGeneralDate = sortedymd.get(0);
+		val maxGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		
 		//労働制マスタ取得
 		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
