@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -58,7 +59,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
 			"appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, "+
-			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+   
+			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE, "+
 			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
 			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
 			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
@@ -171,6 +172,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	}
 	
 	@Override
+	@SneakyThrows
 	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
 		
 		//delete phase
@@ -185,7 +187,6 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		query2 = query2.replaceAll("rootType", String.valueOf(rootType));
 		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
 		
-		
 		//delete root
 		String query3 = DELETE_APP_ROOT_CONFIRM.replaceAll("employeeID", employeeID);
 		query3 = query3.replaceAll("companyID", companyID);
@@ -194,27 +195,12 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		
-		try {
-			PreparedStatement pstatement1 = con.prepareStatement(query1);
-			pstatement1.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
-		}
-		try {
-			PreparedStatement pstatement2 = con.prepareStatement(query2);
-			pstatement2.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
-		}
-		try {
-			PreparedStatement pstatement3 = con.prepareStatement(query3);
-			pstatement3.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new BusinessException(e.getMessage());
-		}
+		PreparedStatement pstatement1 = con.prepareStatement(query1);
+		pstatement1.execute();
+		PreparedStatement pstatement2 = con.prepareStatement(query2);
+		pstatement2.execute();
+		PreparedStatement pstatement3 = con.prepareStatement(query3);
+		pstatement3.execute();
 		
 	}
 
@@ -381,6 +367,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			RecordRootType rootType) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, ");
+		sql.append(" appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, ");
 		sql.append(" phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE ");
 		sql.append(" FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase ");
 		sql.append(" ON appRoot.ROOT_ID = phase.ROOT_ID ");
@@ -488,10 +475,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 				rs.getString("EMPLOYEE_ID"), 
 				rs.getGeneralDate("RECORD_DATE"), 
 				rs.getInt("ROOT_TYPE"), 
-				rs.getInt(""),//yearMonth
-				rs.getInt(""),//closureID
-				rs.getInt(""),//closureDay
-				rs.getInt(""),//lastDayFlg
+				rs.getInt("YEARMONTH"),//yearMonth
+				rs.getInt("CLOSURE_ID"),//closureID
+				rs.getInt("CLOSURE_DAY"),//closureDay
+				rs.getInt("LAST_DAY_FLG"),//lastDayFlg
 				rs.getInt("PHASE_ORDER"), 
 				rs.getInt("APP_PHASE_ATR"), 
 				rs.getInt("FRAME_ORDER"), 
