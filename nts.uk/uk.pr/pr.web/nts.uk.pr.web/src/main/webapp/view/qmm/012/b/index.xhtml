@@ -26,7 +26,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- 新規 -->
-				<button id="B1_1" tabindex="1" class="newBtn" data-bind="click : create, enable: true">#{i18n.getText('QMM012_20')}</button>
+				<button id="B1_1" tabindex="1" class="newBtn" data-bind="click : create, enable: !statementItemDataSelected().checkCreate() || (statementItemDataSelected().statementItem().categoryAtr() == null)">#{i18n.getText('QMM012_20')}</button>
 				<!-- 登録 -->
 				<button id="B1_2" tabindex="2" class="registerBtn proceed" data-bind="click: register, enable: (statementItemDataSelected().statementItem().categoryAtr() != null)">#{i18n.getText('QMM012_21')}</button>
 				<!-- コピー -->
