@@ -76,8 +76,8 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                     E2_17_2: advancedSetting.sociInsuStanDate.refeDate,
                     E2_19_0: advancedSetting.empInsurStanDate.baseMonth,
                     E2_19_1: advancedSetting.empInsurStanDate.refeDate,
-                    E2_21_0: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? params.processingYear : advancedSetting.closeDate.baseYear ,
-                    E2_21_1: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? basicSetting.employeeExtractionReferenceDate.refeMonth: advancedSetting.closeDate.baseMonth,
+                    E2_21_0: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? params.processingYear : advancedSetting.closeDate.baseYear,
+                    E2_21_1: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? basicSetting.employeeExtractionReferenceDate.refeMonth : advancedSetting.closeDate.baseMonth,
                     E2_21_2: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? basicSetting.employeeExtractionReferenceDate.refeDate : advancedSetting.closeDate.refeDate,
                     E2_23_0: advancedSetting.incomTaxBaseYear.baseYear,
                     E2_23_1: advancedSetting.incomTaxBaseYear.baseMonth,
@@ -87,7 +87,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                 }
                 self.mapLabel(tranferModel);
                 dfd.resolve();
-                if ($('#E2_3')){
+                if ($('#E2_3')) {
                     setTimeout(function () {
                         $('#E2_3').focus();
                     }, 350);
@@ -132,6 +132,18 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
 
         reflect() {
             var self = this;
+            if (!self.dailyPaymentDateCheck() &&
+                !self.empExtractionRefDateCheck() &&
+                !self.socialInsuranceMonthCheck() &&
+                !self.specPrintDateCheck() &&
+                !self.numWorkingDaysCheck() &&
+                !self.socialInsuranceDateCheck() &&
+                !self.empInsuranceStandardDateCheck() &&
+                !self.timeClosingDateCheck() &&
+                !self.incomeTaxReferenceCheck() &&
+                !self.accountingClosureDateCheck()) {
+                nts.uk.ui.dialog.alertError({messageId: "MsgQ_8"});
+            }
             setShared("QMM005eParams", {
                 reflect: true,
                 valPayDateSet: self.valPayDateSet,
