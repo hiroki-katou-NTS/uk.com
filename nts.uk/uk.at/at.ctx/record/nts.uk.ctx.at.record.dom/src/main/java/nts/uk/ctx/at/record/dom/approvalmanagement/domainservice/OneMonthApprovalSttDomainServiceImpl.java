@@ -237,7 +237,9 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			List<String> lstEmployees= new ArrayList<>();
 			if (approvalRootOfEmployeeImport == null
 					|| approvalRootOfEmployeeImport.getApprovalRootSituations().size() == 0) {
-				throw new BusinessException("Msg_874");
+				oneMonthApprovalStatusDto.setMessageID("Msg_874");
+				return oneMonthApprovalStatusDto;
+				//throw new BusinessException("Msg_874");
 			}
 			else//クエリ「社員を並び替える(任意)」を実行する (Sort employee)
 			{
@@ -268,12 +270,16 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
 					approvalRootOfEmployeeImport);
 			if (buildApprovalEmployeeData.isEmpty()) {
-				throw new BusinessException("Msg_875");
+				oneMonthApprovalStatusDto.setMessageID("Msg_875");
+				return oneMonthApprovalStatusDto;
+				//throw new BusinessException("Msg_875");
 			}
 			// fix bug 91363
 			List<ApprovalEmployeeDto> buildApprovalEmployeeDataResult = new ArrayList<>();
 			lstEmployees.forEach(item -> {
+				if(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().isPresent()){
 				buildApprovalEmployeeDataResult.add(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().get());
+				}
 			});
 			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeDataResult);
 			
