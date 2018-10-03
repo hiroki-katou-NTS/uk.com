@@ -2,8 +2,6 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 
 /**

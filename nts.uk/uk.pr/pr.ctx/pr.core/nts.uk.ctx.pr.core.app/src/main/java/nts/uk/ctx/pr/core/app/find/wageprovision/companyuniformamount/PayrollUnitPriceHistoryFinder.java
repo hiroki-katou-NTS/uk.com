@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-@Stateless
+
 /**
 * 給与会社単価履歴: Finder
 */
+@Stateless
 public class PayrollUnitPriceHistoryFinder
 {
 

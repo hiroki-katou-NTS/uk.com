@@ -16,11 +16,12 @@ public class RemovePayrollUnitPriceHistoryCommandHandler extends CommandHandler<
     
     @Inject
     private PayrollUnitPriceHistoryRepository repository;
-    
+
     @Override
     protected void handle(CommandHandlerContext<PayrollUnitPriceHistoryCommand> context) {
         String cid = context.getCommand().getCId();
+        String code = context.getCommand().getCode();
         String hisId = context.getCommand().getHisId();
-        repository.remove(cid, hisId);
+        repository.remove(cid, code, hisId);
     }
 }

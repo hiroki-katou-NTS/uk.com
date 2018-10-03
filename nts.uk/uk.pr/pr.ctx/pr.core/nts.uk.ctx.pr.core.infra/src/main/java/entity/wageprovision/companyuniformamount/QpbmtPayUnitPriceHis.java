@@ -34,13 +34,6 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
     public QpbmtPayUnitPriceHisPk payUnitPriceHisPk;
     
     /**
-    * コード
-    */
-    @Basic(optional = false)
-    @Column(name = "CODE")
-    public String code;
-    
-    /**
     * 開始年月
     */
     @Basic(optional = false)
@@ -61,10 +54,10 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
     }
 
     public PayrollUnitPriceHistory toDomain() {
-        return new PayrollUnitPriceHistory(this.code,this.payUnitPriceHisPk.cid, new YearMonthHistoryItem(this.payUnitPriceHisPk.hisId , new YearMonthPeriod(new YearMonth(this.startYearMonth), new YearMonth(this.endYearMonth))));
+        return new PayrollUnitPriceHistory(this.payUnitPriceHisPk.code,this.payUnitPriceHisPk.cid, new YearMonthHistoryItem(this.payUnitPriceHisPk.hisId , new YearMonthPeriod(new YearMonth(this.startYearMonth), new YearMonth(this.endYearMonth))));
     }
     public static QpbmtPayUnitPriceHis toEntity(PayrollUnitPriceHistory domain) {
-        return new QpbmtPayUnitPriceHis(new QpbmtPayUnitPriceHisPk(domain.getCId(), domain.getHistory().identifier()),domain.getCode().v(), domain.getHistory().start().v(), domain.getHistory().end().v());
+        return new QpbmtPayUnitPriceHis(new QpbmtPayUnitPriceHisPk(domain.getCId(), domain.getCode().v(),domain.getHistory().identifier()), domain.getHistory().start().v(), domain.getHistory().end().v());
     }
 
 }

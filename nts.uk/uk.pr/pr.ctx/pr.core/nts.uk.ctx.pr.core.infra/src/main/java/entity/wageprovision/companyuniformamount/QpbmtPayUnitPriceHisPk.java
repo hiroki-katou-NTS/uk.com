@@ -11,8 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 給与会社単価: 主キー情報
-*/
+ * 給与会社単価履歴: 主キー情報
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,19 +20,26 @@ import lombok.NoArgsConstructor;
 public class QpbmtPayUnitPriceHisPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * 会社ID
-    */
+     * 会社ID
+     */
     @Basic(optional = false)
     @Column(name = "CID")
     public String cid;
-    
+
     /**
-    * 履歴ID
-    */
+     * コード
+     */
+    @Basic(optional = false)
+    @Column(name = "CODE")
+    public String code;
+
+    /**
+     * 履歴ID
+     */
     @Basic(optional = false)
     @Column(name = "HIS_ID")
     public String hisId;
-    
+
 }
