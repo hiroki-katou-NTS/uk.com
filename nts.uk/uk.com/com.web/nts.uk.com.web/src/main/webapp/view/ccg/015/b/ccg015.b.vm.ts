@@ -35,7 +35,7 @@ module nts.uk.pr.view.ccg015.b {
                 self.myPageSettingModel = ko.observable(new MyPageSettingModel());
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("CCG015_11"), width: "70px", key: 'itemCode', dataType: "string", hidden: false },
-                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "320px", key: 'itemName', dataType: "string" },
+                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "320px", key: 'itemName', dataType: "string", formatter: _.escape },
                     { headerText: nts.uk.resource.getText("CCG015_29"), key: 'useItem', width: "200px", controlType: 'switch' }
                 ]);
                 this.currentCode = ko.observable("w1");
