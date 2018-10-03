@@ -2,7 +2,9 @@ package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 給与会社単価履歴
+ */
 public interface PayrollUnitPriceHistoryRepository {
     List<PayrollUnitPriceHistory> getAllPayrollUnitPriceHistory();
 
