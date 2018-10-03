@@ -4,16 +4,12 @@ module nts.uk.pr.view.qmm007.c {
          * define path to service
          */
         var path: any = {
-            updateEmpInsurHis: "core/monsalabonus/laborinsur/updateEmpInsurHis",
-            updateAccInsurHis: "core/monsalabonus/laborinsur/updateAccInsurHis"
+            getPayrollUnitPriceHis: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHis/{0}"
         };
 
-        export function updateEmpInsurHis(data :any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.updateEmpInsurHis, data);
-        }
-
-        export function updateAccInsurHis(data :any): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.updateAccInsurHis, data);
+        export function getPayrollUnitPriceHis(data :any): JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.getPayrollUnitPriceHis, data);
+            return nts.uk.request.ajax("pr", _path);
         }
     }
 }

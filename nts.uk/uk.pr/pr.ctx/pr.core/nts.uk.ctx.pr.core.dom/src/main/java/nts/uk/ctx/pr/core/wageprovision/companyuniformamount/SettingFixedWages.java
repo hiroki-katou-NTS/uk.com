@@ -23,7 +23,7 @@ public class SettingFixedWages extends DomainObject
     /**
     * 全員一律
     */
-    private Optional<DesByAllMembers> everyoneEqual;
+    private Optional<DesByAllMembers> flatAllEmployees;
     
     /**
     * 給与契約形態ごと
@@ -32,7 +32,7 @@ public class SettingFixedWages extends DomainObject
     
     public SettingFixedWages(int setClassification,Integer targetClass,Integer monthSalaryPerDay, Integer aDayPayee, Integer hourlyPay, Integer monthSalary) {
         this.setClassification = EnumAdaptor.valueOf(setClassification, SetFixedWageClass.class);
-        this.everyoneEqual = Optional.of(new DesByAllMembers(targetClass));
+        this.flatAllEmployees = Optional.of(new DesByAllMembers(targetClass));
         this.perSalaryConType = Optional.of(new DesForEachSalaryConType(monthSalaryPerDay,aDayPayee,hourlyPay,monthSalary));
     }
     

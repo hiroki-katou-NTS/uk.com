@@ -23,69 +23,39 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             let self = this;
             let to = getText('QMM011_9');
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(999912));
+
+            //start
+            let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
+            if(params){
+                self.getPayrollUnitPriceHis(params.hisId);
+            }
+
+
         }
 
-        update() {
-            let self = this;
-            if(self.validateYearMonth()) {
-                return;
-            }
-
-            let param: any = {
-                hisId: self.hisId(),
-                methodEditing: self.methodEditing(),
-                startMonthYear: $("#F1_9")[0].disabled ? 0 : self.startYearMonth(),
-                endMonthYear: self.convertStringToYearMonth(self.endYearMonth())
-            }
-            block.invisible();
-            if (self.insurrance() == INSURRANCE.EMPLOYMENT_INSURRANCE_RATE) {
-                service.updateEmpInsurHis(param).done(() => {
-                    if (self.methodEditing() == EDIT_METHOD.DELETE) {
-                        dialog.info({ messageId: "Msg_16" }).then(() => {
-                            setShared('QMM011_F_PARAMS_OUTPUT', {
-                                methodEditing: self.methodEditing()
-                            });
-                            close();
+        getPayrollUnitPriceHis(hisId :string ) {
+            service.getPayrollUnitPriceHis(param).done(() => {
+                if (self.methodEditing() == EDIT_METHOD.DELETE) {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        setShared('QMM011_F_PARAMS_OUTPUT', {
+                            methodEditing: self.methodEditing()
                         });
-                    } else {
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            setShared('QMM011_F_PARAMS_OUTPUT', {
-                                methodEditing: self.methodEditing()
-                            });
-                            close();
+                        close();
+                    });
+                } else {
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        setShared('QMM011_F_PARAMS_OUTPUT', {
+                            methodEditing: self.methodEditing()
                         });
-                    }
-                }).fail(function(res: any) {
-                    if (res)
-                        dialog.alertError(res);
-                }).always(() => {
-                    block.clear();
-                });
-            } else {
-                service.updateAccInsurHis(param).done(() => {
-                    if (self.methodEditing() == EDIT_METHOD.DELETE) {
-                        dialog.info({ messageId: "Msg_16" }).then(() => {
-                            setShared('QMM011_F_PARAMS_OUTPUT', {
-                                methodEditing: self.methodEditing()
-                            });
-                            close();
-                        });
-                    } else {
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            setShared('QMM011_F_PARAMS_OUTPUT', {
-                                methodEditing: self.methodEditing()
-                            });
-                            close();
-                        });
-                    }
-                }).fail(function(res: any) {
-                    if (res)
-                        dialog.alertError(res);
-                }).always(() => {
-                    block.clear();
-                });
-
-            }
+                        close();
+                    });
+                }
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
+            }).always(() => {
+                block.clear();
+            });
         }
 
         hasRequired(){

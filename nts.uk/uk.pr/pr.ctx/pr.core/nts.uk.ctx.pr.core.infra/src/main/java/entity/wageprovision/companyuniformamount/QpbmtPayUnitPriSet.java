@@ -83,7 +83,7 @@ public class QpbmtPayUnitPriSet extends UkJpaEntity implements Serializable
     /**
     * メモ
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "NOTES")
     public String notes;
     
@@ -99,7 +99,7 @@ public class QpbmtPayUnitPriSet extends UkJpaEntity implements Serializable
     public static QpbmtPayUnitPriSet toEntity(PayrollUnitPriceSetting domain) {
         return new QpbmtPayUnitPriSet(new QpbmtPayUnitPriSetPk(domain.getHistoryId()),
                 domain.getAmountOfMoney().v(),
-                domain.getFixedWage().getEveryoneEqual().get().getTargetClass().value,
+                domain.getFixedWage().getFlatAllEmployees().get().getTargetClass().value,
                 domain.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value,
                 domain.getFixedWage().getPerSalaryConType().get().getADayPayee().value,
                 domain.getFixedWage().getPerSalaryConType().get().getHourlyPay().value,

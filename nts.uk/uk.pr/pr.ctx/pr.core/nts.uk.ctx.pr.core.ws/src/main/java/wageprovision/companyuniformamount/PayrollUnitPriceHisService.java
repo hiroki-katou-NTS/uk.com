@@ -13,15 +13,15 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 
 
-@Path("core/monsalabonus/laborinsur")
+@Path("core/wageprovision/companyuniformamount")
 @Produces("application/json")
 public class PayrollUnitPriceHisService extends WebService {
 
 
 
     @POST
-    @Path("getListOccAccIsHis")
-    public  void getListOccAccIsHis() {
+    @Path("getPayrollUnitPriceHis/{hisId}")
+    public void getPayrollUnitPriceHis(@PathParam("hisId") String hisId) {
 
     }
 //

@@ -3,9 +3,11 @@ package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+
 /**
  * 給与会社単価履歴
  */
+
 @Getter
 public class PayrollUnitPriceHistory extends AggregateRoot {
     /**
