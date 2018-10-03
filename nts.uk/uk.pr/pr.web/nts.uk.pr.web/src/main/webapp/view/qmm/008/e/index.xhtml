@@ -11,8 +11,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1200,
-					height : 800
+					width : 1085,
+					height : 600
 				};
 			</script>
 			<com:ValidatorScript>
@@ -54,199 +54,203 @@
 						data-bind="text: displayEnd"></span>
 				</div>
 
-				<table id="fixed-table">
-					<colgroup>
-						<col width="40px" />
-						<col width="70px" />
-						<col width="70px" />
-						<col width="70px" />
-						<col width="88px" />			
-						<col width="88px" />
-						<col width="100px" />
-						<col width="100px" />
-						<col width="88px" />
-						<col width="88px" />
-						<col width="100px" />
-						<col width="100px" />
-					</colgroup>
-					<thead>
-						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
-								rowspan="4" id="E3_2">#{i18n.getText('QMM008_145')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								rowspan="4" id="E3_3">#{i18n.getText('QMM008_146')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								colspan="2" rowspan="2" id="E3_4">#{i18n.getText('QMM008_147')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								colspan="8" id="E3_7">#{i18n.getText('QMM008_150')}</th>
-						</tr>
-						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
-								colspan="4" id="E3_8">#{i18n.getText('QMM008_151')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								colspan="4" id="E3_9">#{i18n.getText('QMM008_152')}</th>
+                <div class="flex">
+                    <table id="fixed-table">
+                        <colgroup>
+                            <col width="40px" />
+                            <col width="70px" />
+                            <col width="70px" />
+                            <col width="70px" />
+                            <col width="92px" />
+                            <col width="92px" />
+                            <col width="100px" />
+                            <col width="100px" />
+                            <col width="92px" />
+                            <col width="92px" />
+                            <col width="100px" />
+                            <col width="100px" />
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                rowspan="4" id="E3_2">#{i18n.getText('QMM008_145')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                rowspan="4" id="E3_3">#{i18n.getText('QMM008_146')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                colspan="2" rowspan="2" id="E3_4">#{i18n.getText('QMM008_147')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                colspan="8" id="E3_7">#{i18n.getText('QMM008_150')}</th>
+                        </tr>
+                        <tr>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                colspan="4" id="E3_8">#{i18n.getText('QMM008_151')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                colspan="4" id="E3_9">#{i18n.getText('QMM008_152')}</th>
 
-						</tr>
-						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
-								rowspan="2" id="E3_5">#{i18n.getText('QMM008_148')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								rowspan="2" id="E3_6">#{i18n.getText('QMM008_149')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_10">#{i18n.getText('QMM008_6')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_11">#{i18n.getText('QMM008_153')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_12">#{i18n.getText('QMM008_154')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_13">#{i18n.getText('QMM008_155')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_14">#{i18n.getText('QMM008_6')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_15">#{i18n.getText('QMM008_153')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_16">#{i18n.getText('QMM008_154')}</th>
-							<th class="ui-widget-header" style="text-align: center;"
-								id="E3_17">#{i18n.getText('QMM008_155')}</th>
-						</tr>
-						<tr>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().inHealthInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().inLongCareInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().inSpecialInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().inBasicInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().emHealthInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().emLongCareInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().emSpecialInsuranceRate"></th>
-							<th class="ui-widget-header" style="text-align: center;"
-								data-bind="text: header().emBasicInsuranceRate"></th>
-						</tr>
+                        </tr>
+                        <tr>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                rowspan="2" id="E3_5">#{i18n.getText('QMM008_148')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                rowspan="2" id="E3_6">#{i18n.getText('QMM008_149')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_10">#{i18n.getText('QMM008_6')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_11">#{i18n.getText('QMM008_153')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_12">#{i18n.getText('QMM008_154')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_13">#{i18n.getText('QMM008_155')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_14">#{i18n.getText('QMM008_6')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_15">#{i18n.getText('QMM008_153')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_16">#{i18n.getText('QMM008_154')}</th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                id="E3_17">#{i18n.getText('QMM008_155')}</th>
+                        </tr>
+                        <tr>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().inHealthInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().inLongCareInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().inSpecialInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().inBasicInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().emHealthInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().emLongCareInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().emSpecialInsuranceRate"></th>
+                            <th class="ui-widget-header" style="text-align: center;"
+                                data-bind="text: header().emBasicInsuranceRate"></th>
+                        </tr>
 
-					</thead>
-					<tbody data-bind="foreach: dataList">
-						<tr>
-							<td class="td-widget"><span class="limited-label"
-								data-bind="text:healthInsuranceGrade()"
-								style="text-align: right;"></span></td>
-							<td class="td-widget"><span class="limited-label"
-								data-bind="text: $parent.genNumber(standardMonthlyFee(),0)"
-								style="text-align: right;"></span></td>
-							<td class="td-widget"><span class="limited-label"
-								data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)"
-								style="text-align: right;"></span></td>
-							<td class="td-widget"><span class="limited-label"
-								data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)"
-								style="text-align: right;"></span></td>
-							
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '62px',
-														decimallength: 0,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_157]',
- 													value: inHealthInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />
-								
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '62px',
-														decimallength: 0,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_158]',
- 													value: inNursingCare, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />	
-								
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '73px',
-														decimallength: 2,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_159]',
- 													value: inSpecInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '73px',
-														decimallength: 2,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_160]',
- 													value: inBasicInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '62px',
-														decimallength: 0,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_161]',
- 													value: emHealthInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-							
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '62px',
-														decimallength: 0,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_162]',
- 													value: emNursingCare, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />		
-								
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '73px',
-														decimallength: 2,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_163]',
- 													value: emSpecInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />			
-							</td>
-							<td>
-								<input data-bind="ntsNumberEditor: {
- 													option: {
- 														width: '73px',
-														decimallength: 2,
-														grouplength: 3
-													}, 
-													name: '#[QMM008_164]',
- 													value: emBasicInsurancePremium, 
- 													constraint: 'InsuranceFee', 
- 													required: true}" />			
-							</td>
-						</tr>
-					</tbody>
-				</table>
+                        </thead>
+                        <tbody data-bind="foreach: dataList">
+                        <tr>
+                            <td class="td-widget"><span class="limited-label"
+                                                        data-bind="text:healthInsuranceGrade()"
+                                                        style="text-align: right;"></span></td>
+                            <td class="td-widget"><span class="limited-label"
+                                                        data-bind="text: $parent.genNumber(standardMonthlyFee(),0)"
+                                                        style="text-align: right;"></span></td>
+                            <td class="td-widget"><span class="limited-label"
+                                                        data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)"
+                                                        style="text-align: right;"></span></td>
+                            <td class="td-widget"><span class="limited-label"
+                                                        data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)"
+                                                        style="text-align: right;"></span></td>
+
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '62px',
+                                                            decimallength: 0,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_157]',
+                                                        value: inHealthInsurancePremium,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '62px',
+                                                            decimallength: 0,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_158]',
+                                                        value: inNursingCare,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '73px',
+                                                            decimallength: 2,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_159]',
+                                                        value: inSpecInsurancePremium,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '73px',
+                                                            decimallength: 2,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_160]',
+                                                        value: inBasicInsurancePremium,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '62px',
+                                                            decimallength: 0,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_161]',
+                                                        value: emHealthInsurancePremium,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '62px',
+                                                            decimallength: 0,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_162]',
+                                                        value: emNursingCare,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '73px',
+                                                            decimallength: 2,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_163]',
+                                                        value: emSpecInsurancePremium,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+                            </td>
+                            <td>
+                                <input data-bind="ntsNumberEditor: {
+                                                        option: {
+                                                            width: '73px',
+                                                            decimallength: 2,
+                                                            grouplength: 3
+                                                        },
+                                                        name: '#[QMM008_164]',
+                                                        value: emBasicInsurancePremium,
+                                                        constraint: 'InsuranceFee',
+                                                        required: true}" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
 				<div>
 					<span id="E2_8" class="label" style="margin-bottom: 15px;">#{i18n.getText('QMM008_143')}</span>
 				</div>
