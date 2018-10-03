@@ -305,7 +305,7 @@ public class AggregateMonthlyRecordServiceProc {
 			val attendanceTime = aggregateResult.getAttendanceTime();
 			if (attendanceTime == null) continue;
 			
-			// 社員の月別実績のエラー（フレックス）を確認する
+			// 社員の月別実績のエラー（フレックス不足補填）を確認する
 			val resultPerErrorsForFlex = attendanceTime.getMonthlyCalculation().getFlexTime().getPerErrors();
 			for (val resultPerError : resultPerErrorsForFlex){
 				if (!perErrorsForFlex.contains(resultPerError)) perErrorsForFlex.add(resultPerError);
@@ -330,7 +330,7 @@ public class AggregateMonthlyRecordServiceProc {
 			ConcurrentStopwatches.stop("12200:労働条件ごと：");
 		}
 		
-		// 社員の月別実績のエラー（フレックス）を出力する
+		// 社員の月別実績のエラー（フレックス不足補填）を出力する
 		for (val perError : perErrorsForFlex){
 			this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
 					ErrorType.FLEX,
