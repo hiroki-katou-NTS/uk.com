@@ -30,7 +30,7 @@ public class ExecutionLogAcCommand implements ExecutionLogAdapterFn{
 				importFn.getExecutionContent().value,
 				importFn.getFinishDateTime(),
 				importFn.getManagerId(),
-				importFn.getIsCancelled() == null ? null : 
+				importFn.getIsCancelled() == null ? 0 : 
 				(!importFn.getIsCancelled().isPresent()?null:importFn.getIsCancelled().get()),
 				importFn.getTargerEmployee().stream().map(c->convertToExecutionLogErrorDetailFn(c)).collect(Collectors.toList())
 				);
