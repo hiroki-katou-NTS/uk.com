@@ -107,7 +107,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.setNewMode(false);
                     let code = self.conditionSettingList()[self.index()].conditionSetCode;
                     self.setCondSetCode(code);
-                    // $("tr[data-id='" + code + "'] ").focus()
+                    setTimeout(function(){ 
+                        $("tr[data-id='" + code + "'] ").focus();
+                    }, 500);
                 } else {
                     self.createNewCondition();
                 }
