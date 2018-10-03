@@ -43,6 +43,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         initScreen(hisId: string) :JQueryPromise<any>{
             let self = this;
             block.invisible();
+            let listEmpInsHis: Array<IEmplInsurHis> = [];
             $.when(
                 service.getEmpInsHis())
                 .done((listEmpInsHis: Array<IEmplInsurHis>) => {
@@ -57,6 +58,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                         self.setEmplInsurHis(self.selectedEmpInsHis());
 
                     } else {
+                        self.listEmpInsHis(listEmpInsHis);
                         self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                     }
                 }).always(() => {
@@ -64,9 +66,22 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                 });
         }
         
+        clearHistory(){
+            let self = this;
+            self.hisId(''); 
+            self.startYearMonth(null);
+            self.endYearMonth(null);
+            self.monthlyCalendar(null); 
+        }
+        
         getEmpInsurPreRate() {
             let self = this;
             let hisId :string = self.selectedEmpInsHisId();
+            if(!hisId || hisId == '') {
+                self.isNewMode(MODE.NO);
+                self.clearHistory();
+                return;
+            }
             if (self.transferMethod() == TRANSFER_MOTHOD.TRANSFER && self.listEmpInsHis().length > 1 && self.isNewMode() == MODE.NEW) {
                 hisId = self.listEmpInsHis()[1].hisId;
             }
@@ -101,18 +116,18 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         }
         
         setTabIndex(id: number, stt: number){
-                if (id == 2 && stt == 2) return 9;
-                if (id == 1 && stt == 2) return 13;
-                if (id == 0 && stt == 2) return 17;
-                if (id == 2 && stt == 1) return 8;
-                if (id == 1 && stt == 1) return 12;
-                if (id == 0 && stt == 1) return 16;
-                if (id == 2 && stt == 3) return 10;
-                if (id == 1 && stt == 3) return 14;
-                if (id == 0 && stt == 3) return 18;
-                if (id == 2 && stt == 4) return 11;
-                if (id == 1 && stt == 4) return 15;
-                if (id == 0 && stt == 4) return 19;
+            if (id == 2 && stt == 2) return 9;
+            if (id == 1 && stt == 2) return 13;
+            if (id == 0 && stt == 2) return 17;
+            if (id == 2 && stt == 1) return 8;
+            if (id == 1 && stt == 1) return 12;
+            if (id == 0 && stt == 1) return 16;
+            if (id == 2 && stt == 3) return 10;
+            if (id == 1 && stt == 3) return 14;
+            if (id == 0 && stt == 3) return 18;
+            if (id == 2 && stt == 4) return 11;
+            if (id == 1 && stt == 4) return 15;
+            if (id == 0 && stt == 4) return 19;
         }
         
         convertToCommand(dto :Array<EmpInsurPreRate>){
@@ -223,6 +238,13 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         
         setEmplInsurHis(emplInsurHis: EmplInsurHis) {
             let self = this;
+            if(emplInsurHis == null) {
+                self.hisId('');
+                self.startYearMonth() = ko.observable();
+                self.endYearMonth() = ko.observable();
+                self.monthlyCalendar() = ko.observable();
+                return;
+            }
             let year, month: number;
             self.hisId(emplInsurHis.hisId);
             self.startYearMonth(self.convertMonthYearToString(emplInsurHis.startYearMonth));

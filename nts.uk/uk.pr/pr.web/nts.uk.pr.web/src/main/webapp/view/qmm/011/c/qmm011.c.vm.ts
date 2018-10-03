@@ -51,6 +51,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         // 初期データ取得処理
         initScreen(hisId: string) :JQueryPromise<any>{
             let self = this;
+            let listOccAccIsHis: Array<IOccAccIsHis> = [];
             block.invisible();
             $.when(
                 service.getListOccAccIsHis())
@@ -66,6 +67,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
                     self.setOccAccIsHis(self.selectedEmpInsHis());
                 } else {
+                    self.listOccAccIsHis(listOccAccIsHis);
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
 
                 }
@@ -73,7 +75,8 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                 block.clear();
             });
         }
-
+            
+       
         getOccAccIsPrRate() {
             let self = this;
             service.getOccAccIsPrRate(self.selectedEmpInsHisId()).done((listOccAccIsPrRate: Array<IOccAccIsPrRate>) => {
@@ -90,6 +93,11 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         getAccInsurPreRate() {
             let self = this;
             let hisId: string = self.selectedEmpInsHisId();
+            if(!hisId || hisId == '') {
+                self.isNewMode(MODE.NO);
+                self.clearHistory();
+                return;
+            }
             if (self.transferMethod() == 0 && self.listOccAccIsHis().length > 1 && self.isNewMode() == MODE.NEW) {
                 hisId = self.listOccAccIsHis()[FIRST + 1].hisId;
             }
@@ -107,6 +115,14 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
                 }
             });
+        }
+            
+        clearHistory(){
+            let self = this;
+            self.hisId(''); 
+            self.startYearMonth(null);
+            self.endYearMonth(null);
+            self.monthlyCalendar(null); 
         }
 
         regColumnAccInsurPreRate(listAccInsurPreRate: Array<IAccInsurPreRate>) {

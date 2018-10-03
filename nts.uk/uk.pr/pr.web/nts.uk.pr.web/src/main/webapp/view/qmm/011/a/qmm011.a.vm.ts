@@ -7,9 +7,9 @@ module nts.uk.pr.view.qmm011.a.viewmodel {
         }
         
         onSelectedScreenB(){
+            __viewContext.viewModel.viewmodelB.selectedEmpInsHisId('');
             __viewContext.viewModel.viewmodelB.initScreen(null);
-            let hisId = __viewContext.viewModel.viewmodelB.selectedEmpInsHisId();
-            __viewContext.viewModel.viewmodelB.getEmpInsurPreRate(hisId);
+            __viewContext.viewModel.viewmodelB.getEmpInsurPreRate();
             error.clearAll();
             setTimeout(()=>{
                 $("#B1_4_container").focus();
@@ -17,6 +17,7 @@ module nts.uk.pr.view.qmm011.a.viewmodel {
         }
         
         onSelectedScreenC(){
+            __viewContext.viewModel.viewmodelC.selectedEmpInsHisId('');
             __viewContext.viewModel.viewmodelC.initScreen(null);
             __viewContext.viewModel.viewmodelC.getAccInsurPreRate();
             error.clearAll();
