@@ -58,9 +58,9 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 	@Override
 	public RemarksMonthlyRecord toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		return new RemarksMonthlyRecord(employeeId, ConvertHelper.getEnum(closureID, ClosureId.class), no, ym, 
-										datePeriod == null ? null : datePeriod.toDomain(), 
-										remarks == null ? null : new RecordRemarks(remarks), 
-										closureDate == null ? null : closureDate.toDomain());
+										closureDate == null ? null : closureDate.toDomain(),
+										datePeriod == null ? null : datePeriod.toDomain(),		
+										remarks == null ? null : new RecordRemarks(remarks));
 	}
 	@Override
 	public YearMonth yearMonth() {
@@ -72,7 +72,7 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYm(domain.getRemarksYM());
-			dto.setClosureID(domain.getClosuteId().value);
+			dto.setClosureID(domain.getClosureId().value);
 			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
 			dto.setDatePeriod(DatePeriodDto.from(domain.getRemarksPeriod()));
 			dto.setRemarks(domain.getRecordRemarks() == null ? null : domain.getRecordRemarks().v());
