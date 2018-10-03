@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 420 };</script>
+			<script>var dialogSize = { width: 570, height: 420 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm008.h.service.js" />
@@ -19,15 +19,15 @@
 			<div class="contents-area" style="margin-left: 20px;">
 				<div class="label dialog-title">#{i18n.getText('QMM008_204')}</div>
 				<div style="margin-top: 20px;">
-					<div style="width: 150px; display: inline-block;"
+					<div style="width: 130px; display: inline-block;"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_114')}</div>
-					<div style="width: 150px; display: inline-block;"
+					<div style="width: 130px; display: inline-block;"
 						data-bind="text: socialInsuranceCode"></div>
-					<div style="width: 100px; display: inline-block;"
-						data-bind="text: socialInsuranceName"></div>
+					<span style="width: 270px; display: inline-block; vertical-align: text-bottom" class = "limited-label"
+						  data-bind="text: socialInsuranceName"></span>
 				</div>
 				<div style="margin-top: 20px;">
-					<div style="width: 150px;"
+					<div style="width: 130px;"
 						data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM008_205')}</div>
 					<div style="width: 200px; display: inline-flex">
 						<div id="H1_6" tabindex="1"
@@ -38,7 +38,7 @@
 										optionsValue: 'value', 
 										optionsText: 'name'}"></div>
 					</div>
-					<div style="margin-top: 20px; margin-left: 150px;">
+					<div style="margin-top: 20px; margin-left: 130px;">
 						<div style="width: 100px; display: inline-block"
 							data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_196')}</div>
 						<div id="H1_10" style="display: inline-block"

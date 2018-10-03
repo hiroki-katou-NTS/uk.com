@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 400 };</script>
+			<script>var dialogSize = { width: 570, height: 400 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm008.g.vm.js" />
@@ -18,15 +18,15 @@
 			<div class="contents-area" style="margin-left: 20px;">
 				<div class="label dialog-title">#{i18n.getText('QMM008_195')}</div>
 				<div style="margin-top: 20px;">
-					<div style="width: 150px; display: inline-block;"
+					<div style="width: 130px; display: inline-block;"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM008_114')}</div>
-					<div style="width: 150px; display: inline-block;"
+					<div style="width: 130px; display: inline-block;"
 						data-bind="text: socialInsuranceCode"></div>
-					<div style="width: 100px; display: inline-block;"
-						data-bind="text: socialInsuranceName"></div>
+					<span style="width: 270px; display: inline-block; vertical-align: text-bottom" class = "limited-label"
+						data-bind="text: socialInsuranceName"></span>
 				</div>
 				<div style="margin-top: 20px;">
-					<div style="width: 150px;"
+					<div style="width: 130px;"
 						data-bind="ntsFormLabel: {required: true}" id="C2_1">#{i18n.getText('QMM008_196')}</div>
 					<div id ="G1_6"
 						data-bind="ntsDatePicker: {
@@ -41,7 +41,7 @@
 						style="width: 100px; margin-left: 10px; display: inline-block;">#{i18n.getText('QMM008_198')}</div>
 				</div>
 				<div style="margin-top: 20px;">
-					<div style="width: 150px;"
+					<div style="width: 130px;"
 						data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_199')}</div>
 					<div style = "width: 280px;display: inline-flex">
 						<div id = "G1_9" tabindex = "2"
