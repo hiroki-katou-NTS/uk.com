@@ -267,15 +267,16 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					.search(createQueryEmployee(lstEmployment, datePeriod.start(), datePeriod.end()));
 			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
 					approvalRootOfEmployeeImport);
+			if (buildApprovalEmployeeData.isEmpty()) {
+				throw new BusinessException("Msg_875");
+			}
 			// fix bug 91363
 			List<ApprovalEmployeeDto> buildApprovalEmployeeDataResult = new ArrayList<>();
 			lstEmployees.forEach(item -> {
 				buildApprovalEmployeeDataResult.add(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().get());
 			});
 			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeDataResult);
-			if (buildApprovalEmployeeData.isEmpty()) {
-				throw new BusinessException("Msg_875");
-			}
+			
 		} else {
 			throw new BusinessException("Msg_873");
 		}
