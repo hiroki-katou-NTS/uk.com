@@ -55,6 +55,6 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
         registrationProcessing.registerValPayDateSet(valPayDateSet);
         registrationProcessing.registerSpecPrintYmSet(valPayDateSet);
         registrationProcessing.registerSetDaySupport(valPayDateSet);
-        registrationProcessing.addCurrProcessDate(valPayDateSet);
+
     }
 }

@@ -32,7 +32,6 @@ public class RegisterProcessing {
     private EmpTiedProYearRepository empTiedProYearRepository;
 
 
-
     private static final int NUMBER_OF_MONTH_IN_TWO_YEAR = 24;
 
 
@@ -159,23 +158,21 @@ public class RegisterProcessing {
             );
         }
         this.setDaySupportRepository.addAll(setDaySupports);
+        addCurrProcessDate(valPayDateSet, setDaySupports);
     }
 
 
-    public void addCurrProcessDate(ValPayDateSet valPayDateSet) {
+    public void addCurrProcessDate(ValPayDateSet valPayDateSet, List<SetDaySupport> arr) {
         String cid = AppContexts.user().companyId();
         GeneralDate currentDay = GeneralDate.today();
         int processCateNo = valPayDateSet.getProcessCateNo();
-        List<SetDaySupport> arr=this.setDaySupportRepository.getSetDaySupportById(cid,processCateNo);
-        int currTreatYear=currentDay.yearMonth().v();
-        for(int i=0;i<arr.size();i++){
-            if(arr.get(i).getPaymentDate().before(currentDay)){
-                currTreatYear=arr.get(i).getPaymentDate().yearMonth().v();
+        int currTreatYear = currentDay.yearMonth().v();
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i).getPaymentDate().after(currentDay)) {
+                currTreatYear = arr.get(i).getPaymentDate().yearMonth().v();
                 break;
             }
         }
-
-
         this.currProcessDateRepository.add(new CurrProcessDate(cid, processCateNo, currTreatYear));
     }
 
@@ -201,7 +198,9 @@ public class RegisterProcessing {
             return GeneralDate.ymd(year, 2, 28);
         if (month == 2 && day > 29 && year % 4 == 0)
             return GeneralDate.ymd(year, 2, 29);
-        else
-            return GeneralDate.ymd(year, month, (day == DateSelectClassification.LAST_DAY_MONTH.value) ? GeneralDate.today().lastDateInMonth() : day);
+        else {
+            int lastDate = YearMonth.of(year, month).lastDateInMonth();
+            return GeneralDate.ymd(year, month, (day == DateSelectClassification.LAST_DAY_MONTH.value) ? lastDate : day);
+        }
     }
 }
