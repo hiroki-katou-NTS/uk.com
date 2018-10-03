@@ -951,6 +951,9 @@ public class MonthlyAggregateProcessService {
 		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value;
 		Closure closure = closureService.getClosureDataByEmployee(employee.getId(), today);
 
+		if (closure == null) {
+			return Optional.empty();
+		}
 		//締めのアルゴリズム「当月の期間を算出する」を実行する
 		DatePeriod periodCurrentMonth = closureService.getClosurePeriod(closure.getClosureId().value,
 				today.yearMonth());
@@ -987,9 +990,9 @@ public class MonthlyAggregateProcessService {
 					valueExractAlarm.setAlarmValueDate(GeneralDate.today().toString().substring(0, 7));
 					valueExractAlarm.setClassification(TextResource.localize("KAL010_100"));
 					valueExractAlarm.setAlarmItem(TextResource.localize("KAL010_278"));
-					valueExractAlarm.setAlarmValueMessage(String.format(TextResource.localize("KAL010_279"),
-							String.valueOf(deadlCheckMonth), breakDayOffDetail.getYmdData().getDayoffDate().get(),
-							breakDayOffDetail.getUnUserOfBreak().get().getUnUsedDays()));
+					valueExractAlarm.setAlarmValueMessage(TextResource.localize("KAL010_279",
+							String.valueOf(deadlCheckMonth), breakDayOffDetail.getYmdData().getDayoffDate().get().toString(),
+							String.valueOf(breakDayOffDetail.getUnUserOfBreak().get().getUnUsedDays())));
 					valueExractAlarm.setComment(Optional.ofNullable(fixedExtraMonFunImport.getMessage()));
 					listValueExtractAlarm.add(valueExractAlarm);
 				}
@@ -1016,7 +1019,7 @@ public class MonthlyAggregateProcessService {
 			currentYear = currentYear - 1;
 		}
 		
-		return YearMonth.of(monthCheck, currentYear);
+		return YearMonth.of(currentYear, monthCheck);
 	}
 	//End HiepTH
 }
