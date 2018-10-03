@@ -71,7 +71,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' , '" + workTypeOfDailyPerformance.getDate() + "' , '"
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' )";
 			Statement statementI = con.createStatement();
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -7,22 +7,22 @@
 	<div class="valign-center control-group">
 		<div data-bind="ntsCheckBox: { checked: filterByEmployment, enable: true }"></div>
 		<button data-bind="click: openCDL002Dialog, enable: filterByEmployment">#{i18n.getText('KAL003_17')}</button>
-		<input data-bind="ntsTextEditor: {value: displayTargetEmployment, readonly: true, option: {width: '300px'}}" />
+		<input id = "scopechecktab1" data-bind="ntsTextEditor: {value: displayTargetEmployment, readonly: true, option: {width: '300px'}}" />
 	</div>
 	<div class="valign-center control-group">
 		<div data-bind="ntsCheckBox: { checked: filterByClassification, enable: true }"></div>
 		<button data-bind="click: openCDL003Dialog, enable: filterByClassification">#{i18n.getText('KAL003_18')}</button>
-		<input data-bind="ntsTextEditor: {value: displayTargetClassification, readonly: true, option: {width: '300px'}}" />
+		<input id = "scopechecktab2" data-bind="ntsTextEditor: {value: displayTargetClassification, readonly: true, option: {width: '300px'}}" />
 	</div>
 	<div class="valign-center control-group">
 		<div data-bind="ntsCheckBox: { checked: filterByJobTitle, enable: true }"></div>
 		<button data-bind="click: openCDL004Dialog, enable: filterByJobTitle">#{i18n.getText('KAL003_19')}</button>
-		<input data-bind="ntsTextEditor: {value: displayTargetJobTitle, readonly: true, option: {width: '300px'}}" />
+		<input id = "scopechecktab3" data-bind="ntsTextEditor: {value: displayTargetJobTitle, readonly: true, option: {width: '300px'}}" />
 	</div>
 	<div class="valign-center control-group">
 		<div data-bind="ntsCheckBox: { checked: filterByBusinessType, enable: true }"></div>
 		<button data-bind="click: openCDL024Dialog, enable: filterByBusinessType">#{i18n.getText('KAL003_20')}</button>
-		<input data-bind="ntsTextEditor: {value: displayTargetBusinessType, readonly: true, option: {width: '300px'}}" />
+		<input id = "scopechecktab4" data-bind="ntsTextEditor: {value: displayTargetBusinessType, readonly: true, option: {width: '300px'}}" />
 	</div>
 
 </ui:composition>

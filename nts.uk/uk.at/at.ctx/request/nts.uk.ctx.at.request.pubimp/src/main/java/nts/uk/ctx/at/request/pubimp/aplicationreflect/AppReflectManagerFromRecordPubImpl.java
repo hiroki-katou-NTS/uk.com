@@ -20,5 +20,10 @@ public class AppReflectManagerFromRecordPubImpl implements AppReflectManagerFrom
 		ProcessStateReflect outPut = appReflectService.applicationRellect(workId, workDate, asyncContext);
 		return EnumAdaptor.valueOf(outPut.value, ProcessStateReflectExport.class);
 	}
+	@Override
+	public ProcessStateReflectExport reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
+		ProcessStateReflect outPut = appReflectService.reflectAppOfEmployeeTotal(workId, sid, datePeriod);
+		return EnumAdaptor.valueOf(outPut.value, ProcessStateReflectExport.class);
+	}
 
 }

@@ -361,7 +361,8 @@ public class DailyModifyResCommandFacade {
 		
 		if (dataParent.getMode() == 0 && !dataParent.isFlagCalculation()) {
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
-					dataParent.getDateRange());
+					dataParent.getDateRange(), resultIU.getCommandNew().stream()
+														.map(c -> c.getWorkInfo().getData()).filter(c -> c != null).collect(Collectors.toList()));
 			if (!dataCheck.isEmpty()) {
 				resultError.put(TypeError.CONTINUOUS.value, dataCheck);
 			}
