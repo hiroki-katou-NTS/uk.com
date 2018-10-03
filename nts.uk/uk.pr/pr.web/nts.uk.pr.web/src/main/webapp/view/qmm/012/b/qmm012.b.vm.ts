@@ -260,6 +260,122 @@ module nts.uk.pr.view.qmm012.b {
                             command.paymentItemSet.limitAmount = limitAmount.substring(0, index);
                         }
                     }
+
+                    if((command.itemRangeSet.errorUpperLimitSettingAtr == 1) || (command.itemRangeSet.errorUpperLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.errorUpperRangeValueAmount != null) {
+                            let value = command.itemRangeSet.errorUpperRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorUpperRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorUpperRangeValueTime != null) {
+                            let value = command.itemRangeSet.errorUpperRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorUpperRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorUpperRangeValueNum != null) {
+                            let value = command.itemRangeSet.errorUpperRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorUpperRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
+
+                    if((command.itemRangeSet.errorLowerLimitSettingAtr == 1) || (command.itemRangeSet.errorLowerLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.errorLowerRangeValueAmount != null) {
+                            let value = command.itemRangeSet.errorLowerRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorLowerRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorLowerRangeValueTime != null) {
+                            let value = command.itemRangeSet.errorLowerRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorLowerRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorLowerRangeValueNum != null) {
+                            let value = command.itemRangeSet.errorLowerRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorLowerRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
+
+                    if((command.itemRangeSet.alarmUpperLimitSettingAtr == 1) || (command.itemRangeSet.alarmUpperLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.alarmUpperRangeValueAmount != null) {
+                            let value = command.itemRangeSet.alarmUpperRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmUpperRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmUpperRangeValueTime != null) {
+                            let value = command.itemRangeSet.alarmUpperRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmUpperRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmUpperRangeValueNum != null) {
+                            let value = command.itemRangeSet.alarmUpperRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmUpperRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
+
+                    if((command.itemRangeSet.alarmLowerLimitSettingAtr == 1) || (command.itemRangeSet.alarmLowerLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.alarmLowerRangeValueAmount != null) {
+                            let value = command.itemRangeSet.alarmLowerRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmLowerRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmLowerRangeValueTime != null) {
+                            let value = command.itemRangeSet.alarmLowerRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmLowerRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmLowerRangeValueNum != null) {
+                            let value = command.itemRangeSet.alarmLowerRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmLowerRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
                     
                     // clear rangeSet value if disable
                     if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
