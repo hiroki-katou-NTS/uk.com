@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -24,4 +25,8 @@ public class WorkTypeAndSiftType {
 	 * 控除時間帯(丸め付き)
 	 */
 	List<DeductionTime>  breakTimes;
+	
+	public List<DeductionTime> getBreakTimes() {
+		return breakTimes == null ? Collections.emptyList() : breakTimes;
+	}
 }
