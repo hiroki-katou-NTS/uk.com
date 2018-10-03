@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
-<<<<<<< HEAD
 import java.util.Collections;
-=======
->>>>>>> delivery/release_user
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

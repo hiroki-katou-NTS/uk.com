@@ -176,7 +176,6 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.collect(Collectors.toList());
 	}
 
-<<<<<<< HEAD
 	@Override
 	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
 		return Collections.emptyList();
@@ -186,7 +185,7 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
 				.collect(Collectors.toList());*/
 	}
-=======
+	
 	// RequestList 533
 	@Override
 	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpsMonth(
@@ -227,6 +226,4 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.collect(Collectors.toList());
 		return intermediateDataPub.cancelMonth(approverID, listParam);
 	}
-	
->>>>>>> delivery/release_user
 }
