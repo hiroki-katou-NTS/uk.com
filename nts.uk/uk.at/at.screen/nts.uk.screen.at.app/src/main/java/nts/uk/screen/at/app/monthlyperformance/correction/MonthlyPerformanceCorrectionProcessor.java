@@ -715,6 +715,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
+			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			if (rowData == null) continue;
+			
 			// lock check box1 identify
 			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
@@ -797,8 +800,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			
 			// Setting data for dynamic column
-			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
-			
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream().filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
 				if (null != rowData.getItems()) {

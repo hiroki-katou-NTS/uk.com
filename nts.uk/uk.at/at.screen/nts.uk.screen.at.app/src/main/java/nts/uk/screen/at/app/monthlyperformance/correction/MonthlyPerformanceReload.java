@@ -340,6 +340,9 @@ public class MonthlyPerformanceReload {
 		for (int i = 0; i < param.getLstEmployees().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = param.getLstEmployees().get(i);
 			String employeeId = employee.getId();
+			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			if (rowData == null) continue;
+			
 			// lock check box1 identify
 			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
@@ -426,8 +429,6 @@ public class MonthlyPerformanceReload {
 					employeeId, "", identify, approve, dailyConfirm, "");
 
 			// Setting data for dynamic column
-			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
-
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream()
 					.filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
