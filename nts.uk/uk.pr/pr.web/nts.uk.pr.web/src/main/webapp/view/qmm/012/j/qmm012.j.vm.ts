@@ -99,27 +99,30 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
 
         updateStatelmentItemName() {
             let self = this;
-            block.invisible();
-            // update
-            let data : Array<DataScreen> = ([]);
-            _.forEach(self.lstCustomes(), item =>{
-                if (_.isEmpty(item.englishName())){
-                    item.englishName = null;
-                }
-                if (_.isEmpty(item.otherLanguageName())){
-                    item.otherLanguageName = null;
-                }
-                data.push(item);
-            })
-            self.lstCustomes(data);
-            service.updateStatementItemName(ko.toJS(self.lstCustomes())).done(() => {
-                self.getData();
-                dialog.info({ messageId: "Msg_15" });
-            }).fail(function(error) {
-                alertError(error);
-            }).always(function() {
-                block.clear();
-            });
+
+            if(!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                // update
+                let data: Array<DataScreen> = ([]);
+                _.forEach(self.lstCustomes(), item => {
+                    if (_.isEmpty(item.englishName())) {
+                        item.englishName = null;
+                    }
+                    if (_.isEmpty(item.otherLanguageName())) {
+                        item.otherLanguageName = null;
+                    }
+                    data.push(item);
+                })
+                self.lstCustomes(data);
+                service.updateStatementItemName(ko.toJS(self.lstCustomes())).done(() => {
+                    self.getData();
+                    dialog.info({messageId: "Msg_15"});
+                }).fail(function (error) {
+                    alertError(error);
+                }).always(function () {
+                    block.clear();
+                });
+            }
         }
     }
 
