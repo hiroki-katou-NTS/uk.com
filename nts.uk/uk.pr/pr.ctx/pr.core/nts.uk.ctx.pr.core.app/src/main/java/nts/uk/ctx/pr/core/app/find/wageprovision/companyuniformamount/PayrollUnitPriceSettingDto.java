@@ -63,7 +63,7 @@ public class PayrollUnitPriceSettingDto
     public static PayrollUnitPriceSettingDto fromDomain(PayrollUnitPriceSetting domain)
     {
         return new PayrollUnitPriceSettingDto(domain.getHistoryId(), domain.getAmountOfMoney().v(),
-                domain.getFixedWage().getEveryoneEqual().get().getTargetClass().value,
+                domain.getFixedWage().getFlatAllEmployees().get().getTargetClass().value,
                 domain.getFixedWage().getPerSalaryConType().get().getMonthSalaryPerDay().value,
                 domain.getFixedWage().getPerSalaryConType().get().getADayPayee().value,
                 domain.getFixedWage().getPerSalaryConType().get().getHourlyPay().value,
