@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -20,7 +19,7 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClo
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
@@ -33,21 +32,14 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.NextHolidayGrantDate;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveGrantExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveManageInforExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AnnualLeaveRemainingNumberExport;
-import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.AttendanceRateCalPeriod;
-import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.CalYearOffWorkAttendRateExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.ReNumAnnLeaReferenceDateExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.StandardCalculation;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -67,8 +59,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Inject
 	private GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod;
 
-	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
+//	@Inject
+//	private AnnLeaEmpBasicInfoRepository annLeaBasicInfoRepo;
 
 	@Inject
 	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
@@ -80,8 +72,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	private TempAnnualLeaveMngRepository tempAnnualLeaveMngRepository;
 	
 	/** 年休付与テーブル設定 */
-	@Inject
-	private YearHolidayRepository yearHolidayRepo;
+//	@Inject
+//	private YearHolidayRepository yearHolidayRepo;
 
 	@Override
 	public AnnLeaveOfThisMonth getAnnLeaveOfThisMonth(String employeeId) {
@@ -107,7 +99,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			
 			// 期間中の年休残数を取得
 			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
-					datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
+					datePeriod, InterimRemainMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
 					Optional.empty(), Optional.empty(), Optional.empty());
 			if (!aggrResult.isPresent())
 				return null;
@@ -136,7 +128,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 									: Optional.empty());
 
 			// ドメインモデル「年休社員基本情報」を取得   
-			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
+//			Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 			// 次回年休付与を計算
 			List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
 					Optional.empty());
@@ -199,7 +191,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
 				// 期間中の年休残数を取得
 				aggrResultOfAnnualLeave = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
-						item.getDatePeriod(), TempAnnualLeaveMngMode.OTHER, item.getDatePeriod().end(), false, false,
+						item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, false,
 						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, Optional.empty());
 				// 結果をListに追加
 				if (aggrResultOfAnnualLeave.isPresent()) {
@@ -217,7 +209,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	public NextHolidayGrantDate getNextHolidayGrantDate(String companyId, String employeeId) {
 		NextHolidayGrantDate result = new NextHolidayGrantDate();
 		// ドメインモデル「年休社員基本情報」を取得
-		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
+//		Optional<AnnualLeaveEmpBasicInfo> basicInfo = annLeaBasicInfoRepo.get(employeeId);
 		// 次回年休付与を計算
 		List<NextAnnualLeaveGrant> annualLeaveGrant = calcNextAnnualLeaveGrantDate.algorithm(companyId, employeeId,
 				Optional.empty());
@@ -242,7 +234,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		DatePeriod datePeriod = new DatePeriod(startDate.get(), date);
 		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeID,
-				datePeriod, TempAnnualLeaveMngMode.OTHER, date, false, false, Optional.of(false), Optional.empty(),
+				datePeriod, InterimRemainMngMode.OTHER, date, false, false, Optional.of(false), Optional.empty(),
 				Optional.empty(), Optional.empty());
 		if(aggrResult.isPresent()){
 			AnnualLeaveInfo asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
