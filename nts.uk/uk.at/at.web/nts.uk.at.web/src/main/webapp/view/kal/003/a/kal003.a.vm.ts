@@ -351,10 +351,21 @@ module nts.uk.at.view.kal003.a.viewmodel {
         }
 
         deleteAlarmCheckCondition() {
-            let self = this, data: model.AlarmCheckConditionByCategory = self.selectedAlarmCheckCondition();
-            nts.uk.ui.errors.clearAll();
-            let command: any = ko.toJS(data);
-
+            let self = this; 
+            let data: model.AlarmCheckConditionByCategory = self.selectedAlarmCheckCondition();        
+            nts.uk.ui.errors.clearAll(); 
+           let command: any = ko.toJS(data) ;
+            if(command.dailyAlarmCheckCondition){                
+                 if(command.dailyAlarmCheckCondition.listExtractConditionWorkRecork && command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.length>0){
+                for( let i=0;i< command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.length;i++){
+                    if(command.dailyAlarmCheckCondition.listExtractConditionWorkRecork[i].errorAlarmCheckID == ''){
+                          command.dailyAlarmCheckCondition.listExtractConditionWorkRecork.splice(i,1);
+                        };
+                    }
+                
+                }
+                }
+                
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
                 let indexItemDelete = _.findIndex(self.listAlarmCheckCondition(), (item: model.AlarmCheckConditionByCategory) => { return item.code() == data.code(); });
