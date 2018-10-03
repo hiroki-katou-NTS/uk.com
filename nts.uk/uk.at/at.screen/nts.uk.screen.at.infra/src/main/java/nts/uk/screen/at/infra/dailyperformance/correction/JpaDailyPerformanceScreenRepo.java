@@ -41,7 +41,6 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
@@ -241,6 +240,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcstDvgcReason c"
 			+ " WHERE c.id.cid = :companyId";
+	
+	private final static String SELECT_ALL_DIVREASON_JDBC = "SELECT REASON, [NO], REASON_CD FROM KRCST_DVGC_REASON c WHERE CID = ?";
 
 	private final static String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
@@ -1130,8 +1131,17 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findReason(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_DIVREASON, KrcstDvgcReason.class).setParameter("companyId", companyId)
-				.getList(c -> new CodeName(c.getId().getReasonCd(), c.getReason(), String.valueOf(c.getId().getNo())));
+		try {
+			
+			PreparedStatement statement = this.connection().prepareStatement(SELECT_ALL_DIVREASON_JDBC);
+			statement.setString(1, companyId);
+			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
+				return new CodeName(rs.getString("REASON_CD"), rs.getString("REASON"), rs.getInt("[NO]").toString());
+			});
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

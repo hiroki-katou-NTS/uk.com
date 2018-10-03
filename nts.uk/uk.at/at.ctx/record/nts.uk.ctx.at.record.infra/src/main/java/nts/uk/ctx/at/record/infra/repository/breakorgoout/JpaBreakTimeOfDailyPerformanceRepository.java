@@ -244,6 +244,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
 		if(breakTimes.isEmpty()) {
+			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());
 			return;
 		}
 		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
@@ -258,11 +259,13 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 										.findFirst().isPresent())
 					.collect(Collectors.toList());
 			
-			toRemove.stream().forEach(c -> {
-				commandProxy().remove(getEntityManager().merge(c));
-			});
-			// commandProxy().removeAll(toRemove);
+//			toRemove.stream().forEach(c -> {
+//				commandProxy().remove(getEntityManager().merge(c));
+//			});
 			commandProxy().updateAll(toUpdate);
+			commandProxy().updateAll(toRemove);
+			commandProxy().removeAll(toRemove);
+			// commandProxy().removeAll(toRemove);
 		} else {
 			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());
 		}
