@@ -43,7 +43,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
         initScreen(hisId: string) :JQueryPromise<any>{
             let self = this;
             block.invisible();
-            let listEmpInsHis: Array<IEmplInsurHis> = [];
+            let listTemp: Array<IEmplInsurHis> = [];
             $.when(
                 service.getEmpInsHis())
                 .done((listEmpInsHis: Array<IEmplInsurHis>) => {
@@ -58,7 +58,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
                         self.setEmplInsurHis(self.selectedEmpInsHis());
 
                     } else {
-                        self.listEmpInsHis(listEmpInsHis);
+                        self.listEmpInsHis(listTemp);
                         self.listEmpInsurPreRate(self.addEmpInsurPreRate());
                     }
                 }).always(() => {

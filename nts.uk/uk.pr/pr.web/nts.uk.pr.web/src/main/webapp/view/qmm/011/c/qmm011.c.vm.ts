@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
         // 初期データ取得処理
         initScreen(hisId: string) :JQueryPromise<any>{
             let self = this;
-            let listOccAccIsHis: Array<IOccAccIsHis> = [];
+            let listTemp: Array<IOccAccIsHis> = [];
             block.invisible();
             $.when(
                 service.getListOccAccIsHis())
@@ -67,7 +67,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.selectedEmpInsHis(self.listOccAccIsHis()[self.index()]);
                     self.setOccAccIsHis(self.selectedEmpInsHis());
                 } else {
-                    self.listOccAccIsHis(listOccAccIsHis);
+                    self.listOccAccIsHis(listTemp);
                     self.listAccInsurPreRate(AccInsurPreRate.fromApp(self.regColumnAccInsurPreRate(new Array<IAccInsurPreRate>())));
 
                 }
