@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm008.e {
 
                });
                // $("#fixed-table").ntsFixedTable({ height: 349, width: 1220 });
-               $("#fixed-table").ntsFixedTable({ height: 349, width: 1020 });
+               $("#fixed-table").ntsFixedTable({ height: 349, width: 1000 });
 
            }
            

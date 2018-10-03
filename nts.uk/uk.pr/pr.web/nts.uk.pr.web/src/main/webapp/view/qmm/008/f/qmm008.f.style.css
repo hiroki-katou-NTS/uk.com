@@ -24,3 +24,13 @@
     color: #000;
     background-color: #CFF1A5;
 }
+
+#f3_1_container .nts-fixed-body-container{
+	padding-right: 0px !important;
+}
+
+.edge_scroll_header {
+	width: 16px !important;
+}
+
+

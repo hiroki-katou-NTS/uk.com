@@ -32,13 +32,16 @@ module nts.uk.pr.view.qmm008.f {
                     self.header(response.insuranceRate);
                     self.display(response.display);
                     let currentScreen = nts.uk.ui.windows.getSelf();
-                    $("#fixed-table").ntsFixedTable({ height: 349, width: 1020 });
+                    $("#fixed-table").ntsFixedTable();
                     setTimeout(function () {
                         $(".nts-fixed-table").attr('tabindex', '0');
                         $(".nts-fixed-table").focus();
+                        if(self.dataList().length > 8) {
+                            $('#f3_1_container .scroll-header').addClass('edge_scroll_header');
+                        }
                     }, 1000);
                     currentScreen.setWidth(1200);
-                    $("#fixed-table1").ntsFixedTable({ height: 349, width: 1520 });
+                    $("#fixed-table1").ntsFixedTable();
 
 
                  });
