@@ -112,7 +112,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 
 	private static final String COUNT_EMPL_BY_LSTCID_AND_BASE_DATE = String.join(" ",
-			"SELECT COUNT(dmi) FROM BsymtEmployeeDataMngInfo dmi", 
+			"SELECT COUNT(dmi.companyId) FROM BsymtEmployeeDataMngInfo dmi", 
 			"INNER JOIN BsymtAffCompanyHist ach",
 			"ON dmi.bsymtEmployeeDataMngInfoPk.sId = ach.bsymtAffCompanyHistPk.sId",
 			"WHERE dmi.companyId IN :lstCompID AND dmi.delStatus = 0 AND ach.destinationData = 0",
@@ -404,7 +404,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public Optional<EmployeeDataMngInfo> getEmployeeByCidScd(String cId, String sCd) {
 		// query to Req 125
-		BsymtEmployeeDataMngInfo entity = queryProxy().query(GET_LIST_BY_CID_SCD, BsymtEmployeeDataMngInfo.class)
+		BsymtEmployeeDataMngInfo entity = queryProxy().query(SELECT_EMPLOYEE_NOTDELETE_IN_COMPANY, BsymtEmployeeDataMngInfo.class)
 				.setParameter("cId", cId).setParameter("sCd", sCd).getSingleOrNull();
 
 		EmployeeDataMngInfo empDataMng = new EmployeeDataMngInfo();

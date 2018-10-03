@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -48,6 +49,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	private AbsenceTenProcess tenProcess;
 	@Inject
 	private InterimRemainOffMonthProcess createDataService;
+	@Inject
+	private ClosureService closureService;
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
 		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
@@ -806,14 +809,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public double getBreakDayOffMngRemain(String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
+		//社員に対応する締め期間を取得する
+		DatePeriod period = closureService.findClosurePeriod(employeeID, date);
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
-				companyID, 
-				employeeID, 
-				new DatePeriod(date, date.addYears(1)), 
-				false, 
-				date, 
-				false, 
-				Collections.emptyList(), 
+				companyID, //・ログイン会社ID
+				employeeID, //・INPUT．社員ID
+				new DatePeriod(period.start(), period.start().addYears(1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年
+				false, //・モード＝その他モード
+				date, //・基準日＝INPUT．基準日
+				false, //・上書きフラグ=false
+				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
 				Collections.emptyList());
 		return this.getBreakDayOffMngInPeriod(inputParam).getRemainDays();

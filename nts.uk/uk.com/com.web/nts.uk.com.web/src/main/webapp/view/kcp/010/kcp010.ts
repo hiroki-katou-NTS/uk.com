@@ -140,7 +140,7 @@ module kcp010.viewmodel {
             setShared('inputCDL008', { selectedCodes: self.workplaceId(), 
                                        baseDate: moment(new Date()).toDate(), 
                                        isMultiple: false, 
-                                       selectedSystemType:5 , 
+                                       selectedSystemType:2 , 
                                        isrestrictionOfReferenceRange:true , 
                                        showNoSelection:false , 
                                        isShowBaseDate:true });

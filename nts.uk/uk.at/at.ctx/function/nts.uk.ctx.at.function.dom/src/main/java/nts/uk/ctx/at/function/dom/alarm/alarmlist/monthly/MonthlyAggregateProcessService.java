@@ -423,7 +423,8 @@ public class MonthlyAggregateProcessService {
 						
 						//SPECIAL_HOLIDAY
 					case SPECIAL_HOLIDAY:
-						List<SpecialHolidayImported> specialHolidayImporteds= complileInPeriodOfSpecialLeaveAdapter.getSpeHoliOfConfirmedMonthly(sid, startYearMonth, endYearMonth);
+						List<Integer> listSpeCode = checkRemainNumberMonFunImport.getListItemID();
+						List<SpecialHolidayImported> specialHolidayImporteds= complileInPeriodOfSpecialLeaveAdapter.getSpeHoliOfConfirmedMonthly(sid, startYearMonth, endYearMonth, listSpeCode);
 						for (SpecialHolidayImported specialHolidayImported : specialHolidayImporteds) {
 							boolean check = false;
 							String alarmMessage = "";
@@ -575,7 +576,7 @@ public class MonthlyAggregateProcessService {
 								//group 1 
 								for(ErAlAtdItemConAdapterDto erAlAtdItemCon : listErAlAtdItemCon ) {
 									int compare = erAlAtdItemCon.getCompareOperator();
-									String startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue());
+									String startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue());
 									String endValue= "";
 									String nameErrorAlarm = "";
 									//get name attdanceName 
@@ -629,7 +630,7 @@ public class MonthlyAggregateProcessService {
 									//group 2 
 									for(ErAlAtdItemConAdapterDto erAlAtdItemCon2 : listErAlAtdItemCon2 ) {
 										int compare = erAlAtdItemCon2.getCompareOperator();
-										String startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue());
+										String startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue());
 										String endValue= "";
 										String nameErrorAlarm = "";
 										//get name attdanceName 
@@ -805,7 +806,7 @@ public class MonthlyAggregateProcessService {
 									String startValueMoney = String.valueOf(startValue.intValue());
 									String endValueMoney = "";
 									if(compare<=5) {
-										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueMoney+".00");
+										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueMoney);
 									}else {
 										endValueMoney = String.valueOf(endValue.intValue());
 										if(compare>5 && compare<=7) {
@@ -931,10 +932,10 @@ public class MonthlyAggregateProcessService {
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
 			for(int i=0; i< attendanceItemNames.size(); i++) {
 				String beforeOperator = "";
-				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? "-" : "+";
+				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? " - " : " + ";
 				
 				if (!"".equals(nameErrorAlarm) || type == 1) {
-					beforeOperator = (i == 0) ? type == 1 ? "-" : "+" : "";
+					beforeOperator = (i == 0) ? type == 1 ? " - " : " + " : "";
 				}
                 nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
 			}

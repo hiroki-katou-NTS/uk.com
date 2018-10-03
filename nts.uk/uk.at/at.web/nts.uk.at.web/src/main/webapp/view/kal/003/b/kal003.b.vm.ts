@@ -98,7 +98,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueField(false);
-                         $(".nts-input").ntsError("clear");
+//                         $(".nts-input").ntsError("clear");
+                        if (self.comparisonRange().comparisonOperator() > 5) {
+                            setTimeout(() => {
+                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                }
+                            }, 25);
+                        } else {
+                            $(".nts-input").ntsError("clear");
+                        }
                     });
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(0);
                     self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
@@ -162,14 +171,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
+                        $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
                             setTimeout(() => {
                                 if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
                                     $('#endValue').ntsError('set', { messageId: "Msg_927" });
                                 }
                             }, 25);
-                        } else {
-                            $(".nts-input").ntsError("clear");
                         }
                     });
                     break;
@@ -237,19 +245,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             if(!self.enableComparisonMaxValue()){
                 let mulMonCheckType= self.mulMonCheckCondSet().typeCheckItem();
                
-                if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME) {
-                        //時間
-                        self.comparisonRange().maxTimeValue(null);
-                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES) {
-                        //回数
-                        self.comparisonRange().maxTimesValue(null);
-                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT) {
-                        //金額
-                       self.comparisonRange().maxAmountOfMoneyValue(null);
-                 }
+               
             }
             
         }
@@ -1174,20 +1170,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         fillTextDisplayTargetMulMon(defered, currentAtdItemCondition) {
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
-//            if (self.mulMonCheckCondSet().typeCheckItem() === TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT) {
-//                if (currentAtdItemCondition.uncountableAtdItem()) {
-//                    service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
-//                        if (lstItems && lstItems.length > 0) {
-//                            self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
-//                            $("#display-target-item-category9").trigger("validate");
-//                        }
-//                    }, function(rejected) {
-//                        defered.resolve();
-//                    });
-//                }
-//            } else {
                 if (currentAtdItemCondition.countableAddAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
+                    service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
@@ -1196,7 +1180,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             $("#display-target-item-category9").trigger("validate");
                         }
                         if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                            service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
+                            service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -1211,7 +1195,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         defered.resolve();
                     });
                 } else if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
+                    service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -1611,12 +1595,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         default:
                             break;      
                     }
+                    
                     if (mnValue != undefined && mxValue != undefined) {
                         isValid = self.compareValid(self.comparisonOperator(), mnValue, mxValue);
                     }
                 }
                 if (!isValid) {
-                    if (textBoxFocus === 1) { //max
+                    
+                    if (textBoxFocus === 1) {
+                         //max
                         setTimeout(() => {
                             nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
                             nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
@@ -1630,6 +1617,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         }, 25);
                     }
+                } else {
+                    nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
+                    nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
                 }
                 return isValid;
             }
@@ -1637,17 +1627,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
              * execute check valid of range
              */
             private compareValid(comOper: number, minValue: number, maxValue: number): boolean {
+                let rs = true;
                 switch (comOper) {
                     case 6: // 範囲の間（境界値を含まない）（＜＞）
-                    case 8: // 範囲の外（境界値を含まない）（＞＜）
-                        return minValue < maxValue;
+                    case 8: {// 範囲の外（境界値を含まない）（＞＜）
+                        rs = Number(minValue) < Number(maxValue);
+                        break;
+                    }
                     case 7: // 範囲の間（境界値を含む）（≦≧）
-                    case 9: // 範囲の外（境界値を含む）（≧≦）
-                        return minValue <= maxValue;
+                    case 9: {// 範囲の外（境界値を含む）（≧≦）
+                        rs = Number(minValue) <= Number(maxValue);
+                        break;
+                    }
                     default:
                         break;
                 }
-                return true;
+                return rs;
             }
         }
     }

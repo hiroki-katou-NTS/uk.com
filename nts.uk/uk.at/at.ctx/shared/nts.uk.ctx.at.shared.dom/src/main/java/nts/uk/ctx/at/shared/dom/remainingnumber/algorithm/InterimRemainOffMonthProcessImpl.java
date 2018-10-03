@@ -10,7 +10,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -26,6 +28,10 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 	private ComSubstVacationRepository subRepos;
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
+	@Inject
+	private RemainCreateInforByScheData remainScheData;
+	@Inject
+	private RemainCreateInforByApplicationData remainAppData;
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData) {
 		//(Imported)「残数作成元情報(実績)」を取得する
@@ -37,7 +43,24 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, comSetting, leaveComSetting);
 		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = periodCreateData.createInterimRemainDataMng(inputPara, comHolidaySetting);
-		
+		return mapDataOutput;
+	}
+	@Override
+	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemain3Data(String cid, String sid,
+			DatePeriod dateData) {
+		//(Imported)「残数作成元情報(実績)」を取得する
+		List<RecordRemainCreateInfor> lstRecordData = recordDataService.lstRecordRemainData(cid, sid, dateData);
+		//「残数作成元の勤務予定を取得する」
+		List<ScheRemainCreateInfor> lstScheData = remainScheData.createRemainInfor(cid, sid, dateData);
+		//「残数作成元の申請を取得する」
+		List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cid, sid, dateData);
+		//アルゴリズム「指定期間の暫定残数管理データを作成する」を実行する
+		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(cid, sid, dateData, lstRecordData, lstScheData, lstAppData, false);
+		//雇用履歴と休暇管理設定を取得する
+		Optional<ComSubstVacation> comSetting = subRepos.findById(cid);
+		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
+		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, comSetting, leaveComSetting);
+		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = periodCreateData.createInterimRemainDataMng(inputPara, comHolidaySetting);
 		return mapDataOutput;
 	}
 

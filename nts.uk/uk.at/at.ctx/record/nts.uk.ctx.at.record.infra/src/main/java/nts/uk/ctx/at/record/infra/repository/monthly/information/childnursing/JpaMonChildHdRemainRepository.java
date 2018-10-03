@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemai
 import nts.uk.ctx.at.record.dom.monthly.information.childnursing.MonChildHdRemainRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 
@@ -50,9 +50,9 @@ public class JpaMonChildHdRemainRepository extends JpaRepository implements MonC
 			+ "AND a.krcdtMonRemainPk.yearMonth IN :yearMonths "
 			+ "ORDER BY a.krcdtMonRemainPk.employeeId, a.startDate ";
 
-	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRemain a "
-			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
-			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth ";
+//	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRemain a "
+//			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
+//			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth ";
 
 	@Override
 	public Optional<MonChildHdRemain> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
@@ -148,21 +148,39 @@ public class JpaMonChildHdRemainRepository extends JpaRepository implements MonC
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonRemain.class,
-				new KrcdtMonMergePk(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+//		this.commandProxy().remove(KrcdtMonRemain.class,
+//				new KrcdtMonMergePk(
+//						employeeId,
+//						yearMonth.v(),
+//						closureId.value,
+//						closureDate.getClosureDay().v(),
+//						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 削除
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
+		if (entity != null) entity.deleteChildRemainData();
 	}
 
 	@Override
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+//		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
+//				.setParameter("employeeId", employeeId)
+//				.setParameter("yearMonth", yearMonth.v())
+//				.executeUpdate();
+		
+		val entitys = this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.executeUpdate();
+				.getList();
+		for (val entity : entitys) entity.deleteChildRemainData();
 	}
 }

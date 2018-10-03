@@ -4,12 +4,14 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
@@ -92,43 +94,54 @@ public class DPHeaderDto {
 
 	public static DPHeaderDto createSimpleHeader(String companyId, String key, String width,
 			Map<Integer, DPAttendanceItem> mapDP) {
-		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false, "center-align", inputProcess(Integer.parseInt(getCode(key))));
+		val keyId = getCode(key);
+		DPHeaderDto dto = new DPHeaderDto("", key, "String", width, "", false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)));
 		// optionalRepo.findByListNos(companyId, optionalitemNos)
-		DPAttendanceItem item = mapDP.get(Integer.parseInt(getCode(key)));
+		DPAttendanceItem item = mapDP.get(Integer.parseInt(keyId));
 		int attendanceAtr = item.getAttendanceAtr();
 		if (attendanceAtr == DailyAttendanceAtr.Code.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
-			DPHeaderDto dtoG = new DPHeaderDto("コード", "Code" + getCode(key), "String", String.valueOf(withChild) + "px",
-					"", false, "", "code_"+"Name"+ getCode(key), "search", false, false, inputProcess(Integer.parseInt(getCode(key))));
+			DPHeaderDto dtoG = new DPHeaderDto("コード", "Code" + keyId, "String", String.valueOf(withChild) + "px",
+					"", false, "", "code_"+"Name"+ keyId, "search", false, false, inputProcess(Integer.parseInt(keyId)));
 			dtoG.setConstraint(new Constraint("Primitive", isRequired(item), getPrimitiveAllName(item)));
 			groups.add(dtoG);
-			groups.add(new DPHeaderDto("名称", "Name" + getCode(key), "String", String.valueOf(withChild) + "px", "",
+			groups.add(new DPHeaderDto("名称", "Name" + keyId, "String", String.valueOf(withChild) + "px", "",
 					false, "Link2", false, false, "center-align", null));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value && item.getTypeGroup() != null) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
-			groups.add(new DPHeaderDto("NO", "NO" + getCode(key), "number", String.valueOf(withChild) + "px", "", false,
-					"", "comboCode_"+"Name"+ getCode(key), "", false, false, inputProcess(Integer.parseInt(getCode(key)))));
+			groups.add(new DPHeaderDto("NO", "NO" + keyId, "number", String.valueOf(withChild) + "px", "", false,
+					"", "comboCode_"+"Name"+ keyId, "", false, false, inputProcess(Integer.parseInt(keyId))));
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
-				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "number",
-						String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false, "center-align", null);
-				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
-				groups.add(dtoG);
-			}
-			if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
-				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "number",
+				if(!DPText.ITEM_COMBOBOX_CALC.contains(Integer.parseInt(keyId))){
+					DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
+							String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false, "center-align", null);
+					groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
+					groups.add(dtoG);
+				}else{
+					DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
+							String.valueOf(withChild) + "px", "", false, "ComboItemsCompact", false, false, "center-align", null);
+					groups.get(0).setConstraint(new Constraint("Integer", true, Arrays.asList(0, 2)));
+					groups.add(dtoG);
+				}
+			}else if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
+				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
 						String.valueOf(withChild) + "px", "", false, "ComboboxReason", false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "3"));
-			}
-			if (item.getTypeGroup() == TypeLink.DOWORK.value) {
-				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + getCode(key), "number",
+			}else if (item.getTypeGroup() == TypeLink.DOWORK.value) {
+				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
 						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork", false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "1"));
+			}else if (item.getTypeGroup() == TypeLink.TIME_LIMIT.value) {
+				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
+						String.valueOf(withChild) + "px", "", false, "ComboboxTimeLimit", false, false, "center-align", null);
+				groups.add(dtoG);
+				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 			}
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Combo", true, ""));
@@ -171,9 +184,10 @@ public class DPHeaderDto {
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
-		if (param.getLineBreakPosition() > 0) {
-			this.headerText = param.getName() != null ? param.getName().substring(0, param.getLineBreakPosition())
-					+ "<br/>" + param.getName().substring(param.getLineBreakPosition(), param.getName().length()) : "";
+	
+		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0 && param.getName() != null) {
+			val length = param.getName().length() > param.getLineBreakPosition() ?  param.getLineBreakPosition() :  param.getName().length(); 
+			this.headerText = param.getName().substring(0, length) + "<br/>" + param.getName().substring(length, param.getName().length());
 		} else {
 			this.headerText = param.getName() != null ? param.getName() : "";
 		}

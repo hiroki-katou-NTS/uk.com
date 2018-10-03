@@ -147,14 +147,14 @@ public class MonthlyPerformanceCorrectionDto {
 			this.getAuthDto().getListDisplayAndInputMonthly().forEach(header -> {
 				if (!header.isYouCanChangeIt() && header.isCanBeChangedByOthers()) {
 					if (emp.isLoginUser()) {
-						setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "ntsgrid-disable");
+						setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "mgrid-disable");
 					}
 				} else if (!header.isCanBeChangedByOthers() && header.isYouCanChangeIt()) {
 					if (!emp.isLoginUser()) {
-						setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "ntsgrid-disable");
+						setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "mgrid-disable");
 					}
 				} else if (!header.isCanBeChangedByOthers() && !header.isYouCanChangeIt()) {
-					setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "ntsgrid-disable");
+					setStateCell("A"+header.getItemMonthlyId(), emp.getId(), "mgrid-disable");
 				}
 			});
 		};

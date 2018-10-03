@@ -113,11 +113,10 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             nts.uk.ui.block.grayout();
 
             service.extractApprovalStatusData(param).done((result: OneMonthApprovalStatus) => {
-                let approvalSttGrid = document.getElementById('approvalSttGrid'),
-                    approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+                let approvalSttGrid = document.getElementById('approvalSttGrid');
 
-                ko.cleanNode(approvalSttGrid);
                 ko.cleanNode(approvalSttGrid_headers);
+                ko.cleanNode(approvalSttGrid);
 
                 self.lstData = self.convertToGridData(result.lstEmployee);
                 self.generateColumns();

@@ -60,7 +60,6 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -80,6 +79,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPControlDisplayIt
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPDataDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPHeaderDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPSheetDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
@@ -89,6 +89,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -163,10 +164,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private static final String STATE_DISABLE = "mgrid-disable";
 	private static final String HAND_CORRECTION_MYSELF = "mgrid-manual-edit-target";
 	private static final String HAND_CORRECTION_OTHER = "mgrid-manual-edit-other";
-	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
+//	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
 	private static final String STATE_ERROR = "mgrid-error";
 	private static final String STATE_ALARM = "mgrid-alarm";
-	private static final String STATE_SPECIAL = "ntsgrid-special";
+	private static final String STATE_SPECIAL = "mgrid-special";
 	private static final String ADD_CHARACTER = "A";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -617,13 +618,16 @@ public class MonthlyPerformanceCorrectionProcessor {
 		lstHeader.addAll(lstMPHeaderDto);
 		if (param.getLstAtdItemUnique() != null) {
 			List<Integer> itemIds = param.getLstAtdItemUnique().keySet().stream().collect(Collectors.toList());
+			List<MonthlyAttendanceItemDto> lstAttendanceItem = repo.findByAttendanceItemId(companyId, itemIds);
+			Map<Integer, MonthlyAttendanceItemDto> mapMP = lstAttendanceItem.stream().collect(Collectors.toMap(MonthlyAttendanceItemDto::getAttendanceItemId, x -> x));
 			List<ControlOfMonthlyDto> listCtrOfMonthlyDto = controlOfMonthlyFinder.getListControlOfAttendanceItem(itemIds);
 			for (Integer key : param.getLstAtdItemUnique().keySet()) {
 				PAttendanceItem item = param.getLstAtdItemUnique().get(key);
+				MonthlyAttendanceItemDto dto = mapMP.get(key);
 				// ドメインモデル「月次の勤怠項目の制御」を取得する
 				// Setting Header color & time input
 				Optional<ControlOfMonthlyDto> ctrOfMonthlyDto = listCtrOfMonthlyDto.stream().filter(c -> c.getItemMonthlyId() == item.getId()).findFirst();
-				lstHeader.add(MPHeaderDto.createSimpleHeader(item, ctrOfMonthlyDto.isPresent() ? ctrOfMonthlyDto.get() : null));
+				lstHeader.add(MPHeaderDto.createSimpleHeader(item, ctrOfMonthlyDto.isPresent() ? ctrOfMonthlyDto.get() : null, dto));
 			}
 		}
 		displayItem.setLstHeader(lstHeader);

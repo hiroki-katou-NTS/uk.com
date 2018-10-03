@@ -40,11 +40,11 @@ public class KrcstErAlCompareRange extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "START_VALUE")
-	public int startValue;
+	public double startValue;
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "END_VALUE")
-	public int endValue;
+	public double endValue;
 	
 	@OneToOne
 	@JoinColumns({
@@ -58,7 +58,7 @@ public class KrcstErAlCompareRange extends UkJpaEntity implements Serializable {
 	}
 
 	public KrcstErAlCompareRange(KrcstErAlCompareRangePK krcstEralCompareRangePK, int compareAtr,
-			int startValue, int endValue) {
+			double startValue, double endValue) {
 		super();
 		this.krcstEralCompareRangePK = krcstEralCompareRangePK;
 		this.compareAtr = compareAtr;

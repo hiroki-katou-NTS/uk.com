@@ -82,9 +82,11 @@ module cps001.a.vm {
             personId: ko.observable(''),
             employeeId: ko.observable(''),
             employeeIds: ko.observableArray([]),
-            employees: ko.observableArray([])
+            employees: ko.observableArray([]),
+            hireDate: ko.observable('')
         };
 
+        
         saveAble: KnockoutObservable<boolean> = ko.observable(false);
 
         // resource id for title in category mode

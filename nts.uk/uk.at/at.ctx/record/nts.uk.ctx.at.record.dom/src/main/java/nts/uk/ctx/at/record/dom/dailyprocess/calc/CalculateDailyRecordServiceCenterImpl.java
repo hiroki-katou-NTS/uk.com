@@ -15,6 +15,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -76,10 +78,14 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private EditStateOfDailyPerformanceRepository editStateOfDailyPerformanceRepository;
 	
+	@Inject
+	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
+	
 	@Override
 	//old_process. Don't use!
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList()).getIntegrationOfDailyList();
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,false,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
+										.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 	}
 	
 	@Override
@@ -102,20 +108,35 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				tc.setEditState(notReCalcItems);
 			});
 		}
-		return commonPerCompany(
-				calcOption,
-				integrationOfDaily,
-				false,
-				Optional.empty(),
-				Optional.empty(),
-				companySet,
-				Collections.emptyList())
-				.getIntegrationOfDailyList();
+		val result = commonPerCompany(
+									  calcOption,
+									  integrationOfDaily,
+									  false,
+									  Optional.empty(),
+									  Optional.empty(),
+									  companySet,
+									  Collections.emptyList()).getLst();
+		//勤務情報のステータスを変更
+		result.forEach(tc ->{
+			dailyCalculationEmployeeService.upDateCalcState(tc);
+		});
+		return result.stream().map(ts -> ts.getIntegrationOfDaily()).collect(Collectors.toList()); 
 	}
 	
 	@Override
+	//スケジュールから呼び出す窓口
+	public List<IntegrationOfDaily> calculateForSchedule(
+			CalculateOption calcOption,
+			List<IntegrationOfDaily> integrationOfDaily,
+			Optional<ManagePerCompanySet> companySet){
+		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),Collections.emptyList())
+								.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+	}
+	
+	
+	@Override
 	//就業計算と集計から呼び出す時の窓口
-	public CalcStatus calculateForManageState(
+	public ManageProcessAndCalcStateResult calculateForManageState(
 			List<IntegrationOfDaily> integrationOfDaily,
 			Optional<AsyncCommandHandlerContext> asyncContext,
 			Optional<Consumer<ProcessState>> counter,
@@ -150,7 +171,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			List<IntegrationOfDaily> integrationOfDaily,
 			ManagePerCompanySet companySet,
 			List<ClosureStatusManagement> closureList) {
-		return commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),closureList);
+		val result = commonPerCompany(CalculateOption.asDefault(), integrationOfDaily,true,Optional.empty(),Optional.empty(),Optional.empty(),closureList);
+		
+		return new CalcStatus(result.getPs(), result.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList())); 
 	}
 	
 	
@@ -161,13 +184,13 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @param closureList 
 	 * @return 計算後実績データ
 	 */
-	private CalcStatus commonPerCompany(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,boolean isManageState,
+	private ManageProcessAndCalcStateResult commonPerCompany(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,boolean isManageState,
 													  Optional<AsyncCommandHandlerContext> asyncContext
 													 ,Optional<Consumer<ProcessState>> counter, 
 													 Optional<ManagePerCompanySet> companySet, 
 													 List<ClosureStatusManagement> closureList) {
 		/***会社共通処理***/
-		if(integrationOfDaily.isEmpty()) return new CalcStatus(ProcessState.SUCCESS, integrationOfDaily);
+		if(integrationOfDaily.isEmpty()) return new ManageProcessAndCalcStateResult(ProcessState.SUCCESS, integrationOfDaily.stream().map(tc -> ManageCalcStateAndResult.failCalc(tc)).collect(Collectors.toList()));
 		//社員毎の実績に纏める
 		Map<String,List<IntegrationOfDaily>> recordPerEmpId = getPerEmpIdRecord(integrationOfDaily);
 		String comanyId = AppContexts.user().companyId();
@@ -184,7 +207,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 
 		/***会社共通処理***/
-		List<IntegrationOfDaily> returnList = new ArrayList<>();
+		List<ManageCalcStateAndResult> returnList = new ArrayList<>();
 		//社員ごとの処理
 		for(Entry<String, List<IntegrationOfDaily>> record: recordPerEmpId.entrySet()) {
 			//対象社員の締め取得
@@ -195,9 +218,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
 				asyncContext.get().finishedAsCancelled();
-				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
+				return new ManageProcessAndCalcStateResult(ProcessState.INTERRUPTION,Collections.emptyList());
 			}
-			returnList.addAll(returnValue.getIntegrationOfDailyList());
+			returnList.addAll(returnValue);
 			//人数カウントアップ
 			if(counter.isPresent()) {
 				counter.get().accept(ProcessState.SUCCESS);
@@ -206,9 +229,10 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 		shareContainer.clearAll();
 		shareContainer= null;
-		return new CalcStatus(ProcessState.SUCCESS,returnList);
+		return new ManageProcessAndCalcStateResult(ProcessState.SUCCESS,returnList);
 		
 	}
+	
 
 	/**
 	 * 対象者の締め一覧を取得する
@@ -228,7 +252,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @param closureByEmpId 
 	 * @return　実績データ
 	 */
-	private CalcStatus calcOnePerson(CalculateOption calcOption, String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
+	private List<ManageCalcStateAndResult> calcOnePerson(CalculateOption calcOption, String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
 									Optional<AsyncCommandHandlerContext> asyncContext, List<ClosureStatusManagement> closureByEmpId){
 		
 		//社員の期間取得
@@ -239,26 +263,26 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 								  			.map(tc -> tc.getAffiliationInfor().getYmd())
 								  			.collect(Collectors.toList());
 		
-		val maxGeneralDate = sortedymd.get(0);
-		val minGeneralDate = sortedymd.get(sortedymd.size() - 1);
+		val minGeneralDate = sortedymd.get(0);
+		val maxGeneralDate = sortedymd.get(sortedymd.size() - 1);
 		
 		
 		//労働制マスタ取得
 		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
 		
 		//日ごとループ(1人社員の)
-		List<IntegrationOfDaily> returnList = new ArrayList<>();
+		List<ManageCalcStateAndResult> returnList = new ArrayList<>();
 		for(IntegrationOfDaily record:recordList) {
 			// 中断処理　（中断依頼が出されているかチェックする）
 			if (asyncContext.isPresent() 
 				&& asyncContext.get().hasBeenRequestedToCancel()) {
 				asyncContext.get().finishedAsCancelled();
-				return new CalcStatus(ProcessState.INTERRUPTION,Collections.emptyList());
+				return Collections.emptyList();
 			}
 			
 			//締め一覧から、ymdが計算可能な日かを判定する
 			if(!isCalc(closureByEmpId, record.getAffiliationInfor().getYmd())) {
-				returnList.add(record);
+				returnList.add(ManageCalcStateAndResult.successCalc(record));
 				continue;
 			}
 			
@@ -281,11 +305,11 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(1))));
 			}
 			else {
-				returnList.add(record);
+				returnList.add(ManageCalcStateAndResult.successCalc(record));
 			}
 		}
 
-		return new CalcStatus(ProcessState.SUCCESS,returnList);
+		return returnList;
 	}
 	
 	

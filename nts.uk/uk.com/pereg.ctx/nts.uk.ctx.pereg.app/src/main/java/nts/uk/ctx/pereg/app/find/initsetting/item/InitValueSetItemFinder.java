@@ -50,6 +50,8 @@ public class InitValueSetItemFinder {
 	// sonnlb
 	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002) {
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+		
+		String cid = AppContexts.user().companyId();
 
 		String categoryCd = command.getCategoryCd();
 
@@ -57,8 +59,7 @@ public class InitValueSetItemFinder {
 
 		String employeeId = AppContexts.user().employeeId();
 
-		List<PerInfoInitValueSetItemDetail> itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(),
-				categoryCd);
+		List<PerInfoInitValueSetItemDetail> itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), categoryCd, cid);
 
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
@@ -91,7 +92,7 @@ public class InitValueSetItemFinder {
 			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
 			for (SettingItemDto settingItemDto : result) {
 				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
-					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					comboBoxStandardDate = settingItemDto.getSaveData().getValue().toString().isEmpty()? comboBoxStandardDate :(GeneralDate) settingItemDto.getSaveData().getValue();
 					break;
 				}
 			}

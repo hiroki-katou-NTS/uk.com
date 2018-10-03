@@ -189,7 +189,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						a.getSpecialHolidayCode(),
 						false,
 						true,
-						interimSpecialChk,
+						interimSpecial,
 						specialHolidayData);
 				InPeriodOfSpecialLeave speOutCheck = speLeaveSevice.complileInPeriodOfSpecialLeave(speParam);
 				for (SpecialLeaveError speError : speOutCheck.getLstError()) {
@@ -207,9 +207,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if(inputParam.isChkAnnual()) {
 			mngWork = annualHolidayData.stream()
 					.map(o -> {
-						GeneralDate annalDate = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-								.collect(Collectors.toList()).get(0).getYmd();
-						return TmpAnnualLeaveMngWork.of(o.getAnnualId(), annalDate, o.getWorkTypeCode(), o.getUseDays());
+						InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
+								.collect(Collectors.toList()).get(0);
+						return TmpAnnualLeaveMngWork.of(annualInterim, o);
 					}).collect(Collectors.toList());
 			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(),
@@ -234,9 +234,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if(inputParam.isChkFundingAnnual()) {
 			List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
 					.map(l -> {
-						GeneralDate annalDate = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
-								.collect(Collectors.toList()).get(0).getYmd();
-						return TmpReserveLeaveMngWork.of(l.getResereId(), annalDate, l.getUseDays());
+						InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+								.collect(Collectors.toList()).get(0);
+						return TmpReserveLeaveMngWork.of(reserveInterim, l);
 					}).collect(Collectors.toList());
 			List<ReserveLeaveErrorImport> reserveLeaveErrors = annualService.reserveLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(),
