@@ -2949,8 +2949,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// 打刻漏れ
 		Optional<EmployeeDailyPerError> optErrorEngraving = errorList.stream()
-				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.PCLOG_STAMP_LEAKAGE.value)
-						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.ENTRANCE_STAMP_LACKING.value)).findFirst();
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.TIME_LEAVING_STAMP_LEAKAGE.value)).findFirst();
 		if (optErrorEngraving.isPresent() && (choice == RemarksContentChoice.ENGRAVING)) {
 			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.ENGRAVING.value);
 		}
