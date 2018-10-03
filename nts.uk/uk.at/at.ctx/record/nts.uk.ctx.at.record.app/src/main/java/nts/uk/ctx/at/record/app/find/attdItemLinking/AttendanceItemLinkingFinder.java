@@ -75,7 +75,8 @@ public class AttendanceItemLinkingFinder {
 	 * @return the list
 	 */
 	public List<FrameNoAdapterDto> findAttendanceByOptionalItem(List<Integer> optionalItemNos, int performanceAtr) {
-		return this.frameAdapter.findByFrameNos(optionalItemNos, performanceAtr, FRAME_CATEGORY_OPTIONAL_ITEM);
+		return this.frameAdapter.findByFrameNos(optionalItemNos, this.convertToFrameType(performanceAtr),
+				FRAME_CATEGORY_OPTIONAL_ITEM);
 	}
 
 	/**
