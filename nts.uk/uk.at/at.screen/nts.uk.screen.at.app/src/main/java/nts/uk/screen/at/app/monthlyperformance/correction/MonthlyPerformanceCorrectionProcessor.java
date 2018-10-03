@@ -814,24 +814,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
 							if (item.getValue() != null) {
-								if (Integer.parseInt(item.getValue()) >= 0) {
-									minute = Integer.parseInt(item.getValue());
-								} else {
-									minute = (Integer.parseInt(item.getValue())
-											+ (1 + -Integer.parseInt(item.getValue()) / (24 * 60)) * (24 * 60));
-								}
+								minute = Integer.parseInt(item.getValue());
 							}
-							int hours = minute / 60;
+							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0 && hours == 0)
+							String valueConvert = (minute < 0)
 									? "-" + String.format("%d:%02d", hours, minutes)
 									: String.format("%d:%02d", hours, minutes);
 
 							mpdata.addCellData(
 									new MPCellDataDto(attendanceKey, valueConvert, attendanceAtrAsString, "label"));
-						}
-						mpdata.addCellData(new MPCellDataDto(attendanceKey,
-								item.getValue() != null ? item.getValue() : "", "String", ""));
+						} else
+							mpdata.addCellData(new MPCellDataDto(attendanceKey,
+								item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
 						if (!StringUtil.isNullOrEmpty(lockStatus, true)) {
 							cellStatus.add(STATE_DISABLE);
 						}
