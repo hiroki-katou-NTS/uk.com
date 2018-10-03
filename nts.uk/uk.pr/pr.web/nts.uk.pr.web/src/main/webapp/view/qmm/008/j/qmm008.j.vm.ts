@@ -32,9 +32,10 @@ module nts.uk.pr.view.qmm008.j {
                        $(".nts-fixed-table").attr('tabindex', '0');
                        $(".nts-fixed-table").focus();
                    }, 1000);
-                });
 
-               $("#J3_12").ntsFixedTable({ height: 349, width: 500 });
+               });
+               $("#J3_12").ntsFixedTable({ height: 349, width: 1000 });
+
 
            }
            
