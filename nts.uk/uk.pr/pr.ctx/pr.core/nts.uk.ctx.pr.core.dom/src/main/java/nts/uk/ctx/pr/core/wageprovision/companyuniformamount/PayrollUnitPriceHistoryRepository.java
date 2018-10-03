@@ -8,11 +8,11 @@ import java.util.Optional;
 public interface PayrollUnitPriceHistoryRepository {
     List<PayrollUnitPriceHistory> getAllPayrollUnitPriceHistory();
 
-    Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid,String hisId);
+    Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid, String code, String hisId);
 
     void add(PayrollUnitPriceHistory domain);
 
     void update(PayrollUnitPriceHistory domain);
 
-    void remove(String cid,String hisId);
+    void remove(String cid, String code, String hisId);
 }
