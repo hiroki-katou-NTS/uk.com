@@ -6,7 +6,8 @@ module nts.uk.com.view.cmf002.g.service {
         getOutputCodeConvertByConvertCode:   "exio/exo/codeconvert/getOutputCodeConvertByConvertCode/{0}",
         addOutputCodeConvert:          "exio/exo/codeconvert/addOutputCodeConvert",
         updateOutputCodeConvert:       "exio/exo/codeconvert/updateOutputCodeConvert",
-        removeOutputCodeConvert:       "exio/exo/codeconvert/removeOutputCodeConvert"
+        removeOutputCodeConvert:       "exio/exo/codeconvert/removeOutputCodeConvert",
+        checkBeforeRemove:             "exio/exo/codeconvert/checkBeforeRemove/{0}"
     }
 
     export function getOutputCodeConvertByCompanyId(): JQueryPromise<any> {
@@ -27,6 +28,10 @@ module nts.uk.com.view.cmf002.g.service {
 
     export function removeOutputCodeConvert(command): JQueryPromise<any> {
         return ajax(paths.removeOutputCodeConvert, command);
+    }
+
+    export function checkBeforeRemove(convertCode: string): JQueryPromise<any> {
+        return ajax(format(paths.checkBeforeRemove, convertCode));
     }
 
 }

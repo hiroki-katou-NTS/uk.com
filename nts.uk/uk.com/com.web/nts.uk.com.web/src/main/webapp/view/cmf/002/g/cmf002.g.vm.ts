@@ -246,43 +246,47 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let _codeConvertCurrent = self.codeConvertCurrent;
             block.invisible();
 
-            if (_codeConvertCurrent().listCdConvertDetail().length > 0) {
+            /*if (_codeConvertCurrent().listCdConvertDetail().length > 0) {
                 dialog.alertError({ messageId: "Msg_659" });
                 block.clear();
                 self.setFocusG2_3();
                 return;
                 
-            }
+            }*/
+            service.checkBeforeRemove(self.selectedCodeConvert()).done(() => {
+                dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
 
+                        let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
+                        { return x.convertCode() == _codeConvertCurrent().convertCode() });
 
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
-
-                    let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
-                    { return x.convertCode() == _codeConvertCurrent().convertCode() });
-
-                    if (index >= 0) {
-                        self.listOutputCodeConvert.splice(index, 1);
-                        if (index >= _listOutputCodeConvert().length) {
-                            index = _listOutputCodeConvert().length - 1;
+                        if (index >= 0) {
+                            self.listOutputCodeConvert.splice(index, 1);
+                            if (index >= _listOutputCodeConvert().length) {
+                                index = _listOutputCodeConvert().length - 1;
+                            }
                         }
-                    }
 
-                    dialog.info({ messageId: "Msg_16" }).then(() => {
-                        if (_listOutputCodeConvert().length > 0) {
-                            self.initialScreen(_listOutputCodeConvert()[index].convertCode());
-                            self.screenMode(model.SCREEN_MODE.UPDATE);
-                        } else {
-                            self.settingCreateMode();
-                        }
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            if (_listOutputCodeConvert().length > 0) {
+                                self.initialScreen(_listOutputCodeConvert()[index].convertCode());
+                                self.screenMode(model.SCREEN_MODE.UPDATE);
+                            } else {
+                                self.settingCreateMode();
+                            }
+                        });
+                    }).fail(function(error) {
+                        dialog.alertError(error);
+                    }).always(function() {
+                        block.clear();
+                        self.setFocusG2_3();
                     });
-                }).fail(function(error) {
-                    dialog.alertError(error);
-                }).always(function() {
+                }).then(() => {
                     block.clear();
                     self.setFocusG2_3();
                 });
-            }).then(() => {
+            }).fail(error => {
+                dialog.alertError(error);
                 block.clear();
                 self.setFocusG2_3();
             });

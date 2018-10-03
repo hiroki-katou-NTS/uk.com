@@ -22,7 +22,6 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutputCodeConvert f";
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE f.outputCodeConvertPk.cid = :cid";
 	private static final String SELECT_BY_ID = SELECT_BY_CID + " AND f.outputCodeConvertPk.convertCd = :convertCode";
-	private static final String SELECT_BY_CID_AND_CONVERT_CODE = SELECT_BY_CID + " AND f.outputCodeConvertPk.convertCd = :convertCode";
 
 	@Override
 	public List<OutputCodeConvert> getAllOutputCodeConvert() {
@@ -44,17 +43,10 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 				.getSingle(item -> toDomain(item));
 	}
 
-	public Optional<OutputCodeConvert> getObjectOutputCodeConvertByCidAndConvertCode(String cid, String convertCode) {
-		return this.queryProxy().query(SELECT_BY_CID_AND_CONVERT_CODE, OiomtOutputCodeConvert.class)
-				.setParameter("cid", cid)
-				.setParameter("convertCode", convertCode)
-				.getSingle(item -> toDomain(item));
-	}
-
 	@Override
 	public void add(OutputCodeConvert domain) {
 		Optional<OutputCodeConvert> duplicateDomain 
-			= getObjectOutputCodeConvertByCidAndConvertCode(domain.getCid(), domain.getConvertCode().toString());
+			= getOutputCodeConvertById(domain.getCid(), domain.getConvertCode().toString());
 		if(duplicateDomain.isPresent()) throw new BusinessException("Msg_3");
 		this.commandProxy().insert(toEntity(domain));
 	}

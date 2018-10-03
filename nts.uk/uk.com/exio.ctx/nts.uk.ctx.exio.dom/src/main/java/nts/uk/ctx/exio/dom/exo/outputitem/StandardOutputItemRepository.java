@@ -62,5 +62,5 @@ public interface StandardOutputItemRepository {
 
 	void register(TimeDataFmSetting domain);
 
-
+	List<CharacterDataFmSetting> getCharacterDataFmSettingByByConvertCd(String cid, String convertCd);
 }

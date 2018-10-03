@@ -40,6 +40,8 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	private static final String SELECT_TIME_BY_CID = "SELECT f FROM OiomtTimeDataFmSetO f WHERE f.timeDataFmSetPk.cid =:cid";
 	private static final String SELECT_NUM_BY_CID = SELECT_ALL_NUMBER_QUERY_STRING
 			+ " WHERE f.numberDataFmSetPk.cid =:cid";
+	private static final String SELECT_CHARACTER_BY_CID_CD_CONVERT_CD = SELECT_ALL_CHARACTER_QUERY_STRING
+			+ " WHERE f.chacDataFmSetPk.cid =:cid AND f.cdConvertCd =:cdConvertCd";
 
 	@Override
 	public List<AwDataFormatSet> getAllAwDataFormatSet() {
@@ -84,6 +86,12 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 			return Optional.of(entity.get().toDomain());
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public List<ChacDataFmSet> getChacDataFmSetByConvertCd(String cid, String convertCd) {
+		return this.queryProxy().query(SELECT_CHARACTER_BY_CID_CD_CONVERT_CD, OiomtChacDataFmSet.class)
+				.setParameter("cid", cid).setParameter("cdConvertCd", convertCd).getList(item -> item.toDomain());
 	}
 
 	@Override

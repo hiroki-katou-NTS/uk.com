@@ -21,6 +21,8 @@ public interface DataFormatSettingRepository {
     List<ChacDataFmSet> getAllChacDataFmSet();
 
     Optional<ChacDataFmSet> getChacDataFmSetById(String cid);
+    
+    List<ChacDataFmSet> getChacDataFmSetByConvertCd(String cid, String convertCd);
 
     void add(ChacDataFmSet domain);
 

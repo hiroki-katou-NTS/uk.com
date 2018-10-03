@@ -61,4 +61,10 @@ public class OutputCodeConvertWebService extends WebService {
 	public void removeOutputCodeConvert(OutputCodeConvertCommand command){
 		this.removeHandler.handle(command);
 	}	
+	
+	@POST
+	@Path("checkBeforeRemove/{convertCode}")
+	public void checkBeforeRemove(@PathParam("convertCode") String convertCode) {
+		this.outputCodeConvertFinder.checkBeforeRemove(convertCode);
+	}
 }
