@@ -39,12 +39,15 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
 
         submit() {
             var self = this;
+            if(self.currentCodeListSwap().length == 0){
+                nts.uk.ui.dialog.alertError({messageId: "Msg_105"});
+                return;
+            }
             setShared("QMM005F_outParams", {
                 processCateNo: self.itemShared.processCateNo,
                 returnList: self.currentCodeListSwap()
             });
             close();
-
         }
 
         cancel() {
