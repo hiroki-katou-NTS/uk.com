@@ -287,24 +287,19 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             let month = index - parseInt(basicSetting.employeeExtractionReferenceDate.refeMonth);
                             settingPayment.employeeExtractionReferenceDate(self.preDateTime(self.passYear(self.processingYear(), month, false).year, self.passYear(self.processingYear(), month, false).month, basicSetting.employeeExtractionReferenceDate.refeDate));
                         }
-                        // B4_11    支払曜日
-                        // ※1　支払日チェックが入っている場合のみ更新する
-                        if (params.checkbox.dailyPaymentDateCheck) {
-
-                        }
                         // B4_13	社会保険徴収月
                         // ※3　社会保険徴収月チェックが入っている場合のみ更新する
                         if (params.checkbox.socialInsuranceMonthCheck) {
-                            let year = self.processingYear();
+                            let year = parseInt(<string>self.processingYear());
                             let month = index + parseInt(advancedSetting.salaryInsuColMon.monthCollected) - SOCIAL_INSU_COLLE_MONTH_INDEX;
-                            settingPayment.socialInsuranceCollectionMonth(self.passYear(year, month, true));
+                            settingPayment.socialInsuranceCollectionMonth(self.passYear(year, month, false).year.toString() +  self.fullMonth(self.passYear(year, month, false).month));
                         }
                         // B4_15	明細書印字年月
                         // ※4　要勤務日数チェックが入っている場合のみ更新する
                         if (params.checkbox.specPrintDateCheck) {
-                            let year = self.processingYear();
+                            let year = parseInt(<string>self.processingYear());
                             let month = index + parseInt(advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX;
-                            settingPayment.specificationPrintDate(self.passYear(year, month, false).year.toString() + self.passYear(year, month, false).month.toString);
+                            settingPayment.specificationPrintDate(self.passYear(year, month, false).year.toString() + self.fullMonth(self.passYear(year, month, false).month));
                         }
                         // B4_16	要勤務日数
                         // ※5　明細書印字年月チェックが入っている場合のみ更新する
@@ -314,7 +309,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B6_7		社会保険基準日
                         // ※6　社会保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.socialInsuranceDateCheck) {
-                            let year = self.processingYear() + parseInt(advancedSetting.sociInsuStanDate.baseYear) - SOCI_INSU_BASE_YEAR_INDEX;
+                            let year = parseInt(<string>self.processingYear()) + parseInt(advancedSetting.sociInsuStanDate.baseYear) - SOCI_INSU_BASE_YEAR_INDEX;
                             let month = parseInt(advancedSetting.sociInsuStanDate.baseMonth);
                             if (month == 0 || month == 1) {
                                 month = index + advancedSetting.sociInsuStanDate.baseMonth - SOCI_INSU_BASE_MONTH_INDEX;
@@ -335,15 +330,15 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             if (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) {
                                 settingPayment.timeClosingDate(settingPayment.employeeExtractionReferenceDate());
                             } else {
-                                let year = self.processingYear() + advancedSetting.closeDate.baseYear - CLOSE_DATE_YEAR_INDEX;
-                                let month = index  + advancedSetting.closeDate.baseMonth - CLOSE_DATE_MONTH_INDEX;
+                                let year = parseInt(<string>self.processingYear()) + parseInt(advancedSetting.closeDate.baseYear) - CLOSE_DATE_YEAR_INDEX;
+                                let month = index  + parseInt(advancedSetting.closeDate.baseMonth) - CLOSE_DATE_MONTH_INDEX;
                                 settingPayment.timeClosingDate(self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, advancedSetting.closeDate.refeDate));
                             }
                         }
                         /*B6_10	所得税基準日
                          ※8　所得税基準日チェックが入っている場合のみ更新する*/
                         if (params.checkbox.incomeTaxReferenceCheck) {
-                            let year = self.processingYear() + advancedSetting.incomTaxBaseYear.baseYear - INCOM_TAX_BASEYEAR_YEAR_INDEX;
+                            let year = parseInt(<string>self.processingYear()) + parseInt(advancedSetting.incomTaxBaseYear.baseYear) - INCOM_TAX_BASEYEAR_YEAR_INDEX;
                             settingPayment.incomeTaxReferenceDate(self.preDateTime(year, advancedSetting.incomTaxBaseYear.baseMonth, advancedSetting.incomTaxBaseYear.refeDate));
                         }
 
@@ -364,10 +359,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             month = parseInt(month);
             if (month > -11 && month < 1) {
                 month = month + 12;
-                return flag ? (year - 1) + '/' + (month < 10 ? '0' + month : month) : {year: year, month: month};
+                return flag ? (year - 1) + '/' + (month < 10 ? '0' + month : month) : {year: year - 1, month: month};
             } else if (month > 12 && month < 24) {
                 month = month - 12;
-                return flag ? (year + 1) + '/' + (month < 10 ? '0' + month : month) : {year: year, month: month};
+                return flag ? (year + 1) + '/' + (month < 10 ? '0' + month : month) : {year: year + 1, month: month};
             } else {
                 return flag ? year + '/' + (month < 10 ? '0' + month : month) : {year: year, month: month};
             }
