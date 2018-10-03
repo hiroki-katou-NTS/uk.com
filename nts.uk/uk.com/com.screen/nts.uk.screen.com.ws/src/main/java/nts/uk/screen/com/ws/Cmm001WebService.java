@@ -78,7 +78,7 @@ public class Cmm001WebService extends WebService{
 	@POST
 	@Path("findAll")
 	public List<CompanyQueryDto> findAll() {
-		if (StringUtils.isBlank(AppContexts.user().roles().forCompanyAdmin()) ||
+		if (StringUtils.isBlank(AppContexts.user().roles().forCompanyAdmin()) &&
 				StringUtils.isBlank(AppContexts.user().roles().forGroupCompaniesAdmin())) {
 			throw new BusinessException("Msg_1103");
 		}
