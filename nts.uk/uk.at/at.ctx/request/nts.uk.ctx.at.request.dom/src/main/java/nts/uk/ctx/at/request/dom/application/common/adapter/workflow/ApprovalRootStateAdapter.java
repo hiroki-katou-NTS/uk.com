@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow;
 import java.util.List;
 import java.util.Map;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -22,7 +23,8 @@ public interface ApprovalRootStateAdapter {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType);
+	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType)
+		throws BusinessException;
 	
 	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs,String companyID);
 	

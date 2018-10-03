@@ -1,15 +1,19 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+>>>>>>> delivery/release_user
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
@@ -42,7 +46,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author Doan Duy Hung
  *
  */
-@Stateless
+@RequestScoped
 public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	
 	@Inject
@@ -241,7 +245,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	// request list 113
 	@Override
 	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
-			String employeeID, String companyID, Integer rootType) {
+			String employeeID, String companyID, Integer rootType) throws BusinessException {
 		return intermediateDataPub.getAppRootStatusByEmpPeriod(employeeID, new DatePeriod(startDate, endDate), rootType)
 				.stream().map(x -> new ApproveRootStatusForEmpImPort(
 						x.getEmployeeID(), 

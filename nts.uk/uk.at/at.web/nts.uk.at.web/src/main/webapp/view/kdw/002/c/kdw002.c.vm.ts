@@ -22,6 +22,9 @@ module nts.uk.at.view.kdw002.c {
             datasources :KnockoutObservableArray<any>;
             selectedList: any;
             
+            listAttFullData  : any;
+            listAttFullDataClone  : any;
+            
             constructor(dataShare:any) {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
@@ -35,6 +38,9 @@ module nts.uk.at.view.kdw002.c {
                 //
                 self.datasources = ko.observableArray([]);
                 self.selectedList = ko.observableArray([]);
+                
+                self.listAttFullData = ko.observableArray([]);
+                self.listAttFullDataClone = ko.observableArray([]);
                 //monthly
                 self.listAttdMonthlyItem = [];
 
@@ -212,37 +218,65 @@ module nts.uk.at.view.kdw002.c {
 
 
             startPage(): JQueryPromise<any> {
-                let self = this;
+                let self = this,
+                    typeInput = TypeInput.DAILY;
                 let dfd = $.Deferred();
-                
-                service.getEmpRole().done(empRoles => {
-                    if (!nts.uk.util.isNullOrUndefined(empRoles) && empRoles.length > 0) {
-                        let bussinessCodeItems = [];
-                        empRoles.forEach(empRole => {
-                            bussinessCodeItems.push(new BusinessType(empRole));
-                            //   self.bussinessCodeItems.push(new BusinessType(businessType));
-                        });
-                        var bTypes = _.sortBy(bussinessCodeItems, 'roleCode');
-                        self.bussinessCodeItems(bTypes);
-                        var businessTypeCode = bTypes[0].roleId;
-                        self.currentRoleId(businessTypeCode);
-                    }
+                 if(!self.isDaily){
+                    typeInput = TypeInput.MONTHLY;
+                } 
+                let dtdGetNameAttItemByType = self.getNameAttItemByType(typeInput);
+                $.when(dtdGetNameAttItemByType).done(() => {
+                    service.getEmpRole().done(empRoles => {
+                        if (!nts.uk.util.isNullOrUndefined(empRoles) && empRoles.length > 0) {
+                            let bussinessCodeItems = [];
+                            empRoles.forEach(empRole => {
+                                bussinessCodeItems.push(new BusinessType(empRole));
+                                //   self.bussinessCodeItems.push(new BusinessType(businessType));
+                            });
+                            var bTypes = _.sortBy(bussinessCodeItems, 'roleCode');
+                            self.bussinessCodeItems(bTypes);
+                            var businessTypeCode = bTypes[0].roleId;
+                            self.currentRoleId(businessTypeCode);
+                        }
+                        dfd.resolve();
+                        $("#submitDataId").focus();
+                    });
+                }).always(() => {
                     dfd.resolve();
-                    $("#submitDataId").focus();
-                });
+                })
+                
                 return dfd.promise();
             }
 
+            getNameAttItemByType(typeInput : number){
+                let self = this;
+                let dfd = $.Deferred();
+                service.getNameAttItemByType(typeInput).done(function(data) {
+                    self.listAttFullData(data);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
 
             //get Daily Attd Item By Role ID
             getDailyAttdItemByRoleID(roleID: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getDailyAttdItemByRoleID(roleID).done(function(data) {
+                let startTime: number = performance.now();
+                service.getDailyAttItemNew(roleID).done(function(data) {
+                    console.log("get setting by role: " + (performance.now() - startTime));
                     let listDefault: Array<DisplayAndInputControl> = [];
-                    _.each(data, item => {
-                        listDefault.push(DisplayAndInputControl.fromApp(item));
-                    })
+                    self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
+                    _.each(self.listAttFullDataClone(), attFullData => {
+                        for(let i=0;i<data.length;i++){
+                            if(attFullData.attendanceItemId == data[i].attendanceItemId){
+                                attFullData.authority = data[i].authority; 
+                                break;
+                            }    
+                        }
+                            
+                        listDefault.push(DisplayAndInputControl.fromApp(attFullData));
+                    });
                     /*if (nts.uk.util.isNullOrUndefined(data)) {
                         if (self.listAttdItem.length != 0) {
                             for (let i = 0; i < self.listAttdItem.length; i++) {
@@ -282,6 +316,7 @@ module nts.uk.at.view.kdw002.c {
                     self.dailyServiceTypeControl(
                         new DailyAttendanceItemAuth("", roleID, _.sortBy(listDefault, ['itemDailyID']))
                     );
+                    console.log("convert object: " + (performance.now() - startTime));
                     dfd.resolve(self.dailyServiceTypeControl());
                 });
                 return dfd.promise();
@@ -291,11 +326,22 @@ module nts.uk.at.view.kdw002.c {
             getMonthlyAttdItemByRoleID(roleID: string) {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getMonthlyAttdItemByRoleID(roleID).done(function(data) {
+                service.getMontlyAttItemNew(roleID).done(function(data) {
                     let listDefault: Array<DisplayAndInputControl> = [];
-                    _.each(data, item => {
-                        listDefault.push(DisplayAndInputControl.fromApp(item));
-                    })
+//                    _.each(data, item => {
+//                        listDefault.push(DisplayAndInputControl.fromApp(item));
+//                    })
+                    self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
+                    _.each(self.listAttFullDataClone(), attFullData => {
+                        for(let i=0;i<data.length;i++){
+                            if(attFullData.attendanceItemId == data[i].attendanceItemId){
+                                attFullData.authority = data[i].authority;
+                                break;
+                            }    
+                        }
+                            
+                        listDefault.push(DisplayAndInputControl.fromApp(attFullData));
+                    });
                     /*if (nts.uk.util.isNullOrUndefined(data)) {
                         
                         
@@ -396,7 +442,14 @@ module nts.uk.at.view.kdw002.c {
                 nts.uk.ui.block.invisible();
                 if(self.isDaily){
                     service.updateDailyAttdItem(self.dailyServiceTypeControl()).done(x => {
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(function() {
+                            self.getDailyAttdItemByRoleID(self.dailyServiceTypeControl().authorityDailyId).done(function(){
+                                $("#grid").igGrid("destroy")
+                                self.currentRoleId(self.dailyServiceTypeControl().authorityDailyId);
+                                self.currentRoleId.valueHasMutated();
+                            });
+                            
+                        });
                     }).always(function() {
                         nts.uk.ui.block.clear();
                     });
@@ -421,7 +474,14 @@ module nts.uk.at.view.kdw002.c {
                     
                     let monthly = new MonthlyAttendanceItemAuth("",self.dailyServiceTypeControl().authorityDailyId,listDisplayMonthly);
                     service.updateMonthlyAttdItem(monthly).done(x => {
-                        infor(nts.uk.resource.getMessage("Msg_15", []));
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(function() {
+                            self.getMonthlyAttdItemByRoleID(monthly.authorityMonthlyId).done(function(){
+                            ///var temp = $('#grid').igGrid("option","dataSource", self.dailyServiceTypeControl().displayAndInput)
+                            $("#grid").igGrid("destroy")
+                            self.currentRoleId(monthly.authorityMonthlyId);
+                            self.currentRoleId.valueHasMutated();
+                            });
+                        });
                     }).always(function() {
                         nts.uk.ui.block.clear();
                     });
@@ -558,7 +618,7 @@ module nts.uk.at.view.kdw002.c {
                     dto.canBeChangedByOthers = app.authority.canBeChangedByOthers;
                     dto.youCanChangeIt = app.authority.youCanChangeIt;
                 } else {
-                    dto.toUse = false;
+                    dto.toUse = true;
                     dto.canBeChangedByOthers = false;
                     dto.youCanChangeIt = false;
                 }
@@ -605,6 +665,13 @@ module nts.uk.at.view.kdw002.c {
 
         }
 
+    }
+    enum TypeInput {
+        
+        DAILY = 1,
+        
+        MONTHLY = 2
+        
     }
 }
 function useChanged(element, rowId, userCanSet) {
@@ -797,4 +864,5 @@ function canBeChangedByOthersHeaderChanged(element) {
 
     }
 }
+
 

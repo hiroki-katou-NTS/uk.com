@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.adapter.RoleLogin.LoginRoleAdapter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
@@ -23,11 +24,13 @@ public class AttendanceRecordExportSettingFinder {
 	@Inject
 	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
 
+	/** The permission repo. */
 	@Inject
 	PermissionOfEmploymentFormRepository permissionRepo;
 
-	/** The Constant EXPORT_AUTHORIZATION. */
-	final static int EXPORT_AUTHORIZATION = 3;
+	/** The login role adapter. */
+	@Inject
+	LoginRoleAdapter loginRoleAdapter;
 
 	/**
 	 * Gets the all attendance record export setting.
@@ -102,15 +105,9 @@ public class AttendanceRecordExportSettingFinder {
 	 * @return the boolean
 	 */
 	public Boolean havePermission() {
-		String companyId = AppContexts.user().companyId();
-		String roleId = AppContexts.user().roles().forAttendance();
 
-		Optional<PermissionOfEmploymentForm> optionalPermission = permissionRepo.find(companyId, roleId, EXPORT_AUTHORIZATION);
+		Boolean permission = loginRoleAdapter.getCurrentLoginerRole().isEmployeeCharge();
 
-		if (optionalPermission.isPresent()) {
-			PermissionOfEmploymentForm permission = optionalPermission.get();
-			return permission.isAvailable();
-		}
-		return false;
+		return permission;
 	}
 }

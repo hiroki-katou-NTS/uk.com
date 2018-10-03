@@ -46,13 +46,20 @@
                     nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                     nts.uk.shr.com.time.TimeWithDayAttr
                     nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                    nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                 </com:ValidatorScript>
             </ui:define>
 
             <ui:define name="content">
                 <div id="functions-area">
                     <div id="function-content">
-                        <button class="proceed"
+                        <button style="margin-left: 15px" class="proceed"
                                 data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
                         <button
                             data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
@@ -68,8 +75,8 @@
                             data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
                         <button
                             data-bind="click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
-                        <button data-bind="visible: false">#{i18n.getText('KDW003_15')}</button>
-                        <!-- showButton().available22 -->
+                        <button data-bind="click : historyModification ,visible: showButton().available22 ">#{i18n.getText('KDW003_15')}</button>
+                        <!--click : historyModification , showButton().available22 -->
                         <button class="danger"
                                 data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
                         <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
@@ -88,8 +95,8 @@
                     </div>
                     <div id="right-content">
                         <div class="valign-center control-group">
-                            <div style="margin-top: -20px; float: left">
-                            	<div>
+                            <div style="margin-top: -20px; float: left; width: auto">
+                            
 									<div id = "date-extract" style="width: 315px; display: inline-flex;">
 										<div id="daterangepicker"
 											data-bind="ntsDateRangePicker: { 
@@ -151,7 +158,7 @@
 		                            <button id="btnComfirmAttendance"
 		                                    data-bind="click : referencesActualResult, visible:false">#{i18n.getText('KDW003_22')}</button>
 		                            <!-- visible: showButton().available23 -->
-	                            </div>
+	                            
 	                            <div id="container" style="padding-top: 12px">
 	                                <div id="emp-component"></div>
 	                            </div>                              
@@ -160,10 +167,10 @@
 	                            <table id="fixed-table">
 	                                <thead>
 	                                    <tr>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 85px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
 	                                    </tr>
 	                                </thead>
 	                                <tbody>

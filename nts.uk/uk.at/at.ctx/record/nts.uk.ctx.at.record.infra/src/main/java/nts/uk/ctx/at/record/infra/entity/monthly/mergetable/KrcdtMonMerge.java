@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.monthly.mergetable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +50,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Co
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateAbsenceDaysMerge;
@@ -2408,7 +2410,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_AGGR_OVER_TIME 10 **/
-	public void toEntityOverTime(Map<OverTimeFrameNo, AggregateOverTime> aggregateOverTimeMap) {
+	private void toEntityOverTime(Map<OverTimeFrameNo, AggregateOverTime> aggregateOverTimeMap) {
 		for (int i = 1; i <= 10; i++){
 			OverTimeFrameNo frameNo = new OverTimeFrameNo(i);
 			AggregateOverTime aggrOverTime = new AggregateOverTime(frameNo);
@@ -2451,13 +2453,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_EXCOUT_TIME 50 **/
-	public void toEntityExcessOutsideWorkMerge(ExcessOutsideWorkOfMonthly excessOutsideWork) {
+	private void toEntityExcessOutsideWorkMerge(ExcessOutsideWorkOfMonthly excessOutsideWork) {
 		
 		// 時間外超過
 		toEntityExcessOutsideWorkOfMonthly(excessOutsideWork);
 		
 		// 時間外超過：時間
-		val excessOutsideTimeMap = excessOutsideWork.getTime();
+		Map<Integer, ExcessOutSideWorkEachBreakdown> excessOutsideTimeMap = excessOutsideWork == null ? new HashMap<>() : excessOutsideWork.getTime();
 		
 		for (int i = 0; i < 50; i++){
 			int breakdownNo = i / 5 + 1;
@@ -2625,219 +2627,219 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		}
 	}
 
-	public void toEntityAbsenceDays1(AggregateAbsenceDays absenceDays) {
-		this.absenceDay1 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays1(AggregateAbsenceDays absenceDays) {
+		this.absenceDay1 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime1 = absenceDays.getTime() == null ? 0
+		this.absenceTime1 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays2(AggregateAbsenceDays absenceDays) {
-		this.absenceDay2 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays2(AggregateAbsenceDays absenceDays) {
+		this.absenceDay2 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime2 = absenceDays.getTime() == null ? 0
+		this.absenceTime2 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays3(AggregateAbsenceDays absenceDays) {
-		this.absenceDay3 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays3(AggregateAbsenceDays absenceDays) {
+		this.absenceDay3 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime3 = absenceDays.getTime() == null ? 0
+		this.absenceTime3 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays4(AggregateAbsenceDays absenceDays) {
-		this.absenceDay4 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays4(AggregateAbsenceDays absenceDays) {
+		this.absenceDay4 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime4 = absenceDays.getTime() == null ? 0
+		this.absenceTime4 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays5(AggregateAbsenceDays absenceDays) {
-		this.absenceDay5 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays5(AggregateAbsenceDays absenceDays) {
+		this.absenceDay5 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime5 = absenceDays.getTime() == null ? 0
+		this.absenceTime5 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays6(AggregateAbsenceDays absenceDays) {
-		this.absenceDay6 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays6(AggregateAbsenceDays absenceDays) {
+		this.absenceDay6 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime6 = absenceDays.getTime() == null ? 0
+		this.absenceTime6 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays7(AggregateAbsenceDays absenceDays) {
-		this.absenceDay7 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays7(AggregateAbsenceDays absenceDays) {
+		this.absenceDay7 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime7 = absenceDays.getTime() == null ? 0
+		this.absenceTime7 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays8(AggregateAbsenceDays absenceDays) {
-		this.absenceDay8 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays8(AggregateAbsenceDays absenceDays) {
+		this.absenceDay8 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime8 = absenceDays.getTime() == null ? 0
+		this.absenceTime8 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays9(AggregateAbsenceDays absenceDays) {
-		this.absenceDay9 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays9(AggregateAbsenceDays absenceDays) {
+		this.absenceDay9 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime9 = absenceDays.getTime() == null ? 0
+		this.absenceTime9 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays10(AggregateAbsenceDays absenceDays) {
-		this.absenceDay10 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays10(AggregateAbsenceDays absenceDays) {
+		this.absenceDay10 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime10 = absenceDays.getTime() == null ? 0
+		this.absenceTime10 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays11(AggregateAbsenceDays absenceDays) {
-		this.absenceDay11 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays11(AggregateAbsenceDays absenceDays) {
+		this.absenceDay11 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime11 = absenceDays.getTime() == null ? 0
+		this.absenceTime11 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays12(AggregateAbsenceDays absenceDays) {
-		this.absenceDay12 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays12(AggregateAbsenceDays absenceDays) {
+		this.absenceDay12 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime12 = absenceDays.getTime() == null ? 0
+		this.absenceTime12 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays13(AggregateAbsenceDays absenceDays) {
-		this.absenceDay13 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays13(AggregateAbsenceDays absenceDays) {
+		this.absenceDay13 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime13 = absenceDays.getTime() == null ? 0
+		this.absenceTime13 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays14(AggregateAbsenceDays absenceDays) {
-		this.absenceDay14 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays14(AggregateAbsenceDays absenceDays) {
+		this.absenceDay14 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime14 = absenceDays.getTime() == null ? 0
+		this.absenceTime14 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays15(AggregateAbsenceDays absenceDays) {
-		this.absenceDay15 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays15(AggregateAbsenceDays absenceDays) {
+		this.absenceDay15 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime15 = absenceDays.getTime() == null ? 0
+		this.absenceTime15 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays16(AggregateAbsenceDays absenceDays) {
-		this.absenceDay16 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays16(AggregateAbsenceDays absenceDays) {
+		this.absenceDay16 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime16 = absenceDays.getTime() == null ? 0
+		this.absenceTime16 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays17(AggregateAbsenceDays absenceDays) {
-		this.absenceDay17 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays17(AggregateAbsenceDays absenceDays) {
+		this.absenceDay17 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime17 = absenceDays.getTime() == null ? 0
+		this.absenceTime17 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays18(AggregateAbsenceDays absenceDays) {
-		this.absenceDay18 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays18(AggregateAbsenceDays absenceDays) {
+		this.absenceDay18 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime18 = absenceDays.getTime() == null ? 0
+		this.absenceTime18 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays19(AggregateAbsenceDays absenceDays) {
-		this.absenceDay19 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays19(AggregateAbsenceDays absenceDays) {
+		this.absenceDay19 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime19 = absenceDays.getTime() == null ? 0
+		this.absenceTime19 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays20(AggregateAbsenceDays absenceDays) {
-		this.absenceDay20 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays20(AggregateAbsenceDays absenceDays) {
+		this.absenceDay20 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime20 = absenceDays.getTime() == null ? 0
+		this.absenceTime20 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays21(AggregateAbsenceDays absenceDays) {
-		this.absenceDay21 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays21(AggregateAbsenceDays absenceDays) {
+		this.absenceDay21 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime21 = absenceDays.getTime() == null ? 0
+		this.absenceTime21 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays22(AggregateAbsenceDays absenceDays) {
-		this.absenceDay22 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays22(AggregateAbsenceDays absenceDays) {
+		this.absenceDay22 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime22 = absenceDays.getTime() == null ? 0
+		this.absenceTime22 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays23(AggregateAbsenceDays absenceDays) {
-		this.absenceDay23 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays23(AggregateAbsenceDays absenceDays) {
+		this.absenceDay23 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime23 = absenceDays.getTime() == null ? 0
+		this.absenceTime23 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays24(AggregateAbsenceDays absenceDays) {
-		this.absenceDay24 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays24(AggregateAbsenceDays absenceDays) {
+		this.absenceDay24 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime24 = absenceDays.getTime() == null ? 0
+		this.absenceTime24 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays25(AggregateAbsenceDays absenceDays) {
-		this.absenceDay25 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays25(AggregateAbsenceDays absenceDays) {
+		this.absenceDay25 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime25 = absenceDays.getTime() == null ? 0
+		this.absenceTime25 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays26(AggregateAbsenceDays absenceDays) {
-		this.absenceDay26 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays26(AggregateAbsenceDays absenceDays) {
+		this.absenceDay26 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime26 = absenceDays.getTime() == null ? 0
+		this.absenceTime26 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays27(AggregateAbsenceDays absenceDays) {
-		this.absenceDay27 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays27(AggregateAbsenceDays absenceDays) {
+		this.absenceDay27 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime27 = absenceDays.getTime() == null ? 0
+		this.absenceTime27 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays28(AggregateAbsenceDays absenceDays) {
-		this.absenceDay28 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays28(AggregateAbsenceDays absenceDays) {
+		this.absenceDay28 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime28 = absenceDays.getTime() == null ? 0
+		this.absenceTime28 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays29(AggregateAbsenceDays absenceDays) {
-		this.absenceDay29 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays29(AggregateAbsenceDays absenceDays) {
+		this.absenceDay29 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime29 = absenceDays.getTime() == null ? 0
+		this.absenceTime29 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityAbsenceDays30(AggregateAbsenceDays absenceDays) {
-		this.absenceDay30 = absenceDays.getDays() == null ? 0
+	private void toEntityAbsenceDays30(AggregateAbsenceDays absenceDays) {
+		this.absenceDay30 = absenceDays == null || absenceDays.getDays() == null ? 0
 				: (absenceDays.getDays().v() == null ? 0 : absenceDays.getDays().v().intValue());
-		this.absenceTime30 = absenceDays.getTime() == null ? 0
+		this.absenceTime30 = absenceDays == null || absenceDays.getTime() == null ? 0
 				: (absenceDays.getTime().v() == null ? 0 : absenceDays.getTime().v());
 	}
 
-	public void toEntityBonusPayTime1(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime1(AggregateBonusPayTime paytime) {
 		this.bonusPayTime1 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime1 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime1 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime1 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2845,9 +2847,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime2(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime2(AggregateBonusPayTime paytime) {
 		this.bonusPayTime2 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime2 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime2 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime2 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2855,9 +2857,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime3(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime3(AggregateBonusPayTime paytime) {
 		this.bonusPayTime3 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime3 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime3 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime3 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2865,9 +2867,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime4(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime4(AggregateBonusPayTime paytime) {
 		this.bonusPayTime4 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime4 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime4 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime4 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2875,9 +2877,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime5(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime5(AggregateBonusPayTime paytime) {
 		this.bonusPayTime5 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime5 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime5 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime5 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2885,9 +2887,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime6(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime6(AggregateBonusPayTime paytime) {
 		this.bonusPayTime6 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime6 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime6 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime6 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2895,9 +2897,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime7(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime7(AggregateBonusPayTime paytime) {
 		this.bonusPayTime7 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime7 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime7 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime7 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2905,9 +2907,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime8(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime8(AggregateBonusPayTime paytime) {
 		this.bonusPayTime8 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime8 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime8 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime8 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2915,9 +2917,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime9(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime9(AggregateBonusPayTime paytime) {
 		this.bonusPayTime9 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime9 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime9 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime9 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2925,9 +2927,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityBonusPayTime10(AggregateBonusPayTime paytime) {
+	private void toEntityBonusPayTime10(AggregateBonusPayTime paytime) {
 		this.bonusPayTime10 = paytime.getBonusPayTime() == null ? 0 : paytime.getBonusPayTime().v();
-		this.specificBonusPayTime10 = paytime.getSpecificBonusPayTime() == null ? 0
+		this.specificBonusPayTime10 = paytime.getHolidayWorkSpecificBonusPayTime() == null ? 0
 				: paytime.getSpecificBonusPayTime().v();
 		this.holidayWorkBonusPayTime10 = paytime.getHolidayWorkBonusPayTime() == null ? 0
 				: paytime.getHolidayWorkBonusPayTime().v();
@@ -2935,7 +2937,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: paytime.getHolidayWorkSpecificBonusPayTime().v();
 	}
 
-	public void toEntityDivergenceTime1(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime1(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr1 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime1 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime1 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2943,7 +2945,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime2(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime2(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr2 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime2 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime2 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2951,7 +2953,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime3(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime3(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr3 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime3 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime3 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2959,7 +2961,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime4(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime4(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr4 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime4 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime4 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2967,7 +2969,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime5(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime5(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr5 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime5 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime5 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2975,7 +2977,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime6(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime6(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr6 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime6 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime6 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2983,7 +2985,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime7(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime7(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr7 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime7 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime7 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2991,7 +2993,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime8(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime8(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr8 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime8 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime8 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -2999,7 +3001,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityDivergenceTime9(AggregateDivergenceTime divergenceTime) {
+	private void toEntityDivergenceTime9(AggregateDivergenceTime divergenceTime) {
 		this.divergenceAtr9 = divergenceTime.getDivergenceAtr() == null ? 0 : divergenceTime.getDivergenceAtr().value;
 		this.divergenceTime9 = divergenceTime.getDivergenceTime() == null ? 0 : divergenceTime.getDivergenceTime().v();
 		this.deductionTime9 = divergenceTime.getDeductionTime() == null ? 0 : divergenceTime.getDeductionTime().v();
@@ -3015,79 +3017,79 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: divergenceTime.getDivergenceTimeAfterDeduction().v();
 	}
 
-	public void toEntityGoOut1(AggregateGoOut goOut) {
-		this.goOutTimesPrivate = goOut.getTimes() == null ? 0
+	private void toEntityGoOut1(AggregateGoOut goOut) {
+		this.goOutTimesPrivate = goOut == null || goOut.getTimes() == null ? 0
 				: (goOut.getTimes().v() == null ? 0
 						: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue()));
-		this.legalTimePrivate = goOut.getLegalTime() == null ? 0
+		this.legalTimePrivate = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimePrivate = goOut.getLegalTime() == null ? 0
+		this.calcLegalTimePrivate = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimePrivate = goOut.getIllegalTime() == null ? 0
+		this.illegalTimePrivate = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimePrivate = goOut.getIllegalTime() == null ? 0
+		this.calcIllegalTimePrivate = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimePrivate = goOut.getTotalTime() == null ? 0
+		this.totalTimePrivate = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimePrivate = goOut.getTotalTime() == null ? 0
+		this.calcTotalTimePrivate = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
 	}
 
-	public void toEntityGoOut2(AggregateGoOut goOut) {
-		this.goOutTimesPublic = goOut.getTimes() == null ? 0
+	private void toEntityGoOut2(AggregateGoOut goOut) {
+		this.goOutTimesPublic = goOut == null || goOut.getTimes() == null ? 0
 				: (goOut.getTimes().v() == null ? 0
 						: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue()));
-		this.legalTimePublic = goOut.getLegalTime() == null ? 0
+		this.legalTimePublic = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimePublic = goOut.getLegalTime() == null ? 0
+		this.calcLegalTimePublic = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimePublic = goOut.getIllegalTime() == null ? 0
+		this.illegalTimePublic = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimePublic = goOut.getIllegalTime() == null ? 0
+		this.calcIllegalTimePublic = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimePublic = goOut.getTotalTime() == null ? 0
+		this.totalTimePublic = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimePublic = goOut.getTotalTime() == null ? 0
+		this.calcTotalTimePublic = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
 	}
 
-	public void toEntityGoOut3(AggregateGoOut goOut) {
-		this.goOutTimesCompensation = goOut.getTimes() == null ? 0
+	private void toEntityGoOut3(AggregateGoOut goOut) {
+		this.goOutTimesCompensation = goOut == null || goOut.getTimes() == null ? 0
 				: (goOut.getTimes().v() == null ? 0
 						: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue()));
-		this.legalTimeCompensation = goOut.getLegalTime() == null ? 0
+		this.legalTimeCompensation = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimeCompensation = goOut.getLegalTime() == null ? 0
+		this.calcLegalTimeCompensation = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimeCompensation = goOut.getIllegalTime() == null ? 0
+		this.illegalTimeCompensation = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimeCompensation = goOut.getIllegalTime() == null ? 0
+		this.calcIllegalTimeCompensation = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimeCompensation = goOut.getTotalTime() == null ? 0
+		this.totalTimeCompensation = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimeCompensation = goOut.getTotalTime() == null ? 0
+		this.calcTotalTimeCompensation = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
 	}
 
-	public void toEntityGoOut4(AggregateGoOut goOut) {
-		this.goOutTimesUnion = goOut.getTimes() == null ? 0
+	private void toEntityGoOut4(AggregateGoOut goOut) {
+		this.goOutTimesUnion = goOut == null || goOut.getTimes() == null ? 0
 				: (goOut.getTimes().v() == null ? 0 : goOut.getTimes().v().intValue());
-		this.legalTimeUnion = goOut.getLegalTime() == null ? 0
+		this.legalTimeUnion = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getTime() == null ? 0 : goOut.getLegalTime().getTime().v());
-		this.calcLegalTimeUnion = goOut.getLegalTime() == null ? 0
+		this.calcLegalTimeUnion = goOut == null || goOut.getLegalTime() == null ? 0
 				: (goOut.getLegalTime().getCalcTime() == null ? 0 : goOut.getLegalTime().getCalcTime().v());
-		this.illegalTimeUnion = goOut.getIllegalTime() == null ? 0
+		this.illegalTimeUnion = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getTime() == null ? 0 : goOut.getIllegalTime().getTime().v());
-		this.calcIllegalTimeUnion = goOut.getIllegalTime() == null ? 0
+		this.calcIllegalTimeUnion = goOut == null || goOut.getIllegalTime() == null ? 0
 				: (goOut.getIllegalTime().getCalcTime() == null ? 0 : goOut.getIllegalTime().getCalcTime().v());
-		this.totalTimeUnion = goOut.getTotalTime() == null ? 0
+		this.totalTimeUnion = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getTime() == null ? 0 : goOut.getTotalTime().getTime().v());
-		this.calcTotalTimeUnion = goOut.getTotalTime() == null ? 0
+		this.calcTotalTimeUnion = goOut == null || goOut.getTotalTime() == null ? 0
 				: (goOut.getTotalTime().getCalcTime() == null ? 0 : goOut.getTotalTime().getCalcTime().v());
 	}
 
 	/* KRCDT_MON_AGGR_HDWK_TIME 10 */
-	public void toEntityHolidayWorkTime1(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime1(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime1 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime1 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3100,7 +3102,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime2(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime2(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime2 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime2 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3113,7 +3115,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime3(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime3(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime3 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime3 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3126,7 +3128,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime4(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime4(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime4 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime4 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3139,7 +3141,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime5(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime5(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime5 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime5 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3152,7 +3154,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime6(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime6(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime6 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime6 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3165,7 +3167,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime7(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime7(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime7 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime7 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3178,7 +3180,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime8(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime8(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime8 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime8 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3191,7 +3193,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime9(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime9(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime9 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime9 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3204,7 +3206,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				: domain.getLegalTransferHolidayWorkTime().v();
 	}
 
-	public void toEntityHolidayWorkTime10(AggregateHolidayWorkTime domain) {
+	private void toEntityHolidayWorkTime10(AggregateHolidayWorkTime domain) {
 		this.holidayWorkTime10 = domain.getHolidayWorkTime() == null ? 0 : domain.getHolidayWorkTime().getTime().v();
 		this.calcHolidayWorkTime10 = domain.getHolidayWorkTime() == null ? 0
 				: domain.getHolidayWorkTime().getCalcTime().v();
@@ -3218,7 +3220,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_AGGR_OVER_TIME 10 */
-	public void toEntityOverTime1(AggregateOverTime domain) {
+	private void toEntityOverTime1(AggregateOverTime domain) {
 		this.overTime1 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime1 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime1 = domain.getBeforeOverTime().v();
@@ -3229,7 +3231,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime1 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime2(AggregateOverTime domain) {
+	private void toEntityOverTime2(AggregateOverTime domain) {
 		this.overTime2 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime2 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime2 = domain.getBeforeOverTime().v();
@@ -3240,7 +3242,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime2 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime3(AggregateOverTime domain) {
+	private void toEntityOverTime3(AggregateOverTime domain) {
 		this.overTime3 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime3 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime3 = domain.getBeforeOverTime().v();
@@ -3251,7 +3253,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime3 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime4(AggregateOverTime domain) {
+	private void toEntityOverTime4(AggregateOverTime domain) {
 		this.overTime4 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime4 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime4 = domain.getBeforeOverTime().v();
@@ -3262,7 +3264,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime4 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime5(AggregateOverTime domain) {
+	private void toEntityOverTime5(AggregateOverTime domain) {
 		this.overTime5 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime5 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime5 = domain.getBeforeOverTime().v();
@@ -3273,7 +3275,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime5 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime6(AggregateOverTime domain) {
+	private void toEntityOverTime6(AggregateOverTime domain) {
 		this.overTime6 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime6 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime6 = domain.getBeforeOverTime().v();
@@ -3284,7 +3286,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime6 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime7(AggregateOverTime domain) {
+	private void toEntityOverTime7(AggregateOverTime domain) {
 		this.overTime7 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime7 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime7 = domain.getBeforeOverTime().v();
@@ -3295,7 +3297,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime7 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime8(AggregateOverTime domain) {
+	private void toEntityOverTime8(AggregateOverTime domain) {
 		this.overTime8 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime8 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime8 = domain.getBeforeOverTime().v();
@@ -3306,7 +3308,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime8 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime9(AggregateOverTime domain) {
+	private void toEntityOverTime9(AggregateOverTime domain) {
 		this.overTime9 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime9 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime9 = domain.getBeforeOverTime().v();
@@ -3317,7 +3319,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.legalTransferOverTime9 = domain.getLegalTransferOverTime().v();
 	}
 
-	public void toEntityOverTime10(AggregateOverTime domain) {
+	private void toEntityOverTime10(AggregateOverTime domain) {
 		this.overTime10 = domain.getOverTime() == null ? 0 : domain.getOverTime().getTime().v();
 		this.calcOverTime10 = domain.getOverTime() == null ? 0 : domain.getOverTime().getCalcTime().v();
 		this.beforeOverTime10 = domain.getBeforeOverTime().v();
@@ -3329,128 +3331,127 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
-	public void toEntityPremiumTime1(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime1(AggregatePremiumTime domain) {
 		this.premiumTime1 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime2(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime2(AggregatePremiumTime domain) {
 		this.premiumTime2 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime3(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime3(AggregatePremiumTime domain) {
 		this.premiumTime3 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime4(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime4(AggregatePremiumTime domain) {
 		this.premiumTime4 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime5(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime5(AggregatePremiumTime domain) {
 		this.premiumTime5 = domain.getTime().v();
-
 	}
 
-	public void toEntityPremiumTime6(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime6(AggregatePremiumTime domain) {
 		this.premiumTime6 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime7(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime7(AggregatePremiumTime domain) {
 		this.premiumTime7 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime8(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime8(AggregatePremiumTime domain) {
 		this.premiumTime8 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime9(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime9(AggregatePremiumTime domain) {
 		this.premiumTime9 = domain.getTime().v();
 
 	}
 
-	public void toEntityPremiumTime10(AggregatePremiumTime domain) {
+	private void toEntityPremiumTime10(AggregatePremiumTime domain) {
 		this.premiumTime10 = domain.getTime().v();
 
 	}
 
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	public void toEntitySpecificDays1(AggregateSpecificDays domain) {
-		this.specificDays1 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays1 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays1(AggregateSpecificDays domain) {
+		this.specificDays1 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays1 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays2(AggregateSpecificDays domain) {
-		this.specificDays2 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays2 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays2(AggregateSpecificDays domain) {
+		this.specificDays2 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays2 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays3(AggregateSpecificDays domain) {
-		this.specificDays3 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays3 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays3(AggregateSpecificDays domain) {
+		this.specificDays3 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays3 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays4(AggregateSpecificDays domain) {
-		this.specificDays4 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays4 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays4(AggregateSpecificDays domain) {
+		this.specificDays4 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays4 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays5(AggregateSpecificDays domain) {
-		this.specificDays5 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays5 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays5(AggregateSpecificDays domain) {
+		this.specificDays5 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays5 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays6(AggregateSpecificDays domain) {
-		this.specificDays6 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays6 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays6(AggregateSpecificDays domain) {
+		this.specificDays6 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays6 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays7(AggregateSpecificDays domain) {
-		this.specificDays7 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays7 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays7(AggregateSpecificDays domain) {
+		this.specificDays7 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays7 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays8(AggregateSpecificDays domain) {
-		this.specificDays8 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays8 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays8(AggregateSpecificDays domain) {
+		this.specificDays8 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays8 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays9(AggregateSpecificDays domain) {
-		this.specificDays9 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays9 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays9(AggregateSpecificDays domain) {
+		this.specificDays9 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays9 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
-	public void toEntitySpecificDays10(AggregateSpecificDays domain) {
-		this.specificDays10 = domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
-		this.holidayWorkSpecificDays10 = domain.getHolidayWorkSpecificDays() == null ? 0
+	private void toEntitySpecificDays10(AggregateSpecificDays domain) {
+		this.specificDays10 = domain == null || domain.getSpecificDays() == null ? 0 : domain.getSpecificDays().v();
+		this.holidayWorkSpecificDays10 = domain == null || domain.getHolidayWorkSpecificDays() == null ? 0
 				: domain.getHolidayWorkSpecificDays().v();
 	}
 
 	/* KRCDT_MON_AGGR_TOTAL_SPT */
-	public void toEntityTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWork domain) {
-		this.overTimeSpentAtWork = domain.getOverTimeSpentAtWork().v();
-		this.midnightTimeSpentAtWork = domain.getMidnightTimeSpentAtWork().v();
-		this.holidayTimeSpentAtWork = domain.getHolidayTimeSpentAtWork().v();
-		this.varienceTimeSpentAtWork = domain.getVarienceTimeSpentAtWork().v();
-		this.totalTimeSpentAtWork = domain.getTotalTimeSpentAtWork().v();
+	private void toEntityTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWork domain) {
+		this.overTimeSpentAtWork = domain == null ? 0 : domain.getOverTimeSpentAtWork().v();
+		this.midnightTimeSpentAtWork = domain == null ? 0 : domain.getMidnightTimeSpentAtWork().v();
+		this.holidayTimeSpentAtWork = domain == null ? 0 : domain.getHolidayTimeSpentAtWork().v();
+		this.varienceTimeSpentAtWork = domain == null ? 0 : domain.getVarienceTimeSpentAtWork().v();
+		this.totalTimeSpentAtWork = domain == null ? 0 : domain.getTotalTimeSpentAtWork().v();
 	}
 
 	/* KRCDT_MON_AGGR_TOTAL_WRK */
-	public void toEntityTotalWorkingTime(AggregateTotalWorkingTime domain) {
+	private void toEntityTotalWorkingTime(AggregateTotalWorkingTime domain) {
 		/** 就業時間 */
 		WorkTimeOfMonthly workTime = domain.getWorkTime();
 		/** 所定労働時間 */
@@ -3469,14 +3470,14 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 就業時間 */
-	public void toEntityWorkTimeOfMonthly(WorkTimeOfMonthly workTime) {
+	private void toEntityWorkTimeOfMonthly(WorkTimeOfMonthly workTime) {
 		this.workTime = workTime.getWorkTime().v();
 		this.actualWorkTime = workTime.getActualWorkTime().v();
 		this.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
 	}
 	
 	/** 所定労働時間 */
-	public void toEntityPrescribedWorkingTimeOfMonthly(PrescribedWorkingTimeOfMonthly prescribedWorkingTime) {
+	private void toEntityPrescribedWorkingTimeOfMonthly(PrescribedWorkingTimeOfMonthly prescribedWorkingTime) {
 		this.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
 		this.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();
 	}
@@ -3505,11 +3506,243 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		toEntityTotalCount(totalCount.getTotalCountList());
 	}
 	
+	public void resetAttendanceTime() {
+		
+		this.aggregateDays = 0;
+		
+		this.weeklyTotalPremiumTime = 0;
+		this.monthlyTotalPremiumTime = 0;
+		this.multiMonthIrregularMiddleTime = 0;
+		this.irregularPeriodCarryforwardTime = 0;
+		this.irregularWorkingShortageTime = 0;
+		this.irregularLegalOverTime = 0;
+		this.calcIrregularLegalOverTime = 0;
+		
+		this.flexTime = 0;
+		this.calcFlexTime = 0;
+		this.beforeFlexTime = 0;
+		this.legalFlexTime = 0;
+		this.illegalFlexTime = 0;
+		this.flexExcessTime = 0;
+		this.flexShortageTime = 0;
+		this.flexCarryforwardWorkTime = 0;
+		this.flexCarryforwardTime = 0;
+		this.flexCarryforwardShortageTime = 0;
+		this.excessFlexAtr = 0;
+		this.principleTime = 0;
+		this.forConvenienceTime = 0;
+		this.annualLeaveDeductDays = 0;
+		this.absenceDeductTime = 0;
+		this.shotTimeBeforeDeduct = 0;
+		
+		/** 法定労働時間 */
+		this.statutoryWorkingTime = 0;
+		
+		/** 集計時間 */
+		this.workTime = 0;
+		this.actualWorkTime = 0;
+		this.withinPrescribedPremiumTime = 0;
+		this.schedulePrescribedWorkingTime = 0;
+		this.recordPrescribedWorkingTime = 0;
+		this.totalOverTime = 0;
+		this.calcTotalOverTime = 0;
+		this.beforeOverTime = 0;
+		this.totalTransferOverTime = 0;
+		this.calcTotalTransferOverTime = 0;
+		
+		/** 集計残業時間 */
+		toEntityOverTime(new HashMap<>());
+		
+		this.totalHolidayWorkTime = 0;
+		this.calcTotalHolidayWorkTime = 0;
+		this.beforeHolidayWorkTime = 0;
+		this.totalTransferTime = 0;
+		this.calcTotalTransferTime = 0;
+		toEntityAggregateHolidayWorkTime(new HashMap<>());
+		
+		this.workTime = 0;
+		this.dayDeductionTime = 0;
+		this.dayTakeOverTime = 0;
+		this.nightMedicalTime = 0;
+		this.nightDeductionTime = 0;
+		this.nightTakeOverTime = 0;
+		
+		/** 総労働時間 */
+		this.totalWorkingTime = 0;
+		
+		/** 総拘束時間 */
+		toEntityTotalTimeSpentAtWork(null);
+		
+		/** 36協定時間 */
+		toEntityAgreementTimeOfMonthly(null);
+		
+		/** 時間外超過 */
+		toEntityExcessOutsideWorkMerge(null);
+		
+		/** 縦計 */
+		this.attendanceDays = 0;
+		
+		/** 欠勤日数 */
+		this.totalAbsenceDays = 0;
+		this.totalAbsenceTime = 0;
+		toEntityAbsenceDays(new HashMap<>());
+		
+		/** 所定日数  */
+		this.predetermineDays = 0;
+		/** 勤務日数  */
+		this.workDays = 0;
+		/** 休日日数 */
+		this.holidayDays = 0;
+		
+		/** 特定日数 SpecificDaysOfMonthly */
+		toEntitySpecificDaysOfMonthly(new HashMap<>());
+		
+		/** 休出日数  */
+		this.holidayWorkDays = 0;
+		/** 給与用日数 */
+		this.payAttendanceDays = 0;
+		this.payAbsenceDays = 0;
+		/** 勤務回数  */
+		this.workTimes = 0;
+		/** 二回勤務回数 */
+		this.twoTimesWorkTimes = 0;
+		/** 臨時勤務回数 */
+		this.temporaryWorkTimes = 0;
+		
+		/** 休業 */
+		this.toEntityLeaveOfMonthly(null);
+		
+		/** 振出日数 */
+		this.recruitDays = 0;
+		
+		/** 特別休暇日数 */
+		this.totalSpcvactDays = 0;
+		this.totalSpcvactTime = 0;
+		this.toEntitySpcVacationDaysList(new HashMap<>());
+		
+		/** 加給時間 */
+		toEntityBonusPayTime(new HashMap<>());
+		
+		/** 外出 */
+		toEntityGoOut1(null);
+		toEntityGoOut2(null);
+		toEntityGoOut3(null);
+		toEntityGoOut4(null);
+		
+		/** 育児外出 */
+		this.childcareGoOutTimes = 0;
+		this.childcareGoOutTime = 0;
+		this.careGoOutTimes = 0;
+		this.careGoOutTime = 0;
+		
+		/** 割増時間 */
+		toEntityPremiumTimeOfMonthly(null);
+		
+		/** 休憩時間 */
+		toEntityBreakTime(null);
+		
+		/** 休日時間 */
+		toEntityHolidayTime(null);
+		
+		/** 深夜時間 */
+		this.overWorkMidnightTime = 0;
+		this.calcOverWorkMidnightTime = 0;
+		
+		/** 法定内深夜時間 */
+		this.legalMidnightTime = 0;
+		this.calcLegalMidnightTime = 0;
+		
+		/** 法定外深夜時間 */
+		this.illegalMidnightTime = 0;
+		this.calcIllegalMidnightTime = 0;
+		this.illegalBeforeMidnightTime = 0;
+		
+		/** 法定内休出深夜時間 */
+		this.legalHolidayWorkMidnightTime = 0;
+		this.calcLegalHolidayWorkMidnightTime = 0;
+		
+		/** 法定外休出深夜時間 */
+		this.illegalHolidayWorkMidnightTime = 0;
+		this.calcIllegalHolidayWorkMidnightTime = 0;
+		
+		/** 祝日休出深夜時間 */
+		this.specialHolidayWorkMidnightTime = 0;
+		this.calcSpecialHolidayWorkMidnightTime = 0;
+		
+		/** 遅刻早退 */
+		this.lateTimes = 0;
+		this.lateTime = 0;
+		this.calcLateTime = 0;
+		
+		/** 早退 */
+		this.leaveEarlyTimes = 0;
+		this.leaveEarlyTime = 0;
+		this.calcLeaveEarlyTime = 0;
+		
+		/** 出勤前時間 */
+		this.attendanceLeaveGateBeforeAttendanceTime = 0;
+		/** 退勤後時間 */
+		this.attendanceLeaveGateAfterLeaveWorkTime = 0;
+		/** 滞在時間 */
+		this.attendanceLeaveGateStayingTime = 0;
+		/** 不就労時間 */
+		this.attendanceLeaveGateUnemployedTime = 0;
+		
+		/** 予実差異時間 */
+		this.budgetVarienceTime  = 0;
+		
+		/** 乖離時間 */
+		toEntityDivergenceTimeOfMonthly(null);
+		
+		/** 医療時間 */
+		this.workTime = 0;
+		this.dayDeductionTime = 0;
+		this.dayTakeOverTime = 0;
+		this.nightMedicalTime = 0;
+		this.nightDeductionTime = 0;
+		this.nightTakeOverTime = 0;
+		
+		/** 勤務時刻 */
+		this.endWorkTimes = 0;
+		this.endWorkTotalClock = 0;
+		this.endWorkAveClock = 0;
+		
+		/** 合計日数 */
+		this.logOnTotalDays = 0;
+		/** 合計時刻 */
+		this.logOnTotalClock = 0;
+		/** 平均時刻 */
+		this.logOnAveClock = 0;
+		/** PCログオフ時刻 */
+		this.logOffTotalDays = 0;
+		this.logOffTotalClock = 0;
+		this.logOffAveClock = 0;
+		
+		/** PCログオン乖離 */
+		/** 日数 */
+		this.logOnDivDays = 0;
+		/** 合計時間 */
+		this.logOnDivTotalTime = 0;
+		/** 平均時間 */
+		this.logOnDivAveTime = 0;
+		
+		/** PCログオフ乖離 */		
+	    /** 日数 */
+	    this.logOffDivDays = 0;
+	    /** 合計時間 */
+	    this.logOffDivTotalTime = 0;
+	    /** 平均時間 */
+	    this.logOffDivAveTime = 0;
+		
+		/** 回数集計 */
+		toEntityTotalCount(new HashMap<>());
+	}
+	
 	/**
 	 * 月別実績の月の計算
 	 * MonthlyCalculation
 	 */
-	public void toEntityMonthlyCalculation(MonthlyCalculation monthlyCalculation) {
+	private void toEntityMonthlyCalculation(MonthlyCalculation monthlyCalculation) {
 
 		/** 実働時間 */
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
@@ -3540,7 +3773,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_FLEX_TIME */
-	public void toEntityFlexTimeOfMonthly(FlexTimeOfMonthly domain) {
+	private void toEntityFlexTimeOfMonthly(FlexTimeOfMonthly domain) {
 
 		val flexTime = domain.getFlexTime();
 		val flexCarryForwardTime = domain.getFlexCarryforwardTime();
@@ -3566,7 +3799,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_HDWK_TIME 集計時間：休出・代休：集計休出時間*/
-	public void toEntityHolidayWorkTimeOfMonthly(HolidayWorkTimeOfMonthly domain) {
+	private void toEntityHolidayWorkTimeOfMonthly(HolidayWorkTimeOfMonthly domain) {
 		/** 休出合計時間 */
 		TimeMonthWithCalculation totalHolidayWorkTime = domain.getTotalHolidayWorkTime();
 		/** 振替合計時間 */
@@ -3583,7 +3816,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** KRCDT_MON_AGGR_HDWK_TIME 10 **/
-	public void toEntityAggregateHolidayWorkTime(Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> aggregateHolidayWorkTimeMap) {
+	private void toEntityAggregateHolidayWorkTime(Map<HolidayWorkFrameNo, AggregateHolidayWorkTime> aggregateHolidayWorkTimeMap) {
 		for (int i = 1; i <= 10; i++){
 			HolidayWorkFrameNo frameNo = new HolidayWorkFrameNo(i);
 			AggregateHolidayWorkTime aggrHolidayWorkTime = new AggregateHolidayWorkTime(frameNo);
@@ -3626,7 +3859,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_LEAVE - リポジトリ：月別実績の休業 only update */
-	public void toEntityLeaveOfMonthly(LeaveOfMonthly domain) {
+	private void toEntityLeaveOfMonthly(LeaveOfMonthly domain) {
 		this.prenatalLeaveDays = 0.0;
 		this.postpartumLeaveDays = 0.0;
 		this.childcareLeaveDays = 0.0;
@@ -3636,6 +3869,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.anyLeaveDays02 = 0.0;
 		this.anyLeaveDays03 = 0.0;
 		this.anyLeaveDays04 = 0.0;
+		if(domain == null){
+			return;
+		}
 		val fixLeaveDaysMap = domain.getFixLeaveDays();
 		if (fixLeaveDaysMap.containsKey(CloseAtr.PRENATAL)) {
 			this.prenatalLeaveDays = fixLeaveDaysMap.get(CloseAtr.PRENATAL).getDays().v();
@@ -3668,7 +3904,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_MEDICAL_TIME */
-	public void toEntityMedicalTimeOfMonthly(Map<WorkTimeNightShift, MedicalTimeOfMonthly>  medicalTime) {
+	private void toEntityMedicalTimeOfMonthly(Map<WorkTimeNightShift, MedicalTimeOfMonthly>  medicalTime) {
 		for (WorkTimeNightShift i : medicalTime.keySet()) {
 			MedicalTimeOfMonthly domain = (MedicalTimeOfMonthly) medicalTime.get(i);
 			switch (i) {
@@ -3689,7 +3925,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_OVER_TIME */
-	public void toEntityOverTimeOfMonthly(OverTimeOfMonthly domain) {
+	private void toEntityOverTimeOfMonthly(OverTimeOfMonthly domain) {
 		/** 残業合計時間 */
 		TimeMonthWithCalculation totalOverTime = domain.getTotalOverTime();
 		/** 振替残業合計時間 */
@@ -3706,7 +3942,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_REG_IRREG_TIME */
-	public void toEntityRegAndIrreTimeOfMonth(RegularAndIrregularTimeOfMonthly domain) {
+	private void toEntityRegAndIrreTimeOfMonth(RegularAndIrregularTimeOfMonthly domain) {
 
 		val irregularWorkingTime = domain.getIrregularWorkingTime();
 
@@ -3720,7 +3956,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_VACT_USE_TIME */
-	public void toEntityVacationUseTimeOfMonth(VacationUseTimeOfMonthly domain) {
+	private void toEntityVacationUseTimeOfMonth(VacationUseTimeOfMonthly domain) {
 		this.annualLeaveUseTime = domain.getAnnualLeave().getUseTime().v();
 		this.retentionYearlyUseTime = domain.getRetentionYearly().getUseTime().v();
 		this.specialHolidayUseTime = domain.getSpecialHoliday().getUseTime().v();
@@ -3728,7 +3964,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	public void toEntitySpecificDaysOfMonthly(Map<SpecificDateItemNo, AggregateSpecificDays> specificDaysList) {
+	private void toEntitySpecificDaysOfMonthly(Map<SpecificDateItemNo, AggregateSpecificDays> specificDaysList) {
 		for (int i = 1; i <= 10; i++){
 			SpecificDateItemNo itemNo = new SpecificDateItemNo(i);
 			AggregateSpecificDays specificDay = new AggregateSpecificDays(itemNo);
@@ -3760,7 +3996,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		}
 	}
 	
-	public void toEntitySpcVacationDaysList(Map<Integer, AggregateSpcVacationDays> spcVacationDaysList) {
+	private void toEntitySpcVacationDaysList(Map<Integer, AggregateSpcVacationDays> spcVacationDaysList) {
 		for (int i = 1; i <= 30; i++){
 			AggregateSpcVacationDays specificDay = new AggregateSpcVacationDays(i);
 			if (spcVacationDaysList.containsKey(i)){
@@ -3832,7 +4068,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 勤務日数 */
-	public void toEntityWorkDays(WorkDaysOfMonthly vtWorkDays) {
+	private void toEntityWorkDays(WorkDaysOfMonthly vtWorkDays) {
 		
 		/** 出勤日数 */
 		val attendanceDays =  vtWorkDays.getAttendanceDays();
@@ -3897,7 +4133,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 勤務時間 */
-	public void toEntityWorkTime(WorkTimeOfMonthlyVT vtWorkTime) {
+	private void toEntityWorkTime(WorkTimeOfMonthlyVT vtWorkTime) {
 		/** 加給時間 */
 		val bonusPayTime = vtWorkTime.getBonusPayTime();
 		toEntityBonusPayTime(bonusPayTime.getBonusPayTime());
@@ -3944,9 +4180,9 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 乖離時間 */
-	public void toEntityDivergenceTimeOfMonthly(DivergenceTimeOfMonthly divergenceTime) {
+	private void toEntityDivergenceTimeOfMonthly(DivergenceTimeOfMonthly divergenceTime) {
 		/** 乖離時間 */
-		Map<Integer, AggregateDivergenceTime> divergenceTimeList = divergenceTime.getDivergenceTimeList();
+		Map<Integer, AggregateDivergenceTime> divergenceTimeList = divergenceTime == null ? new HashMap<>() : divergenceTime.getDivergenceTimeList();
 		
 		for (int i = 1; i <= 10; i++){
 			AggregateDivergenceTime bonus = new AggregateDivergenceTime(i);
@@ -3980,7 +4216,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	/** KRCDT_MON_AGGR_ABSN_DAYS 30 **/
 	/** 欠勤日数 */
-	public void toEntityAbsenceDays(Map<Integer, AggregateAbsenceDays> absenceDaysList) {
+	private void toEntityAbsenceDays(Map<Integer, AggregateAbsenceDays> absenceDaysList) {
 		for (int i = 1; i <= 30; i++){
 			AggregateAbsenceDays absenceDays = new AggregateAbsenceDays(i);
 			if (absenceDaysList.containsKey(i)){
@@ -4082,7 +4318,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 入退門時間 */
-	public void toEntityAttendanceLeaveGateTimeOfMonthly(AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime) {
+	private void toEntityAttendanceLeaveGateTimeOfMonthly(AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime) {
 		
 		/** 出勤前時間 */
 		this.attendanceLeaveGateBeforeAttendanceTime = attendanceLeaveGateTime.getTimeBeforeAttendance().v();
@@ -4095,7 +4331,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 遅刻早退 */
-	public void toEntityLateLeaveEarlyOfMonthly(LateLeaveEarlyOfMonthly lateLeaveEarly) {
+	private void toEntityLateLeaveEarlyOfMonthly(LateLeaveEarlyOfMonthly lateLeaveEarly) {
 		
 		/** 遅刻 */
 		Late late = lateLeaveEarly.getLate();
@@ -4111,7 +4347,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 深夜時間 */
-	public void toEntityMidNightTime(MidnightTimeOfMonthly midnightTime) {
+	private void toEntityMidNightTime(MidnightTimeOfMonthly midnightTime) {
 		/** 残業深夜時間 */
 		TimeMonthWithCalculation overWorkMidnightTime =  midnightTime.getOverWorkMidnightTime();
 		this.overWorkMidnightTime = overWorkMidnightTime.getTime().v();
@@ -4145,38 +4381,37 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 休日時間 */
-	public void toEntityHolidayTime(HolidayTimeOfMonthly holidayTime) {
+	private void toEntityHolidayTime(HolidayTimeOfMonthly holidayTime) {
 		
-		this.legalHolidayTime = holidayTime.getLegalHolidayTime().v();
-		this.illegalHolidayTime = holidayTime.getIllegalHolidayTime().v();
-		this.illegalSpecialHolidayTime = holidayTime.getIllegalSpecialHolidayTime().v();
+		this.legalHolidayTime = holidayTime == null ? 0 : holidayTime.getLegalHolidayTime().v();
+		this.illegalHolidayTime = holidayTime == null ? 0 : holidayTime.getIllegalHolidayTime().v();
+		this.illegalSpecialHolidayTime = holidayTime == null ? 0 : holidayTime.getIllegalSpecialHolidayTime().v();
 	}
 	
 	/** 休憩時間 */
-	public void toEntityBreakTime(BreakTimeOfMonthly breakTime) {
+	private void toEntityBreakTime(BreakTimeOfMonthly breakTime) {
 		
-		this.breakTime = breakTime.getBreakTime().v();
+		this.breakTime = breakTime == null ? 0 : breakTime.getBreakTime().v();
 	}
 	
 	/** 割増時間 */
-	public void toEntityPremiumTimeOfMonthly(PremiumTimeOfMonthly premiumTimes) {
+	private void toEntityPremiumTimeOfMonthly(PremiumTimeOfMonthly premiumTimes) {
 		/** 割増時間 */
-		val premiumTime = premiumTimes.getPremiumTime();
-		this.toEntityPremiumTime(premiumTime);
+		this.toEntityPremiumTime(premiumTimes == null ? new HashMap<>() : premiumTimes.getPremiumTime());
 		/** 深夜時間 */
-		this.premiumMidnightTime = premiumTimes.getMidnightTime().v();
+		this.premiumMidnightTime = premiumTimes == null ? 0 : premiumTimes.getMidnightTime().v();
 		/** 法定内時間外時間 */
-		this.premiumLegalOutsideWorkTime = premiumTimes.getLegalOutsideWorkTime().v();
+		this.premiumLegalOutsideWorkTime = premiumTimes == null ? 0 : premiumTimes.getLegalOutsideWorkTime().v();
 		/** 法定内休出時間 */
-		this.premiumIllegalOutsideWorkTime = premiumTimes.getIllegalOutsideWorkTime().v();
+		this.premiumIllegalOutsideWorkTime = premiumTimes == null ? 0 : premiumTimes.getIllegalOutsideWorkTime().v();
 		/** 法定外時間外時間 */
-		this.premiumLegalHolidayWorkTime = premiumTimes.getLegalHolidayWorkTime().v();
+		this.premiumLegalHolidayWorkTime = premiumTimes == null ? 0 : premiumTimes.getLegalHolidayWorkTime().v();
 		/** 法定外休出時間 */
-		this.premiumIllegalHolidayWorkTime = premiumTimes.getIllegalHolidayWorkTime().v();
+		this.premiumIllegalHolidayWorkTime = premiumTimes == null ? 0 : premiumTimes.getIllegalHolidayWorkTime().v();
 	}
 	
 	/** KRCDT_MON_AGGR_BNSPY_TIME 10 **/
-	public void toEntityBonusPayTime(Map<Integer, AggregateBonusPayTime> bonusPayTime) {
+	private void toEntityBonusPayTime(Map<Integer, AggregateBonusPayTime> bonusPayTime) {
 		for (int i = 1; i <= 10; i++){
 			AggregateBonusPayTime bonus = new AggregateBonusPayTime(i);
 			if (bonusPayTime.containsKey(i)){
@@ -4209,7 +4444,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	/** 外出 */
 	/** KRCDT_MON_AGGR_GOOUT 4 **/
-	public void toEntityGout(Map<GoingOutReason, AggregateGoOut> goOuts) {
+	private void toEntityGout(Map<GoingOutReason, AggregateGoOut> goOuts) {
 		
 		GoingOutReason reason1 = GoingOutReason.PRIVATE;
 		AggregateGoOut goOut1 = new AggregateGoOut(reason1);
@@ -4233,7 +4468,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** 育児外出 */
-	public void toEntityGoOutChildCare(Map<ChildCareAtr, GoOutForChildCare> goOutForChildCares) {
+	private void toEntityGoOutChildCare(Map<ChildCareAtr, GoOutForChildCare> goOutForChildCares) {
 		
 		ChildCareAtr atr1 = ChildCareAtr.CHILD_CARE;
 		GoOutForChildCare goOutForChildCare1 = new GoOutForChildCare(atr1);
@@ -4249,7 +4484,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	/** KRCDT_MON_AGGR_PREM_TIME 10 **/
-	public void toEntityPremiumTime(Map<Integer, AggregatePremiumTime> premiumTimes) {
+	private void toEntityPremiumTime(Map<Integer, AggregatePremiumTime> premiumTimes) {
 		for (int i = 1; i <= 10; i++){
 			AggregatePremiumTime premiumTime = new AggregatePremiumTime(i);
 			if (premiumTimes.containsKey(i)){
@@ -4340,7 +4575,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/*  期間別の縦計 - KRCDT_MON_VERTICAL_TOTAL */
-	public void toEntityVerticalTotal(VerticalTotalOfMonthly domain) {
+	private void toEntityVerticalTotal(VerticalTotalOfMonthly domain) {
 		/** 勤務日数 */
 		val vtWorkDays = domain.getWorkDays();
 		/** 勤務時間 */
@@ -4456,224 +4691,224 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_EXCESS_OUTSIDE*/
-	public void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime1 = domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime1 = domain.getMonthlyTotalPremiumTime().v();
-		this.multiMonIrgmdlTime = domain.getDeformationCarryforwardTime().v();
+	private void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
+		this.totalWeeklyPremiumTime1 = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
+		this.totalMonthlyPremiumTime1 = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
+		this.multiMonIrgmdlTime = domain == null ? 0 : domain.getDeformationCarryforwardTime().v();
 	}	
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
-	public void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
-		this.excessTime_1_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
+		this.excessTime_1_1 = domain == null ? 0 : domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork2(ExcessOutsideWork domain) {
-		this.excessTime_1_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork2(ExcessOutsideWork domain) {
+		this.excessTime_1_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork3(ExcessOutsideWork domain) {
-		this.excessTime_1_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork3(ExcessOutsideWork domain) {
+		this.excessTime_1_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork4(ExcessOutsideWork domain) {
-		this.excessTime_1_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork4(ExcessOutsideWork domain) {
+		this.excessTime_1_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork5(ExcessOutsideWork domain) {
-		this.excessTime_1_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork5(ExcessOutsideWork domain) {
+		this.excessTime_1_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork6(ExcessOutsideWork domain) {
-		this.excessTime_2_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork6(ExcessOutsideWork domain) {
+		this.excessTime_2_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork7(ExcessOutsideWork domain) {
-		this.excessTime_2_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork7(ExcessOutsideWork domain) {
+		this.excessTime_2_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork8(ExcessOutsideWork domain) {
-		this.excessTime_2_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork8(ExcessOutsideWork domain) {
+		this.excessTime_2_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork9(ExcessOutsideWork domain) {
-		this.excessTime_2_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork9(ExcessOutsideWork domain) {
+		this.excessTime_2_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork10(ExcessOutsideWork domain) {
-		this.excessTime_2_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork10(ExcessOutsideWork domain) {
+		this.excessTime_2_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork11(ExcessOutsideWork domain) {
-		this.excessTime_3_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork11(ExcessOutsideWork domain) {
+		this.excessTime_3_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork12(ExcessOutsideWork domain) {
-		this.excessTime_3_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork12(ExcessOutsideWork domain) {
+		this.excessTime_3_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork13(ExcessOutsideWork domain) {
-		this.excessTime_3_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork13(ExcessOutsideWork domain) {
+		this.excessTime_3_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork14(ExcessOutsideWork domain) {
-		this.excessTime_3_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork14(ExcessOutsideWork domain) {
+		this.excessTime_3_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork15(ExcessOutsideWork domain) {
-		this.excessTime_3_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork15(ExcessOutsideWork domain) {
+		this.excessTime_3_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
-	public void toEntityExcessOutsideWork16(ExcessOutsideWork domain) {
-		this.excessTime_4_1 = domain.getExcessTime().v();
-	}
-
-	public void toEntityExcessOutsideWork17(ExcessOutsideWork domain) {
-		this.excessTime_4_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork16(ExcessOutsideWork domain) {
+		this.excessTime_4_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork18(ExcessOutsideWork domain) {
-		this.excessTime_4_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork17(ExcessOutsideWork domain) {
+		this.excessTime_4_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork19(ExcessOutsideWork domain) {
-		this.excessTime_4_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork18(ExcessOutsideWork domain) {
+		this.excessTime_4_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork20(ExcessOutsideWork domain) {
-		this.excessTime_4_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork19(ExcessOutsideWork domain) {
+		this.excessTime_4_4 = domain == null ? 0 : domain.getExcessTime().v();
+	}
+
+	private void toEntityExcessOutsideWork20(ExcessOutsideWork domain) {
+		this.excessTime_4_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}	
 
-	public void toEntityExcessOutsideWork21(ExcessOutsideWork domain) {
-		this.excessTime_5_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork21(ExcessOutsideWork domain) {
+		this.excessTime_5_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork22(ExcessOutsideWork domain) {
-		this.excessTime_5_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork22(ExcessOutsideWork domain) {
+		this.excessTime_5_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork23(ExcessOutsideWork domain) {
-		this.excessTime_5_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork23(ExcessOutsideWork domain) {
+		this.excessTime_5_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork24(ExcessOutsideWork domain) {
-		this.excessTime_5_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork24(ExcessOutsideWork domain) {
+		this.excessTime_5_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork25(ExcessOutsideWork domain) {
-		this.excessTime_5_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork25(ExcessOutsideWork domain) {
+		this.excessTime_5_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork26(ExcessOutsideWork domain) {
-		this.excessTime_6_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork26(ExcessOutsideWork domain) {
+		this.excessTime_6_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork27(ExcessOutsideWork domain) {
-		this.excessTime_6_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork27(ExcessOutsideWork domain) {
+		this.excessTime_6_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork28(ExcessOutsideWork domain) {
-		this.excessTime_6_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork28(ExcessOutsideWork domain) {
+		this.excessTime_6_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork29(ExcessOutsideWork domain) {
-		this.excessTime_6_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork29(ExcessOutsideWork domain) {
+		this.excessTime_6_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork30(ExcessOutsideWork domain) {
-		this.excessTime_6_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork30(ExcessOutsideWork domain) {
+		this.excessTime_6_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork31(ExcessOutsideWork domain) {
-		this.excessTime_7_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork31(ExcessOutsideWork domain) {
+		this.excessTime_7_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork32(ExcessOutsideWork domain) {
-		this.excessTime_7_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork32(ExcessOutsideWork domain) {
+		this.excessTime_7_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork33(ExcessOutsideWork domain) {
-		this.excessTime_7_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork33(ExcessOutsideWork domain) {
+		this.excessTime_7_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork34(ExcessOutsideWork domain) {
-		this.excessTime_7_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork34(ExcessOutsideWork domain) {
+		this.excessTime_7_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork35(ExcessOutsideWork domain) {
-		this.excessTime_7_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork35(ExcessOutsideWork domain) {
+		this.excessTime_7_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork36(ExcessOutsideWork domain) {
-		this.excessTime_8_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork36(ExcessOutsideWork domain) {
+		this.excessTime_8_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork37(ExcessOutsideWork domain) {
-		this.excessTime_8_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork37(ExcessOutsideWork domain) {
+		this.excessTime_8_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork38(ExcessOutsideWork domain) {
-		this.excessTime_8_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork38(ExcessOutsideWork domain) {
+		this.excessTime_8_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork39(ExcessOutsideWork domain) {
-		this.excessTime_8_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork39(ExcessOutsideWork domain) {
+		this.excessTime_8_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork40(ExcessOutsideWork domain) {
-		this.excessTime_8_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork40(ExcessOutsideWork domain) {
+		this.excessTime_8_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork41(ExcessOutsideWork domain) {
-		this.excessTime_9_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork41(ExcessOutsideWork domain) {
+		this.excessTime_9_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork42(ExcessOutsideWork domain) {
-		this.excessTime_9_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork42(ExcessOutsideWork domain) {
+		this.excessTime_9_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork43(ExcessOutsideWork domain) {
-		this.excessTime_9_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork43(ExcessOutsideWork domain) {
+		this.excessTime_9_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork44(ExcessOutsideWork domain) {
-		this.excessTime_9_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork44(ExcessOutsideWork domain) {
+		this.excessTime_9_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork45(ExcessOutsideWork domain) {
-		this.excessTime_9_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork45(ExcessOutsideWork domain) {
+		this.excessTime_9_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork46(ExcessOutsideWork domain) {
-		this.excessTime_10_1 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork46(ExcessOutsideWork domain) {
+		this.excessTime_10_1 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork47(ExcessOutsideWork domain) {
-		this.excessTime_10_2 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork47(ExcessOutsideWork domain) {
+		this.excessTime_10_2 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork48(ExcessOutsideWork domain) {
-		this.excessTime_10_3 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork48(ExcessOutsideWork domain) {
+		this.excessTime_10_3 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork49(ExcessOutsideWork domain) {
-		this.excessTime_10_4 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork49(ExcessOutsideWork domain) {
+		this.excessTime_10_4 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
-	public void toEntityExcessOutsideWork50(ExcessOutsideWork domain) {
-		this.excessTime_10_5 = domain.getExcessTime().v();
+	private void toEntityExcessOutsideWork50(ExcessOutsideWork domain) {
+		this.excessTime_10_5 = domain == null ? 0 : domain.getExcessTime().v();
 	}
 
 	/* KRCDT_MON_AGREEMENT_TIME */
-	public void toEntityAgreementTimeOfMonthly(AgreementTimeOfMonthly domain) {
-		this.agreementTime = domain.getAgreementTime().v();
-		this.limitErrorTime = domain.getLimitErrorTime().v();
-		this.limitAlarmTime = domain.getLimitAlarmTime().v();
-		this.exceptionLimitErrorTime = (domain.getExceptionLimitErrorTime().isPresent()
+	private void toEntityAgreementTimeOfMonthly(AgreementTimeOfMonthly domain) {
+		this.agreementTime = domain == null ? 0 : domain.getAgreementTime().v();
+		this.limitErrorTime = domain == null ? 0 : domain.getLimitErrorTime().v();
+		this.limitAlarmTime = domain == null ? 0 : domain.getLimitAlarmTime().v();
+		this.exceptionLimitErrorTime = (domain != null && domain.getExceptionLimitErrorTime().isPresent()
 				? domain.getExceptionLimitErrorTime().get().v()
 				: null);
-		this.exceptionLimitAlarmTime = (domain.getExceptionLimitAlarmTime().isPresent()
+		this.exceptionLimitAlarmTime = (domain != null && domain.getExceptionLimitAlarmTime().isPresent()
 				? domain.getExceptionLimitAlarmTime().get().v()
 				: null);
-		this.status = domain.getStatus().value;
+		this.status = domain == null ? 0 : domain.getStatus().value;
 	}
 
 	/* KRCDT_MON_AFFILIATION */
@@ -4690,75 +4925,89 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.lastClassCd = domain.getLastInfo().getClassCd().v();
 		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().v();
 	}
+	
+	public void resetAffiliationInfo() {
+
+		this.firstEmploymentCd = "";
+		this.firstWorkplaceId = "";
+		this.firstJobTitleId = "";
+		this.firstClassCd = "";
+		this.firstBusinessTypeCd = "";
+		this.lastEmploymentCd = "";
+		this.lastWorkplaceId = "";
+		this.lastJobTitleId = "";
+		this.lastClassCd = "";
+		this.lastBusinessTypeCd = "";
+	}
 
 	/**
 	 * ドメインに変換
 	 * @return 集計加給時間
 	 */
-	public AggregateBonusPayTime toDomainBonusPayTime1() {
+	private AggregateBonusPayTime toDomainBonusPayTime1() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime1),
 				new AttendanceTimeMonth(this.specificBonusPayTime1),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime1),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime1));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime2() {
+	private AggregateBonusPayTime toDomainBonusPayTime2() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime2),
 				new AttendanceTimeMonth(this.specificBonusPayTime2),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime2),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime2));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime3() {
+	private AggregateBonusPayTime toDomainBonusPayTime3() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime3),
 				new AttendanceTimeMonth(this.specificBonusPayTime3),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime3),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime3));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime4() {
+	private AggregateBonusPayTime toDomainBonusPayTime4() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime4),
 				new AttendanceTimeMonth(this.specificBonusPayTime4),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime4),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime4));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime5() {
+	private AggregateBonusPayTime toDomainBonusPayTime5() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime5),
 				new AttendanceTimeMonth(this.specificBonusPayTime5),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime5),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime5));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime6() {
+	private AggregateBonusPayTime toDomainBonusPayTime6() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime6),
 				new AttendanceTimeMonth(this.specificBonusPayTime6),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime6),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime6));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime7() {
+	private AggregateBonusPayTime toDomainBonusPayTime7() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime7),
 				new AttendanceTimeMonth(this.specificBonusPayTime7),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime7),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime7));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime8() {
+	private AggregateBonusPayTime toDomainBonusPayTime8() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime8),
 				new AttendanceTimeMonth(this.specificBonusPayTime8),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime8),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime8));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime9() {
+	private AggregateBonusPayTime toDomainBonusPayTime9() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime9),
 				new AttendanceTimeMonth(this.specificBonusPayTime9),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime9),
 				new AttendanceTimeMonth(this.holidayWorkSpecificBonusPayTime9));
 	}
 
-	public AggregateBonusPayTime toDomainBonusPayTime10() {
+	private AggregateBonusPayTime toDomainBonusPayTime10() {
 		return AggregateBonusPayTime.of(new AttendanceTimeMonth(this.bonusPayTime10),
 				new AttendanceTimeMonth(this.specificBonusPayTime10),
 				new AttendanceTimeMonth(this.holidayWorkBonusPayTime10),
@@ -4769,7 +5018,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計乖離時間
 	 */
-	public AggregateDivergenceTime toDomainDivergenceTime1() {
+	private AggregateDivergenceTime toDomainDivergenceTime1() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime1),
 				new AttendanceTimeMonth(this.deductionTime1),
@@ -4777,7 +5026,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr1, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime2() {
+	private AggregateDivergenceTime toDomainDivergenceTime2() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime2),
 				new AttendanceTimeMonth(this.deductionTime2),
@@ -4785,7 +5034,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr2, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime3() {
+	private AggregateDivergenceTime toDomainDivergenceTime3() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime3),
 				new AttendanceTimeMonth(this.deductionTime3),
@@ -4793,7 +5042,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr3, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime4() {
+	private AggregateDivergenceTime toDomainDivergenceTime4() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime4),
 				new AttendanceTimeMonth(this.deductionTime4),
@@ -4801,7 +5050,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr4, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime5() {
+	private AggregateDivergenceTime toDomainDivergenceTime5() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime5),
 				new AttendanceTimeMonth(this.deductionTime5),
@@ -4809,7 +5058,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr5, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime6() {
+	private AggregateDivergenceTime toDomainDivergenceTime6() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime6),
 				new AttendanceTimeMonth(this.deductionTime6),
@@ -4817,7 +5066,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr6, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime7() {
+	private AggregateDivergenceTime toDomainDivergenceTime7() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime7),
 				new AttendanceTimeMonth(this.deductionTime7),
@@ -4825,7 +5074,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr7, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime8() {
+	private AggregateDivergenceTime toDomainDivergenceTime8() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime8),
 				new AttendanceTimeMonth(this.deductionTime8),
@@ -4833,7 +5082,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr8, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime9() {
+	private AggregateDivergenceTime toDomainDivergenceTime9() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime9),
 				new AttendanceTimeMonth(this.deductionTime9),
@@ -4841,7 +5090,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr9, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateDivergenceTime toDomainDivergenceTime10() {
+	private AggregateDivergenceTime toDomainDivergenceTime10() {
 		return AggregateDivergenceTime.of(
 				new AttendanceTimeMonth(this.divergenceTime10),
 				new AttendanceTimeMonth(this.deductionTime10),
@@ -4849,7 +5098,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.divergenceAtr10, DivergenceAtrOfMonthly.class));
 	}
 
-	public AggregateGoOut toDomainGoOut1() {
+	private AggregateGoOut toDomainGoOut1() {
 		return AggregateGoOut.of(
 				new AttendanceTimesMonth(this.goOutTimesPrivate),
 				new TimeMonthWithCalculation(
@@ -4863,7 +5112,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.calcTotalTimePrivate)));
 	}
 
-	public AggregateGoOut toDomainGoOut2() {
+	private AggregateGoOut toDomainGoOut2() {
 		return AggregateGoOut.of(new AttendanceTimesMonth(this.goOutTimesPublic),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.legalTimePublic),
@@ -4876,7 +5125,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.calcTotalTimePublic)));
 	}
 
-	public AggregateGoOut toDomainGoOut3() {
+	private AggregateGoOut toDomainGoOut3() {
 		return AggregateGoOut.of(
 				new AttendanceTimesMonth(this.goOutTimesCompensation),
 				new TimeMonthWithCalculation(
@@ -4890,7 +5139,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.calcTotalTimeCompensation)));
 	}
 
-	public AggregateGoOut toDomainGoOut4() {
+	private AggregateGoOut toDomainGoOut4() {
 		return AggregateGoOut.of(
 				new AttendanceTimesMonth(this.goOutTimesUnion),
 				new TimeMonthWithCalculation(
@@ -4908,7 +5157,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計休出時間
 	 */
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime1() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime1() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(1),
 		new TimeMonthWithCalculation(
@@ -4922,7 +5171,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime1));
 	}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime2() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime2() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(2),
 		new TimeMonthWithCalculation(
@@ -4936,7 +5185,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime2));
 	}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime3() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime3() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(3),
 		new TimeMonthWithCalculation(
@@ -4950,7 +5199,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime3));
 		}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime4() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime4() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(4),
 		new TimeMonthWithCalculation(
@@ -4964,7 +5213,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime4));
 		}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime5() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime5() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(5),
 		new TimeMonthWithCalculation(
@@ -4978,7 +5227,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime5));
 		}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime6() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime6() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(6),
 		new TimeMonthWithCalculation(
@@ -4992,7 +5241,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime6));
 		}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime7() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime7() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(7),
 		new TimeMonthWithCalculation(
@@ -5006,7 +5255,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime7));
 		}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime8() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime8() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(8),
 		new TimeMonthWithCalculation(
@@ -5020,7 +5269,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime8));
 		}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime9() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime9() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(9),
 		new TimeMonthWithCalculation(
@@ -5034,7 +5283,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime9));
 	}
 
-	public AggregateHolidayWorkTime toDomainHolidayWorkTime10() {
+	private AggregateHolidayWorkTime toDomainHolidayWorkTime10() {
 		return AggregateHolidayWorkTime.of(
 		new HolidayWorkFrameNo(10),
 		new TimeMonthWithCalculation(
@@ -5053,7 +5302,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計残業時間
 	 */
-	public AggregateOverTime toDomainOverTime1() {
+	private AggregateOverTime toDomainOverTime1() {
 		return AggregateOverTime.of(new OverTimeFrameNo(1),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime1), 
@@ -5066,7 +5315,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime1));
 	}
 
-	public AggregateOverTime toDomainOverTime2() {
+	private AggregateOverTime toDomainOverTime2() {
 		return AggregateOverTime.of(new OverTimeFrameNo(2),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime2), 
@@ -5079,7 +5328,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime2));
 	}
 
-	public AggregateOverTime toDomainOverTime3() {
+	private AggregateOverTime toDomainOverTime3() {
 		return AggregateOverTime.of(new OverTimeFrameNo(3),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime3), 
@@ -5092,7 +5341,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime3));
 	}
 
-	public AggregateOverTime toDomainOverTime4() {
+	private AggregateOverTime toDomainOverTime4() {
 		return AggregateOverTime.of(new OverTimeFrameNo(4),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime4), 
@@ -5105,7 +5354,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime4));
 	}
 
-	public AggregateOverTime toDomainOverTime5() {
+	private AggregateOverTime toDomainOverTime5() {
 		return AggregateOverTime.of(new OverTimeFrameNo(5),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime5), 
@@ -5117,7 +5366,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime5));
 	}
 
-	public AggregateOverTime toDomainOverTime6() {
+	private AggregateOverTime toDomainOverTime6() {
 		return AggregateOverTime.of(new OverTimeFrameNo(6),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime6), 
@@ -5130,7 +5379,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime6));
 	}
 
-	public AggregateOverTime toDomainOverTime7() {
+	private AggregateOverTime toDomainOverTime7() {
 		return AggregateOverTime.of(new OverTimeFrameNo(7),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime7), 
@@ -5143,7 +5392,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime7));
 	}
 
-	public AggregateOverTime toDomainOverTime8() {
+	private AggregateOverTime toDomainOverTime8() {
 		return AggregateOverTime.of(new OverTimeFrameNo(8),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime8), 
@@ -5156,7 +5405,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime8));
 	}
 
-	public AggregateOverTime toDomainOverTime9() {
+	private AggregateOverTime toDomainOverTime9() {
 		return AggregateOverTime.of(new OverTimeFrameNo(9),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime9), 
@@ -5169,7 +5418,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.legalTransferOverTime9));
 	}
 
-	public AggregateOverTime toDomainOverTime10() {
+	private AggregateOverTime toDomainOverTime10() {
 		return AggregateOverTime.of(new OverTimeFrameNo(10),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(this.overTime10), 
@@ -5187,48 +5436,48 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計割増時間
 	 */
-	public AggregatePremiumTime toDomainPremiumTime1() {
+	private AggregatePremiumTime toDomainPremiumTime1() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime1));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime2() {
+	private AggregatePremiumTime toDomainPremiumTime2() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime2));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime3() {
+	private AggregatePremiumTime toDomainPremiumTime3() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime3));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime4() {
+	private AggregatePremiumTime toDomainPremiumTime4() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime4));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime5() {
+	private AggregatePremiumTime toDomainPremiumTime5() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime5));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime6() {
+	private AggregatePremiumTime toDomainPremiumTime6() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime6));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime7() {
+	private AggregatePremiumTime toDomainPremiumTime7() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime7));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime8() {
+	private AggregatePremiumTime toDomainPremiumTime8() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime8));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime9() {
+	private AggregatePremiumTime toDomainPremiumTime9() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime9));
 	}
 
-	public AggregatePremiumTime toDomainPremiumTime10() {
+	private AggregatePremiumTime toDomainPremiumTime10() {
 		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime10));
 	}
 
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
-	public List<AggregateSpecificDays> getSpecificDaysLst(){
+	private List<AggregateSpecificDays> getSpecificDaysLst(){
 		List<AggregateSpecificDays> lst= new ArrayList<>();
 		lst.add(this.toDomainSpecificDays1());
 		lst.add(this.toDomainSpecificDays2());
@@ -5247,70 +5496,70 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計特定日数
 	 */
-	public AggregateSpecificDays toDomainSpecificDays1(){
+	private AggregateSpecificDays toDomainSpecificDays1(){
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1),
 				new AttendanceDaysMonth(this.specificDays1),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays1));
 	}
 	
-	public AggregateSpecificDays toDomainSpecificDays2() {
+	private AggregateSpecificDays toDomainSpecificDays2() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1),
 				new AttendanceDaysMonth(this.specificDays2),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays2));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays3() {
+	private AggregateSpecificDays toDomainSpecificDays3() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays3),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays3));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays4() {
+	private AggregateSpecificDays toDomainSpecificDays4() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays4),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays4));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays5() {
+	private AggregateSpecificDays toDomainSpecificDays5() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays5),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays5));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays6() {
+	private AggregateSpecificDays toDomainSpecificDays6() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays6),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays6));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays7() {
+	private AggregateSpecificDays toDomainSpecificDays7() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays7),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays7));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays8() {
+	private AggregateSpecificDays toDomainSpecificDays8() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays8),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays8));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays9() {
+	private AggregateSpecificDays toDomainSpecificDays9() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays9),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays9));
 	}
 
-	public AggregateSpecificDays toDomainSpecificDays10() {
+	private AggregateSpecificDays toDomainSpecificDays10() {
 		return AggregateSpecificDays.of(
 				new SpecificDateItemNo(1), 
 				new AttendanceDaysMonth(this.specificDays10),
@@ -5323,7 +5572,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 集計総拘束時間
 	 */
-	public AggregateTotalTimeSpentAtWork toDomainTotalTimeSpentAtWork(){
+	private AggregateTotalTimeSpentAtWork toDomainTotalTimeSpentAtWork(){
 		
 		return AggregateTotalTimeSpentAtWork.of(
 				new AttendanceTimeMonth(this.overTimeSpentAtWork),
@@ -5344,7 +5593,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonVactUseTime 月別実績の休暇使用時間
 	 * @return 集計総労働時間
 	 */
-	public AggregateTotalWorkingTime toDomainTotalWorkingTime(){
+	private AggregateTotalWorkingTime toDomainTotalWorkingTime(){
 		
 		// 月別実績の就業時間
 		val workTime = WorkTimeOfMonthly.of(
@@ -5505,7 +5754,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceDaysMonth(this.aggregateDays));
 	}
 	
-	public TotalCountByPeriod toDomainTotalCountByPeriod(List<TotalCount> totalCounts) {
+	private TotalCountByPeriod toDomainTotalCountByPeriod(List<TotalCount> totalCounts) {
 		TotalCountByPeriod totalCountPeriod = new TotalCountByPeriod();
 		
 		if (totalCounts != null){
@@ -5520,7 +5769,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績のフレックス時間
 	 */
-	public FlexTimeOfMonthly toDomainFlexTimeOfMonthly(){
+	private FlexTimeOfMonthly toDomainFlexTimeOfMonthly(){
 		
 		return FlexTimeOfMonthly.of(
 				FlexTime.of(
@@ -5552,7 +5801,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonAggrHdwkTimes 集計休出時間
 	 * @return 月別実績の休出時間
 	 */
-	public HolidayWorkTimeOfMonthly toDomainHolidayWorkTimeOfMonthly(){
+	private HolidayWorkTimeOfMonthly toDomainHolidayWorkTimeOfMonthly(){
 		List<AggregateHolidayWorkTime> aggrHolidayWorkTimeLst = this.getAggrHolidayWorkTimeLst();
 		
 		return HolidayWorkTimeOfMonthly.of(
@@ -5566,7 +5815,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				aggrHolidayWorkTimeLst);
 	}
 	
-	public List<AggregateHolidayWorkTime> getAggrHolidayWorkTimeLst(){
+	private List<AggregateHolidayWorkTime> getAggrHolidayWorkTimeLst(){
 		List<AggregateHolidayWorkTime> aggrHolidayWorkTimeLst = new ArrayList<>();
 		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime1());
 		aggrHolidayWorkTimeLst.add(this.toDomainHolidayWorkTime2());
@@ -5586,7 +5835,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の休業
 	 */
-	public LeaveOfMonthly toDomainLeaveOfMonthly(){
+	private LeaveOfMonthly toDomainLeaveOfMonthly(){
 		
 		List<AggregateLeaveDays> fixLeaveDaysList = new ArrayList<>();
 		List<AnyLeave> anyLeaveDaysList = new ArrayList<>();
@@ -5633,7 +5882,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の医療時間
 	 */
-	public List<MedicalTimeOfMonthly> toDomainMedicalTimeOfMonthly(){
+	private List<MedicalTimeOfMonthly> toDomainMedicalTimeOfMonthly(){
 		List<MedicalTimeOfMonthly> medicalTimeLst = new ArrayList<>();
 		medicalTimeLst.add(MedicalTimeOfMonthly.of(
 				WorkTimeNightShift.DAY_SHIFT,
@@ -5654,7 +5903,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonAggrOverTimes 集計残業時間
 	 * @return 月別実績の残業時間
 	 */
-	public OverTimeOfMonthly toDomainOverTimeOfMonthly(){
+	private OverTimeOfMonthly toDomainOverTimeOfMonthly(){
 		List<AggregateOverTime> overTimeList = this.getOverTimeLst();	
 		return OverTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
@@ -5687,7 +5936,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の通常変形時間
 	 */
-	public RegularAndIrregularTimeOfMonthly toDomainRegularAndIrregularTimeOfMonthly(){
+	private RegularAndIrregularTimeOfMonthly toDomainRegularAndIrregularTimeOfMonthly(){
 		
 		// 月別実績の変形労働時間
 		val irregularWorkingTime = IrregularWorkingTimeOfMonthly.of(
@@ -5709,7 +5958,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の休暇使用時間
 	 */
-	public VacationUseTimeOfMonthly toDomainVacationUseTimeOfMonthly(){
+	private VacationUseTimeOfMonthly toDomainVacationUseTimeOfMonthly(){
 		
 		return VacationUseTimeOfMonthly.of(
 				AnnualLeaveUseTimeOfMonthly.of(
@@ -5737,7 +5986,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonWorkClock 月別実績の勤務時刻
 	 * @return 月別実績の縦計
 	 */
-	public VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(){
+	private VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(){
 
 		LeaveOfMonthly  krcdtMonLeave = this.toDomainLeaveOfMonthly();
 		List<AggregateAbsenceDays> krcdtMonAggrAbsnDays  = this.getAbsenceDaysLst();
@@ -5934,7 +6183,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return excessOutsideWork;
 	}
 	
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
+	private ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
 		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
 				new AttendanceTimeMonth(this.totalWeeklyPremiumTime1),
@@ -5948,7 +6197,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 時間外超過
 	 */
-	public ExcessOutsideWork toDomainExcessOutsideWorkXX(int breakdownNo, int excessNo, int excessTime) {
+	private ExcessOutsideWork toDomainExcessOutsideWorkXX(int breakdownNo, int excessNo, int excessTime) {
 		return ExcessOutsideWork.of(breakdownNo, excessNo, new AttendanceTimeMonth(excessTime));
 	}
 	
@@ -5957,7 +6206,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の36協定時間
 	 */
-	public AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
+	private AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
 		
 		return AgreementTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.agreementTime),
@@ -6035,7 +6284,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return merge;
 		
 	}
-	public  List<AggregateBonusPayTime> getBonusPayTimeLst() {
+	private  List<AggregateBonusPayTime> getBonusPayTimeLst() {
 		List<AggregateBonusPayTime> merge = new ArrayList<>();
 		merge.add(toDomainBonusPayTime1());
 		merge.add(toDomainBonusPayTime2());
@@ -6049,7 +6298,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		merge.add(toDomainBonusPayTime10());
 		return merge;
 	}
-	public List<AggregateAbsenceDays> getAbsenceDaysLst(){
+	private List<AggregateAbsenceDays> getAbsenceDaysLst(){
 		List<AggregateAbsenceDays> lst = new ArrayList<>();
 		lst.add(this.toDomainAbsenceDays1());
 		lst.add(this.toDomainAbsenceDays2());
@@ -6084,7 +6333,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return lst;
 	}
 	
-	public List<AggregateGoOut> getGoOutLst() {
+	private List<AggregateGoOut> getGoOutLst() {
 		List<AggregateGoOut> merge = new ArrayList<>();
 		merge.add(toDomainGoOut1());
 		merge.add(toDomainGoOut2());
@@ -6093,7 +6342,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return merge;
 	}
 	
-	public List<AggregatePremiumTime> getPremiumTimeLst() {
+	private List<AggregatePremiumTime> getPremiumTimeLst() {
 		List<AggregatePremiumTime> merge = new ArrayList<>();
 		merge.add(toDomainPremiumTime1());
 		merge.add(toDomainPremiumTime2());
@@ -6109,7 +6358,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	
-	public List<AggregateDivergenceTime> getDivergenceTimeLst() {
+	private List<AggregateDivergenceTime> getDivergenceTimeLst() {
 		List<AggregateDivergenceTime> merge = new ArrayList<>();
 		merge.add(toDomainDivergenceTime1());
 		merge.add(toDomainDivergenceTime2());
@@ -6124,457 +6373,457 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return merge;
 	}
 	
-	public AggregateAbsenceDays toDomainAbsenceDays1() {
+	private AggregateAbsenceDays toDomainAbsenceDays1() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay1)),
 				new AttendanceTimeMonth((int) this.absenceTime1));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays2() {
+	private AggregateAbsenceDays toDomainAbsenceDays2() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay2)),
 				new AttendanceTimeMonth((int) this.absenceTime2));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays3() {
+	private AggregateAbsenceDays toDomainAbsenceDays3() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay3)),
 				new AttendanceTimeMonth((int) this.absenceTime3));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays4() {
+	private AggregateAbsenceDays toDomainAbsenceDays4() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay4)),
 				new AttendanceTimeMonth((int) this.absenceTime4));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays5() {
+	private AggregateAbsenceDays toDomainAbsenceDays5() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay5)),
 				new AttendanceTimeMonth((int) this.absenceTime5));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays6() {
+	private AggregateAbsenceDays toDomainAbsenceDays6() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay6)),
 				new AttendanceTimeMonth((int) this.absenceTime6));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays7() {
+	private AggregateAbsenceDays toDomainAbsenceDays7() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay7)),
 				new AttendanceTimeMonth((int) this.absenceTime7));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays8() {
+	private AggregateAbsenceDays toDomainAbsenceDays8() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay8)),
 				new AttendanceTimeMonth((int) this.absenceTime8));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays9() {
+	private AggregateAbsenceDays toDomainAbsenceDays9() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay9)),
 				new AttendanceTimeMonth((int) this.absenceTime9));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays10() {
+	private AggregateAbsenceDays toDomainAbsenceDays10() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay10)),
 				new AttendanceTimeMonth((int) this.absenceTime10));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays11() {
+	private AggregateAbsenceDays toDomainAbsenceDays11() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay11)),
 				new AttendanceTimeMonth((int) this.absenceTime11));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays12() {
+	private AggregateAbsenceDays toDomainAbsenceDays12() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay12)),
 				new AttendanceTimeMonth((int) this.absenceTime12));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays13() {
+	private AggregateAbsenceDays toDomainAbsenceDays13() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay13)),
 				new AttendanceTimeMonth((int) this.absenceTime13));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays14() {
+	private AggregateAbsenceDays toDomainAbsenceDays14() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay14)),
 				new AttendanceTimeMonth((int) this.absenceTime14));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays15() {
+	private AggregateAbsenceDays toDomainAbsenceDays15() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay15)),
 				new AttendanceTimeMonth((int) this.absenceTime15));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays16() {
+	private AggregateAbsenceDays toDomainAbsenceDays16() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay16)),
 				new AttendanceTimeMonth((int) this.absenceTime16));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays17() {
+	private AggregateAbsenceDays toDomainAbsenceDays17() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay17)),
 				new AttendanceTimeMonth((int) this.absenceTime17));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays18() {
+	private AggregateAbsenceDays toDomainAbsenceDays18() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay18)),
 				new AttendanceTimeMonth((int) this.absenceTime18));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays19() {
+	private AggregateAbsenceDays toDomainAbsenceDays19() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay19)),
 				new AttendanceTimeMonth((int) this.absenceTime19));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays20() {
+	private AggregateAbsenceDays toDomainAbsenceDays20() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay20)),
 				new AttendanceTimeMonth((int) this.absenceTime20));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays21() {
+	private AggregateAbsenceDays toDomainAbsenceDays21() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay21)),
 				new AttendanceTimeMonth((int) this.absenceTime21));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays22() {
+	private AggregateAbsenceDays toDomainAbsenceDays22() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay22)),
 				new AttendanceTimeMonth((int) this.absenceTime22));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays23() {
+	private AggregateAbsenceDays toDomainAbsenceDays23() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay23)),
 				new AttendanceTimeMonth((int) this.absenceTime23));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays24() {
+	private AggregateAbsenceDays toDomainAbsenceDays24() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay24)),
 				new AttendanceTimeMonth((int) this.absenceTime24));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays25() {
+	private AggregateAbsenceDays toDomainAbsenceDays25() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay25)),
 				new AttendanceTimeMonth((int) this.absenceTime25));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays26() {
+	private AggregateAbsenceDays toDomainAbsenceDays26() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay26)),
 				new AttendanceTimeMonth((int) this.absenceTime26));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays27() {
+	private AggregateAbsenceDays toDomainAbsenceDays27() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay27)),
 				new AttendanceTimeMonth((int) this.absenceTime27));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays28() {
+	private AggregateAbsenceDays toDomainAbsenceDays28() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay28)),
 				new AttendanceTimeMonth((int) this.absenceTime28));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays29() {
+	private AggregateAbsenceDays toDomainAbsenceDays29() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay29)),
 				new AttendanceTimeMonth((int) this.absenceTime29));
 	}
 
-	public AggregateAbsenceDays toDomainAbsenceDays30() {
+	private AggregateAbsenceDays toDomainAbsenceDays30() {
 		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay30)),
 				new AttendanceTimeMonth((int) this.absenceTime30));
 	}
 	
-	public void toEntitySpcVacationDays1(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays1(AggregateSpcVacationDays domain) {
 		this.spcVactDays1 = domain.getDays().v();
 		this.spcVactTime1 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays2(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays2(AggregateSpcVacationDays domain) {
 		this.spcVactDays2 = domain.getDays().v();
 		this.spcVactTime2 = domain.getTime().v();
 	}
 	
-		public void toEntitySpcVacationDays3(AggregateSpcVacationDays domain) {
+		private void toEntitySpcVacationDays3(AggregateSpcVacationDays domain) {
 		this.spcVactDays3 = domain.getDays().v();
 		this.spcVactTime3 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays4(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays4(AggregateSpcVacationDays domain) {
 		this.spcVactDays4 = domain.getDays().v();
 		this.spcVactTime4 = domain.getTime().v();
 	}
 		
-	public void toEntitySpcVacationDays5(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays5(AggregateSpcVacationDays domain) {
 		this.spcVactDays5 = domain.getDays().v();
 		this.spcVactTime5 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays6(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays6(AggregateSpcVacationDays domain) {
 		this.spcVactDays6 = domain.getDays().v();
 		this.spcVactTime6 = domain.getTime().v();
 	}
-		public void toEntitySpcVacationDays7(AggregateSpcVacationDays domain) {
+		private void toEntitySpcVacationDays7(AggregateSpcVacationDays domain) {
 		this.spcVactDays7 = domain.getDays().v();
 		this.spcVactTime7 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays8(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays8(AggregateSpcVacationDays domain) {
 		this.spcVactDays8 = domain.getDays().v();
 		this.spcVactTime8 = domain.getTime().v();
 	}	
 	
-	public void toEntitySpcVacationDays9(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays9(AggregateSpcVacationDays domain) {
 		this.spcVactDays9 = domain.getDays().v();
 		this.spcVactTime9 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays10(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays10(AggregateSpcVacationDays domain) {
 		this.spcVactDays10 = domain.getDays().v();
 		this.spcVactTime10 = domain.getTime().v();
 	}	
 	
 	
-		public void toEntitySpcVacationDays11(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays11(AggregateSpcVacationDays domain) {
 		this.spcVactDays11 = domain.getDays().v();
 		this.spcVactTime11 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays12(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays12(AggregateSpcVacationDays domain) {
 		this.spcVactDays12 = domain.getDays().v();
 		this.spcVactTime12 = domain.getTime().v();
 	}
 	
-		public void toEntitySpcVacationDays13(AggregateSpcVacationDays domain) {
+		private void toEntitySpcVacationDays13(AggregateSpcVacationDays domain) {
 		this.spcVactDays13 = domain.getDays().v();
 		this.spcVactTime13 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays14(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays14(AggregateSpcVacationDays domain) {
 		this.spcVactDays14 = domain.getDays().v();
 		this.spcVactTime14 = domain.getTime().v();
 	}
 		
-	public void toEntitySpcVacationDays15(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays15(AggregateSpcVacationDays domain) {
 		this.spcVactDays15 = domain.getDays().v();
 		this.spcVactTime15 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays16(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays16(AggregateSpcVacationDays domain) {
 		this.spcVactDays16 = domain.getDays().v();
 		this.spcVactTime16 = domain.getTime().v();
 	}
-		public void toEntitySpcVacationDays17(AggregateSpcVacationDays domain) {
+		private void toEntitySpcVacationDays17(AggregateSpcVacationDays domain) {
 		this.spcVactDays17 = domain.getDays().v();
 		this.spcVactTime17 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays18(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays18(AggregateSpcVacationDays domain) {
 		this.spcVactDays18 = domain.getDays().v();
 		this.spcVactTime18 = domain.getTime().v();
 	}	
 	
-	public void toEntitySpcVacationDays19(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays19(AggregateSpcVacationDays domain) {
 		this.spcVactDays19 = domain.getDays().v();
 		this.spcVactTime19 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays20(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays20(AggregateSpcVacationDays domain) {
 		this.spcVactDays20 = domain.getDays().v();
 		this.spcVactTime20 = domain.getTime().v();
 	}	
 	
-	public void toEntitySpcVacationDays21(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays21(AggregateSpcVacationDays domain) {
 		this.spcVactDays21 = domain.getDays().v();
 		this.spcVactTime21 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays22(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays22(AggregateSpcVacationDays domain) {
 		this.spcVactDays22 = domain.getDays().v();
 		this.spcVactTime22 = domain.getTime().v();
 	}
 	
-		public void toEntitySpcVacationDays23(AggregateSpcVacationDays domain) {
+		private void toEntitySpcVacationDays23(AggregateSpcVacationDays domain) {
 		this.spcVactDays23 = domain.getDays().v();
 		this.spcVactTime23 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays24(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays24(AggregateSpcVacationDays domain) {
 		this.spcVactDays24 = domain.getDays().v();
 		this.spcVactTime24 = domain.getTime().v();
 	}
 		
-	public void toEntitySpcVacationDays25(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays25(AggregateSpcVacationDays domain) {
 		this.spcVactDays25 = domain.getDays().v();
 		this.spcVactTime25 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays26(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays26(AggregateSpcVacationDays domain) {
 		this.spcVactDays26 = domain.getDays().v();
 		this.spcVactTime26 = domain.getTime().v();
 	}
-		public void toEntitySpcVacationDays27(AggregateSpcVacationDays domain) {
+		private void toEntitySpcVacationDays27(AggregateSpcVacationDays domain) {
 		this.spcVactDays27 = domain.getDays().v();
 		this.spcVactTime27 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays28(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays28(AggregateSpcVacationDays domain) {
 		this.spcVactDays28 = domain.getDays().v();
 		this.spcVactTime28 = domain.getTime().v();
 	}	
 	
-	public void toEntitySpcVacationDays29(AggregateSpcVacationDays domain) {
+	private void toEntitySpcVacationDays29(AggregateSpcVacationDays domain) {
 		this.spcVactDays29 = domain.getDays().v();
 		this.spcVactTime29 = domain.getTime().v();
 	}
 	
-	public void toEntitySpcVacationDays30(AggregateSpcVacationDays domain) {
-		this.spcVactDays30  = domain.getDays().v();
+	private void toEntitySpcVacationDays30(AggregateSpcVacationDays domain) {
+		this.spcVactDays30 = domain.getDays().v();
 		this.spcVactTime30 = domain.getTime().v();
 	}	
 
-	public void toEntityTotalCount1(TotalCount domain) {
+	private void toEntityTotalCount1(TotalCount domain) {
 		this.totalCountDays1 = domain.getCount().v();
 		this.totalCountTime1 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount2(TotalCount domain) {
+	private void toEntityTotalCount2(TotalCount domain) {
 		this.totalCountDays2 = domain.getCount().v();
 		this.totalCountTime2 = domain.getTime().v();
 	}
 	
-		public void toEntityTotalCount3(TotalCount domain) {
+		private void toEntityTotalCount3(TotalCount domain) {
 		this.totalCountDays3 = domain.getCount().v();
 		this.totalCountTime3 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount4(TotalCount domain) {
+	private void toEntityTotalCount4(TotalCount domain) {
 		this.totalCountDays4 = domain.getCount().v();
 		this.totalCountTime4 = domain.getTime().v();
 	}
 		
-	public void toEntityTotalCount5(TotalCount domain) {
+	private void toEntityTotalCount5(TotalCount domain) {
 		this.totalCountDays5 = domain.getCount().v();
 		this.totalCountTime5 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount6(TotalCount domain) {
+	private void toEntityTotalCount6(TotalCount domain) {
 		this.totalCountDays6 = domain.getCount().v();
 		this.totalCountTime6 = domain.getTime().v();
 	}
-		public void toEntityTotalCount7(TotalCount domain) {
+		private void toEntityTotalCount7(TotalCount domain) {
 		this.totalCountDays7 = domain.getCount().v();
 		this.totalCountTime7 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount8(TotalCount domain) {
+	private void toEntityTotalCount8(TotalCount domain) {
 		this.totalCountDays8 = domain.getCount().v();
 		this.totalCountTime8 = domain.getTime().v();
 	}	
 	
-	public void toEntityTotalCount9(TotalCount domain) {
+	private void toEntityTotalCount9(TotalCount domain) {
 		this.totalCountDays9 = domain.getCount().v();
 		this.totalCountTime9 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount10(TotalCount domain) {
+	private void toEntityTotalCount10(TotalCount domain) {
 		this.totalCountDays10 = domain.getCount().v();
 		this.totalCountTime10 = domain.getTime().v();
 	}	
 	
 	
-		public void toEntityTotalCount11(TotalCount domain) {
+	private void toEntityTotalCount11(TotalCount domain) {
 		this.totalCountDays11 = domain.getCount().v();
 		this.totalCountTime11 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount12(TotalCount domain) {
+	private void toEntityTotalCount12(TotalCount domain) {
 		this.totalCountDays12 = domain.getCount().v();
 		this.totalCountTime12 = domain.getTime().v();
 	}
 	
-		public void toEntityTotalCount13(TotalCount domain) {
+		private void toEntityTotalCount13(TotalCount domain) {
 		this.totalCountDays13 = domain.getCount().v();
 		this.totalCountTime13 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount14(TotalCount domain) {
+	private void toEntityTotalCount14(TotalCount domain) {
 		this.totalCountDays14 = domain.getCount().v();
 		this.totalCountTime14 = domain.getTime().v();
 	}
 		
-	public void toEntityTotalCount15(TotalCount domain) {
+	private void toEntityTotalCount15(TotalCount domain) {
 		this.totalCountDays15 = domain.getCount().v();
 		this.totalCountTime15 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount16(TotalCount domain) {
+	private void toEntityTotalCount16(TotalCount domain) {
 		this.totalCountDays16 = domain.getCount().v();
 		this.totalCountTime16 = domain.getTime().v();
 	}
-		public void toEntityTotalCount17(TotalCount domain) {
+		private void toEntityTotalCount17(TotalCount domain) {
 		this.totalCountDays17 = domain.getCount().v();
 		this.totalCountTime17 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount18(TotalCount domain) {
+	private void toEntityTotalCount18(TotalCount domain) {
 		this.totalCountDays18 = domain.getCount().v();
 		this.totalCountTime18 = domain.getTime().v();
 	}	
 	
-	public void toEntityTotalCount19(TotalCount domain) {
+	private void toEntityTotalCount19(TotalCount domain) {
 		this.totalCountDays19 = domain.getCount().v();
 		this.totalCountTime19 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount20(TotalCount domain) {
+	private void toEntityTotalCount20(TotalCount domain) {
 		this.totalCountDays20 = domain.getCount().v();
 		this.totalCountTime20 = domain.getTime().v();
 	}	
 	
-	public void toEntityTotalCount21(TotalCount domain) {
+	private void toEntityTotalCount21(TotalCount domain) {
 		this.totalCountDays21 = domain.getCount().v();
 		this.totalCountTime21 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount22(TotalCount domain) {
+	private void toEntityTotalCount22(TotalCount domain) {
 		this.totalCountDays22 = domain.getCount().v();
 		this.totalCountTime22 = domain.getTime().v();
 	}
 	
-		public void toEntityTotalCount23(TotalCount domain) {
+		private void toEntityTotalCount23(TotalCount domain) {
 		this.totalCountDays23 = domain.getCount().v();
 		this.totalCountTime23 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount24(TotalCount domain) {
+	private void toEntityTotalCount24(TotalCount domain) {
 		this.totalCountDays24 = domain.getCount().v();
 		this.totalCountTime24 = domain.getTime().v();
 	}
 		
-	public void toEntityTotalCount25(TotalCount domain) {
+	private void toEntityTotalCount25(TotalCount domain) {
 		this.totalCountDays25 = domain.getCount().v();
 		this.totalCountTime25 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount26(TotalCount domain) {
+	private void toEntityTotalCount26(TotalCount domain) {
 		this.totalCountDays26 = domain.getCount().v();
 		this.totalCountTime26 = domain.getTime().v();
 	}
-		public void toEntityTotalCount27(TotalCount domain) {
+		private void toEntityTotalCount27(TotalCount domain) {
 		this.totalCountDays27 = domain.getCount().v();
 		this.totalCountTime27 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount28(TotalCount domain) {
+	private void toEntityTotalCount28(TotalCount domain) {
 		this.totalCountDays28 = domain.getCount().v();
 		this.totalCountTime28 = domain.getTime().v();
 	}	
 	
-	public void toEntityTotalCount29(TotalCount domain) {
+	private void toEntityTotalCount29(TotalCount domain) {
 		this.totalCountDays29 = domain.getCount().v();
 		this.totalCountTime29 = domain.getTime().v();
 	}
 	
-	public void toEntityTotalCount30(TotalCount domain) {
+	private void toEntityTotalCount30(TotalCount domain) {
 		this.totalCountDays30  = domain.getCount().v();
 		this.totalCountTime30 = domain.getTime().v();
 	}	
 	
-	public TotalCount toDomainTotalCount(int totalCountNo, double totalCountDays, int totalCountTime) {
+	private TotalCount toDomainTotalCount(int totalCountNo, double totalCountDays, int totalCountTime) {
 	    return TotalCount.of(totalCountNo, new AttendanceDaysMonth(totalCountDays), new AttendanceTimeMonth(totalCountTime));
 	}
 	
-	public AggregateSpcVacationDays toDomainSpcVacationDays(int spcVacationFrameNo, double days, double time) {
+	private AggregateSpcVacationDays toDomainSpcVacationDays(int spcVacationFrameNo, double days, double time) {
 	    return AggregateSpcVacationDays.of(spcVacationFrameNo, new AttendanceDaysMonth(days), new AttendanceTimeMonth((int)time));
 	}
 }

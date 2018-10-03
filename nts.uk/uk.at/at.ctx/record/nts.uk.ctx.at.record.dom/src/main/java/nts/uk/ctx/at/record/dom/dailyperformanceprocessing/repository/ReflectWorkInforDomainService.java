@@ -99,4 +99,14 @@ public interface ReflectWorkInforDomainService {
 	 */
 	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
 			GeneralDate day, String empCalAndSumExecLogID, EmployeeGeneralInfoImport employeeGeneralInfoImport);
+	
+	void reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
+			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
+	
+	void reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
+			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
+			Optional<StampReflectionManagement> stampReflectionManagement);
 }

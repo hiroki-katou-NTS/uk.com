@@ -93,6 +93,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private RegisterProvisionalData registerProvisionalData;
+	
+	@Inject
+	private InsertAllData insertAllData;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -223,13 +226,13 @@ public class DailyModifyResCommandFacade {
 						month.getClosureId(), month.getClosureDate(), domainMonthOpt,
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex());
+						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc());
 			} else {
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
 						month.getClosureId(), month.getClosureDate(), Optional.empty(),
 						new DatePeriod(dataParent.getDateRange().getStartDate(),
 								dataParent.getDateRange().getEndDate()),
-						month.getRedConditionMessage(), month.getHasFlex());
+						month.getRedConditionMessage(), month.getHasFlex(), month.getNeedCallCalc());
 			}
 		}
 
@@ -323,7 +326,7 @@ public class DailyModifyResCommandFacade {
 					}
 
 					if (!hasError) {
-						this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
+						this.insertAllData.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
 								resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(),
 								resultIU.isUpdate());
 						// insert sign

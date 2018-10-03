@@ -200,7 +200,7 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
@@ -1408,7 +1408,7 @@ module nts.layout {
                                 selectedCodes: [ko.toJS(data.value)],
                                 baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
                                 isMultiple: false,
-                                selectedSystemType: 5,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
                                 isrestrictionOfReferenceRange: false,
                                 showNoSelection: !data.required,
                                 isShowBaseDate: false
@@ -1432,7 +1432,17 @@ module nts.layout {
                                 setShared('inputCDL008', null);
                             }
                         } else {
-//                            if (__viewContext.viewModel.layout.mode() == 'layout') {
+                            if (__viewContext.viewModel.layout.mode() == 'layout') {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [data.value],
+                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                    isrestrictionOfReferenceRange: false,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                            } else {
                                 setShared('inputCDL008', {
                                     selectedCodes: [data.value],
                                     baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
@@ -1442,9 +1452,7 @@ module nts.layout {
                                     showNoSelection: !data.required,
                                     isShowBaseDate: false
                                 }, true);
-//                            } else {
-//                                setShared('inputCDL008', null);
-//                            }
+                            }
                         }
                     }
                 };
@@ -2354,7 +2362,7 @@ module nts.layout {
 
 
             if (CS00070IS00781) {
-                fetch.get_cats().done(cats => {
+                fetch.get_cats(false).done(cats => {
                     let cat = _(cats.categoryList).find(c => _.isEqual(c.categoryCode, 'CS00020')) || {};
                     // update categoryName
                     CS00070IS00781.data.resourceParams([cat.categoryName]);

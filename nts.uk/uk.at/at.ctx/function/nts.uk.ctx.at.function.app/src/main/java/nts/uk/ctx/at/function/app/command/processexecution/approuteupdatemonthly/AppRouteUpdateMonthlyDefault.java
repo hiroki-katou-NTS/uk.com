@@ -132,10 +132,10 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				regulationInfoEmployeeAdapterImport.setPeriodEnd(GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
 				// 在職者を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeIncumbents(true);
-				// 休職者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(false);
-				// 休業者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(false);
+				// 休職者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(true);
+				// 休業者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(true);
 				// 出向に来ている社員を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeAreOnLoan(true);
 				// 出向に行っている社員を含める → FALSE
@@ -191,10 +191,10 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 				regulationInfoEmployeeAdapterImport.setPeriodEnd(GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
 				// 在職者を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeIncumbents(true);
-				// 休職者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(false);
-				// 休業者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(false);
+				// 休職者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(true);
+				// 休業者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(true);
 				// 出向に来ている社員を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeAreOnLoan(true);
 				// 出向に行っている社員を含める → FALSE

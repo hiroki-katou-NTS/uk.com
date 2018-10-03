@@ -211,7 +211,7 @@
                                             <!-- BA2-6 -->
                                             <com:ko-if bind="checkItem() == 0 || checkItem() == 4">
                                                 <!-- 時間, 連続時間の場合 -->
-                                                <input id="startValue" class="value-input needcheck" tabindex="6" style= "width : 80px! important" data-bind="ntsTimeEditor: {
+                                                <input id="startValue" class="value-input needcheck" tabindex="6" style= "width : 100px! important" data-bind="ntsTimeEditor: {
                                          name: '#[KAL003_64]',
                                          value: $parent.comparisonRange().minTimeValue,
                                              required: true,
@@ -221,7 +221,7 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 1">
                                                 <!-- 回数 -->
-                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 80px! important" data-bind="ntsNumberEditor: {
+                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 100px! important" data-bind="ntsNumberEditor: {
                                        name: '#[KAL003_64]',
                                        value: $parent.comparisonRange().minTimesValue, 
                                        required: true,
@@ -229,20 +229,21 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 2">
                                                 <!-- 金額 -->
-                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 95px! important" data-bind="ntsNumberEditor: {
+                                                <input id="startValue" class="value-input needcheck"  tabindex="6" data-bind="ntsNumberEditor: {
                                                 name: '#[KAL003_64]',
                                                 value: $parent.comparisonRange().minAmountOfMoneyValue, 
                                                 required: true,
                                                 option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
+                											placeholder: '', 
+                											width : '100'
             												}),
                                                 constraint: 'CheckedAmountValue'}" />
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 3">
                                                 <!-- 時刻 -->
-                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 80px! important" data-bind="ntsTimeWithDayEditor: { 
+                                                <input id="startValue" class="value-input needcheck"  tabindex="6" style = "width : 100px! important" data-bind="ntsTimeWithDayEditor: { 
                                        name: '#[KAL003_64]', 
                                        constraint:'TimeWithDayAttr', 
                                        value: $parent.comparisonRange().minTimeWithinDayValue, 
@@ -255,7 +256,7 @@
                                             <!-- BA2-7 -->
                                             <com:ko-if bind="checkItem() == 0 || checkItem() == 4">
                                                 <!-- 時間, 連続時間の場合 -->
-                                                <input id="endValue" class="value-input needcheck"  tabindex="7" style = "width : 80px! important" data-bind="ntsTimeEditor: {
+                                                <input id="endValue" class="value-input needcheck"  tabindex="7" style = "width : 100px! important" data-bind="ntsTimeEditor: {
                                                name: '#[KAL003_65]',
                                                value: $parent.comparisonRange().maxTimeValue,
                                                 constraint: 'CheckedTimeDuration',
@@ -266,7 +267,7 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 1">
                                                 <!-- 回数 -->
-                                                <input id="endValue" class="value-input needcheck" tabindex="7" style = "width : 80px! important" data-bind="ntsNumberEditor: {
+                                                <input id="endValue" class="value-input needcheck" tabindex="7" style = "width : 100px! important" data-bind="ntsNumberEditor: {
                                                 name: '#[KAL003_65]',
                                                 value: $parent.comparisonRange().maxTimesValue, 
                                                 constraint: 'CheckedTimesValue',
@@ -276,14 +277,15 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 2">
                                                 <!-- 金額 -->
-                                                <input id="endValue" class="value-input needcheck" tabindex="7" style = "width : 95px! important" data-bind="ntsNumberEditor: {
+                                                <input id="endValue" class="value-input needcheck" tabindex="7" data-bind="ntsNumberEditor: {
                                                 name: '#[KAL003_65]',
                                                 value: $parent.comparisonRange().maxAmountOfMoneyValue, 
                                                 constraint: 'CheckedAmountValue',
                                                 option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
+                											placeholder: '', 
+                											width : '100'
             												}),
                                                 required: $parent.enableComparisonMaxValue,
                                                 enable: $parent.enableComparisonMaxValue()}" />
@@ -291,7 +293,7 @@
                                             </com:ko-if>
                                             <com:ko-if bind="checkItem() == 3">
                                                 <!-- 時刻 -->
-                                                <input id="endValue" class="value-input needcheck" style = "width : 80px! important" data-bind="ntsTimeWithDayEditor: { 
+                                                <input id="endValue" class="value-input needcheck" style = "width : 100px! important" data-bind="ntsTimeWithDayEditor: { 
 		                                          name: '#[KAL003_65]', 
 		                                          constraint:'TimeWithDayAttr', 
 		                                          value: $parent.comparisonRange().maxTimeWithinDayValue, 
@@ -580,13 +582,13 @@
                                 </table>
                             </div>
                         </div>
-                        <div id="div_common_footer">
+                        <div id="div_common_footer" style = "margin-top: 20px">
                             <table>
                                 <colgroup>
                                     <col width="150px" />
                                     <col width="*" />
                                 </colgroup>
-                                <tr class="row">
+                                <tr class="row" >
                                     <!-- B3-1: 表示するメッセージ - Message content -->
                                     <td class="pad_left_10px">
                                         <div>#{i18n.getText('KAL003_25')}</div>
@@ -770,13 +772,13 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            <input tabindex ="6" style="width: 100px;" 
                                                             data-bind="ntsTimeEditor: {name : inputName ,  value: value ,
                                                             required: required,mode : 'time',inputFormat: 'time',
                                                             constraint: 'CheckedTimeDuration',enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            <input tabindex ="7" style="width: 100px;" 
                                                             data-bind="ntsTimeEditor: {name : inputName , value: value ,
                                                             required: required,mode : 'time',inputFormat: 'time',
                                                             constraint: 'CheckedTimeDuration',enable : enable}, attr: { id: inputId}" />
@@ -787,17 +789,31 @@
                                                 <com:ko bind="haveInput() === 5" tag="if">
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
+                                                        
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input tabindex ="6" style="width: 75px;" 
-                                                            data-bind="ntsNumberEditor: {name : inputName ,  
-                                                            value: value ,required: required,enable : enable, 
-                                                            constraint: 'CheckedTimesValueDay'}, attr: { id: inputId}" />
+                                                            <input tabindex ="6" style="width: 100px;" 
+                                                            data-bind="ntsNumberEditor: {
+                                                            	name : inputName ,  
+                                                            	value: value ,
+                                                            	required: required,
+                                                            	enable : enable, 
+                                                           	    constraint: 'CheckedTimesValueDay',
+                                                           	    option: new nts.uk.ui.option.NumberEditorOption({
+		                											grouplength: 0,
+		                											decimallength: 1,
+		                											placeholder: ''
+	            												})}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            <input tabindex ="7" style="width: 100px;" 
                                                             data-bind="ntsNumberEditor: {name : inputName , 
                                                             value: value ,required: required,mode : 'time',
-                                                            inputFormat: 'time',constraint: 'CheckedTimesValueDay',enable : enable}, attr: { id: inputId}" />
+                                                            inputFormat: 'time',constraint: 'CheckedTimesValueDay',enable : enable,
+                                                             option: new nts.uk.ui.option.NumberEditorOption({
+		                											grouplength: 0,
+		                											decimallength: 1,
+		                											placeholder: ''
+	            												})}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
                                                     <span  data-bind="text : textLabel"></span>
@@ -806,13 +822,13 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            <input tabindex ="6" style="width: 100px;" 
                                                             data-bind="ntsNumberEditor: {name : inputName ,  
                                                             value: value ,required: required,enable : enable, 
                                                             constraint: 'CheckedTimesValue'}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            <input tabindex ="7" style="width: 100px;" 
                                                             data-bind="ntsNumberEditor: {name : inputName , value: value ,
                                                             required: required,mode : 'time',inputFormat: 'time',
                                                             constraint: 'CheckedTimesValue',enable : enable}, attr: { id: inputId}" />
@@ -824,16 +840,26 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input tabindex ="6" style="width: 75px;" 
+                                                            <input tabindex ="6" style="width: 100px;" 
                                                             data-bind="ntsNumberEditor: {name : inputName ,  
                                                             value: value ,required: required,enable : enable, 
+                                                            option: new nts.uk.ui.option.NumberEditorOption({
+	                											grouplength: 3,
+	                											decimallength: 0,
+	                											placeholder: ''
+            												}),
                                                             constraint: 'CheckedAmountValue'}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input tabindex ="7" style="width: 75px;" 
+                                                            <input tabindex ="7" style="width: 100px; "
                                                             data-bind="ntsNumberEditor: {name : inputName , 
                                                             value: value ,required: required,mode : 'time',
                                                             inputFormat: 'time',constraint: 'CheckedAmountValue',
+                                                            option: new nts.uk.ui.option.NumberEditorOption({
+	                											grouplength: 3,
+	                											decimallength: 0,
+	                											placeholder: ''
+            												}),
                                                             enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
@@ -960,6 +986,7 @@
                                             </td>
                                         </tr>
                                     </com:ko>
+                                    <tr style = "height: 20px" ></tr>
                                     <tr class="row">
                                         <td class="pad_left_10px">
                                             <div>#{i18n.getText('KAL003_25')}</div>
@@ -1101,7 +1128,7 @@
 											<!-- B1_60 --> 
 											<com:ko-if bind="[tcWM.TIME, tcWM.CONTINUOUS_TIME].indexOf(typeCheckItem()) > -1"> 
 												<!-- 時間 -->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 100px ! important"
 													tabindex = "4"
 													data-bind="ntsTimeEditor: {
 				                                         name: '#[KAL003_64]',
@@ -1113,7 +1140,7 @@
 											 </com:ko-if>
 											 <com:ko-if bind="[tcWM.TIMES,tcWM.CONTINUOUS_TIMES].indexOf(typeCheckItem()) > -1"> 
 												<!-- 回数 -->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 100px! important"
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
@@ -1123,7 +1150,7 @@
 											</com:ko-if> 
 											<com:ko-if bind="[tcWM.AMOUNT,tcWM.CONTINUOUS_AMOUNT].indexOf(typeCheckItem()) > -1"> 
 												<!-- 金額 -->
-												<input id="startValue" class="value-input needcheck" style = "width : 95px ! important"
+												<input id="startValue" class="value-input needcheck" 
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 														name: '#[KAL003_64]',
@@ -1132,7 +1159,8 @@
 														option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
+                											placeholder: '',
+                											width : '100'
             												}),
 														required: true,
 														enable: true,
@@ -1141,7 +1169,7 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_TIME].indexOf(typeCheckItem()) > -1"> 
 												<!-- 連続時間帯-->
-                                                <input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+                                                <input id="startValue" class="value-input needcheck" style = "width : 100px ! important"
                                                 tabindex = "4"
 													data-bind="ntsTimeEditor: {
 				                                         name: '#[KAL003_64]',
@@ -1153,7 +1181,7 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_TIMES].indexOf(typeCheckItem()) > -1"> 
 												<!-- 平均回数-->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_64]',
@@ -1163,7 +1191,7 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_AMOUNT].indexOf(typeCheckItem()) > -1"> 
 												<!-- 平均金額-->
-												<input id="startValue" class="value-input needcheck" style = "width : 95px ! important"
+												<input id="startValue" class="value-input needcheck" 
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_64]',
@@ -1172,13 +1200,14 @@
                                                 		option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
+                											placeholder: '',
+                											width : '100'
             												}),
                                                 		constraint: 'CheckedAmountValue'}"/>
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.NUMBER_TIME].indexOf(typeCheckItem()) > -1"> 
 												<!-- 該当月数時間-->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "4"
 													data-bind="ntsTimeEditor: {
 		                                                name: '#[KAL003_64]',
@@ -1190,7 +1219,7 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.NUMBER_TIMES].indexOf(typeCheckItem()) > -1"> 
 												<!-- 該当月数回数-->
-												<input id="startValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="startValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_64]',
@@ -1199,7 +1228,7 @@
                                                 		constraint: 'CheckedTimesValue'}" />
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.NUMBER_AMOUNT].indexOf(typeCheckItem()) > -1"> 
-												<input id="startValue" class="value-input needcheck" style = "width : 95px ! important"
+												<input id="startValue" class="value-input needcheck" 
 												tabindex = "4"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_64]',
@@ -1208,7 +1237,8 @@
                                                 		option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
+                											placeholder: '',
+                											width : '100'
             												}),
                                                 		constraint: 'CheckedAmountValue'}" />
 											</com:ko-if>
@@ -1217,7 +1247,7 @@
 										<td class="pad_left_5px">
 											<com:ko-if bind="[tcWM.TIME].indexOf(typeCheckItem()) > -1">
 												<!-- 時間 -->
-												<input id="endValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "5"
 													data-bind="ntsTimeEditor: {
 		                                               	name: '#[KAL003_65]',
@@ -1230,7 +1260,7 @@
 											</com:ko-if> 
 											<com:ko-if bind="[tcWM.TIMES].indexOf(typeCheckItem()) > -1">
 												<!-- 回数 -->
-												<input id="endValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "5"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_65]',
@@ -1241,7 +1271,7 @@
 											</com:ko-if> 
 											<com:ko-if bind="[tcWM.AMOUNT].indexOf(typeCheckItem()) > -1">
 												<!-- 金額 -->
-												<input id="endValue" class="value-input needcheck" style = "width : 95px ! important"
+												<input id="endValue" class="value-input needcheck" 
 												tabindex = "5"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_65]',
@@ -1250,14 +1280,15 @@
 		                                                option: new nts.uk.ui.option.NumberEditorOption({
                 											grouplength: 3,
                 											decimallength: 0,
-                											placeholder: ''
+                											placeholder: '',
+                											width : '100'
             												}),
 		                                                required: $vm.enableComparisonMaxValue(),
 		                                                enable: $vm.enableComparisonMaxValue()}" />
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_TIME].indexOf(typeCheckItem()) > -1">
 												<!-- 連続時間帯 -->
-												<input id="endValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "5"
 													data-bind="ntsTimeEditor: {
 		                                               	name: '#[KAL003_65]',
@@ -1270,7 +1301,7 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_TIMES].indexOf(typeCheckItem()) > -1">
 												<!-- 平均回数 -->
-												<input id="endValue" class="value-input needcheck" style = "width : 80px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "5"
 													data-bind="ntsNumberEditor: { 
 				                                        name: '#[KAL003_65]', 
@@ -1280,7 +1311,7 @@
 											</com:ko-if>
 											<com:ko-if bind="[tcWM.AVERAGE_AMOUNT].indexOf(typeCheckItem()) > -1">
 												<!--平均金額-->
-												<input id="endValue" class="value-input needcheck" style = "width : 95px ! important"
+												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
 												tabindex = "5"
 													data-bind="ntsNumberEditor: { 
 				                                        name: '#[KAL003_65]',
@@ -1397,13 +1428,12 @@
 								</table>
 							</div>
 						</com:ko-if>
-						<div id="div_common_footer">
+						<div id="div_common_footer" style ="margin-top: 20px;">
 							<table>
 								<colgroup>
 									<col width="150px" />
 									<col width="*" />
 								</colgroup>
-
 								<tr class="row">
 									<!-- B3-1: 表示するメッセージ -->
 									<td class="pad_left_10px">

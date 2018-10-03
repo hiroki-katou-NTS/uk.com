@@ -307,9 +307,9 @@ module cps002.a.vm {
                         break;
                     case 'CPS002_14':
                         if (ko.toJS(self.createTypeId) === 1) {
-                            //start Screen C
-                            //Set name Screen C　#CPS002_3
-                            $('#pg-name').text('CPS002C' + ' ' + text('CPS002_3'));
+                            //start Screen B
+                            //Set name Screen B　#CPS002_2
+                            $('#pg-name').text('CPS002B' + ' ' + text('CPS002_2'));
                             // init ccg component
                             let sto = setTimeout(() => {
                                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
@@ -318,9 +318,9 @@ module cps002.a.vm {
                                 clearTimeout(sto);
                             }, 100);
                         } else {
-                            //start Screen B
-                            //Set name Screen B　#CPS002_2
-                            $('#pg-name').text('CPS002B' + ' ' + text('CPS002_2'));
+                            //start Screen C
+                            //Set name Screen C　#CPS002_3
+                            $('#pg-name').text('CPS002C' + ' ' + text('CPS002_3'));
                             self.loadInitSettingData();
                         }
 
@@ -877,6 +877,7 @@ module cps002.a.vm {
             self.employeeName("");
             self.employeeCode("");
             self.loginId("");
+            self.cardNo("");
             self.password("");
             self.avatarOrgId("");
             self.avatarCropedId("");
@@ -996,20 +997,19 @@ module cps002.a.vm {
         }
 
         genString(item: SettingItem) {
-            if (this.dataType === "DATE" && this.saveData.value) {
-                return this.genDateString(this.saveData.value, this.dateType);
+            if (item.dataType === "DATE" && item.saveData.value) {
+                return this.genDateString(item.saveData.value, item.dateType);
             }
 
-            if (this.dataType === "TIME" && this.saveData.value || this.dataType === "TIMEPOINT" && this.saveData.value) {
-                return this.genTimeString(this.saveData.value, this.dateType);
+            if (item.dataType === "TIME" && item.saveData.value) {
+                return nts.uk.time.parseTime(item.saveData.value, true).format();
+            }
+            
+            if (item.dataType === "TIMEPOINT" && item.saveData.value) {
+                return window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'](item.saveData.value).fullText;
             }
 
-            return this.saveData.value;
-        }
-
-
-        genTimeString(value, dateType) {
-            return nts.uk.time.parseTime(value, true).format();
+            return item.saveData.value;
         }
 
         genDateString(value, dateType) {

@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.pub.resultrecord;
 
 import java.util.List;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
@@ -20,7 +21,7 @@ public interface IntermediateDataPub {
 	 * @param rootType ルート種類（日別確認／月別確認）
 	 * @return 承認ルートの状況
 	 */
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType);
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriod(String employeeID, DatePeriod period, Integer rootType) throws BusinessException;
 	
 	/**
 	 * RequestList 155

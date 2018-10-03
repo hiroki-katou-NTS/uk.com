@@ -98,13 +98,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueField(false);
-//                         $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
-                            setTimeout(() => {
-                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                                }
-                            }, 25);
+                             $(".nts-input").ntsError("clear");
+                            if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator()==9){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                            if(self.comparisonRange().comparisonOperator()==6 || self.comparisonRange().comparisonOperator() ==8){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
                         } else {
                             $(".nts-input").ntsError("clear");
                         }
@@ -152,11 +161,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.comparisonRange().maxAmountOfMoneyValue(null);
                         self.comparisonRange().minTimeValue(null);
                         self.comparisonRange().maxTimeValue(null);
-                        //回数
                         self.comparisonRange().minTimesValue(null);
                         self.comparisonRange().maxTimesValue(null);
-                        
-                        
                         //check typeCheckItem initialization times = 0 
                         self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
@@ -171,13 +177,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
-                        $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
-                            setTimeout(() => {
-                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                                }
-                            }, 25);
+                            $(".nts-input").ntsError("clear");
+                            if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator() ==9){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                            if(self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() ==8){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                        } else {
+                            $(".nts-input").ntsError("clear");
                         }
                     });
                     break;
@@ -245,19 +262,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             if(!self.enableComparisonMaxValue()){
                 let mulMonCheckType= self.mulMonCheckCondSet().typeCheckItem();
                
-                if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME) {
-                        //時間
-                        self.comparisonRange().maxTimeValue(null);
-                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES) {
-                        //回数
-                        self.comparisonRange().maxTimesValue(null);
-                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT) {
-                        //金額
-                       self.comparisonRange().maxAmountOfMoneyValue(null);
-                 }
+               
             }
             
         }
@@ -1182,20 +1187,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         fillTextDisplayTargetMulMon(defered, currentAtdItemCondition) {
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
-//            if (self.mulMonCheckCondSet().typeCheckItem() === TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT) {
-//                if (currentAtdItemCondition.uncountableAtdItem()) {
-//                    service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
-//                        if (lstItems && lstItems.length > 0) {
-//                            self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
-//                            $("#display-target-item-category9").trigger("validate");
-//                        }
-//                    }, function(rejected) {
-//                        defered.resolve();
-//                    });
-//                }
-//            } else {
                 if (currentAtdItemCondition.countableAddAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
+                    service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
@@ -1204,7 +1197,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             $("#display-target-item-category9").trigger("validate");
                         }
                         if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                            service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
+                            service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -1219,7 +1212,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         defered.resolve();
                     });
                 } else if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
-                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
+                    service.getMonthlyAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";

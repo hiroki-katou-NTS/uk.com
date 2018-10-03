@@ -2,6 +2,7 @@
 
 package nts.uk.ctx.at.request.ac.record.dailyattendancetime;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,10 +41,12 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
 		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
 		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
-		dailyAttendanceTimePubImport.setBreakStartTime( breakStartTime== null ? null : new AttendanceTime(breakStartTime));
-		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime == null ? null : new AttendanceTime( breakEndTime));
+		dailyAttendanceTimePubImport.setBreakStartTime( breakStartTime== null ? null : Arrays.asList(new AttendanceTime(breakStartTime)));
+		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime == null ? null : Arrays.asList(new AttendanceTime( breakEndTime)));
 		
+		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
+		
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(convertMapOverTime(dailyAttendanceTimePubExport.getOverTime()),
 				convertMapHolidayWork(dailyAttendanceTimePubExport.getHolidayWorkTime()),
 				convertBonusTime(dailyAttendanceTimePubExport.getBonusPayTime()),
@@ -104,8 +107,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(dailyAttenTimeParam.getWorkTimeCode());
 		dailyAttendanceTimePubImport.setWorkStartTime(dailyAttenTimeParam.getWorkStartTime());
 		dailyAttendanceTimePubImport.setWorkEndTime(dailyAttenTimeParam.getWorkEndTime());
-		dailyAttendanceTimePubImport.setBreakStartTime(dailyAttenTimeParam.getBreakStartTime());
-		dailyAttendanceTimePubImport.setBreakEndTime(dailyAttenTimeParam.getBreakEndTime());
+		dailyAttendanceTimePubImport.setBreakStartTime(Arrays.asList(dailyAttenTimeParam.getBreakStartTime()));
+		dailyAttendanceTimePubImport.setBreakEndTime(Arrays.asList(dailyAttenTimeParam.getBreakEndTime()));
 		DailyAttendanceTimePubLateLeaveExport result = dailyAttendanceTimePub.calcDailyLateLeave(dailyAttendanceTimePubImport);
 		return new DailyAttenTimeLateLeaveImport(result.getLateTime(), result.getLeaveEarlyTime());
 	}

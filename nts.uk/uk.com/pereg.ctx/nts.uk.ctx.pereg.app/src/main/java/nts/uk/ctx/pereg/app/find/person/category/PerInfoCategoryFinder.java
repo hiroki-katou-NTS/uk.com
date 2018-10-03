@@ -223,7 +223,7 @@ public class PerInfoCategoryFinder {
 	};
 
 	// Function get List Category Combobox CPS007
-	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv3() {
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv3(boolean isCps007) {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
@@ -262,25 +262,27 @@ public class PerInfoCategoryFinder {
 			
 			List<Object[]> lstItemDfGroupByCtgId = mapCategoryIdAndLstItemDf.get(p.getPersonInfoCategoryId());
 			
-			if(p.getCategoryCode().toString().equals("CS00001")) {
-				Optional<Object[]> itemEmpCode = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00001")).findFirst();
-				if(itemEmpCode.isPresent()) {
-					lstItemDfGroupByCtgId.remove(itemEmpCode.get());
+			if (isCps007) {
+				if (p.getCategoryCode().toString().equals("CS00001")) {
+					Optional<Object[]> itemEmpCode = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00001")).findFirst();
+					if (itemEmpCode.isPresent()) {
+						lstItemDfGroupByCtgId.remove(itemEmpCode.get());
+					}
+				} else if (p.getCategoryCode().toString().equals("CS00002")) {
+					Optional<Object[]> itemPersonName = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00003")).findFirst();
+					if (itemPersonName.isPresent()) {
+						lstItemDfGroupByCtgId.remove(itemPersonName.get());
+					}
+				} else if (p.getCategoryCode().toString().equals("CS00003")) {
+					Optional<Object[]> itemJobEntryDate = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00020")).findFirst();
+					if (itemJobEntryDate.isPresent()) {
+						lstItemDfGroupByCtgId.remove(itemJobEntryDate.get());
+					}
 				}
-			}else if(p.getCategoryCode().toString().equals("CS00002")) {
-				Optional<Object[]> itemPersonName = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00003")).findFirst();
-				if(itemPersonName.isPresent()) {
-					lstItemDfGroupByCtgId.remove(itemPersonName.get());
+
+				if (CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
+					return null;
 				}
-			}else if(p.getCategoryCode().toString().equals("CS00003")) {
-				Optional<Object[]> itemJobEntryDate = lstItemDfGroupByCtgId.stream().filter(item -> item[1].equals("IS00020")).findFirst();
-				if(itemJobEntryDate.isPresent()) {
-					lstItemDfGroupByCtgId.remove(itemJobEntryDate.get());
-				}
-			}
-			
-			if (CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
-				return null;
 			}
 			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -124,6 +126,8 @@ public class SaveHolidayShipmentCommandHandler
 	private HolidayShipmentScreenAFinder afinder;
 	@Inject
 	private UseDateDeadlineFromDatePeriod dateDeadline;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange registerDateChange;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
@@ -173,6 +177,8 @@ public class SaveHolidayShipmentCommandHandler
 		updateOfSubstitution(command, wkTypeCD);
 		// ドメイン「振休申請」を1件登録する
 		Application_New absCommonApp = createNewAbsApp(command, companyID, sID, absDate, appReason);
+		//暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
 		return this.newAfterReg.processAfterRegister(absCommonApp);
 
@@ -197,6 +203,8 @@ public class SaveHolidayShipmentCommandHandler
 		updateOccurrenceData(companyID, sID, wkTypeCD, recDate);
 		// 消化対象代休管理を振出申請に追加する
 		Application_New recCommonApp = createNewRecApp(command, companyID, sID, recDate, appReason);
+		//暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録後の処理」を実行する
 		return this.newAfterReg.processAfterRegister(recCommonApp);
 	}
@@ -281,9 +289,12 @@ public class SaveHolidayShipmentCommandHandler
 		String absAppID = commonApp.getAppID();
 
 		AbsenceLeaveApp absApp = createNewAbsDomainFromCmd(absAppID, command.getAbsCmd());
-
+		
 		appImp.insert(commonApp);
 		absRepo.insert(absApp);
+		
+		// 暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(absDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
 
@@ -293,14 +304,14 @@ public class SaveHolidayShipmentCommandHandler
 
 	public AbsenceLeaveApp createNewAbsDomainFromCmd(String absAppID, AbsenceLeaveAppCommand absCmd) {
 		WkTimeCommand wkTime1Cmd = absCmd.getWkTime1();
-		WkTimeCommand wkTime2Cmd = absCmd.getWkTime2();
+		//WkTimeCommand wkTime2Cmd = absCmd.getWkTime2();
 		AbsenceLeaveWorkingHour workTime1 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 				new WorkTime(wkTime1Cmd.getEndTime()));
-		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
-				new WorkTime(wkTime2Cmd.getEndTime()));
+//		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
+//				new WorkTime(wkTime2Cmd.getEndTime()));
 		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, new WorkTypeCode(absCmd.getWkTypeCD()),
 				EnumAdaptor.valueOf(absCmd.getChangeWorkHoursType(), NotUseAtr.class), absCmd.getWkTimeCD(), workTime1,
-				workTime2, Collections.emptyList(), Collections.emptyList());
+				null, Collections.emptyList(), Collections.emptyList());
 		return absApp;
 	}
 
@@ -314,11 +325,12 @@ public class SaveHolidayShipmentCommandHandler
 		// アルゴリズム「登録前共通処理（新規）」を実行する
 		CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振出申請」を1件登録する
-
 		RecruitmentApp recApp = createNewRecDomainFromCmd(recAppID, command.getRecCmd());
-
 		appImp.insert(commonApp);
 		recRepo.insert(recApp);
+		
+		// 暫定データの登録
+		this.registerDateChange.registerDateChange(companyID, sID, Arrays.asList(recDate));
 		// アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
 		registerAppReplection.newScreenRegisterAtApproveInfoReflect(sID, commonApp);
 
@@ -327,17 +339,19 @@ public class SaveHolidayShipmentCommandHandler
 
 	private RecruitmentApp createNewRecDomainFromCmd(String recAppID, RecruitmentAppCommand appCmd) {
 		WkTimeCommand wkTime1Cmd = appCmd.getWkTime1();
-		WkTimeCommand wkTime2Cmd = appCmd.getWkTime2();
+		//WkTimeCommand wkTime2Cmd = appCmd.getWkTime2();
+		RecruitmentWorkingHour recHour1 = new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
+				EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class), new WorkTime(wkTime1Cmd.getEndTime()),
+				EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class));
+		
+		RecruitmentWorkingHour recHour2 = null;/* new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
+				EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
+				new WorkTime(wkTime2Cmd.getEndTime()),
+				EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class));*/
 		RecruitmentApp recApp = new RecruitmentApp(recAppID, new WorkTypeCode(appCmd.getWkTypeCD()),
 				new WorkTimeCode(appCmd.getWkTimeCD()),
-				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
-						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime1Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class)),
-				new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime2Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class)),
+				recHour1,
+				recHour2,
 				Collections.emptyList());
 
 		return recApp;
@@ -766,7 +780,7 @@ public class SaveHolidayShipmentCommandHandler
 	private void validateAbs(AbsenceLeaveAppCommand cmd) {
 
 		WkTimeCommand wkTime1 = cmd.getWkTime1();
-		WkTimeCommand wkTime2 = cmd.getWkTime2();
+		//WkTimeCommand wkTime2 = cmd.getWkTime2();
 
 		// 就業時間帯変更＝するしない区分.しないのとき、以下の項目が設定されていないこと
 		// ・就業時間帯
@@ -777,13 +791,13 @@ public class SaveHolidayShipmentCommandHandler
 			wkTime1.setStartTime(null);
 			wkTime1.setEndTime(null);
 			cmd.setWkTimeCD(null);
-			wkTime2.setStartTime(null);
-			wkTime2.setEndTime(null);
+			//wkTime2.setStartTime(null);
+			//wkTime2.setEndTime(null);
 			cmd.setWkTimeCD(null);
 		} else {
 			// 開始時刻＜終了時刻 (#Msg_966#)
 			checkTime(wkTime1.getStartTime(), wkTime1.getEndTime());
-			checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
+			//checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
 			// reason check trước đó ở hàm GenAndInspectionOfAppReason rồi
 		}
 
@@ -791,10 +805,10 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void validateRec(RecruitmentAppCommand cmd) {
 		WkTimeCommand wkTime1 = cmd.getWkTime1();
-		WkTimeCommand wkTime2 = cmd.getWkTime2();
+		//WkTimeCommand wkTime2 = cmd.getWkTime2();
 		// 開始時刻＜終了時刻 (#Msg_966#)
 		checkTime(wkTime1.getStartTime(), wkTime1.getEndTime());
-		checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
+		//checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
 		// reason check trước đó ở hàm GenAndInspectionOfAppReason rồi
 
 	}

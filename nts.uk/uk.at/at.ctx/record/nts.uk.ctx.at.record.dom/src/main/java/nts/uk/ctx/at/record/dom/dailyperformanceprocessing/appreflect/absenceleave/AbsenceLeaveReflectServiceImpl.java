@@ -139,12 +139,12 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			return outData;
 		}
 		WorkingConditionItem workingConditionData = personalLablorCodition.get();
-		if(!workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-			return outData;
-		}
+		workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(x -> {
+			//反映就業時間帯=「平日時」．就業時間帯コード
+			outData.setWorkTimeCode(x.v());
+				
+		});
 		outData.setChkReflect(true);
-		//反映就業時間帯=「平日時」．就業時間帯コード
-		outData.setWorkTimeCode(workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
 		
 		return outData;
 	}
