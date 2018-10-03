@@ -61,7 +61,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
-            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && _.isEmpty(param.data.uncountableAtdItem)) {
+            if (param.data.countableAddAtdItems.length == 0 && param.data.countableSubAtdItems.length == 0 && param.data.uncountableAtdItem == null) {
                 param.data.compareStartValue = null;
                 param.data.compareEndValue = null;
                 param.data.uncountableAtdItem = null;
