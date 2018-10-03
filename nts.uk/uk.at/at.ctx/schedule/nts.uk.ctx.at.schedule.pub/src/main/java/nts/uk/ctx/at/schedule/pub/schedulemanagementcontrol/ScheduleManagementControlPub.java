@@ -20,7 +20,7 @@ public interface ScheduleManagementControlPub {
 	//	RequestList27
 	public boolean isScheduleManagementAtr(String employeeId);
 			
+	//	RequestList536
 	public boolean isScheduleManagementAtr(String employeeId, GeneralDate baseDate);
 	
-
 }
