@@ -32,7 +32,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -61,9 +60,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DailyCalculationCommandFacade {
-
-	@Inject
-	private EmployeeDailyPerErrorRepository employeeErrorRepo;
 
 	@Inject
 	private DailyRecordWorkFinder finder;
@@ -102,9 +98,6 @@ public class DailyCalculationCommandFacade {
 		List<DailyRecordDto> editedDtos = dataParent.getDailyEdits();
 		List<IntegrationOfDaily> editedDomains = editedDtos.stream()
 				.map(d -> d.toDomain(d.getEmployeeId(), d.getDate())).collect(Collectors.toList());
-
-		// delete domain EmployeeDailyPerError
-		employeeErrorRepo.removeParam(dtoToMapParam(editedDtos));
 
 		// check error truoc khi tinh toan
 		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues());
