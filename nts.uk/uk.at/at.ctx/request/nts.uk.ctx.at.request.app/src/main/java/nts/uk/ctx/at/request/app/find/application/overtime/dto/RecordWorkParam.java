@@ -13,6 +13,6 @@ public class RecordWorkParam {
 	public int prePostAtr;
 	public List<CaculationTime> overtimeHours;
 	private String workTypeCode;
-	private Integer startTimeRest;
-	private Integer endTimeRest;
+	private List<Integer> startTimeRests;
+	private List<Integer> endTimeRests;
 }

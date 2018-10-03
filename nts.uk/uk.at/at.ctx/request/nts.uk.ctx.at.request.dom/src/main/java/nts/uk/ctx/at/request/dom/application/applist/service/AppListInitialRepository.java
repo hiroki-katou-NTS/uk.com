@@ -74,7 +74,7 @@ public interface AppListInitialRepository {
 	/**
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 * @param sID
-	 * @param date
+	 * @param date                
 	 * @param time
 	 * @return
 	 */

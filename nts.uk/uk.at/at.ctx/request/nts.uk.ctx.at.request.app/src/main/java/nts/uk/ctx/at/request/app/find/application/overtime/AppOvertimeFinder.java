@@ -231,7 +231,7 @@ public class AppOvertimeFinder {
 			int prePostAtr,
 			String appDate,
 			String siftCD,
-			String workTypeCode,Integer startTime,Integer endTime,Integer startTimeRest,Integer endTimeRest){
+			String workTypeCode,Integer startTime,Integer endTime,List<Integer> startTimeRests,List<Integer> endTimeRests){
 		 
 		List<CaculationTime> caculationTimes = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
@@ -248,14 +248,15 @@ public class AppOvertimeFinder {
 		if(!isSettingDisplay(appCommonSettingOutput)){
 			//休憩時間帯を取得する
 			BreakTimeZoneSharedOutPut breakTime = this.overtimeService.getBreakTimes(companyID,workTypeCode, siftCD);
+			
 			if (!CollectionUtil.isEmpty(breakTime.getLstTimezone())) {
-				startTimeRest = breakTime.getLstTimezone().get(0).getStart().v();
+				startTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getStart().v()).collect(Collectors.toList());
 
-				endTimeRest = breakTime.getLstTimezone().get(0).getEnd().v();
+				startTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getEnd().v()).collect(Collectors.toList());
 			}
 		}
 		
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRest, endTimeRest);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRests, startTimeRests);
 		Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		// 06-01_色表示チェック
@@ -463,8 +464,8 @@ public class AppOvertimeFinder {
 				overTimeDto.setDisplayBonusTime(false);
 			}
 		}
-		Integer restStartTime = null;
-		Integer restEndTime = null;
+		List<Integer> restStartTimes =  new ArrayList<Integer>();
+		List<Integer> restEndTimes =  new ArrayList<Integer>();
 		for(int i = 1; i < 11; i++){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
 			overtimeInputDto.setAttendanceID(AttendanceType.RESTTIME.value);
@@ -486,8 +487,8 @@ public class AppOvertimeFinder {
 		});
 		List<OvertimeInputDto> overtimeRestTimes = overTimeInputs.stream().filter(x -> x.getAttendanceID() == AttendanceType.RESTTIME.value).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(overtimeRestTimes)){
-			restStartTime = overtimeRestTimes.get(0).getStartTime();
-			restEndTime = overtimeRestTimes.get(0).getEndTime();
+			restStartTimes = overtimeRestTimes.stream().map(x-> x.getStartTime()).collect(Collectors.toList());
+			restEndTimes = overtimeRestTimes.stream().map(x-> x.getEndTime()).collect(Collectors.toList());
 		}
 		overTimeDto.setOverTimeInputs(overTimeInputs);
 		
@@ -529,7 +530,7 @@ public class AppOvertimeFinder {
 				,overTimeDto.getWorkType() == null ? "" : overTimeDto.getWorkType().getWorkTypeCode()
 				,overTimeDto.getWorkClockFrom1()
 				,overTimeDto.getWorkClockTo1()
-				,restStartTime,restEndTime);
+				,restStartTimes,restEndTimes);
 		for(OvertimeInputDto overtime : overtimeHours){
 			for(OvertimeInputDto overtimeHour : overTimeDto.getOverTimeInputs()){
 				if(overtime.getAttendanceID() == overtimeHour.getAttendanceID()){
@@ -578,14 +579,14 @@ public class AppOvertimeFinder {
 		return overTimeDto;
 	} 
 	public List<OvertimeInputDto> checkColorCaculationForUIB(List<OvertimeInputDto> overtimeHours,int prePostAtr,String appDate,String inputDate,String siftCD,
-			String workTypeCode,Integer startTime,Integer endTime,Integer startTimeRest,Integer endTimeRest){
+			String workTypeCode,Integer startTime,Integer endTime,List<Integer> startTimeRests,List<Integer> endTimeRests){
 		
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		// 6.計算処理 : 
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,
 				GeneralDate.fromString(appDate, DATE_FORMAT),
-				workTypeCode, siftCD, startTime, endTime, startTimeRest, endTimeRest);
+				workTypeCode, siftCD, startTime, endTime, startTimeRests , endTimeRests);
 		Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		List<CaculationTime> overTimeInputs = new ArrayList<>();
@@ -613,7 +614,7 @@ public class AppOvertimeFinder {
 	 * @param prePostAtr
 	 * @return
 	 */
-	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> overtimeHours,String workTypeCode,Integer startTime,Integer endTime,Integer startTimeRest,Integer endTimeRest,int overtimeAtr){
+	public OverTimeDto findByChangeAppDate(String appDate,int prePostAtr,String siftCD, List<CaculationTime> overtimeHours,String workTypeCode,Integer startTime,Integer endTime,List<Integer> startTimeRests,List<Integer> endTimeRests,int overtimeAtr){
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		OverTimeDto result = new OverTimeDto();
@@ -678,7 +679,7 @@ public class AppOvertimeFinder {
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 			// 6.計算処理 : 
-				DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRest, endTimeRest);
+				DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime,  startTimeRests , endTimeRests);
 				Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 				List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 			// 01-18_実績の内容を表示し直す : chưa xử lí
@@ -1165,7 +1166,7 @@ public class AppOvertimeFinder {
 	 * @param siftCD
 	 * @return
 	 */
-	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours,String workTypeCode,Integer startRestTime,Integer endRestTime){
+	public RecordWorkDto getRecordWork(String employeeID, String appDate, String siftCD,int prePortAtr,List<CaculationTime> overtimeHours,String workTypeCode,List<Integer> startRestTimes,List<Integer> endRestTimes){
 		
 		String companyID = AppContexts.user().companyId();
 		Integer startTime1 = null; 
@@ -1188,7 +1189,7 @@ public class AppOvertimeFinder {
 		endTime2 = recordWorkOutput.getEndTime2();
 		// 01-18_実績の内容を表示し直す
 		// 6.計算処理 : 
-				DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime1, endTime1, startRestTime, endRestTime);
+				DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime1, endTime1, startRestTimes , endRestTimes);
 				Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 				List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours,overtimeInputCaculations);
