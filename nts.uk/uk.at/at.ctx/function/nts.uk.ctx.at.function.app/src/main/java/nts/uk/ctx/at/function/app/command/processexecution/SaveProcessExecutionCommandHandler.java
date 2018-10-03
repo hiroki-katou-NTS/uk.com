@@ -94,7 +94,7 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		DailyPerformanceCreation dailyPerfCreation =
 								new DailyPerformanceCreation(command.isDailyPerfCls(),
 										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
-										,new TargetGroupClassification(command.isRecreateTypeChangePerson(), command.isMidJoinEmployee(), command.isRecreateTransfers()));
+										,new TargetGroupClassification(command.isRecreateTransfer(), command.isMidJoinEmployee(), command.isRecreateWorkType()));
 
 		ProcessExecutionSetting execSetting = 
 				new ProcessExecutionSetting(alarmExtraction, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls(),
