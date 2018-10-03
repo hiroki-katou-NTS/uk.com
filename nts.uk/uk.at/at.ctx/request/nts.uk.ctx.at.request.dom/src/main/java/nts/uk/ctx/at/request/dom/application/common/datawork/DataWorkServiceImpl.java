@@ -23,9 +23,11 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
@@ -167,12 +169,18 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			}
 		} else {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyId,
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			selectedData.setSelectedWorkTypeCd(
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().map(item ->item.v()).orElse(null));
-			if (workType.isPresent()) {
-				selectedData.setSelectedWorkTypeName(workType.get().getName().v());
+			
+			Optional<WorkTypeCode> wkTypeOpt = personalLablorCodition.get().getWorkCategory().getWeekdayTime()
+					.getWorkTypeCode();
+			if (wkTypeOpt.isPresent()) {
+				String wkTypeCd = wkTypeOpt.get().v();
+				
+				Optional<WorkType> workType = workTypeRepository.findByPK(companyId,wkTypeCd);
+				
+				selectedData.setSelectedWorkTypeCd(wkTypeCd);
+				if (workType.isPresent()) {
+					selectedData.setSelectedWorkTypeName(workType.get().getName().v());
+				}
 			}
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
 			WorkTimeSetting workTime = workTimeSettingRepository.findByCode(companyId,

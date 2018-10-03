@@ -28,7 +28,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 実装：基準日時点の積立年休残数を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
@@ -93,11 +93,22 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 					tmpReserveLeaveMng.getUseDays()));
 		}
 		
+		// 積立年休付与日を出力用クラスに格納
+		Optional<GeneralDate> grantDateOpt = Optional.empty();
+		val asOfGrantOpt = aggrResultOfReserve.getAsOfGrant();
+		if (asOfGrantOpt.isPresent()){
+			val asOfGrant = asOfGrantOpt.get();
+			if (asOfGrant.size() > 0){
+				grantDateOpt = Optional.of(asOfGrant.get(0).getYmd());
+			}
+		}
+		
 		// 基準日時点の積立年休残数を返す
 		return Optional.of(new RsvLeaNumByCriteriaDate(
 				aggrResultOfReserve.getAsOfPeriodEnd(),
 				grantRemainingList,
-				tmpManageList));
+				tmpManageList,
+				grantDateOpt));
 	}
 	
 	/**

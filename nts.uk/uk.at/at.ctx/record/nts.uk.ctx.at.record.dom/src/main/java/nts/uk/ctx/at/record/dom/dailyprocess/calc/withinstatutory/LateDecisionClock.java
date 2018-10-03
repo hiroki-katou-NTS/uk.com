@@ -26,7 +26,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Value
 public class LateDecisionClock {
+	//遅刻判断時刻
 	private TimeWithDayAttr lateDecisionClock;
+	//勤務No
 	private int workNo;
 
 	

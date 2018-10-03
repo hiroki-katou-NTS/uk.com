@@ -239,7 +239,19 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 						this.commandProxy().remove(otherAtrkrcdtDayShorttime);
 					}
 					
-					
+					for(OutingTimeOfDaily outing : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
+						//外出時間
+						KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																				   KrcdtDayOutingTime.class).orElse(null);
+						if(krcdtDayOutingTime != null) {
+							krcdtDayOutingTime.setData(outing);
+							this.commandProxy().update(krcdtDayOutingTime);
+						}
+						else {
+							this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+									attendanceTime.getYmd(), outing));
+						}
+					}
 				}
 			}
 			if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
