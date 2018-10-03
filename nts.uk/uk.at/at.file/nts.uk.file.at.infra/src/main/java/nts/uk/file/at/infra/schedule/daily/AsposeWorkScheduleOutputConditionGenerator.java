@@ -882,27 +882,28 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								}
 								// Workaround for optional attendance item from KMK002
 								if (attendanceId >= ATTENDANCE_ID_OPTIONAL_START && attendanceId <= ATTENDANCE_ID_OPTIONAL_END) {
-//									Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
-//									optOptionalItem.ifPresent(optionalItem -> {
-//										switch(optionalItem.getOptionalItemAtr()) {
-//										case TIME:
-//											itemValue.setValueType(ValueType.TIME.value);
-//											break;
-//										case NUMBER:
-//											itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
-//											break;
-//										case AMOUNT:
-//											itemValue.setValueType(ValueType.AMOUNT.value);
-//											break;
-//										}
-//									});
+									Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
+									optOptionalItem.ifPresent(optionalItem -> {
+										switch(optionalItem.getOptionalItemAtr()) {
+										case TIME:
+											//int val = Integer.parseInt(itemValue.getValue());
+											itemValue.setValueType(ValueType.TIME.value);
+											break;
+										case NUMBER:
+											itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
+											break;
+										case AMOUNT:
+											itemValue.setValueType(ValueType.AMOUNT.value);
+											break;
+										}
+									});
 									
-									try {
-										int val = Integer.parseInt(itemValue.getValue());
-										itemValue.setValueType(ValueType.TIME.value);
-									} catch (Exception e) {
-										itemValue.setValueType(ValueType.AMOUNT.value);
-									}
+//									try {
+//										int val = Integer.parseInt(itemValue.getValue());
+//										itemValue.setValueType(ValueType.TIME.value);
+//									} catch (Exception e) {
+//										itemValue.setValueType(ValueType.AMOUNT.value);
+//									}
 								}
 								personalPerformanceDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType()));
 							}
@@ -1101,27 +1102,27 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 					// Workaround for optional attendance item from KMK002
 					if (attendanceId >= ATTENDANCE_ID_OPTIONAL_START && attendanceId <= ATTENDANCE_ID_OPTIONAL_END) {
-//						Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
-//						optOptionalItem.ifPresent(optionalItem -> {
-//							switch(optionalItem.getOptionalItemAtr()) {
-//							case TIME:
-//								itemValue.setValueType(ValueType.TIME.value);
-//								break;
-//							case NUMBER:
-//								itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
-//								break;
-//							case AMOUNT:
-//								itemValue.setValueType(ValueType.AMOUNT.value);
-//								break;
-//							}
-//						}); 
+						Optional<OptionalItem> optOptionalItem = lstOptionalItem.stream().filter(opt -> opt.getOptionalItemNo().v() == attendanceId - 640).findFirst();
+						optOptionalItem.ifPresent(optionalItem -> {
+							switch(optionalItem.getOptionalItemAtr()) {
+							case TIME:
+								itemValue.setValueType(ValueType.TIME.value);
+								break;
+							case NUMBER:
+								itemValue.setValueType(ValueType.COUNT_WITH_DECIMAL.value);
+								break;
+							case AMOUNT:
+								itemValue.setValueType(ValueType.AMOUNT.value);
+								break;
+							}
+						}); 
 						
-						try {
-							int val = Integer.parseInt(itemValue.getValue());
-							itemValue.setValueType(ValueType.TIME.value);
-						} catch (Exception e) {
-							itemValue.setValueType(ValueType.AMOUNT.value);
-						}
+//						try {
+//							int val = Integer.parseInt(itemValue.getValue());
+//							itemValue.setValueType(ValueType.TIME.value);
+//						} catch (Exception e) {
+//							itemValue.setValueType(ValueType.AMOUNT.value);
+//						}
 					}
 					
 					detailedDate.actualValue.add(new ActualValue(attendanceId, itemValue.getValue(), itemValue.getValueType()));
