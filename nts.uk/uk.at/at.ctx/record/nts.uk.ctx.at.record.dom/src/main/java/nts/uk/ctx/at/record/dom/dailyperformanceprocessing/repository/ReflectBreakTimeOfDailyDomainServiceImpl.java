@@ -329,6 +329,9 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	public boolean confirmInterFlexWorkSetting(String companyId, int weekdayHolidayClassification,
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 		Optional<FlexWorkSetting> FlexWorkSettingOptional = this.flexWorkSettingRepo.find(companyId, workTimeCode);
+		if(!FlexWorkSettingOptional.isPresent()){
+			return false;
+		}
 		FlexWorkSetting flexWorkSetting = FlexWorkSettingOptional.get();
 		List<DeductionTime> lstTimezone = null;
 		boolean fixRestTime = true;
