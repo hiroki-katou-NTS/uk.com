@@ -65,11 +65,9 @@ module nts.uk.pr.view.qmm012.b {
                         
                         if(matchSalaryID.length > 0) {
                             self.salaryItemId(oldSalaryId);
-                        } else {
+                        } else if(self.statementItemDataList().length > 0) {
                             self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                         }
-                        
-                        $("#B3_3").focus();
                     });
                 });
 
@@ -83,11 +81,9 @@ module nts.uk.pr.view.qmm012.b {
                         
                         if(matchSalaryID.length > 0) {
                             self.salaryItemId(oldSalaryId);
-                        } else {
+                        } else if(self.statementItemDataList().length > 0) {
                             self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                         }
-                        
-                        $("#B3_3").focus();
                     });
                 });
 
@@ -101,7 +97,10 @@ module nts.uk.pr.view.qmm012.b {
                         if(data) {
                             self.loadItemData(data.categoryAtr, data.itemNameCd, data.salaryItemId);
 
-                            $("#B3_3").focus();
+                            setTimeout(function(){
+                                $("tr[data-id='" + x + "'] ").focus();
+                                $("#B3_3").focus();
+                            }, 1000);
                         } else {
                             self.statementItemDataSelected(new StatementItemData(null, self));
                         }
@@ -120,7 +119,6 @@ module nts.uk.pr.view.qmm012.b {
                 service.getStatementItemData(categoryAtr, itemNameCd, salaryItemId).done(function(data: IStatementItemData) {
                     if(data) {
                         self.statementItemDataSelected(new StatementItemData(data, self));
-                        $("#B3_3").focus();
                     } else {
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
@@ -148,6 +146,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.statementItemDataList(data);
                     
                     if(self.statementItemDataList().length <= 0) {
+                        self.salaryItemId(null);
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
                     
@@ -465,11 +464,9 @@ module nts.uk.pr.view.qmm012.b {
                                 
                                 if(matchSalaryID.length > 0) {
                                     self.salaryItemId(oldSalaryId);
-                                } else {
+                                } else if(self.statementItemDataList().length > 0) {
                                     self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                                 }
-                                
-                                $("#B3_3").focus();
                             });
                         });
                     }).fail(err => {
@@ -514,7 +511,6 @@ module nts.uk.pr.view.qmm012.b {
                                     self.create();
                                 } else if(nextSalaryId != null) {
                                     self.salaryItemId(nextSalaryId);
-                                    $("#B3_3").focus();
                                 }
                             });
                         });
