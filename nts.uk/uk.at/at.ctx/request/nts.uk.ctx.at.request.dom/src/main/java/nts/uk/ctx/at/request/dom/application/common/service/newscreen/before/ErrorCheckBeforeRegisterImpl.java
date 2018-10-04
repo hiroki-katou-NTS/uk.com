@@ -221,8 +221,8 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
-		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		List<AppTimeItem> appTimeItems = overTimeInput.stream().filter(x -> x != null).collect(Collectors.toList()).stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
 				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
@@ -252,7 +252,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
 		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
 				employeeId, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
