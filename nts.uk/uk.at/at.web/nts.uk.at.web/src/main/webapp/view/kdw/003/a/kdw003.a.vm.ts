@@ -2979,6 +2979,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                         case 7:
                             //KAF010-休出時間申請
+                            transfer.uiType = 0;
                             nts.uk.request.jump("/view/kaf/010/a/index.xhtml", transfer);
                             break;
 
