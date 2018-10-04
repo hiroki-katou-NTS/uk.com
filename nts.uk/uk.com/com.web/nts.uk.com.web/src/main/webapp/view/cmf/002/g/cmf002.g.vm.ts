@@ -245,14 +245,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let _listOutputCodeConvert = self.listOutputCodeConvert;
             let _codeConvertCurrent = self.codeConvertCurrent;
             block.invisible();
-
-            /*if (_codeConvertCurrent().listCdConvertDetail().length > 0) {
-                dialog.alertError({ messageId: "Msg_659" });
-                block.clear();
-                self.setFocusG2_3();
-                return;
-                
-            }*/
+            $('#G2_3_container').ntsError('clear');
             service.checkBeforeRemove(self.selectedCodeConvert()).done(() => {
                 dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
@@ -286,7 +279,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     self.setFocusG2_3();
                 });
             }).fail(error => {
-                dialog.alertError(error);
+                $('#G2_3_container').ntsError('set', error);
                 block.clear();
                 self.setFocusG2_3();
             });
