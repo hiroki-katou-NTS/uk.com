@@ -106,7 +106,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     _.forEach(setDaySupport, function (value, key) {
                         if (key == "processDate") {
                             let year = value.toString().substr(0, 4);
-                            array.push(new model.ItemModel(year, year + '(' + nts.uk.time.yearInJapanEmpire(value.toString()).toString().split(' ').slice(0, 3).join('') + ')'));
+                            array.push(new model.ItemModel(year, year + '(' + nts.uk.time.yearmonthInJapanEmpire(value.toString()).toString().split(' ').slice(0, 3).join('') + ')'));
                         }
                     });
                 });
