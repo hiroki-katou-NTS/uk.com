@@ -155,8 +155,10 @@ public class MonthlyAggregateProcessService {
 		for(EmployeeSearchDto employee : employees) {
 			
 			if(listFixed.get(1).isUseAtr()) {
-				//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
-				listValueExtractAlarm.addAll(extractErrorAlarmForHoliday(listFixed.get(1), employee, companyID).get());
+				Optional<List<ValueExtractAlarm>> valueExtractAlarms = extractErrorAlarmForHoliday(listFixed.get(1), employee, companyID);
+				if (valueExtractAlarms.isPresent()) {
+					listValueExtractAlarm.addAll(valueExtractAlarms.get());
+				}
 			}
 			
 			for (YearMonth yearMonth : lstYearMonth) {
