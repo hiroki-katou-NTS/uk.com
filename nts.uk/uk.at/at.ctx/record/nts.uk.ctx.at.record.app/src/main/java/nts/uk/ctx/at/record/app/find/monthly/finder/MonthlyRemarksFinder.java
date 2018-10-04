@@ -37,7 +37,7 @@ public class MonthlyRemarksFinder extends MonthlyFinderFacade {
 	public List<MonthlyRemarksDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
-				.filter(c -> c.getClosuteId() == closureId && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
+				.filter(c -> c.getClosureId() == closureId && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
 							&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay())
 				.map(c -> MonthlyRemarksDto.from(c)).collect(Collectors.toList());
 	}
