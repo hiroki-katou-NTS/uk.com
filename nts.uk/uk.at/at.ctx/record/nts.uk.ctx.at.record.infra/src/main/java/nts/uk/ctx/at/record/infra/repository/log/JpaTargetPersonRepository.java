@@ -88,7 +88,7 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 				.filter(item -> item.KrcdtEmpExeTargetSttPK.executionContent == executionContent)
 				.findFirst().get();
 		target.executionState = state;
-		this.commandProxy().update(krcdtEmpExeTarget);
+		this.commandProxy().update(krcdtEmpExeTarget.get());
 	}
 
 }
