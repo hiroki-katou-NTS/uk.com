@@ -21,21 +21,22 @@
         </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
+
         <div id="functions-area-top">
             <!-- D2_1  処理区分 -->
             <div style="margin-left: 5px"
                  data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>
 
             <!-- D2_2  処理区分名称 -->
-            <input  id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessDivisionName', name: '#[QMM005_48]'}"
+            <input tabindex="3" id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessDivisionName', name: '#[QMM005_48]'}"
                    style="width: 150px"/>
 
             <span data-bind="if : mode==0" style="margin-left: 30px">
 					<!-- D2_3 この処理区分を廃止する -->
-                <div data-bind="ntsCheckBox: { checked: enableCheckBox  , style: 'warnpanel' }">#{i18n.getText('QMM005_80')}</div>
+                <div tabindex="4" data-bind="ntsCheckBox: { checked: enableCheckBox  , style: 'warnpanel' }">#{i18n.getText('QMM005_80')}</div>
 
                 <!-- D2_4 支払年月日区分 -->
-                <button data-bind="ntsHelpButton: {position: 'left top',enable: isEnable,image: '../resource/QMM005_01.png' }">?</button>
+                <button tabindex="5" data-bind="ntsHelpButton: {position: 'left top',enable: isEnable,image: '../resource/QMM005_01.png' }">?</button>
 				</span>
         </div>
         
@@ -67,7 +68,7 @@
 
                     <td>
                         <!-- D3_3 毎月の支払日 -->
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="6" data-bind="ntsComboBox: {
 										 name:'#[QMM005_49]', width:100 ,
 										options: datePayment,
 										optionsValue: 'code',
@@ -86,7 +87,7 @@
                         <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_30')}</div>
 
                         <!-- D3_6 個人情報の履歴参照日について -->
-                        <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable,image: '../resource/QMM005_02.png' }">?</button>
+                        <button tabindex="7" data-bind="ntsHelpButton: {position: 'right top',enable: isEnable,image: '../resource/QMM005_02.png' }">?</button>
                     </td>
 
                     <td>
@@ -95,7 +96,7 @@
                     </td>
                     <td>
                         <!-- D3_8 個人情報の履歴参照月 -->
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="8" data-bind="ntsComboBox: {
 											name:'#[QMM005_30]', width:100 ,
 											options: refeMonth,
 											optionsValue: 'code',
@@ -114,7 +115,7 @@
                     </td>
                     <td>
                         <!--D3_11-->
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="9" data-bind="ntsComboBox: {
 											name:'#[QMM005_30]', width:100 ,
 											options: refeDate,
 											optionsValue: 'code',
@@ -140,7 +141,7 @@
                     </td>
                     <!-- D5_2 -->
                     <td style="text-align: right;">
-                        <span style="width: 45px"><input
+                        <span tabindex="10" style="width: 45px"><input
                                 data-bind="ntsNumberEditor: {value: numberOfWorkingDays,required:true, constraint:'ReqStandardWorkingDays' , name:'#[QMM005_33]' }"
                                 style="width: 45px; text-align: left !important;"/></span>
 
@@ -157,7 +158,7 @@
                         <!--D3_14-->
                         <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_47')}</div>
                         <!--D3_15-->
-                        <button data-bind="ntsHelpButton: {position: 'right top',enable: isEnable,image: '../resource/QMM005_03.png' }">?</button>
+                        <button tabindex="11" data-bind="ntsHelpButton: {position: 'right top',enable: isEnable,image: '../resource/QMM005_03.png' }">?</button>
                     </td>
                     <td>
                         <!--D3_16-->
@@ -165,7 +166,7 @@
                     </td>
                     <!-- D3_17 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="12" data-bind="ntsComboBox: {
 											name:'#[QMM005_57]',
 											 width:100 ,
 											options: processingMonth,
@@ -183,7 +184,7 @@
                     </td>
                     <!-- D3_20 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="13" data-bind="ntsComboBox: {
 											name:'#[QMM005_57]', width:100 ,
 											options: disposalDay,
 											optionsValue: 'code',
@@ -204,7 +205,8 @@
                 </tbody>
             </table>
             <div style="height: 40px;" class="flex valign-center">
-            <a class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')}</a>
+                <!--D3_23-->
+            <a tabindex="14" class="hyperlink" data-bind="click: reSize">#{i18n.getText('QMM005_60')}</a>
             </div>
 
             <com:ko-if bind="isAdvanceSetting()">
@@ -230,7 +232,7 @@
                     </td>
                     <!-- D4_3 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="15" data-bind="ntsComboBox: {
 											name:'#[QMM005_32]', width:100 ,
 											options: printingMonth,
 											optionsValue: 'code',
@@ -260,7 +262,7 @@
                     </td>
                     <!-- D4_9 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="16" data-bind="ntsComboBox: {
 											name:'#[QMM005_64]', width:100 ,
 											options: monthsCollected,
 											optionsValue: 'code',
@@ -306,7 +308,7 @@
                     </td>
                     <!-- D4_15 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="17" data-bind="ntsComboBox: {
 											name:'#[QMM005_69]', width:100 ,
 											options: guaranteedBaseYear,
 											optionsValue: 'code',
@@ -319,7 +321,7 @@
                     </td>
                     <!-- D4_17 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="18" data-bind="ntsComboBox: {
 											name:'#[QMM005_70]', width:100 ,
 											options: guaranteedBaseMonth,
 											optionsValue: 'code',
@@ -332,7 +334,7 @@
                     </td>
                     <!-- D4_19 -->
                     <td>
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="19" data-bind="ntsComboBox: {
 											name:'#[QMM005_44]', width:100 ,
 											options: guaranteedBaseDate,
 											optionsValue: 'code',
@@ -367,7 +369,7 @@
                     <td><span class="label">#{i18n.getText('QMM005_72')}</span></td>
                     <td><!--  D4_23 -->
 
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="20" data-bind="ntsComboBox: {
 											name:'#[QMM005_73]', width:100 ,
 											options: employmentInsuranceStandardMonth,
 											optionsValue: 'code',
@@ -381,7 +383,7 @@
                     </td>
                     <td><!--  D4_24 -->
 
-                        <div data-bind="ntsComboBox: {
+                        <div tabindex="21" data-bind="ntsComboBox: {
 											name:'#[QMM005_45]', width:100 ,
 											options: employmentInsuranceStandardDate,
 											optionsValue: 'code',
@@ -419,7 +421,7 @@
 
                 <!-- D4_30 -->
 
-                <div data-bind="ntsRadioBoxGroup: {
+                <div tabindex="22" data-bind="ntsRadioBoxGroup: {
                                     name:'#[QMM005_116]',
 									options: timeCloseDate,
 									optionsValue: 'code',
@@ -435,7 +437,7 @@
                 <div class="label" style="width: 80px;margin-left: 245px;">#{i18n.getText('QMM005_68')}</div>
                 <!--  D4_34 -->
 
-                <div data-bind="ntsComboBox: {
+                <div tabindex="23" data-bind="ntsComboBox: {
 											name:'#[QMM005_113]', width:100 ,
 											options:  timeBaseYear,
 											optionsValue: 'code',
@@ -450,7 +452,7 @@
 
                 <!--  D4_36 -->
 
-                <div class="item-padding" data-bind="ntsComboBox: {
+                <div tabindex="24" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_114]', width:100 ,
 											options: timeClosingStandardMonth,
 											optionsValue: 'code',
@@ -465,7 +467,7 @@
 
                 <!--  D4_38 -->
 
-                <div class="item-padding" data-bind="ntsComboBox: {
+                <div tabindex="25" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_115]', width:100 ,
 											options: timeReferenceStandardDay,
 											optionsValue: 'code',
@@ -485,10 +487,10 @@
                 <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>
 
                 <!-- D4_41 -->
-                <span class="label" style="padding-left: 105px;">#{i18n.getText('QMM005_68')}</span>
+                <span class="label" style="padding-left: 110px;">#{i18n.getText('QMM005_68')}</span>
                 <!--  D4_42 -->
 
-                <div data-bind="ntsComboBox: {
+                <div tabindex="26" data-bind="ntsComboBox: {
 											name:'#[QMM005_77]', width:100 ,
 											options: yearSelectClassification,
 											optionsValue: 'code',
@@ -503,7 +505,7 @@
 
                 <!--  D4_44 -->
 
-                <div class="item-padding" data-bind="ntsComboBox: {
+                <div tabindex="27" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_78]', width:100 ,
 											options: incomeTaxBaseMonth,
 											optionsValue: 'code',
@@ -518,7 +520,7 @@
 
                 <!--  D4_46 -->
 
-                <div class="item-padding" data-bind="ntsComboBox: {
+                <div tabindex="28" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_46]', width:100 ,
 											options: incomeTaxBaseDate,
 											optionsValue: 'code',
@@ -537,14 +539,15 @@
 
         </div>
         <div id="functions-area-bottom">
-            <button class="x-large proceed "
+            <button tabindex="29" class="x-large proceed "
                     data-bind="click: saveCharacterSetting,enable: $root.errors.isEmpty" >#{i18n.getText('QMM005_1')}</button>
-            <button class="large"
+            <button tabindex="30" class="large"
                     data-bind="click: cancelCharacterSetting">#{i18n.getText('QMM005_23')}</button>
         </div>
 
 
     </ui:define>
+
 </ui:composition>
 </body>
 </html>

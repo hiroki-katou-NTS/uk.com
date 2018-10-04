@@ -105,19 +105,35 @@ public class QpbmtSetDaySupport extends UkJpaEntity implements Serializable {
 	}
 
 	public SetDaySupport toDomain() {
-		return new SetDaySupport(this.setDaySupportPk.cid, this.setDaySupportPk.processCateNo,
-				this.setDaySupportPk.processDate, this.closeDateTime, this.empInsurdStanDate,
-				this.closureDateAccounting, this.paymentDate, this.empExtraRefeDate, this.socialInsurdStanDate,
-				this.socialInsurdCollecMonth, this.incomeTaxDate, this.numberWorkDay);
+		return new SetDaySupport(
+				this.setDaySupportPk.cid,
+				this.setDaySupportPk.processCateNo,
+				this.setDaySupportPk.processDate,
+				this.closeDateTime,
+				this.empInsurdStanDate,
+				this.closureDateAccounting,
+				this.paymentDate,
+				this.empExtraRefeDate,
+				this.socialInsurdStanDate,
+				this.socialInsurdCollecMonth,
+				this.incomeTaxDate,
+				this.numberWorkDay
+		);
 	}
 
 	public static QpbmtSetDaySupport toEntity(SetDaySupport domain) {
 		return new QpbmtSetDaySupport(
 				new QpbmtSetDaySupportPk(domain.getCid(), domain.getProcessCateNo(),
 						domain.getProcessDate().v().intValue()),
-				domain.getCloseDateTime(), domain.getEmpInsurdStanDate(), domain.getClosureDateAccounting(),
-				domain.getPaymentDate(), domain.getEmpExtraRefeDate(), domain.getSocialInsurdStanDate(),
-				domain.getSocialInsurdCollecMonth(), domain.getIncomeTaxDate(), domain.getNumberWorkDay().v());
+				domain.getCloseDateTime(),
+				domain.getEmpInsurdStanDate(),
+				domain.getClosureDateAccounting(),
+				domain.getPaymentDate(),
+				domain.getEmpExtraRefeDate(),
+				domain.getSocialInsurdStanDate(),
+				domain.getSocialInsurdCollecMonth(),
+				domain.getIncomeTaxDate(),
+				domain.getNumberWorkDay().v());
 	}
 
 }

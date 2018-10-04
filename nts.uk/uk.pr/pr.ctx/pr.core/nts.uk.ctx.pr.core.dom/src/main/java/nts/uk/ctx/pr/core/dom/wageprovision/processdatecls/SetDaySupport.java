@@ -75,10 +75,18 @@ public class SetDaySupport extends AggregateRoot {
 	 */
 	private ReqStandardWorkingDays numberWorkDay;
 
-	public SetDaySupport(String cid, int processCateNo, int processDate, GeneralDate closeDateTime,
-			GeneralDate empInsurdStanDate, GeneralDate closureDateAccounting, GeneralDate paymentDate,
-			GeneralDate empExtraRefeDate, GeneralDate socialInsurdStanDate, int socialInsurdCollecMonth,
-			GeneralDate incomeTaxDate, BigDecimal numberWorkDay) {
+	public SetDaySupport(String cid,
+						 int processCateNo,
+						 int processDate,
+						 GeneralDate closeDateTime,
+						 GeneralDate empInsurdStanDate,
+						 GeneralDate closureDateAccounting,
+						 GeneralDate paymentDate,
+						 GeneralDate empExtraRefeDate,
+						 GeneralDate socialInsurdStanDate,
+						 int socialInsurdCollecMonth,
+						 GeneralDate incomeTaxDate,
+						 BigDecimal numberWorkDay) {
 		super();
 		this.cid = cid;
 		this.processCateNo = processCateNo;

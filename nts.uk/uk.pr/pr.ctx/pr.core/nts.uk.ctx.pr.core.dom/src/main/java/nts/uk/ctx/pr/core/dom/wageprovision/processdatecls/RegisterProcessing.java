@@ -107,7 +107,7 @@ public class RegisterProcessing {
             //No2.3 補足資料
             GeneralDate closureDateAccounting = initDateTime(currentYearMonth.year(), currentYearMonth.month(), disposalDay);
             if (processMonth == PreviousMonthClassification.LAST_MONTH.value) {
-                closureDateAccounting = convertDate(closureDateAccounting).addMonths(-1);
+                closureDateAccounting = closureDateAccounting.addMonths(-1);
             }
 
             //No2.1 補足資料
@@ -116,7 +116,7 @@ public class RegisterProcessing {
             //No2.2 補足資料
             GeneralDate empExtraRefeDate = initDateTime(currentYearMonth.year(), currentYearMonth.month(), refeDate);
             if (refeMonth == PreviousMonthClassification.LAST_MONTH.value) {
-                empExtraRefeDate = convertDate(empExtraRefeDate).addMonths(-1);
+                empExtraRefeDate = empExtraRefeDate.addMonths(-1);
             }
 
             //No2.5 補足資料
@@ -199,8 +199,7 @@ public class RegisterProcessing {
         if (month == 2 && day > 29 && year % 4 == 0)
             return GeneralDate.ymd(year, 2, 29);
         else {
-            int lastDate = YearMonth.of(year, month).lastDateInMonth();
-            return GeneralDate.ymd(year, month, (day == DateSelectClassification.LAST_DAY_MONTH.value) ? lastDate : day);
+            return GeneralDate.ymd(year, month, (day == DateSelectClassification.LAST_DAY_MONTH.value) ? YearMonth.of(year, month).lastDateInMonth() : day);
         }
     }
 }

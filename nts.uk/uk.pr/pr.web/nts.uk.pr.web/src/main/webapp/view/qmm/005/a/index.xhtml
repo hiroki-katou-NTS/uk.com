@@ -74,11 +74,11 @@
                                             data-bind="text: processInfomation.processDivisionName()"></label>
                                 </div>
                                 <!--A2_9 編集-->
-                                <button tabindex="-1" class="small" id="button_update" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
+                                <button tabindex="6" class="small" id="button_update" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
                             </div>
                             <com:ko-if bind="processInfomation.processDivisionName() == ''">
                                 <!--A4_1-->
-                            <button id="button_register" tabindex="-1" style="width: 150px; margin-left: 2px " class="small"
+                            <button id="button_register" tabindex="7" style="width: 150px; margin-left: 2px " class="small"
                                     data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
                             </com:ko-if>
                         </td>
@@ -90,7 +90,7 @@
                         <td>
                             <div class="flex valign-center">
                             <!--A2_11 処理年一覧-->
-                            <div tabindex="6" id="processYears" data-bind="ntsComboBox: {
+                            <div tabindex="8" id="processYears" data-bind="ntsComboBox: {
                                 name: '#[#QMM005_30]',
                                  width:78,
                                 options: years,
@@ -107,7 +107,7 @@
                             <span
                                 class="caret-right caret-inline"></span>
                             <!--A2_14 次回給与支払日-->
-                            <div tabindex="7" id="yearMonthProcess" data-bind="ntsComboBox: {
+                            <div tabindex="9" id="yearMonthProcess" data-bind="ntsComboBox: {
                             name: '#[#QMM005_47]',
                             width:270,
                             options: monthsSubcriceYear,

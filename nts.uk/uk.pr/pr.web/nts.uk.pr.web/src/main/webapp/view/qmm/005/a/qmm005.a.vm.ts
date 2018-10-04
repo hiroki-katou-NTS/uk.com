@@ -65,16 +65,15 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
                             self.resetEmployee(processInformationUpdate.processCateNo);
                             self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(false);
-                            nts.uk.ui.dialog.info({ messageId: "MsgQ_158" });
                         });
                     }
-                    $('#A2_2 #button_register').focus();
+                    $('#A2_2 #button_register').eq(processInfomation-1).focus();
                 }
                 if (action == 1) {
                     self.itemBinding.removeAll();
                     self.startPage().done(function () {
                         setTimeout(function () {
-                            $('#A2_2 #processYears').focus();
+                            $('#A2_2 #processYears').eq(processInfomation.processCateNo-1).focus();
                         },100);
                     })
 
@@ -190,6 +189,29 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     // });
                     self.itemTable.setData(data);
                 }
+
+                let datontai:Array<number>=new Array();
+                for(let i=0;i<self.itemTable.processInfomations.length;i++){
+                    datontai.push(self.itemTable.processInfomations[i].processCateNo)
+                }
+                let arrItemBindingProcessinformationsTemp:Array<model.ProcessInfomation>=new Array();
+                for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
+                    if(_.includes(datontai,i+1)){
+                        let index=_.indexOf(datontai,i+1);
+                        arrItemBindingProcessinformationsTemp.push(self.itemTable.processInfomations[index]);
+                    }
+                    else{
+                        arrItemBindingProcessinformationsTemp.push(new model.ProcessInfomation({
+                                processCateNo: i + 1,
+                                processDivisionName: '',
+                                deprecatCate: 0
+                            }
+                        ));
+                    }
+                }
+
+
+
                 for (let i: number = self.itemTable.processInfomations.length; i < MAX_NUMBER_SETTING; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
                             processCateNo: i + 1,
@@ -216,7 +238,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         }
                     }
                     self.itemBinding.push(new ItemBinding(
-                        self.itemTable.processInfomations[i],
+                        //self.itemTable.processInfomations[i],
+                        arrItemBindingProcessinformationsTemp[i],
                         _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
                                 return o.processCateNo == i + 1;
                             }),

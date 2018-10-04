@@ -406,7 +406,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             let expanClass =document.getElementsByClassName("ui-dialog")[0];
             
             if (!self.isAdvanceSetting()) {
-                windowSize.$dialog.height(500);
+                windowSize.$dialog.height(510);
                 self.isAdvanceSetting(true);
                 
                 //expanClass.addClass('expanDialog');
