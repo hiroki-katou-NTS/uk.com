@@ -129,6 +129,56 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             self.startMonth = ko.observable('1');
             self.inline = ko.observable(true);
             self.required = ko.observable(true);
+            self.dailyPaymentDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.empExtractionRefDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.socialInsuranceMonthCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.specPrintDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.numWorkingDaysCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.socialInsuranceDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.empInsuranceStandardDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.timeClosingDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.incomeTaxReferenceCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
+            self.accountingClosureDateCheck.subscribe(function (newValue) {
+                if(newValue){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -141,7 +191,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                 var advancedSetting = data.valPayDateSetDto.advancedSetting;
                 let tranferModel = {
                     E1_3_0: params.processCateNo,
-                    E1_3_1: params.processInfomation.processDivisionName,
+                    E1_3_1: params.processInfomation.processCls,
                     E1_5_0: params.processingYear,
                     E2_2: params.processingYear,
                     E2_8_0: getText(ENUM_DATE_SELECT_CLASSIFICATION[basicSetting.monthlyPaymentDate.datePayMent - 1]),
@@ -190,7 +240,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
             // E2_8
             self.dailyPaymentDate = ko.observable(format(getText("QMM005_102"), tranferModel.E2_8_0));
             //E2_10
-            self.empExtractionRefDate = ko.observable(format(getText("QMM005_102"), tranferModel.E2_10_0, tranferModel.E2_10_1));
+            self.empExtractionRefDate = ko.observable(format(getText("QMM005_103"), tranferModel.E2_10_0, tranferModel.E2_10_1));
             // E2_12
             self.socialInsuranceCollectionMonthSetting = ko.observable(format(getText("QMM005_104"), tranferModel.E2_12_0));
             // E2_14
@@ -221,7 +271,8 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                 !self.timeClosingDateCheck() &&
                 !self.incomeTaxReferenceCheck() &&
                 !self.accountingClosureDateCheck()) {
-                nts.uk.ui.dialog.alertError({messageId: "MsgQ_8"});
+                $('#E2_6').ntsError('set', {messageId: "MsgQ_8"});
+                return;
             }
             setShared("QMM005eParams", {
                 reflect: true,
