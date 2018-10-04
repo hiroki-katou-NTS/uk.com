@@ -177,7 +177,7 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
             occAccIsHis.endYearMonth = '999912';
             occAccIsHis.display = self.convertMonthYearToString(occAccIsHis.startYearMonth) + " ～ " + self.convertMonthYearToString(occAccIsHis.endYearMonth);
             if (list && list.length > 0) {
-                let end = Number(start.toString().slice(4, 6)) == 1 ? (start + 11) : (start - 1);
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
                 list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " ～ " + self.convertMonthYearToString((end).toString());
             }
             listOccAccIsHis.push(occAccIsHis);

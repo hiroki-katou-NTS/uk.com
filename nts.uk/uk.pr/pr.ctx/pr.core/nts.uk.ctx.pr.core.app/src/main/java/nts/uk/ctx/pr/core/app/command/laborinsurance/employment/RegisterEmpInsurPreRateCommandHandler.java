@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.command.laborinsurance.employment;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,12 +30,12 @@ public class RegisterEmpInsurPreRateCommandHandler extends CommandHandler<Regist
 	    String newHistID = IdentifierUtil.randomUniqueId();
 	    if (command.isNewMode()) {
 	    	List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
-	    		return new EmpInsurBusBurRatio(newHistID, item.getEmpPreRateId(), new BigDecimal(item.getIndBdRatio()), new BigDecimal(item.getEmpContrRatio()), item.getPerFracClass(), item.getBusiOwFracClass());
+	    		return new EmpInsurBusBurRatio(newHistID, item.getEmpPreRateId(), item.getIndBdRatio(), item.getEmpContrRatio(), item.getPerFracClass(), item.getBusiOwFracClass());
 	        	}).collect(Collectors.toList());
 	    	empInsurBusBurRatioService.addEmpInsurBusBurRatio(newHistID, listEmpInsurBusBurRatio, startYearMonth, endYearMonth);
 	    } else {
 	    	List<EmpInsurBusBurRatio> listEmpInsurBusBurRatio  = command.getListEmpInsurPreRate().stream().map(item -> {
-		        return new EmpInsurBusBurRatio(item.getHisId(), item.getEmpPreRateId(), new BigDecimal(item.getIndBdRatio()), new BigDecimal(item.getEmpContrRatio()), item.getPerFracClass(), item.getBusiOwFracClass());
+		        return new EmpInsurBusBurRatio(item.getHisId(), item.getEmpPreRateId(), item.getIndBdRatio(), item.getEmpContrRatio(), item.getPerFracClass(), item.getBusiOwFracClass());
 		        }).collect(Collectors.toList());
 	    	empInsurBusBurRatioService.updateEmpInsurBusBurRatio(listEmpInsurBusBurRatio);
 	    }

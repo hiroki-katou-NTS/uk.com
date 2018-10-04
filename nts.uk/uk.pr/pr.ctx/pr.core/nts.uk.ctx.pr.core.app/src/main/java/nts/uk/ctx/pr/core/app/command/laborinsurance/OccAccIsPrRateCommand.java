@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.laborinsurance;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 
 @Value
@@ -17,6 +19,6 @@ public class OccAccIsPrRateCommand {
     /**
     * 事業主負担率
     */
-    private Long empConRatio;
+    private BigDecimal empConRatio;
 
 }

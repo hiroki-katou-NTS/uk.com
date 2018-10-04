@@ -225,7 +225,7 @@ module nts.uk.pr.view.qmm011.b.viewmodel {
             emplInsurHis.endYearMonth = '999912';
             emplInsurHis.display = self.convertMonthYearToString(emplInsurHis.startYearMonth) + " " +to +" "+ self.convertMonthYearToString(emplInsurHis.endYearMonth);
             if (list && list.length > 0) {
-                let end = Number(start.toString().slice(4, 6)) == 1 ? (start + 11) : (start - 1);
+                let end = Number(start.toString().slice(4, 6)) == 1 ? (start - 89) : (start - 1);
                 list[FIRST].display = self.convertMonthYearToString(list[FIRST].startYearMonth) + " "+ to + " "+ self.convertMonthYearToString((end).toString());
             }
             listEmpInsHis.push(emplInsurHis);
