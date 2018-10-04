@@ -26,8 +26,8 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSettingCd;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
-import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -233,6 +233,9 @@ public class StdOutputCondSetService {
 			outCndDetail.get().setConditionSettingCd(new ConditionSettingCd(cndSetCode));
 			for (OutCndDetailItem outCndDetailItem : outCndDetail.get().getListOutCndDetailItem()) {
 				outCndDetailItem.setConditionSettingCd(new ConditionSettingCd(cndSetCode));
+				for (SearchCodeList searchCodeList : outCndDetailItem.getListSearchCodeList()) {
+					searchCodeList.setConditionSetCode(new ExternalOutputConditionCode(cndSetCode));
+				}
 			}
 		}
 		for (StandardOutputItem standardOutputItem : listStdOutputItem) {
