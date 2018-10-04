@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 let items = _.filter(self.ctgItemDataList(), { "tableName": table });
                 self.itemList(items);
                 self.focusFirstRowD5_4();
-                $('#D5_4').focus();
+                $('#D5_4_container').focus();
             })
         }
 
