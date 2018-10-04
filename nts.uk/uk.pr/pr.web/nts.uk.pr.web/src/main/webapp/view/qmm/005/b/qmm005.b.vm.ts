@@ -219,18 +219,42 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 var array = [];
                 service.getValPayDateSet(self.processCateNo).done(function (data) {
                         for (index = 1; index < 13; index++) {
+                            let socialInsuranceCollectionMonth =  self.passYear(self.processingYearInput(), index + data.advancedSetting.salaryInsuColMon.monthCollected - SOCIAL_INSU_COLLE_MONTH_INDEX, false);
+                            let specificationPrintDate = self.passYear(self.processingYearInput(), index - parseInt(data.advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX,false);
+                            let year = parseInt(self.processingYearInput()) + data.advancedSetting.sociInsuStanDate.baseYear - SOCI_INSU_BASE_YEAR_INDEX;
+                            let month = data.advancedSetting.sociInsuStanDate.baseMonth;
+                            if (month == 0 || month == 1) {
+                                month = index + data.advancedSetting.sociInsuStanDate.baseMonth - SOCI_INSU_BASE_MONTH_INDEX;
+                            } else {
+                                month = month - SOCI_INSU_BASE_MONTH_INDEX;
+                            }
+                            let date = data.advancedSetting.sociInsuStanDate.refeDate;
+                            let socialInsuranceStandardDate = self.preDateTime(year, month, date);
+                            let timeClosingDate;
+                            if (data.advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) {
+                                month = index - data.basicSetting.employeeExtractionReferenceDate.refeMonth;
+                                timeClosingDate = self.preDateTime(self.passYear(self.processingYearInput(), month, false).year, self.passYear(self.processingYearInput(), month, false).month, data.basicSetting.employeeExtractionReferenceDate.refeDate);
+                            } else {
+                                let year = parseInt(self.processingYearInput()) + parseInt(data.advancedSetting.closeDate.baseYear) - CLOSE_DATE_YEAR_INDEX;
+                                let month = index + data.advancedSetting.closeDate.baseMonth - CLOSE_DATE_MONTH_INDEX;
+                                timeClosingDate = self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, data.advancedSetting.closeDate.refeDate);
+                            }
+                            year = parseInt(self.processingYearInput()) + parseInt(data.advancedSetting.incomTaxBaseYear.baseYear) - INCOM_TAX_BASEYEAR_YEAR_INDEX;
+                            let incomeTaxReferenceDate = self.preDateTime(year, data.advancedSetting.incomTaxBaseYear.baseMonth, data.advancedSetting.incomTaxBaseYear.refeDate);
+                            month = index - parseInt(data.basicSetting.accountingClosureDate.processMonth); //THIS_MONTH:0 LAST_MONTH :1
+                            let accountingClosureDate = self.preDateTime(self.passYear(self.processingYearInput(), month, false).year, self.passYear(self.processingYearInput(), month, false).month, data.basicSetting.accountingClosureDate.disposalDay);
                             let objItem = {
                                 targetMonth: ko.observable(index + '月の設定'),
                                 paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYearInput(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
                                 employeeExtractionReferenceDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.basicSetting.employeeExtractionReferenceDate.refeDate)),
-                                socialInsuranceCollectionMonth: ko.observable(parseInt(self.processingYearInput() + self.fullMonth(index))),
-                                specificationPrintDate: ko.observable(parseInt(self.processingYearInput() + '' + index)),
+                                socialInsuranceCollectionMonth: ko.observable(parseInt(socialInsuranceCollectionMonth.year)*100 + parseInt(socialInsuranceCollectionMonth.month)),
+                                specificationPrintDate: ko.observable(parseInt(specificationPrintDate.year)*100 + parseInt(specificationPrintDate.month)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
-                                socialInsuranceStandardDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.advancedSetting.sociInsuStanDate.refeDate)),
-                                employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYearInput() - 1), index, data.advancedSetting.empInsurStanDate.refeDate)),
-                                timeClosingDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.advancedSetting.closeDate.refeDate)),
-                                incomeTaxReferenceDate: ko.observable(self.preDateTime(self.processingYearInput(), data.advancedSetting.incomTaxBaseYear.baseMonth, data.advancedSetting.incomTaxBaseYear.refeDate)),
-                                accountingClosureDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.basicSetting.accountingClosureDate.disposalDay))
+                                socialInsuranceStandardDate: ko.observable(socialInsuranceStandardDate),
+                                employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYearInput() - 1), data.advancedSetting.empInsurStanDate.baseMonth, data.advancedSetting.empInsurStanDate.refeDate)),
+                                timeClosingDate: ko.observable(timeClosingDate),
+                                incomeTaxReferenceDate: ko.observable(incomeTaxReferenceDate),
+                                accountingClosureDate: ko.observable(accountingClosureDate)
                             }
                             array.push(objItem);
                         }
@@ -320,7 +344,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // ※4　要勤務日数チェックが入っている場合のみ更新する
                         if (params.checkbox.specPrintDateCheck) {
                             let year = parseInt(<string>self.processingYear());
-                            let month = index + parseInt(advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX;
+                            let month = index - parseInt(advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX;
                             settingPayment.specificationPrintDate(self.passYear(year, month, false).year.toString() + self.fullMonth(self.passYear(year, month, false).month));
                         }
                         // B4_16	要勤務日数
@@ -344,7 +368,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B6_8		雇用保険基準日
                         // ※7　雇用保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.empInsuranceStandardDateCheck) {
-                            settingPayment.employmentInsuranceStandardDate(self.preDateTime(self.processingYear(), advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
+                            settingPayment.employmentInsuranceStandardDate(self.preDateTime(parseInt(self.processingYear()) - 1 , advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
                         }
                         // B6_9		勤怠締め日
                         // ※10 勤怠締め日チェックが入っている場合のみ更新する
