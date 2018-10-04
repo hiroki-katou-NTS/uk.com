@@ -159,6 +159,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             $('#ex_output_wizard').ntsWizard("next");
         }
         previous() {
+            $('#component-items-list').ntsError('clear');
             $('#ex_output_wizard').ntsWizard("prev");
         }
 
