@@ -6,7 +6,8 @@ import java.util.Optional;
  * 給与会社単価履歴
  */
 public interface PayrollUnitPriceHistoryRepository {
-    List<PayrollUnitPriceHistory> getAllPayrollUnitPriceHistory();
+
+    List<PayrollUnitPriceHistory> getAllPayrollUnitPriceHistoryByCidAndCode(String id, String code);
 
     Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid, String code, String hisId);
 

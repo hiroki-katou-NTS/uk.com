@@ -23,13 +23,8 @@ public class PayrollUnitPriceHistoryFinder
     @Inject
     private PayrollUnitPriceHistoryRepository finder;
 
-    public List<PayrollUnitPriceHistoryDto> getAllPayrollUnitPriceHistory(){
-        return finder.getAllPayrollUnitPriceHistory().stream().map(item -> PayrollUnitPriceHistoryDto.fromDomain(item))
+    public List<PayrollUnitPriceHistoryDto> getAllPayrollUnitPriceHistoryByCidAndCode(String cid, String code){
+        return finder.getAllPayrollUnitPriceHistoryByCidAndCode(cid,code).stream().map(item -> PayrollUnitPriceHistoryDto.fromDomain(item))
                 .collect(Collectors.toList());
     }
-    public PayrollUnitPriceHistoryDto getPayrollUnitPriceHis(String hisId){
-        String cId = AppContexts.user().companyId();
-        return PayrollUnitPriceHistoryDto.fromDomain(finder.getPayrollUnitPriceHistoryById(cId,hisId).get());
-    }
-
 }

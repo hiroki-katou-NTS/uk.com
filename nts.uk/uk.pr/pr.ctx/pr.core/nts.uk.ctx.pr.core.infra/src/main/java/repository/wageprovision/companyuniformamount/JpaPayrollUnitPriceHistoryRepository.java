@@ -14,10 +14,13 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPriceHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code AND  f.payUnitPriceHisPk.hisId =:hisId ";
+    private static final String SELECT_BY_CID_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code ";
 
     @Override
-    public List<PayrollUnitPriceHistory> getAllPayrollUnitPriceHistory(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtPayUnitPriceHis.class)
+    public List<PayrollUnitPriceHistory> getAllPayrollUnitPriceHistoryByCidAndCode(String cid, String code) {
+        return this.queryProxy().query(SELECT_BY_CID_CODE_STRING, QpbmtPayUnitPriceHis.class)
+                .setParameter("cid",cid)
+                .setParameter("code",code)
                 .getList(item -> item.toDomain());
     }
 
