@@ -2472,7 +2472,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 					excessOutsideTime = breakdown.get(excessNo);
 				}
 			}
-			switch (i){
+			switch (i + 1){
 			case 1:
 				toEntityExcessOutsideWork1(excessOutsideTime);
 				break;
