@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 780,
+                width : 840,
                 height : 495
             };
         </script>
@@ -39,9 +39,9 @@
             innerDrag: { left: false, right: true },
             outerDrag: { left: true, right: true }
 	        }">
-            </div>
-        <hr/>
-        <div id="button-wraper">
+            </div>  
+        </div>
+        <div id="functions-area-bottom">
             <!--    F3_1    決定-->
             <button type="button" class="proceed x-large"
                     data-bind="click: submit"
@@ -49,7 +49,6 @@
             <!--    F3_2	キャンセル-->
             <button type="button" data-bind="click: cancel"
                     tabindex="5">#{i18n.getText('QMM005_61')}</button>
-        </div>
         </div>
     </ui:define>
 </ui:composition>

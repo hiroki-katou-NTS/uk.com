@@ -47,15 +47,12 @@
             <div style="margin-top: 20px">
             <div
                  data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>
-
             <!-- D2_2  処理区分名称 -->
             <input tabindex="3" id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessCls', name: '#[QMM005_48]'}"
                    style="width: 150px"/>
-
             <span data-bind="if : mode==0" style="margin-left: 30px">
 					<!-- D2_3 この処理区分を廃止する -->
                 <div tabindex="4" data-bind="ntsCheckBox: { checked: enableCheckBox  , style: 'warnpanel' }">#{i18n.getText('QMM005_80')}</div>
-
                 <!-- D2_4 支払年月日区分 -->
                 <button tabindex="5" data-bind="ntsHelpButton: {position: 'left top',enable: isEnable,image: '../resource/QMM005_01.png' }">?</button>
 				</span>
@@ -85,7 +82,6 @@
                         <!-- D3_2 支払月の -->
                         <span class="label" style="margin-left: 30px;">#{i18n.getText('QMM005_50')}</span>
                     </td>
-
                     <td>
                         <!-- D3_3 毎月の支払日 -->
                         <div tabindex="6" data-bind="ntsComboBox: {
@@ -96,7 +92,6 @@
 										value: datePaymentSelectedCode,
 										optionsText: 'name',								
 										columns: [
-											
 											{ prop: 'name', length: 5 },
 										]}"></div>
                     </td>
@@ -124,7 +119,6 @@
 											value: refeMonthSelectedCode,
 											optionsText: 'name',
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -143,7 +137,6 @@
 											value: refeDateSelectedCode,
 											optionsText: 'name',
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -151,9 +144,7 @@
                         <!--D3_12-->
                         <div class="label">#{i18n.getText('QMM005_55')}</div>
                     </td>
-
                 </tr>
-
                 <tr>
                     <!-- D5_1 -->
                     <td>
@@ -164,14 +155,11 @@
                         <span tabindex="10" style="width: 45px"><input
                                 data-bind="ntsNumberEditor: {value: numberOfWorkingDays,required:true, constraint:'ReqStandardWorkingDays' , name:'#[QMM005_33]', option: {decimallength: 2} }"
                                 style="width: 45px; text-align: left !important;"/></span>
-
                     </td>
                     <td>
                         <!--D5_3-->
                         <span class="label" style="margin-left: 10px;">#{i18n.getText('QMM005_40')}</span>
                     </td>
-
-
                 </tr>
                 <tr>
                     <td>
@@ -211,9 +199,7 @@
 											visibleItemsCount: 8,
 											value: disposalDaySelectedCode,
 											optionsText: 'name',
-										
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -260,7 +246,6 @@
 											value: printingMonthSelectedCode,
 											optionsText: 'name',											
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -305,7 +290,6 @@
             <!-- D4_12 -->
             <div class="label"
                  style="padding-left: 215px;margin-top: 10px;margin-bottom: 10px;">#{i18n.getText('QMM005_66')}</div>
-
             <table>
                 <colgroup>
                     <col width="215px"/>
@@ -335,7 +319,6 @@
 											visibleItemsCount: 8,
 											value: guaranteedBaseYearSelectedCode,											
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -348,7 +331,6 @@
 											visibleItemsCount: 8,
 											value: guaranteedBaseMonthSelectedCode,
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -361,7 +343,6 @@
 											visibleItemsCount: 8,
 											value: guaranteedBaseDateSelectedCode,
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
@@ -379,7 +360,6 @@
                     <col width="120px"/>
                 </colgroup>
                 <tbody>
-
                 <tr>
                     <!-- D4_21  -->
                     <td>
@@ -411,36 +391,22 @@
 											value: employmentInsuranceStandardDateSelectedCode,
 											optionsText: 'name',
 											columns: [
-
 												{ prop: 'name', length: 5 },
 											]}"></div>
                     </td>
-
-
                 </tr>
                 </tbody>
             </table>
 
 
             <!-- D4_27 -->
-
-
             <div class="label" style="padding-left: 215px">#{i18n.getText('QMM005_74')}</div>
-
-
             <!-- D4_28 -->
-
-
-            <div class="label" style="padding-left: 215px">#{i18n.getText('QMM005_75')}</div>
-
-
+            <div class="label" style="padding-left: 215px; white-space: pre-wrap;">#{i18n.getText('QMM005_75')}</div>
             <div class="flex valign-center" style="padding-top: 20px;">
                 <!-- D4_29 -->
-
                 <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_112')}</div>
-
                 <!-- D4_30 -->
-
                 <div tabindex="22" data-bind="ntsRadioBoxGroup: {
                                     name:'#[QMM005_116]',
 									options: timeCloseDate,
@@ -450,8 +416,6 @@
 									}" style="width: 240px;margin-left: 95px;"></div>
 
             </div>
-
-
             <div class="flex valign-center" style="margin-top: 5px">
                 <!-- D4_33 -->
                 <div class="label" style="width: 80px;margin-left: 245px;">#{i18n.getText('QMM005_68')}</div>
@@ -466,12 +430,10 @@
 											optionsText: 'name',
 											enable:enableCloseDate,
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
 
                 <!--  D4_36 -->
-
                 <div tabindex="24" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_114]', width:100 ,
 											options: timeClosingStandardMonth,
@@ -481,12 +443,9 @@
 											optionsText: 'name',
 											enable:enableCloseDate,
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-
                 <!--  D4_38 -->
-
                 <div tabindex="25" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_115]', width:100 ,
 											options: timeReferenceStandardDay,
@@ -496,7 +455,6 @@
 											optionsText: 'name',
 											enable:enableCloseDate,
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
 
@@ -505,11 +463,9 @@
                 <!-- D4_40 -->
 
                 <div data-bind="ntsFormLabel: {required: labelRequired}">#{i18n.getText('QMM005_46')}</div>
-
                 <!-- D4_41 -->
                 <span class="label" style="padding-left: 110px;">#{i18n.getText('QMM005_68')}</span>
                 <!--  D4_42 -->
-
                 <div tabindex="26" data-bind="ntsComboBox: {
 											name:'#[QMM005_77]', width:100 ,
 											options: yearSelectClassification,
@@ -517,14 +473,10 @@
 											visibleItemsCount: 8,
 											value: yearSelectClassificationSelectedCode,
 											optionsText: 'name',
-
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-
                 <!--  D4_44 -->
-
                 <div tabindex="27" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_78]', width:100 ,
 											options: incomeTaxBaseMonth,
@@ -532,14 +484,11 @@
 											visibleItemsCount: 8,
 											value: incomeTaxBaseMonthSelectedCode,
 											optionsText: 'name',
-
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
 
                 <!--  D4_46 -->
-
                 <div tabindex="28" class="item-padding" data-bind="ntsComboBox: {
 											name:'#[QMM005_46]', width:100 ,
 											options: incomeTaxBaseDate,
@@ -547,16 +496,12 @@
 											visibleItemsCount: 8,
 											value: incomeTaxBaseDateSelectedCode,
 											optionsText: 'name',
-
 											columns: [
-												
 												{ prop: 'name', length: 5 },
 											]}"></div>
-
             </div>
 		</div>
             </com:ko-if>
-
         </div>
         <div id="functions-area-bottom">
             <button tabindex="29" class="x-large proceed "
@@ -564,10 +509,7 @@
             <button tabindex="30" class="large"
                     data-bind="click: cancelCharacterSetting">#{i18n.getText('QMM005_23')}</button>
         </div>
-
-
     </ui:define>
-
 </ui:composition>
 </body>
 </html>

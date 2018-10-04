@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 520,
-                height : 655
+                width : 535,
+                height : 520
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -22,7 +22,7 @@
     </ui:define>
     <ui:define name="content">
         <div id="contents-area" style="padding: 0px">
-            <div>
+            <div style="height: 520px;">
                 <div class="margin-left-12 margin-top-12 margin-right-12">
                 <!--    E1_1    給与・賞与の処理年月の設定を行います。 -->
                 <div class="label" style="margin-bottom: 15px;">#{i18n.getText('QMM005_6')}</div>
@@ -196,15 +196,15 @@
                     </tr>
                 </table>
             </div>
-            <hr/>
-            <div id="button-wraper" class="margin-top-12">
+            
+        </div>
+        <div id="functions-area-bottom" class="margin-top-12">
                 <!--    E3_1	反映-->
                 <button tabindex="12" type="button" class="proceed x-large"
                         data-bind="click: reflect">#{i18n.getText('QMM005_89')}</button>
                 <!--    E3_2	キャンセル-->
                 <button tabindex="13" type="button" data-bind="click: cancel">#{i18n.getText('QMM005_61')}</button>
             </div>
-        </div>
     </ui:define>
 </ui:composition>
 </body>
