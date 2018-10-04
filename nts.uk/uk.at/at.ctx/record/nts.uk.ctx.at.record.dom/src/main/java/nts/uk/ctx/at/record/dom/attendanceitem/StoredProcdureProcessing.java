@@ -230,7 +230,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 				processOptionalItem(() -> timePre > 0, optionalItem, COUNT_ON, COUNT_OFF, 18, 28);
 				
 				/** 任意項目19: 事前残業1~10 > 0 かつ　乖離時間が発生していない事が条件 */
-				processOptionalItem(() -> timePre > 0 && time <= 0 && timeFlex <= 0, 
+				processOptionalItem(() -> timePre > 0 && overTime.stream().allMatch(t -> t <= 0) && timeFlex <= 0, 
 						optionalItem, COUNT_ON, COUNT_OFF, 19);
 				
 				/** 任意項目21: 事前残業1~10 > 0 かつ　乖離時間が発生している事が条件 */
@@ -472,18 +472,18 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 															|| afternoon == WorkTypeClassification.Attendance || afternoon == WorkTypeClassification.Shooting));
 	}
 
-	private int getTimeStamp(Optional<TimeActualStamp> stamp){
+	private Integer getTimeStamp(Optional<TimeActualStamp> stamp){
 		if(stamp.isPresent()){
 			return getWorkStamp(stamp.get().getStamp());
 		}
-		return 0;
+		return null;
 	}
 	
-	private int getWorkStamp(Optional<WorkStamp> stamp){
+	private Integer getWorkStamp(Optional<WorkStamp> stamp){
 		if(stamp.isPresent() && stamp.get().getTimeWithDay() != null){
 			return stamp.get().getTimeWithDay().valueAsMinutes();
 		}
-		return 0;
+		return null;
 	}
 	
 	private int getAttendanceTime(AttendanceTime time) {
