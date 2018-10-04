@@ -1,7 +1,7 @@
 .sidebar-content {
     margin-left: 10px;
 }
-body{
-    overflow: hidden;
-    overflow-x: auto;
+
+body {
+	width: 1280px;
 }

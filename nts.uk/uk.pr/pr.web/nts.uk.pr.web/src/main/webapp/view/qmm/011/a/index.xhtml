@@ -4,7 +4,7 @@
 	  xmlns:ui="http://java.sun.com/jsf/facelets"
 	  xmlns:com="http://xmlns.jcp.org/jsf/component"
 	  xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body style="overflow: hidden;">
+<body style="overflow:auto;">
 <ui:composition template="../../../../master/sidebar.xhtml">
 	<ui:define name="sidebar-head">
 		<com:scriptfile set="IGNITE" />
@@ -36,11 +36,11 @@
 	</ui:define>
 	<ui:define name="sidebar-content" >
 		<!-- 残数管理データ登録_振休管理 -->
-		<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB" class="flex" >
+		<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB" class="flex" style="overflow:inherit;">
 			<ui:include src="../b/index.xhtml" />
 		</div>
 
-		<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelC" class="flex" >
+		<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelC" class="flex" style="overflow:inherit;">
 			<ui:include src="../c/index.xhtml" />
 		</div>
 	</ui:define>
