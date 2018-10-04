@@ -76,7 +76,7 @@
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
                             <!--B3_4	処理年-->
                             <div id="B3_4"
-                                 data-bind="ntsDatePicker: {name: '#[QMM005_25]', value: processingYear, dateFormat: 'YYYY', enable: isNewMode(), required: true}"></div>
+                                 data-bind="ntsDatePicker: {name: '#[QMM005_25]', value: processingYearInput, dateFormat: 'YYYY', enable: isNewMode(), required: true}"></div>
                             <!--B3_6	反映-->
                             <button id="B3_6" class="small" style="margin-left: 20px"
                                     data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>

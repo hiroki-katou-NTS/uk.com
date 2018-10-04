@@ -21,7 +21,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         setDaySupportDtoList: any;
         targetMonth: KnockoutObservable<string>;
         processingYear: KnockoutObservable<number>;
-        processingYearNative: number;
+        processingYearInput: KnockoutObservable<number>;
+        // processingYearNative: number;
         processingDivisionName: KnockoutObservable<string>;
         settingPaymentList: KnockoutObservableArray<any>;
         processingYearList: KnockoutObservableArray<model.ItemModel>;
@@ -45,9 +46,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             });
             self.isNewMode = ko.observable(false);
             self.processingYear = ko.observable(null);
-            self.processingYearNative = null;
+            self.processingYearInput = ko.observable(null);
+            // self.processingYearNative = null;
             self.processingYear.subscribe(function (newValue) {
-                if (newValue != self.processingYearNative && newValue != '') {
+                // if (newValue != self.processingYearNative && newValue != '') {
+                if (newValue != '') {
                     let length = self.processingYearList().length;
                     let checker = false;
                     for (let k = 0; k < length; k++) {
@@ -60,9 +63,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         self.isNewMode(false);
                         console.log(self.isNewMode());
                     }
-                    self.processingYearNative = newValue;
+                    // self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
+                    self.processingYearInput(newValue);
                     nts.uk.ui.errors.clearAll();
                 }
             });
@@ -125,15 +129,18 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
                     if (selectItem) {
-                        self.processingYearNative = parseInt(selectItem);
+                        // self.processingYearNative = parseInt(selectItem);
                         self.processingYear(selectItem);
+                        self.processingYearInput(selectItem)
                         self.selectProcessingYear(selectItem);
                     } else {
-                        self.processingYearNative = parseInt(self.processingYearList()[0].code);
+                        // self.processingYearNative = parseInt(self.processingYearList()[0].code);
                         self.processingYear(self.processingYearList()[0].code);
+                        self.processingYearInput(self.processingYearList()[0].code);
                         self.selectProcessingYear(self.processingYearList()[0].code);
                     }
                 }
+                self.isNewMode(false);
             });
         }
 
@@ -191,6 +198,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         creatNewProcessYear() {
             var self = this;
             self.processingYear(null);
+            self.processingYearInput(null);
             if ($('#B2_2_container')) {
                 $('#B2_2_container').focus();
             }
@@ -207,22 +215,22 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             if (hasError()) {
                 return;
             }
-            if (self.processingYear()) {
+            if (self.processingYearInput()) {
                 var array = [];
                 service.getValPayDateSet(self.processCateNo).done(function (data) {
                         for (index = 1; index < 13; index++) {
                             let objItem = {
                                 targetMonth: ko.observable(index + '月の設定'),
-                                paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYear(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
-                                employeeExtractionReferenceDate: ko.observable(self.preDateTime(self.processingYear(), index, data.basicSetting.employeeExtractionReferenceDate.refeDate)),
-                                socialInsuranceCollectionMonth: ko.observable(parseInt(self.processingYear() + self.fullMonth(index))),
-                                specificationPrintDate: ko.observable(parseInt(self.processingYear() + '' + index)),
+                                paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYearInput(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
+                                employeeExtractionReferenceDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.basicSetting.employeeExtractionReferenceDate.refeDate)),
+                                socialInsuranceCollectionMonth: ko.observable(parseInt(self.processingYearInput() + self.fullMonth(index))),
+                                specificationPrintDate: ko.observable(parseInt(self.processingYearInput() + '' + index)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
-                                socialInsuranceStandardDate: ko.observable(self.preDateTime(self.processingYear(), index, data.advancedSetting.sociInsuStanDate.refeDate)),
-                                employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYear() - 1), index, data.advancedSetting.empInsurStanDate.refeDate)),
-                                timeClosingDate: ko.observable(self.preDateTime(self.processingYear(), index, data.advancedSetting.closeDate.refeDate)),
-                                incomeTaxReferenceDate: ko.observable(self.preDateTime(self.processingYear(), data.advancedSetting.incomTaxBaseYear.baseMonth, data.advancedSetting.incomTaxBaseYear.refeDate)),
-                                accountingClosureDate: ko.observable(self.preDateTime(self.processingYear(), index, data.basicSetting.accountingClosureDate.disposalDay))
+                                socialInsuranceStandardDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.advancedSetting.sociInsuStanDate.refeDate)),
+                                employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYearInput() - 1), index, data.advancedSetting.empInsurStanDate.refeDate)),
+                                timeClosingDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.advancedSetting.closeDate.refeDate)),
+                                incomeTaxReferenceDate: ko.observable(self.preDateTime(self.processingYearInput(), data.advancedSetting.incomTaxBaseYear.baseMonth, data.advancedSetting.incomTaxBaseYear.refeDate)),
+                                accountingClosureDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.basicSetting.accountingClosureDate.disposalDay))
                             }
                             array.push(objItem);
                         }
@@ -397,28 +405,28 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 arrayItem.push({
                     setDaySupportCommand: {
                         processCateNo: self.processCateNo,
-                        paymentDate: setting.paymentDate(),
-                        processDate: self.processingYear() + self.fullMonth(index),
+                        paymentDate: moment(new Date(setting.paymentDate())).toISOString(),
+                        processDate: (self.isNewMode() ? self.processingYearInput() : self.processingYear()) + self.fullMonth(index),
                         closeDateTime: moment(new Date(setting.timeClosingDate())).toISOString(),
-                        empInsurdStanDate: setting.employmentInsuranceStandardDate(),
-                        closureDateAccounting: setting.accountingClosureDate(),
+                        empInsurdStanDate: moment(new Date(setting.employmentInsuranceStandardDate())).toISOString(),
+                        closureDateAccounting: moment(new Date(setting.accountingClosureDate())).toISOString(),
                         empExtraRefeDate: moment(new Date(setting.employeeExtractionReferenceDate())).toISOString(),
-                        socialInsurdStanDate: setting.socialInsuranceStandardDate(),
+                        socialInsurdStanDate: moment(new Date(setting.socialInsuranceStandardDate())).toISOString(),
                         socialInsurdCollecMonth: setting.socialInsuranceCollectionMonth(),
-                        incomeTaxDate: setting.incomeTaxReferenceDate(),
+                        incomeTaxDate: moment(new Date(setting.incomeTaxReferenceDate())).toISOString(),
                         numberWorkDay: setting.numberOfWorkingDays()
                     },
                     specPrintYmSetCommand: {
                         printDate: setting.specificationPrintDate(),
                         processCateNo: self.processCateNo,
-                        processDate: self.processingYear() + self.fullMonth(index),
+                        processDate: (self.isNewMode() ? self.processingYearInput() : self.processingYear()) + self.fullMonth(index),
                     }
-                })
+                });
             });
             let commandData = {paymentDateSettingCommands: arrayItem}
             if (self.isNewMode()) {
                 service.addDomainModel(commandData).done(function (data) {
-                    self.transactionSuccess(self.processingYear());
+                    self.transactionSuccess(self.processingYearInput());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
                 })
@@ -440,10 +448,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             if (self.isNewMode()) {
                 self.startupScreen(year);
             } else {
-                nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                self.selectProcessingYear(year);
             }
-            self.selectProcessingYear(year);
-            self.isNewMode(false);
+            nts.uk.ui.dialog.info({messageId: "Msg_15"});
         }
     }
 }
