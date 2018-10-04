@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -15,4 +16,26 @@ public class RecordWorkParam {
 	private String workTypeCode;
 	private List<Integer> startTimeRests;
 	private List<Integer> endTimeRests;
+	
+	public List<Integer> getStartTimeRests() {
+		List<Integer> result=  new ArrayList<Integer>();
+		startTimeRests.forEach(x->{
+			if (x != null) {
+				result.add(x);
+			}
+		});
+
+		return result;
+	}
+	
+	public List<Integer> getEndTimeRests() {
+		List<Integer> result=  new ArrayList<Integer>();
+		endTimeRests.forEach(x->{
+			if (x != null) {
+				result.add(x);
+			}
+		});
+
+		return result;
+	}
 }

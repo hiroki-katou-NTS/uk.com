@@ -156,10 +156,6 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private AgreementTimeService agreementTimeService;
-	@Inject
-	private BasicScheduleService basicService;
-	@Inject
-	private BreakTimeZoneService timeService;
 	
 	/**
 	 * @param url
@@ -713,6 +709,8 @@ public class AppOvertimeFinder {
 						/*if(!CollectionUtil.isEmpty(siftTypes)){
 							result.setSiftType(siftTypes.get(0));
 						}*/
+						
+						
 						// 09_勤務種類就業時間帯の初期選択をセットする
 						WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, 
 								Strings.isBlank(appDate) ? appCommonSettingOutput.generalDate : GeneralDate.fromString(appDate, "yyyy/MM/dd"), 

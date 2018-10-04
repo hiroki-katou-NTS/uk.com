@@ -220,14 +220,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		WorkTypeAndSiftType workTypeAndSiftType = new WorkTypeAndSiftType();
 		WorkTypeOvertime workTypeOvertime = new  WorkTypeOvertime();
 		SiftType siftType = new SiftType();
-		if(baseDate!=null){
+		if (baseDate != null) {
 			AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, baseDate);
 			if(Strings.isNotBlank(achievementOutput.getWorkType().getWorkTypeCode())){
 				workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
 				workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
-				return workTypeAndSiftType;
 			}
-		}
+		} else {
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 		
@@ -253,6 +252,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			siftType.setSiftCode(workTime.getWorktimeCode().toString());
 			siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 			workTypeAndSiftType.setSiftType(siftType);
+			}
 		}
 		//休憩時間帯を取得する
 		String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();

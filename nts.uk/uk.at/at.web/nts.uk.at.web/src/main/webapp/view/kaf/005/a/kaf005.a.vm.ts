@@ -1085,13 +1085,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 //            }
             
             // 休憩時間
-            let times = [];
-            for (let i = 1; i < 11; i++) {
-                
-                times.push(new common.OverTimeInput("", "", 0, "", i,0, i, self.getStartTime(data.timezones?data.timezones[i-1]:null),  self.getEndTime(data.timezones?data.timezones[i-1]:null), null,""));
+            if (data.timezones) {
+                let times = [];
+                for (let i = 1; i < 11; i++) {
+
+                    times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(data.timezones[i - 1]), self.getEndTime(data.timezones[i - 1]), null, ""));
+                }
+                self.restTime(times);
             }
-            
-            self.restTime(times);
+           
         }
         
         convertpreAppOvertimeDto(data :any){

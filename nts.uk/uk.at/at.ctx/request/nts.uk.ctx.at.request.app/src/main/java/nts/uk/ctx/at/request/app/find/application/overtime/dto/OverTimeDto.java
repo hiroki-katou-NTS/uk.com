@@ -245,7 +245,7 @@ public class OverTimeDto {
 	/**
 	 * 控除時間帯(丸め付き)
 	 */
-	private List<DeductionTimeDto> timezones = Collections.emptyList();
+	private List<DeductionTimeDto> timezones ;
 	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
