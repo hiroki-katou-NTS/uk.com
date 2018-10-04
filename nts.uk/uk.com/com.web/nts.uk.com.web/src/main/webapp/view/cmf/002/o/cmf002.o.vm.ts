@@ -53,6 +53,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         conditionSettingName: KnockoutObservable<string> = ko.observable('');
         mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
 
+        isLoadScreenQ: boolean = false;
+
         constructor() {
             var self = this;
             //起動する
@@ -305,6 +307,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadScreenQ() {
             let self = this;
+
+            if(self.isLoadScreenQ){
+                return;    
+            }
+            self.isLoadScreenQ = true;
 
             $("#component-items-list").focus();
             self.startDate(self.periodDateValue().startDate);
