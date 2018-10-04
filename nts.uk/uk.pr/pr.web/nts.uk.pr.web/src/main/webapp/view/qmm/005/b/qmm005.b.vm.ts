@@ -112,11 +112,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 });
                 self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
-                    if(selectItem){
+                    if (selectItem) {
                         self.processingYearNative = parseInt(selectItem);
                         self.processingYear(selectItem);
                         self.selectProcessingYear(selectItem);
-                    }else {
+                    } else {
                         self.processingYearNative = parseInt(self.processingYearList()[0].code);
                         self.processingYear(self.processingYearList()[0].code);
                         self.selectProcessingYear(self.processingYearList()[0].code);
@@ -192,7 +192,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             var self = this;
             nts.uk.ui.errors.clearAll();
             $('input#B3_4').ntsError('check');
-            if(hasError()){
+            if (hasError()) {
                 return;
             }
             if (self.processingYear()) {
@@ -215,9 +215,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             array.push(objItem);
                         }
                         self.settingPaymentList(array);
-                    if ($('#B3_6')) {
-                        $('#B3_6').focus();
-                    }
+                        if ($('#B3_6')) {
+                            $('#B3_6').focus();
+                        }
                     }
                 );
             }
@@ -259,6 +259,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 } else if (year % 4 != 0) {
                     return year + '/02/28';
                 }
+            } else if ((month == 4 || month == 6 || month == 9 || month == 11) && date == 31) {
+                return year + '/' + (month < 10 ? '0' + month : month) + '/' + 30;
             } else {
                 return year + '/' + (month < 10 ? '0' + month : month) + '/' + date;
             }
@@ -292,7 +294,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         if (params.checkbox.socialInsuranceMonthCheck) {
                             let year = parseInt(<string>self.processingYear());
                             let month = index + parseInt(advancedSetting.salaryInsuColMon.monthCollected) - SOCIAL_INSU_COLLE_MONTH_INDEX;
-                            settingPayment.socialInsuranceCollectionMonth(self.passYear(year, month, false).year.toString() +  self.fullMonth(self.passYear(year, month, false).month));
+                            settingPayment.socialInsuranceCollectionMonth(self.passYear(year, month, false).year.toString() + self.fullMonth(self.passYear(year, month, false).month));
                         }
                         // B4_15	明細書印字年月
                         // ※4　要勤務日数チェックが入っている場合のみ更新する
@@ -331,7 +333,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                                 settingPayment.timeClosingDate(settingPayment.employeeExtractionReferenceDate());
                             } else {
                                 let year = parseInt(<string>self.processingYear()) + parseInt(advancedSetting.closeDate.baseYear) - CLOSE_DATE_YEAR_INDEX;
-                                let month = index  + parseInt(advancedSetting.closeDate.baseMonth) - CLOSE_DATE_MONTH_INDEX;
+                                let month = index + parseInt(advancedSetting.closeDate.baseMonth) - CLOSE_DATE_MONTH_INDEX;
                                 settingPayment.timeClosingDate(self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, advancedSetting.closeDate.refeDate));
                             }
                         }
@@ -371,7 +373,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         registration() {
             let self = this;
             $('.nts-input').trigger("validate");
-            if(hasError()){
+            if (hasError()) {
                 return;
             }
             //    check input year valid
@@ -422,9 +424,9 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         transactionSuccess(year) {
             let self = this;
-            if(self.isNewMode()){
+            if (self.isNewMode()) {
                 self.startupScreen(year);
-            }else {
+            } else {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"});
             }
             self.selectProcessingYear(year);
