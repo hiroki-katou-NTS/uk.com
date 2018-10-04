@@ -48,6 +48,18 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             self.processingYearNative = null;
             self.processingYear.subscribe(function (newValue) {
                 if (newValue != self.processingYearNative && newValue != '') {
+                    let length = self.processingYearList().length;
+                    let checker = false;
+                    for (let k = 0; k < length; k++) {
+                        if (newValue == self.processingYearList()[k].code) {
+                            checker = true;
+                            break;
+                        }
+                    }
+                    if (self.isNewMode() && checker) {
+                        self.isNewMode(false);
+                        console.log(self.isNewMode());
+                    }
                     self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
@@ -178,12 +190,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         creatNewProcessYear() {
             var self = this;
-            self.isNewMode(true);
+            self.processingYear(null);
             if ($('#B2_2_container')) {
                 $('#B2_2_container').focus();
             }
-            self.processingYear(null);
             self.blankData();
+            self.isNewMode(true);
         }
 
         //反映ボタン押下時処理
@@ -330,7 +342,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // ※10 勤怠締め日チェックが入っている場合のみ更新する
                         if (params.checkbox.timeClosingDateCheck) {
                             if (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) {
-                                settingPayment.timeClosingDate(settingPayment.employeeExtractionReferenceDate());
+                                let month = index - parseInt(basicSetting.employeeExtractionReferenceDate.refeMonth);
+                                settingPayment.timeClosingDate(self.preDateTime(self.passYear(self.processingYear(), month, false).year, self.passYear(self.processingYear(), month, false).month, basicSetting.employeeExtractionReferenceDate.refeDate));
                             } else {
                                 let year = parseInt(<string>self.processingYear()) + parseInt(advancedSetting.closeDate.baseYear) - CLOSE_DATE_YEAR_INDEX;
                                 let month = index + parseInt(advancedSetting.closeDate.baseMonth) - CLOSE_DATE_MONTH_INDEX;
@@ -386,10 +399,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         processCateNo: self.processCateNo,
                         paymentDate: setting.paymentDate(),
                         processDate: self.processingYear() + self.fullMonth(index),
-                        closeDateTime: setting.timeClosingDate(),
+                        closeDateTime: moment(new Date(setting.timeClosingDate())).toISOString(),
                         empInsurdStanDate: setting.employmentInsuranceStandardDate(),
                         closureDateAccounting: setting.accountingClosureDate(),
-                        empExtraRefeDate: setting.employeeExtractionReferenceDate(),
+                        empExtraRefeDate: moment(new Date(setting.employeeExtractionReferenceDate())).toISOString(),
                         socialInsurdStanDate: setting.socialInsuranceStandardDate(),
                         socialInsurdCollecMonth: setting.socialInsuranceCollectionMonth(),
                         incomeTaxDate: setting.incomeTaxReferenceDate(),
