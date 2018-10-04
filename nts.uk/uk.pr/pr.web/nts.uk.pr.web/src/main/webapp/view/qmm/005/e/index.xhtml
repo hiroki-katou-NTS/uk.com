@@ -9,8 +9,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 520,
-                height : 664
+                width : 535,
+                height : 520
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -196,15 +196,15 @@
                     </tr>
                 </table>
             </div>
-            <hr/>
-            <div id="button-wraper" class="margin-top-12">
+            
+        </div>
+        <div id="functions-area-bottom" class="margin-top-12">
                 <!--    E3_1	反映-->
                 <button tabindex="12" type="button" class="proceed x-large"
                         data-bind="click: reflect">#{i18n.getText('QMM005_89')}</button>
                 <!--    E3_2	キャンセル-->
                 <button tabindex="13" type="button" data-bind="click: cancel">#{i18n.getText('QMM005_61')}</button>
             </div>
-        </div>
     </ui:define>
 </ui:composition>
 </body>
