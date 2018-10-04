@@ -240,7 +240,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             let newDate;
             if (date.getDay() == 0) {
                 newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 2);
-            } else if (date.getDate() == 6) {
+            } else if (date.getDay() == 6) {
                 newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
             } else {
                 newDate = date;
@@ -293,7 +293,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                          ※10 勤怠締め日チェックが入っている場合のみ更新する
                          */
                         if (params.checkbox.dailyPaymentDateCheck && params.checkbox.timeClosingDateCheck) {
-                            settingPayment.paymentDate(self.preDateTime(self.processingYear(), index, basicSetting.monthlyPaymentDate.datePayMent));
+                            settingPayment.paymentDate(self.transDate(self.preDateTime(self.processingYear(), index, basicSetting.monthlyPaymentDate.datePayMent)));
                         }
                         // B4_12	社員抽出基準日
                         // ※2　対象社員抽出基準日チェックが入っている場合のみ更新する
