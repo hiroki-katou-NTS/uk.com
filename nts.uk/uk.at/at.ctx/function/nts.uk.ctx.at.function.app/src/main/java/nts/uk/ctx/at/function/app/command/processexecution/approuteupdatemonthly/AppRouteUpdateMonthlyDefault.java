@@ -231,7 +231,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			 procExecLog.getExecId(),
 			 lstRegulationInfoEmployee.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()), 
 			 procExec.getProcessExecType().value, 
-			 closureData.getClosureStartDate());
+			 closureData.getClosureEndDate());
 			 listCheckCreateApp.add(new CheckCreateperApprovalClosure(closure.getClosureId().value,check));
 			
 		}

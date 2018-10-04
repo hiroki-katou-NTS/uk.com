@@ -86,7 +86,8 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 		oldData.reflectApprovalResultEnd = updateData.reflectApprovalResultEnd;
 		this.commandProxy().update(oldData);
 	}
-	
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void remove(String companyId, String execItemCd, String execId) {
 		this.getEntityManager().createQuery(DELETE_BY_EXEC_CD, KfnmtProcessExecutionLog.class)

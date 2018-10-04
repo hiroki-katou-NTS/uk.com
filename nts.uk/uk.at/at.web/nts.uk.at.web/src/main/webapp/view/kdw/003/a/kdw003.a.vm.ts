@@ -991,8 +991,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 _.each(dataAfter.flexShortage.messageError, value => {
                                     $("#next-month").ntsError("set", value.message, value.messageId);
                                 });
+                                $("#next-month").attr('style', 'background-color: red !important');
                                 errorFlex = true;
                             } else {
+                                $("#next-month").attr('style', 'background-color: white !important');
                                 $("#next-month").ntsError("clear");
                             }
                         }
