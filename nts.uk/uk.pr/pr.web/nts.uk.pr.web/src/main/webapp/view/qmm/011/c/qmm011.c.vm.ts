@@ -253,8 +253,6 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.selectedEmpInsHisId(self.listOccAccIsHis()[FIRST].hisId);
                     self.getAccInsurPreRate();
                     $("#C3_1").focus();
-                } else {
-                    self.initScreen(null);
                 }
             });
             block.clear();
@@ -299,6 +297,9 @@ module nts.uk.pr.view.qmm011.c.viewmodel {
                     self.transferMethod(null);
                     self.initScreen(self.selectedEmpInsHisId());
                 });
+            }).fail(function(res: any) {
+                if (res)
+                    dialog.alertError(res);
             });
             $("#C3_1").focus();
             block.clear();
