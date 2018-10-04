@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,5 +263,14 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber) {
 		return approvalRootStatePub.isApproveApprovalPhaseStateComplete(companyID, rootStateID, phaseNumber);
+	}
+	@Override
+	public List<ApproveRootStatusForEmpImPort> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
+		return Collections.emptyList();
+		/*return intermediateDataPub.getAppRootStatusByEmpPeriodMonth(employeeID, period)
+				.stream().map(x -> new ApproveRootStatusForEmpImPort(
+						x.getEmployeeID(), 
+						x.getDate(), 
+						EnumAdaptor.valueOf(x.getDailyConfirmAtr(),ApprovalStatusForEmployeeImport.class))).collect(Collectors.toList());*/
 	}
 }
