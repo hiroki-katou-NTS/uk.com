@@ -64,19 +64,23 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
-			if(!dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
+			if(dailyInfo.getScheduleInfo().getWorkTimeCode() == null 
+					|| !dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
 				lstItem.add(1);	
 			}
-			if(!dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
+			if(dailyInfo.getScheduleInfo().getWorkTypeCode() == null
+					|| !dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
 				lstItem.add(2);	
 			}			
 			dailyInfo.setScheduleInfo(workInfor);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
-			if(!dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
+			if(dailyInfo.getRecordInfo().getWorkTimeCode() == null 
+					|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
 				lstItem.add(28);	
 			}
-			if(!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
+			if(dailyInfo.getRecordInfo().getWorkTypeCode() == null 
+					|| !dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
 				lstItem.add(29);
 			}
 			dailyInfo.setRecordInfo(workInfor);
