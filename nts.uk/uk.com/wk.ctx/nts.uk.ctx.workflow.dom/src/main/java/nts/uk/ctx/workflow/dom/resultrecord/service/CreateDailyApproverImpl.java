@@ -97,6 +97,10 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 			boolean isSame = compareAppRootContent(appRootInstanceConflict, appRootInstance)
 					&& compareAppRootContent(appRootInstance, appRootInstanceConflict);
 			if(isSame){
+				// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
+				DatePeriod oldPeriod = appRootInstanceConflict.getDatePeriod();
+				appRootInstanceConflict.setDatePeriod(new DatePeriod(oldPeriod.start(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")));
+				appRootInstanceRepository.update(appRootInstanceConflict);
 				return new AppRootInstanceContent(appRootInstanceConflict, errorFlag, errorMsgID);
 			} else {
 				appRootInstance.setDatePeriod(new DatePeriod(recordDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")));
