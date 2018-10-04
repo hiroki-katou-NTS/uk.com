@@ -65,7 +65,6 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 self.dateDataFormatSetting().valueOfFixedValue(null);
                 return true;
             } else {
-                self.dateDataFormatSetting().formatSelection(null);
                 self.dateDataFormatSetting().valueOfNullValueSubs(null);
                 return false;
             }
