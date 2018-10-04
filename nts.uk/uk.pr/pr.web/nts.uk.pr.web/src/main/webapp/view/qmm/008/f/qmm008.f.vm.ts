@@ -91,7 +91,11 @@ module nts.uk.pr.view.qmm008.f {
                 };
                 nts.uk.pr.view.qmm008.f.service.update(command).done(function(response) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setTimeout(function () {
+                            $(".nts-fixed-table").attr('tabindex', '0');
+                            $(".nts-fixed-table").focus();
 
+                        }, 500);
                     });
                 });
                
@@ -116,7 +120,10 @@ module nts.uk.pr.view.qmm008.f {
                         self.dataList.push(new RowData(response.cusWelfarePensions[i]));
                     }
                     self.header(response.insuranceRate);
-
+                    setTimeout(function () {
+                        $(".nts-fixed-table").attr('tabindex', '0');
+                        $(".nts-fixed-table").focus();
+                    }, 500);
                 });
             }
             

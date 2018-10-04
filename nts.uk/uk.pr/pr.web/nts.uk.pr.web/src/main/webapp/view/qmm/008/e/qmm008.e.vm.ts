@@ -42,7 +42,7 @@ module nts.uk.pr.view.qmm008.e {
 
                //Fixed table
                if (/Chrome/.test(navigator.userAgent)) {
-                   $("#fixed-table").ntsFixedTable({height: 350, width: 1040});
+                   $("#fixed-table").ntsFixedTable({height: 348, width: 1040});
                } else {
                    $("#fixed-table").ntsFixedTable({height: 377, width: 1040});
                }
@@ -75,6 +75,12 @@ module nts.uk.pr.view.qmm008.e {
                };
                nts.uk.pr.view.qmm008.e.service.update(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                       setTimeout(function () {
+                           $(".flex").attr('tabindex', '0');
+                           $(".flex").focus();
+
+                       }, 500);
                        block.clear();
                    });
                });
@@ -104,6 +110,11 @@ module nts.uk.pr.view.qmm008.e {
                        self.dataList.push(new RowData(response.cusDataDtos[i]));
                    }
                    self.header(response.premiumRate);
+                   setTimeout(function () {
+                       $(".flex").attr('tabindex', '0');
+                       $(".flex").focus();
+
+                   }, 500);
                    block.clear();
                });
            }
