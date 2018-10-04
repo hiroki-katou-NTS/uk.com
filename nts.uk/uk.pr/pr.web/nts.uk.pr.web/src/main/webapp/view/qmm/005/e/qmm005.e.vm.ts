@@ -4,6 +4,85 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
     import getText = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    const ENUM_DATE_SELECT_CLASSIFICATION = [
+        "Enum_DateSelectClassification_DAY_1",
+        "Enum_DateSelectClassification_DAY_2",
+        "Enum_DateSelectClassification_DAY_3",
+        "Enum_DateSelectClassification_DAY_4",
+        "Enum_DateSelectClassification_DAY_5",
+        "Enum_DateSelectClassification_DAY_6",
+        "Enum_DateSelectClassification_DAY_7",
+        "Enum_DateSelectClassification_DAY_8",
+        "Enum_DateSelectClassification_DAY_9",
+        "Enum_DateSelectClassification_DAY_10",
+        "Enum_DateSelectClassification_DAY_11",
+        "Enum_DateSelectClassification_DAY_12",
+        "Enum_DateSelectClassification_DAY_13",
+        "Enum_DateSelectClassification_DAY_14",
+        "Enum_DateSelectClassification_DAY_15",
+        "Enum_DateSelectClassification_DAY_16",
+        "Enum_DateSelectClassification_DAY_17",
+        "Enum_DateSelectClassification_DAY_18",
+        "Enum_DateSelectClassification_DAY_19",
+        "Enum_DateSelectClassification_DAY_20",
+        "Enum_DateSelectClassification_DAY_21",
+        "Enum_DateSelectClassification_DAY_22",
+        "Enum_DateSelectClassification_DAY_23",
+        "Enum_DateSelectClassification_DAY_24",
+        "Enum_DateSelectClassification_DAY_25",
+        "Enum_DateSelectClassification_DAY_26",
+        "Enum_DateSelectClassification_DAY_27",
+        "Enum_DateSelectClassification_DAY_28",
+        "Enum_DateSelectClassification_DAY_29",
+        "Enum_DateSelectClassification_DAY_30",
+        "Enum_DateSelectClassification_LAST_DAY_MONTH"
+    ];
+    const ENUM_PREVIOUS_MONTH_CLASSIFICATION = [
+        'Enum_PreviousMonthClassification_THIS_MONTH',
+        'Enum_PreviousMonthClassification_LAST_MONTH'
+    ];
+    const ENUM_SOCIAL_INSU_COLLE_MONTH = [
+        'Enum_SocialInsuColleMonth_BEFORE_MONTH',
+        'Enum_SocialInsuColleMonth_LAST_MONTH',
+        'Enum_SocialInsuColleMonth_MONTH',
+        'Enum_SocialInsuColleMonth_NEXT_MONTH',
+        'Enum_SocialInsuColleMonth_SECOND_FOLLOWING_MONTH'
+    ];
+    const ENUM_INSURANCE_STANMONTH_CLASSIFICATION = [
+        "Enum_InsuranceStanMonthClassification_LAST_MONTH",
+        "Enum_InsuranceStanMonthClassification_MONTH",
+        "Enum_InsuranceStanMonthClassification_JANUARY",
+        "Enum_InsuranceStanMonthClassification_FEBRUARY",
+        "Enum_InsuranceStanMonthClassification_MARCH",
+        "Enum_InsuranceStanMonthClassification_APRIL",
+        "Enum_InsuranceStanMonthClassification_MAY",
+        "Enum_InsuranceStanMonthClassification_JUNE",
+        "Enum_InsuranceStanMonthClassification_JULY",
+        "Enum_InsuranceStanMonthClassification_AUGUST",
+        "Enum_InsuranceStanMonthClassification_SEPTEMBER",
+        "Enum_InsuranceStanMonthClassification_OCTOBER",
+        "Enum_InsuranceStanMonthClassification_NOVEMBER",
+        "Enum_InsuranceStanMonthClassification_DECEMBER"];
+    const ENUM_YEAR_SELECT_CLASSIFICATION = [
+        "Enum_YearSelectClassification_PREVIOUS_YEAR",
+        "Enum_YearSelectClassification_THIS_YEAR",
+        "Enum_YearSelectClassification_AFTER_YEAR",
+        "Enum_YearSelectClassification_LEAP_YEAR"
+    ];
+    const ENUM_MONTH_SELECTION_SEGMENT = [
+        "Enum_MonthSelectionSegment_JANUARY",
+        "Enum_MonthSelectionSegment_FEBRUARY",
+        "Enum_MonthSelectionSegment_MARCH",
+        "Enum_MonthSelectionSegment_APRIL",
+        "Enum_MonthSelectionSegment_SECOND_MAY",
+        "Enum_MonthSelectionSegment_JUNE",
+        "Enum_MonthSelectionSegment_JULY",
+        "Enum_MonthSelectionSegment_AUGUST",
+        "Enum_MonthSelectionSegment_SEPTEMBER",
+        "Enum_MonthSelectionSegment_SECOND_OCTOBER",
+        "Enum_MonthSelectionSegment_NOVEMBER",
+        "Enum_MonthSelectionSegment_DECEMBER"
+    ];
     export class ScreenModel {
         valPayDateSet: any;
         processingClassification: KnockoutObservable<string>;
@@ -62,28 +141,28 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                 var advancedSetting = data.valPayDateSetDto.advancedSetting;
                 let tranferModel = {
                     E1_3_0: params.processCateNo,
-                    E1_3_1: params.processInfomation.processCls,
+                    E1_3_1: params.processInfomation.processDivisionName,
                     E1_5_0: params.processingYear,
                     E2_2: params.processingYear,
-                    E2_8_0: basicSetting.monthlyPaymentDate.datePayMent,
-                    E2_10_0: basicSetting.employeeExtractionReferenceDate.refeMonth,
-                    E2_10_1: basicSetting.employeeExtractionReferenceDate.refeDate,
-                    E2_12_0: advancedSetting.salaryInsuColMon.monthCollected,
-                    E2_14_0: advancedSetting.detailPrintingMon.printingMonth,
+                    E2_8_0: getText(ENUM_DATE_SELECT_CLASSIFICATION[basicSetting.monthlyPaymentDate.datePayMent - 1]),
+                    E2_10_0: getText(ENUM_PREVIOUS_MONTH_CLASSIFICATION[basicSetting.employeeExtractionReferenceDate.refeMonth]),
+                    E2_10_1: getText(ENUM_DATE_SELECT_CLASSIFICATION[basicSetting.employeeExtractionReferenceDate.refeDate - 1]),
+                    E2_12_0: getText(ENUM_SOCIAL_INSU_COLLE_MONTH[advancedSetting.salaryInsuColMon.monthCollected]),
+                    E2_14_0: getText(ENUM_PREVIOUS_MONTH_CLASSIFICATION[advancedSetting.detailPrintingMon.printingMonth]),
                     E4_2_0: basicSetting.workDay,
-                    E2_17_0: advancedSetting.sociInsuStanDate.baseYear,
-                    E2_17_1: advancedSetting.sociInsuStanDate.baseMonth,
-                    E2_17_2: advancedSetting.sociInsuStanDate.refeDate,
-                    E2_19_0: advancedSetting.empInsurStanDate.baseMonth,
-                    E2_19_1: advancedSetting.empInsurStanDate.refeDate,
-                    E2_21_0: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? params.processingYear : advancedSetting.closeDate.baseYear,
-                    E2_21_1: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? basicSetting.employeeExtractionReferenceDate.refeMonth : advancedSetting.closeDate.baseMonth,
-                    E2_21_2: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? basicSetting.employeeExtractionReferenceDate.refeDate : advancedSetting.closeDate.refeDate,
-                    E2_23_0: advancedSetting.incomTaxBaseYear.baseYear,
-                    E2_23_1: advancedSetting.incomTaxBaseYear.baseMonth,
-                    E2_23_2: advancedSetting.incomTaxBaseYear.refeDate,
-                    E2_25_0: basicSetting.accountingClosureDate.processMonth,
-                    E2_25_1: basicSetting.accountingClosureDate.disposalDay,
+                    E2_17_0: getText(ENUM_YEAR_SELECT_CLASSIFICATION[advancedSetting.sociInsuStanDate.baseYear]),
+                    E2_17_1: getText(ENUM_INSURANCE_STANMONTH_CLASSIFICATION[advancedSetting.sociInsuStanDate.baseMonth]),
+                    E2_17_2: getText(ENUM_DATE_SELECT_CLASSIFICATION[advancedSetting.sociInsuStanDate.refeDate - 1]),
+                    E2_19_0: getText(ENUM_MONTH_SELECTION_SEGMENT[advancedSetting.empInsurStanDate.baseMonth]),
+                    E2_19_1: getText(ENUM_DATE_SELECT_CLASSIFICATION[advancedSetting.empInsurStanDate.refeDate - 1]),
+                    E2_21_0: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? params.processingYear + '年' : getText(ENUM_YEAR_SELECT_CLASSIFICATION[advancedSetting.closeDate.baseYear]),
+                    E2_21_1: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? getText(ENUM_PREVIOUS_MONTH_CLASSIFICATION[basicSetting.employeeExtractionReferenceDate.refeMonth]) : getText(ENUM_SOCIAL_INSU_COLLE_MONTH[advancedSetting.closeDate.baseMonth]),
+                    E2_21_2: (advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) ? getText(ENUM_DATE_SELECT_CLASSIFICATION[basicSetting.employeeExtractionReferenceDate.refeDate - 1]) : getText(ENUM_DATE_SELECT_CLASSIFICATION[advancedSetting.closeDate.refeDate - 1]),
+                    E2_23_0: getText(ENUM_YEAR_SELECT_CLASSIFICATION[advancedSetting.incomTaxBaseYear.baseYear]),
+                    E2_23_1: getText(ENUM_MONTH_SELECTION_SEGMENT[advancedSetting.incomTaxBaseYear.baseMonth]),
+                    E2_23_2: getText(ENUM_DATE_SELECT_CLASSIFICATION[advancedSetting.incomTaxBaseYear.refeDate - 1]),
+                    E2_25_0: getText(ENUM_PREVIOUS_MONTH_CLASSIFICATION[basicSetting.accountingClosureDate.processMonth]),
+                    E2_25_1: getText(ENUM_DATE_SELECT_CLASSIFICATION[basicSetting.accountingClosureDate.disposalDay - 1]),
                 }
                 self.mapLabel(tranferModel);
                 dfd.resolve();
