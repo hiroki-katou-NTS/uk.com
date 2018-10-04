@@ -4,10 +4,10 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(24)
-public class ProcessDivisionName extends StringPrimitiveValue<ProcessDivisionName>{
+public class ProcessCls extends StringPrimitiveValue<ProcessCls>{
 private static final long serialVersionUID = 1L;
 	
-	public ProcessDivisionName(String rawValue) {
+	public ProcessCls(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

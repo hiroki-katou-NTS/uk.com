@@ -32,7 +32,7 @@ public class CloseDateDto {
 	private Integer refeDate;
 
 	public static CloseDateDto fromDomain(CloseDate domain) {
-		return new CloseDateDto(domain.getTimeCloseDate(),
+		return new CloseDateDto(domain.getTimeCloseDate().value,
                 domain.getCloseDateBaseMonth().map(i -> i.value).orElse(null),
 				domain.getCloseDateBaseYear().map(i -> i.value).orElse(null),
                 domain.getCloseDateRefeDate().map(i -> i.value).orElse(null)

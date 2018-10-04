@@ -24,7 +24,7 @@ public class ReflectSystemReferenceDateInfoFinder {
 				processCateNo);
 		Optional<ValPayDateSet> optValPayDateSet = finderValPayDateSet.getValPayDateSetById(cid, processCateNo);
 		ProcessInformationDto informationDto = optProcessInformation.map(x -> new ProcessInformationDto(x.getCid(),
-				x.getProcessCateNo(), x.getDeprecatCate().value, x.getProcessDivisionName().v())).orElse(null);
+				x.getProcessCateNo(), x.getDeprecatCate().value, x.getProcessCls().v())).orElse(null);
 
 		BasicSettingDto basicSettingDto = BasicSettingDto
 				.fromDomain(optValPayDateSet.isPresent() ? optValPayDateSet.get().getBasicSetting() : null);

@@ -20,7 +20,7 @@ public class AddProcessInformationCommandHandler extends CommandHandler<ProcessI
     @Override
     protected void handle(CommandHandlerContext<ProcessInformationCommand> context) {
         ProcessInformationCommand addCommand = context.getCommand();
-        repository.add(new ProcessInformation(addCommand.getCid(), addCommand.getProcessCateNo(), addCommand.getDeprecatCate(), addCommand.getProcessDivisionName()));
+        repository.add(new ProcessInformation(addCommand.getCid(), addCommand.getProcessCateNo(), addCommand.getDeprecatCate(), addCommand.getProcessCls()));
     
     }
 }

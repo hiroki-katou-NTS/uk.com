@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
 
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 750, height: 450};</script>
+        <script>var dialogSize = {width: 750, height: 460};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm005.d.start.js"/>
@@ -16,19 +16,40 @@
         <com:scriptfile path="qmm005.d.service.js"/>
         <com:stylefile path="qmm005.d.style.css"/>
         <com:ValidatorScript>
-            nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessDivisionName
+            nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessCls
             nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ReqStandardWorkingDays
         </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
 
-        <div id="functions-area-top">
+
             <!-- D2_1  処理区分 -->
-            <div style="margin-left: 5px"
+            <!--<div style="margin-left: 5px"-->
+                 <!--data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>-->
+
+            <!--&lt;!&ndash; D2_2  処理区分名称 &ndash;&gt;-->
+            <!--<input tabindex="3" id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessCls', name: '#[QMM005_48]'}"-->
+                   <!--style="width: 150px"/>-->
+
+            <!--<span data-bind="if : mode==0" style="margin-left: 30px">-->
+					<!--&lt;!&ndash; D2_3 この処理区分を廃止する &ndash;&gt;-->
+                <!--<div tabindex="4" data-bind="ntsCheckBox: { checked: enableCheckBox  , style: 'warnpanel' }">#{i18n.getText('QMM005_80')}</div>-->
+
+                <!--&lt;!&ndash; D2_4 支払年月日区分 &ndash;&gt;-->
+                <!--<button tabindex="5" data-bind="ntsHelpButton: {position: 'left top',enable: isEnable,image: '../resource/QMM005_01.png' }">?</button>-->
+				<!--</span>-->
+
+        <!---->
+        <!--<hr style=" margin: 10px 35px; "/>-->
+
+        <div id="contents-area" style="padding-top: 0px;">
+            <!-- D2_1  処理区分 -->
+            <div style="margin-top: 20px">
+            <div
                  data-bind="ntsFormLabel: {required: labelRequired,text:processCategoryNoDisPlay}">#{i18n.getText('QMM005_98')}</div>
 
             <!-- D2_2  処理区分名称 -->
-            <input tabindex="3" id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessDivisionName', name: '#[QMM005_48]'}"
+            <input tabindex="3" id="D2_2" data-bind="ntsTextEditor: {value: processName ,required:true, constraint: 'ProcessCls', name: '#[QMM005_48]'}"
                    style="width: 150px"/>
 
             <span data-bind="if : mode==0" style="margin-left: 30px">
@@ -38,11 +59,10 @@
                 <!-- D2_4 支払年月日区分 -->
                 <button tabindex="5" data-bind="ntsHelpButton: {position: 'left top',enable: isEnable,image: '../resource/QMM005_01.png' }">?</button>
 				</span>
-        </div>
-        
-        <hr style=" margin: 10px 35px; "/>
 
-        <div id="contents-area" style="padding-top: 0px;">
+
+            <hr style=" margin: 10px 0px; "/>
+            </div>
             <table id="fixed-table">
                 <colgroup>
                     <col width="185px"/>
@@ -142,7 +162,7 @@
                     <!-- D5_2 -->
                     <td style="text-align: right;">
                         <span tabindex="10" style="width: 45px"><input
-                                data-bind="ntsNumberEditor: {value: numberOfWorkingDays,required:true, constraint:'ReqStandardWorkingDays' , name:'#[QMM005_33]' }"
+                                data-bind="ntsNumberEditor: {value: numberOfWorkingDays,required:true, constraint:'ReqStandardWorkingDays' , name:'#[QMM005_33]', option: {decimallength: 2} }"
                                 style="width: 45px; text-align: left !important;"/></span>
 
                     </td>

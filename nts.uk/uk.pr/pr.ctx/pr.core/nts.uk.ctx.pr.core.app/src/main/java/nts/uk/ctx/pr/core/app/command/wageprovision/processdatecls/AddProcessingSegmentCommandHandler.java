@@ -26,7 +26,7 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
 
         ProcessInformation processInformation = new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
                 addCommand.getProcessInformation().getDeprecatCate(),
-                addCommand.getProcessInformation().getProcessDivisionName());
+                addCommand.getProcessInformation().getProcessCls());
 
         ValPayDateSet valPayDateSet = new ValPayDateSet(cid, addCommand.getValPayDateSet().getProcessCateNo(),
                 addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),
@@ -55,6 +55,8 @@ public class AddProcessingSegmentCommandHandler extends CommandHandler<Processin
         registrationProcessing.registerValPayDateSet(valPayDateSet);
         registrationProcessing.registerSpecPrintYmSet(valPayDateSet);
         registrationProcessing.registerSetDaySupport(valPayDateSet);
+        registrationProcessing.addCurrProcessDate(valPayDateSet);
+
 
     }
 }

@@ -95,7 +95,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 if (data) {
                     self.processInfomationDto = data;
                     // B3_2
-                    self.processingDivisionName(nts.uk.text.format(nts.uk.resource.getText("QMM005_97"), self.processCateNo, data.processDivisionName));
+                    self.processingDivisionName(nts.uk.text.format(nts.uk.resource.getText("QMM005_97"), self.processCateNo, data.processCls));
                 }
             });
             service.getSetDaySupport(self.processCateNo).done(function (data) {

@@ -17,7 +17,7 @@ public class CloseDate extends DomainObject {
 	/**
 	 * 勤怠締め日
 	 */
-	private int timeCloseDate;
+	private TimeCloseDateClassification timeCloseDate;
 
 	/**
 	 * 基準月
@@ -36,7 +36,7 @@ public class CloseDate extends DomainObject {
 
 	public CloseDate(int timeCloseDate, Integer closeDateBaseMonth, Integer closeDateBaseYear,
 			Integer closeDateRefeDate) {
-		this.timeCloseDate = timeCloseDate;
+		this.timeCloseDate = EnumAdaptor.valueOf(timeCloseDate,TimeCloseDateClassification.class);
 
 
 		if (closeDateBaseMonth == null)

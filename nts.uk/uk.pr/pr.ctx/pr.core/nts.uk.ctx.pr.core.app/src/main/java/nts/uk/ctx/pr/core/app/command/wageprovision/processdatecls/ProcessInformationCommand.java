@@ -24,7 +24,7 @@ public class ProcessInformationCommand
     /**
     * PROCESS_DIVISION_NAME
     */
-    private String processDivisionName;
+    private String processCls;
     
 
 

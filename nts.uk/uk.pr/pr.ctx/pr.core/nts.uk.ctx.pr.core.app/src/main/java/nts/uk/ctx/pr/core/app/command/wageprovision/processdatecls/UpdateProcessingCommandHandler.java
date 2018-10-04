@@ -1,16 +1,11 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.AdvancedSettingDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.BasicSettingDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.ValPayDateSetDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformationRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ValPayDateSet;
@@ -42,7 +37,7 @@ public class UpdateProcessingCommandHandler extends CommandHandler<ProcessingSeg
 		this.processInformationRepository
 				.update(new ProcessInformation(cid, addCommand.getProcessInformation().getProcessCateNo(),
 						addCommand.getProcessInformation().getDeprecatCate(),
-						addCommand.getProcessInformation().getProcessDivisionName()));
+						addCommand.getProcessInformation().getProcessCls()));
 
 		this.valPayDateSetRepository.update(new ValPayDateSet(cid, addCommand.getValPayDateSet().getProcessCateNo(),
 				addCommand.getValPayDateSet().getBasicSetting().getAccountingClosureDate().getProcessMonth(),

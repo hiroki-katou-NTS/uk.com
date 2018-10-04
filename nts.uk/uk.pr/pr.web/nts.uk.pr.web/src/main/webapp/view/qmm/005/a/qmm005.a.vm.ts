@@ -53,40 +53,49 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 let action: number = param.action;
                 let processInformationUpdate = param.processInfomationUpdate;
                 if (action == 0) {
-                    self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.processDivisionName(processInformationUpdate.processDivisionName);
-                    if(processInformationUpdate.deprecatCate==1)
-                        self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=1;
-                    if(processInformationUpdate.deprecatCate==0){
+                    self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.processCls(processInformationUpdate.processCls);
+
+
+                    if(processInformationUpdate.deprecatCate==model.Abolition.NOT_ABOLITION){
                         self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(true);
-                        self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=0;
+                        self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=model.Abolition.NOT_ABOLITION;
                     }
 
-                    if (processInformationUpdate.deprecatCate == 1) {
+                    if (processInformationUpdate.deprecatCate == model.Abolition.ABOLITION) {
+                        self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=model.Abolition.ABOLITION;
                         service.removeEmpTied(processInformationUpdate.processCateNo).done(function () {
                             self.resetEmployee(processInformationUpdate.processCateNo);
                             self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(false);
                         });
                     }
                     $('#A2_2 #button_register').eq(processInfomation-1).focus();
+
+
+
+
                 }
                 if (action == 1) {
-                    self.itemBinding.removeAll();
-                    self.startPage().done(function () {
-                        setTimeout(function () {
-                            $('#A2_2 #processYears').eq(processInfomation.processCateNo-1).focus();
-                        },100);
+                    self.showDialogB(processInformationUpdate.processCateNo).done(function () {
+                        self.itemBinding.removeAll();
+                        self.startPage().done(function () {
+                            setTimeout(function () {
+                                $('#A2_2 #processYears').eq(processInfomation.processCateNo-1).focus();
+                            },100);
+                        })
                     })
-
                 }
-
             })
         }
 
-        showDialogB(param): void {
+        showDialogB(param): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
             $('#A2_2 #processYears').eq(param-1).focus();
             setShared("QMM005_output_B", param);
             modal('/view/qmm/005/b/index.xhtml', {title: '',}).onClosed(function (): any {
-            })
+            });
+            dfd.resolve();
+            return dfd;
         }
 
         showDialogF(processCateNo, employeeList): void {
@@ -203,7 +212,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     else{
                         arrItemBindingProcessinformationsTemp.push(new model.ProcessInfomation({
                                 processCateNo: i + 1,
-                                processDivisionName: '',
+                                processCls: '',
                                 deprecatCate: 0
                             }
                         ));
@@ -215,7 +224,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 for (let i: number = self.itemTable.processInfomations.length; i < MAX_NUMBER_SETTING; i++) {
                     self.itemTable.processInfomations.push(new model.ProcessInfomation({
                             processCateNo: i + 1,
-                            processDivisionName: '',
+                            processCls: '',
                             deprecatCate: 0
                         }
                     ));
@@ -279,8 +288,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if (codeList.length > 0) {
                         commandData.empTiedProYearCommand.push({employmentCodes: codeList});
                     } else {
-
-                        nts.uk.ui.dialog.error(nts.uk.resource.getMessage("MsgQ_217",[i+1]));
+                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_217", message: nts.uk.resource.getText("MsgQ_217",[i+1])});
                       //  nts.uk.resource.getText("MsgQ_217",[i+1]);
                         return;
                     }
@@ -338,7 +346,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
              selfItemBinding.yaersSelected(startYearSelected);
              selfItemBinding.monthsSelectd(startMonthsSelected);
 
-             if(selfItemBinding.processInfomation.processDivisionName() != '' && selfItemBinding.processInfomation.deprecatCate == 0 ){
+             if(selfItemBinding.processInfomation.processCls() != '' && selfItemBinding.processInfomation.deprecatCate == model.Abolition.NOT_ABOLITION ){
                  selfItemBinding.isNotAbolition(true);
              }
 

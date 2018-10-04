@@ -62,7 +62,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
                 var advancedSetting = data.valPayDateSetDto.advancedSetting;
                 let tranferModel = {
                     E1_3_0: params.processCateNo,
-                    E1_3_1: params.processInfomation.processDivisionName,
+                    E1_3_1: params.processInfomation.processCls,
                     E1_5_0: params.processingYear,
                     E2_2: params.processingYear,
                     E2_8_0: basicSetting.monthlyPaymentDate.datePayMent,

@@ -69,7 +69,7 @@ public class QpbmtCloseDate extends UkJpaEntity implements Serializable {
 
 	public static QpbmtCloseDate toEntity(CloseDate domain) {
 
-		return new QpbmtCloseDate(new QpbmtCloseDatePk(), domain.getTimeCloseDate(),
+		return new QpbmtCloseDate(new QpbmtCloseDatePk(), domain.getTimeCloseDate().value,
 				Objects.isNull(domain.getCloseDateBaseMonth()) ? domain.getCloseDateBaseMonth().get().value : null,
 				Objects.isNull(domain.getCloseDateBaseYear()) ? domain.getCloseDateBaseYear().get().value : null,
 				Objects.isNull(domain.getCloseDateRefeDate()) ? domain.getCloseDateRefeDate().get().value : null);

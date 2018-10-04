@@ -27,13 +27,13 @@ public class ProcessInformationDto {
 	private int deprecatCate;
 
 	/**
-	 * PROCESS_DIVISION_NAME
+	 * PROCESS_CLS
 	 */
-	private String processDivisionName;
+	private String processCls;
 
 	public static ProcessInformationDto fromDomain(ProcessInformation domain) {
 		return new ProcessInformationDto(domain.getCid(), domain.getProcessCateNo(), domain.getDeprecatCate().value,
-				domain.getProcessDivisionName().v());
+				domain.getProcessCls().v());
 	}
 
 }

@@ -155,25 +155,24 @@ module nts.uk.pr.view.qmm005.share.model {
     }
 
     export enum Abolition{
-        Abolition=1,
-        Not_Abolition=0
+        ABOLITION=0,
+        NOT_ABOLITION=1
     }
 
     export interface IProcessInfomation {
         processCateNo: number,
-        processDivisionName: string,
+        processCls: string,
         deprecatCate: number
     }
 
-
     export class ProcessInfomation{
         processCateNo:number;
-        processDivisionName:KnockoutObservable<string>=ko.observable('');
+        processCls:KnockoutObservable<string>=ko.observable('');
         deprecatCate:number;
 
         constructor(params:IProcessInfomation){
             this.processCateNo=params.processCateNo;
-            this.processDivisionName(params.processDivisionName);
+            this.processCls(params.processCls);
             this.deprecatCate=params.deprecatCate;
         }
     }

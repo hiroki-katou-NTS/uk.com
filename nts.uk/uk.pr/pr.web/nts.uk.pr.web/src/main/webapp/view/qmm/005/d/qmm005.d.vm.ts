@@ -10,6 +10,9 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
     export class ScreenModel {
 
+
+
+
         isAdvanceSetting:KnockoutObservable<boolean>=ko.observable(false);
         enableCloseDate: KnockoutObservable<boolean>;
         mode: number;
@@ -155,8 +158,8 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             self.processName = ko.observable('');
 
             self.DiscontinueThisProcessClassification = ko.observableArray([
-                new model.ItemModel(model.Abolition.Abolition, 'Abolition'),
-                new model.ItemModel(model.Abolition.Not_Abolition, 'Not_Abolition')
+                new model.ItemModel(model.Abolition.ABOLITION, 'ABOLITION'),
+                new model.ItemModel(model.Abolition.NOT_ABOLITION, 'NOT_ABOLITION')
             ]);
 
 
@@ -354,10 +357,12 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
             self.enableCheckBox = ko.observable(false);
             if(self.mode==0){
-                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableCheckBox() ? 1:0);
+                self.DiscontinueThisProcessClassificationSelectedCode = ko.observable(self.enableCheckBox() ? model.Abolition.ABOLITION:model.Abolition.NOT_ABOLITION);
             }
+            else {
+                 self.DiscontinueThisProcessClassificationSelectedCode=ko.observable(model.Abolition.NOT_ABOLITION);
 
-            self.DiscontinueThisProcessClassificationSelectedCode=ko.observable(0);
+            }
 
            // closeDate: {timeCloseDate: 0, baseMonth: null, baseYear: null, refeDate: null}
 
@@ -459,9 +464,9 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
 
 
                         self.processCategoryNo=self.processInfomation.processCateNo;
-                        self.processName(self.processInfomation.processDivisionName());
+                        self.processName(self.processInfomation.processCls());
                         self.DiscontinueThisProcessClassificationSelectedCode(self.processInfomation.deprecatCate);
-                        self.enableCheckBox(self.processInfomation.deprecatCate ==0 ? false:true);
+                        self.enableCheckBox(self.processInfomation.deprecatCate ==model.Abolition.NOT_ABOLITION ? false:true);
 
                 })
                 
@@ -531,7 +536,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             let processInfomationParam = {
 
                 processCateNo: self.processCategoryNo,
-                processDivisionName: self.processName(),
+                processCls: self.processName(),
                 deprecatCate: self.DiscontinueThisProcessClassificationSelectedCode()
 
             }
@@ -556,7 +561,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
              }
 
             if(self.mode==0){
-                self.enableCheckBox() ? self.processInfomation.deprecatCate=1:self.processInfomation.deprecatCate=0;
+                self.enableCheckBox() ? self.processInfomation.deprecatCate=model.Abolition.ABOLITION : self.processInfomation.deprecatCate=model.Abolition.NOT_ABOLITION;
 
                 service.updateprocessingsegment({
                     processInformation: ko.toJS(self.processInfomation),

@@ -68,15 +68,15 @@
                         <td style="text-align: left;background-color: #CFF1A5" >
                             <!--A2_8 処理区分名称-->
                             <div id="A2_8"  class="flex valign-center"
-                                     data-bind="if: processInfomation.processDivisionName() != '' " >
+                                     data-bind="if: processInfomation.processCls() != '' " >
                                 <div style="width: 100px;text-overflow: ellipsis;overflow: hidden;" id="A2_8_label">
                                     <label class="limited-label"
-                                            data-bind="text: processInfomation.processDivisionName()"></label>
+                                            data-bind="text: processInfomation.processCls()"></label>
                                 </div>
                                 <!--A2_9 編集-->
                                 <button tabindex="6" class="small" id="button_update" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
                             </div>
-                            <com:ko-if bind="processInfomation.processDivisionName() == ''">
+                            <com:ko-if bind="processInfomation.processCls() == ''">
                                 <!--A4_1-->
                             <button id="button_register" tabindex="7" style="width: 150px; margin-left: 2px " class="small"
                                     data-bind="click: function (){$vm.showDialogD(processInfomation,1)}">#{i18n.getText('QMM005_21')}</button>
@@ -85,7 +85,7 @@
                         <td style="text-align: center">
                             <!--A2_10 詳細設定-->
                             <button tabindex="-1" class="small"
-                                    data-bind="enable: processInfomation.processDivisionName(),click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
+                                    data-bind="enable: processInfomation.processCls(),click: function (){$vm.showDialogB(processInfomation.processCateNo)} ">#{i18n.getText('QMM005_12')}</button>
                         </td>
                         <td>
                             <div class="flex valign-center">
@@ -96,7 +96,7 @@
                                 options: years,
                                 optionsValue: 'code',
                                  visibleItemsCount: 8,
-                                 enable: processInfomation.processDivisionName() != '',
+                                 enable: processInfomation.processCls() != '',
                                 value:yaersSelected,
                                 dropDownAttachedToBody:true,
                                 columns:
@@ -116,7 +116,7 @@
                             value: monthsSelectd,
                             optionsText: 'name',
                             dropDownAttachedToBody:true,
-                            enable: processInfomation.processDivisionName() != '',
+                            enable: processInfomation.processCls() != '',
                             columns: [
                                 { prop: 'name', length: 5,lengthDropDown: 5 },
 

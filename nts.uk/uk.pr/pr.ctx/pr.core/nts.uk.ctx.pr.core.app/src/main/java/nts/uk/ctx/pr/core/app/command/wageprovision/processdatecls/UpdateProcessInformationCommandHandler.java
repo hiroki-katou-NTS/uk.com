@@ -20,7 +20,7 @@ public class UpdateProcessInformationCommandHandler extends CommandHandler<Proce
     @Override
     protected void handle(CommandHandlerContext<ProcessInformationCommand> context) {
         ProcessInformationCommand updateCommand = context.getCommand();
-        repository.update(new ProcessInformation(updateCommand.getCid(), updateCommand.getProcessCateNo(), updateCommand.getDeprecatCate(), updateCommand.getProcessDivisionName()));
+        repository.update(new ProcessInformation(updateCommand.getCid(), updateCommand.getProcessCateNo(), updateCommand.getDeprecatCate(), updateCommand.getProcessCls()));
     
     }
 }

@@ -81,7 +81,7 @@ public class RegisterProcessing {
         int baseDate = valPayDateSet.getAdvancedSetting().getSociInsuStanDate().getSociInsuRefeDate().value;
         int referDateEmploymentInsuranceStanDate = valPayDateSet.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurRefeDate().value;
         int baseMonthEmploymentInsuranceStanDate = valPayDateSet.getAdvancedSetting().getEmpInsurStanDate().getEmpInsurBaseMonth().value;
-        int timeCloseDate = valPayDateSet.getAdvancedSetting().getCloseDate().getTimeCloseDate();
+        int timeCloseDate = valPayDateSet.getAdvancedSetting().getCloseDate().getTimeCloseDate().value;
         Integer refeDateClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateRefeDate().map(i -> i.value).orElse(null);
         Integer baseMonthClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseMonth().map(i -> i.value).orElse(null);
         Integer baseYearClose = valPayDateSet.getAdvancedSetting().getCloseDate().getCloseDateBaseYear().map(i -> i.value).orElse(null);
@@ -158,21 +158,15 @@ public class RegisterProcessing {
             );
         }
         this.setDaySupportRepository.addAll(setDaySupports);
-        addCurrProcessDate(valPayDateSet, setDaySupports);
     }
 
 
-    public void addCurrProcessDate(ValPayDateSet valPayDateSet, List<SetDaySupport> arr) {
+    public void addCurrProcessDate(ValPayDateSet valPayDateSet) {
         String cid = AppContexts.user().companyId();
-        GeneralDate currentDay = GeneralDate.today();
         int processCateNo = valPayDateSet.getProcessCateNo();
-        int currTreatYear = currentDay.yearMonth().v();
-        for (int i = 0; i < arr.size(); i++) {
-            if (arr.get(i).getPaymentDate().after(currentDay)) {
-                currTreatYear = arr.get(i).getPaymentDate().yearMonth().v();
-                break;
-            }
-        }
+        int currYear=GeneralDate.today().year();
+        int currTreatYear = currYear*100+1;
+
         this.currProcessDateRepository.add(new CurrProcessDate(cid, processCateNo, currTreatYear));
     }
 
