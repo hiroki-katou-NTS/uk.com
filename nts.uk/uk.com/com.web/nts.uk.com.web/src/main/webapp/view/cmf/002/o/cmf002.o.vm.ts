@@ -228,6 +228,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
+            $('#component-items-list').ntsError('clear');
             // get list to pass screen R
             // 外部出力実行社員選択チェック
             self.dataEmployeeId = self.findListId(self.selectedCode());
