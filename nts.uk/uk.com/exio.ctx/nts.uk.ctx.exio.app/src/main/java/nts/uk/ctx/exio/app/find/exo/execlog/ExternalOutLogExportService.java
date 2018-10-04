@@ -56,6 +56,7 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 				ExternalOutLogDto errorContentList = lstError.getErrorLog()[i];
 				Map<String, Object> errorItem = new HashMap<>();
 				errorItem.put(header.get(0), i);
+				errorItem.put(header.get(1), errorContentList.getProcessCount());
 				errorItem.put(header.get(2), errorContentList.getErrorItem());
 				errorItem.put(header.get(3), errorContentList.getErrorTargetValue());
 				errorItem.put(header.get(4), errorContentList.getErrorContent() + "(" + TextResource.localize("CMF002_356")
