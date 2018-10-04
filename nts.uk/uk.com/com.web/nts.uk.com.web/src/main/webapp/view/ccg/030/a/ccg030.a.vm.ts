@@ -53,9 +53,15 @@ module ccg030.a.viewmodel {
         /** Creat new FlowMenu */
         createNewFlowMenu() {
             var self = this;
+            var topPageCode = ko.mapping.toJS('');
             self.selectedFlowMenuCD(null);
+            self.selectedFlowMenu().topPageCode("");
+            self.selectedFlowMenu().topPageName("");
+            self.selectedFlowMenu().fileName("");
+            self.selectedFlowMenu().fileID("");
             self.focusToInput();
             errors.clearAll();
+
         }
 
         /** Click Registry button */
@@ -177,7 +183,7 @@ module ccg030.a.viewmodel {
             else
                 self.selectedFlowMenuCD(null);
         }
-        
+
         /** Reload Data */
         private reloadData(): JQueryPromise<any> {
             var self = this;

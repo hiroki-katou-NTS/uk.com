@@ -59,4 +59,15 @@ public class BusinessTypeFormatDaily extends AggregateRoot {
 		return new BusinessTypeFormatDaily(companyId, new BusinessTypeCode(businessTypeCode), attendanceItemId, sheetNo,
 				order, columnWidth);
 	}
+
+	public void setSheetNo(BigDecimal sheetNo) {
+		this.sheetNo = sheetNo;
+	}
+	
+	public BusinessTypeFormatDaily clone() {
+		return new BusinessTypeFormatDaily(companyId, businessTypeCode,attendanceItemId,sheetNo,order,columnWidth);
+	}
+	
+	
+	
 }

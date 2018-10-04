@@ -32,81 +32,81 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 
 	@Id
 	@Column(name = "OPERATION_ID")
-	String operationId;
+	public String operationId;
 
 	@Column(name = "CID")
 	@Basic(optional = false)
-	String companyId;
+	public String companyId;
 
 	@Column(name = "USER_ID")
 	@Basic(optional = false)
-	String userId;
+	public String userId;
 
 	@Column(name = "USER_NAME")
 	@Basic(optional = false)
-	String userName;
+	public String userName;
 
 	@Column(name = "SID")
 	@Basic(optional = false)
-	String employeeId;
+	public String employeeId;
 
 	@Column(name = "IP_ADDRESS")
-	String ipAddress;
+	public String ipAddress;
 
 	@Column(name = "PC_NAME")
-	String pcName;
+	public String pcName;
 
 	@Column(name = "ACCOUNT")
-	String account;
+	public String account;
 
 	@Column(name = "MODIFIED_DT")
 	@Basic(optional = false)
-	GeneralDateTime modifiedDateTime;
+	public GeneralDateTime modifiedDateTime;
 
 	@Column(name = "PGID")
 	@Basic(optional = false)
-	String programId;
+	public String programId;
 
 	@Column(name = "SCREEN_ID")
 	@Basic(optional = false)
-	String screenId;
+	public String screenId;
 
 	@Column(name = "QUERY_STRING")
 	@Basic(optional = false)
-	String queryString;
+	public String queryString;
 
 	@Column(name = "OFFICE_HELPER_ROLE")
-	String officeHelperRoleId;
+	public String officeHelperRoleId;
 
 	@Column(name = "GROUP_COM_ADMIN_ROLE")
-	String groupCompaniesAdminRoleId;
+	public String groupCompaniesAdminRoleId;
 
 	@Column(name = "SYS_ADMIN_ROLE")
-	String systemAdminRoleId;
+	public String systemAdminRoleId;
 
 	@Column(name = "MY_NUMBER_ROLE")
-	String myNumberRoleId;
+	public String myNumberRoleId;
 
 	@Column(name = "PERSONNEL_ROLE")
-	String personnelRoleId;
+	public String personnelRoleId;
 
 	@Column(name = "COM_ADMIN_ROLE")
-	String companyAdminRoleId;
+	public String companyAdminRoleId;
 
 	@Column(name = "ACCOUNTING_ROLE")
-	String accountingRoleId;
+	public String accountingRoleId;
 
 	@Column(name = "PERSON_INFO_ROLE")
-	String personalInfoRoleId;
+	public String personalInfoRoleId;
 
 	@Column(name = "ATTENDANCE_ROLE")
-	String attendanceRoleId;
+	public String attendanceRoleId;
 
 	@Column(name = "PAYROLL_ROLE")
-	String payrollRoleId;
+	public String payrollRoleId;
 
 	@Column(name = "NOTE")
-	String note;
+	public String note;
 
 	@Override
 	protected Object getKey() {

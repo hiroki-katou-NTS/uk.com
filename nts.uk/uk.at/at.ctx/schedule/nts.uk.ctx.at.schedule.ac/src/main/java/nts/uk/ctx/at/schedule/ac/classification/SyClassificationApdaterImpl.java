@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.ac.classification;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,5 +27,10 @@ public class SyClassificationApdaterImpl implements SyClassificationAdapter {
 	public Optional<SClsHistImported> findSClsHistBySid(String companyId, String employeeId, GeneralDate baseDate) {
 		return this.pub.findSClsHistBySid(companyId, employeeId, baseDate).map(x -> new SClsHistImported(x.getPeriod(),
 				x.getEmployeeId(), x.getClassificationCode(), x.getClassificationName()));
+	}
+
+	@Override
+	public Map<String, String> getClassificationMapCodeName(String companyId, List<String> clsCds) {
+		return this.pub.getClassificationMapCodeName(companyId, clsCds);
 	}
 }

@@ -1,161 +1,16 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import lombok.val;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.log.BasicScheduleCorrectionParameter.ScheduleCorrectedItem;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.log.BasicScheduleCorrectionParameter.ScheduleCorrectionTarget;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
-import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
-import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 
 @Stateless
 public class CompareItemValue {
-	
-	@Inject
-	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
-
-	public List<ScheduleCorrectionTarget> compare(List<BasicSchedule> listBefore,
-			List<BasicSchedule> listAfter) {
-		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
-
-		// Get all attendanceItemId from domain BasicSchedule
-		List<Integer> attItemIds = this.convertToItemValue(listBefore.get(0))
-				.stream().map(item -> item.getItemId()).collect(Collectors.toList());
-		
-		// Get Name of attendanceItemId
-		Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attItemIds)
-				.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-						x -> x.getAttendanceItemName()));
-		
-		targets = mapToScheduleCorrection(convertToItemValue(listAfter),
-				convertToItemValue(listBefore), new ArrayList<>(), itemNameMap);
-
-		return targets;
-	}
-	
-	/**
-	 * convert to Map ItemValue
-	 * @param domains
-	 * @return Map <Pair<employeeId, Date>, Map<AttendanceItemId, ItemValue>>
-	 */
-	private Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> convertToItemValue(List<BasicSchedule> domains){
-		Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> result = new HashMap<>();
-		for (BasicSchedule daily : domains) {
-			 List<ItemValue> values = this.convertToItemValue(daily);
-			 Map<Integer, ItemValue> map = values.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
-			 result.put(Pair.of(daily.getEmployeeId(), daily.getDate()), map);
-		}
-		return result;
-	}
-	
-	private List<ScheduleCorrectionTarget> mapToScheduleCorrection(
-			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemNewMap,
-			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap, List<Integer> itemEdit,
-			Map<Integer, String> itemNameMap) {
-		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
-		itemNewMap.forEach((key, value) -> {
-			val itemOldValueMap = itemOldMap.get(key);
-			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
-			value.forEach((valueItemKey, valueItemNew) -> {
-				val itemOld = itemOldValueMap.get(valueItemKey);
-				if (valueItemNew.getValue() != null && itemOld.getValue() != null
-						&& !valueItemNew.getValue().equals(itemOld.getValue())
-						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
-						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)) {
-					ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
-							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
-							convertType(valueItemNew.getValueType()), null,
-							itemEdit.contains(valueItemNew.getItemId())
-									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
-					daiTarget.getCorrectedItems().add(item);
-				}
-			});
-			targets.add(daiTarget);
-		});
-		return targets;
-	}	
-	
-	private Integer convertType(ValueType valueType) {
-		switch (valueType.value) {
-
-		case 1:
-		case 2:
-			return DataValueAttribute.TIME.value;
-
-		case 13:
-			return DataValueAttribute.MONEY.value;
-
-		default:
-			return DataValueAttribute.STRING.value;
-		}
-	}
-
-	/**
-	 * 
-	 * @param listBefore
-	 * @param listAfter
-	 * @return Map<Pair<EmployeeId, date>, List<ScheLogDto>>
-	 */
-	public Map<Pair<String, GeneralDate>, List<ScheLogDto>> compareValue(List<BasicScheItemValueDto> listBefore,
-			List<BasicScheItemValueDto> listAfter) {
-		Map<Pair<String, GeneralDate>, List<ScheLogDto>> scheLogDtos = new HashMap<>();
-		List<ScheLogDto> logDtos = new ArrayList<>();
-
-		// create Map <Pair<employeeId, date> , List<BasicScheItemValueDto>>
-		// List before
-		Map<Pair<String, GeneralDate>, List<BasicScheItemValueDto>> mapSidDateBefore = listBefore.stream()
-				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
-
-		// create Map <Pair<employeeId, date> , List<BasicScheItemValueDto>>
-		// List after
-		Map<Pair<String, GeneralDate>, List<BasicScheItemValueDto>> mapSidDateAfter = listAfter.stream()
-				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
-
-		// key : Pair<employeeId, date>
-		// value : List<BasicScheItemValueDto>
-		mapSidDateAfter.forEach((key, value) -> {
-			if (mapSidDateBefore.containsKey(key)) {
-				// create Map<attendanceItemId, value> from listAfter
-				Map<Integer, String> before = mapSidDateBefore.get(key).stream()
-						.collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x.getValue()));
-				for (BasicScheItemValueDto dto : value) {
-					// check value : before and after
-					if (!before.get(dto.getAttendanceItemId()).equals(dto.getValue())) {
-						ScheLogDto logDto = new ScheLogDto();
-						// set data
-						logDto.setAfter(dto.getValue());
-						logDto.setAttendanceItemId(dto.getAttendanceItemId());
-						logDto.setAttendanceItemName(dto.getAttendanceItemName());
-						logDto.setAttr(dto.getAttr());
-						logDto.setBefore(before.get(dto.getAttendanceItemId()));
-						logDto.setValueType(dto.getValueType());
-
-						logDtos.add(logDto);
-					}
-				}
-				if (!logDtos.isEmpty()) {
-					scheLogDtos.put(key, logDtos);
-				}
-			}
-		});
-
-		return scheLogDtos;
-	}
 
 	/**
 	 * Get all ItemValue of domain BasicSchedule
@@ -169,13 +24,13 @@ public class CompareItemValue {
 		ItemValue itemValueWork = new ItemValue();
 		itemValueWork.itemId(1);
 		itemValueWork.value(basicSchedule.getWorkTypeCode());
-		itemValueWork.valueType(ValueType.TEXT);
+		itemValueWork.valueType(ValueType.TEXT); 
 		itemValues.add(itemValueWork);
 
 		// 就業時間帯 - workTimeCode
 		itemValueWork = new ItemValue();
 		itemValueWork.itemId(2);
-		itemValueWork.value(basicSchedule.getWorkTimeCode() == null ? null : basicSchedule.getWorkTimeCode());
+		itemValueWork.value(basicSchedule.getWorkTimeCode());
 		itemValueWork.valueType(ValueType.TEXT);
 		itemValues.add(itemValueWork);
 
@@ -314,13 +169,29 @@ public class CompareItemValue {
 		itemValueTotalLaborTime.valueType(ValueType.TIME);
 		itemValues.add(itemValueTotalLaborTime);
 
-		// 育児介護時間 - childCareTime
-		ItemValue itemValueChildCareTime = new ItemValue();
-		itemValueChildCareTime.itemId(38);
-		itemValueChildCareTime.value(basicSchedule.getWorkScheduleTime().isPresent()
-				? basicSchedule.getWorkScheduleTime().get().getChildCareTime().valueAsMinutes() : null);
-		itemValueChildCareTime.valueType(ValueType.TIME);
-		itemValues.add(itemValueChildCareTime);
+		// フレックス超過時間 - flexTime
+		ItemValue itemValueFlexTime = new ItemValue();
+		itemValueFlexTime.itemId(39);
+		itemValueFlexTime.value(basicSchedule.getWorkScheduleTime().isPresent()
+				? basicSchedule.getWorkScheduleTime().get().getFlexTime().valueAsMinutes() : null);
+		itemValueFlexTime.valueType(ValueType.TIME);
+		itemValues.add(itemValueFlexTime);
+		
+		// 育児時間 - childTime
+		ItemValue itemValueChildTime = new ItemValue();
+		itemValueChildTime.itemId(102);
+		itemValueChildTime.value(basicSchedule.getWorkScheduleTime().isPresent()
+				? basicSchedule.getWorkScheduleTime().get().getChildTime().valueAsMinutes() : null);
+		itemValueChildTime.valueType(ValueType.TIME);
+		itemValues.add(itemValueChildTime);
+		
+		// 介護時間 - careTime
+		ItemValue itemValueCareTime = new ItemValue();
+		itemValueCareTime.itemId(103);
+		itemValueCareTime.value(basicSchedule.getWorkScheduleTime().isPresent()
+				? basicSchedule.getWorkScheduleTime().get().getCareTime().valueAsMinutes() : null);
+		itemValueCareTime.valueType(ValueType.TIME);
+		itemValues.add(itemValueCareTime);
 
 		// 勤務予定人件費 - workSchedulePersonFees
 		int itemIdWorkSchedulePersonFee = 53;
@@ -343,21 +214,21 @@ public class CompareItemValue {
 			itemValueChildCareSchedule.itemId(itemIdChildCareScheduleStart);
 			itemValueChildCareSchedule.value(basicSchedule.getChildCareSchedules().size() > n
 					? basicSchedule.getChildCareSchedules().get(n).getChildCareScheduleStart().v() : null);
-			itemValueChildCareSchedule.valueType(ValueType.TIME_WITH_DAY);
+			itemValueChildCareSchedule.valueType(ValueType.TIME);
 			itemValues.add(itemValueChildCareSchedule);
 			
 			itemValueChildCareSchedule = new ItemValue();
 			itemValueChildCareSchedule.itemId(itemIdChildCareScheduleEnd);
 			itemValueChildCareSchedule.value(basicSchedule.getChildCareSchedules().size() > n
 					? basicSchedule.getChildCareSchedules().get(n).getChildCareScheduleEnd().v() : null);
-			itemValueChildCareSchedule.valueType(ValueType.TIME_WITH_DAY);
+			itemValueChildCareSchedule.valueType(ValueType.TIME);
 			itemValues.add(itemValueChildCareSchedule);
 			
 			itemValueChildCareSchedule = new ItemValue();
 			itemValueChildCareSchedule.itemId(itemIdChildCareScheduleAttr);
 			itemValueChildCareSchedule.value(basicSchedule.getChildCareSchedules().size() > n
 					? basicSchedule.getChildCareSchedules().get(n).getChildCareAtr().value : null);
-			itemValueChildCareSchedule.valueType(ValueType.TIME_WITH_DAY);
+			itemValueChildCareSchedule.valueType(ValueType.ATTR);
 			itemValues.add(itemValueChildCareSchedule);			
 			
 			itemIdChildCareScheduleStart = itemIdChildCareScheduleStart + 3;

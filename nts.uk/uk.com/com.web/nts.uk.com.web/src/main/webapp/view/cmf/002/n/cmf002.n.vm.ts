@@ -41,96 +41,101 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
                 self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(params.formatSetting));
+                dfd.resolve();
             } else {
                 service.getAWDataFormatSetting().done(result => {
                     if (result != null) {
                         self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(result));
                     }
-                })
+                    dfd.resolve();
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject();
+                });
             }
-            if(self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE){
-                $('#N3_1').focus();
-            }
-            $('#N2_1_2').focus();
-            dfd.resolve();
             return dfd.promise();
         }
 
-      /**
-          * Close dialog.
-          */
+        /**
+            * Close dialog.
+            */
         cancelSetting(): void {
             nts.uk.ui.windows.close();
-            }
+        }
         //        self.fixedValue().subscribe(data => {
         //               if(data == 1) $('#N3_1').focus();    
         //               });
-            enableCloseOutput() {
-                var self = this;
-                return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-            }
-       
-      enableRegister(){
+        enableCloseOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+
+        enableRegister() {
             return error.hasError();
         }
-   
-  retirementOutput() {
-        var self = this;
-        return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-    }
-    enableAbsenceOutput() {
-        var self = this;
-        return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-    }
-    enableAtWorkOutput() {
-        var self = this;
-        return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
-    }
 
-    saveSetting() {
-        let self = this;
+        retirementOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        enableAbsenceOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        enableAtWorkOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+
+        saveSetting() {
+            let self = this;
             let command = ko.toJS(self.atWorkDataOutputItem());
-    command.atWorkOutput = ("").equals(command.atWorkOutput) ? null : command.atWorkOutput;
-    command.absenceOutput = ("").equals(command.absenceOutput) ? null : command.absenceOutput;
-    command.closedOutput = ("").equals(command.closedOutput) ? null : command.closedOutput;
-    command.retirementOutput = ("").equals(command.retirementOutput) ? null : command.retirementOutput;
-    command.valueOfFixedValue = ("").equals(command.valueOfFixedValue) ? null : command.valueOfFixedValue;
-    if (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE) {
-        command.atWorkOutput = null;
-        command.absenceOutput = null;
-        command.closedOutput = null;
-        command.retirementOutput = null;
-    }
-    if (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
-        command.valueOfFixedValue = null;
-    }
-    if (!hasError()) {
-            if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
-                // get data shared
-                service.setAWDataFormatSetting(command).done(function() {
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        nts.uk.ui.windows.close();
-                    });            
-            })
-        } else {
-        setShared('CMF002_C_PARAMS', { formatSetting: command });
-        nts.uk.ui.windows.close();
-    }
+            command.atWorkOutput = ("").equals(command.atWorkOutput) ? null : command.atWorkOutput;
+            command.absenceOutput = ("").equals(command.absenceOutput) ? null : command.absenceOutput;
+            command.closedOutput = ("").equals(command.closedOutput) ? null : command.closedOutput;
+            command.retirementOutput = ("").equals(command.retirementOutput) ? null : command.retirementOutput;
+            command.valueOfFixedValue = ("").equals(command.valueOfFixedValue) ? null : command.valueOfFixedValue;
+            if (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE) {
+                command.atWorkOutput = null;
+                command.absenceOutput = null;
+                command.closedOutput = null;
+                command.retirementOutput = null;
+            }
+            if (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
+                command.valueOfFixedValue = null;
+            }
+            if (!hasError()) {
+                if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
+                    // get data shared
+                    service.setAWDataFormatSetting(command).done(function() {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.windows.close();
+                        });
+                    })
+                } else {
+                    setShared('CMF002_C_PARAMS', { formatSetting: command });
+                    nts.uk.ui.windows.close();
+                }
+            }
         }
+        enableFixedValue() {
+            var self = this;
+            if (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE) {
+                $('#N2_1_2').ntsError('clear');
+                $('#N2_2_2').ntsError('clear');
+                $('#N2_3_2').ntsError('clear');
+                $('#N2_4_2').ntsError('clear');
+                self.atWorkDataOutputItem().atWorkOutput(null);
+                self.atWorkDataOutputItem().absenceOutput(null);
+                self.atWorkDataOutputItem().closedOutput(null);
+                self.atWorkDataOutputItem().retirementOutput(null);
+                return true;
+            }
+            if (self.atWorkDataOutputItem().fixedValue() != model.NOT_USE_ATR.USE) {
+                $('#N3_2').ntsError('clear');
+                self.atWorkDataOutputItem().valueOfFixedValue(null);
+                return false;
+            }
         }
-    enableFixedValue() {
-        var self = this;
-        if(self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE){
-            $('#N2_1_2').ntsError('clear');
-            $('#N2_2_2').ntsError('clear');
-            $('#N2_3_2').ntsError('clear');
-            $('#N2_4_2').ntsError('clear');
-        return true;    
-        }
-        if(self.atWorkDataOutputItem().fixedValue() != model.NOT_USE_ATR.USE){
-            $('#N3_2').ntsError('clear');
-            return false;
-        }
-    }
     }
 }

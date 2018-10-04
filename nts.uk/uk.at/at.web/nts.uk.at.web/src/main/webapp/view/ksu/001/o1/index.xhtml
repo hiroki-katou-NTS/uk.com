@@ -24,7 +24,7 @@
 				<button id="copy" class="size-image-button"
 					data-bind="click: copyData"></button>
 				<button id="undo" class="size-image-button"
-					data-bind="click: undoData"></button>
+					data-bind="click: undoData, timeClick: -1"></button>
 				<!-- <button id="setting-workplace">#{i18n.getText('KSU001_69')}</button> -->
 			</div>
 			<div id="contents-area">
@@ -48,7 +48,7 @@
 				</div>
 
 				<div id="set-work-time">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
+					<div data-bind="ntsFormLabel: {enable: isEnableButton}">#{i18n.getText('KSU001_65')}</div>
 			 		<input id="time-edit1"
 						data-bind="ntsTimeWithDayEditor: {
 						name: '#{i18n.getText('KSU001_73')}',
@@ -56,7 +56,8 @@
 						constraint: 'TimeWithDayAttr',
 						inputFormat: 'time',
 						mode: 'time',
-						option: {timeWithDay: false}
+						option: {timeWithDay: false},
+						enable: isEnableButton
 						}" />
 			 		
 					<span>#{i18n.getText('KSU001_66')}</span> 
@@ -68,10 +69,20 @@
 						constraint: 'TimeWithDayAttr',
 						inputFormat: 'time',
 						mode: 'time',
+						enable: isEnableButton,
 						option: {timeWithDay: false}
 						}" />
-					<button data-bind="click:search" class="reserved">#{i18n.getText('KSU001_67')}</button>
-					<button data-bind="click:clear">#{i18n.getText('KSU001_68')}</button>
+					<button data-bind="click:search, enable: isEnableButton" class="reserved">#{i18n.getText('KSU001_67')}</button>
+					<button data-bind="click:clear, enable: isEnableClearSearchButton">#{i18n.getText('KSU001_68')}</button>
+
+					<!-- <div id="switch-o1" class="cf1"
+						data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											enable: isEnableButton,
+											value: selectedRuleCode}">
+					</div> -->
 				</div>
 
 				<div id="table-worktime">
@@ -81,7 +92,8 @@
 							dataSource: listWorkTimeComboBox,
 							primaryKey: 'codeName',
 							columns: columnsWorkTime,
-							value: selectedWorkTimeCode
+							value: selectedWorkTimeCode,
+							enable: isEnableButton
 						}"></table>
 				</div>
 			</div>

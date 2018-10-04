@@ -18,7 +18,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         prerequisiteUseAtr = ko.observableArray([
-            { code: 0, name: text("KAF022_291") },
+            { code: 0, name: text("KAF022_291") },  
             { code: 1, name: text("KAF022_292") }
         ]);
 
@@ -39,7 +39,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 3, name: text("KAF022_303") }
         ]);
 
-        timeInputUseAtr = ko.observableArray([
+        timeInputUseAtr = ko.observableArray([  
             { code: 1, name: text("KAF022_308") },
             { code: 0, name: text("KAF022_309") }
         ]);
@@ -55,8 +55,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         lateOrLeaveAppSettingAtr = ko.observableArray([
-            { code: 0, name: text("KAF022_313") },
-            { code: 1, name: text("KAF022_314") }
+            { code: 1, name: text("KAF022_313") },
+            { code: 0, name: text("KAF022_314") }
         ]);
 
         kcp004WorkplaceListOption: any = {
@@ -79,6 +79,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp> = [];
         selectedSetting: ApplicationApprovalSettingWkp = new ApplicationApprovalSettingWkp(null);
         hasLoadedKcp004: boolean = false;
+        allowRegister: KnockoutObservable<boolean> = ko.observable(true);
 
         // update ver27
         selectVer27: KnockoutObservable<number> = ko.observable(0);
@@ -97,9 +98,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
             return !!self.selectVer27() && isUpdate();
         });
-
+        textKAF022_285 : KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
+            
+            // get text KAF022_285
+            self.textKAF022_285(nts.uk.resource.getText("KAF022_285") + "("
+                        + nts.uk.text.getCharType('Memo').viewName +
+                        + __viewContext.primitiveValueConstraints.Memo.maxLength/2
+                        + "文字)");
 
             _.extend(self.kcp004WorkplaceListOption, {
                 baseDate: self.baseDate,
@@ -108,6 +115,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectVer27.subscribe(v => {
+                self.allowRegister(true);
                 if (v == 1 && !self.hasLoadedKcp004) {
                     $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
                         $('#wkp-list').focusTreeGridComponent();
@@ -120,6 +128,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectedWorkplaceId.subscribe((val) => {
+                if(val){
+                    self.allowRegister(true);    
+                }else{
+                    self.allowRegister(false);    
+                }
+                
                 let exsistedSetting = _.find(self.lstAppApprovalSettingWkp, (setting: IApplicationApprovalSettingWkp) => {
                     return val === setting.wkpId;
                 });
@@ -128,6 +142,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                     self.selectedSetting.update(exsistedSetting);
                 } else {
                     self.selectedSetting.update(null);
+                    self.selectedSetting.wkpName("");
                 }
 
                 self.selectedSetting.wkpId(val);
@@ -166,8 +181,6 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                         nts.uk.ui.block.clear();
                     });
             } else {
-
-                //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
                     if (config) {
                         _.extend(config, {
@@ -236,13 +249,17 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         update() {
+            let self = this;
+            if(!self.allowRegister()){
+                return;
+            }
             $('.memo').trigger("validate");
-            let self = this,
-                command = ko.mapping.toJS(self.selectedSetting);
+            
+            let command = ko.mapping.toJS(self.selectedSetting);
             
             _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
                 // remove private function
-                delete setting.update;
+                delete setting.update;   
 
                 // convert boolean type to number type
                 setting.breakInputFieldDisFlg = Number(setting.breakInputFieldDisFlg);
@@ -253,13 +270,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             command = _.omit(command, ['update', 'wkpName', 'initSettingList']);
 
             if (nts.uk.ui.errors.hasError() === false) {
+                
                 if (!!self.selectVer27()) {
                     service.update([command]).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.block.grayout();
                             self.reloadData();
+                            nts.uk.ui.block.clear();
                         });
                     }).fail(msg => {
-                        debugger;
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
                     });
                 } else {
@@ -271,7 +290,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                     service.saveCom(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.block.grayout();
                             self.reloadData();
+                            nts.uk.ui.block.clear();
                         });
                     }).fail(() => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
@@ -334,15 +355,17 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
 
             self.wkpId.subscribe((val) => {
-                let $wkpl = $('#wkp-list');
+                if(val){
+                    let $wkpl = $('#wkp-list');
 
-                if ($wkpl.getDataList && $wkpl.getRowSelected) {
-                    let lwps = $wkpl.getDataList(),
-                        rstd = $wkpl.getRowSelected(),
-                        flwps = flat(_.cloneDeep(lwps), "childs"),
-                        wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId);
-
-                    self.wkpName(wkp ? wkp.name : '');
+                    if ($wkpl.getDataList && $wkpl.getRowSelected) {
+                        let lwps = $wkpl.getDataList(),
+                            rstd = $wkpl.getRowSelected(),
+                            flwps = flat(_.cloneDeep(lwps), "childs"),
+                            wkp = _.find(flwps, wkp => wkp.workplaceId == _.head(rstd).workplaceId);
+    
+                        self.wkpName(wkp ? wkp.name : '');
+                    }
                 }
             });
 
@@ -461,7 +484,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
             self.appType = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.appType : appTypeParam);
             self.memo = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.memo : '');
-            self.useAtr = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 0);
+            self.useAtr = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 1);
             self.prerequisiteForpauseFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.prerequisiteForpauseFlg : 0);
             self.otAppSettingFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.otAppSettingFlg : 0);
             self.holidayTimeAppCalFlg = ko.observable(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.holidayTimeAppCalFlg : 0);
@@ -484,7 +507,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             let self = this;
             self.appType(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.appType : appTypeParam);
             self.memo(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.memo : '');
-            self.useAtr(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 0);
+            self.useAtr(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.useAtr : 1);
             self.prerequisiteForpauseFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.prerequisiteForpauseFlg : 0);
             self.otAppSettingFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.otAppSettingFlg : 0);
             self.holidayTimeAppCalFlg(param && !nts.uk.util.isNullOrUndefined(param.appType) ? param.holidayTimeAppCalFlg : 0);

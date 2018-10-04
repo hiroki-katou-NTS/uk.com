@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+		<script>
+				var dialogSize = {
+					width : 1000,
+					height : 590
+				};
+			</script>
+		    <com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kdp003.b.vm.js" />		
+			<com:stylefile path="kdp003.b.main.css" />
+			<com:scriptfile path="kdp003.b.service.js" />
+			<com:scriptfile path="kdp003.b.start.js" />
+		</ui:define>
+		
+		
+		
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- B1_1 -->
+				<button tabindex="1" class="fix-button"    data-bind="click:enterNewMode">#{i18n.getText('KDP003_12')}</button>
+				<!-- B1_2 -->
+				<button tabindex="2"  id ="save" class="proceed fix-button" data-bind="click:register">#{i18n.getText('KDP003_13')}</button>
+				<!-- B1_3 -->
+				<button tabindex="3" class="danger fix-button" style="margin-left: 17px;margin-right: 2px;" data-bind="click:btnDelete,enable: enableDelete">#{i18n.getText('KDP003_14')}</button>
+				<!-- B1_4 -->
+				<button tabindex="4" class="fix-button" data-bind="click:close">#{i18n.getText('KDP003_15')}</button>
+			</div>
+			
+			<div id="content-area" style="display: none" data-bind="visible: true">
+				
+				<div >
+				<!-- B2_1 -->
+					<div class="pull-left"  data-bind="ntsPanel:{width: '302px', height: '400px', direction: 'right', showIcon: false, visible: true}">
+						<div id="grid-table"  tabindex="5">
+						<!-- B2_2 -->
+						<table id="single-list" data-bind="ntsGridList: {								
+							name: '#[KDP003_16]',
+							height: 350,
+							dataSource: items,
+							primaryKey: 'stampOutputSetCode',
+							columns: columns,
+							value: currentId,
+							rows: 15
+						}"></table>
+					</div>
+					</div>
+					
+					<div class="pull-left" >
+					<!-- B3_1 -->
+						<div  data-bind="ntsFormLabel: {constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], required: true }">#{i18n.getText('KDP003_19')}</div>
+						<!-- B3_2 -->
+						<input id="stampCode" tabindex="6" data-bind="ntsTextEditor: {name: '#[KDP003_17]',constraint: ['OutputItemSettingCode'],value: stampCode,enable:stampMode,required:true}" />
+						<!-- B3_3 -->
+						<input id="stampName" tabindex="7" data-bind="ntsTextEditor: {name: '#[KDP003_18]',constraint: ['OutputItemSettingName'],value: stampName,required:true}" />
+						<!-- B5_1 -->
+						<div style="margin-top: 25px;width: 400px;">
+							<span>#{i18n.getText('KDP003_22')}</span>
+							<hr/>
+						</div>
+						<table>
+							<tr>
+								<!-- B5_3 -->
+								<td class="out-button-layout"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_23')}</div></td>
+								<td></td>
+								<!-- B5_4 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="8" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_24]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputEmbossMethod ,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr >
+								<!-- B5_5 -->
+								<td class="out-button-layout"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_25')}</div></td>
+								<td></td>
+								<!-- B5_6 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="9" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_26]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputWorkHours,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr >
+								<!-- B5_7 --> <!-- B5_17 -->
+								<td class="out-button-layout"><div  data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_27')}</div><button tabindex="10" style="margin-left: 3px;" data-bind="ntsHelpButton: { position: 'right top ', enable: true,textId:'KDP003_58' }">?</button></td>
+								<td align="left"></td>
+								<!-- B5_8 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="11" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_28]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputSetLocation,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr >
+								<!-- B5_9 --> <!-- B5_18 -->
+								<td class="out-button-layout"><div  data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_29')}</div><button tabindex="12" style="margin-left: 3px;" data-bind="ntsHelpButton: { position: 'right top', enable: true,textId:'KDP003_59' }">?</button></td>
+								<td></td>
+								<!-- B5_10 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="13" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_30]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputPosInfor,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr >
+								<!-- B5_11 -->
+								<td class="out-button-layout"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_31')}</div></td>
+								<td></td>
+								<!-- B5_12 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="14" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_32]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputOT,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr >
+								<!-- B5_13 -->
+								<td class="out-button-layout"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_33')}</div></td>
+								<td></td>
+								<!-- B5_14 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="15" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_34]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputNightTime,
+										enable: true }"></div>
+								</td>
+							</tr>
+							<tr >
+								<!-- B5_15 -->
+								<td class="out-button-layout"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_35')}</div></td>
+								<td></td>
+								<!-- B5_16 -->
+								<td style="padding-left: 30px;">
+									<div tabindex="16" data-bind="ntsSwitchButton: {
+										name: '#[KDP003_36]',
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedOutputSupportCard,
+										enable: true }"></div>
+								</td>
+							</tr>
+						</table>
+					</div>				
+				</div>
+
+			</div>
+			
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.dailyperformanceformat;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,17 +53,24 @@ public class UpdateAutDaiFormatCommandHandler extends CommandHandler<UpdateAutho
 		if (command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().isEmpty()) {
 			throw new BusinessException("Msg_920");
 		}
-
+		
 		// update daily
 		// List attendanceItemId in DB
 		List<Integer> attendanceItemIdsInDB = this.authorityFormatDailyRepository
-				.getAuthorityFormatDailyDetail(companyId,
-						new DailyPerformanceFormatCode(
-								command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()),
-						command.getAuthorityDailyCommand().getSheetNo())
-				.stream().map(f -> {
-					return f.getAttendanceItemId();
-				}).collect(Collectors.toList());
+			.getAuthorityFormatDailyDetail(companyId,
+					new DailyPerformanceFormatCode(
+							command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()),
+					command.getAuthorityDailyCommand().getSheetNo())
+			.stream().map(f -> {
+				return f.getAttendanceItemId();
+			}).collect(Collectors.toList());
+		
+		if(attendanceItemIdsInDB.isEmpty()) {
+			int size = authorityFormatSheetRepository.findByCode(companyId, command.getAuthorityDailyCommand().getDailyPerformanceFormatCode()).size();
+			command.getAuthorityDailyCommand().setSheetNo(BigDecimal.valueOf(size+1));
+		}
+		
+		
 
 		// List attendanceItemId from UI
 		List<Integer> attendanceItemIdsInUI = command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos()
@@ -82,7 +90,7 @@ public class UpdateAutDaiFormatCommandHandler extends CommandHandler<UpdateAutho
 
 		// remove all of data has removed in list attendanceId from UI
 		if (!attendanceItemIdRemove.isEmpty()) {
-			this.authorityFormatDailyRepository.deleteExistData(attendanceItemIdRemove);
+			this.authorityFormatDailyRepository.deleteExistData( companyId,command.getAuthorityDailyCommand().getDailyPerformanceFormatCode(),command.getAuthorityDailyCommand().getSheetNo(),attendanceItemIdRemove);
 		}
 
 		// List Data Update from UI compare DB (exist in DB)
@@ -173,7 +181,7 @@ public class UpdateAutDaiFormatCommandHandler extends CommandHandler<UpdateAutho
 				.filter(item -> !attendanceItemIdsInDBMonthly.contains(item)).collect(Collectors.toList());
 
 		if (!attendanceItemIdRemoveMonthly.isEmpty()) {
-			this.authorityFormatMonthlyRepository.deleteExistData(attendanceItemIdRemoveMonthly);
+			this.authorityFormatMonthlyRepository.deleteExistData(companyId,command.getAuthorityMonthlyCommand().getDailyPerformanceFormatCode(),attendanceItemIdRemoveMonthly);
 		}
 
 		// List Data Update from UI compare DB (exist in DB)

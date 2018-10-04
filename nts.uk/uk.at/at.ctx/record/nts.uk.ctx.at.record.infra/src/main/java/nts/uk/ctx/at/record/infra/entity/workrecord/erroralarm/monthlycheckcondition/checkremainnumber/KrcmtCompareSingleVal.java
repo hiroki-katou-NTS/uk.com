@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcondition.checkremainnumber;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -11,7 +12,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckConValueRemainingNumber;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -31,7 +31,7 @@ public class KrcmtCompareSingleVal extends UkJpaEntity implements Serializable {
 	public int compareOperator;
 	
 	@Column(name = "DAYS_VALUE")
-	public int daysValue;
+	public BigDecimal daysValue;
 	
 	@Column(name = "TIME_VALUE")
 	public Integer timeValue;
@@ -45,7 +45,7 @@ public class KrcmtCompareSingleVal extends UkJpaEntity implements Serializable {
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCompareSingleVal(String errorAlarmCheckID, int compareOperator, int daysValue, Integer timeValue) {
+	public KrcmtCompareSingleVal(String errorAlarmCheckID, int compareOperator, BigDecimal daysValue, Integer timeValue) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.compareOperator = compareOperator;

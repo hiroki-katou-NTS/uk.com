@@ -179,7 +179,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* スケジュールID */
 	@Column(name = "SCHEDULE_ID")
 	public String scheduleId;
-	
+	/* 終了処理スケジュールID*/
 	@Column(name = "END_SCHEDULE_ID")
 	public String endScheduleId;
 	

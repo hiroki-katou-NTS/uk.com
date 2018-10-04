@@ -168,7 +168,7 @@ public class StdOutputCondSetService {
 		List<StandardOutputItemOrder> listStdOutputItemOrder = outputAcquisitionItemOrderList(cId, cndSetCode);
 
 		// 外部出力取得条件一覧
-		outCndDetail = outCndDetailRepository.getOutCndDetailByCode(cndSetCode);
+		outCndDetail = outCndDetailRepository.getOutCndDetailById(cId, cndSetCode);
 		outCndDetail.ifPresent(i -> i.setListOutCndDetailItem(outputAcquisitionConditionList(cndSetCode)));
 
 		// 取得内容の項目を複写先用の情報に変更する

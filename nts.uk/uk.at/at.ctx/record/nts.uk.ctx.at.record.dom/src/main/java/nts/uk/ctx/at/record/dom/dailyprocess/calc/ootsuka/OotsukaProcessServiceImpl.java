@@ -19,7 +19,9 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -72,19 +74,19 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 									dailyWork, 
 									workType.getDeprecate(), 
 									workType.getCalculateMethod());
-			WorkTypeSet createWorkTypeSet = new WorkTypeSet(workTypeSet.getCompanyId(), 
-														workTypeSet.getWorkTypeCd(), 
-														workTypeSet.getWorkAtr(), 
-														workTypeSet.getDigestPublicHd(), 
-														workTypeSet.getHolidayAtr(), 
-														workTypeSet.getCountHodiday(), 
-														workTypeSet.getCloseAtr(), 
-														workTypeSet.getSumAbsenseNo(), 
-														workTypeSet.getSumSpHodidayNo(), 
-														WorkTypeSetCheck.NO_CHECK, 
-														WorkTypeSetCheck.NO_CHECK, 
-														workTypeSet.getGenSubHodiday(),
-														WorkTypeSetCheck.NO_CHECK
+			WorkTypeSet createWorkTypeSet = new WorkTypeSet(workTypeSet.isPresent()?workTypeSet.get().getCompanyId():workType.getCompanyId(), 
+															workTypeSet.isPresent()?workTypeSet.get().getWorkTypeCd():workType.getWorkTypeCode(), 
+															workTypeSet.isPresent()?workTypeSet.get().getWorkAtr():WorkAtr.OneDay, 
+															workTypeSet.isPresent()?workTypeSet.get().getDigestPublicHd():WorkTypeSetCheck.NO_CHECK, 
+															workTypeSet.isPresent()?workTypeSet.get().getHolidayAtr():HolidayAtr.NON_STATUTORY_HOLIDAYS, 
+															workTypeSet.isPresent()?workTypeSet.get().getCountHodiday():WorkTypeSetCheck.NO_CHECK, 
+															workTypeSet.isPresent()?workTypeSet.get().getCloseAtr():CloseAtr.PRENATAL, 
+															workTypeSet.isPresent()?workTypeSet.get().getSumAbsenseNo():0, 
+															workTypeSet.isPresent()?workTypeSet.get().getSumSpHodidayNo():0, 
+															WorkTypeSetCheck.NO_CHECK, 
+															WorkTypeSetCheck.NO_CHECK, 
+															workTypeSet.isPresent()?workTypeSet.get().getGenSubHodiday():WorkTypeSetCheck.NO_CHECK,
+															WorkTypeSetCheck.NO_CHECK
 														);
 			createWorkType.addWorkTypeSet(createWorkTypeSet);
 			return createWorkType;
@@ -108,35 +110,35 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 											  dailyWork, 
 											  workType.getDeprecate(), 
 											  workType.getCalculateMethod());
-			WorkTypeSet createWorkTypeSetMorning = new WorkTypeSet(workTypeSetMorning.getCompanyId(), 
-																   workTypeSetMorning.getWorkTypeCd(), 
-																   workTypeSetMorning.getWorkAtr(), 
-																   workTypeSetMorning.getDigestPublicHd(), 
-																   workTypeSetMorning.getHolidayAtr(), 
-																   workTypeSetMorning.getCountHodiday(), 
-																   workTypeSetMorning.getCloseAtr(), 
-																   workTypeSetMorning.getSumAbsenseNo(), 
-																   workTypeSetMorning.getSumSpHodidayNo(), 
+			WorkTypeSet createWorkTypeSetMorning = new WorkTypeSet(workTypeSetMorning.isPresent()?workTypeSetMorning.get().getCompanyId():workType.getCompanyId(), 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getWorkTypeCd():workType.getWorkTypeCode(), 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getWorkAtr():WorkAtr.OneDay, 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getDigestPublicHd():WorkTypeSetCheck.NO_CHECK, 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getHolidayAtr():HolidayAtr.NON_STATUTORY_HOLIDAYS, 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getCountHodiday():WorkTypeSetCheck.NO_CHECK, 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getCloseAtr():CloseAtr.PRENATAL, 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getSumAbsenseNo():0, 
+																   workTypeSetMorning.isPresent()?workTypeSetMorning.get().getSumSpHodidayNo():0, 
 																   WorkTypeSetCheck.NO_CHECK, 
 																   WorkTypeSetCheck.NO_CHECK, 
-																   workTypeSetMorning.getGenSubHodiday(),
-																   WorkTypeSetCheck.NO_CHECK
-																	);			
+															       workTypeSetMorning.isPresent()?workTypeSetMorning.get().getGenSubHodiday():WorkTypeSetCheck.NO_CHECK,
+															       WorkTypeSetCheck.NO_CHECK
+				);		
 			
-			WorkTypeSet createWorkTypeSetAfternoon = new WorkTypeSet(workTypeSetAfternoon.getCompanyId(), 
-																	 workTypeSetAfternoon.getWorkTypeCd(), 
-																	 workTypeSetAfternoon.getWorkAtr(), 
-																	 workTypeSetAfternoon.getDigestPublicHd(), 
-																	 workTypeSetAfternoon.getHolidayAtr(), 
-																	 workTypeSetAfternoon.getCountHodiday(), 
-																	 workTypeSetAfternoon.getCloseAtr(), 
-																	 workTypeSetAfternoon.getSumAbsenseNo(), 
-																	 workTypeSetAfternoon.getSumSpHodidayNo(), 
-																	 WorkTypeSetCheck.NO_CHECK, 
-																	 WorkTypeSetCheck.NO_CHECK, 
-																	 workTypeSetAfternoon.getGenSubHodiday(),
-																	 WorkTypeSetCheck.NO_CHECK
-																	 );
+			WorkTypeSet createWorkTypeSetAfternoon = new WorkTypeSet(workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getCompanyId():workType.getCompanyId(), 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getWorkTypeCd():workType.getWorkTypeCode(), 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getWorkAtr():WorkAtr.OneDay, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getDigestPublicHd():WorkTypeSetCheck.NO_CHECK, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getHolidayAtr():HolidayAtr.NON_STATUTORY_HOLIDAYS, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getCountHodiday():WorkTypeSetCheck.NO_CHECK, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getCloseAtr():CloseAtr.PRENATAL, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getSumAbsenseNo():0, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getSumSpHodidayNo():0, 
+					   												 WorkTypeSetCheck.NO_CHECK, 
+					   												 WorkTypeSetCheck.NO_CHECK, 
+					   												 workTypeSetAfternoon.isPresent()?workTypeSetAfternoon.get().getGenSubHodiday():WorkTypeSetCheck.NO_CHECK,
+					   												 WorkTypeSetCheck.NO_CHECK
+				);
 			createWorkType.addWorkTypeSet(createWorkTypeSetMorning);
 			createWorkType.addWorkTypeSet(createWorkTypeSetAfternoon);
 			return createWorkType;

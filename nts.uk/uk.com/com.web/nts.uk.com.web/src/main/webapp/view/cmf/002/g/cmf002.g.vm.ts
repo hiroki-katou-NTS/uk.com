@@ -33,6 +33,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 if (convertCode) {
                     block.invisible();
                     self.enableBtn(true);
+                    nts.uk.ui.errors.clearAll();
                     service.getOutputCodeConvertByConvertCode(convertCode).done(function(data) {
                         if (data) {
                             self.codeConvertCurrent().listCdConvertDetail.removeAll();
@@ -48,8 +49,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                             }
 
                             self.screenMode(model.SCREEN_MODE.UPDATE);
-
-                            self.setFocusItem(FOCUS_TYPE.ROW_PRESS, model.SCREEN_MODE.UPDATE);
                         }
                     }).fail(function(error) {
                         dialog.alertError(error);
@@ -96,9 +95,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     self.listOutputCodeConvert(_listOutputCodeConvert);
 
                     self.screenMode(model.SCREEN_MODE.UPDATE);
+                    self.setFocusG2_3();
                 } else {
                     self.enableBtn(false);
                     self.settingCreateMode();
+                    self.setFocusG3_1();
                 }
             }).fail(function(error) {
                 dialog.alertError(error);
@@ -109,19 +110,20 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
         btnAddCdConvertDetails() {
             let self = this;
+            self.addCdConvertDetails();
+            let indexFocus: number = self.codeConvertCurrent().listCdConvertDetail().length;
+            //self.setFocusItem(FOCUS_TYPE.ADD_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
+            self.setFocusG4_3();
+        }
+        
+        addCdConvertDetails() {
+            let self = this;
             block.invisible();
-
             self.codeConvertCurrent().listCdConvertDetail.push(new CdConvertDetail('', self.codeConvertCurrent().listCdConvertDetail().length + 1, '', ''));
-
             self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
             $("#fixed-table tr")[self.codeConvertCurrent().listCdConvertDetail().length - 1].scrollIntoView();
-
-            let indexFocus: number = self.codeConvertCurrent().listCdConvertDetail().length;
-
-            self.setFocusItem(FOCUS_TYPE.ADD_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
-
             block.clear();
-        } // END Add table>tbody>tr
+        }
 
         btnRemoveCdConvertDetails() {
             let self = this;
@@ -142,9 +144,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 indexFocus = self.selectedConvertDetail();
             }
 
-            self.setFocusItem(FOCUS_TYPE.DEL_ROW_PRESS, model.SCREEN_MODE.UPDATE, indexFocus);
             self.selectedConvertDetail.valueHasMutated();
-
+            if (self.codeConvertCurrent().listCdConvertDetail().length == 0) {
+                self.addCdConvertDetails();
+                self.selectedConvertDetail(0);
+            }
             block.clear();
              $('#fixed-table').focus();
         } // END Remove table>tbody>tr
@@ -154,9 +158,8 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             self.enableBtn(false);
             block.invisible();
             self.settingCreateMode();
+            self.setFocusG3_1();
             block.clear();
-            $('#G3_1').focus();
-
         }
 
         btnRegOutputCodeConvert() {
@@ -164,7 +167,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             nts.uk.ui.errors.clearAll();
             block.invisible();
             $('.nts-input').trigger("validate");
-
+            if (nts.uk.ui.errors.hasError()) {
+                block.clear();
+                self.setFocusG2_3();
+                return;
+            }
             for (var i = 0; i < self.codeConvertCurrent().listCdConvertDetail().length; i++) {
                 self.codeConvertCurrent().listCdConvertDetail()[i].convertCode(self.codeConvertCurrent().convertCode());
             }
@@ -206,36 +213,30 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 //dialog.alertError({ messageId: "Msg_661" });
             }
 
-            if (!nts.uk.ui.errors.hasError()) {
-                if (model.SCREEN_MODE.NEW == self.screenMode()) {
-                    service.addOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.initialScreen(self.codeConvertCurrent().convertCode());
-                        });
-                    }).fail(function(error) {
-                        dialog.alertError(error);
-                    }).always(function() {
-                        block.clear();
-                        $('#G2_3').focus();
+            if (model.SCREEN_MODE.NEW == self.screenMode()) {
+                service.addOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.initialScreen(self.codeConvertCurrent().convertCode());
                     });
-                } else {
-                    service.updateOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
-                        dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.initialScreen(self.selectedCodeConvert());
-                        });
-                    }).fail(function(error) {
-                        dialog.alertError(error);
-                    }).always(function() {
-                        block.clear();
-                        $('#G2_3').focus();
-                    });
-                }
+                }).fail(function(error) {
+                    dialog.alertError(error);
+                }).always(function() {
+                    block.clear();
+                    self.setFocusG2_3();
+                });
             } else {
-                block.clear();
-                $('#G2_3').focus();
+                service.updateOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.initialScreen(self.selectedCodeConvert());
+                    });
+                }).fail(function(error) {
+                    dialog.alertError(error);
+                }).always(function() {
+                    block.clear();
+                    self.setFocusG2_3();
+                });
             }
             self.enableBtn(true);
-            _.defer(() => { $('#G2_3').focus(); });
         }
 
 
@@ -244,49 +245,44 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let _listOutputCodeConvert = self.listOutputCodeConvert;
             let _codeConvertCurrent = self.codeConvertCurrent;
             block.invisible();
+            $('#G2_3_container').ntsError('clear');
+            service.checkBeforeRemove(self.selectedCodeConvert()).done(() => {
+                dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
 
-            if (_codeConvertCurrent().listCdConvertDetail().length > 0) {
-                dialog.alertError({ messageId: "Msg_659" });
-                block.clear();
-                $('#G2_3').focus();
-                return;
-                
-            }
+                        let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
+                        { return x.convertCode() == _codeConvertCurrent().convertCode() });
 
-
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
-
-                    let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
-                    { return x.convertCode() == _codeConvertCurrent().convertCode() });
-
-                    if (index >= 0) {
-                        self.listOutputCodeConvert.splice(index, 1);
-                        if (index >= _listOutputCodeConvert().length) {
-                            index = _listOutputCodeConvert().length - 1;
+                        if (index >= 0) {
+                            self.listOutputCodeConvert.splice(index, 1);
+                            if (index >= _listOutputCodeConvert().length) {
+                                index = _listOutputCodeConvert().length - 1;
+                            }
                         }
-                    }
 
-                    dialog.info({ messageId: "Msg_16" }).then(() => {
-                        if (_listOutputCodeConvert().length > 0) {
-                            self.initialScreen(_listOutputCodeConvert()[index].convertCode());
-                            self.screenMode(model.SCREEN_MODE.UPDATE);
-                            $('#G2_3').focus();
-                        } else {
-                            self.settingCreateMode();
-                        }
+                        dialog.info({ messageId: "Msg_16" }).then(() => {
+                            if (_listOutputCodeConvert().length > 0) {
+                                self.initialScreen(_listOutputCodeConvert()[index].convertCode());
+                                self.screenMode(model.SCREEN_MODE.UPDATE);
+                            } else {
+                                self.settingCreateMode();
+                            }
+                        });
+                    }).fail(function(error) {
+                        dialog.alertError(error);
+                    }).always(function() {
+                        block.clear();
+                        self.setFocusG2_3();
                     });
-                }).fail(function(error) {
-                    dialog.alertError(error);
-                }).always(function() {
+                }).then(() => {
                     block.clear();
-                    $('#G2_3').focus();
+                    self.setFocusG2_3();
                 });
-            }).then(() => {
+            }).fail(error => {
+                $('#G2_3_container').ntsError('set', error);
                 block.clear();
-                $('#G2_3').focus();
+                self.setFocusG2_3();
             });
-            $('#G2_3').focus();
         }
 
         btnCloseDialog() {
@@ -305,11 +301,21 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
             self.codeConvertCurrent().listCdConvertDetail.removeAll();
             self.selectedConvertDetail(0);
-            self.btnAddCdConvertDetails();
+            self.addCdConvertDetails();
 
             self.screenMode(model.SCREEN_MODE.NEW);
+        }
+        
+        setFocusG3_1() {
+            _.defer(() => { $('#G3_1').focus(); });
+        }
 
-            self.setFocusItem(FOCUS_TYPE.ADD_PRESS, model.SCREEN_MODE.NEW);
+        setFocusG2_3() {
+            _.defer(() => { $('#G2_3_container').focus(); });
+        }
+        
+        setFocusG4_3() {
+            _.defer(() => { $('#fixed-table').focus(); });
         }
 
         setFocusItem(focus: number, screenMode: number, index?: number) {

@@ -111,7 +111,9 @@ module nts.uk.at.view.kmk007.b.viewmodel {
          */
         register() {
             var self = this;
+            nts.uk.ui.block.invisible();
             if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
                 return;
             }
             if(self.frameId() == Cls_Of_Duty.SpecialHolidayFrame){
@@ -122,6 +124,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
                     self.getData();
                 }).fail(function(res) {
                           
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             } else if(self.frameId() == Cls_Of_Duty.AbsenceFrame){
                 var absenceFrame = new AbsenceFrameDto(self.selectedCode(), self.frameName(), self.frameEliminationSelectedCode());
@@ -131,6 +135,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
                     self.getData();
                 }).fail(function(res) {
                           
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
         }

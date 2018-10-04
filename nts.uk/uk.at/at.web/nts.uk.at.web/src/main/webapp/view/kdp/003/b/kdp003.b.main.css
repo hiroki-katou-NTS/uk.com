@@ -1,0 +1,32 @@
+.pull-left{
+	float:left;
+	margin-left: 25px;
+    margin-top: 25px;
+}
+#stampCode{
+width: 30px;
+}
+#stampName{
+	height: 20px;
+	width: 148px !important;
+}
+.nts-switch-button{
+	width:80px;
+	margin-left: 40px;
+}
+ .out-button-layout{
+	padding-left: 33px;
+	padding-top: 10px;
+} 
+.fix-button{
+	width: 80px;
+	height: 35px;
+}
+
+#functions-area{
+	padding-bottom: 7px;
+    padding-top: 15px;
+}
+#grid-table{
+	border: 1px solid #999999;
+}

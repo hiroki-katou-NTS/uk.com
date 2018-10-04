@@ -1,16 +1,55 @@
 <div>
 	<div class="left-content-kaf006">
-		<table id="tbl">
-			<tr data-bind ="visible : !employeeFlag()">
-				<td><div data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div></td>
-				<td class="thut"><label
-					data-bind="text : employeeName"></label></td>
-			</tr>
-			<tr data-bind ="visible : employeeFlag()">
-				<td style = "vertical-align: top;"><div data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div></td>
-				<td class="thut">
-				<div id="list-box"
-				data-bind="ntsListBox: {
+ 			<!-- TH: 1 Employee -->
+ 			<div  data-bind ="if : !employeeFlag()">
+				<!-- A3_1: 申請者 -->
+				<div class = "line_1 column1" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div>
+				<!-- A3_2: 申請者名 -->
+				<div class = "line_1 thut" >
+					<label data-bind="text : employeeName"></label>
+				</div>
+				<div  id = "numberOfRemaining1"  class = "line_1" data-bind = "if: disAll">
+					<!-- A14_1 - A14_8 -->
+					<table id = "reamaning">
+						<tr style = "background-color: #97D155">
+							<td data-bind = "css: { display1: !yearDis()}">
+								<div>#{i18n.getText('KAF006_69')}</div>
+							</td>
+							<td data-bind = "css: { display1: !subHdDis()}">
+								<div>#{i18n.getText('KAF006_70')}</div>
+							</td>
+							<td data-bind = "css: { display1: !subVacaDis()}">
+								<div>#{i18n.getText('KAF006_71')}</div>
+							</td>
+							<td data-bind = "css: { display1: !stockDis()}">
+								<div>#{i18n.getText('KAF006_72')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class ="flRight" data-bind = "css: { display1: !yearDis()}">
+								<div data-bind = "text: yearRemain"></div>
+							</td>
+							<td class ="flRight" data-bind = "css: { display1: !subHdDis()}">
+								<div data-bind = "text: subHdRemain"></div>
+							</td>
+							<td class ="flRight" data-bind = "css: { display1: !subVacaDis()}">
+								<div data-bind = "text: subVacaRemain"></div>
+							</td>
+							<td class ="flRight" data-bind = "css: { display1: !stockDis()}">
+								<div data-bind = "text: stockRemain"></div>
+							</td>
+						</tr>
+					</table>
+				</div>
+		</div>
+		<!-- TH: List Employee -->
+		<div data-bind ="if : employeeFlag()">
+			<div>
+				<!-- A3_1: 申請者 -->
+				<div id ="applicant" class = "line_1 column1" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_7')}</div>
+				<!-- A3_15: 申請者リスト -->
+				<div class = "line_1 thut">
+					<div id="list-box" data-bind="ntsListBox: {
 							options: employeeList,
 							optionsValue: 'id',
 							optionsText: 'name',
@@ -18,22 +57,36 @@
 							value: selectedEmplCodes,
 							enable: true,
 							rows: 3,
-							columns: [
-								{ key: 'name',length: 11}
-							]}">
+							columns: [ { key: 'name',length: 11} ]}">
 				</div>
-			</td>
-			</tr>
-			<tr data-bind ="visible : employeeFlag()">
-				<td><div></div></td>
-				<td class="thut"><label style ="margin-left: -9px;" data-bind="text : totalEmployee"></label></td>
-			</tr>
+				</div>
+				<div id = "numberOfRemaining2"  class = "line_1">
+					<!-- A14_1 - A14_8 -->
+					<table id = "reamaning">
+						<tr style = "background-color: #97D155">
+							<td>#{i18n.getText('KAF006_69')}</td>
+							<td>#{i18n.getText('KAF006_70')}</td>
+							<td>#{i18n.getText('KAF006_71')}</td>
+							<td>#{i18n.getText('KAF006_72')}</td>
+						</tr>
+						<tr>
+							<td class ="flRight" data-bind = "text: yearRemain"></td>
+							<td class ="flRight" data-bind = "text: subHdRemain"></td>
+							<td class ="flRight" data-bind = "text: subVacaRemain"></td>
+							<td class ="flRight" data-bind = "text: stockRemain"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id = "totalEmp"><label data-bind="text : totalEmployee"></label></div>
+		</div>
+		<table id="tbl">
 			<tr data-bind="if: displayPrePostFlg">
 				<td><div data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_9')}</div></td>
 				<td class="thut"><div data-bind="if: screenModeNew"
 						style="display: inline-block;">
 						<!--A3_4 事前事後スイッチ-->
-						<div tabindex="7" id = "switch_prePost"
+						<div id = "switch_prePost"
 							data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF006_9')}',
 									options:ko.observableArray([
 							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF006_10')}' },
@@ -56,54 +109,80 @@
 				<td><div
 						data-bind="ntsFormLabel: {required: true}"
 						style="margin-right: 16px">#{i18n.getText('KAF006_8')}</div></td>
-				<td><div tabindex="8" style="float: left; margin-right: 15px"
-						data-bind="ntsCheckBox: { checked: displayEndDateFlg, enable: enableDisplayEndDate, text: '#{i18n.getText('KAF006_12')}'},visible: screenModeNew">
+				<td><div style="float: left; margin-right: 15px"
+						data-bind="ntsCheckBox: { checked: displayEndDateFlg, 
+							enable: enableDisplayEndDate, 
+							text: '#{i18n.getText('KAF006_12')}'},
+							visible: screenModeNew">
 					</div>
 					<div
 						data-bind="if: screenModeNew()">
 						<!--A3_9  期間入力-->
-						<div tabindex="9" id="inputdate"
-							data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true,visible: !displayEndDateFlg()"></div>
-						<div id="daterangepicker" tabindex="9"
-							data-bind="ntsDateRangePicker: { name: '#{i18n.getText('KAF006_8')}',startName:'#{i18n.getText('KAF006_8')}',endName: '#{i18n.getText('KAF006_8')}',required:true, enable: true, showNextPrevious: false, value: dateValue, maxRange: 'none'},visible: displayEndDateFlg()" />
+						<div id="inputdate"
+							data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',
+									required:true,
+									value: appDate,
+									dateFormat: 'YYYY/MM/DD'}, 
+									acceptJapaneseCalendar: true,
+									visible: !displayEndDateFlg()"></div>
+						<div id="daterangepicker"
+							data-bind="ntsDateRangePicker: { name: '#{i18n.getText('KAF006_8')}',
+									startName:'#{i18n.getText('KAF006_8')}',
+									endName: '#{i18n.getText('KAF006_8')}',
+									required:true, enable: true, 
+									showNextPrevious: false, 
+									value: dateValue, 
+									maxRange: 'none'},
+							visible: displayEndDateFlg()" />
 					</div>
 					<div data-bind="if: !screenModeNew()">
 						<span style ="margin-left: 6px;"
 							data-bind="text: appDate"></span>
 					</div>
 					<div style="clear: both"></div>
-					</td>
-
-			</tr>
-			<tr>
-				<td></td>
-				<td class="thut" tabindex="11">
-				<label class="ntsRadioBox" style="margin-right: 5px" > <input  type="radio"
-						name="textRadio"
-						data-bind="checkedValue: 0, checked: selectedAllDayHalfDayValue,enable: enbAllDayHalfDayFlg" />
-						<span class="box"></span><span class="label"
-						data-bind="text: '#{i18n.getText('KAF006_13')}'"></span>
-				</label> <label class="ntsRadioBox"> <input type="radio"
-						name="textRadio"
-						data-bind="checkedValue: 1, checked: selectedAllDayHalfDayValue,enable: enbAllDayHalfDayFlg" />
-						<span class="box"></span><span class="label"
-						data-bind="text: '#{i18n.getText('KAF006_14')}'"></span>
-				</label>
 				</td>
 			</tr>
 			<tr>
-				<td><div
-						class="lblTitle-kaf006 cm-column2-kaf006 control-group-kaf006"
-						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_15')}</div></td>
-				<td class="thut"><div tabindex="12"
-						data-bind="ntsSwitchButton: {
+				<td></td>
+				<td class="thut">
+					<!-- A3_13 -->
+					<label class="ntsRadioBox" style="margin-right: 5px" > <input  type="radio"
+							name="textRadio"
+							data-bind="checkedValue: 0,
+								checked: selectedAllDayHalfDayValue,
+								enable: enbAllDayHalfDayFlg" />
+						<span class="box"></span><span class="label"
+							data-bind="text: '#{i18n.getText('KAF006_13')}'"></span>
+					</label> 
+					<!-- A3_14 -->
+					<label class="ntsRadioBox"> <input type="radio"
+							name="textRadio"
+							data-bind="checkedValue: 1, 
+									checked: selectedAllDayHalfDayValue,
+									enable: enbAllDayHalfDayFlg" />
+						<span class="box"></span><span class="label"
+							data-bind="text: '#{i18n.getText('KAF006_14')}'"></span>
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<!-- A4_1 -->
+					<div class="lblTitle-kaf006 cm-column2-kaf006 control-group-kaf006"
+						data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF006_15')}</div>
+				</td>
+				<td class="thut">
+					<!-- A4_2 -->
+					<div id = "hdType" data-bind="ntsSwitchButton: {
+								name: '#{i18n.getText('KAF006_15')}',
 								options: holidayTypes,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: holidayTypeCode,
-								enable: screenModeNew }"></div></td>
+								required: true,
+								enable: screenModeNew }"></div>
+				</td>
 			</tr>
-
 		</table>
 		<div data-bind="css : {disappear: !displayStartFlg()}">
 			<div class="valign-center-kaf006  control-group-kaf006"
@@ -112,7 +191,7 @@
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_16')}</div>
 				<!--A5_2 勤務種類一覧-->
-				<div tabindex="13" class="combo-box-kaf006" id ="workTypes"
+				<div class="combo-box-kaf006" id ="workTypes"
 					data-bind="ntsComboBox: {name: '#{i18n.getText('KAF006_16')}', 
 								options: typeOfDutys,
 								optionsValue: 'typeOfDutyID',
@@ -122,14 +201,17 @@
 								enable: enbWorkType}">
 				</div>
 				<!--A5_3 半日の組み合わせを表示-->
-				<div class="" tabindex="14"
-					data-bind="ntsCheckBox: { checked: displayHalfDayValue, enable: enbHalfDayFlg, text: '#{i18n.getText('KAF006_17')}'}"></div>
+				<div data-bind="ntsCheckBox: { checked: displayHalfDayValue,
+												enable: enbHalfDayFlg,
+												text: '#{i18n.getText('KAF006_17')}'}"></div>
 			</div>
+			<!-- A6 - Work Time -->
 			<div data-bind="visible:changeWorkHourValueFlg">
 				<div class="valign-center-kaf006 control-group-kaf006">
 					<!--A6_1 就業時間帯を変更する-->
-					<div class="" tabindex="18"
-						data-bind="ntsCheckBox: { checked: changeWorkHourValue, enable: enbChangeWorkHourFlg, text: '#{i18n.getText('KAF006_18')}'}"></div>
+					<div data-bind="ntsCheckBox: { checked: changeWorkHourValue,
+							enable: enbChangeWorkHourFlg,
+							text: '#{i18n.getText('KAF006_18')}'}"></div>
 					<!--A6_2 罫線-->
 					<HR data-bind="" style="width: 1000px;"></HR>
 				</div>
@@ -143,8 +225,10 @@
 						</div>
 						<div class="cell valign-top-kaf006 cm-column2-kaf006" >
 							<!--A6_4 就業時間帯選択-->
-							<button class="proceed" tabindex="19"
-								data-bind="click: btnSelectWorkTimeZone, enable : enbbtnWorkTime() &amp; changeWorkHourValue()">#{i18n.getText('KAF006_20')}</button>
+							<button class="proceed"
+								data-bind="click: btnSelectWorkTimeZone,
+									enable : enbbtnWorkTime() &amp; changeWorkHourValue()"
+									>#{i18n.getText('KAF006_20')}</button>
 						</div>
 						<div class="cell valign-center-kaf006">
 							<!--A6_5 就業時間帯選択対象-->
@@ -153,8 +237,7 @@
 						</div>
 					</div>
 				</div>
-				<div
-					class="valign-center-kaf006 control-group-kaf006 margin-left-for-workChange-kaf006">
+				<div class="valign-center-kaf006 control-group-kaf006 margin-left-for-workChange-kaf006">
 					<div class="table">
 						<div class="cell valign-top-kaf006 cm-column2-kaf006">
 							<!--A6_6 勤務時間-->
@@ -164,10 +247,13 @@
 						<div class="cell valign-top-kaf006 cm-column2-kaf006">
 							<div >
 								<!--A6_7 開始時刻-->
-								<input tabindex="20"
-									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
+								<input class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
 									id="inpStartTime1"
-									data-bind="ntsTimeWithDayEditor: {name: '#[KAF006_58]',constraint:'TimeWithDayAttr',value: timeStart1,enable : eblTimeStart1 }" />
+									data-bind="ntsTimeWithDayEditor: {
+											name: '#[KAF006_58]',
+											constraint:'TimeWithDayAttr',
+											value: timeStart1,
+											enable : eblTimeStart1 }" />
 								<!--A6_8 ～-->
 								<label class="valign-center-kaf006 link-label-kaf006">#{i18n.getText('KAF005_39')}</label>
 							</div>
@@ -175,23 +261,88 @@
 						<div class="cell valign-center-kaf006">
 							<div >
 								<!--A6_9 終了時刻-->
-								<input tabindex="21"
-									class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
-									id="inpEndTime1"
-									data-bind="ntsTimeWithDayEditor: {name: '#[KAF006_59]', constraint:'TimeWithDayAttr',value: timeEnd1, enable : eblTimeEnd1}" />
+								<input class="row-cell-margin-kaf006 inputDate-kaf006 right-content-kaf006"
+									id="inpEndTime1" 
+									data-bind="ntsTimeWithDayEditor: {
+											name: '#[KAF006_59]', 
+											constraint:'TimeWithDayAttr',
+											value: timeEnd1, 
+											enable : eblTimeEnd1}" />
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!--定型理由 -->
+			<!-- A10 - Relationship -->
+			<div class="valign-center-kaf006  control-group-kaf006" data-bind = "if: hdTypeDis">
+				<div data-bind = "if: fix">
+					<div class="valign-center-kaf006 control-group-kaf006">
+						<!--A10_1 続柄・喪主-->
+						<div class="lblTitle-kaf006 cm-column-kaf006"
+							data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KAF006_33')}</div>
+						<!--A10_2 続柄・喪主一覧-->
+						<div class="combo-box-kaf006" id = "relaCD-combo"
+							data-bind="ntsComboBox: {name: '#{i18n.getText('KAF006_33')}', 
+										options: relationCombo,
+										optionsValue: 'relationCd',
+										optionsText: 'relationName',
+										value: selectedRelation,
+										enable: relaEnable,
+										required: requiredRela,
+										columns: [{ prop: 'relationName',length: 10 }]}">
+						</div>
+						<!-- A10_3 喪主 -->
+						<div data-bind = "if: mournerDis()" style = "display: inline-block; margin-left: 10px;">
+							<div data-bind="ntsCheckBox: { checked: isCheck, enable: relaMourner}">#{i18n.getText('KAF006_34')}</div>
+						</div>
+					</div>
+					<div class="valign-center-kaf006 control-group-kaf006">
+					<div data-bind = "if: relaResonDis">
+						<!--A10_4 続柄入力-->
+						<div class="lblTitle-kaf006 cm-column-kaf006"
+							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_43')}</div>
+						<!--A10_5 続柄入力欄-->
+						<input id = "relaReason" style = "margin: 0px 0px 0px 15px !important;"
+							data-bind="ntsTextEditor: {
+										  name: '#{i18n.getText('KAF006_43')}',
+	                                         value: relaReason,
+	                                         constraint: 'RelationshipReasonPrimitive', 
+	                                         required: true,
+	                                         enable: relaRelaReason,
+	                                         option: {textalign: 'left',
+	                                         	width: '380px',
+	                                         	placeholder:'#{i18n.getText('KAF006_45')}'}
+                                     	}"/>
+                         <!-- A10_6 -->
+                         <div class = 'maxDay' data-bind = "if: maxDayDis">
+                         	<div data-bind = "text: maxDayline1"></div>
+                         	<div data-bind = "text: maxDayline2"></div>
+                         </div> 
+                   	</div>
+                   	<div data-bind = "if: !relaResonDis()">
+                         <!-- A10_6 -->
+                         <div class = 'maxDay limit-fix' data-bind = "if: maxDayDis">
+                         	<div data-bind = "text: maxDayline1"></div>
+                         	<div data-bind = "text: maxDayline2"></div>
+                         </div> 
+                    </div>          	
+					</div>
+				</div>
+				<div data-bind = "if: !fix() &amp; dataMax()">
+					<div class = 'maxDay limit-fix' data-bind = "if: maxDayDis">
+                       	<div data-bind = "text: maxDayline1"></div>
+                       	<div data-bind = "text: maxDayline2"></div>
+                 </div>
+				</div>
+			</div>
+			<!-- A7 - Reason -->
 			<div class="valign-center-kaf006 control-group-kaf006 overlay-reason-kaf006"
-				data-bind="css: { disappear: !typicalReasonDisplayFlg() }">
+				data-bind="if: typicalReasonDisplayFlg">
 				<!--A7_1 申請定型理由-->
 				<div class="lblTitle-kaf006 cm-column-kaf006"
 					data-bind="ntsFormLabel:{}">#{i18n.getText('KAF006_24')}</div>
 				<!--A7_2 申請定型理由-->
-				<div tabindex="29" class="combo-box-kaf006"
+				<div class="combo-box-kaf006"
 					data-bind="ntsComboBox: {name: '#[KAF006_24]', 
 								options: reasonCombo ,
 								optionsValue: 'reasonId',
@@ -209,7 +360,7 @@
 					data-bind="ntsFormLabel: {}">#{i18n.getText('KAF006_26')}</div>
 				<!--A7_4 申請理由-->
 				<div id="multiline" >
-					<textarea  tabindex="30" id="appReason" class="textarea-kaf006"
+					<textarea  id="appReason" class="textarea-kaf006"
 						data-bind="ntsMultilineEditor: {name: '#[KAF006_26]', 
 								value: multilContent,
 								enable: enbContentReason,

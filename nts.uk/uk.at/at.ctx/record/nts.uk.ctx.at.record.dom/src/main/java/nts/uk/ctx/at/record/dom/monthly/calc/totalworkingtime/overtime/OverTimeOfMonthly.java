@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,14 +16,12 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
-import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
@@ -320,7 +317,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addOverTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalOverTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							overTimeWork, new AttendanceTime(0)));
+							overTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
 					break;
 						
 				case TRANSFER:
@@ -341,7 +338,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalTransferTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							transferTimeWork, new AttendanceTime(0)));
+							transferTimeWork, overTimeFrameTime.getTransferTime().getCalcTime()));
 					break;
 				}
 				break;
@@ -396,13 +393,14 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
 	 * @param aggregateAtr 集計区分
-	 * @param flexAggrSet フレックス時間勤務の月の集計設定
-	 * @param monthlyAggrSetOfFlexOpt フレックス勤務の月別集計設定
 	 * @param flexTime フレックス時間
+	 * @param settingsByFlex フレックス勤務が必要とする設定
 	 */
 	public FlexTime aggregateForFlex(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			String companyId, MonthlyAggregateAtr aggregateAtr, FlexMonthWorkTimeAggrSet flexAggrSet,
-			Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt, FlexTime flexTime){
+			String companyId, MonthlyAggregateAtr aggregateAtr, FlexTime flexTime,
+			SettingRequiredByFlex settingsByFlex){
+		
+		val flexAggrSet = settingsByFlex.getFlexAggrSet();
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -421,18 +419,9 @@ public class OverTimeOfMonthly implements Cloneable {
 			// 「設定．残業を含める」を確認する
 			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
 
-				// 残業フレックス加算を確認
-				if (monthlyAggrSetOfFlexOpt.isPresent()) {
-					val overTimeMap = monthlyAggrSetOfFlexOpt.get().getOutsideTimeAddSet().getOverTimeMap();
-					if (overTimeMap.containsKey(overTimeFrameNo)){
-						if (overTimeMap.get(overTimeFrameNo).getAddition() == UseAtr.USE){
-					
-							// 取得した残業枠時間を「フレックス時間」に入れる
-							flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
-							continue;
-						}
-					}
-				}
+				// 取得した残業枠時間を「フレックス時間」に入れる
+				flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
+				continue;
 			}
 				
 			// 取得した残業枠時間を「集計残業時間」に入れる
@@ -441,6 +430,44 @@ public class OverTimeOfMonthly implements Cloneable {
 		}
 		
 		return flexTime;
+	}
+	
+	/**
+	 * 残業時間の集計　（期間別集計用）
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param roleOverTimeFrameMap 残業枠の役割
+	 */
+	public void aggregateForByPeriod(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap){
+		
+		// 残業時間を縦計する
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			
+			// 期間外はスキップする
+			if (!datePeriod.contains(ymd)) continue;
+			
+			// 「残業枠時間」を取得する
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			val excessPrescibedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+			val overTimeOfDailyOpt = excessPrescibedTimeOfDaily.getOverTimeWork();
+			if (!overTimeOfDailyOpt.isPresent()) continue;
+			val overTimeFrames = overTimeOfDailyOpt.get().getOverTimeWorkFrameTime();
+			
+			// 取得した「残業枠時間」を「集計残業時間」に入れる
+			for (val overTimeFrame : overTimeFrames){
+				int frameNo = overTimeFrame.getOverWorkFrameNo().v();
+				val target = this.getTargetAggregateOverTime(new OverTimeFrameNo(frameNo));
+				target.addOverTimeInTimeSeriesWork(ymd, overTimeFrame);
+			}
+		}
+		
+		// 残業合計時間を集計する
+		this.aggregateTotal(datePeriod);
 	}
 	
 	/**

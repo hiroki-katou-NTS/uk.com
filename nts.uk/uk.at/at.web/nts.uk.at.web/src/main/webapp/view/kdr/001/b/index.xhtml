@@ -134,18 +134,17 @@
 											options: $parent.allSpecialHolidays,
 											optionsValue: 'specialHolidayCode',
 											optionsText: 'specialHolidayName',
-											value: listSpecialHoliday,
-											enable: true}"></div>
+											value: listSpecialHoliday}"></div>
 								</td>
 							</tr>
-							<tr>
+							<tr id="rowChildNursingHoliday">
 								<td>
 									<!-- B4_20  -->
 									<div tabindex="26"
 										data-bind="ntsCheckBox: { checked: childNursingLeave,  enable: true, text: '#{i18n.getText('KDR001_47')}' }"></div>
 								</td>
 							</tr>
-							<tr>
+							<tr id="rowNursingCareHoliday">
 								<td>
 									<!-- B4_21  -->
 									<div tabindex="27"

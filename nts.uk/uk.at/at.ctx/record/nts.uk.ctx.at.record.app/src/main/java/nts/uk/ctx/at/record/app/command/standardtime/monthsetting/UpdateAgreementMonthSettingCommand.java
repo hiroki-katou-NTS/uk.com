@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UpdateAgreementMonthSettingCommand {
-	
+//	private UpdateParam updateParam;
+//	
+//	private int yearMonthValueOld;
+
 	private String employeeId;
 
 	private int yearMonthValue;
@@ -18,4 +21,6 @@ public class UpdateAgreementMonthSettingCommand {
 	private int errorOneMonth;
 
 	private int alarmOneMonth;
+	
+	private int yearMonthValueOld;
 }

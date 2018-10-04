@@ -35,7 +35,7 @@
 		<span>#{i18n.getText('KSU001_1701')}</span>
 		<div>
 			<input
-				data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true}" />
+				data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true, name: '#[KSU001_1702]' }" />
 			<button class="proceed"
 				data-bind="enable: $root.errors.isEmpty, click: decision">#{i18n.getText('KSU001_1703')}</button>
 			<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>

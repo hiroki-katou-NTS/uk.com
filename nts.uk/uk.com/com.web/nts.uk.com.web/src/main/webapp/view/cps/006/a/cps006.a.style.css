@@ -1,3 +1,7 @@
+body * {
+	font-family: "DroidSansMono", "Meiryo" !important;
+}
+
 .float-right {
 	float: right !important;
 }
@@ -37,9 +41,9 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
 	margin-left: -5px !important;
 }
 
-#item_grid_container {
+/* #item_grid_container {
 	margin-top: 10px !important;
-}
+} */
 
 .distane {
 	margin-bottom: 5px;
@@ -54,4 +58,5 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
 
 #col1 {
 	width: 150px;
+    margin-bottom: 10px;
 }

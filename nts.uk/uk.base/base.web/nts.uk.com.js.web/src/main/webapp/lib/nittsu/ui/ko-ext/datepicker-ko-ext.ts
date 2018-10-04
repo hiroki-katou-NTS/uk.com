@@ -142,6 +142,7 @@ module nts.uk.ui.koExtentions {
                     }
 //                    container.data("changed", true);
                     value(result.parsedValue);
+                    value.valueWillMutate();
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -779,6 +780,7 @@ module nts.uk.ui.koExtentions {
             this.$input.on(this.EVENT_SHOW, function(evt) {
                 var _self = self;
                 setTimeout(function() {
+                    if (!_self.validDate()) return; 
                     _self._beforeShow.call(_self);
                     _self.onClick.call(_self);
                 }, 0);
@@ -789,7 +791,47 @@ module nts.uk.ui.koExtentions {
         onKeyup(): DatePickerNormalizer {
 //            this.$input.off(this.EVENT_KEYUP, this._beforeShow);
 //            this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
+            let self = this;
+            this.$input.on(this.EVENT_KEYUP, () => {
+                self.validDate();
+            });
+            
             return this;
+        }
+        
+        validDate() {
+            let self = this;
+            let current, prev, next, b, ns = self.$input.data(self.NAMESPACE);
+            if (!isNaN(ns.date)) return true;
+            if (!self.colorLevel) self.setColorLevel();
+            if (self.colorLevel === self.YEARS) {
+                current = ns.$yearsCurrent;
+                prev = ns.$yearsPrev;
+                next = ns.$yearsNext;
+                b = ns.$years;
+            } else if (self.colorLevel === self.MONTHS) {
+                current = ns.$yearCurrent;
+                prev = ns.$yearPrev;
+                next = ns.$yearNext;
+                b = ns.$months;
+            } else if (self.colorLevel === self.DAYS) {
+                current = ns.$monthCurrent;
+                prev = ns.$monthPrev;
+                next = ns.$monthNext;
+                b = ns.$days;
+            }
+            
+            current.html("");
+            current.addClass(ns.options.disabledClass);
+            prev.addClass(ns.options.disabledClass);
+            next.addClass(ns.options.disabledClass);
+            b.find("li").each(function() {
+                let e = $(this); 
+                e.addClass(ns.options.disabledClass);
+                if (self.colorLevel === self.YEARS) {
+                    e.html("");
+                }
+            });
         }
         
         onPick(): DatePickerNormalizer {
@@ -814,6 +856,8 @@ module nts.uk.ui.koExtentions {
                         _self.updateMonthsView.call(_self);
                     }, 0);
                 }
+                
+                self.$input.focus();
             });
             return self;
         }

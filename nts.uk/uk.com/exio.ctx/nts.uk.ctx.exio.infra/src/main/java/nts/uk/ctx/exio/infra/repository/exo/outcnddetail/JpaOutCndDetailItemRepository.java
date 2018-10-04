@@ -25,7 +25,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  ";
 	private static final String SELECT_BY_CID_AND_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  and f.outCndDetailItemPk.cid =:cid";
+			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  and f.outCndDetailItemPk.cid =:cid ORDER BY f.outCndDetailItemPk.seriNum";
 	
 	@Override
 	public List<OutCndDetailItem> getAllOutCndDetailItem() {

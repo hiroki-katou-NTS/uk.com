@@ -26,9 +26,11 @@ public class TopPageAlarm {
 	private ExistenceError existenceError;
 	/** 了解フラグ */
 	private RogerFlag rogerFlag;
+	/** 中止フラグ */
+	private IsCancelled isCancelled;
 	
 	public TopPageAlarm(String companyId, String executionLogId, String managerId, GeneralDateTime finishDateTime,
-			AlarmCategory executionContent, ExistenceError existenceError, RogerFlag rogerFlag) {
+			AlarmCategory executionContent, ExistenceError existenceError, RogerFlag rogerFlag, IsCancelled isCancelled) {
 		super();
 		this.companyId = companyId;
 		this.executionLogId = executionLogId;
@@ -37,13 +39,15 @@ public class TopPageAlarm {
 		this.executionContent = executionContent;
 		this.existenceError = existenceError;
 		this.rogerFlag = rogerFlag;
+		this.isCancelled = isCancelled;
 	}
 	
 	public static TopPageAlarm createFromJavaType(String companyId, String executionLogId, String managerId, GeneralDateTime finishDateTime,
-			int executionContent, int existenceError, int rogerFlag){
+			int executionContent, int existenceError, int rogerFlag, int isCancelled){
 		return new TopPageAlarm(companyId, executionLogId, managerId, finishDateTime,
 									EnumAdaptor.valueOf(executionContent, AlarmCategory.class), 
 									EnumAdaptor.valueOf(existenceError, ExistenceError.class),
-									EnumAdaptor.valueOf(rogerFlag, RogerFlag.class));
+									EnumAdaptor.valueOf(rogerFlag, RogerFlag.class),
+									EnumAdaptor.valueOf(isCancelled, IsCancelled.class));
 	}
 }

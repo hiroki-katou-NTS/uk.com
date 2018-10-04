@@ -11,7 +11,7 @@ public interface AgreementMonthSetDomainService {
 
 	List<String> add(AgreementMonthSetting agreementMonthSetting, Optional<WorkingConditionItem> workingConditionItem);
 	
-	List<String> update(AgreementMonthSetting agreementMonthSetting, Optional<WorkingConditionItem> workingConditionItem);
+	List<String> update(AgreementMonthSetting agreementMonthSetting, Optional<WorkingConditionItem> workingConditionItem, Integer yearMonthValueOld);
 	
 	void delete(String employeeId, BigDecimal yearMonthValue);
 	

@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -317,7 +316,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String settingName = "";
 		if (stdOutputCondSet != null)
 			settingName = stdOutputCondSet.getConditionSetName().v();
-		String fileName = exOutSetting.getConditionSetCd() + settingName + processingId;
+		String fileName = exOutSetting.getConditionSetCd() + settingName + GeneralDateTime.now().toString("yyyyMMddHHmmss");
 
 		Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(processingId);
 		if (!exOutOpMngOptional.isPresent()) {
@@ -1256,20 +1255,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
 
-		if ((setting.getFixedValue() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
+		if ((setting.getFixedValueOperation() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
 			if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
-				decimaValue.subtract(setting.getFixedCalculationValue().get().v());
+				decimaValue = decimaValue.subtract(setting.getFixedCalculationValue().get().v());
 			} else if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.PLUS) {
-				decimaValue.add(setting.getFixedCalculationValue().get().v());
+				decimaValue = decimaValue.add(setting.getFixedCalculationValue().get().v());
 			}
 		}
 
 		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && decimaValue.doubleValue() < 0)
-				? BigDecimal.valueOf(0.0) : decimaValue;
+				? BigDecimal.valueOf(0) : decimaValue;
 
 		int precision = ((setting.getFormatSelection() == DecimalDivision.DECIMAL)
 				&& setting.getDecimalDigit().isPresent()) ? setting.getDecimalDigit().get().v() : 0;
-		roundDecimal(decimaValue, precision, setting.getDecimalFraction());
+				decimaValue = roundDecimal(decimaValue, precision, setting.getDecimalFraction());
 
 		targetValue = (setting.getDecimalPointClassification() == DecimalPointClassification.OUT_PUT)
 				? decimaValue.toString() : decimaValue.toString().replace(DOT, "");
@@ -1294,11 +1293,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
 
-		if ((setting.getFixedValue() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
+		if ((setting.getFixedValueOperation() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
 			if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
-				decimaValue.subtract(setting.getFixedCalculationValue().get().v());
+				decimaValue = decimaValue.subtract(setting.getFixedCalculationValue().get().v());
 			} else if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.PLUS) {
-				decimaValue.add(setting.getFixedCalculationValue().get().v());
+				decimaValue = decimaValue.add(setting.getFixedCalculationValue().get().v());
 			}
 		}
 
@@ -1312,13 +1311,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 		}
 
+		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
+				? BigDecimal.valueOf(0) : decimaValue;
+		
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
-			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
+			decimaValue = roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
-
-		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
-				? BigDecimal.valueOf(0.0) : decimaValue;
 
 		targetValue = decimaValue.toString();
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
@@ -1355,26 +1354,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 					setting.getEndDigit().get().v().intValue() - setting.getStartDigit().get().v().intValue());
 		}
 
-		Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
-		if (setting.getConvertCode().isPresent() && codeConvert.isPresent()) {
-			for (CdConvertDetail convertDetail : codeConvert.map(OutputCodeConvert::getListCdConvertDetails).orElseGet(ArrayList::new)) {
-				if (!targetValue.equals(convertDetail.getSystemCd())) {
-					continue;
+		if (setting.getConvertCode().isPresent()) {
+			Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
+			
+			if(codeConvert.isPresent()) {
+				for (CdConvertDetail convertDetail : codeConvert.map(OutputCodeConvert::getListCdConvertDetails).orElseGet(ArrayList::new)) {
+					if (!targetValue.equals(convertDetail.getSystemCd())) {
+						continue;
+					}
+					targetValue = convertDetail.getOutputItem().map(i->i.v()).orElse("");
+					inConvertCode = true;
+					break;
 				}
-				targetValue = convertDetail.getOutputItem().map(i->i.v()).orElse("");
-				inConvertCode = true;
-				break;
-			}
-
-			if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
-				state = RESULT_NG;
-				errorMess = "mes-678";
-
-				result.put(RESULT_STATE, state);
-				result.put(ERROR_MESS, errorMess);
-				result.put(RESULT_VALUE, targetValue);
-
-				return result;
+	
+				if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
+					state = RESULT_NG;
+					errorMess = "mes-678";
+	
+					result.put(RESULT_STATE, state);
+					result.put(ERROR_MESS, errorMess);
+					result.put(RESULT_VALUE, targetValue);
+	
+					return result;
+				}
 			}
 		}
 
@@ -1413,14 +1415,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
 			}
 		}
+		
+		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
+				? BigDecimal.valueOf(0) : decimaValue;
 
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
-			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
+			decimaValue = roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
-
-		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
-				? BigDecimal.valueOf(0.0) : decimaValue;
 
 		if ((Double.valueOf(itemValue) > 1440)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
@@ -1541,7 +1543,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		return result;
 	}
 
-	private void roundDecimal(BigDecimal decimaValue, int precision, Rounding rounding) {
+	private BigDecimal roundDecimal(BigDecimal decimaValue, int precision, Rounding rounding) {
 		RoundingMode roundingMode;
 
 		switch (rounding) {
@@ -1560,7 +1562,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			break;
 		}
 
-		decimaValue.round(new MathContext(precision, roundingMode));
+		return decimaValue.setScale(precision, roundingMode);
 	}
 
 	private String fixlengthData(String data, int fixLength, FixedLengthEditingMethod method) {

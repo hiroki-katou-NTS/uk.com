@@ -232,6 +232,9 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 		//TH: create history new
 		if(checkAddHist){
+			if(rootInsert.size() == 0){//TH tao moi ls nhung k co don nao duoc setting
+				return;
+			}
 			//Tạo root có ls mới với appType ở dữ liệu bên phải.
 			//Update root có ls trước đó của những root mới được tạo ở trên.
 			List<WorkplaceApprovalRoot> listWp = new ArrayList<>();

@@ -24,7 +24,7 @@ public class UpdateScheCommonAppRelectImpl implements UpdateScheCommonAppRelect{
 					1,
 					baseDate,
 					employeeId);
-			workScheReposi.updateScheduleEditState(scheData);	
+			workScheReposi.updateOrInsert(scheData);	
 		}
 		if(workTimeCode != null) {
 			//就業時間帯の編集状態を更新する
@@ -32,7 +32,7 @@ public class UpdateScheCommonAppRelectImpl implements UpdateScheCommonAppRelect{
 					2,
 					baseDate,
 					employeeId);
-			workScheReposi.updateScheduleEditState(scheDataTime);	
+			workScheReposi.updateOrInsert(scheDataTime);	
 		}
 		
 	}

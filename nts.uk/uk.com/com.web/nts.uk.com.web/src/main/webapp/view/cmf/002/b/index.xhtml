@@ -28,7 +28,7 @@
 				<!--B1_2 新規-->
 				<button id="B1_2" data-bind="click: createNewCondition, enable: !isNewMode()">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
-				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
+				<button id="B1_3" data-bind="click: register, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
 				<button id="B1_5" data-bind="click: openCopyScreen, enable: !isNewMode()" >#{i18n.getText('CMF002_32')}</button>
 				<!--B1_6 削除-->

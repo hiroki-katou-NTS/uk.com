@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
@@ -50,11 +51,13 @@ public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
 	public AppHolidayWork buildHolidayWork(String companyID, String appID, String workTypeCode,
 			String siftCode, Integer workClockStart1, Integer workClockEnd1, Integer workClockStart2,
 			Integer workClockEnd2, int goAtr1, int backAtr1, int goAtr2, int backAtr2, String divergenceReason,
-			int overTimeShiftNight, List<HolidayWorkInput> holidayWorkInputs) {
+			int overTimeShiftNight, List<HolidayWorkInput> holidayWorkInputs, 
+			Optional<AppOvertimeDetail> appOvertimeDetail) {
 		AppHolidayWork appHolidayWork = AppHolidayWork.createSimpleFromJavaType(companyID, appID, workTypeCode,
 				siftCode, workClockStart1, workClockEnd1, workClockStart2, workClockEnd2,goAtr1,backAtr1,goAtr2,backAtr2, divergenceReason,
 				overTimeShiftNight);
 		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);
+		appHolidayWork.setAppOvertimeDetail(appOvertimeDetail);
 		return appHolidayWork;
 	}
 

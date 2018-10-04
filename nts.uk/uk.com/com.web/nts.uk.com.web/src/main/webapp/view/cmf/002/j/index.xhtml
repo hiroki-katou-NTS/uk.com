@@ -34,8 +34,8 @@
 						<div class="div-table-col-medium">
 							<div id="J2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_164')}</div>
 						</div>
-						<div id="J2_1" tabindex="1" class="div-table-col-standard">
-							<div class="div-table-col-standard"
+						<div class="div-table-col-standard">
+							<div id="J2_1" tabindex="1" class="div-table-col-standard"
 								data-bind="ntsRadioBoxGroup: {
 									options: $vm.effectDigitLengthItem,
 									optionsValue: 'code',
@@ -168,8 +168,8 @@
 						<div class="div-table-col-medium">
 							<div id="J7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_159')}</div>
 						</div>
-						<div tabindex="11" class="div-table-col-standard">
-							<div id="J7_1"
+						<div class="div-table-col-standard">
+							<div id="J7_1" tabindex="11"
 								data-bind="ntsRadioBoxGroup: {
 									options: $vm.fixedValueItem,
 									optionsValue: 'code',
@@ -193,7 +193,7 @@
 			<!--  I20  -->
 			<div id="functions-area-bottom">
 				<button tabindex="13" id="J20_1" class="x-large proceed "
-					data-bind="click: saveCharacterSetting">#{i18n.getText('CMF002_161')}</button>
+					data-bind="click: saveCharacterSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
 				<button tabindex="14" id="J20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>

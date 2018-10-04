@@ -66,4 +66,11 @@ public interface OptionalItemGetMemento {
 	 * @return the calculation result range
 	 */
 	CalcResultRange getCalculationResultRange();
+
+	/**
+	 * Gets the unit.
+	 *
+	 * @return the unit
+	 */
+	UnitOfOptionalItem getUnit();
 }

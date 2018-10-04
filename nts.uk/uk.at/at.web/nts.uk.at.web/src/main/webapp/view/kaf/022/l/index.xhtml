@@ -2,11 +2,11 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div  class="fixed-flex-layout contents-area-kaf022">
+	<div  class="fixed-flex-layout contents-area-kaf022l">
 		<div class="fixed-flex-layout-left">
 			<div id="empt-list-setting"></div>
 		</div>
-		<div class="fixed-flex-layout-right">			
+		<div id = "right-content" class="fixed-flex-layout-right">			
 			<div class="block-style">
 				<!--L4_1 単位情報--> 
 				<div data-bind="ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Employment')])"/></div>
@@ -15,8 +15,8 @@
 				</div>
 			</div>			
 			<!--   -->
-			<div class="ui-iggrid kaf022l" data-bind="with: appSetData">
-				<table class="fixed-table kaf022l">
+			<div class="kaf022l" data-bind="with: appSetData">
+				<table id = "right-table" class="fixed-table kaf022l">
 					<colgroup>
 						<col width="350px" />
 						<col width="450px" />
@@ -66,10 +66,10 @@
 								</td>
 								<td>
 									<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, 
-																	enable: displayFlag">#{i18n.getText('KAF022_280')}</button>
+																	enable: enableButton">#{i18n.getText('KAF022_280')}</button>
 									<input  class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes,
 																								name: optionName, 
-																								enable: displayFlag, 
+																								enable: enableButton, 
 																								readonly: true,
 																								required: true},
 																								attr: { NameID: optionName }

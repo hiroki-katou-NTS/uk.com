@@ -67,6 +67,10 @@ public class GrantDateTbl extends AggregateRoot {
 			currentYearMonth.setMonth(currentElapseYear.getMonths().v());
 			currentYearMonth.setYear(currentElapseYear.getYears().v());
 			
+			if (currentYearMonth.getMonth()==0 && currentYearMonth.getYear()==0) {
+				throw new BusinessException("Msg_95");
+			}
+			
 			if (yearMonth.stream().anyMatch(x -> x.equals(currentYearMonth))) {
 				throw new BusinessException("Msg_96");
 			}

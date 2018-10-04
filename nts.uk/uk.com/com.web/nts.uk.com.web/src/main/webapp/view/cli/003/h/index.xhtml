@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				                var dialogSize = {
-				                    width : 500,
-				                    height : 350
+				                    width : 570,
+				                    height : 400
 				                };
             				</script>
 			<com:scriptfile set="IGNITE" />
@@ -30,12 +30,53 @@
 					<span id="H1_2"></span>
 				</div>
 				<br/>
-				<table id="H2_1"></table>
+				<div class="table" id="condition-set-div">
+					<table id="H2_1">
+						<thead>
+							<tr>
+								<th></th>
+								<th>#{i18n.getText('CLI003_48')}</th>
+								<th>#{i18n.getText('CLI003_49')}</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: conditionSets">
+							<tr>
+								<td><div
+										data-bind="ntsCheckBox: { checked: isUseCondFlg, enable: true}"></div></td>
+								<td>
+								<div id="combo-box"
+										data-bind="ntsComboBox: {
+									options: $parent.itemListCbb,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: symbolStr,
+									optionsText: 'name',
+									editable: false,
+									required: true,
+									enable: isUseCondFlg,
+									selectFirstIfNull: true,
+									columns: $parent.comboColumns}"></div></td>
+
+								<td class="control-group valign-center">
+									<div class="cell"><input class="validate_form"
+										data-bind="ntsTextEditor: {
+										name: '#[CLI003_49]',
+										value: condition,
+										constraint: 'LogDetailCondition',
+										option: { width: '200px' },
+										enable: isUseCondFlg}" />
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
 				</div>
 				<hr/>
 				<center>
-				<button id = "H3_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
-				<button id = "H3_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
+				<button id = "H3_1" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
+				<button id = "H3_2" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
 				</center>
 			</ui:define>
 	</ui:composition>

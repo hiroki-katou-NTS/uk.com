@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
+import nts.uk.ctx.exio.dom.exo.outputitem.OutputItemName;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -74,7 +75,7 @@ public class CtgItemData extends AggregateRoot {
 	/**
 	 * 項目名
 	 */
-	private String itemName;
+	private OutputItemName itemName;
 
 	/**
 	 * 必須区分
@@ -100,7 +101,7 @@ public class CtgItemData extends AggregateRoot {
 		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
-		this.itemName = itemName;
+		this.itemName = new OutputItemName(itemName);
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
 		this.searchValueCd = Optional.ofNullable(searchValueCd);
 	}
@@ -121,7 +122,7 @@ public class CtgItemData extends AggregateRoot {
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
 		this.itemNo = new ItemNo(itemNo);
-		this.itemName = itemName;
+		this.itemName = new OutputItemName(itemName);
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
 		this.searchValueCd = Optional.ofNullable(searchValueCd);
 	}

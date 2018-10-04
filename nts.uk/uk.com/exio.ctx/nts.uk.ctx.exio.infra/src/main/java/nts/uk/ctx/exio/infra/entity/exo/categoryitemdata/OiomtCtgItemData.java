@@ -128,7 +128,7 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 		return new OiomtCtgItemData(new OiomtCtgItemDataPk(domain.getCategoryId().v(), domain.getItemNo().v()),
 				domain.getTblAlias(), domain.getDataType().value, domain.getTableName(), domain.getFieldName(),
 				domain.getPrimarykeyClassfication().get().value, domain.getDateClassfication().get(), domain.getSpecialItem().value,
-				domain.getDisplayTableName(), domain.getDisplayClassfication().value, domain.getItemName(),
+				domain.getDisplayTableName(), domain.getDisplayClassfication().value, domain.getItemName().v(),
 				domain.getRequiredCategory().value, domain.getSearchValueCd().get());
 	}
 

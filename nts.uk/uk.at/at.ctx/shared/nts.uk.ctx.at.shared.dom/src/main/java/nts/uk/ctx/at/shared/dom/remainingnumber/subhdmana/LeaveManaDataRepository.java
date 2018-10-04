@@ -19,12 +19,22 @@ public interface LeaveManaDataRepository {
 	
 	List<LeaveManagementData> getBySidNotUnUsed(String cid, String sid);
 	
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd ・休出日 < INPUT．集計開始日
+	 * @return
+	 */
+	List<LeaveManagementData> getBySidDate(String cid, String sid, GeneralDate ymd);
+	
 	List<LeaveManagementData> getBySid(String cid, String sid);
+
 	
 	List<LeaveManagementData> getByDateCondition (String cid, String sid, GeneralDate startDate, GeneralDate endDate);
 	
 	List<LeaveManagementData> getBySidWithHolidayDate(String cid, String sid, GeneralDate dateHoliday);
-
+	
 	void create(LeaveManagementData domain);
 	
 	void update(LeaveManagementData domain);
@@ -77,4 +87,10 @@ public interface LeaveManaDataRepository {
 	 * @return
 	 */
 	List<LeaveManagementData> getByExtinctionPeriod(String sid, DatePeriod tmpDateData, DatePeriod dateData, double unUseDays, DigestionAtr subHDAtr);
+
+	List<LeaveManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayOff);
+	
+	void deleteById(List<String> leaveId);
+	
+	Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate dayOff, int deadlMonth);
 }

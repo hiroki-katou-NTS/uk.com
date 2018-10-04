@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,7 +45,12 @@ public class RemainReserveAnnualLeaveUpdating {
 	 */
 	public void updateReservedAnnualLeaveRemainNumber(AggrResultOfReserveLeave output,
 			AggrPeriodEachActualClosure period, String empId) {
-		updateNumberOfRemainingLeaveData(output, period, empId);
+		deleteDataAfterCurrentMonth(period, empId);
+//		if (output != null) {
+			updateNumberOfRemainingLeaveData(output, period, empId);
+//		} else {
+//			return;
+//		}
 	}
 
 	/**
@@ -67,9 +71,11 @@ public class RemainReserveAnnualLeaveUpdating {
 				reserveLeaveRemainHistRepo.addOrUpdate(hist, cid);
 			}
 		}
+
 		updateProcess(output.getAsOfPeriodEnd());
 		updateRsvLeaveTimeRemainHistProcess(
 				output.getAsOfGrant().isPresent() ? output.getAsOfGrant().get() : Collections.emptyList());
+
 	}
 
 	/**
@@ -81,23 +87,25 @@ public class RemainReserveAnnualLeaveUpdating {
 		String cId = AppContexts.user().companyId();
 		List<ReserveLeaveGrantRemainingData> listData = info.getGrantRemainingNumberList();
 		for (ReserveLeaveGrantRemainingData data : listData) {
-			Optional<ReserveLeaveGrantRemainingData> optDomain = reserveLeaveRemainRepo.find(data.getEmployeeId(),
-					data.getGrantDate(), data.getDeadline());
-			if (optDomain.isPresent()) {
-				ReserveLeaveGrantRemainingData domain = optDomain.get();
-				ReserveLeaveGrantRemainingData updateDomain = ReserveLeaveGrantRemainingData.createFromJavaType(
-						domain.getRsvLeaID(), domain.getEmployeeId(), domain.getGrantDate(), domain.getDeadline(),
-						data.getExpirationStatus().value, data.getRegisterType().value,
-						data.getDetails().getGrantNumber().v(), data.getDetails().getUsedNumber().getDays().v(),
-						data.getDetails().getUsedNumber().getOverLimitDays().isPresent()
-								? data.getDetails().getUsedNumber().getOverLimitDays().get().v() : null,
-						data.getDetails().getRemainingNumber().v());
-				reserveLeaveRemainRepo.update(updateDomain);
-			} else {
+			List<ReserveLeaveGrantRemainingData> lstDomain = reserveLeaveRemainRepo.find(data.getEmployeeId(),
+					data.getGrantDate());
+			boolean found = false;
+			for (ReserveLeaveGrantRemainingData d : lstDomain) {
+				if (data.getRsvLeaID().equals(d.getRsvLeaID())) {
+					// update
+					reserveLeaveRemainRepo.update(data);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				// insert
 				ReserveLeaveGrantRemainingData addDomain = ReserveLeaveGrantRemainingData.createFromJavaType(
-						IdentifierUtil.randomUniqueId(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
-						data.getExpirationStatus().value, data.getRegisterType().value,
-						data.getDetails().getGrantNumber().v(), data.getDetails().getUsedNumber().getDays().v(),
+						(data.getRsvLeaID() != null && !data.getRsvLeaID().isEmpty()) ? data.getRsvLeaID()
+								: IdentifierUtil.randomUniqueId(),
+						data.getEmployeeId(), data.getGrantDate(), data.getDeadline(), data.getExpirationStatus().value,
+						data.getRegisterType().value, data.getDetails().getGrantNumber().v(),
+						data.getDetails().getUsedNumber().getDays().v(),
 						data.getDetails().getUsedNumber().getOverLimitDays().isPresent()
 								? data.getDetails().getUsedNumber().getOverLimitDays().get().v() : null,
 						data.getDetails().getRemainingNumber().v());
@@ -122,6 +130,15 @@ public class RemainReserveAnnualLeaveUpdating {
 			}
 
 		}
+	}
+
+	/**
+	 * 当月以降の積休付与残数データを削除
+	 */
+	private void deleteDataAfterCurrentMonth(AggrPeriodEachActualClosure period, String empId) {
+		reserveLeaveRemainRepo.deleteAfterDate(empId, period.getPeriod().start());
+		reserveLeaveRemainHistRepo.delete(empId, period.getYearMonth(), period.getClosureId(), period.getClosureDate());
+		rsvLeaveTimeRemainHistRepo.deleteAfterDate(empId, period.getPeriod().start());
 	}
 
 }

@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.uk.ctx.at.function.app.find.holidaysremaining.report.HolidaysRemainingReportHandler;
-import nts.uk.ctx.at.function.app.find.holidaysremaining.report.HolidaysRemainingReportQuery;
+import nts.uk.ctx.at.function.app.export.holidaysremaining.HolidaysRemainingReportHandler;
+import nts.uk.ctx.at.function.app.export.holidaysremaining.HolidaysRemainingReportQuery;
 
 @Path("at/function/holidaysremaining")
 @Produces("application/json") 

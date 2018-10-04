@@ -47,12 +47,15 @@
 }
 
 .master_setting_caret.caret-right:after {
-	color: #97D155;
-	border-width: 51px 20px;
+	color: #92D050;
+	border-width: 51px 25px;
 	margin-top: 95px;
 	margin-left: 3px;
 }
 
 .large.btnconfig.caret-bottom:after {
-	margin-top: 0.4em;
+	border-width: 22px 45px;
+	margin-top: 0.5em;
+	color: #92D050;
+	left: 40% !important;
 }

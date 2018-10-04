@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
     import text = nts.uk.resource.getText;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     export class ScreenModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
@@ -48,9 +49,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         employeeList = ko.observableArray([]);
         selectedEmployee = ko.observable(null);
         totalEmployeeText = ko.observable("");
-        multiDate: KnockoutObservable<boolean> = ko.observable(true);
+        multiDate: KnockoutObservable<boolean> = ko.observable(false);
         dateSingle: KnockoutObservable<any> = ko.observable(null);
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
+        requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
@@ -62,8 +64,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         endDate: self.targetDate    
                     });
                 }
-                if(!nts.uk.util.isNullOrEmpty(data.employeeIDs)){
-                    self.employeeID = data.employeeIDs[0];
+                if(!nts.uk.util.isNullOrEmpty(data.employeeIds)){
+                    self.employeeID = data.employeeIds[0];
                 }
                 return null;
             });
@@ -131,6 +133,19 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 }
             });
         }
+        
+        showReasonText(){
+            let self =this;
+                if (self.screenModeNew()) {
+                return self.displayAppReasonContentFlg();
+            } else {
+                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+            }    
+            }
+        showRightContent(){
+        let self =this;
+         return   self.appChangeSetting().displayResultAtr() && self.appWorkChange().application().prePostAtr() == 1   ; 
+        }
         /**
          * 起動する
          */
@@ -138,7 +153,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
             let self = this,
                 dfd = $.Deferred(),
-                employeeIDs = [];
+                employeeIDs = isNullOrEmpty(self.employeeID)? []:[self.employeeID];
 
             //get Common Setting
             nts.uk.ui.block.invisible();
@@ -215,7 +230,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false);
                 //A8 勤務時間２ ※A7
                 //共通設定.複数回勤務
-                self.isMultipleTime(settingData.multipleTime);
+                // self.isMultipleTime(settingData.multipleTime);
             }
             //Setting default value data work:
             self.appWorkChange().dataWork(settingData.dataWorkDto);
@@ -223,7 +238,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             self.appWorkChange().workChange().workTypeName(settingData.dataWorkDto.selectedWorkTypeName === null ? '' : settingData.dataWorkDto.selectedWorkTypeName);
             self.appWorkChange().workChange().workTimeCd(settingData.dataWorkDto.selectedWorkTimeCd === null ? '' : settingData.dataWorkDto.selectedWorkTimeCd);
             self.appWorkChange().workChange().workTimeName(settingData.dataWorkDto.selectedWorkTimeName === null ? '' : settingData.dataWorkDto.selectedWorkTimeName);
-
+            self.requiredCheckTime(self.isWorkChange() && settingData.timeRequired);
         }
 
         /**
@@ -314,6 +329,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             $("#singleDate").trigger("validate");
+            $("#pre-post").trigger("validate");
+            
 
             //return if has error
             if (nts.uk.ui.errors.hasError()) {
@@ -386,8 +403,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             //実績の内容
             service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
                 //Binding data
-                dfd.resolve();
                 ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
+                if(self.appChangeSetting().initDisplayWorktime()===0){
+                    self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
+                    self.appWorkChange().workChange().workTimeEnd1(recordWorkInfo.endTime1);
+                    self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime1);
+                    self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
+                }
+                dfd.resolve();
             }).fail((res) => {
                 dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 dfd.reject();
@@ -483,11 +506,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          * KDL003_勤務就業ダイアログを起動する
          */
         openKDL003Click() {
-            let self = this,
-                dataWork = self.dataWork(),
-                workChange = self.workChange();
-            //dataWork = self.appWorkChange().dataWork(),
-            //    workChange = self.appWorkChange().workChange();
+            let self = nts.uk.ui._viewModel.content,
+                dataWork = self.appWorkChange().dataWork(),
+                workChange = self.appWorkChange().workChange();
+            $("#inpStartTime1").ntsError('clear');
+            $("#inpEndTime1").ntsError('clear');
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: dataWork.workTypeCodes,
                 selectedWorkTypeCode: dataWork.selectedWorkTypeCd,
@@ -504,11 +527,14 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     workChange.workTypeName(childData.selectedWorkTypeName);
                     workChange.workTimeCd(childData.selectedWorkTimeCode);
                     workChange.workTimeName(childData.selectedWorkTimeName);
+                    service.isTimeRequired( workChange.workTypeCd()).done((rs) =>{
+                        self.requiredCheckTime(self.isWorkChange() && rs);    
+                    });
                 }
                 //フォーカス制御
                 //self.changeFocus('#inpStartTime1');
                 $('#inpStartTime1').focus();
-            })
+            });
         }
 
         /**

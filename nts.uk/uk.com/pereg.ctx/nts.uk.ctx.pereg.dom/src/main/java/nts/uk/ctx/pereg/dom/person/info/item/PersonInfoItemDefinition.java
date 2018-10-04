@@ -97,6 +97,16 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	public PersonInfoItemDefinition() {
 	};
 
+	/**
+	 * liên quan đến ver 18, bug liên quan #99565
+	 * @param perInfoCategoryId
+	 * @param itemCode
+	 * @param itemParentCode
+	 * @param itemName
+	 * @param isAbolition
+	 * @param isFixed
+	 * @param isRequired
+	 */
 	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName,
 			int isAbolition, int isFixed, int isRequired) {
 		super();
@@ -110,7 +120,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.NONE_REQUIRED;
-		this.canAbolition = true;
+		this.canAbolition = false;
 	}
 
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
@@ -149,6 +159,13 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
 	}
 
+	/**
+	 * hàm tạo item của màn cps005b
+	 * @param perInfoCategoryId
+	 * @param itemCode
+	 * @param itemParentCode
+	 * @param itemName
+	 */
 	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode,
 			String itemName) {
 		super();
@@ -162,6 +179,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.isRequired = IsRequired.NONE_REQUIRED;
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
+		this.canAbolition = true;
 	}
 
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemName) {
@@ -283,7 +301,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			case NUMERIC:
 				dataTypeState = DataTypeState.createNumericItem(numericItemMinus.intValue(),
 						numericItemAmount.intValue(), numericItemIntegerPart.intValue(),
-						numericItemDecimalPart.intValue(), numericItemMin, numericItemMax);
+						numericItemDecimalPart == null? null: new Integer(numericItemDecimalPart.intValue()), numericItemMin, numericItemMax);
 				break;
 			case DATE:
 				dataTypeState = DataTypeState.createDateItem(dateItemType.intValue());

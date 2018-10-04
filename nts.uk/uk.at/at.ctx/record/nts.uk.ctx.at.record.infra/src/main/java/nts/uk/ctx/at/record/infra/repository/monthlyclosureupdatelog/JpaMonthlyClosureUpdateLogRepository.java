@@ -22,7 +22,7 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 
 	@Override
 	public List<MonthlyClosureUpdateLog> getAll(String companyId) {
-		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId";
+		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId ORDER BY c.executionDateTime ASC";
 		return this.queryProxy().query(sql, KrcdtMclosureUpdLog.class).setParameter("companyId", companyId)
 				.getList(c -> c.toDomain());
 	}

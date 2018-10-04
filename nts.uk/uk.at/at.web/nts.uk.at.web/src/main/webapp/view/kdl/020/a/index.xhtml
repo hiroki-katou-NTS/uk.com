@@ -21,205 +21,209 @@
 			<script>var dialogSize = { width: 1080 , height: 700};</script>
 		</ui:define>
 		<ui:define name="content">
-					<div id="contents-area" class="cf">
-						<div id="content-left">
-							<div id="title" class="div_line">#{i18n.getText('KDL020_2')}</div>
-							<div id="component-items-list"></div>
-						</div>
-						<div id="content-right">
-							<div id="content-right_top">
-								<div class="div_line">
-									<div id="employeeInfo" class="div_line">
-										<!-- A3_1 -->
-										<label data-bind="text:selectedCode"> </label>
-										<!-- A3_2 -->
-										<label style="margin-left: 15px;"
-											data-bind="text:selectedName"> </label>
-									</div>
+			<div id="contents-area" class="cf">
+				<div id="content-left">
+					<div data-bind="visible:isShowEmployeeList()">
+						<div id="title" class="div_line">#{i18n.getText('KDL020_2')}</div>
+						<div id="component-items-list"></div>
+					</div>
+				</div>
+				<div id="content-right">
+					<div id="content-right_top">
+						<div class="div_line">
+							<div id="employeeInfo" class="div_line">
+								<!-- A3_1 -->
+								<label data-bind="text:selectedCode"> </label>
+								<!-- A3_2 -->
+								<label style="margin-left: 15px;" data-bind="text:selectedName">
+								</label>
+							</div>
 
+						</div>
+						<div class="div_line" style="margin-top: 18px">
+							<!-- A4 -->
+							<table id="holiday-info_table">
+								<colgroup>
+									<col width="120px" />
+									<col width="120px" />
+									<col width="120px" />
+									<col width="120px" />
+									<col width="120px" />
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="ui-widget-header">#{i18n.getText('KDL020_9')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL020_10')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL020_11')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL020_12')}</th>
+										<th class="ui-widget-header">#{i18n.getText('KDL020_13')}</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<com:ko-foreach bind="reNumAnnLeave().annualLeaveGrants()">
+										<tr>
+											<td><div data-bind="text: grantDate"></div></td>
+											<td><div
+													data-bind="html: $parent.genDateText(grantNumber()) "></div></td>
+											<td><div
+													data-bind="html: $parent.genDaysUsedNo(daysUsedNo(),usedMinutes())"></div></td>
+											<td><div
+													data-bind="html: $parent.genRemainDays(remainDays(),remainMinutes())"></div></td>
+											<td><div data-bind="text: deadline"></div></td>
+										</tr>
+									</com:ko-foreach>
+								</tbody>
+							</table>
+						</div>
+						<div class="div_line" id="total">
+							<div>#{i18n.getText('KDL020_15')}</div>
+							<div id="total-number" data-bind="html:total"></div>
+
+						</div>
+						<div data-bind="with:reNumAnnLeave().annualLeaveRemainNumber">
+							<div data-bind="visible:$parent.annualSet().maxManageSemiVacation!=0"
+								class="div_line" id="half-year-rest">
+								<!-- A5_1_1 -->
+								<div>
+									<label>#{i18n.getText('KDL020_16')}</label>
 								</div>
-								<div class="div_line" style="margin-top: 18px">
-									<!-- A4 -->
-									<table id="holiday-info_table">
-										<colgroup>
-											<col width="120px" />
-											<col width="120px" />
-											<col width="120px" />
-											<col width="120px" />
-											<col width="120px" />
-										</colgroup>
-										<thead>
+								<!-- A5_1_2-->
+								<div style="margin-left: 20px;">
+									<label data-bind="text:annualLeaveGrantPostDay"></label>
+									<!-- A5_1_3 -->
+									<label>#{i18n.getText('KDL020_17')}</label>
+								</div>
+							</div>
+							<div data-bind="visible:$parent.annualSet().timeManageType!=0"
+								class="div_line" id="time-year-rest">
+								<!-- A5_2_1 -->
+								<div>
+									<label> #{i18n.getText('KDL020_18')}</label>
+								</div>
+								<!-- A5_2_2 -->
+								<div style="margin-left: 20px;">
+									<label
+										data-bind="text:$parent.genTime(annualLeaveGrantPostTime())">
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="content-right_bottom">
+						<div id="content-right_bottom_left">
+							<div class="div_line">
+								<!-- A6_1 -->
+								<label>#{i18n.getText('KDL020_19')}</label>
+							</div>
+							<div class="div_line">
+								<!-- A7 -->
+								<table id="holiday-use_table">
+									<colgroup>
+										<col width="120px" />
+										<col width="120px" />
+										<col width="120px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th class="ui-widget-header">#{i18n.getText('KDL020_20')}</th>
+											<th class="ui-widget-header">#{i18n.getText('KDL020_21')}</th>
+											<th class="ui-widget-header">#{i18n.getText('KDL020_22')}</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<com:ko-foreach
+											bind="reNumAnnLeave().annualLeaveManageInfors()">
 											<tr>
-												<th class="ui-widget-header">#{i18n.getText('KDL020_9')}</th>
-												<th class="ui-widget-header">#{i18n.getText('KDL020_10')}</th>
-												<th class="ui-widget-header">#{i18n.getText('KDL020_11')}</th>
-												<th class="ui-widget-header">#{i18n.getText('KDL020_12')}</th>
-												<th class="ui-widget-header">#{i18n.getText('KDL020_13')}</th>
+												<td><div data-bind="text: ymd"></div></td>
+												<td><div
+														data-bind="html: $parent.genUsedNo(daysUsedNo(),usedMinutes()) "></div></td>
+												<td><div
+														data-bind="html: $parent.genScheduleRecordText(scheduleRecordAtr())"></div></td>
 											</tr>
-										</thead>
-
-										<tbody>
-											<com:ko-foreach bind="reNumAnnLeave().annualLeaveGrants()">
-												<tr>
-													<td><div data-bind="text: grantDate"></div></td>
-													<td><div
-															data-bind="html: $parent.genDateText(grantNumber()) "></div></td>
-													<td><div
-															data-bind="html: $parent.genDaysUsedNo(daysUsedNo(),usedMinutes())"></div></td>
-													<td><div
-															data-bind="html: $parent.genRemainDays(remainDays(),remainMinutes())"></div></td>
-													<td><div data-bind="text: deadline"></div></td>
-												</tr>
-											</com:ko-foreach>
-										</tbody>
-									</table>
-								</div>
-								<div class="div_line" id="total">
-									<div>#{i18n.getText('KDL020_15')}</div>
-									<div id="total-number" data-bind="html:total"></div>
-
-								</div>
-								<div data-bind="with:reNumAnnLeave().annualLeaveRemainNumber">
-									<div class="div_line" id="half-year-rest">
-										<!-- A5_1_1 -->
-										<div>
-											<label>#{i18n.getText('KDL020_16')}</label>
-										</div>
-										<!-- A5_1_2-->
-										<div style="margin-left: 20px;">
-											<label data-bind="text:annualLeaveGrantPostDay"></label>
-											<!-- A5_1_3 -->
-											<label>#{i18n.getText('KDL020_17')}</label>
-										</div>
-									</div>
-									<div class="div_line" id="time-year-rest">
-										<!-- A5_2_1 -->
-										<div>
-											<label> #{i18n.getText('KDL020_18')}</label>
-										</div>
-										<!-- A5_2_2 -->
-										<div style="margin-left: 20px;">
-											<label
-												data-bind="text:$parent.genTime(annualLeaveGrantPostTime())">
-											</label>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id="content-right_bottom">
-								<div id="content-right_bottom_left">
-									<div class="div_line">
-										<!-- A6_1 -->
-										<label>#{i18n.getText('KDL020_19')}</label>
-									</div>
-									<div class="div_line">
-										<!-- A7 -->
-										<table id="holiday-use_table">
-											<colgroup>
-												<col width="120px" />
-												<col width="120px" />
-												<col width="120px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th class="ui-widget-header">#{i18n.getText('KDL020_20')}</th>
-													<th class="ui-widget-header">#{i18n.getText('KDL020_21')}</th>
-													<th class="ui-widget-header">#{i18n.getText('KDL020_22')}</th>
-												</tr>
-											</thead>
-
-											<tbody>
-												<com:ko-foreach
-													bind="reNumAnnLeave().annualLeaveManageInfors()">
-													<tr>
-														<td><div data-bind="text: ymd"></div></td>
-														<td><div
-																data-bind="html: $parent.genUsedNo(daysUsedNo(),usedMinutes()) "></div></td>
-														<td><div
-																data-bind="html: $parent.genScheduleRecordText(scheduleRecordAtr())"></div></td>
-													</tr>
-												</com:ko-foreach>
-											</tbody>
-										</table>
-									</div>
-								</div>
-								<div id="content-right_bottom_right">
-									<div class="div_line">
-										<!-- A8_1 -->
-										<label>#{i18n.getText('KDL020_23')}</label>
-									</div>
-									<!-- Request List 210 -->
-									<div data-bind="with:displayAnnualLeaveGrant">
-										<div class="div_line">
-											<!-- A8_2_1 -->
-											<label> #{i18n.getText('KDL020_24')}</label>
-											<!-- A8_2_2 -->
-											<label data-bind="text:grantDate" style="margin-left: 20px;">
-											</label>
-
-										</div>
-
-										<div class="div_line">
-											<!-- A8_3_1 -->
-											<label>#{i18n.getText('KDL020_25')}</label>
-											<!-- A8_3_2 + A8_3_3 -->
-											<label data-bind="html:$parent.genDateText(grantDays())"
-												style="margin-left: 20px;"> </label>
-										</div>
-									</div>
-
-									<!-- Request List 323 -->
-									<div data-bind="with:attendNextHoliday" style="display: none">
-										<div class="div_line" style="margin-top: 30px">
-											<!-- A8_4_1 -->
-											<label>#{i18n.getText('KDL020_26')} </label>
-											<!-- A8_4_2 + A8_4_3 -->
-											<label
-												data-bind="html:$parent.genAttendanceRate(attendanceRate())"></label>
-										</div>
-
-										<div class="div_line">
-											<!-- A8_5_1 -->
-											<label> #{i18n.getText('KDL020_28')} </label> <label
-												data-bind="html:$parent.genNextHolidayGrantDate(nextHolidayGrantDate())">
-											</label>
-										</div>
-										<div class="div_line">
-											<!-- A8_6_1 -->
-											<label> #{i18n.getText('KDL020_30')}</label>
-											<!-- A8_6_2 -->
-											<label data-bind="text:attendanceDays"> </label>
-											<!-- A8_6_3 -->
-											<label>#{i18n.getText('KDL020_31')}</label>
-											<!-- A8_6_4 -->
-											<label data-bind="text:predeterminedDays"> </label>
-											<!-- A8_6_5 -->
-											<label> #{i18n.getText('KDL020_14')}</label>
-
-										</div>
-
-										<div class="div_line">
-											<!-- A8_7_1 -->
-											<label> #{i18n.getText('KDL020_32')}</label>
-											<!-- A8_7_2 -->
-											<label data-bind="text:annualPerYearDays"> </label>
-											<!-- A8_7_3 -->
-											<label> #{i18n.getText('KDL020_33')}</label>
-
-										</div>
-
-										<div class="div_line"></div>
-									</div>
-
-								</div>
-
-
+										</com:ko-foreach>
+									</tbody>
+								</table>
 							</div>
 						</div>
+						<div id="content-right_bottom_right">
+							<div class="div_line">
+								<!-- A8_1 -->
+								<label>#{i18n.getText('KDL020_23')}</label>
+							</div>
+							<!-- Request List 210 -->
+							<div data-bind="with:displayAnnualLeaveGrant">
+								<div class="div_line">
+									<!-- A8_2_1 -->
+									<label> #{i18n.getText('KDL020_24')}</label>
+									<!-- A8_2_2 -->
+									<label data-bind="text:grantDate" style="margin-left: 20px;">
+									</label>
+
+								</div>
+
+								<div class="div_line">
+									<!-- A8_3_1 -->
+									<label>#{i18n.getText('KDL020_25')}</label>
+									<!-- A8_3_2 + A8_3_3 -->
+									<label data-bind="html:$parent.genDateText(grantDays())"
+										style="margin-left: 20px;"> </label>
+								</div>
+							</div>
+
+							<!-- Request List 323 -->
+							<div data-bind="with:attendNextHoliday" style="display: none">
+								<div class="div_line" style="margin-top: 30px">
+									<!-- A8_4_1 -->
+									<label>#{i18n.getText('KDL020_26')} </label>
+									<!-- A8_4_2 + A8_4_3 -->
+									<label
+										data-bind="html:$parent.genAttendanceRate(attendanceRate())"></label>
+								</div>
+
+								<div class="div_line">
+									<!-- A8_5_1 -->
+									<label> #{i18n.getText('KDL020_28')} </label> <label
+										data-bind="html:$parent.genNextHolidayGrantDate(nextHolidayGrantDate())">
+									</label>
+								</div>
+								<div class="div_line">
+									<!-- A8_6_1 -->
+									<label> #{i18n.getText('KDL020_30')}</label>
+									<!-- A8_6_2 -->
+									<label data-bind="text:attendanceDays"> </label>
+									<!-- A8_6_3 -->
+									<label>#{i18n.getText('KDL020_31')}</label>
+									<!-- A8_6_4 -->
+									<label data-bind="text:predeterminedDays"> </label>
+									<!-- A8_6_5 -->
+									<label> #{i18n.getText('KDL020_14')}</label>
+
+								</div>
+
+								<div class="div_line">
+									<!-- A8_7_1 -->
+									<label> #{i18n.getText('KDL020_32')}</label>
+									<!-- A8_7_2 -->
+									<label data-bind="text:annualPerYearDays"> </label>
+									<!-- A8_7_3 -->
+									<label> #{i18n.getText('KDL020_33')}</label>
+
+								</div>
+
+								<div class="div_line"></div>
+							</div>
+
+						</div>
+
+
 					</div>
-					<div id="functions-area-bottom">
-						<button id="btnCancel" class="large" data-bind="click: close">#{i18n.getText('KDL020_34')}</button>
-					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="btnCancel" class="large" data-bind="click: close">#{i18n.getText('KDL020_34')}</button>
+			</div>
 		</ui:define>
 
 	</ui:composition>

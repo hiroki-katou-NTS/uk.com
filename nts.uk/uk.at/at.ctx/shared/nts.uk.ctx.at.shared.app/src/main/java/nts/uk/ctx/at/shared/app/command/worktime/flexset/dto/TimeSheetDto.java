@@ -28,6 +28,9 @@ public class TimeSheetDto implements TimeSheetGetMemento{
 	 */
 	@Override
 	public TimeWithDayAttr getStartTime() {
+		if (this.startTime == null) {
+			return null;
+		}
 		return new TimeWithDayAttr(this.startTime);
 	}
 
@@ -36,6 +39,9 @@ public class TimeSheetDto implements TimeSheetGetMemento{
 	 */
 	@Override
 	public TimeWithDayAttr getEndTime() {
+		if (this.endTime == null) {
+			return null;
+		}
 		return new TimeWithDayAttr(this.endTime);
 	}
 

@@ -21,12 +21,12 @@ public class TimeMonthWithCalculationDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	@AttendanceItemValue(type = ValueType.TIME)
 	/** 時間 */
-	private int time;
+	private Integer time;
 
 	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.TIME)
 	/** 計算時間 */
-	private int calcTime;
+	private Integer calcTime;
 
 	public TimeMonthWithCalculation toDomain() {
 		return new TimeMonthWithCalculation(toTime(time), toTime(calcTime));
@@ -49,10 +49,13 @@ public class TimeMonthWithCalculationDto implements ItemConst {
 	}
 
 	private AttendanceTimeMonth toTime(Integer time) {
+		if(time != null){
 		return new AttendanceTimeMonth(time);
+		}
+		return new AttendanceTimeMonth(0);
 	}
 
 	private AttendanceTimeMonthWithMinus toTimeWithMinus(Integer time) {
-		return new AttendanceTimeMonthWithMinus(time);
+		return time == null ? new AttendanceTimeMonthWithMinus(0) : new AttendanceTimeMonthWithMinus(time);
 	}
 }

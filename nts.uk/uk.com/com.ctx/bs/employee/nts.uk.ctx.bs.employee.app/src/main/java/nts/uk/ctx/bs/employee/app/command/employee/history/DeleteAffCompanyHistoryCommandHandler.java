@@ -42,9 +42,8 @@ public class DeleteAffCompanyHistoryCommandHandler extends CommandHandler<Delete
 	@Override
 	protected void handle(CommandHandlerContext<DeleteAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
-		String companyId = AppContexts.user().companyId();
 		
-		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId, command.getSId());
+		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
 		if (listHist == null){
 			throw new RuntimeException("Invalid AffCompanyHist");
 		}

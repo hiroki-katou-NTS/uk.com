@@ -244,6 +244,47 @@ public class WorkTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
+	 * 就業時間を集計する　（任意期間別集計用）
+	 * @param datePeriod 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 */
+	public void aggregateForByPeriod(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
+		
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
+			val ymd = attendanceTimeOfDaily.getYmd();
+			
+			// 期間外はスキップする
+			if (!datePeriod.contains(ymd)) continue;
+			
+			// ドメインモデル「日別実績の所定内時間」を取得する
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+			if (withinPrescribedTimeOfDaily == null){
+				withinPrescribedTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+						new AttendanceTime(0),
+						new AttendanceTime(0),
+						new AttendanceTime(0),
+						new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+						new AttendanceTime(0));
+			}
+	
+			// 時系列ワークに追加
+			val workTimeOfTimeSeries = WorkTimeOfTimeSeries.of(ymd,
+					WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
+							withinPrescribedTimeOfDaily.getWorkTime(),
+							withinPrescribedTimeOfDaily.getActualWorkTime(),
+							withinPrescribedTimeOfDaily.getWithinPrescribedPremiumTime(),
+							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
+							withinPrescribedTimeOfDaily.getVacationAddTime()),
+					new AttendanceTime(0));
+			this.timeSeriesWorks.putIfAbsent(ymd, workTimeOfTimeSeries);
+		}
+	}
+	
+	/**
 	 * 就業時間の合計処理
 	 * @param datePeriod 期間
 	 */

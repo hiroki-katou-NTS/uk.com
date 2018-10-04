@@ -25,13 +25,17 @@ public class SettingDataCharRegisterService extends CommandHandler<ChacDataFmSet
 	protected void handle(CommandHandlerContext<ChacDataFmSetCommand> context) {
 		ChacDataFmSetCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		ChacDataFmSet chacDataFmSet = new ChacDataFmSet(ItemType.CHARACTER.value, cid, command.getNullValueReplace(), command.getValueOfNullValueReplace(), command.getCdEditting(), command.getFixedValue(), command.getCdEdittingMethod(), command.getCdEditDigit(), command.getCdConvertCd(), command.getSpaceEditting(), command.getEffectDigitLength(), command.getStartDigit(), command.getEndDigit(), command.getValueOfFixedValue());
-		Optional<ChacDataFmSet> chacDataFmSetCheck = chacDataFmSetRepository
-				.getChacDataFmSetById(cid);
-		if(!chacDataFmSetCheck.isPresent()){
-		chacDataFmSetRepository.add(chacDataFmSet);
+		ChacDataFmSet chacDataFmSet = new ChacDataFmSet(ItemType.CHARACTER.value, cid, command.getNullValueReplace(),
+				command.getValueOfNullValueReplace(), command.getCdEditting(), command.getFixedValue(),
+				command.getCdEdittingMethod(), command.getCdEditDigit(), command.getCdConvertCd(),
+				command.getSpaceEditting(), command.getEffectDigitLength(), command.getStartDigit(),
+				command.getEndDigit(), command.getValueOfFixedValue());
+		Optional<ChacDataFmSet> chacDataFmSetCheck = chacDataFmSetRepository.getChacDataFmSetById(cid);
+		if (!chacDataFmSetCheck.isPresent()) {
+			chacDataFmSetRepository.add(chacDataFmSet);
+		} else {
+			chacDataFmSetRepository.update(chacDataFmSet);
 		}
-		chacDataFmSetRepository.update(chacDataFmSet);
 	}
 
 }

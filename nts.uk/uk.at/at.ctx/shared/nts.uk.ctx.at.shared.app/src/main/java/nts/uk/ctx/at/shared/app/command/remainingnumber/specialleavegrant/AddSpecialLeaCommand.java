@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,14 +18,14 @@ public class AddSpecialLeaCommand {
 	private GeneralDate deadlineDate;
 	private int expStatus;
 	private int registerType;
-	private double numberDayGrant;
-	private int timeGrant;
-	private double numberDayUse;
-	private int timeUse;
-	private double useSavingDays;
-	private double numberDaysOver;
-	private int timeOver;
-	private double numberDayRemain;
-	private int timeRemain;
+	private BigDecimal numberDayGrant;
+	private BigDecimal timeGrant;
+	private BigDecimal numberDayUse;
+	private BigDecimal timeUse;
+	private BigDecimal useSavingDays;
+	private BigDecimal numberDaysOver;
+	private BigDecimal timeOver;
+	private BigDecimal numberDayRemain;
+	private BigDecimal timeRemain;
 
 }

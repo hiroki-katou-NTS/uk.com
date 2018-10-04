@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.auth.dom.user;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(30)
+@StringMaxLength(41)
 public class UserName extends StringPrimitiveValue<UserName> {
 	
 	/** The Constant serialVersionUID. */

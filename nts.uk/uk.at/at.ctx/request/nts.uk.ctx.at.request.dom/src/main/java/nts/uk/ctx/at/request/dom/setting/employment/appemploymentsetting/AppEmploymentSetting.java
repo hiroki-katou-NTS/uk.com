@@ -33,10 +33,28 @@ public class AppEmploymentSetting extends AggregateRoot{
 	private ApplicationType appType;
 	/**
 	 * 休暇申請種類, 振休振出区分
+	 * 休暇申請の種類
+		 0: 年次有休
+		 1: 代休
+		 2: 欠勤
+		 3: 特別休暇
+		 4: 積立年休
+		 5: 休日
+		 6: 時間消化
+		 7: 振休
+		振休振出申請の種類振休振出区分
+		 0: 振休
+		 1: 振出
+		その他：
+		 9: その他
 	 */
 	private int holidayOrPauseType;
 	/**
 	 * 休暇種類を利用しない
+	 * 申請種類は1:休暇申請しか使わない。
+		利用:
+		 0: 利用する
+		 1: 利用しない
 	 */
 	private Boolean holidayTypeUseFlg;
 	/**

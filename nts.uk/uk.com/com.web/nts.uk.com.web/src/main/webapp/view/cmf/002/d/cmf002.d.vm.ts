@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     import shareModel = cmf002.share.model;
     import info = nts.uk.ui.dialog.info;
     import validation = nts.uk.ui.validation;
+    import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
 
     export class ScreenModel {
         selectedSearchTable: KnockoutObservable<any> = ko.observable(null);
@@ -44,7 +45,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 let items = _.filter(self.ctgItemDataList(), { "tableName": table });
                 self.itemList(items);
                 self.focusFirstRowD5_4();
-                $('#D5_4').focus();
+                $('#D5_4_container').focus();
             })
         }
 
@@ -71,7 +72,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
                     self.loadDetaiItemGrid();
-                    $('#D5_2').focus();
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
@@ -120,6 +120,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     item.subscribeCondBetween(item.conditionSymbol());
                     item.searchValueCd = ctgItem.searchValueCd;
                     item.switchView(OutCndDetailItemDto.getSwitchView(item.dataType, item.conditionSymbol()));
+                    item.formatSearchCodeList(item.joinCode);
                     item.clearData();
                 } else {
                     item.dataType = null;
@@ -170,8 +171,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
                 let listSearchCodeList = [];
                 if (item.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) return;
-                let listSearchCode = _.split(item.joinedSearchCodeList(), ',');
-                _.each(listSearchCode, searchCode => {
+                _.each(item.parsedValSearchCodeList, searchCode => {
                     let newSearchCode: SearchCodeListDto = new SearchCodeListDto(item.conditionSettingCd(), item.categoryId(),
                         item.categoryItemNo(), item.seriNum(), _.trim(searchCode), self.getItemName(item.categoryItemNo()));
                     listSearchCodeList.push(newSearchCode);
@@ -183,7 +183,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             service.register(command).done(() => {
                 info({ messageId: "Msg_15" }).then(() => {
                     self.focusFirstRowD5_2();
-                    $('#D5_2').focus();
+                    $('#D5_2_container').focus();   
                 });
             }).fail(res => {
                 alertError(res);
@@ -323,7 +323,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         searchTimeStartVal: KnockoutObservable<number>;
         listSearchCodeList: Array<SearchCodeListDto>;
         joinedSearchCodeList: KnockoutObservable<string>;
-
+        parsedValSearchCodeList: Array<any>;
+        joinCode: string;
         itemName: string;
         dataType: shareModel.ITEM_TYPE;
         searchValueCd: string;
@@ -336,16 +337,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         searchCdValidator = new validation.StringValidator("", "ExtOutCndSearchCd", { required: true });
 
         subCharStart: any;
-        subCharEnd: any;
         subNumStart: any;
-        subNumEnd: any;
         subDateStart: any;
-        subDateEnd: any;
         subTimeStart: any;
-        subTimeEnd: any;
         subClockStart: any;
-        subClockEnd: any;
-        
+
         constructor(categoryId: string, categoryItemNo: number, seriNum: number,
             conditionSettingCd: string, conditionSymbol: number) {
             let self = this;
@@ -395,41 +391,31 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case shareModel.ITEM_TYPE.CHARACTER:
                     self.subCharStart = self.searchCharStartVal.subscribe(value => {
                         this.clearError("D6_C4_3");
-                    })
-                    self.subCharEnd = self.searchCharEndVal.subscribe(value => {
-                        this.clearError("D6_C4_3");
+                        this.checkError("D6_C4_3");
                     })
                     break;
                 case shareModel.ITEM_TYPE.NUMERIC:
                     self.subNumStart = self.searchNumStartVal.subscribe(value => {
                         this.clearError("D6_C4_6");
-                    })
-                    self.subNumEnd = self.searchNumEndVal.subscribe(value => {
-                        this.clearError("D6_C4_6");
+                        this.checkError("D6_C4_6");
                     })
                     break;
                 case shareModel.ITEM_TYPE.DATE:
                     self.subDateStart = self.searchDateStart.subscribe(value => {
                         this.clearError("D6_C4_9");
-                    })
-                    self.subDateEnd = self.searchDateEnd.subscribe(value => {
-                        this.clearError("D6_C4_9");
+                        this.checkError("D6_C4_9");
                     })
                     break;
                 case shareModel.ITEM_TYPE.TIME:
                     self.subTimeStart = self.searchTimeStartVal.subscribe(value => {
                         this.clearError("D6_C4_12");
-                    })
-                    self.subTimeEnd = self.searchTimeEndVal.subscribe(value => {
-                        this.clearError("D6_C4_12");
+                        this.checkError("D6_C4_12");
                     })
                     break;
                 case shareModel.ITEM_TYPE.INS_TIME:
                     self.subClockStart = self.searchClockStartVal.subscribe(value => {
                         this.clearError("D6_C4_15");
-                    })
-                    self.subClockEnd = self.searchClockEndVal.subscribe(value => {
-                        this.clearError("D6_C4_15");
+                        this.checkError("D6_C4_15");
                     })
                     break;
             }
@@ -443,24 +429,36 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             switch (self.dataType) {
                 case shareModel.ITEM_TYPE.CHARACTER:
                     self.subCharStart.dispose();
-                    self.subCharEnd.dispose();
                     break;
                 case shareModel.ITEM_TYPE.NUMERIC:
                     self.subNumStart.dispose();
-                    self.subNumEnd.dispose();
                     break;
                 case shareModel.ITEM_TYPE.DATE:
                     self.subDateStart.dispose();
-                    self.subDateEnd.dispose();
                     break;
                 case shareModel.ITEM_TYPE.TIME:
                     self.subTimeStart.dispose();
-                    self.subTimeEnd.dispose();
                     break;
                 case shareModel.ITEM_TYPE.INS_TIME:
                     self.subClockStart.dispose();
-                    self.subClockEnd.dispose();
                     break;
+            }
+        }
+
+        formatSearchCodeList(joinCode: string) {
+            let self = this;
+            if (joinCode == null) {
+                return;
+            }
+            if (self.dataType == shareModel.ITEM_TYPE.TIME || self.dataType == shareModel.ITEM_TYPE.INS_TIME) {
+                let parseCode = [];
+                let codes = joinCode.split(',');
+                _.each(codes, (code: string) => {
+                    parseCode.push(nts.uk.time.parseTime(code, true).format());
+                })
+                this.joinedSearchCodeList(parseCode.join(', '));
+            } else {
+                this.joinedSearchCodeList(joinCode);
             }
         }
 
@@ -482,7 +480,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         setErrorCompare(control1, control2) {
             let self = this;
             $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control2)
-                .ntsError('set', { messageId: 'Msg_1401', messageParams: [getText(self.getControlName(control1)), getText(self.getControlName(control2))] });
+                .ntsError('set', { messageId: 'Msg_1401', messageParams: [getText(self.getControlName(control2)), getText(self.getControlName(control1))] });
         }
 
         getControlName(control) {
@@ -494,8 +492,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 case 'D6_C4_5': return 'CMF002_107';
                 case 'D6_C4_6': return 'CMF002_108';
                 case 'D6_C4_7': return 'CMF002_106';
-                case 'D6_C4_8': return 'CMF002_106';
-                case 'D6_C4_9': return 'CMF002_106';
+                case 'D6_C4_8': return 'CMF002_107';
+                case 'D6_C4_9': return 'CMF002_108';
                 case 'D6_C4_10': return 'CMF002_106';
                 case 'D6_C4_11': return 'CMF002_107';
                 case 'D6_C4_12': return 'CMF002_108';
@@ -587,87 +585,87 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             // 検索する値が入力されていない項目が１件以上ある場合（複数の場合は全ての項目が入力されていること）
             switch (self.switchView()) {
                 case SWITCH_VIEW.CHARACTER_NORMAL:
-                    if (_.isEmpty(self.searchChar())) {
+                    if (isNullOrEmpty(self.searchChar())) {
                         self.setError("D6_C4_1", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.CHARACTER_PERIOD:
-                    if (_.isEmpty(self.searchCharStartVal())) {
+                    if (isNullOrEmpty(self.searchCharStartVal())) {
                         self.setError("D6_C4_2", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isEmpty(self.searchCharEndVal())) {
+                    if (isNullOrEmpty(self.searchCharEndVal())) {
                         self.setError("D6_C4_3", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_NORMAL:
-                    if (_.isEmpty(self.searchNum())) {
+                    if (isNullOrEmpty(self.searchNum())) {
                         self.setError("D6_C4_4", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (_.isNil(self.searchNumStartVal())) {
+                    if (isNullOrEmpty(self.searchNumStartVal())) {
                         self.setError("D6_C4_5", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchNumEndVal())) {
+                    if (isNullOrEmpty(self.searchNumEndVal())) {
                         self.setError("D6_C4_6", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.DATE_NORMAL:
-                    if (_.isEmpty(self.searchDate())) {
+                    if (isNullOrEmpty(self.searchDate())) {
                         self.setError("D6_C4_7", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.DATE_PERIOD:
-                    if (_.isEmpty(self.searchDateStart())) {
+                    if (isNullOrEmpty(self.searchDateStart())) {
                         self.setError("D6_C4_8", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isEmpty(self.searchDateEnd())) {
+                    if (isNullOrEmpty(self.searchDateEnd())) {
                         self.setError("D6_C4_9", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.TIME_NORMAL:
-                    if (_.isNil(self.searchTime())) {
+                    if (isNullOrEmpty(self.searchTime())) {
                         self.setError("D6_C4_10", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.TIME_PERIOD:
-                    if (_.isNil(self.searchTimeStartVal())) {
+                    if (isNullOrEmpty(self.searchTimeStartVal())) {
                         self.setError("D6_C4_11", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchTimeEndVal())) {
+                    if (isNullOrEmpty(self.searchTimeEndVal())) {
                         self.setError("D6_C4_12", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.INS_TIME_NORMAL:
-                    if (_.isNil(self.searchClock())) {
-                        self.setError("D6_C4_1", "Msg_656");
+                    if (isNullOrEmpty(self.searchClock())) {
+                        self.setError("D6_C4_13", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.INS_TIME_PERIOD:
-                    if (_.isNil(self.searchClockStartVal())) {
+                    if (isNullOrEmpty(self.searchClockStartVal())) {
                         self.setError("D6_C4_14", "Msg_656");
                         checkRequired = true;
                     }
-                    if (_.isNil(self.searchClockEndVal())) {
+                    if (isNullOrEmpty(self.searchClockEndVal())) {
                         self.setError("D6_C4_15", "Msg_656");
                         checkRequired = true;
                     }
                     break;
                 case SWITCH_VIEW.SEARCH_CODE_LIST:
-                    if (_.isEmpty(self.joinedSearchCodeList())) {
+                    if (isNullOrEmpty(self.joinedSearchCodeList())) {
                         self.setError("D6_C4_16", "Msg_656");
                         checkRequired = true;
                     }
@@ -686,7 +684,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    if (self.searchNumStartVal() > self.searchNumEndVal()) {
+                    if (parseFloat(self.searchNumStartVal()) > parseFloat(self.searchNumEndVal())) {
                         self.setErrorCompare("D6_C4_5", "D6_C4_6");
                         checkCompare = true;
                     }
@@ -727,46 +725,59 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         validateSearchCodeList(control) {
             let self = this;
             let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
+            let check: any;
+            this.parsedValSearchCodeList = [];
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
 
-                // 検索コードがカテゴリ項目の型と同じ場合
-                switch (self.dataType) {
-                    case shareModel.ITEM_TYPE.CHARACTER:
-                        if (!self.charValidator.validate(searchCode).isValid) {
-                            self.setError(control, "Msg_760");
-                            return false;
-                        }
-                        break;
-                    case shareModel.ITEM_TYPE.NUMERIC:
-                        if (!self.numberValidator.validate(searchCode).isValid) {
-                            self.setError(control, "Msg_760");
-                            return false;
-                        }
-                        break;
-                    case shareModel.ITEM_TYPE.DATE:
-                        if (!moment(searchCode, "YYYY/MM/DD", true).isValid()) {
-                            self.setError(control, "Msg_760");
-                            return false;
-                        }
-                        break;
-                    case shareModel.ITEM_TYPE.TIME:
-                        if (!self.timeValidator.validate(searchCode).isValid) {
-                            self.setError(control, "Msg_760");
-                            return false;
-                        }
-                        break;
-                    case shareModel.ITEM_TYPE.INS_TIME:
-                        if (!self.clockValidator.validate(searchCode).isValid) {
-                            self.setError(control, "Msg_760");
-                            return false;
-                        }
-                        break;
-                }
                 // 対象の値の桁数が「検索コード」の桁数より大きい場合
                 if (!self.searchCdValidator.validate(searchCode).isValid) {
                     self.setError(control, "Msg_1346");
                     return false;
+                }
+
+                // 検索コードがカテゴリ項目の型と同じ場合
+                switch (self.dataType) {
+                    case shareModel.ITEM_TYPE.CHARACTER:
+                        check = self.charValidator.validate(searchCode);
+                        if (!check.isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
+                        break;
+                    case shareModel.ITEM_TYPE.NUMERIC:
+                        check = self.numberValidator.validate(searchCode);
+                        if (!check.isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
+                        break;
+                    case shareModel.ITEM_TYPE.DATE:
+                        check = moment(searchCode, "YYYY/MM/DD", true);
+                        if (!check.isValid()) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
+                        this.parsedValSearchCodeList.push(check._i);
+                        break;
+                    case shareModel.ITEM_TYPE.TIME:
+                        check = self.timeValidator.validate(searchCode)
+                        if (!check.isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
+                        break;
+                    case shareModel.ITEM_TYPE.INS_TIME:
+                        check = self.clockValidator.validate(searchCode);
+                        if (!check.isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
+                        this.parsedValSearchCodeList.push(check.parsedValue);
+                        break;
                 }
             })
         }
@@ -872,7 +883,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             dto.searchTime(app.searchTime);
             dto.searchTimeEndVal(app.searchTimeEndVal);
             dto.searchTimeStartVal(app.searchTimeStartVal);
-            dto.joinedSearchCodeList(app.joinedSearchCodeList);
+            dto.joinCode = app.joinedSearchCodeList;
             return dto;
         }
     }
@@ -976,9 +987,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             cmd.searchNum = dto.searchNum();
             cmd.searchNumEndVal = dto.searchNumEndVal();
             cmd.searchNumStartVal = dto.searchNumStartVal();
-            cmd.searchChar = dto.searchChar();
-            cmd.searchCharEndVal = dto.searchCharEndVal();
-            cmd.searchCharStartVal = dto.searchCharStartVal();
+            if (dto.searchChar() != "") {
+                cmd.searchChar = dto.searchChar();
+            }
+            if (dto.searchCharEndVal() != "") {
+                cmd.searchCharEndVal = dto.searchCharEndVal();
+            }
+            if (dto.searchCharStartVal() != "") {
+                cmd.searchCharStartVal = dto.searchCharStartVal();
+            }
             if (dto.searchDate() != null) {
                 cmd.searchDate = moment.utc(dto.searchDate(), "YYYY/MM/DD")._d
             }

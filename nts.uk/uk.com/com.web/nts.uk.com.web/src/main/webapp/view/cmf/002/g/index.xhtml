@@ -10,7 +10,7 @@
         <script type='text/javascript'>
             var dialogSize = {
                 width : 1000,
-                height : 550
+                height : 590
             };
         </script>
         <com:ValidatorScript>
@@ -28,9 +28,9 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button data-bind="click: btnCreateCodeConvert, enable: enableBtn"
+            <button data-bind="click: btnCreateCodeConvert, enable: enableBtn "
                     tabindex="1">#{i18n.getText('CMF002_114')}</button>
-            <button class="proceed" data-bind="click: btnRegOutputCodeConvert"
+            <button class="proceed" data-bind="click: btnRegOutputCodeConvert, enable: $root.errors.isEmpty"
                     tabindex="2">#{i18n.getText('CMF002_115')}</button>
             <button data-bind="click: btnCloseDialog" tabindex="3">#{i18n.getText('CMF002_116')}</button>
             <button class="danger" data-bind="click: btnDeleteOutputCodeConvert, enable: screenMode() == 1"
@@ -39,16 +39,16 @@
         <div id="contents-area" class="fixed-flex-layout">
             <div id="left-content" class="fixed-flex-layout-left" style="padding-top: 5px;">
                 <div
-                        data-bind="ntsPanel:{width: '320px', height: '410px', showIcon:true, direction: 'none', visible: true}"
-                        style="padding-top: 5px;">
+                        data-bind="ntsPanel:{showIcon:true, direction: 'none', visible: true}"
+                        style="padding-top: 10px;">
                     <div class="flex">
                         <div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</div>
-                        <div style="width: 200px" tabindex="5"
+                        <div style="width: 220px" tabindex="5"
                              data-bind="ntsSearchBox: {
 									searchMode :'filter',
 									targetKey: 'dispConvertCode',
 									mode: 'igGrid',
-									comId: 'table-single-list',
+									comId: 'G2_3',
 									items: listOutputCodeConvert,
 									selected: selectedCodeConvert,
 									selectedKey: 'dispConvertCode',
@@ -63,10 +63,10 @@
                                             columns:
                                             [
                                             	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 70, formatter: _.escape},
-			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 220, formatter: _.escape} ],
+			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 248, formatter: _.escape} ],
                                             multiple: false,
                                             value: selectedCodeConvert,
-                                            rows: 15,
+                                            rows: 14,
                                             enable: true}">
                         </table>
                     </div>
@@ -110,18 +110,10 @@
                 </div>
                 <div class="flex">
                     <table id="fixed-table" tabindex="8">
-                        <!--<colgroup>
-                            <col width="20px" />
-                            <col width="125px" />
-                            <col width="125px" />
-
-
-                        </colgroup>-->
-
                         <colgroup>
-                            <col width="33px"/>
-                            <col width="130px"/>
-                            <col width="130px"/>
+                            <col width="50px"/>
+                            <col width="132px"/>
+                            <col width="132px"/>
                         </colgroup>
                         <thead>
                         <tr>

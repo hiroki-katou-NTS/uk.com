@@ -12,13 +12,22 @@ module nts.uk.ui.jqueryExtentions {
             onFail?(): any;
         }
 
-        $.fn.ntsFileUpload = function(option: FileUploadOption) {
+        $.fn.ntsFileUpload = function(option: any) {
+            let $container = $(this);
+            if (typeof option === 'string' && option === 'clear') {
+                resetFileUpload($container);
+            } else {
+                return uploadFile($container, option);
+            }
+        }
+        
+        function uploadFile($container : JQuery, option: FileUploadOption) { 
             let dfd = $.Deferred();
             let fileInput: HTMLElement;
-            if ($(this).find("input[type='file']").length == 0) {
-                fileInput = $(this).get(0);
+            if ($container.find("input[type='file']").length == 0) {
+                fileInput = $container.get(0);
             } else {
-                fileInput = $(this).find("input[type='file']").get(0);
+                fileInput = $container.find("input[type='file']").get(0);
             }
 
             if (fileInput !== undefined) {
@@ -63,5 +72,14 @@ module nts.uk.ui.jqueryExtentions {
             }
             return dfd.promise();
         }
+        
+        function resetFileUpload($container : JQuery) { 
+            $container.find("input[type='file']").val(null);
+            
+            $container.data("restored-by-cancel", false)
+            $container.data("files-cache-for-cancel", null);
+            $container.data("selected-file-name", '');
+        } 
+        
     }
 }

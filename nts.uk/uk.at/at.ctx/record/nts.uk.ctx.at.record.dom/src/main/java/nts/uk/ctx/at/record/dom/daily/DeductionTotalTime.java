@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * 控除合計時間
@@ -31,5 +32,11 @@ public class DeductionTotalTime {
 									 totalTime
 									,withinStatutoryTotalTime
 									,excessOfStatutoryTotalTime);
+	}
+	
+	public static DeductionTotalTime defaultValue() {
+		return new DeductionTotalTime(TimeWithCalculation.sameTime(AttendanceTime.ZERO)
+										,TimeWithCalculation.sameTime(AttendanceTime.ZERO)
+										,TimeWithCalculation.sameTime(AttendanceTime.ZERO));
 	}
 }

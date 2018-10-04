@@ -135,7 +135,10 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         state: 'state',
                         states: cellStates
                     },
-                ]
+                ],
+                dataBound: function(evt, ui) {
+                    $(".limited-label-view").remove();
+                }
             });
         }
 

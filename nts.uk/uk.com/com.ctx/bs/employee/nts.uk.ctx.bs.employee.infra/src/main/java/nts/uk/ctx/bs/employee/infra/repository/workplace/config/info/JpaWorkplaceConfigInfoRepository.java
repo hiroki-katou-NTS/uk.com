@@ -510,8 +510,10 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.historyId), historyIds));
+		if (!CollectionUtil.isEmpty(historyIds)) {
+			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
+					.get(BsymtWkpConfigInfoPK_.historyId).in(historyIds));
+		}
 		if (!CollectionUtil.isEmpty(workplaceIds)) {
 			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
 					.in(workplaceIds));
@@ -594,5 +596,17 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		return em.createQuery(cq).setParameter("prHierarchyCodeParameter", prHierarchyCode)
 				.getResultList();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository#updateWorkplaceConfigInfo(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void updateWorkplaceConfigInfo(String companyId, String historyId, String wkpId, String hierarchyCd) {
+		BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK(companyId, historyId, wkpId);
+		BsymtWkpConfigInfo entity = new BsymtWkpConfigInfo();
+		entity.setBsymtWkpConfigInfoPK(pk);
+		entity.setHierarchyCd(hierarchyCd);
+		this.commandProxy().update(entity);
 	}
 }

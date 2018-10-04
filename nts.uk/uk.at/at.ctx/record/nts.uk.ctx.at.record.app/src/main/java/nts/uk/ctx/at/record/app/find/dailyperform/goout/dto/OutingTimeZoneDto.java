@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -29,4 +30,24 @@ public class OutingTimeZoneDto implements ItemConst{
 	private int outTimeCalc;
 	
 	private int outTIme;
+
+	@Override
+	protected OutingTimeZoneDto clone() {
+		return new OutingTimeZoneDto(no, outing == null ? null : outing.clone(), 
+				comeBack == null ? null : comeBack.clone(), reason, outTimeCalc, outTIme);
+	}
+	
+	public GoingOutReason reason() {
+		switch (this.reason) {
+		case 0:
+			return GoingOutReason.PRIVATE;
+		case 1:
+			return GoingOutReason.PUBLIC;
+		case 2:
+			return GoingOutReason.COMPENSATION;
+		case 3:
+		default:
+			return GoingOutReason.UNION;
+		}
+	}
 }

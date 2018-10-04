@@ -37,35 +37,37 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         }
 
         start(): JQueryPromise<any> {
-            block.invisible();
             let self = this;
             let dfd = $.Deferred();
 
             if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.formatSetting) {
                 self.dateDataFormatSetting(new model.DateDataFormatSetting(self.formatSetting));
                 dfd.resolve();
-                block.clear();
-                return dfd.promise();
-            }
+            } else {
+                service.getDateFormatSetting().done(function(data: any) {
+                    if (data != null) {
+                        self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+                    }
+                    dfd.resolve();
+                }).fail(function(error) {
+                    alertError(error);
+                    dfd.reject();
+                });
+            }           
 
-            service.getDateFormatSetting().done(function(data: any) {
-                if (data != null) {
-                    self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            });
-
-            block.clear();
             return dfd.promise();
         }
 
         //enable component when not using fixed value
         enable() {
             let self = this;
-            return self.dateDataFormatSetting().fixedValue() == self.notUse;
+            if (self.dateDataFormatSetting().fixedValue() == self.notUse) {
+                self.dateDataFormatSetting().valueOfFixedValue(null);
+                return true;
+            } else {
+                self.dateDataFormatSetting().valueOfNullValueSubs(null);
+                return false;
+            }
         }
 
         //enable component replacement value editor
@@ -73,6 +75,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let self = this;
             let enable = (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
             if (!enable) {
+                self.dateDataFormatSetting().valueOfNullValueSubs(null);
                 $('#K3_2').ntsError('clear');
             }
             return enable;
@@ -87,8 +90,8 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             }
             return enable;
         }
-        
-        enableRegister(){
+
+        enableRegister() {
             return errors.hasError();
         }
 

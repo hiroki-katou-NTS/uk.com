@@ -98,6 +98,9 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String CATEGORY_ITEM = "DELETE FROM OiomtCtgItem f "
             + "WHERE f.ctgItemPk.cid =:cid AND f.ctgItemPk.condSetCd =:condSetCd ";
 	
+	private static final String SELECT_CHAR_FORMAT_BY_CD_CONVERT_CD = "SELECT f FROM OiomtCharacterDfs f"
+			+ " WHERE  f.characterDfsPk.cid =:cid AND f.cdConvertCd =:convertCd ";
+	
 	@Override
 	public List<StandardOutputItem> getAllStdOutItem() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutItem.class).getList(item -> item.toDomain());
@@ -315,6 +318,12 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	public List<TimeDataFmSetting> getTimeDataFmSetting(String cid, String conditionSettingCode) {
 		return this.queryProxy().query(SELECT_TIME_FORMAT, OiomtTimeDfs.class).setParameter("cid", cid)
 				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<CharacterDataFmSetting> getCharacterDataFmSettingByByConvertCd(String cid, String convertCd) {
+		return this.queryProxy().query(SELECT_CHAR_FORMAT_BY_CD_CONVERT_CD, OiomtCharacterDfs.class)
+				.setParameter("cid", cid).setParameter("convertCd", convertCd).getList(c -> c.toDomain());
 	}
 
 }

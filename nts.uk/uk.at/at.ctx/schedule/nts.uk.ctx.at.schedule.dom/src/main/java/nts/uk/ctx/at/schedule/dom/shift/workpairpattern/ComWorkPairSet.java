@@ -25,6 +25,6 @@ public class ComWorkPairSet extends DomainObject {
 	public static ComWorkPairSet convertFromJavaType(String companyId, int groupNo, int patternNo, int pairNo,
 			String workTypeCode, String workTimeCode) {
 		return new ComWorkPairSet(companyId, groupNo, patternNo, pairNo, new WorkTypeCode(workTypeCode),
-				new WorkTimeCode(workTimeCode));
+				workTimeCode == null ? null : new WorkTimeCode(workTimeCode));
 	}
 }

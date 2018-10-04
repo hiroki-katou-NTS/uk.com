@@ -38,7 +38,7 @@ public class AddAuthorityMonthlyCommandHandler extends CommandHandler<AddAuthori
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 
-		if (this.authorityFormatMonthlyRepository.checkExistCode(new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
+		if (this.authorityFormatMonthlyRepository.checkExistCode(companyId,new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("#Msg_3");
 		} else {
 			this.authorityFormatMonthlyRepository.add(authorityFomatMonthlies);

@@ -23,7 +23,7 @@ public class CtgItemDataFinder {
 	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId, Integer dataType) {
 		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream()
 				.filter(c -> c.getDataType().value == dataType).map(item -> {
-					return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
+					return new CtgItemDataDto(item.getItemNo().v(), item.getItemName().v());
 				}).collect(Collectors.toList());
 	}
 

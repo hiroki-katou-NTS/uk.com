@@ -25,7 +25,7 @@ public class LogDisplaySettingCommand {
 	private String name;
 
 	/** the data type */
-	private int dataType;
+	private Integer dataType;
 
 	/** the record type */
 	private int recordType;

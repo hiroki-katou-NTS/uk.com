@@ -5,9 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 540 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.Memo
 				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
@@ -99,8 +98,8 @@
 														                 	width: '80',
 														                    unitID: 'DAYS'
 														                	}, 
-														                required: false,
-														                enable: maxNumberDay()==1}" />
+														                required: dayGrantUse  ,
+														                enable: dayGrantUse }" />
 										</div>
 										<div class="div_line">
 											<div class="div_line">
@@ -217,7 +216,7 @@
 										</div>
 										<div class="float_left" data-bind="with:ageRange">
 											<!-- I13_2 -->
-											<input
+											<input id="lowerLimit"
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
 																			name:'#{i18n.getText('KMF004_49')}',
 																			value: ageLowerLimit ,
@@ -228,7 +227,7 @@
 											<!-- I13_3 -->
 											#{i18n.getText('KMF004_45')}
 											<!-- I13_4 -->
-											<input
+											<input id="higherLimit"
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
 																			name:'#{i18n.getText('KMF004_50')}',
 																			value: ageHigherLimit ,
@@ -270,14 +269,9 @@
 										</div>
 									</div>
 								</div>
-
 							</div>
-
 						</div>
-
 					</div>
-
-
 				</div>
 			</div>
 		</ui:define>

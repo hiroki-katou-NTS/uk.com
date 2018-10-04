@@ -1,11 +1,6 @@
-#ex_accept_wizard {
-	width: 1300px;
-	height: 480px;
-}
 
 #ex_accept_wizard>.steps {
-	width: 250px;
-	height: 640px;
+	width: 250px;	
 }
 
 #ex_accept_wizard>.content {
@@ -25,18 +20,15 @@
 	overflow: visible;
 }
 
-#contents-area {
-	overflow: hidden;
-	height: 700px !important;
-}
+ #contents-area {
+	overflow: hidden;	
+} 
 
 .contentF {
-	padding-top: 20px;
-	margin: 20px;
-	height: 600px;
-	overflow: auto;
+	margin-left: 20px;
 	display: inline-block;
-	width :900px;
+	height: calc(100% - 25px);
+	width :965px;
 }
 
 #lable {
@@ -48,7 +40,7 @@
     border-collapse: separate;
 }
 .contentB {
-	margin: 20px;
+	margin: 10px;
 	display: inline-block;
 }
 #list-box_b_grid_container {
@@ -64,6 +56,7 @@
 }
 .listbox-wrapper {
     margin-left: 20px;
+    float: left;
 }
 #list-box_b_grid_displayContainer {
 	height: 231px !important;
@@ -75,15 +68,21 @@
 
 #F2 {
 	width: 100%;
+	height: 100%;
+	
 }
 #F2_2 {
-	width: 400px;
-	margin-bottom:5px;
+	height:20px;
+	font-size :14px;
+	width: 450px;
 }
 
 #F3_1 {
 	width: 150px;
-	margin-top: 5px;
+	margin-top: 2px;
+}
+.ui-iggrid-filterrow.ui-widget > td {
+	border-width: 1px !important;
 }
  #ccgcomponent{
 	display:none; 
@@ -92,4 +91,83 @@
 
 #igGridLog {
 	white-space: nowrap;
+}
+
+  div#tab-2.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
+	/* height: 340px !important; */
+	
+	max-height:	calc(100% - 120px) !important;
+}
+div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
+	max-height: calc(100% - 120px) !important;
+} 
+
+
+input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
+	max-width: 330px !important;
+}
+
+div#list-box_b1 {
+    float: left;
+    height: 71px;
+    width: 153px;
+}
+#caret{
+	 float: left;
+	 margin-top: 6px;
+	 margin-left: 30px;
+}
+#list-box_b1_grid_scrollContainer {
+	overflow-y: hidden !important ;
+    overflow-x: hidden !important;
+}
+
+#ccg001-part-g {
+	overflow-x: hidden !important;
+}
+#title_dataType {
+	margin-bottom: 30px;
+}
+
+.ui-iggrid-expandcolumn{
+	height: 26px !important;	
+}
+.ui-iggrid-headertext{
+	font-weight: normal;
+}
+
+.ui-iggrid-childarea{
+	overflow :visible !important;
+}
+.ui-iggrid-header.ui-widget-header{
+	overflow :visible;
+}
+
+ .default-overflow{
+	overflow :auto hidden !important;
+}
+
+.overflow-show{
+	overflow :visible !important;
+}
+
+#igGridLog_tooltips.ui-tooltip {
+	border: none;
+	background: none;
+	box-shadow: none;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+#igGridLog_tooltips.ui-tooltip .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+.ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
+	z-index: 99999999;
 }

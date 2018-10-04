@@ -328,7 +328,6 @@ module nts.uk.at.view.kmf004.b {
             deleteBtn(){
                 var self = this;
                 
-                nts.uk.ui.block.invisible();
                 
                 let count = 0;
                 for (let i = 0; i <= self.items().length; i++){
@@ -375,7 +374,7 @@ module nts.uk.at.view.kmf004.b {
                     }).always(function() {
                         nts.uk.ui.block.clear();      
                     });
-                }).ifNo(()=> { nts.uk.ui.block.clear(); });
+                })
             }
             
             /**

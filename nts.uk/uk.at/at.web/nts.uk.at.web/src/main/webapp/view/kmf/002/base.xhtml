@@ -10,12 +10,14 @@
 		<div>
 			<!-- YearMonth Picker -->
 			<!-- E7_1 -->
-			<div tabindex="99" id="datePickerYear" class="ntsControl nts-datepicker-wrapper" data-bind="ntsDatePicker: { value: fiscalYear, 
+			<div tabindex="99" class="ntsControl nts-datepicker-wrapper datePickerYear" data-bind="ntsDatePicker: { value: fiscalYear, 
 																						dateFormat: 'YYYY', 
 																						valueFormat: 'YYYY', 
 																						fiscalYear: true, 
 																						cssRanger: cssRangerY, 
-																						showJumpButtons: true }"></div>
+																						showJumpButtons: true,
+																						required: true,
+																						name: '#[KMF002_20]' }"></div>
 		</div>
 		<div tabindex="-1" data-bind="visible: visibleInfoSelect">
 			<!-- B4_1 -->
@@ -42,7 +44,7 @@
 				<tbody data-bind="foreach: arrMonth">
 					<tr>
 						<!-- E8_5 -->
-						<td class="bg-green"><span data-bind="text: month"></span> <span></span></td>
+						<td class="bg-green"><span data-bind="text: month() + '#{i18n.getText('KMF002_12')}'"></span> <span></span></td>
 						<!-- E8_6 -->
 						<td>
 							<div>
@@ -55,7 +57,8 @@
 																		option: {width: '90px',
 																				decimallength: 1,
 																				unitID: 'DAYS'},
-																		name:'#[KMF002_13]'}"></input>
+																		name: month() + '#{i18n.getText('KMF002_12')}' + '#{i18n.getText('KMF002_13')}'
+																		}"></input>
 							</div>	
 						</td>
 					</tr>

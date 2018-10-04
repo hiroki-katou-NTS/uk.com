@@ -30,8 +30,8 @@
 	font-size: 90%;
 }
 
-.ml-3 {
-	margin-left: 3px;
+.ml-2 {
+	margin-left: 2px;
 }
 
 table th, table td {
@@ -229,7 +229,7 @@ table th, table td {
 }
 
 #color-9 {
-	background-color: #008000
+	background-color: #FF7F27
 }
 
 #paste {
@@ -371,8 +371,3 @@ tbody a.x-link {
 	color: #404040;
 }
 
-/* Button Open CAL027 */
-.revision {
-    margin-right: 800px;
-    float: right;
-}

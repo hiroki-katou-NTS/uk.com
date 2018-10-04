@@ -26,6 +26,14 @@ public interface SpecialHolidayRepository {
 	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
 	
 	/**
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCodes
+	 * @return
+	 */
+	List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes);
+	
+	/**
 	 * Add Special Holiday
 	 * @param specialHoliday
 	 */
@@ -46,10 +54,24 @@ public interface SpecialHolidayRepository {
 	
 	Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD);
 	/**
-	 * 特別休暇枠NOから特別休暇を取得する
+	 * 欠勤枠CDから特別休暇CDを取得する
 	 * @param cid
 	 * @param absFrameNo 特別休暇枠NO
 	 * @return
 	 */
 	List<Integer> findByAbsframeNo(String cid, int absFrameNo);
+	/**
+	 * Find By CompanyId
+	 * @param companyId
+	 * @return
+	 */
+	List<SpecialHoliday> findByCompanyIdWithTargetItem(String companyId);
+	
+	/**
+	 * 特別休暇枠CDから特別休暇CDを取得する
+	 * @param cid
+	 * @param absFrameNo 特別休暇枠NO
+	 * @return
+	 */
+	List<Integer> findBySphdSpecLeave(String cid, int sphdSpecLeaveNo);
 }

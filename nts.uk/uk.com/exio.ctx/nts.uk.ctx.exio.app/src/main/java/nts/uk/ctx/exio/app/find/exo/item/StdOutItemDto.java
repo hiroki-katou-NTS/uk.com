@@ -72,7 +72,7 @@ public class StdOutItemDto {
 									&& x.getItemNo().v() == item.getItemNo().v())
 							.findFirst();
 					if (ctgItemData.isPresent()) {
-						categoryItemName = ctgItemData.get().getItemName();
+						categoryItemName = ctgItemData.get().getItemName().v();
 					}
 					return CategoryItemDto.fromDomain(item, categoryItemName);
 				}).collect(Collectors.toList()));

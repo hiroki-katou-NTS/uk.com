@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInf
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
@@ -48,9 +50,18 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_AFFILIATION_INF Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", ymd).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -68,9 +79,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 					+ affiliationInforOfDailyPerfor.getWplID() + "' , "
 					+ bonusPaycode + " )";
 			Statement statementI = con.createStatement();
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -121,17 +132,16 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		// this.commandProxy().update(data);
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String bonusPaycode = domain.getBonusPaySettingCode() != null ? "'" + domain.getBonusPaySettingCode().v() + "'" : null;
+		String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
+				+ domain.getEmploymentCode().v() + "' , JOB_ID = '" + domain.getJobTitleID()
+				+ "' , CLS_CODE = '" + domain.getClsCode().v() + "' , WKP_ID = '" + domain.getWplID()
+				+ "' , BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
+				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
-			String bonusPaycode = domain.getBonusPaySettingCode() != null ? "'" + domain.getBonusPaySettingCode().v() + "'" : null;
-			String updateTableSQL = " UPDATE KRCDT_DAI_AFFILIATION_INF SET EMP_CODE = '"
-					+ domain.getEmploymentCode().v() + "' AND JOB_ID = '" + domain.getJobTitleID()
-					+ "' AND CLS_CODE = '" + domain.getClsCode().v() + "' AND WKP_ID = '" + domain.getWplID()
-					+ "' AND BONUS_PAY_CODE = " + bonusPaycode + " WHERE SID = '"
-					+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
-			Statement statementU = con.createStatement();
-			statementU.executeUpdate(updateTableSQL);
+				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

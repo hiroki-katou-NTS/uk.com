@@ -8,19 +8,19 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
-				var dialogSize = {
-					width : 1260,
-					height : 600
-				};
-			</script>
+            var dialogSize = {
+                width : 1270,
+                height : 600
+            };
+		</script>
 			<com:ValidatorScript>
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndCharVal
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndNumVal
-	            nts.uk.shr.com.time.AttendanceClock
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.AttendanceTime
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.MultipleCodeInput
-	            nts.uk.ctx.exio.dom.exo.outcnddetail.ExtOutCndSearchCd
-            </com:ValidatorScript>
+			nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndCharVal
+			nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndNumVal
+			nts.uk.shr.com.time.AttendanceClock
+			nts.uk.ctx.exio.dom.exo.outcnddetail.AttendanceTime
+			nts.uk.ctx.exio.dom.exo.outcnddetail.MultipleCodeInput
+			nts.uk.ctx.exio.dom.exo.outcnddetail.ExtOutCndSearchCd
+		</com:ValidatorScript>
 			<com:stylefile path="cmf002.d.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -62,7 +62,7 @@
 				<div class="table content">
 					<div class="cell valign-top grid-list">
 						<div id="D5"
-							data-bind="ntsPanel:{width: '420px', height: '300px', direction: 'none',showIcon: true}">
+							data-bind="ntsPanel:{width: '410px', height: '300px', direction: 'none',showIcon: true}">
 							<div class="pull-left search-item" style="margin-right: 10px;">
 								<div tabindex="3" style="width: 220px"
 									data-bind="ntsSearchBox: {
@@ -90,7 +90,7 @@
 									value: selectedTable}"></table>
 							</div>
 							<div class="pull-left search-item">
-								<div tabindex="4" style="width: 190px"
+								<div tabindex="4" style="width: 180px"
 									data-bind="ntsSearchBox: {
 									searchMode: 'highlight', 
 									targetKey: 'itemNo',
@@ -109,7 +109,7 @@
 									dataSource: itemList,
 									primaryKey: 'itemNo',
 									columns: [
-								    	{ headerText: '#{i18n.getText('CMF002_102')}', key: 'itemName', width: 170, formatter: _.escape},
+								    	{ headerText: '#{i18n.getText('CMF002_102')}', key: 'itemName', width: 160, formatter: _.escape},
 								    	{ headerText: '', key: 'itemNo', hidden: true  }
 								    ],									
 									multiple: false,
@@ -130,29 +130,28 @@
 					<div class="cell valign-top grid-list">
 						<table tabindex="5" id="fixed-table">
 							<colgroup>
-								<col width="20px" />
-								<col width="105px" />
-								<col width="138px" />
-								<col width="214px" />
-								<col width="215px" />
+								<col width="120px" />
+								<col width="152px" />
+								<col width="430px" />
 							</colgroup>
 							<thead>
 								<tr>
-									<th class="ui-widget-header"></th>
 									<th class="ui-widget-header">#{i18n.getText('CMF002_104')}</th>
 									<th class="ui-widget-header">#{i18n.getText('CMF002_105')}</th>
-									<th colspan="2" class="ui-widget-header">#{i18n.getText('CMF002_106')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF002_106')}</th>
 								</tr>
 							</thead>
 							<tbody data-bind="foreach: cndDetai().listOutCndDetailItem">
 								<tr
 									data-bind="attr: { 'data-id': seriNum() }, click: function() {$vm.selectDetailItem(seriNum())}">
-									<td><span data-bind="text: seriNum()"></span></td>
-									<td><span
-										data-bind="text: $vm.getItemName(categoryItemNo())"></span></td>
+									<td>
+										<div class="limited-label"
+											data-bind="text: $vm.getItemName(categoryItemNo())"></div>
+									</td>
 									<td>
 										<div tabindex="6" class="D6_C3_1"
 											data-bind="ntsComboBox: {
+									 		width: 148,
 											name: '#[CMF002_105]',
 											options: $vm.getComboboxSource(searchValueCd, dataType),
 											optionsValue: 'code',
@@ -180,7 +179,17 @@
 										value: searchCharStartVal, 
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD">#{i18n.getText('CMF002_407')}</span>
+										<span
+										data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD">#{i18n.getText('CMF002_407')}</span>
+
+										<!-- D6_C4_3 --> <input tabindex="9" class="D6_C4_3"
+										style="float: right; padding-left: 5px"
+										data-bind="ntsTextEditor: {
+										name: '#[CMF002_108]',
+										constraint: 'OutCndCharVal', 
+										value: searchCharEndVal, 
+										required: false}, 
+										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
 
 										<!-- D6_C4_4 --> <input tabindex="8" class="D6_C4_4"
 										data-bind="ntsNumberEditor: {
@@ -199,7 +208,17 @@
 										option: {decimallength: 2},
 										required: false}, 
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD">#{i18n.getText('CMF002_407')}</span>
+										<span
+										data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD">#{i18n.getText('CMF002_407')}</span>
+
+										<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
+										data-bind="ntsNumberEditor: {
+										name: '#[CMF002_108]',
+										constraint: 'OutCndNumVal', 
+										value: searchNumEndVal, 
+										option: {decimallength: 2},
+										required: false}, 
+										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
 
 										<!-- D6_C4_7 -->
 										<div tabindex="10" class="D6_C4_7"
@@ -211,10 +230,21 @@
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_NORMAL"></div>
 
 										<!-- D6_C4_8 -->
-										<div tabindex="12" style="float: right; padding-right: 10px;" class="D6_C4_8"
+										<div tabindex="12" class="D6_C4_8"
 											data-bind="ntsDatePicker: {
-										name: '#[CMF002_106]',
+										name: '#[CMF002_107]',
 										value: searchDateStart, 
+										dateFormat: 'YYYY/MM/DD', 
+										required: false},
+										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD"></div>
+
+										<span
+										data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD">#{i18n.getText('CMF002_407')}</span>
+										<!-- D6_C4_9 -->
+										<div tabindex="13" class="D6_C4_9"
+											data-bind="ntsDatePicker: {
+										name: '#[CMF002_108]',
+										value: searchDateEnd, 
 										dateFormat: 'YYYY/MM/DD', 
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD"></div>
@@ -239,8 +269,20 @@
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD" />
 
-										<!-- D6_C4_13 --> <input tabindex="14" class="D6_C4_13"
-										data-bind="ntsTimeEditor: { 
+										<span
+										data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
+										<!-- D6_C4_12 --> <input tabindex="14" class="D6_C4_12"
+										data-bind="ntsTimeEditor: {
+														 name: '#[CMF002_108]',
+										constraint: 'AttendanceTime', 
+										value: searchTimeEndVal, 
+										inputFormat: 'time',
+										mode: 'time',
+										required: false},
+										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD" />
+
+										<!-- D6_C4_13 --> <input tabindex="15" class="D6_C4_13"
+										data-bind="ntsTimeEditor: {
 										name: '#[CMF002_106]',
 										constraint:'AttendanceClock', 
 										inputFormat: 'time',
@@ -249,7 +291,7 @@
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_NORMAL" />
 
-										<!-- D6_C4_14 --> <input tabindex="15" class="D6_C4_14"
+										<!-- D6_C4_14 --> <input tabindex="16" class="D6_C4_14"
 										data-bind="ntsTimeEditor: {
 										name: '#[CMF002_107]',
 										constraint: 'AttendanceClock', 
@@ -258,8 +300,20 @@
 										mode: 'time',
 										required: false},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
+										<span
+										data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
 
-										<!-- D6_C4_16 --> <input tabindex="17" class="D6_C4_16"
+										<!-- D6_C4_15 --> <input tabindex="17" class="D6_C4_15"
+										data-bind="ntsTimeEditor: {
+										name: '#[CMF002_108]',
+										constraint: 'AttendanceClock', 
+										value: searchClockEndVal, 
+										inputFormat: 'time',
+										mode: 'time',
+										required: false},
+										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
+
+										<!-- D6_C4_16 --> <input tabindex="18" class="D6_C4_16"
 										data-bind="ntsTextEditor: {
 										name: '#[CMF002_355]',
 										constraint: 'MultipleCodeInput', 
@@ -274,55 +328,6 @@
 											position: 'bottom right', 
 											enable: true }, 
 											visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.SEARCH_CODE_LIST">?</button>
-
-									</td>
-									<td class="view-control view-over" >
-										<!-- D6_C4_3 --> <input tabindex="9" class="D6_C4_3" style="float: right ;padding-left: 5px"
-										data-bind="ntsTextEditor: {
-										name: '#[CMF002_108]',
-										constraint: 'OutCndCharVal', 
-										value: searchCharEndVal, 
-										required: false}, 
-										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_PERIOD" />
-											<!-- D6_C4_6 --> <input tabindex="11" class="D6_C4_6"
-										data-bind="ntsNumberEditor: {
-										name: '#[CMF002_108]',
-										constraint: 'OutCndNumVal', 
-										value: searchNumEndVal, 
-										option: {decimallength: 2},
-										required: false}, 
-										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.NUMERIC_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD">#{i18n.getText('CMF002_407')}</span>
-										<!-- D6_C4_9 -->
-										<div tabindex="13"  class="D6_C4_9"
-											data-bind="ntsDatePicker: {
-										name: '#[CMF002_106]',
-										value: searchDateEnd, 
-										dateFormat: 'YYYY/MM/DD', 
-										required: false},
-										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.DATE_PERIOD"></div>
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
-
-										<!-- D6_C4_12 --> <input tabindex="14" class="D6_C4_12"
-										data-bind="ntsTimeEditor: {
-										name: '#[CMF002_108]',
-										constraint: 'AttendanceTime', 
-										value: searchTimeEndVal, 
-										inputFormat: 'time',
-										mode: 'time',
-										required: false},
-										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.TIME_PERIOD" />
-										<span data-bind="visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD">#{i18n.getText('CMF002_407')}</span>
-
-										<!-- D6_C4_15 --> <input tabindex="16" class="D6_C4_15"
-										data-bind="ntsTimeEditor: {
-										name: '#[CMF002_108]',
-										constraint: 'AttendanceClock', 
-										value: searchClockEndVal, 
-										inputFormat: 'time',
-										mode: 'time',
-										required: false},
-										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
 
 									</td>
 								</tr>

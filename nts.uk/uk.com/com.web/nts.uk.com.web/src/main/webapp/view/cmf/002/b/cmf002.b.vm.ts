@@ -21,6 +21,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         listCategory:                   KnockoutObservableArray<Category> = ko.observableArray([]);
         categoryName:                   KnockoutObservable<string>       = ko.observable('');
         outItemCd:                      KnockoutObservable<string>       = ko.observable('');
+        roleAuthority: any;
         conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
             cId: '',
             conditionSetCode: '',
@@ -32,41 +33,58 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             stringFormat: 0,
             itemOutputName: 0
         }));
-        
+        checkFocusWhenCopy: boolean = false;
 
         constructor() {
             block.invisible();
             let self = this;
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
-            self.getListCategory();
-            self.initScreen(null);
             block.clear();
             self.selectedConditionSettingCode.subscribe((data) => {
-                if (data) {
-                    nts.uk.ui.errors.clearAll();
-                    block.invisible();
-                    self.index(self.getIndex(data));
-                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                    self.getOutItem(data);
-                    self.settingCurrentCondition();
-                    self.isNewMode(false);
-                    block.clear();
-                } else {
-                    self.createNewCondition();
+                if (!data) {
+                    return
                 }
+                nts.uk.ui.errors.clearAll();
+                block.invisible();
+                self.index(self.getIndex(data));
+                self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
+                self.getOutItem(data);
+                self.settingCurrentCondition();
+                block.clear();
             });
             
             self.isNewMode.subscribe((data) => {
+               let self = this;
+               if(self.checkFocusWhenCopy){
+                   $("#B5_2").focus();
+                   self.checkFocusWhenCopy = false;
+                   return;
+               }
                if (data) {
                    $("#B5_1").focus();
                } else {
                    $("#B3_3_container").focus();
                }
             });
-            
+
+        }
+
+        setNewMode(mode: boolean) {
+            let self = this;
+            if (self.isNewMode() == mode) {
+                self.isNewMode.valueHasMutated();
+            } else {
+                self.isNewMode(mode);
+            }
         }
         
+        setCondSetCode(code: string) {
+            let self = this;
+            self.selectedConditionSettingCode('');
+            self.selectedConditionSettingCode(code);
+        }
+
         /**
          * 起動する
          * アルゴリズム「外部出力条件設定一覧」を実行する
@@ -79,18 +97,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
             service.getCndSet().done((itemList: Array<IConditionSet>) =>{
+                self.conditionSettingList.removeAll();
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
                     if (conditionSetCode) {
+                        self.setCondSetCode(conditionSetCode);
                         self.index(self.getIndex(conditionSetCode));
-                    }
-                    self.isNewMode(false);
-                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                    self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);  
+                    }                    
+                    let code = self.conditionSettingList()[self.index()].conditionSetCode;
+                    self.setCondSetCode(code);
+                    setTimeout(function(){ 
+                        $("tr[data-id='" + code + "'] ").focus();
+                        self.setNewMode(false);
+                    }, 500);
                 } else {
-                    self.isNewMode(true);
                     self.createNewCondition();
-                    self.conditionSettingList(itemList);
                 }
             }).always(() => {
                 block.clear();
@@ -138,16 +159,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }
         }
         
-        getListCategory(){
-            let self = this;
-            if (!self.roleAuthority) {
-                self.listCategory(null);
-                return;
-            }
-            service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
-                self.listCategory(data);             
-            });
-        }
         
         getCategoryName(cateId){
             let self = this;
@@ -157,14 +168,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }
         }
         
-        getIndex(conditionCode){
+        getIndex(conditionCode) {
             let self = this;
-            for (let i = 0 ; i < self.conditionSettingList().length ; i++) {
-                if ( conditionCode == self.conditionSettingList()[i].conditionSetCode){
-                    return i;
-                }
-            }
-            return 0;
+            let index = _.findIndex(self.conditionSettingList(), { 'conditionSetCode': conditionCode });
+            return index;
         }
         
         
@@ -177,13 +184,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
+                        let index = 0;
                         if (self.index() != self.conditionSettingList().length - 1){
-                            self.index(self.index() + 1);
+                            index = self.index() + 1;
                         } else {
-                            self.index(self.index() - 1);
+                            index = self.index() - 1;
                         }
                         if (self.conditionSettingList().length != 1) {
-                            self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
+                            self.initScreen(self.conditionSettingList()[index].conditionSetCode);
                         } else {
                             self.initScreen(null);
                         }
@@ -226,8 +234,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             if (destinationCode == self.selectedConditionSettingCode()){
                                 self.conditionSetData().conditionSetName(destinationName);
                             }
+                            self.checkFocusWhenCopy = true;
                             self.initScreen(destinationCode);
-                            $("#B5_2").focus();
                         });  
                     });
                 }
@@ -238,8 +246,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         openVScreen(){
             let self = this;
             setShared('CMF002_V_PARAMS', {
-                    categoryId :self.conditionSetData().categoryId() || ''});
-            
+                categoryId :self.conditionSetData().categoryId() || '',
+                roleAuthority: self.roleAuthority
+            });
+ 
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
@@ -290,7 +300,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let self = this;
             let outputItem: Array<IOutputItem> = [];
             nts.uk.ui.errors.clearAll();
-            self.selectedConditionSettingCode('');
+            self.setCondSetCode('');
             self.selectedConditionSetting(null);
             self.outputItemList(outputItem);
             self.categoryName('');
@@ -303,8 +313,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().delimiter(1);
             self.conditionSetData().stringFormat(0);
             self.conditionSetData().itemOutputName(0);
-            self.isNewMode(true);
-            $("#B5_1").focus();
+            self.setNewMode(true);
         }
            
     
@@ -335,7 +344,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.isNewMode(false);
                     self.initScreen(data.conditionSetCd);
                     if(self.outputItemList() && self.outputItemList().length > 0) {
                         self.getOutItem(data.conditionSetCd);
@@ -348,6 +356,44 @@ module nts.uk.com.view.cmf002.b.viewmodel {
       
         }
         
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            
+            if (!self.roleAuthority) {
+                self.listCategory(null);
+                return;
+            }
+            let dfd = $.Deferred();
+            block.invisible();
+            $.when(
+                service.getCategory(self.roleAuthority)
+            ).done((
+                data: Array<Category>)=> {
+                if(data && data.length > 0) {
+                    self.listCategory(data);
+                }
+                self.initScreen(null);
+                dfd.resolve(self);
+            }).fail((error) => {
+                dialog.alertError(error);
+                dfd.reject();
+            }).always(() => {
+                self.focusUpDown();
+                block.clear();
+            });
+
+            return dfd.promise();
+        }
+
+        focusUpDown() {
+            $("#B14_2-up").click(() => {
+                $("#B13_2_container").focus();
+            })
+            $("#B14_2-down").click(() => {
+                $("#B13_2_container").focus();
+            })
+        }
+
     }
     //条件名出力選択, 項目名出力選択
     export function getNotUseAtrItems(): Array<model.ItemModel> {

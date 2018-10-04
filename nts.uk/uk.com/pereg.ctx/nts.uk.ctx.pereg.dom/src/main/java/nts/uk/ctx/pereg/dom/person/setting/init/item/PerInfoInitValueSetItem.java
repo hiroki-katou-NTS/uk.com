@@ -98,6 +98,9 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.perInfoCtgId = perInfoCtgId;
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.refMethodType = refMethodType;
+		this.dateValue = null;
+		this.intValue = null;
+		this.stringValue = null;
 	}
 
 	public PerInfoInitValueSetItem(String perInfoItemDefId, String settingId, String perInfoCtgId,

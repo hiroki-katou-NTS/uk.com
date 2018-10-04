@@ -33,7 +33,7 @@ public enum ValueType {
 	 * @return　INTEGERである
 	 */
 	public boolean isInteger() {
-		return TIME.equals(this) || CLOCK.equals(this) || ATTR.equals(this) || AMOUNT.equals(this)
+		return TIME.equals(this) || CLOCK.equals(this) || ATTR.equals(this)
 				|| NUMBER.equals(this) || COUNT.equals(this) || TIME_WITH_DAY.equals(this);
 	}
 	
@@ -42,7 +42,7 @@ public enum ValueType {
 	 * @return　Doubleである
 	 */
 	public boolean isDouble() {
-		return RATE.equals(this) || COUNT_WITH_DECIMAL.equals(this) || DAYS.equals(this);
+		return RATE.equals(this) || COUNT_WITH_DECIMAL.equals(this) || DAYS.equals(this) || AMOUNT.equals(this);
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public enum ValueType {
 	 * @return
 	 */
 	public boolean isIntegerCountable() {
-		return COUNT.equals(this) || TIME.equals(this) || AMOUNT.equals(this);
+		return COUNT.equals(this) || TIME.equals(this);
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public enum ValueType {
 	 * @return　Doubleである
 	 */
 	public boolean isDoubleCountable() {
-		return COUNT_WITH_DECIMAL.equals(this);
+		return COUNT_WITH_DECIMAL.equals(this) || AMOUNT.equals(this) || DAYS.equals(this);
 	}
 	
 	public boolean isTime() {

@@ -247,6 +247,30 @@ module nts.uk.at.view.kaf000.shr{
         }
         
         export class CommonProcess {
+            public static getComboBoxReason(selectID: string, listID: Array<string>, displaySet: boolean): string{
+                if(!displaySet){
+                    return "";    
+                }
+                if(nts.uk.util.isNullOrEmpty(selectID)){
+                    return "";        
+                }         
+                let reasonValue = _.find(listID, o => { return o.reasonId == selectID; }).reasonName;
+                if(nts.uk.util.isNullOrUndefined(reasonValue)){
+                    return "";    
+                }
+                return reasonValue;
+            }
+            
+            public static getTextAreaReason(reasonText: string, displaySet: boolean, enableSet: boolean): string{
+                if(!displaySet){
+                    return "";    
+                }
+                if(!enableSet){
+                    return "";    
+                }
+                return reasonText;
+            }
+            
             public static checkAppReason(appReasonRequired: boolean, inputReasonDisp: boolean, detailReasonDisp: boolean, appReason: string): boolean {
                 if(appReasonRequired == false) {
                     return true;
@@ -270,6 +294,39 @@ module nts.uk.at.view.kaf000.shr{
                    return false;
                 }
                return true;
+            }
+            
+            public static displayMailDeleteRs(data: ProcessResult): void {
+                let autoSuccessMail = "", autoFailMail = "";
+                data.autoSuccessMail.forEach((value, index) => { 
+                    autoSuccessMail += value;
+                    if(index != data.autoSuccessMail.length-1){
+                        autoSuccessMail += ",";        
+                    }     
+                });
+                data.autoFailMail.forEach((value, index) => { 
+                    autoFailMail += value;
+                    if(index != data.autoFailMail.length-1){
+                        autoFailMail += ",";        
+                    }     
+                });
+                if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        });
+                    });        
+                } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                    });    
+                } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
+                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                    });    
+                } else {
+                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");        
+                }
             }
             
             public static displayMailResult(data: ProcessResult): void {

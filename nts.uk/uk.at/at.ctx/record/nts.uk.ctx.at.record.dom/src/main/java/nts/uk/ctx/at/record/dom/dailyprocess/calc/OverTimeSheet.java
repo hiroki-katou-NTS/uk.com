@@ -334,8 +334,8 @@ public class OverTimeSheet {
 		for(OverTimeFrameTimeSheetForCalc timeSheet:frameTimeSheets) {
 			val calcSet = getCalcSetByAtr(autoCalcSet, timeSheet.getWithinStatutryAtr(),timeSheet.isGoEarly());
 			if(timeSheet.getMidNightTimeSheet().isPresent()) {
-				val breakValue = timeSheet.getDedTimeSheetByAtr(DeductionAtr.Appropriate, ConditionAtr.BREAK).stream().map(tc -> tc.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc));
-				calcTime = calcTime.addMinutes(timeSheet.calcMidNight(calcSet.getCalAtr()).valueAsMinutes() - breakValue);
+				val calcValue = timeSheet.getMidNightTimeSheet().get().calcTotalTime(DeductionAtr.Appropriate);
+				calcTime = calcTime.addMinutes(calcSet.getCalAtr().isCalculateEmbossing()?calcValue.valueAsMinutes():0);
 			}
 		}
 		return calcTime;

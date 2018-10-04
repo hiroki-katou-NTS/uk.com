@@ -1,11 +1,13 @@
 module nts.uk.com.view.cmf002.j {
-     __viewContext.ready(function() {
-    __viewContext['screenModel'] = new viewmodel.ScreenModel();
-            __viewContext['screenModel'].start().done(function() {
-                __viewContext.bind(__viewContext['screenModel']);
-                _.defer(() => {
-                __viewContext['screenModel'].characterDataFormatSetting().fixedValue() == 1 ? $('#J7_1').focus() : $('#J2_1').focus(); 
-            });
-            });
+    import model = cmf002.share.model;
+    __viewContext.ready(function() {
+        nts.uk.ui.block.invisible();
+        __viewContext['screenModel'] = new viewmodel.ScreenModel();
+        __viewContext['screenModel'].start().done(function() {
+            __viewContext.bind(__viewContext['screenModel']);
+            __viewContext['screenModel'].characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE ? $('#J2_1').focus() : $('#J7_1').focus();
+        }).always(() => {
+            nts.uk.ui.block.clear();
+        });
     });
 }

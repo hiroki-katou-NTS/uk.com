@@ -50,4 +50,6 @@ public class WorkChangeBasicData {
 	
 	
 	List<EmployeeInfoImport> employees;
+	
+	private boolean isTimeRequired;
 }

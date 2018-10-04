@@ -23,7 +23,7 @@
 }
 
 .table.content .cell:NTH-CHILD(1) {
-	width: 460px;
+	width: 450px;
 }
 
 .table.content .cell:NTH-CHILD(2) {
@@ -31,7 +31,7 @@
 }
 
 .table.content .cell:NTH-CHILD(3) {
-	width: 710px;
+	width: 725px;
 }
 
 .table.content .search-item:NTH-CHILD(1) {
@@ -39,7 +39,7 @@
 }
 
 .table.content .search-item:NTH-CHILD(2) {
-	width: 190px;
+	width: 180px;
 }
 
 .table.content .arrow-item {
@@ -66,16 +66,15 @@
 
 #fixed-table tr td {
 	padding: 2px;
-	text-align: center;
 }
-
-.fixed-table tr td:NTH-CHILD(4) {
+/* 
+.fixed-table tr td:NTH-CHILD(3) {
 	border-right: none;
 }
 
-.fixed-table tr td:NTH-CHILD(5) {
+.fixed-table tr td:NTH-CHILD(4) {
 	border-left: none;
-}
+} */
 
 .fixed-table .view-over {
 	overflow: visible !important;

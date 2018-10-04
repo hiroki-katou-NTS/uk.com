@@ -26,9 +26,9 @@ public class AffCompanyHist extends AggregateRoot {
 	private List<AffCompanyHistByEmployee> lstAffCompanyHistByEmployee;
 	
 	public static AffCompanyHist createNewEmployeeHist(String personId, String employeeId, String comHistId,
-			GeneralDate hireDate) {
+			GeneralDate hireDate, GeneralDate entryDate) {
 		List<AffCompanyHistItem> comHistItemList = Arrays
-				.asList(new AffCompanyHistItem(comHistId, false, new DatePeriod(hireDate, GeneralDate.max())));
+				.asList(new AffCompanyHistItem(comHistId, false, new DatePeriod(hireDate, entryDate != null? entryDate: GeneralDate.max())));
 		
 		List<AffCompanyHistByEmployee> comHistList = Arrays
 				.asList(new AffCompanyHistByEmployee(employeeId, comHistItemList));

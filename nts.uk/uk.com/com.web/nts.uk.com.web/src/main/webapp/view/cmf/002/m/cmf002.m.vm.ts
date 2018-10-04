@@ -210,24 +210,20 @@ module nts.uk.com.view.cmf002.m.viewmodel {
                 // get data shared
                 self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(params.formatSetting));
                 dfd.resolve();
-                return dfd.promise();
+            } else {
+                service.findPerformSettingByInTime().done(result => {
+                    if (result) {
+                        self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(result));
+                    } else {
+                        self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(self.initInTimeDataFormatSetting));
+                    }
+                    dfd.resolve();
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject();
+                });
             }
-
-            self.startFindData();
-
-            dfd.resolve();
             return dfd.promise();
-        }
-
-        startFindData() {
-            let self = this;
-            service.findPerformSettingByInTime().done(result => {
-                if (result) {
-                    self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(result));
-                    return;
-                }
-                self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(self.initInTimeDataFormatSetting));
-            });
         }
 
         cancelCharacterSetting() {

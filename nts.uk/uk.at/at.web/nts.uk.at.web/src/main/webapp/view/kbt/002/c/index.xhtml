@@ -46,7 +46,7 @@
 	                        </colgroup>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_53')}</td>
-	                        	<td><div tabindex="1" id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true}"></div></td>
+	                        	<td><div tabindex="1" id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true,name: '#[KBT002_54]'}"></div></td>
 	                        </tr>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_55')}</td>
@@ -56,6 +56,7 @@
                         				inputFormat: 'time',
                         				required: true,
                         				mode: 'time',
+                        				name: '#[KBT002_56]',
                         				constraint: 'StartTime'}" />
                  				</td>
 	                        </tr>
@@ -65,20 +66,20 @@
 	                        		<div id="endTimeRadio">
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
-												<input type="radio" name="endTimeCls" data-bind="checkedValue: 0, checked: endTimeCls, enable:false" />
+												<input type="radio" name="endTimeCls" data-bind="checkedValue: 0, checked: endTimeCls" />
 												<span tabindex="3" class="box"></span><span class="label">#{i18n.getText('KBT002_141')}</span>
 											</label>
 										</div>		
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
-												<input type="radio" name="endTimeCls" data-bind="checkedValue: 1, checked: endTimeCls, enable:false" />
+												<input type="radio" name="endTimeCls" data-bind="checkedValue: 1, checked: endTimeCls" />
 												<span tabindex="3" class="box"></span><span class="label">#{i18n.getText('KBT002_142')}</span>
 											</label>
 										</div>
 										<input tabindex="4" style="width: 60px;" id="endTime"
 											data-bind="ntsTimeEditor: {value: endTime,
 											inputFormat: 'time',
-											enable: endTimeCls() == 1 &amp;&amp; false,
+											enable: endTimeCls() == 1,
 											required: true,
 											mode: 'time',
 											constraint: 'EndTime'}" />
@@ -91,13 +92,13 @@
 	                        		<div id="oneDayRadio">
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
-												<input type="radio" name="oneDayCls" data-bind="checkedValue: 0, checked: oneDayRepCls, enable:false" />
+												<input type="radio" name="oneDayCls" data-bind="checkedValue: 0, checked: oneDayRepCls" />
 												<span tabindex="7" class="box"></span><span class="label">#{i18n.getText('KBT002_67')}</span>
 											</label>
 										</div>		
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
-												<input type="radio" name="oneDayCls" data-bind="checkedValue: 1, checked: oneDayRepCls, enable:false" />
+												<input type="radio" name="oneDayCls" data-bind="checkedValue: 1, checked: oneDayRepCls" />
 												<span tabindex="7" class="box"></span><span class="label">#{i18n.getText('KBT002_68')}</span>
 											</label>
 										</div>
@@ -124,7 +125,7 @@
 											optionsValue: 'code',
 											value: oneDayRepInterval,
 											optionsText: 'name',
-											enable: oneDayRepCls() == 1 &amp;&amp; false
+											enable: oneDayRepCls() == 1
 											
 											}"></div>
 	                        	</td>
@@ -164,7 +165,7 @@
 	                        		<div id="endDateRadio">
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
-												<input type="radio" name="endDateCls" data-bind="checkedValue: 0, checked: endDateCls, enable: repeatCls() == 1 &amp;&amp; false" />
+												<input type="radio" name="endDateCls" data-bind="checkedValue: 0, checked: endDateCls, enable: repeatCls() == 1 " />
 												<com:ko-if bind="repeatCls() == 1">
 													<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('KBT002_71')}</span>
 												</com:ko-if>
@@ -175,7 +176,7 @@
 										</div>		
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
-												<input type="radio" name="endDateCls" data-bind="checkedValue: 1, checked: endDateCls, enable: repeatCls() == 1 &amp;&amp; false" />
+												<input type="radio" name="endDateCls" data-bind="checkedValue: 1, checked: endDateCls, enable: repeatCls() == 1 " />
 												<com:ko-if bind="repeatCls() == 1">
 													<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('KBT002_72')}</span>
 												</com:ko-if>
@@ -184,7 +185,7 @@
 												</com:ko-if>
 											</label>
 										</div>
-										<div tabindex="10" id="endDate" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'date', enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1&amp;&amp; false}" />
+										<div tabindex="10" id="endDate" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'date', enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1&amp;&amp; endDateCls() == 1 }" />
 									</div>
 	                        	</td>
 	                        </tr>

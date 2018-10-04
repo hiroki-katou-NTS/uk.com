@@ -73,9 +73,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         selectedCode: KnockoutObservable<string> = ko.observable('0');
         holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
         
-        permissionOfEmploymentForm : KnockoutObservable<PermissionOfEmploymentFormModel> 
-                                        = ko.observable(new PermissionOfEmploymentFormModel(
-                                            '', '', 1, true));
+        isEmployeeCharge: KnockoutObservable<boolean> =  ko.observableArray(false);
+        closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
 
@@ -216,6 +215,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.applyKCP005ContentSearch(data.listEmployee);
                     self.startDateString(data.periodStart);
                     self.endDateString(data.periodEnd);
+                    self.closureId(data.closureId);
                 }
             }
         }
@@ -236,12 +236,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             });
             $.when(service.findAll(),
                     service.getDate(),
-                    service.getPermissionOfEmploymentForm(),
+                    service.getCurrentLoginerRole(),
                     nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
                     ).done((
                             holidayRemainings: Array<any>,
                             dateData: GetDate,
-                            permission: any,
+                            role: any,
                             userSpecific
                             ) => {
                     self.loadAllHolidayRemaining(holidayRemainings);
@@ -256,11 +256,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.startDateString(moment.utc(preYear).format("YYYY/MM/DD"));
                     self.endDateString(moment.utc(nextMonth).format("YYYY/MM/DD"));
                         
-                    self.permissionOfEmploymentForm(new PermissionOfEmploymentFormModel(
-                            permission.companyId,
-                            permission.roleId,
-                            permission.functionNo,
-                            permission.availability));
+                    self.isEmployeeCharge(role.employeeCharge);
                     if (userSpecific) {
                         if (_.find(holidayRemainings, x => { return x.cd == userSpecific.outputItemSettingCode; })) {
                             self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
@@ -326,7 +322,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 isShowNoSelectRow: false,
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
-                isShowSelectAllButton: true,
+                isShowSelectAllButton: false,
                 maxWidth: 550,
                 maxRows: 15
             };
@@ -386,7 +382,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 endMonth.format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode(),
-                self.baseDate().format("YYYY/MM/DD")
+                self.baseDate().format("YYYY/MM/DD"),
+                self.closureId()
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
@@ -438,22 +435,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         }
     }
     
-    /**
-     * Permission Of Employment Form model
-     */
-    export class PermissionOfEmploymentFormModel {
-        companyId : string;
-        roleId : string;
-        functionNo : number;
-        availability : KnockoutObservable<boolean> = ko.observable(false);
-        constructor(companyId : string, roleId : string, functionNo : number, availability : boolean) {
-            let self = this;
-            self.companyId = companyId || '';
-            self.roleId = roleId || '';
-            self.functionNo = functionNo || 0;
-            self.availability(availability || false);
-        }
-    }
     // スケジュール一括修正設定
     export class ScheduleBatchCorrectSetting {
         // 勤務種類
@@ -591,12 +572,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         outputItemSettingCode: string;
         pageBreak: string;
         baseDate: string;
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, baseDate: string) {
+        closureId: number
+        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, 
+                baseDate: string, closureId: number) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
+            this.closureId = closureId;
         }
     }
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -54,6 +55,15 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 						getWithStatutory(domain.getWithinStatutoryMidNightTime()),
 						getAttendanceTime(domain.getVacationAddTime()));
 	}
+	
+	@Override
+	public WithinStatutoryTimeDailyPerformDto clone() {
+		return new WithinStatutoryTimeDailyPerformDto(workTime,
+									workTimeIncludeVacationTime,
+									withinPrescribedPremiumTime,
+									withinStatutoryMidNightTime == null ? null : withinStatutoryMidNightTime.clone(),
+									vacationAddTime);
+	}
 
 	private static CalcAttachTimeDto getWithStatutory(WithinStatutoryMidNightTime domain) {
 		return domain == null || domain.getTime() == null ? null : CalcAttachTimeDto.toTimeWithCal(domain.getTime());
@@ -64,16 +74,16 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 				toAttendanceTime(workTime),
 				toAttendanceTime(workTimeIncludeVacationTime), 
 				toAttendanceTime(withinPrescribedPremiumTime),
-				withinStatutoryMidNightTime == null ? null 
-						: new WithinStatutoryMidNightTime(withinStatutoryMidNightTime.createTimeDivWithCalc()),
+				new WithinStatutoryMidNightTime(withinStatutoryMidNightTime == null ? TimeDivergenceWithCalculation.defaultValue()
+							: withinStatutoryMidNightTime.createTimeDivWithCalc()),
 				toAttendanceTime(vacationAddTime));
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? AttendanceTime.ZERO : new AttendanceTime(time);
 	}
 }

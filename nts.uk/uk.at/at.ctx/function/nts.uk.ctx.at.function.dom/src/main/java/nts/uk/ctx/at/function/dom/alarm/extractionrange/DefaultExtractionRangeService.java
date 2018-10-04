@@ -61,7 +61,6 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
-			
 			if (c.isDaily()) {
 				CheckConditionTimeDto daily = this.getDailyTime(c, closureId, new YearMonth(processingYm));
 				result.add(daily);
@@ -92,8 +91,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 		Date startDate = null;
 		Date endDate = null;
-		String startMonth =null;
-		String endMonth = null;
+//		String startMonth =null;
+//		String endMonth = null;
+		YearMonth startMonth = yearMonth;
+		YearMonth endMonth = yearMonth;
 		int year = 0;
 		
 		for(ExtractionRangeBase extractBase : c.getExtractPeriodList()) {
@@ -111,20 +112,19 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				ExtractionPeriodMonth extraction = (ExtractionPeriodMonth) extractBase;
 				
 				if(extraction.getStartMonth().isDesignateMonth()) {
-					startMonth = yearMonth.year() +"/" + (yearMonth.month()<10 ? "0" + yearMonth.month(): yearMonth.month());
+					startMonth = yearMonth.addMonths((-1)*extraction.getStartMonth().getStrMonthNo().get().getMonthNo());
 				}else {
-					int sMonth = yearMonth.month() - extraction.getStartMonth().getFixedMonthly().get().getDesignatedMonth();
-					startMonth = yearMonth.year() +"/" + (sMonth<10 ? "0" + sMonth: sMonth);					
+					Calendar calendar = Calendar.getInstance();
+					int currentYear = calendar.get(Calendar.YEAR);
+					startMonth = YearMonth.of(currentYear, extraction.getStartMonth().getFixedMonthly().get().getDesignatedMonth());
 				}
 				
 				if(extraction.getEndMonth().isSpecifyClose()) {
-					endMonth = yearMonth.year() +"/" + (yearMonth.month()<10 ? "0" + yearMonth.month(): yearMonth.month());
+					endMonth = yearMonth.addMonths((-1)*extraction.getEndMonth().getEndMonthNo().get().getMonthNo());
 				}else {
-					int eMonth = yearMonth.month() - extraction.getEndMonth().getEndMonthNo().get().getMonthNo();
-					endMonth = yearMonth.year() +"/" + (eMonth <10 ? "0"+eMonth : eMonth);
+					endMonth = yearMonth.addMonths((-1)*extraction.getEndMonth().getEndMonthNo().get().getMonthNo());
 				}
-				
-				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth, endMonth);
+				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth.toString(), endMonth.toString());
 				monthDto.setTabOrder(extraction.getNumberOfMonth().value +2);
 				result.add(monthDto);
 				
@@ -134,23 +134,23 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				
 				if(extraction.isToBeThisYear()){
 					if(firstMonth <= yearMonth.month()) {
-						startMonth = yearMonth.year() +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						startMonth = yearMonth.addMonths(firstMonth);
 						firstMonth = firstMonth-1;
-						endMonth = (yearMonth.year()+1) +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						endMonth = YearMonth.of( yearMonth.year()+1, yearMonth.month()).addMonths(firstMonth);
 						year = yearMonth.year();
 					}else {
-						startMonth = (yearMonth.year()-1) +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						startMonth = YearMonth.of( yearMonth.year()-1, yearMonth.month()).addMonths(firstMonth);
 						firstMonth = firstMonth-1;
-						endMonth = yearMonth.year() +"/" + (firstMonth<10 ? "0" + firstMonth: firstMonth);
+						endMonth = yearMonth.addMonths(firstMonth);
 						year = yearMonth.year()-1;
 					}
 				}else {
-					startMonth = extraction.getYear() + "/" + (firstMonth <10 ? "0" + firstMonth: firstMonth);
+					startMonth = YearMonth.of( extraction.getYear(),firstMonth);
 					firstMonth = firstMonth-1;
-					endMonth = (extraction.getYear() +1) + "/" + (firstMonth <10 ? "0" + firstMonth: firstMonth);
+					endMonth = YearMonth.of( extraction.getYear()+1,firstMonth);
 					year = extraction.getYear();
 				}
-				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth, endMonth, year );
+				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );
 				yearDto.setTabOrder(5);
 				result.add(yearDto);
 			}
@@ -195,10 +195,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth startMonthly = yearMonth;
 		YearMonth endMonthly = yearMonth;
 		ExtractionPeriodMonth extractionPeriodMonth =  (ExtractionPeriodMonth) c.getExtractPeriodList().get(0);
-		if(extractionPeriodMonth.getStartMonth().getSpecifyStartMonth().value == SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE.value) {
+		if(extractionPeriodMonth.getStartMonth().getSpecifyStartMonth().value == SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value) {
 			startMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
 		}
-		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_PERIOD_START_MONTH.value ) {
+		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH.value ) {
 			endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
 		}
 		
@@ -212,6 +212,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		
 		Date startDate =null;
 		Date endDate =null;
+		YearMonth startMonthly = yearMonth;
+		YearMonth endMonthly = yearMonth;
 		// Calculate start date
 		if (extraction.getStartDate().getStartSpecify() == StartSpecify.DAYS) {
 			Calendar calendar = Calendar.getInstance();
@@ -219,11 +221,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				calendar.add(Calendar.DAY_OF_YEAR, -extraction.getStartDate().getStrDays().get().getDay().v());
 			else
 				calendar.add(Calendar.DAY_OF_YEAR, extraction.getStartDate().getStrDays().get().getDay().v());
-
-			startDate = calendar.getTime();
+				startDate = calendar.getTime();
 
 		} else {
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
+			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
 			startDate = datePeriod.start().date();
 		}
 
@@ -237,7 +238,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 
 			endDate = calendar.getTime();
 		} else {
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearMonth);
+			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth()));
 			endDate = datePeriod.end().date();
 		}
 		

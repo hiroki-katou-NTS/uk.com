@@ -48,7 +48,7 @@ public class InitValueSetItemFinder {
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002) {
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
 		String categoryCd = command.getCategoryCd();
@@ -64,7 +64,7 @@ public class InitValueSetItemFinder {
 
 		// set item SAMEASLOGIN
 
-		setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId);
+		setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId, isRegisFrLayoutCPS002);
 
 		// set item
 
@@ -76,7 +76,7 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASSYSTEMDATE, GeneralDate.today());
 
-		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId);
+		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId, isRegisFrLayoutCPS002);
 
 		if (isScreenC) {
 			// Get perInfoCategory
@@ -91,7 +91,7 @@ public class InitValueSetItemFinder {
 			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
 			for (SettingItemDto settingItemDto : result) {
 				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
-					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					comboBoxStandardDate = settingItemDto.getSaveData().getValue().toString().isEmpty()? comboBoxStandardDate :(GeneralDate) settingItemDto.getSaveData().getValue();
 					break;
 				}
 			}
@@ -124,12 +124,12 @@ public class InitValueSetItemFinder {
 	}
 
 	private boolean setItemSameLogin(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
-			String categoryCd, GeneralDate baseDate, String employeeId) {
+			String categoryCd, GeneralDate baseDate, String employeeId , boolean isRegisFrLayoutCPS002) {
 		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
 			if (categoryCd.charAt(1) == 'S') {
 
-				return setSystemCtgData(itemList, result, categoryCd, baseDate, employeeId);
+				return setSystemCtgData(itemList, result, categoryCd, baseDate, employeeId, isRegisFrLayoutCPS002);
 
 			}
 
@@ -200,7 +200,7 @@ public class InitValueSetItemFinder {
 	}
 
 	private boolean setSystemCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
-			String categoryCd, GeneralDate baseDate, String employeeId) {
+			String categoryCd, GeneralDate baseDate, String employeeId, boolean isRegisFrLayoutCPS002) {
 		PeregQuery query = PeregQuery.createQueryLayout(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
@@ -215,9 +215,18 @@ public class InitValueSetItemFinder {
 									.filter(item -> item.getItemCode().equals(x.getItemCode())).findFirst();
 							if (itemDtoOpt.isPresent()) {
 								Object value = dataMap.get(itemDtoOpt.get().getItemCode());
-								if (value != null) {
-									itemDtoOpt.get().setData(value);
+								if(isRegisFrLayoutCPS002) {
+									if (value == null) {
+										result.remove(itemDtoOpt.get());
+									}else {
+										itemDtoOpt.get().setData(value);
+									}
+								}else {
+									if (value != null) {
+										itemDtoOpt.get().setData(value);
+									}
 								}
+								
 							}
 						});
 

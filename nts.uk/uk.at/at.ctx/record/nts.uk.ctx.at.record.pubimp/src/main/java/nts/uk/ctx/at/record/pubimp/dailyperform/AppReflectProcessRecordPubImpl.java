@@ -1,12 +1,21 @@
 package nts.uk.ctx.at.record.pubimp.dailyperform;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCheckParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.DegreeReflectionAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence.AbsenceReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absenceleave.AbsenceLeaveReflectService;
@@ -28,13 +37,26 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitmen
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.PreWorkchangeReflectService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ConfirmStatusCheck;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ObjectCheck;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.PrePostRecordAtr;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPub{
@@ -56,14 +78,73 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	private RecruitmentRelectRecordService recruitmentService;
 	@Inject
 	private WorkInformationRepository workRepository;
+	@Inject
+	private CommonProcessCheckService processCheckService;
+	@Inject
+	private DetermineActualResultLock resultLock;
+	@Inject
+	private ClosureService closureService;
+	@Inject
+	private RemainCreateInforByScheData scheData;
+	@Inject
+	private ApprovalStatusAdapter appAdapter;
 	@Override
 	public boolean appReflectProcess(AppCommonPara para) {
-		/*CommonCheckParameter paraTemp = new CommonCheckParameter(EnumAdaptor.valueOf(para.getDegressAtr().value, DegreeReflectionAtr.class),
-				EnumAdaptor.valueOf(para.getExecutiontype().value, ExecutionType.class),
+		boolean output = true;		
+		ScheRemainCreateInfor scheInfor = null;
+		if(para.isChkRecord()) {
+			//ドメインモデル「日別実績の勤務情報」を取得する
+			Optional<WorkInfoOfDailyPerformance> optDaily = workRepository.find(para.getSid(), para.getYmd());
+			if(!optDaily.isPresent()) {
+				return false;
+			}
+		} else {
+			//ドメインモデル「勤務予定基本情報」を取得する(get domain model)
+			List<ScheRemainCreateInfor> lstSche = scheData.createRemainInfor(para.getCid(), para.getSid(), 
+					new DatePeriod(para.getYmd(), para.getYmd()));
+			if(lstSche.isEmpty()) {
+				return false;
+			}
+			scheInfor = lstSche.get(0);
+		}
+		
+		//WorkInfoOfDailyPerformance dailyInfor = optDaily.get();
+		//反映状況によるチェック
+		CommonCheckParameter checkPara = new CommonCheckParameter(para.isChkRecord() ? DegreeReflectionAtr.RECORD : DegreeReflectionAtr.SCHEDULE,
+				ExecutionType.EXCECUTION,
 				EnumAdaptor.valueOf(para.getStateReflectionReal().value, ReflectedStateRecord.class),
 				EnumAdaptor.valueOf(para.getStateReflection().value, ReflectedStateRecord.class));
-		return commonProcess.commonProcessCheck(paraTemp);*/
-		return true;
+		boolean chkProcess = processCheckService.commonProcessCheck(checkPara);
+		if(chkProcess) {
+			//ドメインモデル「申請承認設定」.データが確立されている場合の承認済申請の反映のチェックをする
+			if(para.getReflectAtr() == ReflectRecordAtr.REFLECT) {
+				return output;
+			}
+			//アルゴリズム「実績ロックされているか判定する」を実行する
+			Closure closureData = closureService.getClosureDataByEmployee(para.getSid(), para.getYmd());
+			if(closureData == null) {
+				return false;
+			}
+			LockStatus lockStatus = resultLock.getDetermineActualLocked(para.getCid(),
+					para.getYmd(),
+					closureData.getClosureId().value,
+					PerformanceType.DAILY);
+			if(lockStatus == LockStatus.UNLOCK) {
+				return output;
+			}
+			//確定状態によるチェック
+			ConfirmStatusCheck chkParam = new ConfirmStatusCheck(para.getCid(), 
+					para.getSid(),
+					para.getYmd(), 
+					para.getPrePostAtr(),
+					para.getAppType(), 
+					para.isChkRecord() ? ObjectCheck.DAILY : ObjectCheck.SCHE, 
+					para.isRecordReflect(),
+					para.isScheReflect(),
+					para.isChkRecord() ? false : scheInfor.isConfirmedAtr());
+			return this.checkConfirmStatus(chkParam);
+		}
+		return output;
 	}
 
 	@Override
@@ -192,4 +273,37 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 		return true;
 	}
 
+	@Override
+	public boolean checkConfirmStatus(ConfirmStatusCheck chkParam) {
+		boolean output = true;
+		//申請の種類と事前事後区分をチェックする
+		if(chkParam.getPrePost() == PrePostRecordAtr.PREDICT
+				&& chkParam.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {
+			return output;
+		}
+		//INPUT．対象をチェックする
+		if(chkParam.getChkObject() == ObjectCheck.DAILY) {
+			//ドメインモデル「反映情報」．実績強制反映をチェックする
+			if(chkParam.isRecordReflect()) {
+				return output;
+			}
+			List<ApprovalRootStateStatusImport> lstRootStatus = appAdapter.getStatusByEmpAndDate(chkParam.getSid(), 
+					new DatePeriod(chkParam.getAppDate(), chkParam.getAppDate()), 1);
+			if(!lstRootStatus.isEmpty()
+					&& lstRootStatus.get(0).getDailyConfirmAtr() == 0) {
+				return output;
+			} else {
+				return false;
+			}
+		} else {
+			//ドメインモデル「反映情報」．予定強制反映をチェックする
+			if(chkParam.isScheReflect()) {
+				return output;
+			} 
+			if(chkParam.isConfirmedAtr()) {
+				return false;
+			}
+		}
+		return output;
+	}
 }

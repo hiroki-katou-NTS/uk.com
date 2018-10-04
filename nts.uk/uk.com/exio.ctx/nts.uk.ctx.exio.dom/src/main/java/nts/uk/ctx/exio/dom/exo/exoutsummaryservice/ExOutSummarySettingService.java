@@ -128,12 +128,13 @@ public class ExOutSummarySettingService {
 
 			if (ctgItemData.get().getSearchValueCd().isPresent()
 					&& !ctgItemData.get().getSearchValueCd().get().isEmpty()) {
+				cond.setLength(0);
 				cond.append(String.join(", ",
 						searchCodeList.stream().map(item -> item.getSearchCode().v()).collect(Collectors.toList())));
 				cond.append(outCndDetailItem.getConditionSymbol().nameId);
 			}
 
-			ctgItemDataCustomList.add(new CtgItemDataCustom(ctgItemData.get().getItemName(), cond.toString()));
+			ctgItemDataCustomList.add(new CtgItemDataCustom(outCndDetailItem.getSeriNum(), ctgItemData.get().getItemName().v(), cond.toString()));
 		}
 
 		return ctgItemDataCustomList;

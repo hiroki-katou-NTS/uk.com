@@ -4,9 +4,17 @@ module nts.uk.at.view.kmk003.i {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             if (screenModel.isFlow()) {
-                _.defer(() => $('#lateStampExactlyTimeIsLateEarly').focus());
+                _.defer(() => {
+                    $('#timeLeaveEarlyGraceTime').focus();
+                    $('#timeLateGraceTime').focus();
+                    $('#lateStampExactlyTimeIsLateEarly').focus();
+                });
             } else {
-                _.defer(() => $('#delFromEmTime').focus());
+                _.defer(() => {
+                    $('#timeLeaveEarlyGraceTime').focus();
+                    $('#timeLateGraceTime').focus();
+                    $('#delFromEmTime').focus();
+                });
             }
         });
     });

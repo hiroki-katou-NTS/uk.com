@@ -31,6 +31,7 @@
 	border-radius: 5px;
 	height: 28px;
 	text-align: center;
+	word-wrap: break-word;
 }
 
 .seal {
@@ -92,7 +93,7 @@
 }
 
 .buttons {
-	margin-left: 559px;
+	margin-left: 336px;
 }
 
 .tab-master {
@@ -116,7 +117,8 @@
 	clear: left;
 	zoom: 1;
 }
-.layout-info{
+
+.layout-info {
 	margin-left: 110px;
 	margin-right: 5px;
 }

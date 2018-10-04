@@ -108,7 +108,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			// 期間中の年休残数を取得
 			Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 					datePeriod, TempAnnualLeaveMngMode.OTHER, datePeriod.end(), false, false, Optional.empty(),
-					Optional.empty(), Optional.empty());
+					Optional.empty(), Optional.empty(), Optional.empty());
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
@@ -200,7 +200,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				// 期間中の年休残数を取得
 				aggrResultOfAnnualLeave = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeId,
 						item.getDatePeriod(), TempAnnualLeaveMngMode.OTHER, item.getDatePeriod().end(), false, false,
-						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave);
+						Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, Optional.empty());
 				// 結果をListに追加
 				if (aggrResultOfAnnualLeave.isPresent()) {
 					result.add(
@@ -243,7 +243,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		// 期間中の年休残数を取得
 		Optional<AggrResultOfAnnualLeave> aggrResult = getAnnLeaRemNumWithinPeriod.algorithm(companyId, employeeID,
 				datePeriod, TempAnnualLeaveMngMode.OTHER, date, false, false, Optional.of(false), Optional.empty(),
-				Optional.empty());
+				Optional.empty(), Optional.empty());
 		if(aggrResult.isPresent()){
 			AnnualLeaveInfo asOfPeriodEnd = aggrResult.get().getAsOfPeriodEnd();
 			if(asOfPeriodEnd != null){
