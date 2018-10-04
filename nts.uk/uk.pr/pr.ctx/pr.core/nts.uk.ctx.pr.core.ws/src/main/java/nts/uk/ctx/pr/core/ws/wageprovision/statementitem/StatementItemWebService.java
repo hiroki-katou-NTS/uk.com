@@ -14,13 +14,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.RemoveStatemen
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.StatementItemDataCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.UpdateStatementItemDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementitem.UpdateStatementItemNameCommandHandler;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemAndStatementItemNameDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemNameDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemNameFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.*;
 
 @Path("ctx/pr/core/wageprovision/statementitem")
 @Produces("application/json")
@@ -55,9 +49,9 @@ public class StatementItemWebService extends WebService {
 
 	@POST
 	@Path("getAllStatementItemData/{categoryAtr}/{isIncludeDeprecated}")
-	public List<StatementItemDataDto> getAllStatementItemData(@PathParam("categoryAtr") Integer categoryAtr,
-			@PathParam("isIncludeDeprecated") boolean isIncludeDeprecated) {
-		return this.statementItemDataFinder.getAllStatementItemData(categoryAtr, isIncludeDeprecated);
+	public List<StatementItemCustomDto> getAllStatementItemData(@PathParam("categoryAtr") Integer categoryAtr,
+																@PathParam("isIncludeDeprecated") boolean isIncludeDeprecated) {
+		return this.statementItemDataFinder.getListStatementItemData(categoryAtr, isIncludeDeprecated);
 	}
 
 	@POST

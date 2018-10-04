@@ -20,8 +20,9 @@ module nts.uk.pr.view.qmm012.b {
             isdisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
             
             // statement gridList
-            statementItemDataList: KnockoutObservableArray<IStatementItemData> = ko.observableArray([]);
-            statementItemDataSelected: KnockoutObservable<StatementItemData> = ko.observable(null);
+            statementItemDataList: KnockoutObservableArray<IStatementItemCustom> = ko.observableArray([]);
+            statementItemDataSelected: KnockoutObservable<StatementItemData>;
+            salaryItemId: KnockoutObservable<string> = ko.observable(null);
             
             // define gridColumns
             gridColumns: any;
@@ -51,6 +52,8 @@ module nts.uk.pr.view.qmm012.b {
                                             return '';
                                         } }
                                    ];
+
+                self.statementItemDataSelected = ko.observable(new StatementItemData(null, self));
                 
                 self.selectedCategory.subscribe(() => {
                     let oldSalaryId = self.statementItemDataSelected().salaryItemId();
@@ -61,7 +64,9 @@ module nts.uk.pr.view.qmm012.b {
                         });
                         
                         if(matchSalaryID.length > 0) {
-                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                            self.salaryItemId(oldSalaryId);
+                        } else {
+                            self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                         }
                         
                         $("#B3_3").focus();
@@ -77,13 +82,56 @@ module nts.uk.pr.view.qmm012.b {
                         });
                         
                         if(matchSalaryID.length > 0) {
-                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                            self.salaryItemId(oldSalaryId);
+                        } else {
+                            self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                         }
                         
                         $("#B3_3").focus();
                     });
                 });
+
+                self.salaryItemId.subscribe(x => {
+
+                    if(x && (x != "")) {
+                        let data: IStatementItemCustom = _.filter(self.statementItemDataList(), function(o) {
+                            return x == o.salaryItemId;
+                        })[0];
+
+                        if(data) {
+                            self.loadItemData(data.categoryAtr, data.itemNameCd, data.salaryItemId);
+
+                            $("#B3_3").focus();
+                        } else {
+                            self.statementItemDataSelected(new StatementItemData(null, self));
+                        }
+                    } else {
+                        self.statementItemDataSelected(new StatementItemData(null, self));
+                    }
+
+                    nts.uk.ui.errors.clearAll();
+                });
             }//end constructor
+
+            loadItemData(categoryAtr: number, itemNameCd: string, salaryItemId: string) {
+                let self = this;
+                block.invisible();
+
+                service.getStatementItemData(categoryAtr, itemNameCd, salaryItemId).done(function(data: IStatementItemData) {
+                    if(data) {
+                        self.statementItemDataSelected(new StatementItemData(data, self));
+                        $("#B3_3").focus();
+                    } else {
+                        self.statementItemDataSelected(new StatementItemData(null, self));
+                    }
+
+                    block.clear();
+                }).fail(error => {
+                    self.statementItemDataSelected(new StatementItemData(null, self));
+
+                    block.clear();
+                });
+            }
             
             loadListData(): JQueryPromise<any> {
                 let self = this;
@@ -95,14 +143,11 @@ module nts.uk.pr.view.qmm012.b {
                     category = parseInt(self.selectedCategory(), 10);
                 }
                 
-                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
+                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemCustom>) {
                     data.sort(self.compare);
                     self.statementItemDataList(data);
                     
-                    if(data.length > 0) {
-                        self.statementItemDataSelected(new StatementItemData(data[0], self));
-                        $("#B3_3").focus();
-                    } else {
+                    if(self.statementItemDataList().length <= 0) {
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
                     
@@ -118,7 +163,7 @@ module nts.uk.pr.view.qmm012.b {
                 return deferred.promise();
             }
             
-            compare(a: IStatementItemData, b: IStatementItemData): number {
+            compare(a: IStatementItemCustom, b: IStatementItemCustom): number {
             
                 let comparison = 0;
                 if (a.categoryAtr > b.categoryAtr) {
@@ -146,7 +191,7 @@ module nts.uk.pr.view.qmm012.b {
                     
                     if(data != null) {
                         let categoryAtr = parseInt(data, 10);
-                        self.statementItemDataSelected(new StatementItemData(null, self));
+                        self.salaryItemId(null);
                         self.statementItemDataSelected().statementItem().categoryAtr(categoryAtr);
                     }
                     
@@ -419,7 +464,9 @@ module nts.uk.pr.view.qmm012.b {
                                 });
                                 
                                 if(matchSalaryID.length > 0) {
-                                    self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                                    self.salaryItemId(oldSalaryId);
+                                } else {
+                                    self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                                 }
                                 
                                 $("#B3_3").focus();
@@ -466,7 +513,7 @@ module nts.uk.pr.view.qmm012.b {
                                 if(self.statementItemDataList().length == 0) {
                                     self.create();
                                 } else if(nextSalaryId != null) {
-                                    self.statementItemDataSelected().salaryItemId(nextSalaryId);
+                                    self.salaryItemId(nextSalaryId);
                                     $("#B3_3").focus();
                                 }
                             });
@@ -579,41 +626,6 @@ module nts.uk.pr.view.qmm012.b {
                     
                     self.checkCreate = ko.observable(true);
                 }
-                
-                self.salaryItemId.subscribe(x => {
-                    
-                    if(x) {
-                        data = _.filter(screenModel.statementItemDataList(), function(o) {
-                            return x == o.salaryItemId;
-                        })[0];
-                        
-                        self.statementItem(new StatementItem(data.statementItem));
-                        self.statementItemName(new StatementItemName(data.statementItemName));
-                        self.paymentItemSet(new PaymentItemSet(data.paymentItemSet, screenModel));
-                        self.statementItemDisplaySet(new StatementItemDisplaySet(data.statementItemDisplaySet));
-                        self.itemRangeSet(new ItemRangeSet(data.itemRangeSet));
-                        self.deductionItemSet(new DeductionItemSet(data.deductionItemSet, screenModel));
-                        self.timeItemSet(new TimeItemSet(data.timeItemSet, screenModel));
-
-                        if(data.validityPeriodAndCycleSet) {
-                            self.isSetValidity(true);
-                        } else {
-                            self.isSetValidity(false);
-                        }
-                        
-                        if(data.breakdownItemSet && (data.breakdownItemSet.length > 0)) {
-                            self.isSetBreakdownItem(true);
-                        } else {
-                            self.isSetBreakdownItem(false);
-                        }
-                        
-                        self.checkCreate(false);
-                        screenModel.statementItemDataSelected(self);
-                        $("#B3_3").focus();
-                    }
-                    
-                    nts.uk.ui.errors.clearAll();
-                });
                 
                 nts.uk.ui.errors.clearAll();
             }
@@ -1155,7 +1167,15 @@ module nts.uk.pr.view.qmm012.b {
                 }
             }
         }
-        
+
+        interface IStatementItemCustom {
+            salaryItemId: string;
+            categoryAtr: number;
+            itemNameCd: string;
+            name: string;
+            deprecatedAtr: number;
+        }
+
         interface IStatementItemData {
             cid: string;
             salaryItemId: string;
