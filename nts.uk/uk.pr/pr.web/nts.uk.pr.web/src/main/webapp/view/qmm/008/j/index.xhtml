@@ -53,16 +53,16 @@
 							data-bind="text: displayEnd"></span>
 					</div>
 
-					<div class="flex" id="J3_1_container" style="margin-left: 35px; margin-top: 15px; width: 790px;min-width: 790px;" >
-						<table id="fixed-table">
-							<colgroup>
+					<div class="flex"  id="J3_1_container" style="margin-left: 35px; margin-top: 15px; width: 790px;min-width: 790px;" >
+						<table id="fixed-table" >
+							<colgroup >
 								<col width="40px" />
 								<col width="100px" />
 								<col width="100px" />
 								<col width="100px" />
 								<col width="150px" />
 							</colgroup>
-							<thead>
+							<thead >
 								<tr>
 									<th class="ui-widget-header" style="text-align: center;"
 										rowspan="2" id="J3_2">#{i18n.getText('QMM008_145')}</th>
@@ -80,7 +80,7 @@
 										rowspan="2" id="J3_6">#{i18n.getText('QMM008_149')}</th>
 								</tr>
 							</thead>
-							<tbody data-bind="foreach: dataList">
+							<tbody data-bind="foreach: dataList" >
 								<tr>
 									<td class="td-widget"><span class="limited-label"
 										data-bind="text: welfarePensionGrade()" style="text-align: right;"></span></td>
@@ -91,7 +91,7 @@
 									<td class="td-widget"><span class="limited-label"
 										data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)" style="text-align: right;"></span></td>
 									<td >
-										<input class="focusTest" data-bind="ntsNumberEditor: {
+										<input tabindex="6" class="focusTest" data-bind="ntsNumberEditor: {
  													option: {
  														width: '123px',
 														decimallength: 0,

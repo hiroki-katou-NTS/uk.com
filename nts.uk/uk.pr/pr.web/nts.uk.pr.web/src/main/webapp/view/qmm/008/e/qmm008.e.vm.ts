@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm008.e {
                    }
                    self.header(response.premiumRate);
                    setTimeout(function () {
-                       $(".flex").attr('tabindex', '0');
+                       $(".flex").attr('tabindex', '5');
                        $(".flex").focus();
                        if(self.dataList().length > 8) {
                            if (/Edge/.test(navigator.userAgent)) {

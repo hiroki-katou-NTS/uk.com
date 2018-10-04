@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm008.j {
                             self.dataList.push(new RowData(response[i]));
                      }
                    setTimeout(function () {
-                       $(".nts-fixed-table").attr('tabindex', '0');
+                       $(".nts-fixed-table").attr('tabindex', '5');
                        $(".nts-fixed-table").focus();
                        if(self.dataList().length > 10) {
                            if (/Edge/.test(navigator.userAgent)) {

@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm008.f {
                     let currentScreen = nts.uk.ui.windows.getSelf();
 
                     setTimeout(function () {
-                        $(".nts-fixed-table").attr('tabindex', '0');
+                        $(".nts-fixed-table").attr('tabindex', '6');
                         $(".nts-fixed-table").focus();
                         if(self.dataList().length > 8) {
                             if (/Edge/.test(navigator.userAgent)) {
