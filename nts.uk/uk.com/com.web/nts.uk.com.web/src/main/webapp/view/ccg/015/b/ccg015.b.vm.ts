@@ -41,34 +41,28 @@ module nts.uk.pr.view.ccg015.b {
                 this.currentCode = ko.observable("w1");
                 self.data = ko.observable(null);
             }
-            start(): JQueryPromise<void> {
+            start(): JQueryPromise<any> {
                 var self = this;
-                var dfd = $.Deferred<void>();
-                dfd.resolve();
-                return dfd.promise();
-            }
-            initData() {
-                var self = this;
-                var companyId: string;
+                var dfd = $.Deferred();
                 service.loadMyPageSetting().done(function(data: MyPageSettingDto) {
                     if (data) {
                         self.data(data);
-                        self.loadDataToScreen(data).done(function() {
-                            self.setData(data);
-                        });
+                        self.loadDataToScreen(data);
+                        self.setData(data);
+                        dfd.resolve();
                     } else {
                         service.loadDefaultMyPageSetting().done(function(dataDefault: MyPageSettingDto) {
                             self.data(dataDefault);
-                            self.loadDataToScreen(dataDefault).done(function() {
-                                self.setData(dataDefault);
-                            });
+                            self.loadDataToScreen(dataDefault);
+                            self.setData(dataDefault);
+                            dfd.resolve();
                         });
                     }
                 });
+                return dfd.promise();
             }
-            private loadDataToScreen(data: MyPageSettingDto): JQueryPromise<void> {
+            private loadDataToScreen(data: MyPageSettingDto) {
                 var self = this;
-                var dfd = $.Deferred<void>();
                 var dataSort = _.sortBy(data.topPagePartUseSettingDto, ['partType', 'partItemCode', 'partItemName']);
                 //reset item
                 self.myPageSettingModel().topPagePartSettingItems()[0].settingItems([]);
@@ -83,22 +77,29 @@ module nts.uk.pr.view.ccg015.b {
                 self.myPageSettingModel().topPagePartSettingItems()[2].usePart(data.useDashboard);
                 self.myPageSettingModel().topPagePartSettingItems()[3].usePart(data.useFlowMenu);
                 self.myPageSettingModel().topPagePartSettingItems()[4].usePart(data.externalUrlPermission);
+                var StandarWidget = [], 
+                    OptionalWidget = [], 
+                    Dashboard = [], 
+                    FlowMenu = [];
+                
                 dataSort.forEach(function(item, index) {
                     if (item.partType == TopPagePartsEnum.StandarWidget) {
-                        self.myPageSettingModel().topPagePartSettingItems()[0].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
+                        StandarWidget.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                     if (item.partType == TopPagePartsEnum.OptionalWidget) {
-                        self.myPageSettingModel().topPagePartSettingItems()[1].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
+                        OptionalWidget.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                     if (item.partType == TopPagePartsEnum.Dashboard) {
-                        self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
+                        Dashboard.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                     if (item.partType == TopPagePartsEnum.FlowMenu) {
-                        self.myPageSettingModel().topPagePartSettingItems()[3].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
+                        FlowMenu.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                 });
-                dfd.resolve();
-                return dfd.promise();
+                self.myPageSettingModel().topPagePartSettingItems()[0].settingItems(StandarWidget);
+                self.myPageSettingModel().topPagePartSettingItems()[1].settingItems(OptionalWidget);
+                self.myPageSettingModel().topPagePartSettingItems()[2].settingItems(Dashboard);
+                self.myPageSettingModel().topPagePartSettingItems()[3].settingItems(FlowMenu);
             }
             private setData(data: MyPageSettingDto) {
                 data.topPagePartUseSettingDto.forEach(function(item, index) {
