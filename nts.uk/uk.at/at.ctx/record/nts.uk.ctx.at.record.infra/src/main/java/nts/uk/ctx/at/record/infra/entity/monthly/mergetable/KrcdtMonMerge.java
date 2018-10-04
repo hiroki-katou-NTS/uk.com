@@ -5437,43 +5437,43 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @return 集計割増時間
 	 */
 	private AggregatePremiumTime toDomainPremiumTime1() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime1));
+		return AggregatePremiumTime.of(1, new AttendanceTimeMonth(this.premiumTime1));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime2() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime2));
+		return AggregatePremiumTime.of(2, new AttendanceTimeMonth(this.premiumTime2));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime3() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime3));
+		return AggregatePremiumTime.of(3, new AttendanceTimeMonth(this.premiumTime3));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime4() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime4));
+		return AggregatePremiumTime.of(4, new AttendanceTimeMonth(this.premiumTime4));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime5() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime5));
+		return AggregatePremiumTime.of(5, new AttendanceTimeMonth(this.premiumTime5));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime6() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime6));
+		return AggregatePremiumTime.of(6, new AttendanceTimeMonth(this.premiumTime6));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime7() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime7));
+		return AggregatePremiumTime.of(7, new AttendanceTimeMonth(this.premiumTime7));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime8() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime8));
+		return AggregatePremiumTime.of(8, new AttendanceTimeMonth(this.premiumTime8));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime9() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime9));
+		return AggregatePremiumTime.of(9, new AttendanceTimeMonth(this.premiumTime9));
 	}
 
 	private AggregatePremiumTime toDomainPremiumTime10() {
-		return AggregatePremiumTime.of(0, new AttendanceTimeMonth(this.premiumTime10));
+		return AggregatePremiumTime.of(10, new AttendanceTimeMonth(this.premiumTime10));
 	}
 
 	/** KRCDT_MON_AGGR_SPEC_DAYS 10 **/
@@ -6374,92 +6374,92 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 	
 	private AggregateAbsenceDays toDomainAbsenceDays1() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay1)),
+		return AggregateAbsenceDays.of(1, new AttendanceDaysMonth(new Double(this.absenceDay1)),
 				new AttendanceTimeMonth((int) this.absenceTime1));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays2() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay2)),
+		return AggregateAbsenceDays.of(2, new AttendanceDaysMonth(new Double(this.absenceDay2)),
 				new AttendanceTimeMonth((int) this.absenceTime2));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays3() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay3)),
+		return AggregateAbsenceDays.of(3, new AttendanceDaysMonth(new Double(this.absenceDay3)),
 				new AttendanceTimeMonth((int) this.absenceTime3));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays4() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay4)),
+		return AggregateAbsenceDays.of(4, new AttendanceDaysMonth(new Double(this.absenceDay4)),
 				new AttendanceTimeMonth((int) this.absenceTime4));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays5() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay5)),
+		return AggregateAbsenceDays.of(5, new AttendanceDaysMonth(new Double(this.absenceDay5)),
 				new AttendanceTimeMonth((int) this.absenceTime5));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays6() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay6)),
+		return AggregateAbsenceDays.of(6, new AttendanceDaysMonth(new Double(this.absenceDay6)),
 				new AttendanceTimeMonth((int) this.absenceTime6));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays7() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay7)),
+		return AggregateAbsenceDays.of(7, new AttendanceDaysMonth(new Double(this.absenceDay7)),
 				new AttendanceTimeMonth((int) this.absenceTime7));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays8() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay8)),
+		return AggregateAbsenceDays.of(8, new AttendanceDaysMonth(new Double(this.absenceDay8)),
 				new AttendanceTimeMonth((int) this.absenceTime8));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays9() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay9)),
+		return AggregateAbsenceDays.of(9, new AttendanceDaysMonth(new Double(this.absenceDay9)),
 				new AttendanceTimeMonth((int) this.absenceTime9));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays10() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay10)),
+		return AggregateAbsenceDays.of(10, new AttendanceDaysMonth(new Double(this.absenceDay10)),
 				new AttendanceTimeMonth((int) this.absenceTime10));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays11() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay11)),
+		return AggregateAbsenceDays.of(11, new AttendanceDaysMonth(new Double(this.absenceDay11)),
 				new AttendanceTimeMonth((int) this.absenceTime11));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays12() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay12)),
+		return AggregateAbsenceDays.of(12,new AttendanceDaysMonth(new Double(this.absenceDay12)),
 				new AttendanceTimeMonth((int) this.absenceTime12));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays13() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay13)),
+		return AggregateAbsenceDays.of(13, new AttendanceDaysMonth(new Double(this.absenceDay13)),
 				new AttendanceTimeMonth((int) this.absenceTime13));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays14() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay14)),
+		return AggregateAbsenceDays.of(14, new AttendanceDaysMonth(new Double(this.absenceDay14)),
 				new AttendanceTimeMonth((int) this.absenceTime14));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays15() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay15)),
+		return AggregateAbsenceDays.of(15, new AttendanceDaysMonth(new Double(this.absenceDay15)),
 				new AttendanceTimeMonth((int) this.absenceTime15));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays16() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay16)),
+		return AggregateAbsenceDays.of(16, new AttendanceDaysMonth(new Double(this.absenceDay16)),
 				new AttendanceTimeMonth((int) this.absenceTime16));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays17() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay17)),
+		return AggregateAbsenceDays.of(17, new AttendanceDaysMonth(new Double(this.absenceDay17)),
 				new AttendanceTimeMonth((int) this.absenceTime17));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays18() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay18)),
+		return AggregateAbsenceDays.of(18 ,new AttendanceDaysMonth(new Double(this.absenceDay18)),
 				new AttendanceTimeMonth((int) this.absenceTime18));
 	}
 
@@ -6474,22 +6474,22 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays21() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay21)),
+		return AggregateAbsenceDays.of(21, new AttendanceDaysMonth(new Double(this.absenceDay21)),
 				new AttendanceTimeMonth((int) this.absenceTime21));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays22() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay22)),
+		return AggregateAbsenceDays.of(22, new AttendanceDaysMonth(new Double(this.absenceDay22)),
 				new AttendanceTimeMonth((int) this.absenceTime22));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays23() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay23)),
+		return AggregateAbsenceDays.of(23, new AttendanceDaysMonth(new Double(this.absenceDay23)),
 				new AttendanceTimeMonth((int) this.absenceTime23));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays24() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay24)),
+		return AggregateAbsenceDays.of(24, new AttendanceDaysMonth(new Double(this.absenceDay24)),
 				new AttendanceTimeMonth((int) this.absenceTime24));
 	}
 
@@ -6504,22 +6504,22 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays27() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay27)),
+		return AggregateAbsenceDays.of(27, new AttendanceDaysMonth(new Double(this.absenceDay27)),
 				new AttendanceTimeMonth((int) this.absenceTime27));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays28() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay28)),
+		return AggregateAbsenceDays.of(28, new AttendanceDaysMonth(new Double(this.absenceDay28)),
 				new AttendanceTimeMonth((int) this.absenceTime28));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays29() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay29)),
+		return AggregateAbsenceDays.of(29, new AttendanceDaysMonth(new Double(this.absenceDay29)),
 				new AttendanceTimeMonth((int) this.absenceTime29));
 	}
 
 	private AggregateAbsenceDays toDomainAbsenceDays30() {
-		return AggregateAbsenceDays.of(new AttendanceDaysMonth(new Double(this.absenceDay30)),
+		return AggregateAbsenceDays.of(30, new AttendanceDaysMonth(new Double(this.absenceDay30)),
 				new AttendanceTimeMonth((int) this.absenceTime30));
 	}
 	
