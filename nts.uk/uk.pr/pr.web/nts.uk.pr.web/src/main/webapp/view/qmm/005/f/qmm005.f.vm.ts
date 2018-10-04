@@ -19,7 +19,12 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
                 {headerText: resource.getText('QMM005_93'), key: 'code', width: 90},
                 {headerText: resource.getText('QMM005_94'), key: 'name', width: 200}
             ]);
-            this.currentCodeListSwap = ko.observableArray(self.itemShared.employeeSelectedList);
+            self.currentCodeListSwap = ko.observableArray(self.itemShared.employeeSelectedList);
+            self.currentCodeListSwap.subscribe(function(newValue){
+                if(newValue.length > 0){
+                    nts.uk.ui.errors.clearAll();
+                }
+            });
             if ($('#F1_2-grid1_container')) {
                 setTimeout(function () {
                     $('#F1_2-grid1_container').focus();
@@ -40,7 +45,7 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
         submit() {
             var self = this;
             if(self.currentCodeListSwap().length == 0){
-                nts.uk.ui.dialog.alertError({messageId: "Msg_105"});
+                $('#F1_2-grid2_displayContainer').ntsError('set', {messageId: "Msg_105"});
                 return;
             }
             setShared("QMM005F_outParams", {
