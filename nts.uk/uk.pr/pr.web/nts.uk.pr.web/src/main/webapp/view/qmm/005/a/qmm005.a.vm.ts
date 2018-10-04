@@ -93,6 +93,12 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             $('#A2_2 #processYears').eq(param-1).focus();
             setShared("QMM005_output_B", param);
             modal('/view/qmm/005/b/index.xhtml', {title: '',}).onClosed(function (): any {
+                self.itemBinding.removeAll();
+                self.startPage().done(function () {
+                    setTimeout(function () {
+                        $('#A2_2 #processYears').eq(param - 1).focus();
+                    },100);
+                })
             });
             dfd.resolve();
             return dfd;
