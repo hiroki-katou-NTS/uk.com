@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PersAuthority;
 /**
  * 
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PersAuthority;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PersAuthorityDto {
 	/** 会社ID*/
 	private String companyId;
