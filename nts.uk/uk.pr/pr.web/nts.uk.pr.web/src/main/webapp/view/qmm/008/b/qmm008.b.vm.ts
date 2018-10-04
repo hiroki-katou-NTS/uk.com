@@ -53,6 +53,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 healthInsuranceMonthlyFee: ko.toJS(self.healthInsuranceMonthlyFee),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
+            command = self.formatDataBeforeSubmit(command);
             // Update historyId for case clone previous data
             command.bonusHealthInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.healthInsuranceMonthlyFee.historyId = command.yearMonthHistoryItem.historyId;
@@ -74,6 +75,23 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 self.registerIfValid(command);
             }
 
+        }
+
+        formatDataBeforeSubmit (command) {
+            let self = this;
+            command.bonusHealthInsuranceRate.individualBurdenRatio = self.convertHealthContributionToNumber(command.bonusHealthInsuranceRate.individualBurdenRatio);
+            command.bonusHealthInsuranceRate.employeeBurdenRatio = self.convertHealthContributionToNumber(command.bonusHealthInsuranceRate.employeeBurdenRatio);
+            command.healthInsuranceMonthlyFee.healthInsuranceRate.individualBurdenRatio = self.convertHealthContributionToNumber(command.healthInsuranceMonthlyFee.healthInsuranceRate.individualBurdenRatio);
+            command.healthInsuranceMonthlyFee.healthInsuranceRate.employeeBurdenRatio = self.convertHealthContributionToNumber(command.healthInsuranceMonthlyFee.healthInsuranceRate.employeeBurdenRatio);
+            return command;
+        }
+
+        convertHealthContributionToNumber (healthContribution){
+            healthContribution.longCareInsuranceRate = Number(healthContribution.longCareInsuranceRate);
+            healthContribution.basicInsuranceRate = Number(healthContribution.basicInsuranceRate);
+            healthContribution.healthInsuranceRate = Number(healthContribution.healthInsuranceRate);
+            healthContribution.specialInsuranceRate = Number(healthContribution.specialInsuranceRate);
+            return healthContribution;
         }
 
         registerIfValid(command) {

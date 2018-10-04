@@ -219,6 +219,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             command.bonusEmployeePensionInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.employeesPensionMonthlyInsuranceFee.historyId = command.yearMonthHistoryItem.historyId;
             command.welfarePensionInsuranceClassification.historyId = command.yearMonthHistoryItem.historyId;
+            command = self.formatDataBeforeSubmit(command);
             if (self.isUpdateMode()) {
                 service.checkWelfarePensionInsuranceGradeFeeChange(command).done(function(data) {
                     block.clear();
@@ -236,6 +237,23 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             } else {
                 self.registerIfValid(command);
             }
+        }
+
+        formatDataBeforeSubmit (command){
+            let self = this;
+            command.bonusEmployeePensionInsuranceRate.femaleContributionRate = self.formatWelfareContributionRate(command.bonusEmployeePensionInsuranceRate.femaleContributionRate);
+            command.bonusEmployeePensionInsuranceRate.maleContributionRate = self.formatWelfareContributionRate(command.bonusEmployeePensionInsuranceRate.maleContributionRate);
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate = self.formatWelfareContributionRate(command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.femaleContributionRate);
+            command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate = self.formatWelfareContributionRate(command.employeesPensionMonthlyInsuranceFee.salaryEmployeesPensionInsuranceRate.maleContributionRate);
+            return command;
+        }
+
+        formatWelfareContributionRate (contributionFee) {
+            contributionFee.individualBurdenRatio = Number(contributionFee.individualBurdenRatio);
+            contributionFee.employeeContributionRatio = Number(contributionFee.employeeContributionRatio);
+            contributionFee.individualExemptionRate = Number(contributionFee.individualExemptionRate);
+            contributionFee.employeeExemptionRate = Number(contributionFee.employeeExemptionRate);
+            return contributionFee;
         }
 
         registerIfValid(command) {
