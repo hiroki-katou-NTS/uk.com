@@ -311,22 +311,23 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				String overTimeName = "";
 				String outsideOTBRDItemName = "";
 				itemLink = mapItemLinking.get(attId);
-				for (OvertimeDto ovt : overtimesSetting) {
-					if (ovt.getOvertimeNo() == itemLink.getFrameNo().v()) {
-						overTimeName = ovt.getName();
-						break;
+				// fixbug 101557
+				Optional<OvertimeDto> optOvertimeDto = overtimesSetting.stream().filter(x -> x.getOvertimeNo() == itemLink.getFrameNo().v()).findFirst();
+				if(optOvertimeDto.isPresent()){
+					overTimeName = optOvertimeDto.get().getName();
+				} else {
+					overTimeName = TextResource.localize("KDW003_125", itemLink.getFrameNo().v().toString());
+				}
+				
+				if (itemLink.getPreliminaryFrameNO() != null && itemLink.getPreliminaryFrameNO().isPresent()){
+					Optional<OutsideOTBRDItemDto> optOutsideOTBRDItemDto = outsideOTBRDItem.stream().filter(x-> x.getBreakdownItemNo() == itemLink.getPreliminaryFrameNO().get().v()).findFirst();
+					if(optOutsideOTBRDItemDto.isPresent()){
+						outsideOTBRDItemName = optOutsideOTBRDItemDto.get().getName();
+					} else {
+						outsideOTBRDItemName = TextResource.localize("KDW003_126", itemLink.getPreliminaryFrameNO().get().v().toString());
 					}
 				}
-				for (OutsideOTBRDItemDto oso : outsideOTBRDItem) {
-					if (itemLink.getPreliminaryFrameNO() == null)
-						break;
-					if (!itemLink.getPreliminaryFrameNO().isPresent())
-						break;
-					if (oso.getBreakdownItemNo() == itemLink.getPreliminaryFrameNO().get().v()) {
-						outsideOTBRDItemName = oso.getName();
-						break;
-					}
-				}
+				
 				item.setAttendanceItemName(MessageFormat.format(attName, overTimeName, outsideOTBRDItemName));
 				break;
 			case Absence:
