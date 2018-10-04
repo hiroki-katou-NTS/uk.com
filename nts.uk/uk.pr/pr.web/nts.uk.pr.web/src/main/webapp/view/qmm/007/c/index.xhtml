@@ -26,9 +26,9 @@
             <div id="C1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px;">
                 <span class="label">#{i18n.getText('QMM007_5')}</span>
                 <!-- C1_3 保険名称 -->
-                <span id="F1_3" class="label"  style="margin-left: 50px" data-bind = "text: 'C1_3'"></span>
+                <span id="C1_3" class="label"  style="margin-left: 50px" data-bind = "text: '項目移送'"></span>
                 <!-- C1_4 保険名称 -->
-                <span id="F1_4" class="label"  style="margin-left: 15px" data-bind = "text: 'C1_4'"></span>
+                <span id="C1_4" class="label"  style="margin-left: 15px" data-bind = "text: '項目移送'"></span>
             </div>
             <!-- F1_4 編集方法の選択 -->
             <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
@@ -39,7 +39,7 @@
 										checked: methodEditing,
 										option: itemList()[0],
 										optionValue: 'code',
-										enable: canDelete,
+										enable: isHisFirst,
 										optionText: 'name',
 										group: 'periodOption'}">
                 </div>
@@ -53,6 +53,7 @@
 										checked: methodEditing,
 										option: itemList()[1],
 										optionValue: 'code',
+										enable: isHisFirst,
 										optionText: 'name',
 										group: 'periodOption'}">
                 </div>
@@ -79,7 +80,7 @@
         <div id= "functions-area-bottom">
             <!-- F2_1 登録 -->
             <button id="F2_1" tabindex="3" class="proceed large"
-                    data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_44')}</button>
+                    data-bind="click: submit,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_44')}</button>
             <!-- F2_2 削除 -->
             <button id="F2_2" tabindex="4"
                     data-bind="click: cancel">#{i18n.getText('QMM007_37')}</button>

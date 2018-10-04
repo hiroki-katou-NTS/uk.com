@@ -5,8 +5,8 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import error = nts.uk.ui.errors;
-    // import model = qmm011.share.model;
+    import model = qmm007.share.model;
+    import server = nts.uk.pr.view.qmm007.c;
     export class ScreenModel {
         startYearMonth:         KnockoutObservable<number> = ko.observable();
         endYearMonth:           KnockoutObservable<number> = ko.observable();
@@ -16,71 +16,71 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         insurrance:             KnockoutObservable<number> = ko.observable();
         hisId:                  KnockoutObservable<string> = ko.observable('');
-        canDelete:              KnockoutObservable<boolean> = ko.observable('');
+        isHisFirst:              KnockoutObservable<boolean> = ko.observable(true);
         insuranceName:          KnockoutObservable<string> = ko.observable('');
+        mPayrollUnitPriceHis : KnockoutObservableArray<PayrollUnitPriceHistoryDto> = ko.observableArray(null);
         constructor() {
-            block.invisible();
+            let self = this;
+            self.innitView();
+
+
+
+        }
+        submit(){
+            // if(this.methodEditing() == EDIT_METHOD.UPDATE){
+            //     service.updatePayrollUnitPriceHis(hisId).done((data) => {
+            //         console.log(data);
+            //     }).fail(function(res: any) {
+            //         if (res)
+            //             dialog.alertError(res);
+            //     }).always(() => {
+            //         block.clear();
+            //     });
+            // }
+            // else{
+            //     service.deletePayrollUnitPriceHis(hisId).done((data) => {
+            //         console.log(data);
+            //     }).fail(function(res: any) {
+            //         if (res)
+            //             dialog.alertError(res);
+            //     }).always(() => {
+            //         block.clear();
+            //     });
+            // }
+        }
+
+        innitView(){
             let self = this;
             let to = getText('QMM011_9');
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(999912));
 
-            //start
-            let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
-            if(params){
-                self.getPayrollUnitPriceHis(params.hisId);
-            }
-
-
+            // // start
+            // let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
+            // if(params){
+            //     self.isHisFirst(params.isHisFirst);
+            //     self.getPayrollUnitPriceHis(params.hisId);
+            // }
+            self.getPayrollUnitPriceHis("0000000101");
         }
 
         getPayrollUnitPriceHis(hisId :string ) {
-            service.getPayrollUnitPriceHis(param).done(() => {
-                if (self.methodEditing() == EDIT_METHOD.DELETE) {
-                    dialog.info({ messageId: "Msg_16" }).then(() => {
-                        setShared('QMM011_F_PARAMS_OUTPUT', {
-                            methodEditing: self.methodEditing()
-                        });
-                        close();
-                    });
-                } else {
-                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                        setShared('QMM011_F_PARAMS_OUTPUT', {
-                            methodEditing: self.methodEditing()
-                        });
-                        close();
-                    });
-                }
-            }).fail(function(res: any) {
-                if (res)
-                    dialog.alertError(res);
-            }).always(() => {
-                block.clear();
+            let self = this;
+            service.getPayUnitPriceHist(hisId).done((data:PayrollUnitPriceHistoryDto) => {
+               self.mPayrollUnitPriceHis(ko.observableArray(data));
             });
+
         }
 
         hasRequired(){
             if(this.methodEditing() != EDIT_METHOD.UPDATE) {
-                $('#F1_9').ntsError('clear');
+
                 return false;
             }
             return true;
         }
 
         validateYearMonth(){
-            let self = this;
-            nts.uk.ui.errors.clearAll();
-            $("#F1_9").trigger("validate");
-            if($("#F1_9")[0].disabled){
-                $("#F1_9").ntsError('clear');
-                nts.uk.ui.errors.removeByElement($("#F1_9"));
-                return false;
-            }
-            if ((self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) ||
-                    Number(self.startLastYearMonth()) > Number(self.startYearMonth())) && (this.methodEditing() == EDIT_METHOD.UPDATE)){
-                $('#F1_9').ntsError('set', { messageId: "Msg_107" });
-                return true;
-            }
-            return error.hasError();
+
         }
 
         cancel(){
@@ -108,8 +108,8 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
 
     export function getHistoryEditMethod(): Array<model.ItemModel> {
         return [
-            // new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM011_54')),
-            // new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM011_55'))
+            new model.ItemModel(EDIT_METHOD.DELETE, getText('QMM007_40')),
+            new model.ItemModel(EDIT_METHOD.UPDATE, getText('QMM007_41'))
         ];
     }
 
@@ -122,6 +122,46 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         EMPLOYMENT_INSURRANCE_RATE = 1,
         ACCIDENT_INSURRANCE_RATE = 0
     }
+    class PayrollUnitPriceHistoryDto{
+        /**
+         * 会社ID
+         */
+         cId:string;
+
+        /**
+         * 履歴ID
+         */
+        hisId:string;
+
+        /**
+         * コード
+         */
+          code:string;
+
+        /**
+         * 開始年月
+         */
+          startYearMonth: number;
+
+        /**
+         * 終了年月
+         */
+          endYearMonth :number;
+          constructor(cId:string,hisId:string,code:string,startYearMonth: number,endYearMonth :number){
+                this.cId=cId;
+                this.code=code;
+                this.hisId=hisId;
+                this.startYearMonth=startYearMonth;
+                this.endYearMonth = endYearMonth;
+          }
+    }
+    class AcquiCondiPayrollHis{
+        cId :string;
+        code :string;
+        startYearMonth:number
+
+    }
+
 
 
 
