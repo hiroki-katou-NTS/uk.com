@@ -37,8 +37,14 @@ module nts.uk.pr.view.qmm008.f {
                         $(".nts-fixed-table").attr('tabindex', '0');
                         $(".nts-fixed-table").focus();
                         if(self.dataList().length > 8) {
-                            $('#f3_1_container .scroll-header').addClass('edge_scroll_header');
-                            $('#f3_1_2_container .scroll-header').addClass('edge_scroll_header');
+                            if (/Edge/.test(navigator.userAgent)) {
+                                $('#f3_1_container .scroll-header').addClass('edge_scroll_header');
+                                $('#f3_1_2_container .scroll-header').addClass('edge_scroll_header');
+                            } else {
+                                $('#f3_1_container .scroll-header').addClass('ci_scroll_header');
+                                $('#f3_1_2_container .scroll-header').addClass('ci_scroll_header');
+                            }
+
                         }
                     }, 500);
                     if (!response.display){
@@ -91,7 +97,11 @@ module nts.uk.pr.view.qmm008.f {
                 };
                 nts.uk.pr.view.qmm008.f.service.update(command).done(function(response) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        setTimeout(function () {
+                            $(".nts-fixed-table").attr('tabindex', '0');
+                            $(".nts-fixed-table").focus();
 
+                        }, 500);
                     });
                 });
                
@@ -116,7 +126,10 @@ module nts.uk.pr.view.qmm008.f {
                         self.dataList.push(new RowData(response.cusWelfarePensions[i]));
                     }
                     self.header(response.insuranceRate);
-
+                    setTimeout(function () {
+                        $(".nts-fixed-table").attr('tabindex', '0');
+                        $(".nts-fixed-table").focus();
+                    }, 500);
                 });
             }
             

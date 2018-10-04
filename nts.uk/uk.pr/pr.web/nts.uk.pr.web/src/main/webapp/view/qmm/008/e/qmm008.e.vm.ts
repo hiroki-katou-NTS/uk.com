@@ -33,7 +33,13 @@ module nts.uk.pr.view.qmm008.e {
                        $(".flex").attr('tabindex', '0');
                        $(".flex").focus();
                        if(self.dataList().length > 8) {
-                           $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+                           if (/Edge/.test(navigator.userAgent)) {
+                               $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+                               $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+                           } else {
+                               $('#E3_1_container .scroll-header').addClass('ci_scroll_header');
+                               $('#E3_1_container .scroll-header').addClass('ci_scroll_header');
+                           }
 
                        }
                    }, 500);
@@ -42,7 +48,7 @@ module nts.uk.pr.view.qmm008.e {
 
                //Fixed table
                if (/Chrome/.test(navigator.userAgent)) {
-                   $("#fixed-table").ntsFixedTable({height: 350, width: 1040});
+                   $("#fixed-table").ntsFixedTable({height: 348, width: 1040});
                } else {
                    $("#fixed-table").ntsFixedTable({height: 377, width: 1040});
                }
@@ -75,6 +81,12 @@ module nts.uk.pr.view.qmm008.e {
                };
                nts.uk.pr.view.qmm008.e.service.update(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                       setTimeout(function () {
+                           $(".flex").attr('tabindex', '0');
+                           $(".flex").focus();
+
+                       }, 500);
                        block.clear();
                    });
                });
@@ -104,6 +116,11 @@ module nts.uk.pr.view.qmm008.e {
                        self.dataList.push(new RowData(response.cusDataDtos[i]));
                    }
                    self.header(response.premiumRate);
+                   setTimeout(function () {
+                       $(".flex").attr('tabindex', '0');
+                       $(".flex").focus();
+
+                   }, 500);
                    block.clear();
                });
            }

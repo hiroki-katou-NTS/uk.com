@@ -6,7 +6,7 @@
 }
 
 #J2_4 {
-	margin-left: 125px;
+	margin-left: 30px;
 }
 
 #J2_8 {
@@ -26,6 +26,9 @@
 	padding-right: 0px !important;
 }
 
+.ci_scroll_header {
+	width: 17px !important;
+}
 .edge_scroll_header {
 	width: 16px !important;
 }

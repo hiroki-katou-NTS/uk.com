@@ -32,7 +32,14 @@ module nts.uk.pr.view.qmm008.j {
                        $(".nts-fixed-table").attr('tabindex', '0');
                        $(".nts-fixed-table").focus();
                        if(self.dataList().length > 10) {
-                           $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                           if (/Edge/.test(navigator.userAgent)) {
+                               $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                               $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                           } else {
+                               $('#J3_1_container .scroll-header').addClass('ci_scroll_header');
+                               $('#J3_1_container .scroll-header').addClass('ci_scroll_header');
+                           }
+
                        }
                    }, 500);
 
@@ -74,7 +81,10 @@ module nts.uk.pr.view.qmm008.j {
                };
                nts.uk.pr.view.qmm008.j.service.update(command).done(function(response) {
                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-
+                       setTimeout(function () {
+                           $(".nts-fixed-table").attr('tabindex', '0');
+                           $(".nts-fixed-table").focus();
+                       }, 500);
                    });
                });
            }
@@ -88,6 +98,10 @@ module nts.uk.pr.view.qmm008.j {
                    for (var i = 0; i < response.length; i++) {
                        self.dataList.push(new RowData(response[i]));
                    }
+                   setTimeout(function () {
+                       $(".nts-fixed-table").attr('tabindex', '0');
+                       $(".nts-fixed-table").focus();
+                   }, 500);
                });
             }
        }
