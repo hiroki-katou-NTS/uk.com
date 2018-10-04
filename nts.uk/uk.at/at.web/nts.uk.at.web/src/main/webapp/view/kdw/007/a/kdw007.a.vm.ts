@@ -1262,13 +1262,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.displayLeftOperator("");
             self.displayRightOperator("");
             switch (self.compareOperator()) {
-                case 0:
+                case 1:
                     self.displayLeftOperator("＝");
                     break;
-                case 1:
+                case 0:
                     self.displayLeftOperator("≠");
                     break;
-                case 2:
+                case 5:
                     self.displayLeftOperator("＞");
                     break;
                 case 3:
@@ -1277,7 +1277,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 case 4:
                     self.displayLeftOperator("＜");
                     break;
-                case 5:
+                case 2:
                     self.displayLeftOperator("≦");
                     break;
                 case 6:

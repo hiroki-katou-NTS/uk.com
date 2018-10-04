@@ -561,7 +561,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//休暇加算時間設定
 		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
 		if(!holidayAddtionSetting.isPresent()) {
-			throw new BusinessException(new RawErrorMessage("休暇加算時間設定が存在しません"));
+			throw new BusinessException("Msg_1446");
 		}
 		HolidayAddtionSet holidayAddtionSet = holidayAddtionSetting.get();
 		
@@ -913,7 +913,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//総拘束時間の計算
 		Optional<CalculateOfTotalConstraintTime> optionalCalculateOfTotalConstraintTime = companyCommonSetting.getCalculateOfTotalCons();
 		if(!optionalCalculateOfTotalConstraintTime.isPresent()) {
-			throw new BusinessException(new RawErrorMessage("総拘束時間の計算が存在しません"));
+			throw new BusinessException("Msg_1447");
 		}
 		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime = optionalCalculateOfTotalConstraintTime.get();
 		

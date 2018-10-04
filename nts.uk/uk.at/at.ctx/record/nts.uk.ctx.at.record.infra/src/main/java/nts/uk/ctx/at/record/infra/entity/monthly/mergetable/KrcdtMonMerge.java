@@ -4928,16 +4928,16 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	public void resetAffiliationInfo() {
 
-		this.firstEmploymentCd = null;
-		this.firstWorkplaceId = null;
-		this.firstJobTitleId = null;
-		this.firstClassCd = null;
-		this.firstBusinessTypeCd = null;
-		this.lastEmploymentCd = null;
-		this.lastWorkplaceId = null;
-		this.lastJobTitleId = null;
-		this.lastClassCd = null;
-		this.lastBusinessTypeCd = null;
+		this.firstEmploymentCd = "";
+		this.firstWorkplaceId = "";
+		this.firstJobTitleId = "";
+		this.firstClassCd = "";
+		this.firstBusinessTypeCd = "";
+		this.lastEmploymentCd = "";
+		this.lastWorkplaceId = "";
+		this.lastJobTitleId = "";
+		this.lastClassCd = "";
+		this.lastBusinessTypeCd = "";
 	}
 
 	/**
@@ -5505,63 +5505,63 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	private AggregateSpecificDays toDomainSpecificDays2() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1),
+				new SpecificDateItemNo(2),
 				new AttendanceDaysMonth(this.specificDays2),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays2));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays3() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(3), 
 				new AttendanceDaysMonth(this.specificDays3),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays3));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays4() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(4), 
 				new AttendanceDaysMonth(this.specificDays4),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays4));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays5() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(5), 
 				new AttendanceDaysMonth(this.specificDays5),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays5));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays6() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(6), 
 				new AttendanceDaysMonth(this.specificDays6),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays6));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays7() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(7), 
 				new AttendanceDaysMonth(this.specificDays7),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays7));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays8() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(8), 
 				new AttendanceDaysMonth(this.specificDays8),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays8));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays9() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(9), 
 				new AttendanceDaysMonth(this.specificDays9),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays9));
 	}
 
 	private AggregateSpecificDays toDomainSpecificDays10() {
 		return AggregateSpecificDays.of(
-				new SpecificDateItemNo(1), 
+				new SpecificDateItemNo(10), 
 				new AttendanceDaysMonth(this.specificDays10),
 				new AttendanceDaysMonth(this.holidayWorkSpecificDays10));
 	}

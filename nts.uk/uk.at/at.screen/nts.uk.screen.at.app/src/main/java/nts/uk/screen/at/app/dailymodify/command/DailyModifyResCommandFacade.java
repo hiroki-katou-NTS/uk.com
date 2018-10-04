@@ -93,6 +93,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private RegisterProvisionalData registerProvisionalData;
+	
+	@Inject
+	private InsertAllData insertAllData;
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
@@ -323,7 +326,7 @@ public class DailyModifyResCommandFacade {
 					}
 
 					if (!hasError) {
-						this.handler.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
+						this.insertAllData.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
 								resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(),
 								resultIU.isUpdate());
 						// insert sign
@@ -358,7 +361,8 @@ public class DailyModifyResCommandFacade {
 		
 		if (dataParent.getMode() == 0 && !dataParent.isFlagCalculation()) {
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
-					dataParent.getDateRange());
+					dataParent.getDateRange(), resultIU.getCommandNew().stream()
+														.map(c -> c.getWorkInfo().getData()).filter(c -> c != null).collect(Collectors.toList()));
 			if (!dataCheck.isEmpty()) {
 				resultError.put(TypeError.CONTINUOUS.value, dataCheck);
 			}

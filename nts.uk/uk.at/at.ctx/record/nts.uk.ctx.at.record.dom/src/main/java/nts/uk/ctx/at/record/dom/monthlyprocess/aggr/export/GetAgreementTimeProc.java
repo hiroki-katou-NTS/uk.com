@@ -27,8 +27,6 @@ public class GetAgreementTimeProc {
 
 	/** 月別集計で必要な会社別設定 */
 	private MonAggrCompanySettings companySets;
-	/** 月別集計で必要な社員別設定 */
-	private MonAggrEmployeeSettings employeeSets;
 	/** 月別集計が必要とするリポジトリ */
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	
@@ -82,10 +80,10 @@ public class GetAgreementTimeProc {
 			if (errorMessages.size() > 0) break;
 			
 			// 月別集計で必要な社員別設定を取得
-			this.employeeSets = MonAggrEmployeeSettings.loadSettings(
+			MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(
 					companyId, employeeId, aggrPeriod, this.repositories);
-			if (this.employeeSets.getErrorInfos().size() > 0){
-				errorMessages.add(this.employeeSets.getErrorInfos().values().stream().findFirst().get().v());
+			if (employeeSets.getErrorInfos().size() > 0){
+				errorMessages.add(employeeSets.getErrorInfos().values().stream().findFirst().get().v());
 				break;
 			}
 			
@@ -104,7 +102,11 @@ public class GetAgreementTimeProc {
 					this.repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, aggrPeriod);
 
 			// 確定情報の取得
-			val confirmed = this.getConfirmed(employeeId, aggrPeriod, Optional.of(confirmedAttdTimeList));
+			val confirmed = this.getConfirmed(employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
+			if (confirmed.getConfirmedErrorMessage() != null){
+				errorMessages.add(confirmed.getConfirmedErrorMessage());
+				break;
+			}
 			
 			// 社員の申請を反映　（反映結果の取得）
 			//*****（未）　申請反映側処理の完成後、本実装。（永続化でない）「取得モード」で貰う。
@@ -119,7 +121,10 @@ public class GetAgreementTimeProc {
 			results.add(aggrTimeDetail);
 		}
 		
-		if (errorMessages.size() > 0) this.errorMessage = errorMessages.get(0);
+		if (errorMessages.size() > 0) {
+			this.errorMessage = errorMessages.get(0);
+			return new CopyOnWriteArrayList<>();
+		}
 		
 		return results;
 	}
@@ -158,12 +163,14 @@ public class GetAgreementTimeProc {
 	 * 確定情報の取得
 	 * @param employeeId 社員ID
 	 * @param aggrPeriod 集計期間
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param attendanceTimeOfDailysOpt 日別実績の勤怠時間リスト
 	 * @return 月別実績の36協定時間
 	 */
 	private AgreementTimeOfMonthly getConfirmed(
 			String employeeId,
 			DatePeriod aggrPeriod,
+			MonAggrEmployeeSettings employeeSets,
 			Optional<List<AttendanceTimeOfDailyPerformance>> attendanceTimeOfDailysOpt){
 		
 		// 「月別実績の勤怠時間」を取得
@@ -212,17 +219,18 @@ public class GetAgreementTimeProc {
 		val monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
 		val agreementTimeOpt = monthlyCalculation.aggregateAgreementTime(
 				this.companyId, employeeId, this.yearMonth, this.closureId, this.closureDate, aggrPeriod,
-				Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
+				Optional.empty(), Optional.empty(), this.companySets, employeeSets,
 				monthlyCalcDailys, monthlyOldDatas, Optional.empty(), this.repositories);
 		if (agreementTimeOpt.isPresent()){
+			val agreementTime = agreementTimeOpt.get().getAgreementTime();
 			
 			// エラーメッセージがあれば、エラーメッセージを入れる
 			if (!monthlyCalculation.getErrorInfos().isEmpty()){
-				this.errorMessage = monthlyCalculation.getErrorInfos().get(0).getMessage().v();
+				agreementTime.setConfirmedErrorMessage(monthlyCalculation.getErrorInfos().get(0).getMessage().v());
 			}
 			
 			// 月別実績の36協定時間を返す
-			return agreementTimeOpt.get().getAgreementTime();
+			return agreementTime;
 		}
 		
 		return null;

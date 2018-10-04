@@ -352,20 +352,14 @@ public class AttendanceItemsFinder {
 		List<AttdItemDto> attdItems = this.findListByAttendanceAtr(this.convertToAttdItemType(request.getFormulaAtr()));
 
 		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
-			// get attendance item linking
-			List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
+			// get unselectable attendance items
+			List<Integer> excludes = this.attdItemLinkingFinder
+					.findAttendanceByOptionalItem(request.getAnyItemNos(), request.getPerformanceAtr()).stream()
 					.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
 
-			// get list attendance item filtered by attdItemLinks
-			List<AttdItemDto> filtered = this.findAll().stream()
-					.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
-
-			// merge two list attendance items
-			filtered.forEach(item -> {
-				if (attdItems.stream().anyMatch(i -> i.getAttendanceItemId() == item.getAttendanceItemId())) {
-					return;
-				}
-				attdItems.add(item);
+			// remove excluded attendance item
+			excludes.forEach(ex -> {
+				attdItems.removeIf(item -> item.getAttendanceItemId() == ex);
 			});
 		}
 
