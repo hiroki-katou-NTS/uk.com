@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         isNewMode:                      KnockoutObservable<boolean> = ko.observable(true);
+        checkFocus:                     KnockoutObservable<boolean> = ko.observable(true);
         standType:                      KnockoutObservable<number> = ko.observable(1);
         index:                          KnockoutObservable<number> = ko.observable(0);  
         conditionSettingList:           KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
@@ -55,7 +56,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 block.clear();
             });
             
-            self.isNewMode.subscribe((data) => {
+            self.checkFocus.subscribe((data) => {
                let self = this;
                if(self.checkFocusWhenCopy){
                    $("#B5_2").focus();
@@ -73,10 +74,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
 
         setNewMode(mode: boolean) {
             let self = this;
-            if (self.isNewMode() == mode) {
-                self.isNewMode.valueHasMutated();
+            self.isNewMode(mode);
+            if (self.checkFocus() == mode) {
+                self.checkFocus.valueHasMutated();
             } else {
-                self.isNewMode(mode);
+                self.checkFocus(mode);
             }
         }
         
@@ -110,7 +112,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     setTimeout(function(){ 
                         $("tr[data-id='" + code + "'] ").focus();
                         self.setNewMode(false);
-                    }, 500);
+                    }, 100);
                 } else {
                     self.createNewCondition();
                 }
