@@ -279,11 +279,12 @@ public class PerInfoCategoryFinder {
 						lstItemDfGroupByCtgId.remove(itemJobEntryDate.get());
 					}
 				}
-
-				if (CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
-					return null;
-				}
 			}
+			
+			if (CollectionUtil.isEmpty(lstItemDfGroupByCtgId)) {
+				return null;
+			}
+			
 			return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 					p.getCategoryType().value, p.getCategoryCode().v(), p.getIsAbolition().value,
 					p.getCategoryParentCode().v(), p.getInitValMasterCls() == null ? 1 : p.getInitValMasterCls().value,
