@@ -3407,8 +3407,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (valueError != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
-                    nts.uk.ui.block.invisible();
+                    //nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
+                    let e = document.createEvent("HTMLEvents");
+                    e.initEvent("mouseup", false, true);
+                    $("#dpGrid")[0].dispatchEvent(e);
                     
                     let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
                         return item.id == rowId;
