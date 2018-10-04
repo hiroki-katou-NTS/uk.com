@@ -16,7 +16,6 @@ module nts.uk.pr.view.qmm008.j {
                var self = this;
                self.dataList = ko.observableArray([]);
                let dataGetShare = getShared("QMM008_J_PARAMS");
-               console.log(dataGetShare);
                self.officeCode(dataGetShare.selectedOffice.socialInsuranceCode);
                self.socialInsuranceName(dataGetShare.selectedOffice.socialInsuranceName);
                self.displayStart(dataGetShare.selectedHistory.displayStart);
