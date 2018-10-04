@@ -255,10 +255,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 			}
 		}
 		//休憩時間帯を取得する
-		String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();
-		String siftCD = workTypeAndSiftType.getSiftType().getSiftCode();
-		BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID, workTypeCode, siftCD);
-		workTypeAndSiftType.setBreakTimes(breakTime.getLstTimezone());
+		if (workTypeAndSiftType.getWorkType() != null && workTypeAndSiftType.getSiftType() != null) {
+			String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();
+			String siftCD = workTypeAndSiftType.getSiftType().getSiftCode();
+			BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID, workTypeCode, siftCD);
+			workTypeAndSiftType.setBreakTimes(breakTime.getLstTimezone());
+		}
 		return workTypeAndSiftType;
 	}
 	
