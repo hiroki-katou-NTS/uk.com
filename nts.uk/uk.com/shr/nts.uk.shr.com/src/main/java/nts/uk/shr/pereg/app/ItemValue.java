@@ -277,7 +277,7 @@ public class ItemValue {
 		}
 	}
 	
-	private static String formatMinutesToTime(int valueAsMinutes) {
+	public static String formatMinutesToTime(int valueAsMinutes) {
 		
 		boolean isMinus = valueAsMinutes < 0;
 		int value = Math.abs(valueAsMinutes);

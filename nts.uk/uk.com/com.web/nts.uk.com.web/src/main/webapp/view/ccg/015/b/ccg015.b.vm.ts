@@ -2,6 +2,7 @@ module nts.uk.pr.view.ccg015.b {
     export module viewmodel {
         import MyPageSettingDto = nts.uk.pr.view.ccg015.b.service.model.MyPageSettingDto;
         import TopPagePartUseSettingItemDto = nts.uk.pr.view.ccg015.b.service.model.TopPagePartUseSettingItemDto;
+        import block = nts.uk.ui.block;
         export class ScreenModel {
             useDivisionOptions: KnockoutObservableArray<any>;
             permissionDivisionOptions: KnockoutObservableArray<any>;
@@ -44,18 +45,21 @@ module nts.uk.pr.view.ccg015.b {
             start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                block.invisible();
                 service.loadMyPageSetting().done(function(data: MyPageSettingDto) {
                     if (data) {
                         self.data(data);
                         self.loadDataToScreen(data);
                         self.setData(data);
                         dfd.resolve();
+                        block.clear();
                     } else {
                         service.loadDefaultMyPageSetting().done(function(dataDefault: MyPageSettingDto) {
                             self.data(dataDefault);
                             self.loadDataToScreen(dataDefault);
                             self.setData(dataDefault);
                             dfd.resolve();
+                            block.clear();
                         });
                     }
                 });
