@@ -305,7 +305,7 @@ public class MonthlyPerformanceReload {
 			} else if (param.getInitMenuMode() == 2) {
 				// *8 request list 534
 				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
-						AppContexts.user().userId(), new YearMonth(yearMonth), closureId,
+						AppContexts.user().employeeId(), new YearMonth(yearMonth), closureId,
 						screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 			}
 		}
