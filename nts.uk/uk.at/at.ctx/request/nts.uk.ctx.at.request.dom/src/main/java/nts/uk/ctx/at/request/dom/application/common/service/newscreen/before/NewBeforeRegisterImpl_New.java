@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.ActualLockImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.workfixed.WorkFixedAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.workrecord.identificationstatus.IdentificationAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
@@ -86,6 +88,9 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	private ActualLockAdapter actualLockAdapter;
 	@Inject
 	private WorkFixedAdapter workFixedAdater;
+	
+	@Inject
+	private IdentificationAdapter identificationAdapter;
 	
 	public void processBeforeRegister(Application_New application,int overTimeAtr){
 		// アルゴリズム「未入社前チェック」を実施する
@@ -340,6 +345,10 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			}
 			//「Imported(申請承認)「実績確定状態」．日別実績が確認済をチェックする(check 「Imported(申請承認)「実績確定状態」．日別実績が確認済)
 			if(isConfirm){
+				throw new BusinessException("Msg_448");
+			}
+			List<GeneralDate> identificationDateLst = identificationAdapter.getProcessingYMD(companyID, employeeID, new DatePeriod(appDate, appDate));
+			if(!CollectionUtil.isEmpty(identificationDateLst)){
 				throw new BusinessException("Msg_448");
 			}
 		}
