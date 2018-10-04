@@ -343,8 +343,8 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
              let startYearSelected=parseInt((selfItemBinding.currentYaerMonthSelected())/100);
              let startMonthsSelected=selfItemBinding.currentYaerMonthSelected();
-             selfItemBinding.yaersSelected(startYearSelected);
-             selfItemBinding.monthsSelectd(startMonthsSelected);
+             selfItemBinding.yaersSelected(0);
+             selfItemBinding.monthsSelectd(0);
 
              if(selfItemBinding.processInfomation.processCls() != '' && selfItemBinding.processInfomation.deprecatCate == model.Abolition.NOT_ABOLITION ){
                  selfItemBinding.isNotAbolition(true);

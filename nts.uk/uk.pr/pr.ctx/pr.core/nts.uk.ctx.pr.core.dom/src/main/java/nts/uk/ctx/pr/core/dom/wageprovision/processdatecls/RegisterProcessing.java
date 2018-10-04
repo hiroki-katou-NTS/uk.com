@@ -158,15 +158,21 @@ public class RegisterProcessing {
             );
         }
         this.setDaySupportRepository.addAll(setDaySupports);
+        addCurrProcessDate(valPayDateSet, setDaySupports);
     }
 
 
-    public void addCurrProcessDate(ValPayDateSet valPayDateSet) {
+    public void addCurrProcessDate(ValPayDateSet valPayDateSet, List<SetDaySupport> arr) {
         String cid = AppContexts.user().companyId();
+        GeneralDate currentDay = GeneralDate.today();
         int processCateNo = valPayDateSet.getProcessCateNo();
-        int currYear=GeneralDate.today().year();
-        int currTreatYear = currYear*100+1;
-
+        int currTreatYear = currentDay.yearMonth().v();
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i).getPaymentDate().after(currentDay) || arr.get(i).getPaymentDate().equals(currentDay)) {
+                currTreatYear = arr.get(i).getPaymentDate().yearMonth().v();
+                break;
+            }
+        }
         this.currProcessDateRepository.add(new CurrProcessDate(cid, processCateNo, currTreatYear));
     }
 
