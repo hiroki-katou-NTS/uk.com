@@ -84,9 +84,9 @@ public class ZeroTime extends AggregateRoot {
 	
 	public boolean isCalcOneOverYesterDayToDay(WorkType beforeWorkType,WorkType nowWorkType) {
 		//休日
-		if(nowWorkType.getDailyWork().isHolidayOrPause()) {
+		if(nowWorkType.getDailyWork().isHolidayOrPause() || nowWorkType.getDailyWork().isHolidayWork()) {
 			//休日→休日
-			if(beforeWorkType.getDailyWork().isHolidayOrPause()) {
+			if(beforeWorkType.getDailyWork().isHolidayOrPause() || beforeWorkType.getDailyWork().isHolidayWork()) {
 				switch(beforeWorkType.afterDay()) {
 				case STATUTORY_HOLIDAYS:
 					switch(nowWorkType.beforeDay()) {
@@ -163,9 +163,9 @@ public class ZeroTime extends AggregateRoot {
 	
 	public boolean isCalcOneOverToDayTomorrow(WorkType otherWorkType,WorkType nowWorkType) {
 		//休日
-		if(nowWorkType.getDailyWork().isHolidayOrPause()) {
+		if(nowWorkType.getDailyWork().isHolidayOrPause() || nowWorkType.getDailyWork().isHolidayWork()) {
 			//休日→休日
-			if(otherWorkType.getDailyWork().isHolidayOrPause()) {
+			if(otherWorkType.getDailyWork().isHolidayOrPause() || otherWorkType.getDailyWork().isHolidayWork()) {
 				switch(nowWorkType.afterDay()) {
 				case STATUTORY_HOLIDAYS:
 					switch(otherWorkType.beforeDay()) {
@@ -221,7 +221,7 @@ public class ZeroTime extends AggregateRoot {
 		//平日
 		else {
 			//平日→休日
-			if(otherWorkType.getDailyWork().isHolidayOrPause()) {
+			if(otherWorkType.getDailyWork().isHolidayOrPause() || otherWorkType.getDailyWork().isHolidayWork()) {
 				switch(otherWorkType.beforeDay()) {
 				case STATUTORY_HOLIDAYS:
 					return legalHd == 1 ? true : false;

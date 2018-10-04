@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.attendanceitemframelinking;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
@@ -21,6 +24,11 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	private static final String FIND;
 	private static final String FIND_BY_ANY_ITEM;
 	private static final String FIND_BY_ITEM_ID_AND_TYPE;
+
+	private static final String FIND_BY_FRAME_NO = "SELECT a FROM KfnmtAttendanceLink a "
+			+ "WHERE a.kfnmtAttendanceLinkPK.frameNo IN :frameNos "
+			+ "AND a.kfnmtAttendanceLinkPK.typeOfItem = :typeOfItem "
+			+ "AND a.kfnmtAttendanceLinkPK.frameCategory = :frameCategory";
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -100,6 +108,24 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
 				.setParameter("attendanceItemIds", attendanceItemIds)
 				.setParameter("typeOfItem", type.value).getList(f -> f.toDomain());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.
+	 * AttendanceItemLinkingRepository#findByFrameNos(java.util.List)
+	 */
+	@Override
+	public List<AttendanceItemLinking> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory) {
+		if (CollectionUtil.isEmpty(frameNos)) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(FIND_BY_FRAME_NO, KfnmtAttendanceLink.class)
+				.setParameter("frameNos", frameNos.stream().map(BigDecimal::valueOf).collect(Collectors.toList()))
+				.setParameter("typeOfItem", BigDecimal.valueOf(typeOfItem))
+				.setParameter("frameCategory", BigDecimal.valueOf(frameCategory))
+				.getList(KfnmtAttendanceLink::toDomain);
 	}
 
 }

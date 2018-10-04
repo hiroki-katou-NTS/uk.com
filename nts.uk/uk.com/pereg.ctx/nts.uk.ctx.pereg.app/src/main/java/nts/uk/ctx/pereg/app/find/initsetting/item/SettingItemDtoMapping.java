@@ -61,6 +61,8 @@ public class SettingItemDtoMapping {
 				if (cbItem.getOptionValue().equals(item.getSaveData().getValue().toString())) {
 
 					item.getSaveData().setValue(cbItem.getOptionText());
+				}else {
+					item.getSaveData().setValue("");
 				}
 			});
 		});
