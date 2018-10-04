@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -65,8 +66,10 @@ public class DataCorrectionLogFinder {
 			throw new BusinessException("Msg_37");
 
 		Map<String, String> empIdCode = personEmpInfo.getEmployeeCodesByEmpIds(params.getListEmployeeId());
+		List<String> operationIds = listCorrectionLog.stream().map(i -> i.getOperationId()).collect(Collectors.toList());
+		List<LogBasicInformation> basicInfos = basicInfoRepo.getLogBasicInfo(companyId, operationIds);
 		for (DataCorrectionLog d : listCorrectionLog) {
-			Optional<LogBasicInformation> basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId());
+			Optional<LogBasicInformation> basicInfo = basicInfos.stream().filter(i -> d.getOperationId().equals(i.getOperationId())).findFirst();
 			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey(),
 					d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
 					d.getCorrectedItem().getValueBefore().getViewValue(),
