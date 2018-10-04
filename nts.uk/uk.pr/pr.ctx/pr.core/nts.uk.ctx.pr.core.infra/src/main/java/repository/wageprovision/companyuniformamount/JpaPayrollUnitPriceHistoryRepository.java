@@ -6,9 +6,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
-
+@Stateless
 public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implements PayrollUnitPriceHistoryRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPriceHis f";

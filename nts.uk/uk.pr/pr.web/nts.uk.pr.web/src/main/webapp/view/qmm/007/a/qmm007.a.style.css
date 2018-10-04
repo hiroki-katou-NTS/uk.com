@@ -1,0 +1,83 @@
+.padding-item {
+    padding: 10px 0 0 10px;
+}
+
+#C1_8 {
+    margin-left: 175px;
+    margin-top:10px;
+}
+
+#C1_7 {
+    margin-left: 90px;
+}
+
+.datepicker-container {
+    z-index: 10010;
+}
+#A{
+    height:50px;
+}
+#left{
+    margin-top: 15px;
+    margin-left: 25px;
+    float:left;
+}
+#A2_4{
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+#A2_5{
+    float: right;
+    margin-right: 15px;
+}
+#A1_1{
+    margin-top: 10px;
+    margin-left: 50px;
+}
+#A1_2{
+    margin-top: 8px;
+    margin-left: 10px;
+}
+#A1_3{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+#A1_4{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+#A3_1{
+    display: inline-block;
+}
+#A3_2{
+    width:50px;
+    height: 20px;
+}
+#A3_3{
+    margin-left: 10px;
+    height: 20px;
+}
+#A3_4{
+
+}
+.div-line{
+    margin-top:10px;
+}
+#A3_5{
+    margin-left: 53px;
+}
+#A3_8{
+    display: inline-block;
+}
+#A3_11{
+    margin-left: 190px;
+    margin-top:5px;
+    display: inline-block;
+}
+#A3_10{
+    margin-left: 55px;
+}
+#A3_21{
+    margin-top: 10px;
+    float: left;
+}
