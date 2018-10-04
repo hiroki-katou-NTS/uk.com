@@ -238,7 +238,6 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
 
         start(): JQueryPromise<any> {
-            //block.invisible();
             let self = this;
             let dfd = $.Deferred();
 
@@ -249,23 +248,26 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 // get data shared
                 self.timeDataFormatSetting(new model.TimeDataFormatSetting(params.formatSetting));
                 dfd.resolve();
-                return dfd.promise();
+            } else {
+                service.findPerformSettingByTime().done(result => {
+                    if (result) {
+                        self.timeDataFormatSetting(new model.TimeDataFormatSetting(result));
+                    } else {
+                        self.timeDataFormatSetting(new model.TimeDataFormatSetting(self.initTimeDataFormatSetting));
+                    }                    
+                    dfd.resolve();
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject();
+                });
             }
-            self.startFindData();
-            dfd.resolve();
-            return dfd.promise();
 
+            return dfd.promise();
         }
 
         startFindData() {
             let self = this;
-            service.findPerformSettingByTime().done(result => {
-                if (result) {
-                    self.timeDataFormatSetting(new model.TimeDataFormatSetting(result));
-                    return;
-                }
-                self.timeDataFormatSetting(new model.TimeDataFormatSetting(self.initTimeDataFormatSetting));
-            });
+           
         }
 
         cancelCharacterSetting() {

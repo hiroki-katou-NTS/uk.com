@@ -41,18 +41,18 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
                 self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(params.formatSetting));
+                dfd.resolve();
             } else {
                 service.getAWDataFormatSetting().done(result => {
                     if (result != null) {
                         self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(result));
                     }
-                })
+                    dfd.resolve();
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject();
+                });
             }
-            if (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE) {
-                $('#N3_1').focus();
-            }
-            $('#N2_1_2').focus();
-            dfd.resolve();
             return dfd.promise();
         }
 

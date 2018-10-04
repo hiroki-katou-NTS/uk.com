@@ -55,28 +55,23 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         }
 
         start(): JQueryPromise<any> {
-            block.invisible();
             let self = this;
             let dfd = $.Deferred();
 
             if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.formatSetting) {
                 self.numberDataFormatSetting(new model.NumberDataFormatSetting(self.formatSetting));
                 dfd.resolve();
-                block.clear();
-                return dfd.promise();
+            } else{
+                service.getNumberFormatSetting().done(function(data: any) {
+                    if (data != null) {
+                        self.numberDataFormatSetting(new model.NumberDataFormatSetting(data));
+                    }
+                    dfd.resolve();
+                }).fail(function(error) {
+                    alertError(error);
+                    dfd.reject();
+                });
             }
-
-            service.getNumberFormatSetting().done(function(data: any) {
-                if (data != null) {
-                    self.numberDataFormatSetting(new model.NumberDataFormatSetting(data));
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            });
-
-            block.clear();
             return dfd.promise();
         }
 

@@ -37,28 +37,24 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         }
 
         start(): JQueryPromise<any> {
-            block.invisible();
             let self = this;
             let dfd = $.Deferred();
 
             if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.formatSetting) {
                 self.dateDataFormatSetting(new model.DateDataFormatSetting(self.formatSetting));
                 dfd.resolve();
-                block.clear();
-                return dfd.promise();
-            }
+            } else {
+                service.getDateFormatSetting().done(function(data: any) {
+                    if (data != null) {
+                        self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+                    }
+                    dfd.resolve();
+                }).fail(function(error) {
+                    alertError(error);
+                    dfd.reject();
+                });
+            }           
 
-            service.getDateFormatSetting().done(function(data: any) {
-                if (data != null) {
-                    self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            });
-
-            block.clear();
             return dfd.promise();
         }
 

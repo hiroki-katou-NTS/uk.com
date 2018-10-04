@@ -67,14 +67,18 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             self.modeScreen(params.screenMode);
             if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 self.characterDataFormatSetting(new model.CharacterDataFormatSetting(params.formatSetting));
+                dfd.resolve();
             } else {
                 service.getCharacterDataFormatSetting().done(result => {
                     if (result) {
                         self.characterDataFormatSetting(new model.CharacterDataFormatSetting(result));
                     }
+                    dfd.resolve();
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject();
                 });
             }
-            dfd.resolve();
             return dfd.promise();
         }
 
