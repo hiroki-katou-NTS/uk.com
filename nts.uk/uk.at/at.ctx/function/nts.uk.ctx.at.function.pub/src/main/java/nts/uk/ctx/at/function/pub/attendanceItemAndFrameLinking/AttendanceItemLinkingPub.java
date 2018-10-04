@@ -18,4 +18,14 @@ public interface AttendanceItemLinkingPub {
 	 * @author anhnm
 	 */
 	List<AttendanceItemLinkingDto> getByAnyItemCategory(int typeOfItem);
+
+	/**
+	 * Find by frame nos.
+	 *
+	 * @param frameNos the frame nos
+	 * @param typeOfItem the type of item
+	 * @param frameCategory the frame category
+	 * @return the list
+	 */
+	List<AttendanceItemLinkingDto> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory);
 }

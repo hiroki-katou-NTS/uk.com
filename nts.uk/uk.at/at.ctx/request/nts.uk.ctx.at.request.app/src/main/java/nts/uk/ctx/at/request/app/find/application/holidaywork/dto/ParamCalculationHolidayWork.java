@@ -54,9 +54,9 @@ public class ParamCalculationHolidayWork {
 	/**
 	 * startTimeRest
 	 */
-	private Integer startTimeRest;
+	private List<Integer> startTimeRests;
 	/**
 	 * endTimeRest
 	 */
-	private Integer endTimeRest;
+	private List<Integer> endTimeRests;
 }

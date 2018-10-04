@@ -150,13 +150,15 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		
 		// アルゴリズム「申請の受付制限をチェック」を実施する
 		applicationAcceptanceRestrictionsCheck(application.getCompanyID(), application.getAppType(), application.getPrePostAtr(), startDate, endDate,overTimeAtr);
-		if(application.getAppDate().equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
-			confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
-		}else{
-			// アルゴリズム「確定チェック」を実施する
-			confirmationCheck(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		// 申請する開始日～申請する終了日までループする
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+				confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}else{
+				// アルゴリズム「確定チェック」を実施する
+				confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}
 		}
-		
 	}
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem

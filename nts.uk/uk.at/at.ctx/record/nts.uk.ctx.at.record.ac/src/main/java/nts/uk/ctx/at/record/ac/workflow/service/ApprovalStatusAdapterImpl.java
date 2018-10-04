@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.ac.workflow.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -175,6 +176,16 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
+		return Collections.emptyList();
+		/*return intermediateDataPub.getAppRootStatusByEmpPeriodMonth(employeeID, period)
+				.stream()
+				.map((pub) -> new ApproveRootStatusForEmpImport(pub.getEmployeeID(), pub.getDate(),
+						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class)))
+				.collect(Collectors.toList());*/
+	}
+	
 	// RequestList 533
 	@Override
 	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpsMonth(
@@ -215,5 +226,4 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 				.collect(Collectors.toList());
 		return intermediateDataPub.cancelMonth(approverID, listParam);
 	}
-	
 }

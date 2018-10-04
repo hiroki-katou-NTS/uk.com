@@ -159,11 +159,11 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			return outputData;
 		}
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
-		GeneralDate loopDate = param.getGrantDate();
+		GeneralDate baseDate = param.getGrantDate();
 		List<GrantDaysInfor> lstGrantDays = new ArrayList<>();
 		for (ElapseYear yearData : elapseYear) {
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
-			loopDate = loopDate.addYears(yearData.getYears().v());
+			GeneralDate loopDate = baseDate.addYears(yearData.getYears().v());
 			loopDate = loopDate.addMonths(yearData.getMonths().v());
 			outputData.setGrantDate(loopDate);
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する
