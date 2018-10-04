@@ -4,7 +4,7 @@
 		<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_7')}</span>
 		<!-- A2_1 -> A1_5 -->
 		<button id="A1_1" class="proceed" tabindex="1"
-			data-bind="click: register, enable: isSelectedHistory &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
+			data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
 		<button id="A1_2" tabindex="1"
 			data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
 		<button id="A1_3" tabindex="1"
