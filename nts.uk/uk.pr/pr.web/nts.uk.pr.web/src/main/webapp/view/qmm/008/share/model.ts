@@ -538,7 +538,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     $(this.individualBurdenRatioId).ntsError('clear');
                     $(this.individualExemptionRateId).ntsError('clear');
                 }
-                return this.individualBurdenRatio() - this.individualExemptionRate();
+                return (this.individualBurdenRatio() - this.individualExemptionRate()).toFixed(3);
             }, this);
         }
 
@@ -569,7 +569,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     $(this.employeeContributionRatioId).ntsError('clear');
                     $(this.employeeExemptionRateId).ntsError('clear');
                 }
-                return this.employeeContributionRatio() - this.employeeExemptionRate();
+                return (this.employeeContributionRatio() - this.employeeExemptionRate()).toFixed(3);
             }, this);
         }
 

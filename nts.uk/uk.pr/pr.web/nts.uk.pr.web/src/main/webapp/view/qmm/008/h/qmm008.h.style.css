@@ -1,7 +1,9 @@
 .dialog-title {
-  margin-top: 20px;
-  font-size: 1.5rem;
+    margin-top: 20px;
+    font-size: 1.5rem;
+    min-width: 550px;
 }
+
 #H1_6 span {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
