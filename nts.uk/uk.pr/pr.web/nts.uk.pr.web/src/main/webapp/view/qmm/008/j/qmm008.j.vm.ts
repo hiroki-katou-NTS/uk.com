@@ -32,7 +32,14 @@ module nts.uk.pr.view.qmm008.j {
                        $(".nts-fixed-table").attr('tabindex', '0');
                        $(".nts-fixed-table").focus();
                        if(self.dataList().length > 10) {
-                           $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                           if (/Edge/.test(navigator.userAgent)) {
+                               $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                               $('#J3_1_container .scroll-header').addClass('edge_scroll_header');
+                           } else {
+                               $('#J3_1_container .scroll-header').addClass('ci_scroll_header');
+                               $('#J3_1_container .scroll-header').addClass('ci_scroll_header');
+                           }
+
                        }
                    }, 500);
 

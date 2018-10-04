@@ -33,7 +33,13 @@ module nts.uk.pr.view.qmm008.e {
                        $(".flex").attr('tabindex', '0');
                        $(".flex").focus();
                        if(self.dataList().length > 8) {
-                           $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+                           if (/Edge/.test(navigator.userAgent)) {
+                               $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+                               $('#E3_1_container .scroll-header').addClass('edge_scroll_header');
+                           } else {
+                               $('#E3_1_container .scroll-header').addClass('ci_scroll_header');
+                               $('#E3_1_container .scroll-header').addClass('ci_scroll_header');
+                           }
 
                        }
                    }, 500);
