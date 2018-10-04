@@ -150,7 +150,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	
 	public MonthlyRecordWorkCommand withData(MonthlyRecordWorkDto data){
 		this.setRecords(data);
-		if (this.dayOff.getData().getDatePeriod() == null) this.dayOff.getData().setDatePeriod(this.annualLeave.getData().getDatePeriod());
+		if (this.dayOff.getData().getDatePeriod() == null) this.dayOff.getData().setDatePeriod(this.attendanceTime.getData().getDatePeriod());
 		return this;
 	}
 	
