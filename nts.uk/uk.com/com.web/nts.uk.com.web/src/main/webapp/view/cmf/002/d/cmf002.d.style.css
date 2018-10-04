@@ -97,8 +97,45 @@
 	width: 360px !important;
 }
 
-.nts-help-button-image{
-	margin-top: 20px!important;
-    top: 24px!important;
-    left: -251px!important;
+#fixed-table tbody tr .nts-help-button-image {
+	margin-top: 20px !important;
+	top: 24px !important;
+	left: -251px !important;
+}
+
+#fixed-table tbody tr:nth-last-child(1) .nts-help-button-image,
+	#fixed-table tbody tr:nth-last-child(2) .nts-help-button-image {
+	margin-top: -20px !important;
+	top: -72px !important;
+	left: -251px !important;
+}
+
+#fixed-table tbody tr:nth-last-child(1) .nts-help-button-image .caret-helpbutton.caret-top,
+	#fixed-table tbody tr:nth-last-child(2) .nts-help-button-image .caret-helpbutton.caret-top
+	{
+	bottom: 0;
+	top: auto;
+}
+
+#fixed-table tbody tr:nth-last-child(1) .nts-help-button-image .caret-helpbutton.caret-top:before,
+	#fixed-table tbody tr:nth-last-child(2) .nts-help-button-image .caret-helpbutton.caret-top:before
+	{
+	left: 0.5em;
+	border-bottom: none;
+	border-top: 2.1em solid;
+	border-right: 1.1em solid transparent;
+	border-left: 1.1em solid transparent;
+	margin-left: -0.1em;
+	margin-bottom: -0.1em;
+	margin-top: auto;
+}
+
+#fixed-table tbody tr:nth-last-child(1) .nts-help-button-image .caret-helpbutton.caret-top:after,
+	#fixed-table tbody tr:nth-last-child(2) .nts-help-button-image .caret-helpbutton.caret-top:after
+	{
+	left: 0.5em;
+	border-bottom: none;
+	border-top: 2em solid;
+	border-right: 1em solid transparent;
+	border-left: 1em solid transparent;
 }
