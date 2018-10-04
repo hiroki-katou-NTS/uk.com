@@ -1202,15 +1202,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 let cellDatas = row.cellDatas;
                                 let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
                                 _.forEach(cellDatas, cell => {
-                                    let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
-                                    let editedCell2 = _.find(self.cellStates(), (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
-                                    if ((editedCell == null
-                                        && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target"))))
-                                        || updateAll) {
-                                        let itemId = self.getItemIdFromColumnKey(cell.columnKey);
-                                        let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
-                                        if (itemValue)
-                                            $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                    if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625') {
+                                        let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
+                                        let editedCell2 = _.find(self.cellStates(), (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
+                                        if ((editedCell == null
+                                            && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target"))))
+                                            || updateAll) {
+                                            let itemId = self.getItemIdFromColumnKey(cell.columnKey);
+                                            let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
+                                            if (itemValue)
+                                                $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                        }
                                     }
                                 });
                             });
