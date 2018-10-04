@@ -258,7 +258,6 @@ module kcp.share.list {
         searchBoxId: string;
         disableSelection : boolean;
         componentOption: ComponentOption;
-        triggerReload: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -275,7 +274,6 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
-            this.triggerReload = false;
             disableSelection = false;
         }
 
@@ -285,15 +283,6 @@ module kcp.share.list {
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var self = this;
-
-            // reload ntsGrid if has been loaded on parent screen
-            if ($input.children().length != 0) {
-                self.triggerReload = true;
-                data.selectedCode.valueHasMutated();
-                // Minh_Anh fix performance
-                dfd.resolve();
-                return dfd.promise();
-            }
 
             $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
 
@@ -477,10 +466,8 @@ module kcp.share.list {
             });
 
             self.selectedCodes.subscribe(() => {
-                $('#' + self.componentGridId).ntsGridList('setSelected', self.selectedCodes());
-                if (self.triggerReload) {
-                    self.reload();
-                    self.triggerReload = false;
+                if ($('#' + self.componentGridId).length > 0) {
+                    $('#' + self.componentGridId).ntsGridList('setSelected', self.selectedCodes());
                 }
             });
 
