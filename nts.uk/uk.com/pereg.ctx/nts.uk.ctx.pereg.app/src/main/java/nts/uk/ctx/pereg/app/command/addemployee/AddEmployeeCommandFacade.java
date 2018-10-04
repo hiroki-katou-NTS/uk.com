@@ -68,6 +68,7 @@ public class AddEmployeeCommandFacade {
 			return command.getInputs();
 		}
 
+		// trường hợp phi vào trường hợp init và copy
 		List<SettingItemDto> dataServer = this.layoutFinder.getSetItems(command , true);
 
 		List<String> categoryCodeList = commandFacade.getAddCategoryCodeList();
