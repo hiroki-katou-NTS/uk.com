@@ -422,7 +422,7 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
                 //$('.ui-dialog').attr('style','top: 0px!important');
             }else {
                 self.isAdvanceSetting(false);
-                windowSize.$dialog.height(410);
+                windowSize.$dialog.height(420);
                 //element.style.display = "none";
             }
         }

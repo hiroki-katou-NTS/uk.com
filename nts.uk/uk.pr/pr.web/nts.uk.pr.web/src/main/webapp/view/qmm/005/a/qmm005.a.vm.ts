@@ -288,7 +288,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     if (codeList.length > 0) {
                         commandData.empTiedProYearCommand.push({employmentCodes: codeList});
                     } else {
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_217", message: nts.uk.resource.getText("MsgQ_217",[i+1])});
+                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_217", message: nts.uk.resource.getMessage("MsgQ_217",[i+1])});
                       //  nts.uk.resource.getText("MsgQ_217",[i+1]);
                         return;
                     }
