@@ -1,15 +1,22 @@
 package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+
+import java.util.List;
 
 /**
  * 給与会社単価履歴
  */
 
+@AllArgsConstructor
 @Getter
-public class PayrollUnitPriceHistory extends AggregateRoot {
+public class PayrollUnitPriceHistory extends AggregateRoot implements ContinuousResidentHistory<YearMonthHistoryItem, YearMonthPeriod,YearMonth> {
     /**
      * コード
      */
@@ -23,11 +30,15 @@ public class PayrollUnitPriceHistory extends AggregateRoot {
     /**
      * 履歴
      */
-    private YearMonthHistoryItem history;
+    private List<YearMonthHistoryItem> history;
 
-    public PayrollUnitPriceHistory(String code, String cId,YearMonthHistoryItem history){
-        this.code = new CompanyUnitPriceCode(code);
-        this.cId = cId;
-        this.history = history;
+
+    @Override
+    public List<YearMonthHistoryItem> items() {
+        return this.history;
+    }
+
+    public void exCorrectToRemove(YearMonthHistoryItem latest) {
+        latest.changeSpan(latest.span().newSpanWithMaxEnd());
     }
 }

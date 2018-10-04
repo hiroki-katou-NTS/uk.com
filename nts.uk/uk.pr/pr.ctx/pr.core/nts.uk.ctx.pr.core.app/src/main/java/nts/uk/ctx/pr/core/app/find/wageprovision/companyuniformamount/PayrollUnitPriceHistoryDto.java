@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
 * 給与会社単価履歴: DTO
 */
@@ -36,11 +39,14 @@ public class PayrollUnitPriceHistoryDto
     * 終了年月
     */
     private int endYearMonth;
-    
-    
-    public static PayrollUnitPriceHistoryDto fromDomain(PayrollUnitPriceHistory domain)
+
+
+    public static List<PayrollUnitPriceHistoryDto> fromDomain(PayrollUnitPriceHistory domain)
     {
-        return new PayrollUnitPriceHistoryDto(domain.getCId(), domain.getHistory().identifier(), domain.getCode().v(), domain.getHistory().start().v(), domain.getHistory().end().v());
+        List<PayrollUnitPriceHistoryDto> occAccIsHisDtoList = domain.getHistory().stream().map(item -> {
+            return new PayrollUnitPriceHistoryDto(domain.getCId(),item.identifier(),domain.getCode().v(), Integer.parseInt(item.start().toString()), Integer.parseInt(item.end().toString()));
+        }).collect(Collectors.toList());
+        return occAccIsHisDtoList;
     }
     
 }

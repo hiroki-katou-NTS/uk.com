@@ -24,6 +24,6 @@ public class UpdatePayrollUnitPriceHistoryCommandHandler extends CommandHandler<
     @Override
     protected void handle(CommandHandlerContext<PayrollUnitPriceHistoryCommand> context) {
         PayrollUnitPriceHistoryCommand command = context.getCommand();
-        repository.update(new PayrollUnitPriceHistory(command.getCode(),command.getCId(),new YearMonthHistoryItem(command.getHisId() , new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth())))));
+//        repository.update(new PayrollUnitPriceHistory(command.getCode().,command.getCId(),new YearMonthHistoryItem(command.getHisId() , new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth())))));
     }
 }

@@ -2,11 +2,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
     import dialog  = nts.uk.ui.dialog;
-    import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import model = qmm007.share.model;
-    import server = nts.uk.pr.view.qmm007.c;
     export class ScreenModel {
         startYearMonth:         KnockoutObservable<number> = ko.observable();
         endYearMonth:           KnockoutObservable<number> = ko.observable();
@@ -16,6 +14,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         insurrance:             KnockoutObservable<number> = ko.observable();
         hisId:                  KnockoutObservable<string> = ko.observable('');
+        // validate disable item
         isHisFirst:              KnockoutObservable<boolean> = ko.observable(true);
         insuranceName:          KnockoutObservable<string> = ko.observable('');
         mPayrollUnitPriceHis : KnockoutObservableArray<PayrollUnitPriceHistoryDto> = ko.observableArray(null);
@@ -27,20 +26,20 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
 
         }
         submit(){
-            // if(this.methodEditing() == EDIT_METHOD.UPDATE){
+            // if (this.methodEditing() == EDIT_METHOD.UPDATE) {
             //     service.updatePayrollUnitPriceHis(hisId).done((data) => {
             //         console.log(data);
-            //     }).fail(function(res: any) {
+            //     }).fail(function (res: any) {
             //         if (res)
             //             dialog.alertError(res);
             //     }).always(() => {
             //         block.clear();
             //     });
             // }
-            // else{
+            // else {
             //     service.deletePayrollUnitPriceHis(hisId).done((data) => {
             //         console.log(data);
-            //     }).fail(function(res: any) {
+            //     }).fail(function (res: any) {
             //         if (res)
             //             dialog.alertError(res);
             //     }).always(() => {
@@ -54,19 +53,27 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             let to = getText('QMM011_9');
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(999912));
 
-            // // start
-            // let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
-            // if(params){
-            //     self.isHisFirst(params.isHisFirst);
-            //     self.getPayrollUnitPriceHis(params.hisId);
-            // }
-            self.getPayrollUnitPriceHis("0000000101");
+            // start
+            let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
+            if (params) {
+                self.isHisFirst(params.isHisFirst);
+                self.getPayrollUnitPriceHis(params.hisId,params.code);
+            }
+            self.getPayrollUnitPriceHis("0000000101",'1');
         }
 
-        getPayrollUnitPriceHis(hisId :string ) {
+        getPayrollUnitPriceHis(hisId: string, code: string) {
             let self = this;
-            service.getPayUnitPriceHist(hisId).done((data:PayrollUnitPriceHistoryDto) => {
+            let data: any = {
+                cId: '',
+                code: code,
+                hisId: hisId
+            }
+            service.getPayrollUnitPriceHis(new PayrollUnitPriceHisKey('',code,hisId)).done((data: PayrollUnitPriceHistoryDto) => {
                self.mPayrollUnitPriceHis(ko.observableArray(data));
+            }).fail(function (res: any) {
+                if (res)
+                    dialog.alertError(res);
             });
 
         }
@@ -160,6 +167,17 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         code :string;
         startYearMonth:number
 
+    }
+
+    class PayrollUnitPriceHisKey {
+        cId: string;
+        code: string;
+        hisId: string;
+        constructor(cId:string,hisId:string,code:string){
+            this.cId=cId;
+            this.code=code;
+            this.hisId=hisId;
+        }
     }
 
 
