@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
@@ -66,9 +67,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -257,6 +258,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	@Inject
 	private UpdateAllDomainMonthService updateAllDomainMonthService;
+	
+	@Inject
+	private EmployeeMonthlyPerErrorRepository employeeMonthlyPerErrorRepository;
 
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
@@ -410,6 +414,13 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		long time = System.currentTimeMillis();
 		registerNotCalcDomain(commandNew, isUpdate);
 		updateDomainAfterCalc(domainDailyNew, null);
+		
+		lstMonthDomain.forEach(x ->{
+			if (!x.getEmployeeMonthlyPerErrorList().isEmpty()) {
+				val error = x.getEmployeeMonthlyPerErrorList().get(0);
+				employeeMonthlyPerErrorRepository.removeAll(error.getEmployeeID(), error.getYearMonth(), error.getClosureId(), error.getClosureDate());
+			}
+		});
 		updateAllDomainMonthService.merge(lstMonthDomain);
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
@@ -451,6 +462,14 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if (mode == 0 && month.getNeedCallCalc()) {
 			List<IntegrationOfMonthly> lstMonthDomain = updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew,
 					month == null ? Optional.empty() : month.getDomainMonth(), month);
+			
+			lstMonthDomain.forEach(x -> {
+				if (!x.getEmployeeMonthlyPerErrorList().isEmpty()) {
+					val error = x.getEmployeeMonthlyPerErrorList().get(0);
+					employeeMonthlyPerErrorRepository.removeAll(error.getEmployeeID(), error.getYearMonth(),
+							error.getClosureId(), error.getClosureDate());
+				}
+			});
 			updateAllDomainMonthService.merge(lstMonthDomain);
 		}
 

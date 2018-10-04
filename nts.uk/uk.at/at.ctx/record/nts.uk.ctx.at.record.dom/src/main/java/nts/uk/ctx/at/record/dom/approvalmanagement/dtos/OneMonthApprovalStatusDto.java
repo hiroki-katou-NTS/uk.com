@@ -27,4 +27,6 @@ public class OneMonthApprovalStatusDto {
 
 	List<ApprovalEmployeeDto> lstEmployee;
 	
+	String messageID;
+	
 }

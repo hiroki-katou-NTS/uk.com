@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 
 public interface OvertimeService {
 	/**
@@ -57,4 +58,13 @@ public interface OvertimeService {
 	 * @return
 	 */
 	public Integer getTime36Detail(AppOvertimeDetail appOvertimeDetail);
+	
+	/**
+	 * 休憩時間帯を取得する
+	 * @param companyID
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @return
+	 */
+	public BreakTimeZoneSharedOutPut getBreakTimes(String companyID, String workTypeCode, String workTimeCode);
 }

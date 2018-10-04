@@ -71,7 +71,7 @@ module nts.uk.at.view.kmk002.c {
 
                 // create request object
                 let request = <AttdItemLinkRequest>{};
-                request.anyItemNos = param.selectableOptItemNos;
+                request.anyItemNos = param.excludedOptItemNos;
                 request.formulaAtr = param.formulaAtr;
                 request.performanceAtr = param.performanceAtr;
 

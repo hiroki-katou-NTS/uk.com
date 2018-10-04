@@ -746,10 +746,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred();
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            $("#dpGrid").mGrid("updateCell", rowId, item, value);
+            $("#dpGrid").mGrid("updateCell", rowId, item, value, false, true);
             self.inputProcess(rowId, item, value).done(value => {
                 _.each(value.cellEdits, itemResult => {
-                    $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
+                    $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true, true);
                 })
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -1210,7 +1210,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                         let itemId = self.getItemIdFromColumnKey(cell.columnKey);
                                         let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
                                         if (itemValue)
-                                            $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value);
+                                            $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
                                     }
                                 });
                             });
@@ -1356,7 +1356,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
                 _.forEach(dataSourceRow, (valueUpate) => {
                     _.each(valueUpate, (value, key) => {
-                        $("#dpGrid").mGrid("updateCell", valueUpate.id, key, value, true)
+                        $("#dpGrid").mGrid("updateCell", valueUpate.id, key, value, true, true)
                     });
                 })
                 
@@ -2220,7 +2220,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             service.lock(param).done((data) => {
                 let dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
                 _.forEach(dataSourceRow, (valueUpdate) => {
-                    $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true)
+                    $("#dpGrid").mGrid("updateCell", valueUpdate.id, "state", valueUpdate.state, true, true)
                 })
                 setTimeout(() => {
                     let rowIdsTemp = _.uniqBy(data.lstCellState, function(e) {
@@ -3407,8 +3407,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (valueError != undefined) {
                     dfd.resolve({ id: rowId, item: columnKey, value: value })
                 } else {
-                    nts.uk.ui.block.invisible();
+                    //nts.uk.ui.block.invisible();
                     nts.uk.ui.block.grayout();
+                    let e = document.createEvent("HTMLEvents");
+                    e.initEvent("mouseup", false, true);
+                    $("#dpGrid")[0].dispatchEvent(e);
                     
                     let dataTemp = _.find(__viewContext.vm.lstDataSourceLoad, (item: any) => {
                         return item.id == rowId;
@@ -3448,7 +3451,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     service.calcTime(param).done((value) => {
                         //__viewContext.vm.lstDomainEdit = value.dailyEdits;
                         _.each(value.cellEdits, itemResult => {
-                            $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
+                            $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true, true);
                         })
                         nts.uk.ui.block.clear();
                         //dfd.resolve(value.cellEdits);
@@ -3990,7 +3993,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 __viewContext.vm.inputProcess(rowId, "Code" + itemId, code).done(value => {
                     _.each(value.cellEdits, itemResult => {
-                        $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true);
+                        $("#dpGrid").mGrid("updateCell", itemResult.id, itemResult.item, itemResult.value, true, true);
                     })
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -4405,9 +4408,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataAgreement(data: any): void {
             this.showAgreement(data.showAgreement);
             if (!data.showAgreement) return;
-            this.agreementTime(getText("KDW003_74", [data.agreementTime36, data.maxTime]));
+            this.agreementTime(getText("KDW003_74", [data.agreementTime36 == null ? "0" : data.agreementTime36, data.maxTime == null ? "0" : data.maxTime]));
             this.cssAgree = data.cssAgree;
-            this.agreementExcess(getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
+            this.agreementExcess(getText("KDW003_76", [data.excessFrequency == null ? "" : data.excessFrequency, data.maxNumber == null ? "" : data.maxNumber]));
             this.cssFrequency = data.cssFrequency;
 
             this.processState(data.cssAgree, data.cssFrequency);

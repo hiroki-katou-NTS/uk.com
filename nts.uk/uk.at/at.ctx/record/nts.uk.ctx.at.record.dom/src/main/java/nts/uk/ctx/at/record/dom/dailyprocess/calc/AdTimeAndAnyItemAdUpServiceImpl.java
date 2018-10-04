@@ -91,11 +91,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			});
 			//任意項目更新
 			d.getAnyItemValue().ifPresent(ai -> {
-				if(anyItemValueOfDailyRepo.find(ai.getEmployeeId(), ai.getYmd()).isPresent()){
-					anyItemValueOfDailyRepo.update(ai);
-				} else {
-					anyItemValueOfDailyRepo.add(ai);
-				}
+				anyItemValueOfDailyRepo.persistAndUpdate(ai);
 			});
 		});
 	}
