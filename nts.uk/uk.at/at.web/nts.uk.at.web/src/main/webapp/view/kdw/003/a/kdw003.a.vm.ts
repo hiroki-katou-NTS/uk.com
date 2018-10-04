@@ -4408,9 +4408,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         mapDataAgreement(data: any): void {
             this.showAgreement(data.showAgreement);
             if (!data.showAgreement) return;
-            this.agreementTime(getText("KDW003_74", [data.agreementTime36, data.maxTime]));
+            this.agreementTime(getText("KDW003_74", [data.agreementTime36 == null ? "0" : data.agreementTime36, data.maxTime == null ? "0" : data.maxTime]));
             this.cssAgree = data.cssAgree;
-            this.agreementExcess(getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
+            this.agreementExcess(getText("KDW003_76", [data.excessFrequency == null ? "" : data.excessFrequency, data.maxNumber == null ? "" : data.maxNumber]));
             this.cssFrequency = data.cssFrequency;
 
             this.processState(data.cssAgree, data.cssFrequency);
