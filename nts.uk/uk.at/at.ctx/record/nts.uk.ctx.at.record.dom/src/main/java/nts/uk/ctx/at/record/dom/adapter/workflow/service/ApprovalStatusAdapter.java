@@ -119,6 +119,15 @@ public interface ApprovalStatusAdapter {
 	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDateNew(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType);
 	
 	/**
+	 * RequestList 532
+	 * [No.532](中間データ版)承認対象者と期間から承認状況を取得する（月別）
+	 * @param employeeID
+	 * @param period
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpImport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period); 
+	
+	/**
 	 * RequestList 533
 	 * [No.533](中間データ版)承認対象者リストと日付リストから承認状況を取得する（月別）
 	 * @param empPerformMonthParamLst
@@ -155,5 +164,4 @@ public interface ApprovalStatusAdapter {
 	 * @return
 	 */
 	public boolean cancelMonth(String approverID, List<EmpPerformMonthParamImport> empPerformMonthParamLst);
-	
 }
