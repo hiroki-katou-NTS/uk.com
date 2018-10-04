@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.CompanyUnitPriceCode;
 import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -53,11 +54,9 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
         return payUnitPriceHisPk;
     }
 
-    public PayrollUnitPriceHistory toDomain() {
-        return new PayrollUnitPriceHistory(this.payUnitPriceHisPk.code,this.payUnitPriceHisPk.cid, new YearMonthHistoryItem(this.payUnitPriceHisPk.hisId , new YearMonthPeriod(new YearMonth(this.startYearMonth), new YearMonth(this.endYearMonth))));
-    }
-    public static QpbmtPayUnitPriceHis toEntity(PayrollUnitPriceHistory domain) {
-        return new QpbmtPayUnitPriceHis(new QpbmtPayUnitPriceHisPk(domain.getCId(), domain.getCode().v(),domain.getHistory().identifier()), domain.getHistory().start().v(), domain.getHistory().end().v());
+
+    public static QpbmtPayUnitPriceHis toEntity(YearMonthHistoryItem domain, String cId,String code) {
+        return new QpbmtPayUnitPriceHis(new QpbmtPayUnitPriceHisPk(cId, code,domain.identifier()), domain.start().v(), domain.end().v());
     }
 
 }

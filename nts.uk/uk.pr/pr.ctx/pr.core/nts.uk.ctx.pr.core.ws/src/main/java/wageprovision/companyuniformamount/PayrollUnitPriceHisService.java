@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryFinder;
+import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHisKey;
 
 
 @Path("core/wageprovision/companyuniformamount")
@@ -23,17 +24,23 @@ public class PayrollUnitPriceHisService extends WebService {
     private PayrollUnitPriceHistoryFinder payrollUnitPriceHistoryFinder;
 
 
-    @POST
-    @Path("getPayrollUnitPriceHis/{hisId}")
-    public PayrollUnitPriceHistoryDto getPayrollUnitPriceHis(@PathParam("hisId") String hisId) {
-        return payrollUnitPriceHistoryFinder.getPayrollUnitPriceHis(hisId);
-    }
 
     @POST
-    @Path("getPayUnitPriceHist/{hisId}")
-    public PayrollUnitPriceHistoryDto getPayUnitPriceHist(@PathParam("hisId") String hisId) {
-        return payrollUnitPriceHistoryFinder.getPayrollUnitPriceHis(hisId);
+    @Path("getPayrollUnitPriceHis")
+    public PayrollUnitPriceHistoryDto getPayrollUnitPriceHis(PayrollUnitPriceHisKey mPayrollUnitPriceHisKey) {
+        return payrollUnitPriceHistoryFinder.getPayrollUnitPriceHis(mPayrollUnitPriceHisKey.getHisId(),mPayrollUnitPriceHisKey.getCode());
     }
+    @POST
+    @Path("updatePayrollUnitPriceHis/{hisId}")
+    public PayrollUnitPriceHistoryDto updatePayrollUnitPriceHis(@PathParam("hisId") String hisId) {
+        return null;
+    }
+    @POST
+    @Path("updatePayrollUnitPriceHis/{hisId}")
+    public PayrollUnitPriceHistoryDto deletePayrollUnitPriceHis(@PathParam("hisId") String hisId) {
+        return null;
+    }
+
 
 
 //

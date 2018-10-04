@@ -19,8 +19,23 @@ public class PayrollUnitPriceHistoryFinder {
     @Inject
     private PayrollUnitPriceHistoryRepository finder;
 
-    public List<PayrollUnitPriceHistoryDto> getAllPayrollUnitPriceHistoryByCidAndCode(String cid, String code){
-        return finder.getAllPayrollUnitPriceHistoryByCidAndCode(cid,code).stream().map(item -> PayrollUnitPriceHistoryDto.fromDomain(item))
-                .collect(Collectors.toList());
+    public List<PayrollUnitPriceHistoryDto> getAllPayrollUnitPriceHistory(){
+//        return finder.getAllPayrollUnitPriceHistory().stream().map(item -> PayrollUnitPriceHistoryDto.fromDomain(item))
+//                .collect(Collectors.toList());
+        return null;
+
     }
+    public PayrollUnitPriceHistoryDto getPayrollUnitPriceHis(String hisId,String code){
+//        String cId = AppContexts.user().companyId();
+//        return PayrollUnitPriceHistoryDto.fromDomain(finder.getPayrollUnitPriceHistoryById(cId,code,hisId).get());
+        return null;
+
+    }
+
+    public List<PayrollUnitPriceHistoryDto> getAllPayrollUnitPriceHistoryByCidAndCode(String cid, String code){
+//        return finder.getPayrollUnitPriceHistoryByCidCode(cid,code).stream().map(item -> PayrollUnitPriceHistoryDto.fromDomain(item))
+//                .collect(Collectors.toList());
+        return null;
+    }
+
 }
