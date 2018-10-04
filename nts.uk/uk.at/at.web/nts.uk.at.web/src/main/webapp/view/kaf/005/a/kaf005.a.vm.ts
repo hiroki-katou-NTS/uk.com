@@ -1164,7 +1164,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             0, data.appOvertimeReference.overTimeInputsRefer[i].frameName +" : ",
                             data.appOvertimeReference.overTimeInputsRefer[i].applicationTime,
                             data.appOvertimeReference.overTimeInputsRefer[i].preAppTime,
-                            data.appOvertimeReference.overTimeInputsRefer[i].applicationTime == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].applicationTime) ,null));
+                            data.appOvertimeReference.overTimeInputsRefer[i].caculationTime == -1 ? null : self.convertIntToTime(data.appOvertimeReference.overTimeInputsRefer[i].caculationTime) ,null));
                             }
                     }
                 }

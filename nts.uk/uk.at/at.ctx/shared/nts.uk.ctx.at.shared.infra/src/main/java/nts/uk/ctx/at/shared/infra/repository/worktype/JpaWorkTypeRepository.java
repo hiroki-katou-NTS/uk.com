@@ -54,8 +54,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
-	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
-			+ " AND a.closeAtr = :closeAtr" + " ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
+	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR = "SELECT a FROM KshmtWorkTypeSet a LEFT JOIN KshmtWorkType c"
+			+ " ON a.kshmtWorkTypeSetPK.companyId = c.kshmtWorkTypePK.companyId AND a.kshmtWorkTypeSetPK.workTypeCode = c.kshmtWorkTypePK.workTypeCode"
+			+ " WHERE a.kshmtWorkTypeSetPK.companyId = :companyId AND a.closeAtr = :closeAtr AND c.deprecateAtr = :deprecateAtr" 
+			+ " ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
 
 	private static final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
@@ -371,9 +373,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	@Override
-	public List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr) {
-		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR, KshmtWorkTypeSet.class)
-				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr)
+	public List<WorkTypeSet> findWorkTypeSetCloseAtrDeprecateAtr(String companyId, int closeAtr, int deprecateAtr) {
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr).setParameter("deprecateAtr", deprecateAtr)
 				.getList(x -> toDomainWorkTypeSet(x));
 	}
 

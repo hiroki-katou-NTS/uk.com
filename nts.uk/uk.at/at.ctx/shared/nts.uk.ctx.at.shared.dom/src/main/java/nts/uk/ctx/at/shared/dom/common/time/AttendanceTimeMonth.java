@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.TimeRange;
  * 勤怠月間時間
  * @author shuichi_ishida
  */
-@TimeRange(min = "0:00", max = "9999:59")
+@TimeRange(min = "0:00", max = "999:59")
 public class AttendanceTimeMonth extends TimeDurationPrimitiveValue<AttendanceTimeMonth> {
 
 	/** serialVersionUID */

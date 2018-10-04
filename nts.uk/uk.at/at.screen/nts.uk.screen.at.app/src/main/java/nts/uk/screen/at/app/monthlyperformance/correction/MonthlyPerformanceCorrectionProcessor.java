@@ -715,11 +715,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
+			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			if (rowData == null) continue;
+			
 			// lock check box1 identify
 			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 			}
-			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
+			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) || param.getInitMenuMode() == 1 ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 			
 			// set state approval
@@ -778,7 +781,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 							}
 						}
 					}
-				}else if(param.getInitMenuMode()==2){
+				} else if (param.getInitMenuMode() == 2) {
 					//*8 
 					if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
 						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
@@ -797,8 +800,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			
 			// Setting data for dynamic column
-			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
-			
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream().filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
 				if (null != rowData.getItems()) {
@@ -813,24 +814,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
 							if (item.getValue() != null) {
-								if (Integer.parseInt(item.getValue()) >= 0) {
-									minute = Integer.parseInt(item.getValue());
-								} else {
-									minute = (Integer.parseInt(item.getValue())
-											+ (1 + -Integer.parseInt(item.getValue()) / (24 * 60)) * (24 * 60));
-								}
+								minute = Integer.parseInt(item.getValue());
 							}
-							int hours = minute / 60;
+							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0 && hours == 0)
+							String valueConvert = (minute < 0)
 									? "-" + String.format("%d:%02d", hours, minutes)
 									: String.format("%d:%02d", hours, minutes);
 
 							mpdata.addCellData(
 									new MPCellDataDto(attendanceKey, valueConvert, attendanceAtrAsString, "label"));
-						}
-						mpdata.addCellData(new MPCellDataDto(attendanceKey,
-								item.getValue() != null ? item.getValue() : "", "String", ""));
+						} else
+							mpdata.addCellData(new MPCellDataDto(attendanceKey,
+								item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
 						if (!StringUtil.isNullOrEmpty(lockStatus, true)) {
 							cellStatus.add(STATE_DISABLE);
 						}

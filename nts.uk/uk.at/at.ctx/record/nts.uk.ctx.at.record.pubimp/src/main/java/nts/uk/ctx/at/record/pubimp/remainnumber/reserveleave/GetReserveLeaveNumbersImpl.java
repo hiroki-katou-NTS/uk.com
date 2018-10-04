@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 実装：社員の積立年休の月初残・使用・残数・未消化を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
@@ -73,7 +73,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 				closure.getCompanyId().v(),
 				employeeId,
 				closurePeriod,
-				TempAnnualLeaveMngMode.OTHER,
+				InterimRemainMngMode.OTHER,
 				closurePeriod.end(),
 				false,
 				false,
