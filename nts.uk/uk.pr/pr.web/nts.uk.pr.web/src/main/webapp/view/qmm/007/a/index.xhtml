@@ -44,8 +44,8 @@
                     <div style="float:left">
                         <div id="A2_2" style="width: 350px" data-bind="ntsSearchBox: {label: 'コード・名称', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
 			searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
-                        <button id="A2_4">#{i18n.getText('QMM007_4')}</button>
-                        <button id="A2_5">#{i18n.getText('QMM007_4')}</button>
+                        <button id="A2_4" data-bind="click: openBscreen,enable: $root.errors.isEmpty">>#{i18n.getText('QMM007_4')}</button>
+                        <button id="A2_5" data-bind="click: openCscreen,enable: $root.errors.isEmpty">>#{i18n.getText('QMM007_4')}</button>
                         <table id="treegrid1"
                                data-bind="ntsTreeGridView:{
 				width: 350,

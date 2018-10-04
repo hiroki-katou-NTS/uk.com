@@ -166,10 +166,20 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         }
         openFscreen(){
             let self = this;
-            service.getPayrollUnitPriceHis({});
-            modal("/view/qmm/007/c/index.xhtml").onClosed(function () {
+            service.getAllPayrollUnitPriceByCID();
+        }
 
+        openBscreen(){
+            let self = this;
+            modal("/view/qmm/007/b/index.xhtml").onClosed(function () {
+              });
+        }
+
+        openCscreen(){
+            let self = this;
+            modal("/view/qmm/007/c/index.xhtml").onClosed(function () {
             });
+            
         }
     }
 
