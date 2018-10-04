@@ -51,6 +51,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                 self.getOutItem(data);
                 self.settingCurrentCondition();
+                self.setNewMode(false);
                 block.clear();
             });
             

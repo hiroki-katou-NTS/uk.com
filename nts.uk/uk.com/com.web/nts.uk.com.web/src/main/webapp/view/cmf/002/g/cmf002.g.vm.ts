@@ -42,19 +42,22 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                             self.codeConvertCurrent().convertName(data.convertName);
                             self.codeConvertCurrent().acceptWithoutSetting(data.acceptWithoutSetting);
 
-                            var detail: Array<any> = _.sortBy(data.listCdConvertDetail, ['lineNumber']);
-
+                            let detail: Array<any> = _.sortBy(data.listCdConvertDetail, ['lineNumber']);
+                            let converDetail: Array<CdConvertDetail> = [];
                             for (let i = 0; i < detail.length; i++) {
-                                self.codeConvertCurrent().listCdConvertDetail.push(new CdConvertDetail(detail[i].convertCode, detail[i].lineNumber, detail[i].outputItem, detail[i].systemCode));
+                                converDetail.push(new CdConvertDetail(detail[i].convertCode, detail[i].lineNumber, detail[i].outputItem, detail[i].systemCode));
                             }
-
+                            self.codeConvertCurrent().listCdConvertDetail(converDetail);
                             self.screenMode(model.SCREEN_MODE.UPDATE);
                         }
                     }).fail(function(error) {
                         dialog.alertError(error);
-                    }).always(function() {
-                        block.clear();
+                    }).always(function() {     
+                        block.clear();                   
                     });
+                    _.defer(() => {
+                        nts.uk.ui.errors.clearAll();
+                    })
                 } else {
                     self.btnCreateCodeConvert();
                 }
