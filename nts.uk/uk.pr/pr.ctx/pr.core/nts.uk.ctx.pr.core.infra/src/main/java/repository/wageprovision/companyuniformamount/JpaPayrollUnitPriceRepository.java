@@ -18,11 +18,14 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPrice f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPricePk.code =:code AND  f.payUnitPricePk.cid =:cid ";
+    private static final String SELECT_BY_KEY_STRING_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPricePk.cid =:cid ";
+
 
     @Override
-    public List<PayrollUnitPrice> getAllPayrollUnitPrice(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtPayUnitPrice.class)
-                .getList(item -> item.toDomain());
+    public List<PayrollUnitPrice> getAllPayrollUnitPriceByCID(String cid) {
+        return this.queryProxy().query(SELECT_BY_KEY_STRING_BY_CID, QpbmtPayUnitPrice.class)
+                .setParameter("cid", cid)
+                .getList(item ->item.toDomain());
     }
 
     @Override

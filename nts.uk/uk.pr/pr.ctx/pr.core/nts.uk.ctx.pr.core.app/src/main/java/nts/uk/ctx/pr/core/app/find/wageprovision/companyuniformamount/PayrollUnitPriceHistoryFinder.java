@@ -34,6 +34,10 @@ public class PayrollUnitPriceHistoryFinder
 
     }
 
-
+    public List<PayrollUnitPriceHistoryDto> getAllPayrollUnitPriceHistoryByCidAndCode(String cid, String code){
+//        return finder.getPayrollUnitPriceHistoryByCidCode(cid,code).stream().map(item -> PayrollUnitPriceHistoryDto.fromDomain(item))
+//                .collect(Collectors.toList());
+        return null;
+    }
 
 }

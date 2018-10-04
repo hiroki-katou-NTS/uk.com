@@ -9,7 +9,7 @@ import java.util.List;
 public interface PayrollUnitPriceRepository
 {
 
-    List<PayrollUnitPrice> getAllPayrollUnitPrice();
+    List<PayrollUnitPrice> getAllPayrollUnitPriceByCID(String cid);
 
     Optional<PayrollUnitPrice> getPayrollUnitPriceById(String code, String cid);
 
