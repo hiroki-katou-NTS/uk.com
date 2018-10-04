@@ -345,9 +345,13 @@ public class ErrorAlarmConditionPubExport {
 				break;
 			case DAYS:
 				erAlAtdItemConditionDto.setCompareStartValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
+					/*	new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));*/
+						new BigDecimal( ( Double.valueOf(itemDomain.getCompareRange().getStartValue().toString()) ).intValue()));
+				
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
+						
+					/*	new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));*/
+						new BigDecimal( ( Double.valueOf(itemDomain.getCompareRange().getEndValue().toString()) ).intValue()));
 				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);

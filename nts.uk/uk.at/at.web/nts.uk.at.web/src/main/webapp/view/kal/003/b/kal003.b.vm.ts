@@ -935,11 +935,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.AmountOfMoney, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
-            }else if (typeCheck == 2) {
-                //With type 時刻 - TimeWithDay
-                service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.TimeOfDay, mode).done((lstAtdItem) => {
-                    dfd.resolve(lstAtdItem);
-                });
             }else{
                 dfd.resolve([]);
             }
