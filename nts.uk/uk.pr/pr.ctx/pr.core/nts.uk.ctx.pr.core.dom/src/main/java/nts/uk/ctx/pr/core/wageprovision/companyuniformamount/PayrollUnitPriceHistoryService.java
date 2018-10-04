@@ -40,7 +40,6 @@ public class PayrollUnitPriceHistoryService {
         itemtoBeAdded.add(yearMonthItem);
         this.addPayrollUnitPriceHis(yearMonthItem,cId,code);
         this.updateItemBefore(mPayrollUnitPriceHistory.get(), yearMonthItem, cId,code);
-//        this.addPayrollUnitPriceHis(new PayrollUnitPriceHistory(code,cId,yearMonthItem));
     }
     public void deletePayrollUnitPriceHis(String hisId,String code ){
         String cId = AppContexts.user().companyId();
@@ -59,9 +58,7 @@ public class PayrollUnitPriceHistoryService {
         }
         mPayrollUnitPriceHistoryRepository.update(itemToBeUpdated.get(),cId,code);
     }
-//    private void addPayrollUnitPriceHis(List<OccAccInsurBusiBurdenRatio> domain,String hisId){
-//        occAccIsPrRateRepository.add(domain,hisId);
-//    }
+
 
 
 

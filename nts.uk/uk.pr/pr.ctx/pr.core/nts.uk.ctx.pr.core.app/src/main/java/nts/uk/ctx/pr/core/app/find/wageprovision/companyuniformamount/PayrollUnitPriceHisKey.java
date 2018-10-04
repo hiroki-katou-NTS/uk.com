@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
 import lombok.Data;
 
@@ -7,4 +7,5 @@ public class PayrollUnitPriceHisKey {
     private String cId;
     private String code;
     private String hisId;
+
 }

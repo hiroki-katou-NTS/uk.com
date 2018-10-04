@@ -30,6 +30,8 @@ public class PayrollUnitPriceHistoryCommand
     * 終了年月
     */
     private int endYearMonth;
+
+    private int isMode;
     
 
 }

@@ -5,8 +5,7 @@ module nts.uk.pr.view.qmm007.c {
          */
         var path: any = {
             getPayrollUnitPriceHis: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHis",
-            updatePayrollUnitPriceHis: "core/wageprovision/companyuniformamount/updatePayrollUnitPriceHis/{0}",
-            deletePayrollUnitPriceHis: "core/wageprovision/companyuniformamount/updatePayrollUnitPriceHis/{0}"
+            submitPayrollUnitPriceHis: "core/wageprovision/companyuniformamount/submitPayrollUnitPriceHis"
         };
 
         export function getPayrollUnitPriceHis(data :any): JQueryPromise<any> {
@@ -14,13 +13,10 @@ module nts.uk.pr.view.qmm007.c {
             return nts.uk.request.ajax('pr', _path);
 
         }
-        export function updatePayrollUnitPriceHis(hisId :string): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.updatePayrollUnitPriceHis, hisId);
+        export function submitPayrollUnitPriceHis(data :any): JQueryPromise<any> {
+            let _path = nts.uk.text.format(path.submitPayrollUnitPriceHis, data);
             return nts.uk.request.ajax('pr', _path);
         }
-        export function deletePayrollUnitPriceHis(hisId :string): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.deletePayrollUnitPriceHis, hisId);
-            return nts.uk.request.ajax('pr', _path);
-        }
+
     }
 }

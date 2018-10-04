@@ -26,26 +26,24 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
 
         }
         submit(){
-            // if (this.methodEditing() == EDIT_METHOD.UPDATE) {
-            //     service.updatePayrollUnitPriceHis(hisId).done((data) => {
-            //         console.log(data);
-            //     }).fail(function (res: any) {
-            //         if (res)
-            //             dialog.alertError(res);
-            //     }).always(() => {
-            //         block.clear();
-            //     });
-            // }
-            // else {
-            //     service.deletePayrollUnitPriceHis(hisId).done((data) => {
-            //         console.log(data);
-            //     }).fail(function (res: any) {
-            //         if (res)
-            //             dialog.alertError(res);
-            //     }).always(() => {
-            //         block.clear();
-            //     });
-            // }
+            let self = this;
+            let data: any = {
+                cId: '',
+                hisId: self.mPayrollUnitPriceHis.hisId(),
+                code: self.mPayrollUnitPriceHis.code(),
+                startYearMonth: self.mPayrollUnitPriceHis.startYearMonth(),
+                endYearMonth: self.mPayrollUnitPriceHis.endYearMonth(),
+                isMode:this.methodEditing()
+            }
+            service.submitPayrollUnitPriceHis(data).done((data) => {
+                console.log(data);
+            }).fail(function (res: any) {
+                if (res)
+                    dialog.alertError(res);
+            }).always(() => {
+                block.clear();
+            });
+
         }
 
         innitView(){
@@ -68,8 +66,8 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                 cId: '',
                 code: code,
                 hisId: hisId
-            }
-            service.getPayrollUnitPriceHis(new PayrollUnitPriceHisKey('',code,hisId)).done((data: PayrollUnitPriceHistoryDto) => {
+            };
+            service.getPayrollUnitPriceHis(data).done((data: PayrollUnitPriceHistoryDto) => {
                self.mPayrollUnitPriceHis(ko.observableArray(data));
             }).fail(function (res: any) {
                 if (res)
@@ -178,6 +176,25 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             this.code=code;
             this.hisId=hisId;
         }
+    }
+
+    class PayrollUnitPriceHistoryCommand {
+        cId: string;
+        hisId: string;
+        code: string;
+        startYearMonth: number;
+        endYearMonth: number;
+        isMode: number;
+
+        constructor(cId: string, hisId: string, code: string, startYearMonth: number, endYearMonth: number, isMode: number) {
+            this.cId = cId;
+            this.hisId = hisId;
+            this.code = code;
+            this.startYearMonth = startYearMonth;
+            this.endYearMonth = endYearMonth;
+            this.isMode = isMode;
+        }
+
     }
 
 
