@@ -174,7 +174,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		
 		// 登録・更新を判断　および　キー値設定
 		boolean isNeedPersist = false;
-		KrcdtMonMerge entity = queryProxy().find(key, KrcdtMonMerge.class).orElse(null);
+		KrcdtMonMerge entity = this.getEntityManager().find(KrcdtMonMerge.class, key);
 		if (entity == null){
 			isNeedPersist = true;
 			entity = new KrcdtMonMerge();

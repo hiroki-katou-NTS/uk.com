@@ -86,8 +86,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     startDate: moment(result.startDate).format("YYYY/MM/DD"),
                     endDate: moment(result.endDate).format("YYYY/MM/DD")
                 });
-
+                if(result.lstEmployee != null)
                 self.lstData = self.convertToGridData(result.lstEmployee);
+                else {
+                    nts.uk.ui.dialog.alert({ messageId: result.messageID  });
+                }
                 self.generateColumns();
                 self.loadGrid();
                 self.addClickEventDateHeader();
@@ -208,7 +211,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //画面モード
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     //社員一覧
-                    lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    //fix bug 
+                    //lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    lstEmployee:[employeeId],
                     //エラー参照を起動する
                     errorRefStartAtr: false,
                     // fix bug 101435

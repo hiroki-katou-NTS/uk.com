@@ -33,7 +33,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 	 * @return 年休の集計結果
 	 */
 	Optional<AggrResultOfAnnualLeave> algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<Boolean> noCheckStartDate);
@@ -57,7 +57,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 	 * @return 年休の集計結果
 	 */
 	Optional<AggrResultOfAnnualLeave> algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteList,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,

@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 
 /**
@@ -49,15 +50,17 @@ public class SingleWorkTime extends WorkTimeCondition {
 	}
 
 	@Override
-	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
-		if(workInfo.getScheduleInfo().getWorkTimeCode() != null && 
-				!workInfo.getScheduleInfo().getWorkTimeCode().equals(workInfo.getRecordInfo().getWorkTimeCode())){
-			return true;
-		}
+	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+//		if(workInfo.getScheduleInfo().getWorkTimeCode() != null && 
+//				!workInfo.getScheduleInfo().getWorkTimeCode().equals(workInfo.getRecordInfo().getWorkTimeCode())){
+//			return true;
+//		}
 		if (this.targetWorkTime != null && isUse()) {
-			return this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode());
+			if(this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode())){
+				return WorkCheckResult.ERROR;
+			}
 		}
-		return false;
+		return WorkCheckResult.NOT_ERROR;
 
 	}
 
