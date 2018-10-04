@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         targetMonth: KnockoutObservable<string>;
         processingYear: KnockoutObservable<number>;
         processingYearInput: KnockoutObservable<number>;
-        // processingYearNative: number;
+        processingYearNative: number;
         processingDivisionName: KnockoutObservable<string>;
         settingPaymentList: KnockoutObservableArray<any>;
         processingYearList: KnockoutObservableArray<model.ItemModel>;
@@ -47,10 +47,10 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             self.isNewMode = ko.observable(false);
             self.processingYear = ko.observable(null);
             self.processingYearInput = ko.observable(null);
-            // self.processingYearNative = null;
+            self.processingYearNative = null;
             self.processingYear.subscribe(function (newValue) {
-                // if (newValue != self.processingYearNative && newValue != '') {
-                if (newValue != '') {
+                if (newValue != self.processingYearNative && newValue != '') {
+                // if (newValue != '') {
                     let length = self.processingYearList().length;
                     let checker = false;
                     for (let k = 0; k < length; k++) {
@@ -63,7 +63,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         self.isNewMode(false);
                         console.log(self.isNewMode());
                     }
-                    // self.processingYearNative = newValue;
+                    self.processingYearNative = newValue;
                     self.selectProcessingYear(newValue);
                     self.processingYear(newValue);
                     self.processingYearInput(newValue);
@@ -129,12 +129,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 self.processingYearList(_.orderBy(_.uniqBy(array, 'code'), ['code'], ['desc']));
                 if (array.length > 0) {
                     if (selectItem) {
-                        // self.processingYearNative = parseInt(selectItem);
+                        self.processingYearNative = parseInt(selectItem);
                         self.processingYear(selectItem);
                         self.processingYearInput(selectItem)
                         self.selectProcessingYear(selectItem);
                     } else {
-                        // self.processingYearNative = parseInt(self.processingYearList()[0].code);
+                        self.processingYearNative = parseInt(self.processingYearList()[0].code);
                         self.processingYear(self.processingYearList()[0].code);
                         self.processingYearInput(self.processingYearList()[0].code);
                         self.selectProcessingYear(self.processingYearList()[0].code);
