@@ -234,7 +234,6 @@ module kcp.share.list {
         hasPadding: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
-        isHasButtonSelectAll: boolean;
         gridStyle: GridStyle;
         listType: ListType;
         selectType: SelectType;
@@ -320,8 +319,6 @@ module kcp.share.list {
             // 複数使用区分　＝　単独使用 : show baseDate
             // 複数使用区分　＝　複数使用 : hide baseDate
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isMultipleUse;
-            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
-                 && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
             self.isShowAlreadySet = data.isShowAlreadySet;
             self.isShowWorkPlaceName = data.isShowWorkPlaceName;
@@ -452,13 +449,6 @@ module kcp.share.list {
                 // load ntsGrid & searchbox component
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
                 $('#' + self.componentGridId).ntsGridList(options);
-
-                // fix searchbox width
-                if (self.isHasButtonSelectAll) {
-                    const searchBoxAreaWidth = $('#com-kcp-searchbox').width();
-                    const searchBoxInputWidth = searchBoxAreaWidth - 260;
-                    $('#' + self.searchBoxId + ' input.ntsSearchBox').width(searchBoxInputWidth)
-                }
 
                 // setup event
                 self.initEvent();
@@ -875,10 +865,9 @@ module kcp.share.list {
             }
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
             var multiSelectColSize = data.isMultiSelect ? 55 : 0;
-            var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
             var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
-            var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
+            var minTotalSize = 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
             var optionalColumnSize = 0;
@@ -906,6 +895,7 @@ module kcp.share.list {
                 alreadySetColumnSize: alreadySetColumnSize,
                 optionalColumnSize: optionalColumnSize
             };
+            
             if (data.maxWidth && data.maxWidth <= 350) {
                 data.maxWidth = 350;
             }
@@ -1141,14 +1131,9 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
             </div>
         <!-- /ko -->
         <!-- End of Upgrade -->
-        <div id="com-kcp-searchbox" style="width: 100%">
-        <div data-bind="attr: {id: searchBoxId}" style="display: inline-block"></div>
-        <!-- ko if: isHasButtonSelectAll -->
-            <button
-                data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll"
-                style="margin-left: 4px; display: inline-block">`+ListComponentTextResource.KCP004_7+`</button>
-        <!-- /ko -->
-        </div>
+
+        <div data-bind=" attr: {id: searchBoxId}, style:{width: gridStyle.totalComponentSize + 'px'}" style="display: inline-block"></div>
+
         <table id="grid-list-all-kcp"></table>
     </div>`;
 }
