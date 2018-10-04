@@ -2951,7 +2951,15 @@ module nts.uk.ui.mgrid {
                 let idx = _.findIndex(_dataSource, r => r[_pk] === id);
                 if (_.isNil(idx)) return;
                 let $cell = lch.cellAt(_$grid[0], idx, key);
-                if (_.isNil($cell) || (!ackDis && $cell.classList.contains(color.Disable))) return idx;
+                if (_.isNil($cell)) {
+                    if (dkn.controlType[key] === dkn.TEXTBOX) {
+                        let col = _columnsMap[key];
+                        if (!col || col.length === 0) return;
+                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, su.formatSave(col[0], val), reset);
+                    } else su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                    return idx;
+                }
+                if ((!ackDis && $cell.classList.contains(color.Disable))) return idx;
                 if (dkn.controlType[key] === dkn.TEXTBOX) {
                     let col = _columnsMap[key];
                     if (!col || col.length === 0) return;
@@ -3223,6 +3231,7 @@ module nts.uk.ui.mgrid {
                 if (!$tCell || !selector.is($tCell, "." + v.CELL_CLS)
                     || $tCell.classList.contains(color.Disable)
                     || $tCell.classList.contains(dkn.LABEL_CLS)) return;
+                
                 let coord = ti.getCellCoord($tCell);
                 let control = dkn.controlType[coord.columnKey];
                 let cEditor = _mEditor;
@@ -3558,11 +3567,7 @@ module nts.uk.ui.mgrid {
             
             let origDs = _mafollicle[_currentPage].origDs;
             if (!origDs) return;
-            let column = _columnsMap[coord.columnKey];
-            if (!column) return;
-            if (_.toLower(column[0].dataType) === "number") {
-                cellValue = parseFloat(cellValue);
-            }
+           
             if (reset) {
                 origDs[coord.rowIdx][coord.columnKey] = cellValue;
             }
@@ -3668,7 +3673,6 @@ module nts.uk.ui.mgrid {
                 }
             };
             
-            res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
             let some = function(arr) {
                 let exist = false;
                 _.forEach(arr, c => {
@@ -3686,36 +3690,52 @@ module nts.uk.ui.mgrid {
                 return exist;
             };
             
-            _.forEach(_.keys(_mafollicle[SheetDef]), s => {
-                if (s === _currentSheet || !some(_mafollicle[SheetDef][s].columns)) return;
-                let t, formatted, disFormat, maf = _mafollicle[_currentPage][s];
-                if (maf && maf.desc) {
-                    t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
-                    if (!t || !t.c || _.find(_fixedColumns, fc => fc.key === coord.columnKey)) return;
-                    formatted = format(column[0], cellValue);
-                    t.c.textContent = formatted;
-                    disFormat = cellValue === "" ? "" : formatSave(column[0], cellValue);
-                    $.data(t.c, v.DATA, disFormat);
-                    if (t.colour) t.c.classList.add(t.colour);
-                }
-                
-                if (maf && maf.zeroHidden && ti.isZero(origVal)
-                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))
-                    && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
-                    delete maf.dirties[id][coord.columnKey];
-                } else if (maf && cellValue === origVal
-                    && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
-                    delete maf.dirties[id][coord.columnKey];
-                } else if (cellValue !== origVal) {
-                    if (!maf) {
-                        _mafollicle[_currentPage][s] = { dirties: {} };
-                        maf = _mafollicle[_currentPage][s];
+            let osht = function(inoth) {
+                _.forEach(_.keys(_mafollicle[SheetDef]), s => {
+                    if (s === _currentSheet || !some(_mafollicle[SheetDef][s].columns)) return;
+                    let t, formatted, disFormat, maf = _mafollicle[_currentPage][s];
+                    if (maf && maf.desc) {
+                        t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
+                        if (!t || !t.c || _.find(_fixedColumns, fc => fc.key === coord.columnKey)) return;
+                        formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
+                        t.c.textContent = formatted;
+                        disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
+                        $.data(t.c, v.DATA, disFormat);
+                        if (t.colour) t.c.classList.add(t.colour);
                     }
                     
-                    if (!maf.dirties[id]) maf.dirties[id] = {};
-                    maf.dirties[id][coord.columnKey] = cellValue;
-                }
-            });
+                    if (maf && maf.zeroHidden && ti.isZero(origVal)
+                        && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))
+                        && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                        delete maf.dirties[id][coord.columnKey];
+                    } else if (maf && cellValue === origVal
+                        && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
+                        delete maf.dirties[id][coord.columnKey];
+                    } else if (cellValue !== origVal) {
+                        if (!maf) {
+                            _mafollicle[_currentPage][s] = { dirties: {} };
+                            maf = _mafollicle[_currentPage][s];
+                        }
+                        
+                        if (!maf.dirties[id]) maf.dirties[id] = {};
+                        maf.dirties[id][coord.columnKey] = cellValue;
+                    } else if (inoth && cellValue === origVal) {
+                        rData[coord.columnKey] = cellValue;
+                    }
+                });
+            };
+            
+            let column = _columnsMap[coord.columnKey];
+            if (!column) {
+                osht(true);
+                return;
+            }
+            
+            if (_.toLower(column[0].dataType) === "number") {
+                cellValue = parseFloat(cellValue);
+            }
+            res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
+            osht();
             
             return res ? res.colour : null;
         }
@@ -6619,12 +6639,17 @@ module nts.uk.ui.mgrid {
           * Moment to string.
           */
          export function momentToString(total) {
-            let time = total.asHours(),
-                hour = Math.floor(time),
+            let minus = "", time = total.asHours();
+            if (time < 0) {
+                time = Math.abs(time);
+                minus = "-";    
+            }
+             
+            let hour = Math.floor(time),
                 minute = (time - hour) * 60,
                 roundMin = Math.round(minute),
                 minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
-            return hour + ":" + minuteStr;
+            return minus + hour + ":" + minuteStr;
          }
          
          /**
