@@ -13,6 +13,7 @@ import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarm;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetail;
+import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetailPK;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageAlarmRepository{
@@ -59,11 +60,18 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	
 	// convert from domain to entity, this function created for request list No.477
 	private KrcstToppageAlarmDetail toEntityDetail(TopPageAlarmDetail domainDetail){
-		val entityDetail = new KrcstToppageAlarmDetail();
-		entityDetail.errorMessage = domainDetail.getErrorMessage().v();
-		entityDetail.targerEmployee = domainDetail.getTargerEmployee();
-		entityDetail.krcstToppageAlarmDetailPK.executionLogId = domainDetail.getExecutionLogId();
-		entityDetail.krcstToppageAlarmDetailPK.serialNo = domainDetail.getSerialNo().v();
+		KrcstToppageAlarmDetail entityDetail = new KrcstToppageAlarmDetail(
+				new KrcstToppageAlarmDetailPK(
+						domainDetail.getExecutionLogId(),
+						domainDetail.getSerialNo().v()
+						),
+				domainDetail.getErrorMessage().v(),
+				domainDetail.getTargerEmployee()
+				);
+//		entityDetail.errorMessage = domainDetail.getErrorMessage().v();
+//		entityDetail.targerEmployee = domainDetail.getTargerEmployee();
+//		entityDetail.krcstToppageAlarmDetailPK.executionLogId = domainDetail.getExecutionLogId();
+//		entityDetail.krcstToppageAlarmDetailPK.serialNo = domainDetail.getSerialNo().v();
 		return entityDetail;
 	}
 	
