@@ -820,7 +820,7 @@ public class MonthlyCalculation {
 		if (!agreementOperationSetOpt.isPresent()) {
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
-			return Optional.empty();
+			return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, this.errorInfos));
 		}
 		val agreementOperationSet = agreementOperationSetOpt.get();
 		
@@ -833,7 +833,7 @@ public class MonthlyCalculation {
 		if (workingConditionItems.isEmpty()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"006", new ErrMessageContent(TextResource.localize("Msg_430"))));
-			return Optional.empty();
+			return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, this.errorInfos));
 		}
 		
 		// 同じ労働制の履歴を統合
@@ -876,7 +876,7 @@ public class MonthlyCalculation {
 						period, workingConditionItem, weekNo,
 						companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
 				if (calcWork.errorInfos.size() > 0){
-					return Optional.empty();
+					return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, calcWork.errorInfos));
 				}
 				calcWork.year = aggrPeriod.getYear();
 				

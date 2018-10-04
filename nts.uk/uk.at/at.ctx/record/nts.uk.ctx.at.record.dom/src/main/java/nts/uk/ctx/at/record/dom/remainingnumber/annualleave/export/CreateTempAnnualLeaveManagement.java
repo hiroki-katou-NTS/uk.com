@@ -23,7 +23,7 @@ public interface CreateTempAnnualLeaveManagement {
 	 * @return 暫定年休管理データリスト
 	 */
 	List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
-			TempAnnualLeaveMngMode mode);
+			InterimRemainMngMode mode);
 
 	/**
 	 * 暫定年休管理データを作成する　（月別集計用）
@@ -36,7 +36,7 @@ public interface CreateTempAnnualLeaveManagement {
 	 * @return 暫定年休管理データリスト
 	 */
 	List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
-			TempAnnualLeaveMngMode mode,
+			InterimRemainMngMode mode,
 			Optional<MonAggrCompanySettings> companySets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
 
 }

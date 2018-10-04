@@ -165,7 +165,10 @@ public class ActualWorkingTimeOfDaily {
 		/*大塚モードの計算（欠勤控除時間）*/
 		//1日出勤系の場合は処理を呼ばないように作成が必要
 		if(workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME && recordClass.getCalculatable()) {
-			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(recordClass.getWorkTimezoneCommonSet().get().getHolidayCalculation());
+			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(recordClass.getWorkTimezoneCommonSet(),
+																  recordClass.getFixRestTimeSetting(),
+																  recordClass.getFixWoSetting(),
+																  recordClass.getIntegrationOfDaily().getAttendanceLeave());
 		}
 		
 		/*拘束差異時間*/
@@ -330,6 +333,13 @@ public class ActualWorkingTimeOfDaily {
 									recordClass.getIntegrationOfDaily().getAttendanceLeave().get()) 
 							: new AttendanceTime(0);
 			unUseBreakTime = unUseBreakTime.greaterThan(0)?unUseBreakTime:new AttendanceTime(0);
+			//所定内休憩未取得時間の計算
+			AttendanceTime unUseWithinBreakTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().calcUnUseWithinBreakTime(unUseBreakTime,recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime()));
+			//所定外休憩未取得時間
+			AttendanceTime unUseExcessBreakTime = unUseBreakTime.minusMinutes(unUseWithinBreakTime.valueAsMinutes());
+			
+									
+			
 			//日別実績の総労働からとってくる
 			AttendanceTime vacationAddTime = totalWorkingTime.getVacationAddTime();
 			//残業時間
@@ -337,7 +347,7 @@ public class ActualWorkingTimeOfDaily {
 				//休憩未取得時間から残業時間計算
 				totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcOotsukaOverTime(
 						totalWorkingTime.getWithinStatutoryTimeOfDaily().getActualWorkTime(),
-						unUseBreakTime,
+						unUseExcessBreakTime,
 						vacationAddTime,/*休暇加算時間*/
 						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork()),
 						recordClass.getOotsukaFixedWorkSet(),
@@ -355,7 +365,8 @@ public class ActualWorkingTimeOfDaily {
 			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak() != null
 			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod() != null
 			   && !recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
-				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
+				//totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
+				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseExcessBreakTime);
 			}
 			
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう

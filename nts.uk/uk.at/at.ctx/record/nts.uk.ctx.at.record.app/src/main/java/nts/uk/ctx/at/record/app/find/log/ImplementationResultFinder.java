@@ -43,8 +43,8 @@ public class ImplementationResultFinder {
 		// Get distinct list EmployeeID
 		List<String> listEmployeeID = listErrMessageInfo.keySet().stream().collect(Collectors.toList());
 		
-		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 5 ? listEmployeeID.subList(0, 5) : listEmployeeID;
-		List<String> listEmployeeIDToUI = listEmployeeID.size() > 5 ? listEmployeeID.subList(5, listEmployeeID.size()) : new ArrayList<>();
+		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 100 ? listEmployeeID.subList(0, 100) : listEmployeeID;
+		List<String> listEmployeeIDToUI = listEmployeeID.size() > 100 ? listEmployeeID.subList(100, listEmployeeID.size()) : new ArrayList<>();
 		
 		personInfoErrMessageLogResultDto.setListEmployee(listEmployeeIDToUI);
 				
@@ -64,7 +64,7 @@ public class ImplementationResultFinder {
 			result.addAll(results);	
 		}
 		
-		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getPersonCode)).limit(100).collect(Collectors.toList());
+		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getPersonCode)).collect(Collectors.toList());
 		
 		personInfoErrMessageLogResultDto.setListResult(result);
 
@@ -84,8 +84,8 @@ public class ImplementationResultFinder {
 		// Get distinct list EmployeeID
 		List<String> listEmployeeID = screenImplementationResultDto.getEmployeeID();
 		
-		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 5 ? listEmployeeID.subList(0, 5) : listEmployeeID;
-		List<String> listEmployeeIDToUI = listEmployeeID.size() > 5 ? listEmployeeID.subList(5, listEmployeeID.size()) : new ArrayList<>();
+		List<String> listEmployeeIDToSelect = listEmployeeID.size() > 100 ? listEmployeeID.subList(0, 100) : listEmployeeID;
+		List<String> listEmployeeIDToUI = listEmployeeID.size() > 100 ? listEmployeeID.subList(100, listEmployeeID.size()) : new ArrayList<>();
 		
 		personInfoErrMessageLogResultDto.setListEmployee(listEmployeeIDToUI);
 				
@@ -105,7 +105,7 @@ public class ImplementationResultFinder {
 			result.addAll(results);	
 		}
 		
-		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getPersonCode)).limit(100).collect(Collectors.toList());
+		result = result.stream().sorted(Comparator.comparing(PersonInfoErrMessageLogDto::getPersonCode)).collect(Collectors.toList());
 		
 		personInfoErrMessageLogResultDto.setListResult(result);
 
