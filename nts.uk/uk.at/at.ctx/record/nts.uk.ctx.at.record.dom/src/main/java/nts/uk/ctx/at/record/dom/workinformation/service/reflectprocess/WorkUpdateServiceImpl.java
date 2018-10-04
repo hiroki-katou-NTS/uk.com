@@ -40,6 +40,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -63,13 +64,21 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
-			lstItem.add(1);
-			lstItem.add(2);
+			if(!dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
+				lstItem.add(1);	
+			}
+			if(!dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
+				lstItem.add(2);	
+			}			
 			dailyInfo.setScheduleInfo(workInfor);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
-			lstItem.add(28);
-			lstItem.add(29);
+			if(!dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode())){
+				lstItem.add(28);	
+			}
+			if(!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode())) {
+				lstItem.add(29);
+			}
 			dailyInfo.setRecordInfo(workInfor);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		}
@@ -503,32 +512,45 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		if(data.isStart() && optTimeAttendanceStart.isPresent()) {
 			TimeActualStamp timeAttendanceStart= optTimeAttendanceStart.get();
 			Optional<WorkStamp> optStamp = timeAttendanceStart.getStamp();
+			WorkStamp stampTmp = null;
 			if(optStamp.isPresent()) {
 				WorkStamp stamp = optStamp.get();
-				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+				stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
 						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
-				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
-						stampTmp,
-						timeAttendanceStart.getNumberOfReflectionStamp());
-				optTimeAttendanceStart = Optional.of(timeActualStam);
+				
+			} else {
+				stampTmp = new WorkStamp(null,
+						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
+						null,
+						StampSourceInfo.GO_STRAIGHT_APPLICATION);
 			}
+			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
+					stampTmp,
+					timeAttendanceStart.getNumberOfReflectionStamp());
+			optTimeAttendanceStart = Optional.of(timeActualStam);
 		}
 		if(data.isEnd() && optTimeAttendanceEnd.isPresent()) {			
 			TimeActualStamp timeAttendanceEnd = optTimeAttendanceEnd.get();
 			Optional<WorkStamp> optStamp = timeAttendanceEnd.getStamp();
+			WorkStamp stampTmp = null;
 			if(optStamp.isPresent()) {				
 				WorkStamp stamp = optStamp.get();
-				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+				stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
 						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
-				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
-						stampTmp,
-						timeAttendanceEnd.getNumberOfReflectionStamp());
-				optTimeAttendanceEnd = Optional.of(timeActualStam);
+			} else {
+				stampTmp = new WorkStamp(null,
+						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
+						null,
+						StampSourceInfo.GO_STRAIGHT_APPLICATION);
 			}
+			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
+					stampTmp,
+					timeAttendanceEnd.getNumberOfReflectionStamp());
+			optTimeAttendanceEnd = Optional.of(timeActualStam);
 		}
 		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
 				optTimeAttendanceStart.get(),

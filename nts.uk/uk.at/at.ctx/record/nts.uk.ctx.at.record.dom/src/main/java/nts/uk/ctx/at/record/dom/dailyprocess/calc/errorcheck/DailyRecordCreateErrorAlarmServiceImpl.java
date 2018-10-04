@@ -2,10 +2,12 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.ExitStampCheck
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.ExitStampIncorrectOrderCheck;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.GoingOutStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.GoingOutStampOrderChecking;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.HolidayStampCheck;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.LackOfStampingAlgorithm;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.MissingOfTemporaryStampChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.PCLogOnOffIncorrectOrderCheck;
@@ -31,6 +34,8 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStamp
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -78,11 +83,17 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	@Inject
 	private PCLogOnOffIncorrectOrderCheck pCLogOnOffIncorrectOrderCheck;
 	
+	@Inject
+	private HolidayStampCheck holidayStampCheck;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
 	@Override
 	//打刻漏れ
 	public List<EmployeeDailyPerError> lackOfTimeLeavingStamping(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		String empId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd();
 		// 出勤系打刻漏れをチェックする
@@ -107,7 +118,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	public List<EmployeeDailyPerError> lackOfAttendanceGateStamping(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
 		// 入退門の打刻漏れをチェックする
-		returnList.add(exitStampCheck.exitStampCheck(AppContexts.user().companyCode(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily.getAttendanceLeavingGate().orElse(null),
+		returnList.add(exitStampCheck.exitStampCheck(AppContexts.user().companyId(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily.getAttendanceLeavingGate().orElse(null),
 				integrationOfDaily.getWorkInformation()));
 		return returnList;
 	}
@@ -117,7 +128,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	public List<EmployeeDailyPerError> lackOfAttendancePCLogOnStamping(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
 		// PCログオン打刻漏れをチェックする
-		returnList.add(this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(AppContexts.user().companyCode(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily.getPcLogOnInfo().orElse(null),
+		returnList.add(this.pClogOnOffLackOfStamp.pClogOnOffLackOfStamp(AppContexts.user().companyId(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily.getPcLogOnInfo().orElse(null),
 				integrationOfDaily.getWorkInformation()));
 		return returnList;
 	}
@@ -127,7 +138,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	//打刻順序不正
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithm(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		String empId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getAffiliationInfor().getYmd();
 		// 出勤系打刻順序不正をチェックする
@@ -157,11 +168,41 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	public List<EmployeeDailyPerError> doubleStampAlgorithm(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
 		// 出勤系二重打刻をチェックする
-		returnList.add(this.doubleStampAlgorithm.doubleStamp(AppContexts.user().companyCode(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily.getAttendanceLeave().orElse(null)));
+		returnList.add(this.doubleStampAlgorithm.doubleStamp(AppContexts.user().companyId(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily.getAttendanceLeave().orElse(null)));
 		//ここに外出系、休憩系の二重打刻チェックが入る
 		// 臨時系二重打刻をチェックする
-		returnList.add(temporaryDoubleStampChecking.temporaryDoubleStampChecking(AppContexts.user().companyCode(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(),integrationOfDaily.getTempTime().orElse(null)));
+		returnList.add(temporaryDoubleStampChecking.temporaryDoubleStampChecking(AppContexts.user().companyId(), integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(),integrationOfDaily.getTempTime().orElse(null)));
 		
 		return returnList;
+	}
+	
+	@Override
+	//休日打刻
+	public Optional<EmployeeDailyPerError> checkHolidayStamp(IntegrationOfDaily integration) {
+		//休日チェックをするための事前チェック
+		if(integration.getWorkInformation() == null
+		|| integration.getWorkInformation().getRecordInfo() == null
+		|| integration.getWorkInformation().getRecordInfo().getWorkTypeCode() == null)
+			return Optional.empty();
+		
+		val workType = workTypeRepository.findByDeprecated(AppContexts.user().companyId(), integration.getWorkInformation().getRecordInfo().getWorkTypeCode().toString());
+		
+		if( integration.getAttendanceLeave() == null
+		 ||!integration.getAttendanceLeave().isPresent()
+		 ||!workType.isPresent())
+			return Optional.empty();
+		
+		//休日打刻チェック
+		val resultError = holidayStampCheck.holidayStamp(AppContexts.user().companyId(), 
+														 integration.getAffiliationInfor().getEmployeeId(), 
+														 integration.getAffiliationInfor().getYmd(), 
+														 workType.get(), 
+														 integration.getAttendanceLeave().get());
+		if(resultError == null) {
+			return Optional.empty();
+		}
+		else {
+			return Optional.of(resultError);
+		}
 	}
 }

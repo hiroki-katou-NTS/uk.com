@@ -115,7 +115,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					
 				}
 				//期限切れの管理データを期限切れに変更する
-				DataMngOfDeleteExpired expiredData = this.unDigestedDay(grantRemainData.getRemainDatas(), param.getComplileDate().end().addDays(1));
+				DataMngOfDeleteExpired expiredData = this.unDigestedDay(grantRemainData.getRemainDatas(), param.getBaseDate());
 				//「特別休暇の残数」．未消化数 += 未消化数(output)
 				output.getRemainDays().setUnDisgesteDays(output.getRemainDays().getUnDisgesteDays() + expiredData.getUnDigestedDay());
 				//繰越上限日数まで調整する
@@ -451,7 +451,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 			outputData.setAfterUseDays(useDaysBeforeAfter);
 		}
 		//期限切れの管理データを期限切れに変更する
-		DataMngOfDeleteExpired expiredData = this.unDigestedDay(lstGrantData, dateData.end());
+		DataMngOfDeleteExpired expiredData = this.unDigestedDay(lstGrantData, baseDate);
 		//未消化数+=未消化数(output)
 		outputData.setUndigested(outputData.getUndigested() + expiredData.getUnDigestedDay());
 		//繰越上限日数まで調整する
@@ -605,6 +605,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		}
 		//パラメータ．特別休暇の付与明細をループする
 		for (SpecialLeaveGrantDetails grantDetail : inPeriodData.getLstSpeLeaveGrantDetails()) {
+			if(grantDetail.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) {
+				continue;
+			}
 			//ループ中のパラメータ．特別休暇の付与明細．データ区分をチェックする
 			if(grantDetail.getDataAtr() == DataAtr.GRANTED) {
 				//付与前明細．残数 += ループ中のパラメータ．特別休暇の付与明細．明細．残数
