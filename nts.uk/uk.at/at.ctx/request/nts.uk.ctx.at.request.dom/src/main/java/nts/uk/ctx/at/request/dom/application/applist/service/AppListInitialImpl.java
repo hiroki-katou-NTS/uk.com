@@ -708,14 +708,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 					List<OverTimeFrame> time = appOtPost.getLstFrame();
-					OverTimeFrame frameRestTime = this.findRestTime(time);
-					Integer restStart = null;
-					Integer restEnd = null;
-					if(frameRestTime != null){
-						restStart = frameRestTime.getStartTime();
-						restEnd = frameRestTime.getEndTime();
+					List<OverTimeFrame> lstFrameRestTime = this.findRestTime(time);
+					List<Integer> lstRestStart = new ArrayList<>();
+					List<Integer> lstRestEnd = new ArrayList<>();
+					for (OverTimeFrame restTime : lstFrameRestTime) {
+						lstRestStart.add(restTime.getStartTime());
+						lstRestEnd.add(restTime.getEndTime());
 					}
-					TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, restStart, restEnd);
+					TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, lstRestStart, lstRestEnd);
 					if(result.isCheckColor()){
 						if(this.checkExistColor(lstColorTime, appID)){
 							checkColor.setColorAtr(2);
@@ -817,13 +817,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
-	private OverTimeFrame findRestTime(List<OverTimeFrame> lstFrame){
+	private List<OverTimeFrame> findRestTime(List<OverTimeFrame> lstFrame){
+		List<OverTimeFrame> lstRestTime = new ArrayList<>();
 		for (OverTimeFrame frame : lstFrame) {
 			if(frame.getAttendanceType() == 0){//休出時間 - RESTTIME
-				return frame;
+				lstRestTime.add(frame);
 			}
 		}
-		return null;
+		return lstRestTime;
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
@@ -869,10 +870,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 */
 	@Override
-	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time, Integer restStart, Integer restEnd) {
+	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time, 
+			List<Integer> lstRestStart, List<Integer> lstRestEnd) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), restStart, restEnd);
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),
+				record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), lstRestStart, lstRestEnd);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();

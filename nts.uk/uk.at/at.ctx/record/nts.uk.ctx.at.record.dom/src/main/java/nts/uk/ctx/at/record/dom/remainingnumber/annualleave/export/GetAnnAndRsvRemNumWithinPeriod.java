@@ -39,7 +39,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 	 * @return 年休積立年休の集計結果
 	 */
 	AggrResultOfAnnAndRsvLeave algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
@@ -71,7 +71,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 	 * @return 年休積立年休の集計結果
 	 */
 	AggrResultOfAnnAndRsvLeave algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,

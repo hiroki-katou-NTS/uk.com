@@ -15,6 +15,8 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecord;
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecordPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -149,7 +151,25 @@ val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toL
 
 	@Override
 	public void persistAndUpdate(RemarksMonthlyRecord remarksMonthlyRecord) {
-		
+				// キー
+				val key = new KrcdtRemarksMonthlyRecordPK(
+						remarksMonthlyRecord.getEmployeeId(),
+						remarksMonthlyRecord.getClosureId().value,
+						remarksMonthlyRecord.getRemarksNo(),
+						remarksMonthlyRecord.getRemarksYM().v(),
+						remarksMonthlyRecord.getClosureDate().getClosureDay().v());
+				
+				// 登録・更新
+				KrcdtRemarksMonthlyRecord entity = this.getEntityManager().find(KrcdtRemarksMonthlyRecord.class, key);
+				if (entity == null){
+					entity = new KrcdtRemarksMonthlyRecord();
+					entity.setRecordPK(key);
+					entity.toEntityCareRemainData(remarksMonthlyRecord);
+					this.getEntityManager().persist(entity);
+				}
+				else {
+					entity.toEntityCareRemainData(remarksMonthlyRecord);
+				}
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.adapter.createmonthlyapprover.CreateMonthlyApproverAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
@@ -70,6 +71,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	@Inject
 	private TimeOfMonthlyRepository timeOfMonthlyRepo;
 //	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;		// 旧版
+	/** アダプタ：承認状態の作成（月次） */
+	@Inject
+	private CreateMonthlyApproverAdapter createMonthlyApproverAd;
 	/** リポジトリ：週別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeOfWeeklyRepository attendanceTimeWeekRepo;
@@ -288,6 +292,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			if (value.getAttendanceTime().isPresent()){
 				this.timeOfMonthlyRepo.persistAndUpdate(new TimeOfMonthly(
 						value.getAttendanceTime(), value.getAffiliationInfo()));
+				// 月別実績の就業実績確認状態を作成する
+				this.createMonthlyApproverAd.createApprovalStatusMonth(
+						employeeId, datePeriod.end(), yearMonth, closureId.value, closureDate);
 			}
 			if (value.getAttendanceTimeWeeks().size() > 0){
 				for (val attendanceTimeWeek : value.getAttendanceTimeWeeks()){

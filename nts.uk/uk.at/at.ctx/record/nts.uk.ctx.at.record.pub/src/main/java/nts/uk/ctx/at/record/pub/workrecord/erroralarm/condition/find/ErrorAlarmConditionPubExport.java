@@ -345,13 +345,17 @@ public class ErrorAlarmConditionPubExport {
 				break;
 			case DAYS:
 				erAlAtdItemConditionDto.setCompareStartValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
+					/*	new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));*/
+						new BigDecimal( ( Double.valueOf(itemDomain.getCompareRange().getStartValue().toString()) ).intValue()));
+				
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
+						
+					/*	new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));*/
+						new BigDecimal( ( Double.valueOf(itemDomain.getCompareRange().getEndValue().toString()) ).intValue()));
 				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);
-		} else if (itemDomain.getCompareSingleValue() != null) {
+		} else if (itemDomain.getCompareSingleValue() != null && itemDomain.getCompareSingleValue().getValue() !=null ) {
 			if (itemDomain.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
 				switch (itemDomain.getConditionAtr()) {
 				case AMOUNT_VALUE:
@@ -367,12 +371,12 @@ public class ErrorAlarmConditionPubExport {
 							new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case TIMES:
-					erAlAtdItemConditionDto.setCompareStartValue(
+					erAlAtdItemConditionDto.setCompareStartValue(							
 							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case DAYS:
 					erAlAtdItemConditionDto.setCompareStartValue(
-							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
+							new BigDecimal( ( Double.valueOf(itemDomain.getCompareSingleValue().getValue().toString()) ).intValue()));
 					break;
 				}
 			} else {
