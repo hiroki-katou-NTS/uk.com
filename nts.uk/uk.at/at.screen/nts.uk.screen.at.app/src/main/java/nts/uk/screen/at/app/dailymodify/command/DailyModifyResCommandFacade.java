@@ -328,7 +328,7 @@ public class DailyModifyResCommandFacade {
 					if (!hasError) {
 						this.insertAllData.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
 								resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(),
-								resultIU.isUpdate());
+								resultIU.isUpdate(), monthParam);
 						// insert sign
 						insertSign(dataParent.getDataCheckSign());
 						// insert approval

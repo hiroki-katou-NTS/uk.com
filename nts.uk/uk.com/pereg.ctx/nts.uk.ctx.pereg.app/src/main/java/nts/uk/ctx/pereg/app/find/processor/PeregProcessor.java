@@ -200,7 +200,7 @@ public class PeregProcessor {
 		
 		// get Combo-Box List
 		layoutControlComboBox.getComboBoxListForSelectionItems(query.getEmployeeId(), perInfoCtg, classItemList,
-				comboBoxStandardDate);
+				comboBoxStandardDate,null);
 
 		return classItemList;
 	}
