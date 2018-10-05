@@ -261,6 +261,7 @@ module nts.uk.pr.view.qmm005.e.viewmodel {
 
         reflect() {
             var self = this;
+            nts.uk.ui.errors.clearAll();
             if (!self.dailyPaymentDateCheck() &&
                 !self.empExtractionRefDateCheck() &&
                 !self.socialInsuranceMonthCheck() &&

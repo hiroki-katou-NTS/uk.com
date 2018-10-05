@@ -29,6 +29,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         btnText: any;
         isNewMode: KnockoutObservable<boolean>;
         show: KnockoutObservable<boolean>;
+        acceptRegistration: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -45,6 +46,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 }
             });
             self.isNewMode = ko.observable(false);
+            self.acceptRegistration = ko.observable(true);
             self.processingYear = ko.observable(null);
             self.processingYearInput = ko.observable(null);
             self.processingYearNative = null;
@@ -224,10 +226,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 var array = [];
                 service.getValPayDateSet(self.processCateNo).done(function (data) {
                         for (index = 1; index < 13; index++) {
+                            let month = index - data.basicSetting.employeeExtractionReferenceDate.refeMonth;
+                            let employeeExtractionReferenceDate = self.preDateTime(self.passYear(self.processingYearInput(), month, false).year, self.passYear(self.processingYearInput(), month, false).month, data.basicSetting.employeeExtractionReferenceDate.refeDate);
                             let socialInsuranceCollectionMonth =  self.passYear(self.processingYearInput(), index + data.advancedSetting.salaryInsuColMon.monthCollected - SOCIAL_INSU_COLLE_MONTH_INDEX, false);
                             let specificationPrintDate = self.passYear(self.processingYearInput(), index - parseInt(data.advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX,false);
                             let year = parseInt(self.processingYearInput()) + data.advancedSetting.sociInsuStanDate.baseYear - SOCI_INSU_BASE_YEAR_INDEX;
-                            let month = data.advancedSetting.sociInsuStanDate.baseMonth;
+                            month = data.advancedSetting.sociInsuStanDate.baseMonth;
                             if (month == 0 || month == 1) {
                                 month = index + data.advancedSetting.sociInsuStanDate.baseMonth - SOCI_INSU_BASE_MONTH_INDEX;
                             } else {
@@ -251,7 +255,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             let objItem = {
                                 targetMonth: ko.observable(index + '月の設定'),
                                 paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYearInput(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
-                                employeeExtractionReferenceDate: ko.observable(self.preDateTime(self.processingYearInput(), index, data.basicSetting.employeeExtractionReferenceDate.refeDate)),
+                                employeeExtractionReferenceDate: ko.observable(employeeExtractionReferenceDate),
                                 socialInsuranceCollectionMonth: ko.observable(parseInt(socialInsuranceCollectionMonth.year)*100 + parseInt(socialInsuranceCollectionMonth.month)),
                                 specificationPrintDate: ko.observable(parseInt(specificationPrintDate.year)*100 + parseInt(specificationPrintDate.month)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
@@ -422,6 +426,14 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         registration() {
             let self = this;
+            if(!self.acceptRegistration()){
+                return;
+            }
+            self.acceptRegistration(false);
+            setTimeout(function () {
+                self.acceptRegistration(true)
+            },700)
+
             $('.nts-input').trigger("validate");
             if (hasError()) {
                 return;
