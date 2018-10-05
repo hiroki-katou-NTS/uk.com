@@ -136,7 +136,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -189,7 +189,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -300,7 +300,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				listNewBasicSchedule.add(new BasicSchedule(sId, date, workTypeCode, workTimeCode, EnumAdaptor.valueOf(confirmAtr, ConfirmedAtr.class), scheMasterInfo));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return listNewBasicSchedule;
 	}
@@ -380,7 +380,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			listNewBasicSchedule.addAll(this.mapData(mapPairBasicSche));
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return listNewBasicSchedule;
 	}
@@ -738,7 +738,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -755,7 +755,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -775,7 +775,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -796,7 +796,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -875,7 +875,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -901,7 +901,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -919,7 +919,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -948,7 +948,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -970,7 +970,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -998,7 +998,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -1019,7 +1019,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -1045,7 +1045,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -1056,7 +1056,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1075,7 +1075,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1104,7 +1104,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -1138,7 +1138,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 			
 		} else {
@@ -1157,7 +1157,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1196,7 +1196,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}

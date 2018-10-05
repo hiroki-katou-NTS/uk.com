@@ -248,7 +248,7 @@
 #text-flex {
 	left: 400px;
 	position: relative;
-	top: -112px;
+	top: -103px;
 	width: 216px;}
 	
 .italic-text{
@@ -410,7 +410,7 @@ table#employ_view tr{
 	margin-right: 4px
 }
 .nts-datepicker-wrapper .ntsDatepicker {
-    width: 65px;
+    width: 67px;
 }
 .btn_show_list {
     width: auto !important;

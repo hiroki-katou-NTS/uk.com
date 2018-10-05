@@ -295,7 +295,7 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			remainData.ifPresent(y -> {
 				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
 				if(y.getCreatorAtr() == CreateAtr.RECORD) {
-					atr = MngHistDataAtr.CONFIRMED;
+					atr = MngHistDataAtr.RECORD;
 				} else if (y.getCreatorAtr() == CreateAtr.SCHEDULE) {
 					atr = MngHistDataAtr.SCHEDULE;
 				}

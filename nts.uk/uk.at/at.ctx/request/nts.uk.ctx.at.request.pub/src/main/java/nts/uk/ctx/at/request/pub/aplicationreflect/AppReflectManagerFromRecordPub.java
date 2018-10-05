@@ -12,4 +12,13 @@ public interface AppReflectManagerFromRecordPub {
 	 * @return
 	 */
 	ProcessStateReflectExport applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext);
+	
+	/**
+	 * pub 社員の申請を反映
+	 * @param workId
+	 * @param sid
+	 * @param datePeriod
+	 * @return
+	 */
+	ProcessStateReflectExport reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod);
 }

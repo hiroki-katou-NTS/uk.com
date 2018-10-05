@@ -92,7 +92,8 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		Optional<ErrorAlarmCondition> optErAlCondition = 
 				listErrorAlarmCondition.stream().filter(item -> item.getErrorAlarmCheckID().equals(eralCheckId)).findFirst();
         if (!optErAlCondition.isPresent()) {
-        	throw new RuntimeErrorException(new Error(), "ErrorAlarmCondition is invalid!");
+//        	throw new RuntimeErrorException(new Error(), "ErrorAlarmCondition is invalid!");
+        	return null;
         }
       //ドメインモデル「勤怠項目に対する条件」を取得する - Acquire domain model "Condition for attendance item"
         ErrorAlarmCondition errorAlarmCondition = optErAlCondition.get();

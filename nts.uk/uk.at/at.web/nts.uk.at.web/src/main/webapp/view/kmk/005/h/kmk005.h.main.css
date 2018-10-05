@@ -30,3 +30,6 @@ div[class^=screen-h] {
 .screen-h .ntsSearchBox {
 	min-width: 300px;
 }
+#nts-component-tree{
+	padding : 20px !important
+}

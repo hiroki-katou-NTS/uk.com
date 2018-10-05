@@ -46,6 +46,13 @@
                     nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                     nts.uk.shr.com.time.TimeWithDayAttr
                     nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                    nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                 </com:ValidatorScript>
             </ui:define>
 
@@ -68,11 +75,11 @@
                             data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
                         <button
                             data-bind="click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
-                        <button data-bind="visible: false">#{i18n.getText('KDW003_15')}</button>
-                        <!-- showButton().available22 -->
+                        <button data-bind="click : historyModification ,visible: showButton().available22 ">#{i18n.getText('KDW003_15')}</button>
+                        <!--click : historyModification , showButton().available22 -->
                         <button class="danger"
                                 data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
-                        <button data-bind="visible: showButton().available7">#{i18n.getText('KDW003_17')}</button>
+                        <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
                         <!-- visible: showButton().available7 -->
                         <button data-bind="click : proceedUnLock, visible: showLock">#{i18n.getText('KDW003_84')}</button>
                         <button data-bind="click : proceedLock, visible: unLock">#{i18n.getText('KDW003_85')}</button>
@@ -233,7 +240,7 @@
                                 </div>
                             </div>
                             <div class="compact-grid grid-container" id="gid">
-                                <table id="dpGrid"></table>
+                                <div id="dpGrid"></div>
                                 <div id="sample-component"></div>
                             </div>
                             <div style="margin-top: 5px" data-bind="visible: isVisibleMIGrid">

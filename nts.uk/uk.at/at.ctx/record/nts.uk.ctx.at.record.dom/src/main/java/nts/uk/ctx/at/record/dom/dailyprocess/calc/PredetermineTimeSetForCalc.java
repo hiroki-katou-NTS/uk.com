@@ -24,17 +24,29 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class PredetermineTimeSetForCalc {
 	
+	//時間帯(使用区分付き)
 	private final List<TimezoneUse> timeSheets;
 	
+	//午前終了時刻
 	private final TimeWithDayAttr AMEndTime;
 
+	//午後開始時刻
 	private final TimeWithDayAttr PMStartTime;
 	
+	//所定時間
 	private PredetermineTime additionSet;
 	
+	//1日の計算範囲
 	private AttendanceTime oneDayRange;
 	
+	//日付開始時間
 	private TimeWithDayAttr startOneDayTime;
+	
+	//残業を含めた所定時間を設定する
+	private boolean isIncludeOverTimePred = false;
+	
+	//夜勤区分
+	private boolean nightWorkAtr = false;
 
 	/**
 	 * 所定時間帯の時間を更新する
