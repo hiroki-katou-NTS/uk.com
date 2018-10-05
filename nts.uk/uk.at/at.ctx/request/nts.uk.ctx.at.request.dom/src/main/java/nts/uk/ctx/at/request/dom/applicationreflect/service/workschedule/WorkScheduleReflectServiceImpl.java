@@ -29,21 +29,27 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		if(application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {			
 			return ReflectInformationResult.CHECKFALSE;
 		}  else if (application.getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION){
-			isReflect = processScheReflect.goBackDirectlyReflect(reflectParam);
+			return processScheReflect.goBackDirectlyReflect(reflectParam)
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 		} else if(application.getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-			isReflect = processScheReflect.workChangeReflect(reflectParam);
+			return processScheReflect.workChangeReflect(reflectParam)
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 		} else if(application.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-			isReflect = processScheReflect.forleaveReflect(reflectParam);
+			return processScheReflect.forleaveReflect(reflectParam)
+					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 		} else if (application.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
 			/**TODO chua doi ung lan nay
 			/*reflectSchePara.setHolidayWork(reflectParam.getHolidayWork());
 			isReflect = processScheReflect.holidayWorkReflect(reflectSchePara);*/
+			return ReflectInformationResult.CHECKFALSE;
 		} else if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 			if(reflectParam.getAbsenceLeave() != null) {
-				isReflect = processScheReflect.ebsenceLeaveReflect(reflectParam);
+				return processScheReflect.ebsenceLeaveReflect(reflectParam)
+						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} 
 			if(reflectParam.getRecruitment() != null) {
-				isReflect = processScheReflect.recruitmentReflect(reflectParam);
+				return processScheReflect.recruitmentReflect(reflectParam)
+						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			}
 		}
 		return isReflect ? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;

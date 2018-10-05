@@ -342,8 +342,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		
 		OvertimeAppParameter overtimePara = new OvertimeAppParameter(appInfor.getReflectionInformation().getStateReflectionReal(),
 				appInfor.getReflectionInformation().getNotReasonReal().isPresent() ? appInfor.getReflectionInformation().getNotReasonReal().get() : null,
-						appOvertimeInfor.getWorkTypeCode().v(),
-						appOvertimeInfor.getSiftCode().v(),
+						appOvertimeInfor.getWorkTypeCode() == null ? null : appOvertimeInfor.getWorkTypeCode().v(),
+						appOvertimeInfor.getSiftCode() == null ? null : appOvertimeInfor.getSiftCode().v(),
 						appOvertimeInfor.getWorkClockFrom1(),
 						appOvertimeInfor.getWorkClockTo1(),
 						appOvertimeInfor.getWorkClockFrom2(),

@@ -75,6 +75,18 @@ public class AttendanceItemDictionaryForCalc {
 		this.dictionary.put("残業時間9", 256);
 		this.dictionary.put("残業時間10", 261);
 		
+		//残業時間
+		this.dictionary.put("振替残業時間1", 217);
+		this.dictionary.put("振替残業時間2", 222);
+		this.dictionary.put("振替残業時間3", 227);
+		this.dictionary.put("振替残業時間4", 232);
+		this.dictionary.put("振替残業時間5", 237);
+		this.dictionary.put("振替残業時間6", 242);
+		this.dictionary.put("振替残業時間7", 247);
+		this.dictionary.put("振替残業時間8", 252);
+		this.dictionary.put("振替残業時間9", 257);
+		this.dictionary.put("振替残業時間10", 262);
+		
 		//フレックス時間
 		this.dictionary.put("フレックス時間", 556);
 	}
@@ -92,6 +104,18 @@ public class AttendanceItemDictionaryForCalc {
 		this.dictionary.put("休出時間8", 301);
 		this.dictionary.put("休出時間9", 306);
 		this.dictionary.put("休出時間10", 311);
+		
+		//休出の振替時間
+		this.dictionary.put("振替時間1", 267);
+		this.dictionary.put("振替時間2", 272);
+		this.dictionary.put("振替時間3", 277);
+		this.dictionary.put("振替時間4", 282);
+		this.dictionary.put("振替時間5", 287);
+		this.dictionary.put("振替時間6", 292);
+		this.dictionary.put("振替時間7", 297);
+		this.dictionary.put("振替時間8", 302);
+		this.dictionary.put("振替時間9", 307);
+		this.dictionary.put("振替時間10", 312);
 		
 	}
 	

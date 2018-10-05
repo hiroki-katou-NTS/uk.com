@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -311,6 +312,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	@Override
 	public List<WorkTypeInfor> getPossibleWorkTypeAndOrder(String companyId, List<String> lstPossible) {
+		if(CollectionUtil.isEmpty(lstPossible)){
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(SELECT_WORKTYPE_AND_ORDER, WorkTypeInfor.class).setParameter("companyId", companyId)
 							.setParameter("lstPossible", lstPossible).getList();
 	}

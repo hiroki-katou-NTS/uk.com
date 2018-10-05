@@ -22,22 +22,20 @@ public class ControlOverFrameTime {
 	public void correct() {
 		List<OverTimeFrameTime> returnList = new ArrayList<>(10);
 		for(int overTimeWorkNo = 0 ; overTimeWorkNo < overTimeWorkFrameTime.size() ; overTimeWorkNo++) {
-			OverTimeFrameTime a  = returnList.get(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue());
+			OverTimeFrameTime overFrame  = returnList.get(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue());
 			
-			TimeDivergenceWithCalculation ove_a = TimeDivergenceWithCalculation.createTimeWithCalculation( new AttendanceTime(a.getOverTimeWork().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getTime().valueAsMinutes())
-															  ,new AttendanceTime(a.getOverTimeWork().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getCalcTime().valueAsMinutes()));
-			TimeDivergenceWithCalculation tran_a = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(a.getTransferTime().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getTime().valueAsMinutes())
-					  										  ,new AttendanceTime(a.getTransferTime().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getCalcTime().valueAsMinutes()));
+			TimeDivergenceWithCalculation overTime = TimeDivergenceWithCalculation.createTimeWithCalculation( new AttendanceTime(overFrame.getOverTimeWork().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getTime().valueAsMinutes())
+															  ,new AttendanceTime(overFrame.getOverTimeWork().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getOverTimeWork().getCalcTime().valueAsMinutes()));
+			TimeDivergenceWithCalculation overTransTime = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(overFrame.getTransferTime().getTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getTime().valueAsMinutes())
+					  										  ,new AttendanceTime(overFrame.getTransferTime().getCalcTime().valueAsMinutes()+overTimeWorkFrameTime.get(overTimeWorkNo).getTransferTime().getCalcTime().valueAsMinutes()));
 			
-			
-			
-			OverTimeFrameTime b  = new OverTimeFrameTime(a.getOverWorkFrameNo()
-																,ove_a
-					   											,tran_a
-					   											,a.getBeforeApplicationTime()
+			OverTimeFrameTime newOverFrame  = new OverTimeFrameTime(overFrame.getOverWorkFrameNo()
+																,overTime
+					   											,overTransTime
+					   											,overFrame.getBeforeApplicationTime()
 					   											//TODO: 指示時間 渡す
 					   											,new AttendanceTime(0));
-			returnList.set(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue(),b);
+			returnList.set(overTimeWorkFrameTime.get(overTimeWorkNo).getOverWorkFrameNo().v().intValue(),newOverFrame);
 		}
 	}
 }

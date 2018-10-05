@@ -84,6 +84,9 @@ module nts.uk.ui {
                 content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
             }
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+            
+            // start a dialog when parent window too small, so this will auto resize the dialog
+            $("#contents-area").css("max-height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
             //            } 
         }

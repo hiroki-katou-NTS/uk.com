@@ -4,9 +4,6 @@
 		position: relative;
 		padding: 10px;
 		overflow-y: auto;
-        &:first-child {
-            max-height: calc(100vh - 86px) !important; 
-        }
     }
 }
 	

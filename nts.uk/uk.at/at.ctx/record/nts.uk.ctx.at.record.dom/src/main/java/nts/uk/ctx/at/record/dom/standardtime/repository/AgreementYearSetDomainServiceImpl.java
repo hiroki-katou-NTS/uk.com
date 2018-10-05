@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
@@ -109,6 +110,11 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 
 		if (limitOneYear.v() > 0 && agreementYearSetting.getErrorOneYear().v().compareTo(limitOneYear.v()) > 0) {
 			errors.add("Msg_59,KMK008_42,KMK008_44");
+		}
+		
+		Optional<AgreementYearSetting> agreementYear = this.agreementYearSettingRepository.findByKey(agreementYearSetting.getEmployeeId(), agreementYearSetting.getYearValue()); 
+		if(agreementYear.isPresent()){
+			errors.add("Msg_61,KMK008_29");
 		}
 
 		if (errors.isEmpty()) {

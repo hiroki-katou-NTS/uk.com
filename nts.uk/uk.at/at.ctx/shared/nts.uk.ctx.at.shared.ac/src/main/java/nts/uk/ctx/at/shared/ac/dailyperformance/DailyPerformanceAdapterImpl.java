@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
@@ -38,6 +39,12 @@ public class DailyPerformanceAdapterImpl implements DailyPerformanceAdapter {
 	public boolean isDataExist(String approverID, DatePeriod period, Integer rootType) {
 		// TODO Auto-generated method stub
 		val x = intermediateDataPub.isDataExist(approverID, period, rootType);
+		return x;
+	}
+
+	@Override
+	public boolean dataMonth(String approverID, DatePeriod period, YearMonth yearMonth) {
+		val x = intermediateDataPub.isDataExistMonth(approverID, period, yearMonth);
 		return x;
 	}
 

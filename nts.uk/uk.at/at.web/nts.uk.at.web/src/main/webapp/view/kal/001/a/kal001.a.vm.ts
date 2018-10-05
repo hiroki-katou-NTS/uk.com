@@ -112,7 +112,7 @@ module nts.uk.at.view.kal001.a.model {
             self.empCount = ko.observable(0);
             self.currentAlarmCode.subscribe((newCode) => {
                 errors.clearAll();
-            }
+            });
                    
         }
 

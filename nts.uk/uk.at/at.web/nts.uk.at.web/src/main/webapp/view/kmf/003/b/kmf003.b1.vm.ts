@@ -16,6 +16,7 @@ module nts.uk.at.view.kmf003.b1.viewmodel {
         lengthServiceData: any;
         GrantHdData: any;
         checkDataExisted: KnockoutObservable<boolean>;
+        dialogType: KnockoutObservable<string> = ko.observable();
         
         constructor() {
             var self = this;

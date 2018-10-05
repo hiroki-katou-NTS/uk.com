@@ -89,13 +89,14 @@ public class RegisterLayoutFinder {
 
 		NewLayout _layout = layout.get();
 
-		List<LayoutPersonInfoClsDto> itemCls = getClassItemList(command, _layout);
+		StringBuilder wrkPlaceStartDate = new StringBuilder();
+		List<LayoutPersonInfoClsDto> itemCls = getClassItemList(command, _layout,wrkPlaceStartDate);
 		
-		return NewLayoutDto.fromDomain(_layout, itemCls);
+		return NewLayoutDto.fromDomain(_layout, itemCls, wrkPlaceStartDate.toString());
 
 	}
 
-	private List<LayoutPersonInfoClsDto> getClassItemList(AddEmployeeCommand command, NewLayout _layout) {
+	private List<LayoutPersonInfoClsDto> getClassItemList(AddEmployeeCommand command, NewLayout _layout, StringBuilder wrkPlaceStartDate) {
 
 		List<LayoutPersonInfoClsDto> classItemList = this.clsFinder.getListClsDtoHasCtgCd(_layout.getLayoutID());
 		List<SettingItemDto> dataServer = new ArrayList<>();
@@ -104,10 +105,13 @@ public class RegisterLayoutFinder {
 			dataServer = this.getSetItems(command, false);
 		}
 		String workPlaceId = null;
-		Optional<SettingItemDto> workPlace = dataServer.stream()
-				.filter(i -> i.getCategoryCode().equals("CS00017") && i.getItemCode().equals("IS00084")).findFirst();
-		if (workPlace.isPresent()){
-			workPlaceId = workPlace.get().getSaveData().getValue().toString();
+		List<SettingItemDto> workPlace = dataServer.stream()
+				.filter(i -> i.getCategoryCode().equals("CS00017") && (i.getItemCode().equals("IS00084") || i.getItemCode().equals("IS00082")) ).collect(Collectors.toList());
+		if (!workPlace.isEmpty()){
+			workPlaceId = workPlace.stream().filter(i -> i.getItemCode().equals("IS00084")).findFirst()
+					.map(v -> v.getSaveData().getValue().toString()).orElse(null);
+			wrkPlaceStartDate = wrkPlaceStartDate.append(workPlace.stream().filter(i -> i.getItemCode().equals("IS00082")).findFirst()
+			.map(v -> v.getSaveData().getValue().toString()).orElse(""));
 		}
 		// set to layout's item
 		mapToLayoutItems(classItemList, dataServer, command.getHireDate(),workPlaceId);;

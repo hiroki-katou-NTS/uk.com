@@ -142,6 +142,12 @@ module nts.uk.com.view.kal001.d.viewmodel {
             nts.uk.ui.dialog.confirm({ messageId: "Msg_1412" })
                 .ifYes(() => {
                     nts.uk.request.asyncTask.requestToCancel(self.taskId());
+                    // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
+                    let extraParams = {
+                        processStatusId: self.processExtraId(),
+                        status: AlarmExtraStatus.INTERRUPT
+                    };
+                    service.extractFinished(extraParams);
                     self.dialogMode(AlarmExtraStatus.INTERRUPT);
                     self.setFinished();
                 })

@@ -74,4 +74,11 @@ public interface SpecialHolidayRepository {
 	 * @return
 	 */
 	List<Integer> findBySphdSpecLeave(String cid, int sphdSpecLeaveNo);
+	
+	/**
+	 * Find By CompanyId
+	 * @param companyId
+	 * @return
+	 */
+	List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes);
 }

@@ -50,10 +50,8 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
@@ -131,7 +129,7 @@ public class MonthlyPerformanceDisplay {
 			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param, screenDto);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
-		if (param.getSheets() == null || param.getSheets().isEmpty()) {
+		if (CollectionUtil.isEmpty(param.getSheets())) {
 			throw new BusinessException("Msg_1261");
 		}
 		param.getSheets().forEach(item -> {
@@ -327,6 +325,9 @@ public class MonthlyPerformanceDisplay {
 		// 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
 		List<MonthlyRecordWorkTypeDto> monthlyRecordWorkTypeDtos = monthlyRecordWorkTypeFinder
 				.getMonthlyRecordWorkTypeByListCode(cId, lstBusinessTypeCode);
+		if(CollectionUtil.isEmpty(monthlyRecordWorkTypeDtos)){
+			throw new BusinessException("Msg_1402");
+		}
 
 		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository.getColumnWidtgByMonthly(cId);
 		// 取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
@@ -474,7 +475,7 @@ public class MonthlyPerformanceDisplay {
 		//対応するドメインモデル「本人確認処理の利用設定」を取得する
 		if(!identityOp.isPresent()) {
 			checkIdentityOp = true;
-		}else {
+		} else {
 			//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
 			if(identityOp.get().getUseDailySelfCk() == 0){
 				checkIdentityOp = true;
