@@ -8,12 +8,8 @@ module nts.uk.pr.view.qmm012.b {
             }
 
             __viewContext.bind(screenModel);
-            
-            if(screenModel.statementItemDataSelected().checkCreate()) {
-                $("#B3_2").focus();
-            } else {
-                $("#B3_3").focus();
-            }
+
+            $("#B3_3").focus();
         });
     });
 }
