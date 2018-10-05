@@ -63,14 +63,14 @@
                         <td style="background-color: #CFF1A5;text-align: right" >
                             <!--A2_7 処理区分NO-->
                             <div class="label"
-                                 data-bind="text:processInfomation.processCateNo" ></div>
+                                 data-bind="text:processInfomation.processCateNo" style=" padding-bottom: 9px; " ></div>
                         </td>
                         <td style="text-align: left;background-color: #CFF1A5" >
                             <!--A2_8 処理区分名称-->
                             <div id="A2_8"  class="flex valign-center" style="display: inline-block;"
                                      data-bind="if: processInfomation.processCls() != '' " >
                                 
-                                    <label style="width: 100px;vertical-align: text-bottom;padding-top: 10px;padding-left: 5px;"  class="limited-label"
+                                    <label style="width: 100px;vertical-align: text-bottom;"  class="limited-label"
                                             data-bind="text: processInfomation.processCls()"></label>
                                 
                                 <!--A2_9 編集-->
