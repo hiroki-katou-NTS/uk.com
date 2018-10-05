@@ -87,11 +87,17 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         }
 
         convertHealthContributionToNumber (healthContribution){
-            healthContribution.longCareInsuranceRate = Number(healthContribution.longCareInsuranceRate);
-            healthContribution.basicInsuranceRate = Number(healthContribution.basicInsuranceRate);
-            healthContribution.healthInsuranceRate = Number(healthContribution.healthInsuranceRate);
-            healthContribution.specialInsuranceRate = Number(healthContribution.specialInsuranceRate);
+            let self = this;
+            healthContribution.longCareInsuranceRate = self.formatThreeDigit(healthContribution.longCareInsuranceRate);
+            healthContribution.basicInsuranceRate = self.formatThreeDigit(healthContribution.basicInsuranceRate);
+            healthContribution.healthInsuranceRate = self.formatThreeDigit(healthContribution.healthInsuranceRate);
+            healthContribution.specialInsuranceRate = self.formatThreeDigit(healthContribution.specialInsuranceRate);
             return healthContribution;
+        }
+
+        formatThreeDigit (input){
+            input = String(input);
+            return input.substring(0, input.indexOf('.')+4);
         }
 
         registerIfValid(command) {
@@ -100,6 +106,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             service.registerEmployeeHealthInsurance(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
+                    self.selectedHealthInsurance.valueHasMutated();
                     $('#B2_7').focus();
                 });
                 self.isUpdateMode(true);

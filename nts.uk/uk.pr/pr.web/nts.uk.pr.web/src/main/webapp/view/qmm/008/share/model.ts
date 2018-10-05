@@ -519,7 +519,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     this.updateOldIndividualValue();
                     return 0;
                 }
-                if (Number(this.individualBurdenRatio()) < Number(this.individualExemptionRate())) {
+                if (Number(this.individualBurdenRatio()).toFixed(3) < Number(this.individualExemptionRate()).toFixed(3)) {
                     if (__viewContext.viewModel.viewmodelC.welfareInsuranceClassification().fundClassification() == 1) {
                         if (this.individualBurdenRatio() != this.oldIndividualBurdenRatio) {
                             $(this.individualBurdenRatioId).ntsError('clear');
@@ -538,9 +538,14 @@ module nts.uk.pr.view.qmm008.share.model {
                     $(this.individualBurdenRatioId).ntsError('clear');
                     $(this.individualExemptionRateId).ntsError('clear');
                 }
-                return (this.individualBurdenRatio() - this.individualExemptionRate()).toFixed(3);
+                if (this.individualBurdenRatio() != null && this.individualExemptionRate() != null){
+                    return this.formatThreeDigit(this.formatThreeDigit(this.individualBurdenRatio()) - this.formatThreeDigit(this.individualExemptionRate()));
+                }
+                return (this.individualBurdenRatio() - this.individualExemptionRate());
             }, this);
         }
+
+
 
         initRemainEmployeeRate() {
             this.remainEmployeeContributionRatio = ko.computed(function () {
@@ -549,7 +554,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     return 0;
                 }
 
-                if (Number(this.employeeContributionRatio()) < Number(this.employeeExemptionRate())) {
+                if (this.formatThreeDigit(this.employeeContributionRatio()) < this.formatThreeDigit(this.employeeExemptionRate())){
                     if (__viewContext.viewModel.viewmodelC.welfareInsuranceClassification().fundClassification() == 1) {
                         if (this.employeeContributionRatio() != this.oldEmployeeContributionRatio) {
                             $(this.employeeContributionRatioId).ntsError('clear');
@@ -563,14 +568,21 @@ module nts.uk.pr.view.qmm008.share.model {
                     this.updateOldEmployeeValue();
                     return 0
                 }
-                ;
                 this.updateOldEmployeeValue();
                 if (this.isAlreadyBinding) {
                     $(this.employeeContributionRatioId).ntsError('clear');
                     $(this.employeeExemptionRateId).ntsError('clear');
                 }
-                return (this.employeeContributionRatio() - this.employeeExemptionRate()).toFixed(3);
+                if (this.employeeContributionRatio() != null && this.employeeExemptionRate() != null){
+                    return this.formatThreeDigit(this.formatThreeDigit(this.employeeContributionRatio()) - this.formatThreeDigit(this.employeeExemptionRate()));
+                }
+                return (this.employeeContributionRatio() - this.employeeExemptionRate());
             }, this);
+        }
+
+        formatThreeDigit (input){
+            input = String(input);
+            return Number(input.substring(0, input.indexOf('.')+4));
         }
 
         updateOldIndividualValue() {

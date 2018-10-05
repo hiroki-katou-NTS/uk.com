@@ -206,6 +206,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 welfarePensionInsuranceClassification: ko.toJS(self.welfareInsuranceClassification),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
+            command = self.formatDataBeforeSubmit(command);
             if (command.welfarePensionInsuranceClassification.fundClassification == model.FUND_CLASSIFICATION.JOIN) {
                 self.validateRemainRatio(command);
                 if (nts.uk.ui.errors.hasError()) {
@@ -219,7 +220,6 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             command.bonusEmployeePensionInsuranceRate.historyId = command.yearMonthHistoryItem.historyId;
             command.employeesPensionMonthlyInsuranceFee.historyId = command.yearMonthHistoryItem.historyId;
             command.welfarePensionInsuranceClassification.historyId = command.yearMonthHistoryItem.historyId;
-            command = self.formatDataBeforeSubmit(command);
             if (self.isUpdateMode()) {
                 service.checkWelfarePensionInsuranceGradeFeeChange(command).done(function(data) {
                     block.clear();
@@ -249,11 +249,17 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         }
 
         formatWelfareContributionRate (contributionFee) {
-            contributionFee.individualBurdenRatio = Number(contributionFee.individualBurdenRatio);
-            contributionFee.employeeContributionRatio = Number(contributionFee.employeeContributionRatio);
-            contributionFee.individualExemptionRate = Number(contributionFee.individualExemptionRate);
-            contributionFee.employeeExemptionRate = Number(contributionFee.employeeExemptionRate);
+            let self = this;
+            contributionFee.individualBurdenRatio = self.formatThreeDigit(contributionFee.individualBurdenRatio);
+            contributionFee.employeeContributionRatio = self.formatThreeDigit(contributionFee.employeeContributionRatio);
+            contributionFee.individualExemptionRate = self.formatThreeDigit(contributionFee.individualExemptionRate);
+            contributionFee.employeeExemptionRate = self.formatThreeDigit(contributionFee.employeeExemptionRate);
             return contributionFee;
+        }
+
+        formatThreeDigit (input){
+            input = String(input);
+            return input.substring(0, input.indexOf('.')+4);
         }
 
         registerIfValid(command) {
@@ -262,10 +268,10 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             service.registerEmployeePension(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
+                    self.selectedWelfareInsurance.valueHasMutated();
                     $('#C2_7').focus();
                 });
                 self.isUpdateMode(true);
-                self.selectedWelfareInsurance.valueHasMutated();
             }).fail(function(err) {
                 block.clear();
                 dialog.alertError(err.message);
