@@ -186,9 +186,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             if (self.screenMode() == ScreenMode.Daily) {
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                block.invisible();
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
                 service.findMonthlyCondition(foundItem.errorAlarmCheckID, foundItem.code).done((data) => {
                     self.resetMonthlyConditon(self.selectedErrorAlarm(), data);
+                }).always(() => {
+                    block.clear();
                 });
             }
             self.selectedTab('tab-1');
