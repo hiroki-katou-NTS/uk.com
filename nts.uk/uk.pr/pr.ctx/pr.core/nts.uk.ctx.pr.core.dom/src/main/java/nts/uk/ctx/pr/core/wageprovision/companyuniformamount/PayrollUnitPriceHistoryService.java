@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,33 +19,46 @@ public class PayrollUnitPriceHistoryService {
     @Inject
     private PayrollUnitPriceHistoryRepository mPayrollUnitPriceHistoryRepository;
 
-    public void addPayrollUnitPriceHistory(YearMonth start, YearMonth end ){
-        String cId = AppContexts.user().companyId();
-        String newHistID = IdentifierUtil.randomUniqueId();
-        String newCode = IdentifierUtil.randomUniqueId();;
-        YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+    @Inject
+    private PayrollUnitPriceSettingRepository mPayrollUnitPriceSettingRepository;
 
-//        this.mPayrollUnitPriceHistoryRepository.add(new PayrollUnitPriceHistory(newCode,cId,yearMonthItem));
-    }
+    @Inject
+    private PayrollUnitPriceRepository mPayrollUnitPriceRepository;
 
-    public void updatePayrollUnitPriceHistory(String hisId,String code, YearMonth startYearMonth,YearMonth endYearMonth ){
-        String cId = AppContexts.user().companyId();
-        YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(hisId, new YearMonthPeriod(startYearMonth, endYearMonth));
 
-        PayrollUnitPriceHistory itemtoBeAdded = new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cId, new ArrayList<>());
-        Optional<PayrollUnitPriceHistory> mPayrollUnitPriceHistory =  mPayrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
-
-        if (mPayrollUnitPriceHistory.isPresent()) {
-            itemtoBeAdded = mPayrollUnitPriceHistory.get();
+    public void historyDeletionProcessing(String hisId, String cId,String code){
+        Optional<PayrollUnitPriceHistory> accInsurHis = mPayrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
+        if (!accInsurHis.isPresent()) {
+            throw new RuntimeException("invalid employmentHistory");
         }
-        itemtoBeAdded.add(yearMonthItem);
-        this.addPayrollUnitPriceHis(yearMonthItem,cId,code);
-        this.updateItemBefore(mPayrollUnitPriceHistory.get(), yearMonthItem, cId,code);
+        Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
+                .filter(h -> h.identifier().equals(hisId))
+                .findFirst();
+        accInsurHis.get().remove(itemToBeDelete.get());
+        this.mPayrollUnitPriceSettingRepository.remove(hisId);
+        mPayrollUnitPriceHistoryRepository.remove(cId,code, hisId);
+        if (accInsurHis.get().getHistory().size() > 0 ){
+            YearMonthHistoryItem lastestItem = accInsurHis.get().getHistory().get(0);
+            accInsurHis.get().exCorrectToRemove(lastestItem);
+            mPayrollUnitPriceHistoryRepository.update(lastestItem, cId,code);
+        }
     }
-    public void deletePayrollUnitPriceHis(String hisId,String code ){
-        String cId = AppContexts.user().companyId();
-        this.mPayrollUnitPriceHistoryRepository.remove(cId,code,hisId);
+    public void historyCorrectionProcecessing(String cId, String hisId,String code, YearMonth start, YearMonth end){
+        Optional<PayrollUnitPriceHistory> accInsurHis = mPayrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId,code);
+        if (!accInsurHis.isPresent()) {
+            return;
+        }
+        Optional<YearMonthHistoryItem> itemToBeUpdate = accInsurHis.get().getHistory().stream()
+                .filter(h -> h.identifier().equals(hisId)).findFirst();
+        if (!itemToBeUpdate.isPresent()) {
+            return;
+        }
+        accInsurHis.get().changeSpan(itemToBeUpdate.get(), new YearMonthPeriod(start, end));
+        this.updatePayrollUnitPriceHis(itemToBeUpdate.get(), cId,code);
+        this.updateItemBefore(accInsurHis.get(), itemToBeUpdate.get(), cId,code);
     }
+
+    
     private void addPayrollUnitPriceHis(YearMonthHistoryItem itemtoBeAdded, String cId,String code){
         if(itemtoBeAdded == null){
             return;
@@ -57,6 +71,9 @@ public class PayrollUnitPriceHistoryService {
             return;
         }
         mPayrollUnitPriceHistoryRepository.update(itemToBeUpdated.get(),cId,code);
+    }
+    private void updatePayrollUnitPriceHis(YearMonthHistoryItem itemToBeUpdated, String cId,String code){
+        mPayrollUnitPriceHistoryRepository.update(itemToBeUpdated, cId,code);
     }
 
 

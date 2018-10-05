@@ -29,20 +29,41 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             let self = this;
             let data: any = {
                 cId: '',
-                hisId: self.mPayrollUnitPriceHis.hisId(),
-                code: self.mPayrollUnitPriceHis.code(),
-                startYearMonth: self.mPayrollUnitPriceHis.startYearMonth(),
-                endYearMonth: self.mPayrollUnitPriceHis.endYearMonth(),
+                hisId: self.mPayrollUnitPriceHis()[0].hisId,
+                code: self.mPayrollUnitPriceHis()[0].code,
+                startYearMonth: Number(self.startYearMonth()),
+                endYearMonth: self.mPayrollUnitPriceHis()[0].endYearMonth,
                 isMode:this.methodEditing()
             }
-            service.submitPayrollUnitPriceHis(data).done((data) => {
-                console.log(data);
-            }).fail(function (res: any) {
-                if (res)
-                    dialog.alertError(res);
-            }).always(() => {
-                block.clear();
-            });
+            if(this.methodEditing() == EDIT_METHOD.DELETE){
+                dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                    service.submitPayrollUnitPriceHis(data).done((data) => {
+                        dialog.info({ messageId: "Msg_16" }).then(function () {
+                            self.cancel();
+                        });
+                    }).fail(function (res: any) {
+                        if (res)
+                            dialog.alertError(res);
+                    })
+                }).ifCancel(() => {
+                    nts.uk.ui.block.clear();
+                    return ;
+                });
+
+            }
+            else {
+                service.submitPayrollUnitPriceHis(data).done(() => {
+                    self.cancel();
+                }).fail(function (res: any) {
+                    if (res)
+                        dialog.alertError(res);
+                }).always((res:any) => {
+                    if (res)
+                        dialog.alertError(res);
+                });
+            }
+
+
 
         }
 
@@ -64,11 +85,11 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             let self = this;
             let data: any = {
                 cId: '',
-                code: code,
-                hisId: hisId
+                hisId: hisId,
+                code: code
             };
             service.getPayrollUnitPriceHis(data).done((data: PayrollUnitPriceHistoryDto) => {
-               self.mPayrollUnitPriceHis(ko.observableArray(data));
+               self.mPayrollUnitPriceHis = ko.observableArray(data);
             }).fail(function (res: any) {
                 if (res)
                     dialog.alertError(res);

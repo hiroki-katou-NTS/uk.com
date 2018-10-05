@@ -35,7 +35,7 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
 
     @Override
     public Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryByCidCode(String cid, String code) {
-        List<QpbmtPayUnitPriceHis> temp = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPayUnitPriceHis.class)
+        List<QpbmtPayUnitPriceHis> temp = this.queryProxy().query(SELECT_BY_CID_CODE_STRING, QpbmtPayUnitPriceHis.class)
                 .setParameter("cid", cid)
                 .setParameter("code", code)
                 .getList();
@@ -65,7 +65,7 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
 
     @Override
     public void update(YearMonthHistoryItem domain, String cId, String code) {
-
+        this.commandProxy().update(QpbmtPayUnitPriceHis.toEntity(domain,cId,code));
     }
 
     @Override
