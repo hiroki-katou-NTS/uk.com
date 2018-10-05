@@ -59,12 +59,12 @@
 				<div data-bind="with: $vm.viewmodelB.selectedHistoryPeriod" style = "min-width: 700px;">
 					<div style="width: 130px;" class="inline-element"
 						data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_12')}</div>
-					<div style="width: 65px;" class="inline-element"
+					<div class="inline-element"
 						data-bind="text: displayStart"></div>
-					<div style="width: 125px;" class="inline-element"
+					<div style="margin-left: 5px;" class="inline-element"
 						data-bind="text: displayJapanYearMonth"></div>
-					<div class="inline-element">#{i18n.getText('QMM008_11')}</div>
-					<div style="width: 65px; margin-left: 10px;" class="inline-element"
+						<div style=" margin-left: 5px;" data-bind="if: displayStart.length > 1" class="inline-element">#{i18n.getText('QMM008_11')}</div>
+					<div style=" margin-left: 5px;" class="inline-element"
 						data-bind="text: displayEnd"></div>
 				</div>
 			</div>
