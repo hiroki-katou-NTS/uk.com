@@ -11,7 +11,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 750,
+					width : 950,
 					height : 600
 				};
 			</script>
@@ -43,7 +43,7 @@
 						<div id="J2_1" style="margin-left: 32px;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
 						<span style="margin-bottom: 15px;" id="J2_2"
 							data-bind="text: officeCode"></span> <span
-							style="margin-left: 10px;width: 250px;" id="J2_3"
+							style="margin-left: 30px;width: 250px;" id="J2_3"
 							data-bind="text: socialInsuranceName" class="limited-label"></span>
 						<div id="J2_4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_12')}</div>
 						<span style="margin-bottom: 15px;" id="J2_5"
@@ -53,14 +53,14 @@
 							data-bind="text: displayEnd"></span>
 					</div>
 
-					<div class="flex"  id="J3_1_container" style="margin-left: 35px; margin-top: 15px; width: 590px;min-width: 390px;" >
+					<div class="flex"  id="J3_1_container" style="margin-left: 35px; margin-top: 15px; width: 800px;min-width: 390px;" >
 						<table id="fixed-table" >
 							<colgroup >
 								<col width="40px" />
-								<col width="90px" />
-								<col width="90px" />
-								<col width="90px" />
-								<col width="130px" />
+								<col width="150px" />
+								<col width="150px" />
+								<col width="150px" />
+								<col width="250px" />
 							</colgroup>
 							<thead >
 								<tr>
@@ -82,18 +82,14 @@
 							</thead>
 							<tbody data-bind="foreach: dataList" >
 								<tr>
-									<td class="td-widget"><span class="limited-label"
-										data-bind="text: welfarePensionGrade()" style="text-align: right;"></span></td>
-									<td class="td-widget"><span class="limited-label"
-										data-bind="text: $parent.genNumber(standardMonthlyFee(),0)" style="text-align: right;"></span></td>
-									<td class="td-widget"><span class="limited-label"
-										data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)" style="text-align: right;"></span></td>
-									<td class="td-widget"><span class="limited-label"
-										data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)" style="text-align: right;"></span></td>
+									<td class="td-widget"><span data-bind="text: welfarePensionGrade()" style="float: right;"></span></td>
+									<td class="td-widget"><span data-bind="text: $parent.genNumber(standardMonthlyFee(),0)" style="float: right;"></span></td>
+									<td class="td-widget"><span data-bind="text: $parent.genNumber(rewardMonthlyLowerLimit(),0)" style="float: right;"></span></td>
+									<td class="td-widget"><span data-bind="text: $parent.genNumber(rewardMonthlyUpperLimit(),0)" style="float: right;"></span></td>
 									<td >
 										<input tabindex="6" class="focusTest" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '103px',
+ 														width: '223px',
 														decimallength: 2,
 														grouplength: 3
 													}, 
