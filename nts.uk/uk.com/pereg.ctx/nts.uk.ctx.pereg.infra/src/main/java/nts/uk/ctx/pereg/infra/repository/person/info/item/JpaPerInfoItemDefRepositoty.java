@@ -259,16 +259,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			"SELECT distinct i.itemCd",
 			"FROM PpemtPerInfoItem i",
 			"INNER JOIN PpemtPerInfoItemCm ic ON  i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
-			"WHERE  i.abolitionAtr = 0 AND ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId ");
+			"WHERE  ic.ppemtPerInfoItemCmPK.contractCd =:contractCd and i.ppemtPerInfoItemPK.perInfoItemDefId IN :listItemDefId ");
 	
 	private final static String SELECT_ITEM_CD_BY_ITEM_CD_QUERY = String.join(" ",
 			"SELECT distinct ic.ppemtPerInfoItemCmPK.itemCd",
 			"FROM PpemtPerInfoItem i INNER JOIN  PpemtPerInfoItemCm ic  ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd ",
-			"WHERE i.abolitionAtr = 0 AND ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ");
+			"WHERE ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ");
 	
 	private final static String SELECT_CHILD_ITEMS_BY_ITEM_CD_QUERY = String.join(" ",
 			 SELECT_NO_WHERE,
-			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2 AND i.abolitionAtr = 0 AND ic.ppemtPerInfoItemCmPK.categoryCd IN :ctgLst AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
+			"WHERE c.cid =:cid  and ic.ppemtPerInfoItemCmPK.contractCd =:contractCd AND ic.itemType = 2 AND ic.ppemtPerInfoItemCmPK.categoryCd IN :ctgLst AND  (ic.ppemtPerInfoItemCmPK.itemCd IN :itemCdLst OR ic.itemParentCd IN :itemCdLst) ",
 			"ORDER BY io.disporder");
 	
 	private final static String SEL_ITEM_EVENT = String.join(" ",

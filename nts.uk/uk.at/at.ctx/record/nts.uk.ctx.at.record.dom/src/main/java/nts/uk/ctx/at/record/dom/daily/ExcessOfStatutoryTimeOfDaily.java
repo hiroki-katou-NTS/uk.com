@@ -47,9 +47,12 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 public class ExcessOfStatutoryTimeOfDaily {
+	//所定外深夜時間
 	@Setter
 	private ExcessOfStatutoryMidNightTime excessOfStatutoryMidNightTime;
+	//残業時間
 	private Optional<OverTimeOfDaily> overTimeWork;
+	//休出時間
 	private Optional<HolidayWorkTimeOfDaily> workHolidayTime;
 	
 	

@@ -1245,7 +1245,7 @@ module nts.custombinding {
 
         private services = {
             getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
-            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${location.href.indexOf('cps/007') > -1}`),
             getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
             getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),

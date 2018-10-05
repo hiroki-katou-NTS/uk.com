@@ -184,7 +184,7 @@
                                                 <!-- BA2-2 -->
                                                 <button id="btnSettingBA2_2" tabindex="4" data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                 <!-- BA2-3 -->
-                                                <input  
+                                                <input  id="display-target-item_category5"
                                                 class="display-list-label" data-bind="ntsTextEditor: {
                                                 name:'#[KAL003_59]',
                                          value: $parent.displayAttendanceItemSelections_BA2_3,
@@ -789,17 +789,31 @@
                                                 <com:ko bind="haveInput() === 5" tag="if">
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
+                                                        
                                                         <com:ko bind="typeInput() === 0" tag="if">
                                                             <input tabindex ="6" style="width: 100px;" 
-                                                            data-bind="ntsNumberEditor: {name : inputName ,  
-                                                            value: value ,required: required,enable : enable, 
-                                                            constraint: 'CheckedTimesValueDay'}, attr: { id: inputId}" />
+                                                            data-bind="ntsNumberEditor: {
+                                                            	name : inputName ,  
+                                                            	value: value ,
+                                                            	required: required,
+                                                            	enable : enable, 
+                                                           	    constraint: 'CheckedTimesValueDay',
+                                                           	    option: new nts.uk.ui.option.NumberEditorOption({
+		                											grouplength: 0,
+		                											decimallength: 1,
+		                											placeholder: ''
+	            												})}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
                                                             <input tabindex ="7" style="width: 100px;" 
                                                             data-bind="ntsNumberEditor: {name : inputName , 
                                                             value: value ,required: required,mode : 'time',
-                                                            inputFormat: 'time',constraint: 'CheckedTimesValueDay',enable : enable}, attr: { id: inputId}" />
+                                                            inputFormat: 'time',constraint: 'CheckedTimesValueDay',enable : enable,
+                                                             option: new nts.uk.ui.option.NumberEditorOption({
+		                											grouplength: 0,
+		                											decimallength: 1,
+		                											placeholder: ''
+	            												})}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
                                                     <span  data-bind="text : textLabel"></span>

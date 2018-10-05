@@ -428,6 +428,25 @@ module nts.uk.at.view.kaf005.b {
                 })
             }
             
+            setTimeZones(timeZones) {
+                let self = this;
+                if (timeZones) {
+                    let times = [];
+                    for (let i = 1; i < 11; i++) {
+                        times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
+                    }
+                    self.restTime(times);
+                }
+            }
+            
+            getStartTime(data) {
+                return data ? data.start : null;
+            }
+
+            getEndTime(data) {
+                return data ? data.end : null;
+            }
+            
             hasAppTimeOvertimeHours(){
                 let self = this,
                     hasData = false;
@@ -668,8 +687,8 @@ module nts.uk.at.view.kaf005.b {
                                 prePostAtr: self.prePostSelected(),
                                 overtimeHours:  _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
                                 workTypeCode: self.workTypeCd(),
-                                startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
-                                endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime()
+                                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.startTime()}),
+                                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.endTime()})
                             }
                         ).done(data => {
                             $("#inpStartTime1").ntsError("clear"); 
@@ -679,6 +698,7 @@ module nts.uk.at.view.kaf005.b {
                             self.timeStart2(data.startTime2 == null ? null : data.startTime2);
                             self.timeEnd2(data.endTime2 == null ? null : data.endTime2); 
                             self.convertAppOvertimeReferDto(data);   
+                            self.setTimeZones(data.timezones);
                         });
                     }
                 })
@@ -752,8 +772,8 @@ module nts.uk.at.view.kaf005.b {
                         appDate : moment(self.appDate()).format(self.DATE_FORMAT),
                         siftCD: self.siftCD(),
                         workTypeCode: self.workTypeCd(),
-                        startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
-                        endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime(),
+                        startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.startTime()}),
+                        endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime())? [] : _.map(self.restTime(), x=>{return x.endTime()}),
                         startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                         endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1()
                     }

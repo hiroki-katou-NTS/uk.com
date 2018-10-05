@@ -10,8 +10,11 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
  */
 @Getter
 public class WithinOutingTotalTime {
+	//合計時間
 	TimeWithCalculation totalTime;
+	//コア内時間
 	TimeWithCalculation withinCoreTime;
+	//コア外時間
 	TimeWithCalculation excessCoreTime;
 	
 	/**

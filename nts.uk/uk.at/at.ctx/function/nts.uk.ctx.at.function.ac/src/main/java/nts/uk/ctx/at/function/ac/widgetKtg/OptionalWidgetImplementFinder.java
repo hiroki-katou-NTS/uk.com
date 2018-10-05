@@ -264,7 +264,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
-			GeneralDate grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			GeneralDate grantDay = rsvDate.getGrantDate().orElse(null);
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
