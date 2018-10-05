@@ -27,8 +27,7 @@ td {
 .nts-fixed-body-container {
 	
 }
-
+ 
 .limited-label-view {
-	left: 50px !important;
-	margin: 0px 15px;
+	max-width: 75%!important;
 }
