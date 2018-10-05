@@ -836,16 +836,16 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxExemptionName = ko.observable(data.taxExemptionName);
                     self.note = ko.observable(data.note);
                 } else {
-                    self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.laborInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.laborInsuranceCategory = ko.observable(model.CoveredAtr.COVERED);
                     self.settingAtr = ko.observable(model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS);
-                    self.everyoneEqualSet = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.monthlySalary = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.hourlyPay = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.dayPayee = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.monthlySalaryPerday = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.averageWageAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.socialInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.everyoneEqualSet = ko.observable(model.CoveredAtr.COVERED);
+                    self.monthlySalary = ko.observable(model.CoveredAtr.COVERED);
+                    self.hourlyPay = ko.observable(model.CoveredAtr.COVERED);
+                    self.dayPayee = ko.observable(model.CoveredAtr.COVERED);
+                    self.monthlySalaryPerday = ko.observable(model.CoveredAtr.COVERED);
+                    self.averageWageAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.socialInsuranceCategory = ko.observable(model.CoveredAtr.COVERED);
                     self.taxAtr = ko.observable(model.TaxAtr.TAXATION);
                     self.taxableAmountAtr = ko.observable(model.TaxableAmountClassification.OVERDRAFT_TAXATION);
                     self.limitAmount = ko.observable(null);
@@ -1127,8 +1127,8 @@ module nts.uk.pr.view.qmm012.b {
                     // show in screen because use same component
                     screenModel.statementItemDataSelected().paymentItemSet().note(data.note);
                 } else {
-                    self.averageWageAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.workingDaysPerYear = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.averageWageAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.workingDaysPerYear = ko.observable(model.CoveredAtr.COVERED);
                     self.timeCountAtr = ko.observable(model.TimeCountAtr.TIME);
                     self.note = ko.observable(null);
                 }
