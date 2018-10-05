@@ -26,10 +26,10 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
                 {headerText: getText('QMM023_8'), key: 'taxExemptionName', width: 180, formatter: _.escape},
                 {
                     headerText: getText('QMM023_9'),
-                    key: 'taxExemption',
+                    key: 'taxExemptionDisp',
                     width: 170,
                     formatter: _.escape,
-                    template: "<div style='text-align: right'>${taxExemption}</div>"
+                    template: "<div style='text-align: right'>${taxExemptionDisp}</div>"
                 }
             ]);
             self.currentCode.subscribe((item) => {
@@ -50,7 +50,7 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
             service.getAllTaxAmountByCompanyId().done(function (data: Array<TaxExemptLimit>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["taxFreeamountCode"])
-                    dataSort.forEach(x => x.taxExemption = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
+                    dataSort.forEach(x => x.taxExemptionDisp = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
                     self.lstTaxExemptLimit(dataSort);
                     self.currentCode(self.lstTaxExemptLimit()[0].taxFreeamountCode);
                     self.isNewMode(false);
@@ -183,7 +183,7 @@ module nts.uk.pr.view.qmm023.a.viewmodel {
             service.getAllTaxAmountByCompanyId().done(function (data: Array<TaxExemptLimit>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["taxFreeamountCode"])
-                    dataSort.forEach(x => x.taxExemption = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
+                    dataSort.forEach(x => x.taxExemptionDisp = nts.uk.ntsNumber.formatNumber(x.taxExemption, new nts.uk.ui.option.NumberEditorOption({grouplength: 3})) + "¥");
                     self.lstTaxExemptLimit(dataSort);
                     self.currentCode(self.lstTaxExemptLimit()[0].taxFreeamountCode);
                     self.isNewMode(false);
