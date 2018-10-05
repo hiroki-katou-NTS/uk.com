@@ -618,6 +618,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		inputs.forEach(ctg -> {
 
 			items.addAll(ctg.getItems());
+			
 
 		});
 		// lấy item system required để so sánh
