@@ -44,6 +44,7 @@ module nts.uk.pr.view.qmm005.f.viewmodel {
 
         submit() {
             var self = this;
+            nts.uk.ui.errors.clearAll();
             if(self.currentCodeListSwap().length == 0){
                 $('#F1_2-grid2_displayContainer').ntsError('set', {messageId: "Msg_105"});
                 return;
