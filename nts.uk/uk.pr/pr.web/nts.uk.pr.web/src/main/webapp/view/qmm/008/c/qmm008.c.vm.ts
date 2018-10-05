@@ -267,8 +267,8 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
             block.invisible();
             service.registerEmployeePension(command).done(function(data) {
                 block.clear();
+                self.selectedWelfareInsurance.valueHasMutated();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
-                    self.selectedWelfareInsurance.valueHasMutated();
                     $('#C2_7').focus();
                 });
                 self.isUpdateMode(true);

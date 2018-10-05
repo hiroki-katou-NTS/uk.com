@@ -105,8 +105,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             block.invisible();
             service.registerEmployeeHealthInsurance(command).done(function(data) {
                 block.clear();
+                self.selectedHealthInsurance.valueHasMutated();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
-                    self.selectedHealthInsurance.valueHasMutated();
                     $('#B2_7').focus();
                 });
                 self.isUpdateMode(true);
