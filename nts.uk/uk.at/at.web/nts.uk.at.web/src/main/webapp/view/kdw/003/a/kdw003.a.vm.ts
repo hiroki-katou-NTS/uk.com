@@ -1320,6 +1320,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return map;
             });
 
+            // get cell Edit
+            let dataChageUI = _.map(_.filter(dataChange, row => {
+                return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey.indexOf("Name") == -1;
+            }), allValue => {
+                let itemTemp, keyIdRow;
+                keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
+                return new CellEdit(allValue.rowId, keyIdRow)
+            });
+            
             let param = {
                 lstAttendanceItem: self.lstAttendanceItem(),
                 lstEmployee: lstEmployee,
@@ -1340,7 +1349,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     endDate: moment(self.dateRanger().endDate).toISOString()
                 },
                 identityProcess: self.dataAll().identityProcessDto,
-                showLock: self.showLock()
+                showLock: self.showLock(),
+                cellEdits: dataChageUI
             }
 
             let dfd = $.Deferred();
@@ -1367,9 +1377,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         return value.rowId;
                     }))
                     _.each(data.lstCellState, (valt) => {
+                        $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
+                    });
+                    
+                    _.each(data.lstCellStateCalc, (valt) => {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
+                    
                     if (!self.displayWhenZero()) {
                         $("#dpGrid").mGrid("hideZero", true)
                         $("#dpGrid").mGrid("hideZero", false)
@@ -1610,7 +1625,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 service.startScreen(param).done((data) => {
                     if (_.isEmpty(data.lstEmployee) && _.isEmpty(data.lstControlDisplayItem.lstHeader)) {
                          self.destroyGrid();
-                         self.processFlex(data, false);
+                         self.processFlex(data, true);
                          //self.hasEmployee = false;
 //                        nts.uk.ui.dialog.alert({ messageId: "Msg_916" }).then(function() {
 //                            return;
@@ -1657,7 +1672,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         // no20
                         self.dPErrorDto(data.dperrorDto);
                         // flex
-                        self.processFlex(data, false);
+                        self.processFlex(data, true);
                         self.displayNumberZero();
                         //self.displayProfileIcon(self.displayFormat());
                         self.dislayNumberHeaderText();
@@ -4268,9 +4283,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 $("#next-month").attr('style', 'background-color: white !important');
             }
-//            if (showLstError) {
-//                self.displayListError(lstError);
-//            }
+            if (showLstError) {
+                self.displayListError(lstError);
+            }
             self.initLoad = 1;
         }
 
@@ -4467,5 +4482,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listEmployeeId: Array<string>;
         period: any; // {startDate: string, endDate: string};  {startDate: string 'YYYYMM', endDate: string 'YYYYMMDD'} only from the monthly correction to calling
         displayFormat: number;
+    }
+    
+    class CellEdit {
+        rowId: string;
+        columnKey: number;
+        constructor(rowId: string, columnKey: number) {
+            this.rowId = rowId;
+            this.columnKey = columnKey;
+        }
     }
 }
