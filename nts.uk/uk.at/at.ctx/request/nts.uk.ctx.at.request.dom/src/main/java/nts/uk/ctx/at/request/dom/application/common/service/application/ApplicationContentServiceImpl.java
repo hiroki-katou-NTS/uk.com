@@ -331,6 +331,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						count++;
 					}
 					for (val x : preOverTime.getOverTimeInput()) {
+						if(x.getApplicationTime()==null){
+							continue;
+						}
 						if (x.getApplicationTime().v() > 0) {
 							totalWorkUnit += x.getApplicationTime().v();
 							if (count < 3) {
