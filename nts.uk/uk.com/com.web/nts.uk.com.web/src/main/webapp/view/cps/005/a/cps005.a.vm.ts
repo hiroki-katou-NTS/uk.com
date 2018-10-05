@@ -115,7 +115,7 @@ module nts.uk.com.view.cps005.a {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().addPerInfoCtg(newCategory).done(() => {
                         self.reloadData(newCategory.categoryName);
-                        info({ messageId: "Msg_15" }).then(() => {
+                            confirm({ messageId: "Msg_213" }).ifYes(() => {
                                 let params = {
                                     categoryId: self.currentData().perInfoCtgSelectCode(),
                                     currentCtg: ko.toJS(self.currentData().currentCtgSelected()),
@@ -132,7 +132,13 @@ module nts.uk.com.view.cps005.a {
                                     ctrl.focus().val('').val(str);
                                     block.clear();
                                 });
-                        });
+                            }).ifNo(() => {
+                                let ctrl = $("#category-name-control"),
+                                        str = ctrl.val();
+
+                                 ctrl.focus().val('').val(str);
+                                block.clear();
+                            })
                     }).fail(res => {
 
                         if (res.messageId == 'Msg_928') {
