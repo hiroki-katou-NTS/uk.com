@@ -408,13 +408,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.totalEmployee(nts.uk.resource.getText("KAF005_184",total.toString()));
             }
             // 休憩時間
-            let times = [];
-            for (let i = 1; i < 11; i++) {
-                
-                times.push(new common.OverTimeInput("", "", 0, "", i,0, i, self.getStartTime(data.timezones[i-1]),  self.getEndTime(data.timezones[i-1]), null,""));
-            }
-            
-            self.restTime(times);
+            self.setTimeZones(data.timezones);
             // 残業時間
             if (!data.resultCaculationTimeFlg) {
                 if (data.overTimeInputs != null) {
@@ -995,9 +989,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         self.timeStart2(data.startTime2 == null ? null : data.startTime2);
                         self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
                         self.convertAppOvertimeReferDto(data);
+                        // 休憩時間
+                        self.setTimeZones(data.timezones);
+                       
                     });
                 }
             })
+        }
+        
+        setTimeZones(timeZones) {
+            let self = this;
+            if (timeZones) {
+                let times = [];
+                for (let i = 1; i < 11; i++) {
+                    times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
+                }
+                self.restTime(times);
+            }
         }
         /**
          * Jump to CMM018 Screen
@@ -1085,14 +1093,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 //            }
             
             // 休憩時間
-            if (data.timezones) {
-                let times = [];
-                for (let i = 1; i < 11; i++) {
-
-                    times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(data.timezones[i - 1]), self.getEndTime(data.timezones[i - 1]), null, ""));
-                }
-                self.restTime(times);
-            }
+            self.setTimeZones(data.timezones);
            
         }
         

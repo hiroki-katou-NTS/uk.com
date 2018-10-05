@@ -23,7 +23,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 			+ "AND a.kmnmtAttendanceTypePK.screenUseAtr = :screenUseAtr";
 	
 	private static final String SEL_ITEM_BY_TYPE_AND_ATR = SEL_ITEM_BY_TYPE
-			+ " AND a.attendanctType = :attendanctType";
+			+ " AND a.kmnmtAttendanceTypePK.attendanctType = :attendanctType";
 	
 	@Override
 	public List<AttendanceType> getItemByScreenUseAtr(String companyID, int screenUseAtr) {
@@ -36,7 +36,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 						x.kmnmtAttendanceTypePK.companyId, 
 						x.kmnmtAttendanceTypePK.attendanceItemId,
 						x.kmnmtAttendanceTypePK.screenUseAtr,
-						x.attendanctType))
+						x.kmnmtAttendanceTypePK.attendanctType))
 			.collect(Collectors.toList());
 	}
 
@@ -52,7 +52,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 						x.kmnmtAttendanceTypePK.companyId, 
 						x.kmnmtAttendanceTypePK.attendanceItemId,
 						x.kmnmtAttendanceTypePK.screenUseAtr,
-						x.attendanctType))
+						x.kmnmtAttendanceTypePK.attendanctType))
 			.collect(Collectors.toList());
 	}
 

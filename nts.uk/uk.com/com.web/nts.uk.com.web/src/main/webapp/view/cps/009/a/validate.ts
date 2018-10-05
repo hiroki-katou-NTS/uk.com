@@ -134,7 +134,7 @@ module validationcps009 {
                     }
                 } else {
 
-                    if (_.isNil(item.selectedCode()) || _.isEmpty(item.selectedCode())) {
+                    if ((item.dataType()== 6) &&(_.isNil(item.selectedCode()) || _.isEmpty(item.selectedCode()))) {
                         $element.find('.nts-input').attr('nameid', item.itemName());
                         $element.addClass("error");
                         $element.ntsError('set', {

@@ -36,8 +36,8 @@
 				<button id="closeBtn" style="visibility: hidden;"
 					data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CPS016_4')}</button>
 				<!-- A1_005: link label 個人情報定義へ -->
-				<a class='goout link-button' style='margin-left:637px;'
-						data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }"
+				<a class='goout link-button'
+						data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }, style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? '607px' : '625px'}"
 						tabindex="5">#{i18n.getText('CPS009_7')}</a>
 			</div>
 			<div id="contents-area" class="cf">
@@ -104,7 +104,7 @@
 									selectedKey: 'perInfoCtgId',
 									fields: ['categoryName'],
 									placeHolder:'名称で検索・・・'}" />
-								<div id="history" class="flex valign-center">
+								<div id="history" class="flex valign-center" data-bind="style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? '345px' : '362px'}">
 									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<!-- A3_13: button ヘルプボタン -->

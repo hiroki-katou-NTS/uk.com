@@ -166,6 +166,12 @@ public class KTG027QueryProcessor {
 			throw new BusinessException("Msg_1138");
 		}
 		
+		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail){
+			if (agreementTimeDetail.getErrorMessage().isPresent()){
+				throw new BusinessException("Msg_1138");
+			}
+		}
+		
 		// (Set thông tin công việc ngoài giờ đã lấy)
 		List<String> lstEmpID = listAgreementTimeDetail.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 		// Lay Request61

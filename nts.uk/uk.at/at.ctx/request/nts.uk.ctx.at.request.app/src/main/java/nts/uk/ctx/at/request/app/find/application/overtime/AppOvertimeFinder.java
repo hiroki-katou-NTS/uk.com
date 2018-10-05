@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -80,20 +81,15 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
-import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneService;
 import nts.uk.ctx.at.shared.dom.employmentrules.employmenttimezone.BreakTimeZoneSharedOutPut;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -483,8 +479,10 @@ public class AppOvertimeFinder {
 		});
 		List<OvertimeInputDto> overtimeRestTimes = overTimeInputs.stream().filter(x -> x.getAttendanceID() == AttendanceType.RESTTIME.value).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(overtimeRestTimes)){
-			restStartTimes = overtimeRestTimes.stream().map(x-> x.getStartTime()).collect(Collectors.toList());
-			restEndTimes = overtimeRestTimes.stream().map(x-> x.getEndTime()).collect(Collectors.toList());
+			restStartTimes = overtimeRestTimes.stream().filter(x -> x.getStartTime() != null).map(x -> x.getStartTime())
+					.collect(Collectors.toList());
+			restEndTimes = overtimeRestTimes.stream().filter(x -> x.getEndTime() != null).map(x -> x.getEndTime())
+					.collect(Collectors.toList());
 		}
 		overTimeDto.setOverTimeInputs(overTimeInputs);
 		
@@ -1171,13 +1169,11 @@ public class AppOvertimeFinder {
 		Integer endTime1 = null;
 		Integer startTime2 = null;
 		Integer endTime2 = null;
+		GeneralDate inputDate=  appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT);
 		AppOvertimeReference appOvertimeReference = new AppOvertimeReference();
-		if(appDate == null){
-			return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
-		}
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID,
-				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), inputDate);
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
 		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,siftCD);
@@ -1185,13 +1181,20 @@ public class AppOvertimeFinder {
 		endTime1 = recordWorkOutput.getEndTime1();
 		startTime2 = recordWorkOutput.getStartTime2();
 		endTime2 = recordWorkOutput.getEndTime2();
+		//休憩時間帯を取得する
+		BreakTimeZoneSharedOutPut breakTime = this.overtimeService.getBreakTimes(companyID,workTypeCode, siftCD);
+		List<DeductionTimeDto> timeZones = breakTime.getLstTimezone().stream().map(domain->{
+			DeductionTimeDto dto = new DeductionTimeDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 		// 01-18_実績の内容を表示し直す
 		// 6.計算処理 : 
-				DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime1, endTime1, startRestTimes , endRestTimes);
+				DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID,inputDate, workTypeCode, siftCD, startTime1, endTime1, startRestTimes , endRestTimes);
 				Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 				List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours,overtimeInputCaculations);
 		
-		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
+		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference, timeZones);
 	} 
 }

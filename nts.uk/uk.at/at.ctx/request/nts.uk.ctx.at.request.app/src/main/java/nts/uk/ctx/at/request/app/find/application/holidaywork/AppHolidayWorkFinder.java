@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.holidaywork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -503,10 +504,11 @@ public class AppHolidayWorkFinder {
 		endTime1 = recordWorkOutput.getEndTime1();
 		startTime2 = recordWorkOutput.getStartTime2();
 		endTime2 = recordWorkOutput.getEndTime2();
+		
 		// 01-18_実績の内容を表示し直す
 		//appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
 		
-		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
+		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference,Collections.emptyList());
 	}
 	
 	/**

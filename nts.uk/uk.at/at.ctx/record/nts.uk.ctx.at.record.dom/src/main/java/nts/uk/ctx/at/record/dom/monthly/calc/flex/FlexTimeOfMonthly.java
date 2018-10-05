@@ -458,6 +458,10 @@ public class FlexTimeOfMonthly {
 			val difference = carryforwardTimeBeforeOffset.minusMinutes(carryforwardTime.v());
 			this.flexExcessTime = this.flexExcessTime.addMinutes(difference.v());
 			this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(difference.v(), 0));
+			
+			// 法定外フレックス時間にフレックス時間をセットする
+			this.flexTime.setIllegalFlexTime(this.flexTime.getFlexTime().getTime());
+			this.flexTime.setLegalFlexTime(new AttendanceTimeMonthWithMinus(0));
 		}
 		else {
 			

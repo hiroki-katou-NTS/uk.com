@@ -950,7 +950,7 @@ public class MonthlyAggregateProcessService {
 		
 		GeneralDate today = GeneralDate.today();
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
-		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value;
+		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
 		Closure closure = closureService.getClosureDataByEmployee(employee.getId(), today);
 
 		if (closure == null) {

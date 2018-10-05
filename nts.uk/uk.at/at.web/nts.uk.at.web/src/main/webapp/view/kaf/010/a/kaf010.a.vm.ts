@@ -662,8 +662,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 siftCD: self.siftCD(),
                 workTypeCode: self.workTypeCd(),
                 inputDate: null,
-                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : self.restTime()[0].startTime(),
-                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : self.restTime()[0].endTime(),
+                startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.startTime(); }),
+                endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.endTime(); }), 
                 startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                 endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                 employeeID: self.employeeID()
