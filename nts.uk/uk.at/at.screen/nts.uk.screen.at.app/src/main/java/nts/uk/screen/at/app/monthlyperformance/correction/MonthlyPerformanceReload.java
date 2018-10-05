@@ -435,6 +435,7 @@ public class MonthlyPerformanceReload {
 				if (null != rowData.getItems()) {
 					rowData.getItems().forEach(item -> {
 						// Cell Data
+						// TODO item.getValueType().value
 						String attendanceAtrAsString = String.valueOf(item.getValueType());
 						String attendanceKey = mergeString(ADD_CHARACTER, "" + item.getItemId());
 						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
@@ -443,26 +444,24 @@ public class MonthlyPerformanceReload {
 						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
 							if (item.getValue() != null) {
-								if (Integer.parseInt(item.getValue()) >= 0) {
-									minute = Integer.parseInt(item.getValue());
-								} else {
-									minute = (Integer.parseInt(item.getValue())
-											+ (1 + -Integer.parseInt(item.getValue()) / (24 * 60)) * (24 * 60));
-								}
+								minute = Integer.parseInt(item.getValue());
 							}
-							int hours = minute / 60;
+							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0 && hours == 0)
-									? "-" + String.format("%d:%02d", hours, minutes)
+							String valueConvert = (minute < 0) ? "-" + String.format("%d:%02d", hours, minutes)
 									: String.format("%d:%02d", hours, minutes);
 
 							mpdata.addCellData(
 									new MPCellDataDto(attendanceKey, valueConvert, attendanceAtrAsString, "label"));
-						}
-						mpdata.addCellData(new MPCellDataDto(attendanceKey,
-								item.getValue() != null ? item.getValue() : "", "String", ""));
-						if (!StringUtil.isNullOrEmpty(lockStatus, true)) {
-							cellStatus.add(STATE_DISABLE);
+						} else
+							mpdata.addCellData(new MPCellDataDto(attendanceKey,
+									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
+						if (param.getInitMenuMode() == 2) {
+							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+								cellStatus.add(STATE_DISABLE);
+						} else {
+							if (!StringUtil.isNullOrEmpty(lockStatus, true))
+								cellStatus.add(STATE_DISABLE);
 						}
 						// Cell Data
 						lstCellState.add(new MPCellStateDto(employeeId, attendanceKey, cellStatus));
