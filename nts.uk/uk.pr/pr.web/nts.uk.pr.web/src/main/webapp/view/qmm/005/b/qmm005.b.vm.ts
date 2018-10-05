@@ -240,7 +240,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             let socialInsuranceStandardDate = self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, date);
                             let employmentInsuranceStandardDate;
                             /*compare month. 2018 and 18 is year and date for create new Date*/
-                            if (moment(new Date(2018, index - 1, 18)).isBefore(new Date(2018, data.advancedSetting.empInsurStanDate.baseMonth, 18))) {
+                            if (moment(new Date(2018, index, 18)).isBefore(new Date(2018, data.advancedSetting.empInsurStanDate.baseMonth, 18))) {
                                 employmentInsuranceStandardDate = self.preDateTime(parseInt(self.processingYearInput()) - 1, data.advancedSetting.empInsurStanDate.baseMonth, data.advancedSetting.empInsurStanDate.refeDate);
                             } else {
                                 employmentInsuranceStandardDate = self.preDateTime(parseInt(self.processingYearInput()), data.advancedSetting.empInsurStanDate.baseMonth, data.advancedSetting.empInsurStanDate.refeDate);
@@ -384,7 +384,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // ※7　雇用保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.empInsuranceStandardDateCheck) {
                             /*compare month. 2018 and 18 is year and date for create new Date*/
-                            if (moment(new Date(2018, index - 1, 18)).isBefore(new Date(2018, advancedSetting.empInsurStanDate.baseMonth, 18))) {
+                            if (moment(new Date(2018, index, 18)).isBefore(new Date(2018, advancedSetting.empInsurStanDate.baseMonth, 18))) {
                                 settingPayment.employmentInsuranceStandardDate(self.preDateTime(parseInt(self.processingYear()) - 1, advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
                             } else {
                                 settingPayment.employmentInsuranceStandardDate(self.preDateTime(parseInt(self.processingYear()), advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
