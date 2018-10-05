@@ -98,8 +98,8 @@ public class RegisterProcessing {
             YearMonth currentYearMonth = startMonth.addMonths(i);
 
             //No2.6 補足資料
-            GeneralDate empInsurdStanDate = initDateTime(currentYearMonth.year(), currentYearMonth.month(), referDateEmploymentInsuranceStanDate);
-            if (baseMonthEmploymentInsuranceStanDate > i) {
+            GeneralDate empInsurdStanDate = initDateTime(currentYearMonth.year(), baseMonthEmploymentInsuranceStanDate, referDateEmploymentInsuranceStanDate);
+            if (baseMonthEmploymentInsuranceStanDate > currentYearMonth.month()) {
                 empInsurdStanDate = initDateTime(empInsurdStanDate.year(), baseMonthEmploymentInsuranceStanDate,
                         empInsurdStanDate.day()).addYears(-1);
             }

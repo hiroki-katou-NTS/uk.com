@@ -52,7 +52,6 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             self.processingYearNative = null;
             self.processingYear.subscribe(function (newValue) {
                 if (newValue != self.processingYearNative && newValue != '') {
-                // if (newValue != '') {
                     let length = self.processingYearList().length;
                     let checker = false;
                     for (let k = 0; k < length; k++) {
@@ -73,7 +72,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 }
             });
             self.processingYearInput.subscribe(function (newValue) {
-                if(self.isNewMode()){
+                if (self.isNewMode()) {
                     self.blankData();
                 }
             })
@@ -228,8 +227,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         for (index = 1; index < 13; index++) {
                             let month = index - data.basicSetting.employeeExtractionReferenceDate.refeMonth;
                             let employeeExtractionReferenceDate = self.preDateTime(self.passYear(self.processingYearInput(), month, false).year, self.passYear(self.processingYearInput(), month, false).month, data.basicSetting.employeeExtractionReferenceDate.refeDate);
-                            let socialInsuranceCollectionMonth =  self.passYear(self.processingYearInput(), index + data.advancedSetting.salaryInsuColMon.monthCollected - SOCIAL_INSU_COLLE_MONTH_INDEX, false);
-                            let specificationPrintDate = self.passYear(self.processingYearInput(), index - parseInt(data.advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX,false);
+                            let socialInsuranceCollectionMonth = self.passYear(self.processingYearInput(), index + data.advancedSetting.salaryInsuColMon.monthCollected - SOCIAL_INSU_COLLE_MONTH_INDEX, false);
+                            let specificationPrintDate = self.passYear(self.processingYearInput(), index - parseInt(data.advancedSetting.detailPrintingMon.printingMonth) - DETAIL_PRINTING_MON_INDEX, false);
                             let year = parseInt(self.processingYearInput()) + data.advancedSetting.sociInsuStanDate.baseYear - SOCI_INSU_BASE_YEAR_INDEX;
                             month = data.advancedSetting.sociInsuStanDate.baseMonth;
                             if (month == 0 || month == 1) {
@@ -239,6 +238,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                             }
                             let date = data.advancedSetting.sociInsuStanDate.refeDate;
                             let socialInsuranceStandardDate = self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, date);
+                            let employmentInsuranceStandardDate;
+                            /*compare month. 2018 and 18 is year and date for create new Date*/
+                            if (moment(new Date(2018, index, 18)).isBefore(new Date(2018, data.advancedSetting.empInsurStanDate.baseMonth, 18))) {
+                                employmentInsuranceStandardDate = self.preDateTime(parseInt(self.processingYearInput()) - 1, data.advancedSetting.empInsurStanDate.baseMonth, data.advancedSetting.empInsurStanDate.refeDate);
+                            } else {
+                                employmentInsuranceStandardDate = self.preDateTime(parseInt(self.processingYearInput()), data.advancedSetting.empInsurStanDate.baseMonth, data.advancedSetting.empInsurStanDate.refeDate);
+                            }
                             let timeClosingDate;
                             if (data.advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) {
                                 month = index - data.basicSetting.employeeExtractionReferenceDate.refeMonth;
@@ -256,11 +262,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                                 targetMonth: ko.observable(index + '月の設定'),
                                 paymentDate: ko.observable(self.transDate(self.preDateTime(self.processingYearInput(), index, data.basicSetting.monthlyPaymentDate.datePayMent))),
                                 employeeExtractionReferenceDate: ko.observable(employeeExtractionReferenceDate),
-                                socialInsuranceCollectionMonth: ko.observable(parseInt(socialInsuranceCollectionMonth.year)*100 + parseInt(socialInsuranceCollectionMonth.month)),
-                                specificationPrintDate: ko.observable(parseInt(specificationPrintDate.year)*100 + parseInt(specificationPrintDate.month)),
+                                socialInsuranceCollectionMonth: ko.observable(parseInt(socialInsuranceCollectionMonth.year) * 100 + parseInt(socialInsuranceCollectionMonth.month)),
+                                specificationPrintDate: ko.observable(parseInt(specificationPrintDate.year) * 100 + parseInt(specificationPrintDate.month)),
                                 numberOfWorkingDays: ko.observable(data.basicSetting.workDay),
                                 socialInsuranceStandardDate: ko.observable(socialInsuranceStandardDate),
-                                employmentInsuranceStandardDate: ko.observable(self.preDateTime((self.processingYearInput() - 1), data.advancedSetting.empInsurStanDate.baseMonth, data.advancedSetting.empInsurStanDate.refeDate)),
+                                employmentInsuranceStandardDate: ko.observable(employmentInsuranceStandardDate),
                                 timeClosingDate: ko.observable(timeClosingDate),
                                 incomeTaxReferenceDate: ko.observable(incomeTaxReferenceDate),
                                 accountingClosureDate: ko.observable(accountingClosureDate)
@@ -377,7 +383,12 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                         // B6_8		雇用保険基準日
                         // ※7　雇用保険基準日チェックが入っている場合のみ更新する
                         if (params.checkbox.empInsuranceStandardDateCheck) {
-                            settingPayment.employmentInsuranceStandardDate(self.preDateTime(parseInt(self.processingYear()) - 1 , advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
+                            /*compare month. 2018 and 18 is year and date for create new Date*/
+                            if (moment(new Date(2018, index, 18)).isBefore(new Date(2018, advancedSetting.empInsurStanDate.baseMonth, 18))) {
+                                settingPayment.employmentInsuranceStandardDate(self.preDateTime(parseInt(self.processingYear()) - 1, advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
+                            } else {
+                                settingPayment.employmentInsuranceStandardDate(self.preDateTime(parseInt(self.processingYear()), advancedSetting.empInsurStanDate.baseMonth, advancedSetting.empInsurStanDate.refeDate));
+                            }
                         }
                         // B6_9		勤怠締め日
                         // ※10 勤怠締め日チェックが入っている場合のみ更新する
@@ -426,13 +437,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         registration() {
             let self = this;
-            if(!self.acceptRegistration()){
+            if (!self.acceptRegistration()) {
                 return;
             }
             self.acceptRegistration(false);
             setTimeout(function () {
                 self.acceptRegistration(true)
-            },700)
+            }, 1200)
 
             $('.nts-input').trigger("validate");
             if (hasError()) {
