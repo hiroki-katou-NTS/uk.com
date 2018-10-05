@@ -519,7 +519,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     this.updateOldIndividualValue();
                     return 0;
                 }
-                if (Number(this.individualBurdenRatio()).toFixed(3) < Number(this.individualExemptionRate()).toFixed(3)) {
+                if (this.formatThreeDigit(this.individualBurdenRatio()) < this.formatThreeDigit(this.individualExemptionRate())) {
                     if (__viewContext.viewModel.viewmodelC.welfareInsuranceClassification().fundClassification() == 1) {
                         if (this.individualBurdenRatio() != this.oldIndividualBurdenRatio) {
                             $(this.individualBurdenRatioId).ntsError('clear');
