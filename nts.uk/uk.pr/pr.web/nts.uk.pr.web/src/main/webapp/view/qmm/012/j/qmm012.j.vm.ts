@@ -87,6 +87,16 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
                     self.lstCustomes(dataSort.map(x => new DataScreen(x)));
                     self.currentCode(dataSort[0].itemNameCd);
                     self.isNewMode(false);
+
+                    setTimeout(function () {
+                        if(data.length > 15) {
+                            $('.nts-fixed-body-container').addClass('has-padding');
+                            $('.nts-fixed-table .scroll-header').addClass('scroll_header');
+                        } else {
+                            $('.nts-fixed-body-container').removeClass('has-padding');
+                            $('.nts-fixed-table .scroll-header').removeClass('scroll_header');
+                        }
+                    }, 100);
                 }
                 else{
                     self.lstCustomes([]);
