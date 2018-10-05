@@ -464,6 +464,7 @@ module nts.uk.pr.view.qmm012.b {
                                 
                                 if(matchSalaryID.length > 0) {
                                     self.salaryItemId(oldSalaryId);
+                                    self.salaryItemId.valueHasMutated();
                                 } else if(self.statementItemDataList().length > 0) {
                                     self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                                 }
