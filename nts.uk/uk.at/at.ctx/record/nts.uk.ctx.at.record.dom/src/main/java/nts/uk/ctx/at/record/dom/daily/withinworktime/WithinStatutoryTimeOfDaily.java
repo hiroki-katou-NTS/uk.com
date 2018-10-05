@@ -479,7 +479,9 @@ public class WithinStatutoryTimeOfDaily {
 						  														  dailyUnit,commonSetting,
 						  														  conditionItem,
 						  														  predetermineTimeSetByPersonInfo,coreTimeSetting,
-						  														  HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
+						  														  //HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
+						  														  //休暇加算するか(就業時間計算時)はここを見るようにしている
+						  														  HolidayAdditionAtr.HolidayNotAddition,
 						  														  leaveLateset
 						  														  
 												).getWorkTime();
