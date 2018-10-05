@@ -670,7 +670,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
-		
 		}
 		else {
 			DailyReportData dailyReportData = new DailyReportData();
@@ -801,9 +800,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
 									List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream().
 											filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
-									if (lstItemMasterUnregistered.stream().map(item -> {
-										return getNameFromCode(item.getItemId(), item.getValue(), queryData, outSche);
-										}).filter(item -> StringUtils.equalsAnyIgnoreCase(item, MASTER_UNREGISTERED)).count() > 0) {
+									
+									List<String> names = lstItemMasterUnregistered.stream()
+											.map(item -> this.getNameFromCode(item.getItemId(),
+													item.getValue(), queryData, outSche))
+											.collect(Collectors.toList());
+
+									boolean masterUnregistedFlag = names.stream()
+											.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
+													MASTER_UNREGISTERED));
+										
+									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 									}
 								}
@@ -876,7 +883,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 								int attendanceId = itemValue.getItemId();
 								if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-									String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
+									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 									itemValue.setValue(value);
 								}
 								// Workaround for optional attendance item from KMK002
@@ -1025,9 +1032,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
 						List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream().
 								filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
-						if (lstItemMasterUnregistered.stream().map(item -> {
-							return getNameFromCode(item.getItemId(), item.getValue(), queryData, outSche);
-							}).filter(item -> StringUtils.equalsAnyIgnoreCase(item, MASTER_UNREGISTERED)).count() > 0) {
+						
+						List<String> names = lstItemMasterUnregistered.stream()
+								.map(item -> this.getNameFromCode(item.getItemId(),
+										item.getValue(), queryData, outSche))
+								.collect(Collectors.toList());
+
+						boolean masterUnregistedFlag = names.stream()
+								.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
+										MASTER_UNREGISTERED));
+							
+						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 						}
 					}
@@ -1096,7 +1111,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 					int attendanceId = itemValue.getItemId();
 					if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-						String value = getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
+						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
 						itemValue.setValue(value);
 					}
 					// Workaround for optional attendance item from KMK002
@@ -2982,104 +2997,125 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<CodeName> lstEmployment = queryData.getLstEmployment();
 		
 		if (IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(id -> id == attendanceId)) {
-			Optional<WorkType> optWorkType = lstWorkType.stream().filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
-			if (optWorkType.isPresent()) {
-				WorkType workType = optWorkType.get();
-				if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
-					return workType.getName().v();
-				else
-					return workType.getAbbreviationName().v();
-			}
-			else {
+			Optional<WorkType> optWorkType = lstWorkType.stream()
+					.filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
+
+			if (!optWorkType.isPresent()) {
 				return MASTER_UNREGISTERED;
 			}
-		}
-		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
-			Optional<WorkTimeSetting> optWorkTime = lstWorkTime.stream().filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
-			if (optWorkTime.isPresent()) {
-				WorkTimeSetting workTime = optWorkTime.get();
-				if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME)
-					return workTime.getWorkTimeDisplayName().getWorkTimeName().v();
-				else
-					return workTime.getWorkTimeDisplayName().getWorkTimeAbName().v();
+
+			WorkType workType = optWorkType.get();
+			if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME) {
+				return workType.getName().v();
 			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optWorkLocation = lstWorkLocation.stream().filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
-			if (optWorkLocation.isPresent()) {
-				CodeName workLocation = optWorkLocation.get();
-				return workLocation.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_WORKPLACE) {
-			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream().filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
-			if (optWorkplace.isPresent()) {
-				CodeName workplace = optWorkplace.get();
-				return workplace.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
-			Optional<CodeName> optReason = lstReason.stream().filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
-			if (optReason.isPresent()) {
-				CodeName reason = optReason.get();
-				return reason.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
-			Optional<CodeName> optClassification = lstClassification.stream().filter(classification -> classification.getCode().equalsIgnoreCase(code)).findFirst();
-			if (optClassification.isPresent()) {
-				CodeName classification = optClassification.get();
-				return classification.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_POSITION) {
-			Optional<CodeName> optPosition = lstPosition.stream().filter(position -> position.getId().equalsIgnoreCase(code)).findFirst();
-			if (optPosition.isPresent()) {
-				CodeName position = optPosition.get();
-				return position.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
-		}
-		if (attendanceId == ATTENDANCE_ID_EMPLOYMENT) {
-			Optional<CodeName> optEmployment = lstEmployment.stream().filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
-			if (optEmployment.isPresent()) {
-				CodeName employment = optEmployment.get();
-				return employment.getName();
-			}
-			else {
-				return MASTER_UNREGISTERED;
-			}
+
+			return workType.getAbbreviationName().v();
 		}
 		
+		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
+			Optional<WorkTimeSetting> optWorkTime = lstWorkTime.stream()
+					.filter(type -> type.getWorktimeCode().v().equalsIgnoreCase(code)).findFirst();
+			
+			if (!optWorkTime.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			WorkTimeSetting workTime = optWorkTime.get();
+			if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME) {
+				return workTime.getWorkTimeDisplayName().getWorkTimeName().v();
+			}
+
+			return workTime.getWorkTimeDisplayName().getWorkTimeAbName().v();
+		}
+		
+		if (IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(id -> id == attendanceId)) {
+			Optional<CodeName> optWorkLocation = lstWorkLocation.stream()
+					.filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
+			
+			if (!optWorkLocation.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+			
+			CodeName workLocation = optWorkLocation.get();
+			return workLocation.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_WORKPLACE) {
+			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream()
+					.filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
+			if (!optWorkplace.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName workplace = optWorkplace.get();
+			return workplace.getName();
+		}
+
+		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
+			Optional<CodeName> optReason = lstReason.stream()
+					.filter(reason -> reason.getId().equalsIgnoreCase(code)).findFirst();
+			if (!optReason.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName reason = optReason.get();
+			return reason.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_CLASSIFICATION) {
+			Optional<CodeName> optClassification = lstClassification.stream()
+					.filter(classification -> classification.getCode().equalsIgnoreCase(code))
+					.findFirst();
+
+			if (!optClassification.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName classification = optClassification.get();
+			return classification.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_POSITION) {
+			Optional<CodeName> optPosition = lstPosition.stream()
+					.filter(position -> position.getId().equalsIgnoreCase(code)).findFirst();
+
+			if (!optPosition.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName position = optPosition.get();
+			return position.getName();
+		}
+		
+		if (attendanceId == ATTENDANCE_ID_EMPLOYMENT) {
+			Optional<CodeName> optEmployment = lstEmployment.stream()
+					.filter(employment -> employment.getCode().equalsIgnoreCase(code)).findFirst();
+			if (!optEmployment.isPresent()) {
+				return MASTER_UNREGISTERED;
+			}
+
+			CodeName employment = optEmployment.get();
+			return employment.getName();
+		}
+
 		if (IntStream.of(ATTENDANCE_ID_CALCULATION_MAP).anyMatch(id -> id == attendanceId)) {
 			return EnumAdaptor.valueOf(Integer.valueOf(code), AutoCalAtrOvertime.class).description;
 		}
+
 		if (IntStream.of(ATTENDANCE_ID_OVERTIME_MAP).anyMatch(id -> id == attendanceId)) {
-			return EnumAdaptor.valueOf(Integer.valueOf(code), TimeLimitUpperLimitSetting.class).description;
+			return EnumAdaptor.valueOf(Integer.valueOf(code),
+					TimeLimitUpperLimitSetting.class).description;
 		}
+
 		if (IntStream.of(ATTENDANCE_ID_OUTSIDE_MAP).anyMatch(id -> id == attendanceId)) {
-			return TextResource.localize(EnumAdaptor.valueOf(Integer.valueOf(code), GoingOutReason.class).nameId);
+			return TextResource.localize(
+					EnumAdaptor.valueOf(Integer.valueOf(code), GoingOutReason.class).nameId);
 		}
+
 		if (IntStream.of(ATTENDANCE_ID_USE_MAP).anyMatch(id -> id == attendanceId)) {
 			return EnumAdaptor.valueOf(Integer.valueOf(code), ManageAtr.class).description;
 		}
+
 		return "";
 	}
 	
