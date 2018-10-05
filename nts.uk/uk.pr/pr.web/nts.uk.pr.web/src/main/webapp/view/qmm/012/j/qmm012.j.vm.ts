@@ -23,7 +23,9 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             let self = this;
             $("#J2_1").focus();
             //Fixed table
-            if (/Chrome/.test(navigator.userAgent)) {
+            if (/Edge/.test(navigator.userAgent)) {
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 825 });
+            } else if (/Chrome/.test(navigator.userAgent)) {
                 $("#fixed-table").ntsFixedTable({ height: 505, width: 825 });
             } else {
                 $("#fixed-table").ntsFixedTable({ height: 499, width: 825 });
