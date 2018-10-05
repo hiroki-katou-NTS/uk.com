@@ -532,6 +532,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     });
                     return val != undefined ? val : value;
                 });
+                _.each(data.lstCellState, (cs: any) => {
+                    let val = _.find(cellStatesNew, (item: any) => {
+                        return item.rowId == cs.rowId && item.columnKey == cs.columnKey;
+                    });
+                    if (val == undefined) {
+                        cellStatesNew.push(cs);
+                    }
+                });
                 self.cellStates(cellStatesNew);
                 self.dailyPerfomanceData(dpDataNew);
                 $("#dpGrid").mGrid("destroy");

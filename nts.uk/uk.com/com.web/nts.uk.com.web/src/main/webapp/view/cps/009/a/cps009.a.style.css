@@ -70,7 +70,7 @@ input.ntsSearchBox {
 
 #sub-right {
 	float: left;
-	width: 624px;
+	width: 595px;
 	margin-left: 30px;
 }
 
@@ -122,11 +122,11 @@ table tr td, table tr th {
 .ui-igcombo-wrapper {
 	display: block;
 	width: initial;
-	width: 259px;
+	width: 249px;
 }
 
 .contents-header {
-	width: 98.5%;
+	width: 94.5%;
 	border: 1px solid #ccc;
 }
 
@@ -139,7 +139,7 @@ thead {
 }
 
 #COL_1 {
-	min-width: 200px !important;
+	min-width: 180px !important;
 	border-left: none;
     border-top: none;
 }
@@ -150,7 +150,7 @@ thead {
 }
 
 #COL_3 {
-	min-width: 259px !important;
+	min-width: 249px !important;
 	border-right: none;
 	border-top: none;
 }
@@ -168,8 +168,8 @@ input.sub-input-units  {
 }
 
 .input-units-1 {
-	min-width: 199px;
-	max-width: 199px;
+	min-width: 179px;
+	max-width: 179px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -181,24 +181,25 @@ input.sub-input-units  {
 }
 
 .input-units-3 {
-	min-width: 259px !important;
+	min-width: 249px !important;
+	max-width: 249px !important;
 }
 
  #notdata {
-	min-width: 259px !important;
-	max-width: 259px !important;
+	min-width: 249px !important;
+	max-width: 249px !important;
 }
 
 .sub-input-units  {
-	width: 259px !important;
+	width: 249px !important;
 	text-align: right !important;
 }
 
 .ntsDatepicker.nts-input.reset-element.sub-input-units{
-	width: 235px !important;
+	width: 225px !important;
 }
 .sub-input-units.nts-editor.nts-input{
-	width: 235px !important;
+	width: 225px !important;
 }
 
 .ntsControl.error input{

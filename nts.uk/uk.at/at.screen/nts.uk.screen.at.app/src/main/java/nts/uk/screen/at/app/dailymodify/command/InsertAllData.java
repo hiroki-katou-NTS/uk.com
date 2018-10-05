@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
@@ -23,7 +24,7 @@ public class InsertAllData {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void handlerInsertAll(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,
-			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate) {
-		hander.handlerInsertAll(commandNew, domainDailyNew, commandOld, dailyItems, lstMonthDomain, isUpdate);
+			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate, UpdateMonthDailyParam month) {
+		hander.handlerInsertAll(commandNew, domainDailyNew, commandOld, dailyItems, lstMonthDomain, isUpdate, month);
 	}
 }

@@ -349,8 +349,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 				ApprovalProcessingUseSetting approvalProcessingUseSetting = optApprovalProcessingUseSetting.get();
 				if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
 					 //アルゴリズム「ログイン社員の承認対象者の取得」を実行する	
-					//Imported（就業）「基準社員の承認対象者」を取得する request list 133
-					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+					// request list 534
+					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
+							AppContexts.user().employeeId(), new YearMonth(yearMonth), screenDto.getClosureId(),
+							screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 					
 					if(approvalRootOfEmloyee==null){
 						throw new BusinessException("Msg_916");
@@ -680,7 +682,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else if (param.getInitMenuMode() == 2) {
 				// *8 request list 534
 				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
-						AppContexts.user().userId(), new YearMonth(yearMonth), closureId,
+						AppContexts.user().employeeId(), new YearMonth(yearMonth), closureId,
 						screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 			}
 		}
@@ -787,7 +789,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
 							//◆基準社員の承認アクション　＝　承認した　の場合
 							if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED){
-								approve =true;
+								approve = true;
+								break;
 							}
 						}
 					}
