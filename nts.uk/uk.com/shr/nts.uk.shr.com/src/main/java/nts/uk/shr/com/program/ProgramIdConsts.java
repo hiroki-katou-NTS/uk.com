@@ -825,6 +825,16 @@ public class ProgramIdConsts {
 	public static final String KDR001B = "KDR001B";
 
 	/**
+	 * QMM011
+	 */
+	public static final String QMM011A = "QMM011A";
+	public static final String QMM011B = "QMM011B";
+	public static final String QMM011C = "QMM011C";
+	public static final String QMM011D = "QMM011D";
+	public static final String QMM011E = "QMM011E";
+	public static final String QMM011F = "QMM011F";	
+	
+	/**
 	 * CMM053
 	 */
 	public static final String CMM053A = "CMM053A";

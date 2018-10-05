@@ -19,7 +19,23 @@ import java.util.stream.Collectors;
  *
  */
 public class ProgramsManager {
-
+	
+	/**
+	 * QMM011
+	 */
+	public static final Program QMM011A = new Program(WebAppId.PR, ProgramIdConsts.QMM011A, "QMM011_60",
+			"/view/qmm/011/a/index.xhtml");
+	public static final Program QMM011B = new Program(WebAppId.PR, ProgramIdConsts.QMM011B, "QMM011_61",
+			"/view/qmm/011/b/index.xhtml");
+	public static final Program QMM011C = new Program(WebAppId.PR, ProgramIdConsts.QMM011C, "QMM011_62",
+			"/view/qmm/011/c/index.xhtml");
+	public static final Program QMM011D = new Program(WebAppId.PR, ProgramIdConsts.QMM011D, "QMM011_63",
+			"/view/qmm/011/d/index.xhtml");
+	public static final Program QMM011E = new Program(WebAppId.PR, ProgramIdConsts.QMM011E, "QMM011_64",
+			"/view/qmm/011/e/index.xhtml");
+	public static final Program QMM011F = new Program(WebAppId.PR, ProgramIdConsts.QMM011F, "QMM011_65",
+			"/view/qmm/011/f/index.xhtml");
+	
 	/**
 	 * CCG008A
 	 */
