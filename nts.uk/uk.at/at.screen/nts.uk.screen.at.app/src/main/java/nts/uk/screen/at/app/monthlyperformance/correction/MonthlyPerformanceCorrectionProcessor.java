@@ -803,7 +803,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			
 			// Setting data for dynamic column
-			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream().filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
+			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream()
+					.filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
 				if (null != rowData.getItems()) {
 					rowData.getItems().forEach(item -> {
@@ -821,22 +822,26 @@ public class MonthlyPerformanceCorrectionProcessor {
 							}
 							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0)
-									? "-" + String.format("%d:%02d", hours, minutes)
+							String valueConvert = (minute < 0) ? "-" + String.format("%d:%02d", hours, minutes)
 									: String.format("%d:%02d", hours, minutes);
 
 							mpdata.addCellData(
 									new MPCellDataDto(attendanceKey, valueConvert, attendanceAtrAsString, "label"));
 						} else
 							mpdata.addCellData(new MPCellDataDto(attendanceKey,
-								item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
-						if (!StringUtil.isNullOrEmpty(lockStatus, true)) {
-							cellStatus.add(STATE_DISABLE);
+									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
+						if (param.getInitMenuMode() == 2) {
+							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+								cellStatus.add(STATE_DISABLE);
+						} else {
+							if (!StringUtil.isNullOrEmpty(lockStatus, true))
+								cellStatus.add(STATE_DISABLE);
 						}
 						// Cell Data
 						lstCellState.add(new MPCellStateDto(employeeId, attendanceKey, cellStatus));
 
-						Optional<EditStateOfMonthlyPerformanceDto> dto = newList.stream().filter(item2 -> item2.getAttendanceItemId().equals(item.getItemId())).findFirst();
+						Optional<EditStateOfMonthlyPerformanceDto> dto = newList.stream()
+								.filter(item2 -> item2.getAttendanceItemId().equals(item.getItemId())).findFirst();
 						if (dto.isPresent()) {
 							if (dto.get().getStateOfEdit() == 0) {
 								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_MYSELF);
@@ -845,45 +850,48 @@ public class MonthlyPerformanceCorrectionProcessor {
 							}
 						}
 						// color for attendance Item 202
-						if(item.getItemId()==202){
-						//月別実績の勤怠時間．月の計算．36協定時間．36協定時間のエラー状態
-						Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.find(employeeId,new YearMonth(rowData.getYearMonth()) , ClosureId.valueOf(rowData.getClosureId()), new ClosureDate(rowData.getClosureDate().getClosureDay(), rowData.getClosureDate().getLastDayOfMonth()) );
-						if(optAttendanceTimeOfMonthly.isPresent()){
-							MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get().getMonthlyCalculation();
-							if(monthlyCalculation!=null){
-								AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
-								if(agreementTime!=null){
-									switch (agreementTime.getStatus().value) {
-									//限度アラーム時間超過
-									case 2:
-									//特例限度アラーム時間超過	
-									case 4:	
-										screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
-										break;
-									//限度エラー時間超過
-									case 1:
-									//特例限度エラー時間超過 
-									case 3:
-										screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
-										break;
-									//正常（特例あり）
-									case 5:
-									//限度アラーム時間超過（特例あり）	
-									case 7:
-									//限度エラー時間超過（特例あり）
-									case 6:	
-										screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
-										break;	
-									default:
-										break;
+						if (item.getItemId() == 202) {
+							// 月別実績の勤怠時間．月の計算．36協定時間．36協定時間のエラー状態
+							Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo
+									.find(employeeId, new YearMonth(rowData.getYearMonth()),
+											ClosureId.valueOf(rowData.getClosureId()),
+											new ClosureDate(rowData.getClosureDate().getClosureDay(),
+													rowData.getClosureDate().getLastDayOfMonth()));
+							if (optAttendanceTimeOfMonthly.isPresent()) {
+								MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get()
+										.getMonthlyCalculation();
+								if (monthlyCalculation != null) {
+									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
+									if (agreementTime != null) {
+										switch (agreementTime.getStatus().value) {
+										// 限度アラーム時間超過
+										case 2:
+											// 特例限度アラーム時間超過
+										case 4:
+											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
+											break;
+										// 限度エラー時間超過
+										case 1:
+											// 特例限度エラー時間超過
+										case 3:
+											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
+											break;
+										// 正常（特例あり）
+										case 5:
+											// 限度アラーム時間超過（特例あり）
+										case 7:
+											// 限度エラー時間超過（特例あり）
+										case 6:
+											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
+											break;
+										default:
+											break;
+										}
 									}
 								}
 							}
 						}
-						}
-						
-						
-						
+
 					});
 				}
 			}
