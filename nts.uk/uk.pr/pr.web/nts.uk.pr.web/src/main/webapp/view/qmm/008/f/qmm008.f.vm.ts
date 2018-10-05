@@ -47,18 +47,7 @@ module nts.uk.pr.view.qmm008.f {
 
                         }
                     }, 100);
-                    if (!response.display){
-                        setTimeout(function () {
-                             currentScreen.setWidth(1250);
-                        }, 100);
-                        // dialogSize = { width: 1200, height: 600 };
-                    } else {
-                        //setTimeout(function () {
-                            currentScreen.setWidth(1250);
-                        //}, 100);
-                        //var dialogSize = { width: 800, height: 600 };
-                    }
-                    console.log("99999");
+
                     //Fixed table
                     if (/Chrome/.test(navigator.userAgent)) {
                         $("#fixed-table1").ntsFixedTable({height: 412, width: 1140});
@@ -96,6 +85,10 @@ module nts.uk.pr.view.qmm008.f {
             */
            
             private update(): void {
+                $('#f3_1_2_container .nts-input').trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 let self = this;
                 let command = {
                     cusWelfarePensions: ko.toJS(self.dataList()),

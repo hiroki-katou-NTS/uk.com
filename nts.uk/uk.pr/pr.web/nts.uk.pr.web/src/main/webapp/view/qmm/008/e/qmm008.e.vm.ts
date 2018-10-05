@@ -74,6 +74,10 @@ module nts.uk.pr.view.qmm008.e {
            
            private update() : void {
                let self = this;
+               $('#E3_1_container .nts-input').trigger("validate");
+               if (nts.uk.ui.errors.hasError()) {
+                   return;
+               }
                block.invisible();
                let command = {
                 cusDataDtos :    ko.toJS(self.dataList()) ,

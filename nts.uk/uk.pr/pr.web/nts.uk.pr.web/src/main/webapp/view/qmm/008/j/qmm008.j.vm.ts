@@ -70,7 +70,10 @@ module nts.uk.pr.view.qmm008.j {
            }
            
            private update(): void {
-               
+               $('#J3_1_container .nts-input').trigger("validate");
+               if (nts.uk.ui.errors.hasError()) {
+                   return;
+               }
                let self = this;
                let command = {
                    data: ko.toJS(self.dataList()),
