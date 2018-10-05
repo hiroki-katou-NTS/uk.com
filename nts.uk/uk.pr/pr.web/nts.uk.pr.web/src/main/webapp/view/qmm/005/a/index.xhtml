@@ -69,11 +69,13 @@
                             <!--A2_8 処理区分名称-->
                             <div id="A2_8"  class="flex valign-center" style="display: inline-block;"
                                      data-bind="if: processInfomation.processCls() != '' " >
-                                
-                                    <label style="width: 100px;vertical-align: text-bottom;"  class="limited-label"
-                                            data-bind="text: processInfomation.processCls()"></label>
-                                
-                                <!--A2_9 編集-->
+
+											<label
+												style="width: 100px; vertical-align: text-bottom; padding-left: 5px;"
+												class="limited-label"
+												data-bind="text: processInfomation.processCls()"></label>
+
+											<!--A2_9 編集-->
                                 <button tabindex="6" class="small" id="button_update" data-bind="click: function (){$vm.showDialogD(processInfomation,0)}">#{i18n.getText('QMM005_11')}</button>
                             </div>
                             <com:ko-if bind="processInfomation.processCls() == ''">
