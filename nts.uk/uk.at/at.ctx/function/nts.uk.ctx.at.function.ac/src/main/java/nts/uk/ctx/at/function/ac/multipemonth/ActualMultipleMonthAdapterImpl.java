@@ -23,7 +23,7 @@ public class ActualMultipleMonthAdapterImpl implements ActualMultipleMonthAdapte
 	@Override
 	public Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(List<String> employeeIds, YearMonthPeriod period,
 			List<Integer> itemIds) {
-		Map<String, List<MonthlyRecordValuesExport>> x = getMonthlyRecord.algorithm(employeeIds, period, itemIds);
+		Map<String, List<MonthlyRecordValuesExport>> x = getMonthlyRecord.getRecordValues(employeeIds, period, itemIds);
 		Map<String, List<MonthlyRecordValueImport>> y =
 		    x.entrySet().stream()
 		        .collect(Collectors.toMap(

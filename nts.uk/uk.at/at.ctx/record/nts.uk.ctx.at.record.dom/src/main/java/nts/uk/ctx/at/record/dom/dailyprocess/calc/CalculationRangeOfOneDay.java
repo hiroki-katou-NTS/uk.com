@@ -116,14 +116,15 @@ public class CalculationRangeOfOneDay {
 	//所定時間設定
 	private PredetermineTimeSetForCalc predetermineTimeSetForCalc;
 	
-	
+	/*----------------Optional-----------------------*/
 	//インターバル制度管理
 	
 	//休暇使用合計残時間未割当
 	private Finally<TimevacationUseTimeOfDaily> timeVacationAdditionRemainingTime = Finally.empty();// 時間休暇�?算残時�?
 	
 	//非勤務時間帯
-	private Optional<NonWorkingTimeSheet> nonWorkingTimeSheet; 
+	private Optional<NonWorkingTimeSheet> nonWorkingTimeSheet;
+	/*----------------------Finally------------------------*/
 	//加給時間
 	
 	//就業時間内時間帯
@@ -134,9 +135,10 @@ public class CalculationRangeOfOneDay {
 	private Finally<OutsideWorkTimeSheet> outsideWorkTimeSheet = Finally.empty();
 
 	//出勤前時間
+	private Finally<AttendanceTime> beforeAttendance = Finally.of(new AttendanceTime(0)); 
 	
 	//退勤後時間
-
+	private Finally<AttendanceTime> afterLeaving = Finally.of(new AttendanceTime(0));
 
 
 

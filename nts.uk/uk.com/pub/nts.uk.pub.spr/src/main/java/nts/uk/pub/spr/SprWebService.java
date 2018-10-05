@@ -118,14 +118,6 @@ public class SprWebService {
 		    html.append("</body></html>");            
 		    return html.toString();
 		}
-		loginUserContextManager.loggedInAsEmployee(
-				loginUserContextSpr.getUserID(), 
-				loginUserContextSpr.getPersonID(), 
-				loginUserContextSpr.getContractCD(), 
-				loginUserContextSpr.getCompanyID(), 
-				loginUserContextSpr.getCompanyCD(), 
-				loginUserContextSpr.getLoginEmployeeID(), 
-				loginUserContextSpr.getEmployeeCD());
 		for(RoleInfoSpr roleInfor : loginUserContextSpr.getRoleList()){
 			switch (roleInfor.getRoleType()) {
 			case COMPANY_MANAGER:

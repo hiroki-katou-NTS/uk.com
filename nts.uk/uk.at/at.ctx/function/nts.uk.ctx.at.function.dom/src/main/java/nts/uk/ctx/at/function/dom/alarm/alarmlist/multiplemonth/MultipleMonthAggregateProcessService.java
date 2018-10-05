@@ -155,6 +155,7 @@ public class MultipleMonthAggregateProcessService {
 				List<MonthlyRecordValueImport> result = resultActuals.get(employee.getId());
 				if (CollectionUtil.isEmpty(result)) continue;
 				switch (checkItem) {
+				
 				case TIME:
 					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
 
@@ -178,8 +179,10 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+					
 				case TIMES:
 				case AMOUNT:
+				case DAYS:
 					if (checkActualResultMulMonth.checkMulMonthCheckCond(period,companyId,employee.getId(),result,extra)) {
 
 						checkAddAlarm = true;
@@ -202,6 +205,7 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+					
 				case AVERAGE_TIME:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
@@ -224,8 +228,10 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+					
 				case AVERAGE_TIMES:
 				case AVERAGE_AMOUNT:
+				case AVERAGE_DAYS:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondAverage(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue());
@@ -247,6 +253,7 @@ public class MultipleMonthAggregateProcessService {
 						}
 					}
 					break;
+					
 				case CONTINUOUS_TIME:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
@@ -256,8 +263,10 @@ public class MultipleMonthAggregateProcessService {
 								String.valueOf(extra.getContinuousMonths()));
 					}
 					break;
+					
 				case CONTINUOUS_TIMES:
 				case CONTINUOUS_AMOUNT:
+				case CONTINUOUS_DAYS:
 					if (checkActualResultMulMonth.checkMulMonthCheckCondContinue(period,companyId,employee.getId(),result,extra)) {
 						checkAddAlarm = true;
 						String startValueTime = String.valueOf(startValue.intValue());
@@ -278,8 +287,10 @@ public class MultipleMonthAggregateProcessService {
 
 					}
 					break;
-					//10,11
-				default:
+					
+				case NUMBER_TIMES:
+				case NUMBER_AMOUNT:
+				case NUMBER_DAYS:
 					ArrayList<Integer> listMonthNumber = checkActualResultMulMonth.checkMulMonthCheckCondCosp(period,companyId,employee.getId(),result,extra) ;
 					if (!CollectionUtil.isEmpty(listMonthNumber)) {
 						checkAddAlarm = true;
@@ -290,7 +301,9 @@ public class MultipleMonthAggregateProcessService {
 
 					}
 					break;
-				}
+				default:
+					break;
+				}//end switch check item
 				if (checkAddAlarm) {
 					ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(employee.getWorkplaceId(),
 							employee.getId(), tempStart.toString("yyyy/MM"), TextResource.localize("KAL010_250"),

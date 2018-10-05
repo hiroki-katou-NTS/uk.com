@@ -24,7 +24,7 @@ public class StdOutputCondSetDto {
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private int categoryId;
 
 	/**
 	 * 区切り文字
@@ -57,9 +57,10 @@ public class StdOutputCondSetDto {
 	private int stringFormat;
 
 	public static StdOutputCondSetDto fromDomain(StdOutputCondSet domain) {
-		return new StdOutputCondSetDto(domain.getCid(), domain.getConditionSetCd(), domain.getCategoryId(),
-				domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
-				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
+		return new StdOutputCondSetDto(domain.getCid(), domain.getConditionSetCode().v(), domain.getCategoryId().v(),
+				domain.getDelimiter().value, domain.getItemOutputName().value, domain.getAutoExecution().value,
+				domain.getConditionSetName().v(), domain.getConditionOutputName().value,
+				domain.getStringFormat().value);
 	}
 
 }

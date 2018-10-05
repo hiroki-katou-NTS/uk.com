@@ -37,4 +37,12 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
+	/**
+	 * 社員の申請を反映
+	 * @param workId
+	 * @param sid
+	 * @param datePeriod
+	 * @return
+	 */
+	ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod);
 }

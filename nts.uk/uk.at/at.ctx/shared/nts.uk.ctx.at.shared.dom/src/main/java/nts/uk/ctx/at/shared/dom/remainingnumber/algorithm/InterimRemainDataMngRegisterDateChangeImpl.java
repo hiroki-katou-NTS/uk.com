@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -54,6 +57,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private InterimBreakDayOffMngRepository breakDayOffRepos;
 	@Inject
 	private InterimSpecialHolidayMngRepository specialHoliday;
+
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
 		//「残数作成元情報(実績)」を取得する
@@ -104,7 +108,8 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, comSetting, leaveComSetting);
 		
-		this.managedParallelWithContext.forEach(lstDate, loopDate -> {
+		//this.managedParallelWithContext.forEach(lstDate, loopDate -> {
+		for(GeneralDate loopDate : lstDate){
 			DatePeriod datePeriod = new DatePeriod(loopDate, loopDate);
 			//指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputData = new InterimRemainCreateDataInputPara(cid, 
@@ -115,7 +120,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 					lstAppData,
 					false);
 			mngRegister.registryInterimDataMng(inputData, comHolidaySetting);
-		});
+		}
 	}
 
 }

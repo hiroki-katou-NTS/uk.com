@@ -78,6 +78,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         // monthly
         monthlyAggregateStartTime : KnockoutObservable<string> = ko.observable("");
         monthlyAggregateEndTime : KnockoutObservable<string> = ko.observable("");
+        employeeIDS : KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             var self = this;
@@ -100,6 +101,16 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     self.getLogData();    
                 }
             });
+            
+            self.employeeIDS.subscribe(value => {
+                if(value != null && value.length > 0) {
+                    self.getLogDataAgain(value).done(employeeIDS => {
+                        if(employeeIDS.length > 0) {
+                             self.employeeIDS(employeeIDS);
+                            } 
+                        });
+                    }
+                });
         }
 
         startPage(): JQueryPromise<any> {
@@ -267,7 +278,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             self.monthlyAggregateEndTime(self.getAsyncData(info.taskDatas, "monthlyAggregateEndTime").valueAsString);
                             
                             // Get Log data
-                            self.getLogData();
+                            //self.getLogData();
                             self.enableCancelTask(false);
                             
                             let stopped = 0;
@@ -326,12 +337,46 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             };
             service.getErrorMessageInfo(params).done((res) => {
                 let i = 0;
-                let data = _.map(res,function(item:any){
+                let data = _.map(res.listResult,function(item:any){
                    return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
                 });
                 self.errorMessageInfo(data);
-                self.dataExport(res);
+                self.errorMessageInfo.valueHasMutated();
+                self.dataExport(data);
+                self.dataExport.valueHasMutated();
+                if(res.listEmployee.length > 0) {
+                   self.employeeIDS(res.listEmployee);
+                   self.errorMessageInfo.valueHasMutated();
+//                   LabelGetLogDataAgain : getLogDataAgain(res.listEmployee).done((EmpIDS) => {
+//                       if(EmpIDS.lenght > 0){
+//                           self.employeeIDS(EmpIDS);
+//                           continue LabelGetLogDataAgain;
+//                       } 
+//                    });
+                }
             });
+        }
+
+        getLogDataAgain(employeeIDS : any) : JQueryPromise<any> {
+            var self = this;
+            let dfd = $.Deferred<any>();
+            var params = {
+                empCalAndSumExecLogID: self.empCalAndSumExecLogID(),
+                executionContent: self.selectedExeContent(),
+                employeeID : self.employeeIDS()
+            };
+            service.getErrorMessageInfo(params).done((res) => {
+                let i = self.errorMessageInfo().length;
+                let data = _.map(res.listResult,function(item:any){
+                   return {id: i++, disposalDay:item.disposalDay,messageError:item.messageError,personCode:item.personCode,personName:item.personName}; 
+                });
+                ko.utils.arrayPushAll(self.errorMessageInfo, data);
+                self.errorMessageInfo.valueHasMutated();
+                self.dataExport.push(data);
+                self.dataExport.valueHasMutated();
+                dfd.resolve(res.listEmployee);
+            });
+            return dfd.promise();
         }
 
     }

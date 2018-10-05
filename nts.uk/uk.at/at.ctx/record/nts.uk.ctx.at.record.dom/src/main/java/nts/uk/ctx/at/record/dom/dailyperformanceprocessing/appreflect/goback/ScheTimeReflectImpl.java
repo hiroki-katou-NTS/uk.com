@@ -169,7 +169,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				return;
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
-			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode().v();
+			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode() == null ? null : workData.getRecordInfo().getWorkTimeCode().v();
 		}
 		//出勤時刻を反映できるかチェックする
 		boolean isStart1 = this.checkAttendenceReflect(para, 1, true);

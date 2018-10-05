@@ -81,10 +81,10 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	}
 	
 	@Override
-	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
+	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
 			if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode())){
-				return true;
+				return WorkCheckResult.ERROR;
 			}
 		}
 		
@@ -106,16 +106,33 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 		return comparePlanAndActual(planCheck, actualCheck, this.operatorBetweenPlanActual == LogicalOperator.AND);
 	}
 	
-	private boolean comparePlanAndActual(WorkCheckResult plan, WorkCheckResult actual, boolean same){
+	private WorkCheckResult comparePlanAndActual(WorkCheckResult plan, WorkCheckResult actual, boolean same){
+		if(plan == WorkCheckResult.NOT_CHECK && actual == WorkCheckResult.NOT_CHECK){
+			return WorkCheckResult.NOT_CHECK;
+		}
+		
 		if(plan == WorkCheckResult.NOT_CHECK) {
-			return WorkCheckResult.ERROR == actual;
+			if(WorkCheckResult.ERROR == actual){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
 		}
 		if(actual == WorkCheckResult.NOT_CHECK) {
-			return WorkCheckResult.ERROR == plan;
+			if(WorkCheckResult.ERROR == plan){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
 		}
 		if(same){
-			return WorkCheckResult.ERROR == actual && WorkCheckResult.ERROR == plan;
+			if(WorkCheckResult.ERROR == actual && WorkCheckResult.ERROR == plan){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
 		}
-		return WorkCheckResult.ERROR == actual || WorkCheckResult.ERROR == plan;
+
+		if(WorkCheckResult.ERROR == actual || WorkCheckResult.ERROR == plan){
+			return WorkCheckResult.ERROR;
+		}
+		return WorkCheckResult.NOT_ERROR;
 	}
 }

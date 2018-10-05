@@ -7,6 +7,4 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  */
 public interface LateLeaveEarlyManagementTimeSheet {
 	
-//	List<LateTimeSheet> lateTimeSheetList();
-//	List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetlist();
 } 

@@ -18,7 +18,7 @@ module kdl021.a.viewmodel {
             self.items = ko.observableArray([]);
             //header
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', width: 90 },
+                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'displayCode', width: 90 },
                 { headerText: nts.uk.resource.getText("KDL021_4"), prop: 'name', width: 245, formatter: _.escape }
             ]);
             self.currentCodeList = ko.observableArray();
@@ -38,14 +38,17 @@ module kdl021.a.viewmodel {
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
             //the fist item 
             if(!self.isMulti){
-                self.dataSoure.push(new ItemModel("", "選択なし"));    
+                self.dataSoure.push(new ItemModel("", "選択なし", ""));    
             }
             //set source
             if (self.posibleItems.length > 0) {
                 if (self.isMonthly) {
                     service.getMonthlyAttendanceDivergenceName(self.posibleItems).done(function(lstItem: Array<any>) {
                         for (let i in lstItem) {
-                            self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
+                            self.dataSoure.push(new ItemModel(
+                                lstItem[i].attendanceItemId.toString(), 
+                                lstItem[i].attendanceItemName.toString(),
+                                lstItem[i].attendanceItemDisplayNumber.toString()));
                         };
                         //set source
                         let data = _.sortBy(self.dataSoure, ['code']);
@@ -58,7 +61,10 @@ module kdl021.a.viewmodel {
                 } else {
                     service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>) {
                         for (let i in lstItem) {
-                            self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
+                            self.dataSoure.push(new ItemModel(
+                                lstItem[i].attendanceItemId.toString(), 
+                                lstItem[i].attendanceItemName.toString(),
+                                lstItem[i].attendanceItemDisplayNumber.toString()));
                         };
                         //set source
                         let data = _.sortBy(self.dataSoure, ['code']);
@@ -104,9 +110,11 @@ module kdl021.a.viewmodel {
     class ItemModel {
         code: string;
         name: string;
-        constructor(code: string, name: string) {
+        displayCode: string;
+        constructor(code: string, name: string, displayCode: string) {
             this.code = code;
             this.name = name;
+            this.displayCode = displayCode;
         }
     }
 
