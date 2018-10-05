@@ -59,7 +59,7 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
 			"appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, "+
-			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE, "+
+			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+
 			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
 			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
 			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
