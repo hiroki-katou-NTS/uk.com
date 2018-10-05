@@ -42,7 +42,7 @@ module nts.uk.pr.view.qmm008.e {
                            }
 
                        }
-                   }, 500);
+                   }, 100);
 
                });
 
