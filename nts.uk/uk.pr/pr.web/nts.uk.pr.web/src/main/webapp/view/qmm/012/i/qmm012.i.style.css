@@ -5,3 +5,7 @@ button.nts-switch-button{
 .ntsSearchBox nts-editor ntsSearchBox_Component{
 	width: 180px;
 }
+
+#contents-area .direction-right {
+    margin-right: 10px;
+}

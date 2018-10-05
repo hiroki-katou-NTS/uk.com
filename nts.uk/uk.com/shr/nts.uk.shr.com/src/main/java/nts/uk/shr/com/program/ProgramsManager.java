@@ -19,7 +19,23 @@ import java.util.stream.Collectors;
  *
  */
 public class ProgramsManager {
-
+	
+	/**
+	 * QMM011
+	 */
+	public static final Program QMM011A = new Program(WebAppId.PR, ProgramIdConsts.QMM011A, "QMM011_60",
+			"/view/qmm/011/a/index.xhtml");
+	public static final Program QMM011B = new Program(WebAppId.PR, ProgramIdConsts.QMM011B, "QMM011_61",
+			"/view/qmm/011/b/index.xhtml");
+	public static final Program QMM011C = new Program(WebAppId.PR, ProgramIdConsts.QMM011C, "QMM011_62",
+			"/view/qmm/011/c/index.xhtml");
+	public static final Program QMM011D = new Program(WebAppId.PR, ProgramIdConsts.QMM011D, "QMM011_63",
+			"/view/qmm/011/d/index.xhtml");
+	public static final Program QMM011E = new Program(WebAppId.PR, ProgramIdConsts.QMM011E, "QMM011_64",
+			"/view/qmm/011/e/index.xhtml");
+	public static final Program QMM011F = new Program(WebAppId.PR, ProgramIdConsts.QMM011F, "QMM011_65",
+			"/view/qmm/011/f/index.xhtml");
+	
 	/**
 	 * CCG008A
 	 */
@@ -2174,6 +2190,21 @@ public class ProgramsManager {
 			"/view/kdp/003/b/index.xhtml");
 	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
 			"/view/kdp/003/c/index.xhtml");
+
+	/**
+	* QMM005 
+	*/
+	 public static final Program QMM005A = new Program(WebAppId.PR, ProgramIdConsts.QMM005A, "QMM005_122",
+	 "/view/qmm/005/a/index.xhtml");
+	 public static final Program QMM005B = new Program(WebAppId.PR, ProgramIdConsts.QMM005B, "QMM005_123",
+	 "/view/qmm/005/b/index.xhtml");
+	 public static final Program QMM005D = new Program(WebAppId.PR, ProgramIdConsts.QMM005D, "QMM005_125",
+	 "/view/qmm/005/d/index.xhtml");
+	 public static final Program QMM005E = new Program(WebAppId.PR, ProgramIdConsts.QMM005E, "QMM005_27",
+	 "/view/qmm/005/e/index.xhtml");
+	 public static final Program QMM005F = new Program(WebAppId.PR, ProgramIdConsts.QMM005F, "QMM005_127",
+	 "/view/qmm/005/f/index.xhtml");
+
 	/**
 	 * All programs map.
 	 */

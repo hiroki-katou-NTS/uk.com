@@ -1,13 +1,14 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 出力条件設定（定型）
  */
-@AllArgsConstructor
 @Getter
 public class StdOutputCondSet extends AggregateRoot {
 
@@ -17,51 +18,56 @@ public class StdOutputCondSet extends AggregateRoot {
 	private String cid;
 
 	/**
-	 * 外部出力条件コード
+	 * 条件設定コード
 	 */
-	private String conditionSetCd;
+	private ExternalOutputConditionCode conditionSetCode;
 
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private CategoryCd categoryId;
 
 	/**
 	 * 区切り文字
 	 */
-	private int delimiter;
+	private Delimiter delimiter;
 
 	/**
 	 * するしない区分
 	 */
-	private int itemOutputName;
+	private NotUseAtr itemOutputName;
 
 	/**
 	 * するしない区分
 	 */
-	private int autoExecution;
+	private NotUseAtr autoExecution;
 
 	/**
-	 * 外部出力条件名称
+	 * 条件設定名称
 	 */
-	private String conditionSetName;
+	private ExternalOutputConditionName conditionSetName;
 
 	/**
 	 * するしない区分
 	 */
-	private int conditionOutputName;
+	private NotUseAtr conditionOutputName;
 
 	/**
 	 * 文字列形式
 	 */
-	private int stringFormat;
+	private StringFormat stringFormat;
 
-	public static StdOutputCondSet toDomain(String cid, String conditionSetCd, String categoryId,
-			int delimiter, int itemOutputName, int autoExecution, String conditionSetName, int conditionOutputName,
-			int stringFormat) {
-		StdOutputCondSet stdOutputCondSet = new StdOutputCondSet(cid, conditionSetCd, categoryId, delimiter,
-				itemOutputName, autoExecution, conditionSetName, conditionOutputName, stringFormat);
-		return stdOutputCondSet;
+	public StdOutputCondSet(String cid, String conditionSetCode, int categoryId, int delimiter, int itemOutputName,
+			int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat) {
+		super();
+		this.cid = cid;
+		this.conditionSetCode = new ExternalOutputConditionCode(conditionSetCode);
+		this.categoryId = new CategoryCd(categoryId);
+		this.delimiter = EnumAdaptor.valueOf(delimiter, Delimiter.class);
+		this.itemOutputName = EnumAdaptor.valueOf(itemOutputName, NotUseAtr.class);
+		this.autoExecution = EnumAdaptor.valueOf(autoExecution, NotUseAtr.class);
+		this.conditionSetName = new ExternalOutputConditionName(conditionSetName);
+		this.conditionOutputName = EnumAdaptor.valueOf(conditionOutputName, NotUseAtr.class);
+		this.stringFormat = EnumAdaptor.valueOf(stringFormat, StringFormat.class);
 	}
-
 }

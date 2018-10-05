@@ -20,8 +20,9 @@ module nts.uk.pr.view.qmm012.b {
             isdisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
             
             // statement gridList
-            statementItemDataList: KnockoutObservableArray<IStatementItemData> = ko.observableArray([]);
-            statementItemDataSelected: KnockoutObservable<StatementItemData> = ko.observable(null);
+            statementItemDataList: KnockoutObservableArray<IStatementItemCustom> = ko.observableArray([]);
+            statementItemDataSelected: KnockoutObservable<StatementItemData>;
+            salaryItemId: KnockoutObservable<string> = ko.observable(null);
             
             // define gridColumns
             gridColumns: any;
@@ -51,6 +52,8 @@ module nts.uk.pr.view.qmm012.b {
                                             return '';
                                         } }
                                    ];
+
+                self.statementItemDataSelected = ko.observable(new StatementItemData(null, self));
                 
                 self.selectedCategory.subscribe(() => {
                     let oldSalaryId = self.statementItemDataSelected().salaryItemId();
@@ -61,10 +64,10 @@ module nts.uk.pr.view.qmm012.b {
                         });
                         
                         if(matchSalaryID.length > 0) {
-                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                            self.salaryItemId(oldSalaryId);
+                        } else if(self.statementItemDataList().length > 0) {
+                            self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                         }
-                        
-                        $("#B3_3").focus();
                     });
                 });
 
@@ -77,13 +80,56 @@ module nts.uk.pr.view.qmm012.b {
                         });
                         
                         if(matchSalaryID.length > 0) {
-                            self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                            self.salaryItemId(oldSalaryId);
+                        } else if(self.statementItemDataList().length > 0) {
+                            self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                         }
-                        
-                        $("#B3_3").focus();
                     });
                 });
+
+                self.salaryItemId.subscribe(x => {
+
+                    if(x && (x != "")) {
+                        let data: IStatementItemCustom = _.filter(self.statementItemDataList(), function(o) {
+                            return x == o.salaryItemId;
+                        })[0];
+
+                        if(data) {
+                            self.loadItemData(data.categoryAtr, data.itemNameCd, data.salaryItemId);
+
+                            setTimeout(function(){
+                                $("tr[data-id='" + x + "'] ").focus();
+                                $("#B3_3").focus();
+                            }, 500);
+                        } else {
+                            self.statementItemDataSelected(new StatementItemData(null, self));
+                        }
+                    } else {
+                        self.statementItemDataSelected(new StatementItemData(null, self));
+                    }
+
+                    nts.uk.ui.errors.clearAll();
+                });
             }//end constructor
+
+            loadItemData(categoryAtr: number, itemNameCd: string, salaryItemId: string) {
+                let self = this;
+                block.invisible();
+
+                service.getStatementItemData(categoryAtr, itemNameCd, salaryItemId).done(function(data: IStatementItemData) {
+                    if(data) {
+                        self.statementItemDataSelected(new StatementItemData(data, self));
+                    } else {
+                        self.statementItemDataSelected(new StatementItemData(null, self));
+                    }
+
+                    block.clear();
+                }).fail(error => {
+                    self.statementItemDataSelected(new StatementItemData(null, self));
+
+                    block.clear();
+                });
+            }
             
             loadListData(): JQueryPromise<any> {
                 let self = this;
@@ -95,14 +141,12 @@ module nts.uk.pr.view.qmm012.b {
                     category = parseInt(self.selectedCategory(), 10);
                 }
                 
-                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemData>) {
+                service.getAllStatementItemData(category, self.isdisplayAbolition()).done(function(data: Array<IStatementItemCustom>) {
                     data.sort(self.compare);
                     self.statementItemDataList(data);
                     
-                    if(data.length > 0) {
-                        self.statementItemDataSelected(new StatementItemData(data[0], self));
-                        $("#B3_3").focus();
-                    } else {
+                    if(self.statementItemDataList().length <= 0) {
+                        self.salaryItemId(null);
                         self.statementItemDataSelected(new StatementItemData(null, self));
                     }
                     
@@ -118,7 +162,7 @@ module nts.uk.pr.view.qmm012.b {
                 return deferred.promise();
             }
             
-            compare(a: IStatementItemData, b: IStatementItemData): number {
+            compare(a: IStatementItemCustom, b: IStatementItemCustom): number {
             
                 let comparison = 0;
                 if (a.categoryAtr > b.categoryAtr) {
@@ -146,7 +190,7 @@ module nts.uk.pr.view.qmm012.b {
                     
                     if(data != null) {
                         let categoryAtr = parseInt(data, 10);
-                        self.statementItemDataSelected(new StatementItemData(null, self));
+                        self.salaryItemId(null);
                         self.statementItemDataSelected().statementItem().categoryAtr(categoryAtr);
                     }
                     
@@ -229,19 +273,151 @@ module nts.uk.pr.view.qmm012.b {
                          oldSalaryId = nts.uk.util.randomId();
                          command.salaryItemId = oldSalaryId;
                     }
-                    
-                    // clear limitAmount value if not visible
-                    if((command.paymentItemSet.limitAmount != null) && (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT)) {
+
+                    // clear all tax value if not visible
+                    if((command.paymentItemSet.taxAtr == model.TaxAtr.LIMIT_TAX_EXEMPTION) ||
+                        (command.paymentItemSet.taxAtr == model.TaxAtr.LIMIT_TAX_EXEMPTION.toString()) ||
+                        (command.paymentItemSet.taxAtr == model.TaxAtr.COMMUTING_EXPENSES_MANUAL) ||
+                        (command.paymentItemSet.taxAtr == model.TaxAtr.COMMUTING_EXPENSES_MANUAL.toString())) {
+
+                        if((command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT) &&
+                            (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.FIXED_AMOUNT.toString())) {
+                            command.paymentItemSet.limitAmount = null;
+                        }
+
+                        if((command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.TAX_EXEMPTION_LIMIT_MASTER) &&
+                            (command.paymentItemSet.limitAmountAtr != model.LimitAmountClassification.TAX_EXEMPTION_LIMIT_MASTER.toString())) {
+                            command.paymentItemSet.taxLimitAmountCode = null;
+                        }
+                    } else {
+                        command.paymentItemSet.limitAmountAtr = null;
                         command.paymentItemSet.limitAmount = null;
+                        command.paymentItemSet.taxLimitAmountCode = null;
                     }
 
                     // clear phần thập phân
                     if((command.paymentItemSet.limitAmountAtr == model.LimitAmountClassification.FIXED_AMOUNT) && (command.paymentItemSet.limitAmount != null)) {
-                        let limitAmount = command.paymentItemSet.limitAmount;
+                        let limitAmount = command.paymentItemSet.limitAmount.toString();
                         let index = limitAmount.indexOf(".");
 
                         if(index >= 0) {
                             command.paymentItemSet.limitAmount = limitAmount.substring(0, index);
+                        }
+                    }
+
+                    if((command.itemRangeSet.errorUpperLimitSettingAtr == 1) || (command.itemRangeSet.errorUpperLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.errorUpperRangeValueAmount != null) {
+                            let value = command.itemRangeSet.errorUpperRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorUpperRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorUpperRangeValueTime != null) {
+                            let value = command.itemRangeSet.errorUpperRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorUpperRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorUpperRangeValueNum != null) {
+                            let value = command.itemRangeSet.errorUpperRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorUpperRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
+
+                    if((command.itemRangeSet.errorLowerLimitSettingAtr == 1) || (command.itemRangeSet.errorLowerLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.errorLowerRangeValueAmount != null) {
+                            let value = command.itemRangeSet.errorLowerRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorLowerRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorLowerRangeValueTime != null) {
+                            let value = command.itemRangeSet.errorLowerRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorLowerRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.errorLowerRangeValueNum != null) {
+                            let value = command.itemRangeSet.errorLowerRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.errorLowerRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
+
+                    if((command.itemRangeSet.alarmUpperLimitSettingAtr == 1) || (command.itemRangeSet.alarmUpperLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.alarmUpperRangeValueAmount != null) {
+                            let value = command.itemRangeSet.alarmUpperRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmUpperRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmUpperRangeValueTime != null) {
+                            let value = command.itemRangeSet.alarmUpperRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmUpperRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmUpperRangeValueNum != null) {
+                            let value = command.itemRangeSet.alarmUpperRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmUpperRangeValueNum = value.substring(0, index);
+                            }
+                        }
+                    }
+
+                    if((command.itemRangeSet.alarmLowerLimitSettingAtr == 1) || (command.itemRangeSet.alarmLowerLimitSettingAtr == "1")) {
+                        if(command.itemRangeSet.alarmLowerRangeValueAmount != null) {
+                            let value = command.itemRangeSet.alarmLowerRangeValueAmount.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmLowerRangeValueAmount = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmLowerRangeValueTime != null) {
+                            let value = command.itemRangeSet.alarmLowerRangeValueTime.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmLowerRangeValueTime = value.substring(0, index);
+                            }
+                        }
+
+                        if(command.itemRangeSet.alarmLowerRangeValueNum != null) {
+                            let value = command.itemRangeSet.alarmLowerRangeValueNum.toString();
+                            let index = value.indexOf(".");
+
+                            if(index >= 0) {
+                                command.itemRangeSet.alarmLowerRangeValueNum = value.substring(0, index);
+                            }
                         }
                     }
                     
@@ -266,6 +442,15 @@ module nts.uk.pr.view.qmm012.b {
                         command.itemRangeSet.alarmLowerRangeValueTime = null;
                         command.itemRangeSet.alarmLowerRangeValueNum = null;
                     }
+
+                    // set value cho ValueAtr
+                    if((command.statementItem.categoryAtr == model.CategoryAtr.ATTEND_ITEM) || (command.statementItem.categoryAtr == model.CategoryAtr.ATTEND_ITEM.toString())) {
+                        if((command.timeItemSet.timeCountAtr == model.TimeCountAtr.TIMES) || (command.timeItemSet.timeCountAtr == model.TimeCountAtr.TIMES.toString())) {
+                            command.statementItem.valueAtr = 3;
+                        } else {
+                            command.statementItem.valueAtr = 2;
+                        }
+                    }
                     
                     block.invisible();
                     service.registerStatementItemData(command).done(function() {
@@ -278,10 +463,11 @@ module nts.uk.pr.view.qmm012.b {
                                 });
                                 
                                 if(matchSalaryID.length > 0) {
-                                    self.statementItemDataSelected().salaryItemId(oldSalaryId);
+                                    self.salaryItemId(oldSalaryId);
+                                    self.salaryItemId.valueHasMutated();
+                                } else if(self.statementItemDataList().length > 0) {
+                                    self.salaryItemId(self.statementItemDataList()[0].salaryItemId);
                                 }
-                                
-                                $("#B3_3").focus();
                             });
                         });
                     }).fail(err => {
@@ -325,8 +511,7 @@ module nts.uk.pr.view.qmm012.b {
                                 if(self.statementItemDataList().length == 0) {
                                     self.create();
                                 } else if(nextSalaryId != null) {
-                                    self.statementItemDataSelected().salaryItemId(nextSalaryId);
-                                    $("#B3_3").focus();
+                                    self.salaryItemId(nextSalaryId);
                                 }
                             });
                         });
@@ -413,8 +598,8 @@ module nts.uk.pr.view.qmm012.b {
                     self.paymentItemSet = ko.observable(new PaymentItemSet(data.paymentItemSet, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(data.statementItemDisplaySet));
                     self.itemRangeSet = ko.observable(new ItemRangeSet(data.itemRangeSet));
-                    self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet, screenModel));
-                    self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet, screenModel));
+                    self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet, self));
+                    self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet, self));
                     
                     if(data.validityPeriodAndCycleSet) {
                         self.isSetValidity(true);
@@ -433,46 +618,11 @@ module nts.uk.pr.view.qmm012.b {
                     self.paymentItemSet = ko.observable(new PaymentItemSet(null, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(null));
                     self.itemRangeSet = ko.observable(new ItemRangeSet(null));
-                    self.deductionItemSet = ko.observable(new DeductionItemSet(null, screenModel));
-                    self.timeItemSet = ko.observable(new TimeItemSet(null, screenModel));
+                    self.deductionItemSet = ko.observable(new DeductionItemSet(null, self));
+                    self.timeItemSet = ko.observable(new TimeItemSet(null, self));
                     
                     self.checkCreate = ko.observable(true);
                 }
-                
-                self.salaryItemId.subscribe(x => {
-                    
-                    if(x) {
-                        data = _.filter(screenModel.statementItemDataList(), function(o) {
-                            return x == o.salaryItemId;
-                        })[0];
-                        
-                        self.statementItem(new StatementItem(data.statementItem));
-                        self.statementItemName(new StatementItemName(data.statementItemName));
-                        self.paymentItemSet(new PaymentItemSet(data.paymentItemSet, screenModel));
-                        self.statementItemDisplaySet(new StatementItemDisplaySet(data.statementItemDisplaySet));
-                        self.itemRangeSet(new ItemRangeSet(data.itemRangeSet));
-                        self.deductionItemSet(new DeductionItemSet(data.deductionItemSet, screenModel));
-                        self.timeItemSet(new TimeItemSet(data.timeItemSet, screenModel));
-
-                        if(data.validityPeriodAndCycleSet) {
-                            self.isSetValidity(true);
-                        } else {
-                            self.isSetValidity(false);
-                        }
-                        
-                        if(data.breakdownItemSet && (data.breakdownItemSet.length > 0)) {
-                            self.isSetBreakdownItem(true);
-                        } else {
-                            self.isSetBreakdownItem(false);
-                        }
-                        
-                        self.checkCreate(false);
-                        screenModel.statementItemDataSelected(self);
-                        $("#B3_3").focus();
-                    }
-                    
-                    nts.uk.ui.errors.clearAll();
-                });
                 
                 nts.uk.ui.errors.clearAll();
             }
@@ -485,16 +635,6 @@ module nts.uk.pr.view.qmm012.b {
                 nts.uk.ui.windows.sub.modal('../i/index.xhtml').onClosed(() => {
                     let isSetting = getShared("QMM012_I_IS_SETTING");
                     self.isSetBreakdownItem(isSetting);
-                    
-                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
-                    
-                    if(index >= 0) {
-                        if(isSetting) {
-                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [{breakdownItemCode: 1, breakdownItemName: "1"}];
-                        } else {
-                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [];
-                        }
-                    }
                     
                     $("#C3_8").focus();
                 });
@@ -513,28 +653,8 @@ module nts.uk.pr.view.qmm012.b {
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                     let isSetting = getShared("QMM012_H_IS_SETTING");
                     
-                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
-                    
                     if(isSetting && (isSetting.exitStatus == 1)) {
                         self.isSetValidity(isSetting);
-                        if(index >= 0) {
-                            self.screenModel.statementItemDataList()[index].validityPeriodAndCycleSet = {cycleSettingAtr: 0,
-                                                                                                        january: 0,
-                                                                                                        february: 0,
-                                                                                                        march: 0,
-                                                                                                        april: 0,
-                                                                                                        may: 0,
-                                                                                                        june: 0,
-                                                                                                        july: 0,
-                                                                                                        august: 0,
-                                                                                                        september: 0,
-                                                                                                        october: 0,
-                                                                                                        november: 0,
-                                                                                                        december: 0,
-                                                                                                        periodAtr: 0,
-                                                                                                        yearPeriodStart: 0,
-                                                                                                        yearPeriodEnd: 0};
-                        }
                     }
                     
                     $("#C3_2").focus();
@@ -711,21 +831,21 @@ module nts.uk.pr.view.qmm012.b {
                     self.taxAtr = ko.observable(data.taxAtr);
                     self.taxableAmountAtr = ko.observable(data.taxableAmountAtr);
                     self.limitAmount = ko.observable(data.limitAmount);
-                    self.limitAmountAtr = ko.observable(data.limitAmountAtr);
+                    self.limitAmountAtr = ko.observable((data.limitAmountAtr != null) ? data.limitAmountAtr : model.LimitAmountClassification.FIXED_AMOUNT);
                     self.taxLimitAmountCode = ko.observable(data.taxLimitAmountCode);
                     self.taxExemptionName = ko.observable(data.taxExemptionName);
                     self.note = ko.observable(data.note);
                 } else {
-                    self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.laborInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.breakdownItemUseAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.laborInsuranceCategory = ko.observable(model.CoveredAtr.COVERED);
                     self.settingAtr = ko.observable(model.SettingClassification.DESIGNATE_BY_ALL_MEMBERS);
-                    self.everyoneEqualSet = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.monthlySalary = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.hourlyPay = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.dayPayee = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.monthlySalaryPerday = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.averageWageAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.socialInsuranceCategory = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.everyoneEqualSet = ko.observable(model.CoveredAtr.COVERED);
+                    self.monthlySalary = ko.observable(model.CoveredAtr.COVERED);
+                    self.hourlyPay = ko.observable(model.CoveredAtr.COVERED);
+                    self.dayPayee = ko.observable(model.CoveredAtr.COVERED);
+                    self.monthlySalaryPerday = ko.observable(model.CoveredAtr.COVERED);
+                    self.averageWageAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.socialInsuranceCategory = ko.observable(model.CoveredAtr.COVERED);
                     self.taxAtr = ko.observable(model.TaxAtr.TAXATION);
                     self.taxableAmountAtr = ko.observable(model.TaxableAmountClassification.OVERDRAFT_TAXATION);
                     self.limitAmount = ko.observable(null);
@@ -947,7 +1067,7 @@ module nts.uk.pr.view.qmm012.b {
             // deductionItemList switch button
             deductionItemList: KnockoutObservableArray<model.ItemModel>;
             
-            constructor(data: IDeductionItemSet, screenModel: ScreenModel) {
+            constructor(data: IDeductionItemSet, parent: StatementItemData) {
                 let self = this;
                 
                 self.deductionItemList = ko.observableArray([
@@ -963,8 +1083,8 @@ module nts.uk.pr.view.qmm012.b {
                     self.note = ko.observable(data.note);
 
                     // show in screen because use same component
-                    screenModel.statementItemDataSelected().paymentItemSet().breakdownItemUseAtr(data.breakdownItemUseAtr);
-                    screenModel.statementItemDataSelected().paymentItemSet().note(data.note);
+                    parent.paymentItemSet().breakdownItemUseAtr(data.breakdownItemUseAtr);
+                    parent.paymentItemSet().note(data.note);
                 } else {
                     self.deductionItemAtr = ko.observable(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM);
                     self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
@@ -985,7 +1105,7 @@ module nts.uk.pr.view.qmm012.b {
             // coveredList switch button
             coveredList: KnockoutObservableArray<model.ItemModel>;
             
-            constructor(data: ITimeItemSet, screenModel: ScreenModel) {
+            constructor(data: ITimeItemSet, parent: StatementItemData) {
                 let self = this;
                 
                 self.timeCountList = ko.observableArray([
@@ -1005,16 +1125,24 @@ module nts.uk.pr.view.qmm012.b {
                     self.note = ko.observable(data.note);
 
                     // show in screen because use same component
-                    screenModel.statementItemDataSelected().paymentItemSet().note(data.note);
+                    parent.paymentItemSet().note(data.note);
                 } else {
-                    self.averageWageAtr = ko.observable(model.CoveredAtr.NOT_COVERED);
-                    self.workingDaysPerYear = ko.observable(model.CoveredAtr.NOT_COVERED);
+                    self.averageWageAtr = ko.observable(model.CoveredAtr.COVERED);
+                    self.workingDaysPerYear = ko.observable(model.CoveredAtr.COVERED);
                     self.timeCountAtr = ko.observable(model.TimeCountAtr.TIME);
                     self.note = ko.observable(null);
                 }
             }
         }
-        
+
+        interface IStatementItemCustom {
+            salaryItemId: string;
+            categoryAtr: number;
+            itemNameCd: string;
+            name: string;
+            deprecatedAtr: number;
+        }
+
         interface IStatementItemData {
             cid: string;
             salaryItemId: string;

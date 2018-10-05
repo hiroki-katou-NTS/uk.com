@@ -516,7 +516,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
 //		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
-		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(command.getEmployeeId(), new ArrayList<>());
+		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
 		
 		if (masterCache.getListWorkingConItem().size() > 1) {
 			// 労働条件が途中で変化するなら、計算キャッシュは利用しない

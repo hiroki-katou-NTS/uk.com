@@ -1,0 +1,70 @@
+.padding-item {
+	padding: 10px 0 0 10px;
+}
+
+.content {
+	margin: 20px 0 20px 0;
+}
+.right{
+	float: left;
+	width: 800px;
+}
+.left{
+	float: left;
+	width: 310px;
+}
+.table{
+	margin: 20px 20px 0 0;
+	width: 750px;
+}
+#B3_1 tr td{
+    border: 1px solid #CCC;
+	text-align: center;
+}
+#B3_1 th{
+	height: 40px;
+	text-align: center;
+}
+.table table {
+  table-layout: fixed;
+}
+span.nts-editor-wrapped.ntsControl{
+	width: 20% !important;
+}
+.ui-igcombo-wrapper{
+	width: 80% !important;
+}
+#B3_8{
+	margin-left: 65px;
+}
+
+#B3_12{
+	margin-left: 65px;
+}
+
+.top{
+	float: left;
+	
+}
+.bg-green {
+    height: 40px;
+}
+
+#B1_1{
+	margin-left: 25px;
+}
+#action{
+	margin-bottom: 10px;
+}
+
+#B1_2{
+	float: left;
+}
+
+#B1_3{
+	margin-left: 45px;
+}
+
+#B1_4 td{
+    text-align: center;
+}

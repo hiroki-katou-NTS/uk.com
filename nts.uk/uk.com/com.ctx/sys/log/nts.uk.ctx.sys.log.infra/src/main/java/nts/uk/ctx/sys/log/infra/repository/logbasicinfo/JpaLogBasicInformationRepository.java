@@ -1,17 +1,20 @@
 package nts.uk.ctx.sys.log.infra.repository.logbasicinfo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.ctx.sys.log.infra.entity.logbasicinfo.SrcdtLogBasicInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  *
@@ -54,6 +57,18 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 	@Override
 	public void save(LogBasicInformation basicInfo) {
 		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
+	}
+
+	@Override
+	public List<LogBasicInformation> getLogBasicInfo(String companyId, List<String> operationIds) {
+		if (operationIds.isEmpty()) return Collections.emptyList();
+		String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.operationId IN :operationIds";
+		List<LogBasicInformation> results = new ArrayList<>();
+		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+					.setParameter("operationIds", splitData).getList(item -> item.toDomain()));
+		});
+		return results;
 	}
 
 }

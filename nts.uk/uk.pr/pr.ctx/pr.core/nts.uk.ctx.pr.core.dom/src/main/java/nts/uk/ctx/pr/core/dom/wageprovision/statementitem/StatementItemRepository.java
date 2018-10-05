@@ -18,6 +18,10 @@ public interface StatementItemRepository {
 
 	Optional<StatementItem> getStatementItemById(String cid, int categoryAtr, String itemNameCd, String salaryItemId);
 
+	List<StatementItemCustom> getItemCustomByCategoryAndDeprecated(String cid, int categoryAtr, boolean isIncludeDeprecated);
+
+	List<StatementItemCustom> getItemCustomByDeprecated(String cid, boolean isIncludeDeprecated);
+
 	void add(StatementItem domain);
 
 	void update(StatementItem domain);

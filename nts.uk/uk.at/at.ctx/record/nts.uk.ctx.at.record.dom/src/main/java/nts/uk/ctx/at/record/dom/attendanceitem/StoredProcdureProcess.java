@@ -19,12 +19,12 @@ public interface StoredProcdureProcess {
 	
 	public List<IntegrationOfDaily> dailyProcessing(List<IntegrationOfDaily> dailies, Map<WorkTypeCode, WorkType> workTypes);
 	
-	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate);
 	
-	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime);
 	
-	public void monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime, List<AnyItemOfMonthly> monthlyOptionalItems);
 }

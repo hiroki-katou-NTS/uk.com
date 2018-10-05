@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementitem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItem;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemPk;
@@ -24,6 +26,18 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.statementItemPk.cid =:cid AND " + " f.statementItemPk.categoryAtr =:categoryAtr AND "
 			+ " f.statementItemPk.itemNameCd =:itemNameCd AND" + " f.statementItemPk.salaryItemId =:salaryItemId";
+	private static final String SELECT_CUSTOM =
+			"SELECT f.statementItemPk.salaryItemId, f.statementItemPk.categoryAtr, f.statementItemPk.itemNameCd, n.name, f.deprecatedAtr "
+					+ " FROM QpbmtStatementItem f INNER JOIN QpbmtStatementItemName n "
+					+ " ON f.statementItemPk.salaryItemId = n.statementItemNamePk.salaryItemId "
+					+ " WHERE  f.statementItemPk.cid =:cid ";
+	private static final String SELECT_CUSTOM_BY_CATE_AND_DEP = SELECT_CUSTOM
+					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
+					+ " AND f.deprecatedAtr = 0 ";
+	private static final String SELECT_CUSTOM_BY_CATE = SELECT_CUSTOM
+					+ " AND f.statementItemPk.categoryAtr =:categoryAtr ";
+	private static final String SELECT_CUSTOM_BY_DEP = SELECT_CUSTOM
+					+ " AND f.deprecatedAtr = 0 ";
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {
@@ -56,6 +70,25 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementItem.class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCd", itemNameCd)
 				.setParameter("salaryItemId", salaryItemId).getSingle(c -> c.toDomain());
+	}
+
+	@Override
+	public List<StatementItemCustom> getItemCustomByCategoryAndDeprecated(String cid, int categoryAtr, boolean isIncludeDeprecated) {
+		String query = isIncludeDeprecated ? SELECT_CUSTOM_BY_CATE : SELECT_CUSTOM_BY_CATE_AND_DEP;
+
+		return this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
+				.setParameter("categoryAtr", categoryAtr)
+				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "", item[4] != null ? String.valueOf(item[4]) : ""));
+	}
+
+	@Override
+	public List<StatementItemCustom> getItemCustomByDeprecated(String cid, boolean isIncludeDeprecated) {
+		String query = isIncludeDeprecated ? SELECT_CUSTOM : SELECT_CUSTOM_BY_DEP;
+
+		return this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
+				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "", item[4] != null ? String.valueOf(item[4]) : ""));
 	}
 
 	@Override

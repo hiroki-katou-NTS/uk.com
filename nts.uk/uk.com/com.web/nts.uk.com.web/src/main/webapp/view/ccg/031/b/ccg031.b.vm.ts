@@ -38,7 +38,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             self.listPartColumn = [
                 { headerText: "ID", key: "topPagePartID", dataType: "string", hidden: true },
                 { headerText: resource.getText("CCG031_27"), key: "code", dataType: "string", width: 50 },
-                { headerText: resource.getText("CCG031_28"), key: "name", dataType: "string" },
+                { headerText: resource.getText("CCG031_28"), key: "name", dataType: "string", formatter: _.escape },
             ];
         }
 

@@ -40,7 +40,7 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param perInfoCtgId
 	 * @return List<PerInfoInitValueSetItem>
 	 */
-	List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String categoryCd, String cid);
+	List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String perInfoCtgId, String cid);
 
 	// sonnlb
 

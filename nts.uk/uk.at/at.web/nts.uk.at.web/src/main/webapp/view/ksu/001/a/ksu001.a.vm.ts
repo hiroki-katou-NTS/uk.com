@@ -1302,6 +1302,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setDatasource(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             $.when(self.getDataBasicSchedule()).done(function() {
+                // set data hien thi o mode symbol
                 self.setDataToDisplaySymbol(self.dataSource())
                 dfd.resolve();
             });
@@ -1461,7 +1462,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     
                 let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
                     arrNewCellIsUnlocked: any[] = _.differenceWith(self.arrLockCellInit(), arrLockCellAfterSave, _.isEqual);
-                
+
                 // neu o mode time thi can merge cac object giong nhau vao thanh 1
                 if (self.selectedModeDisplay() == 2) {
                     _.each(arrTmp, (item) => {
@@ -1477,7 +1478,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
                                 _.remove(arrCell, data);
                             });
-                            // set innerIdx = -1: do sua cua startTime va endTime trong mode Time
+                            // set innerIdx = -1: do sua startTime va endTime (=> cell) trong mode Time
                             arrCell.push(new Cell({
                                 rowIndex: item.rowIndex,
                                 columnKey: item.columnKey,

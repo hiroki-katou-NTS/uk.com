@@ -9,11 +9,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemDisplaySetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemNameRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset.BreakdownItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.itemrangeset.ItemRangeSetRepository;
@@ -169,5 +165,15 @@ public class StatementItemDataFinder {
 			}
 		}
 		return result;
+	}
+
+	public List<StatementItemCustomDto> getListStatementItemData(Integer categoryAtr, boolean isIncludeDeprecated) {
+		String cid = AppContexts.user().companyId();
+		boolean isEnumValue = EnumAdaptor.convertToValueNameList(CategoryAtr.class).stream()
+				.anyMatch(c -> c.getValue() == categoryAtr);
+
+		List<StatementItemCustom> listStatementItemCustom = isEnumValue ? statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, categoryAtr, isIncludeDeprecated)
+				: statementItemRepository.getItemCustomByDeprecated(cid, isIncludeDeprecated);
+		return listStatementItemCustom.stream().map(i -> new StatementItemCustomDto(i)).collect(Collectors.toList());
 	}
 }

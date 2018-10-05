@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width: 1020,
+                height: 630
+            };
+        </script>
+        <com:ValidatorScript>
+            nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ReqStandardWorkingDays
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qmm005.b.style.css"/>
+        <com:scriptfile path="qmm005.b.start.js"/>
+        <com:scriptfile path="qmm005.b.service.js"/>
+        <com:scriptfile path="qmm005.b.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--B1_1	新規-->
+            <button tabindex="1" id="B1_1" class=""
+                    data-bind="click: creatNewProcessYear, enable: !isNewMode()">#{i18n.getText('QMM005_22')}</button>
+
+            <!--B1_2	登録-->
+            <button tabindex="2" id="B1_2" class="proceed "
+                    data-bind="click: registration, enable: $root.errors.isEmpty">#{i18n.getText('QMM005_1')}</button>
+
+            <!--B1_3	閉じる-->
+            <button tabindex="3" id="B1_3" style="margin-left: 165px;"
+                    data-bind="click: cancel">#{i18n.getText('QMM005_23')}</button>
+        </div>
+        <!--B2_4	処理年-->
+        <!--B4_1	支払日設定一覧-->
+        <div id="contents-area">
+            <table style="height: 600px" id='content_dialog'>
+                <tr>
+                    <td style="border: 0px; vertical-align: top">
+                        <div id="clf-component">
+                            <!--B2_1	処理年パネル-->
+                            <div id="B2_1" style="height: 295px" data-bind="ntsPanel:{}">
+                                <!--B2_2	処理年一覧-->
+                                <table id="B2_2" data-bind="ntsGridList: {
+                                        height: 350,
+                                        dataSource: processingYearList,
+                                        primaryKey: 'code',
+                                        columns: [
+                                                {headerText: '', key: 'code', width: 0, hidden: true},
+                                                {headerText: '#{i18n.getText('QMM005_25')}', key: 'name', width: 150}
+                                            ],
+                                        multiple: false,
+                                        value: processingYear,
+                                        rows: 10
+                                    }"></table>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="border: 0px; vertical-align: top">
+                        <div>
+                            <!--B3_1	処理区分-->
+                            <div class="form_label"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
+                            <!--B3_2	処理区分名称-->
+                            <span class="label" data-bind="text: processingDivisionName"></span>
+                        </div>
+                        <div class="margin-top-12">
+                            <!--B3_3	処理年-->
+                            <div class="form_label"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
+                            <!--B3_4	処理年-->
+                            <div id="B3_4"
+                                 data-bind="ntsDatePicker: {name: '#[QMM005_25]', value: processingYearInput, dateFormat: 'YYYY', enable: isNewMode(), required: true}"></div>
+                            <!--B3_6	反映-->
+                            <button id="B3_6" class="small" style="margin-left: 20px"
+                                    data-bind="click: reflectionPressingProcess, enable: isNewMode()">#{i18n.getText('QMM005_89')}</button>
+                            <!--B3_7	システム基準日情報反映-->
+                            <button id="B3_7" class="small" style="margin-left: 20px;"
+                                    data-bind="click: reflectSystemReference, enable: !isNewMode()">#{i18n.getText('QMM005_27')}</button>
+                        </div>
+                        <table style="height: 510px;" id="expand-table" class="margin-right-12">
+                            <tbody>
+                            <tr id="row-nonboder">
+                                <th colspan="5"></th>
+                                <!--B5_1	展開-->
+                                <!--B6_1	縮小-->
+                                <th>
+                                    <button tabindex="9" id="B5_1" style="float: right;" class="toggle-expand small"
+                                            data-bind="click: toggle"><span
+                                            data-bind="text: btnText"></span></button>
+                                </th>
+                            </tr>
+                            <tr class="bg-header">
+                                <th rowspan="2"></th>
+                                <!--B4_2	給与設定-->
+                                <th colspan="5">#{i18n.getText('QMM005_28')}</th>
+                                <th colspan="5" data-bind="css: { hidden: !show() }"></th>
+                            </tr>
+                            <tr class="bg-header">
+                                <!--B4_3	支払年月日-->
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_29')}</th>
+                                <!--B4_4	社員抽出基準日-->
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_30')}</th>
+                                <!--B4_5	社会保険徴収月-->
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_31')}</th>
+                                <!--B4_6	明細書印字年月-->
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_32')}</th>
+                                <!--B4_7	要勤務日数-->
+                                <th class="th-center th-nowrap">#{i18n.getText('QMM005_33')}</th>
+                                <!--B6_2	社会保険基準日-->
+                                <th class="th-center th-nowrap"
+                                    data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_44')}</th>
+                                <!--B6_3	雇用保険基準日-->
+                                <th class="th-center th-nowrap"
+                                    data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_45')}</th>
+                                <!--B6_4	勤怠締め日-->
+                                <th class="th-center th-nowrap"
+                                    data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_112')}</th>
+                                <!--B6_5	所得税基準日-->
+                                <th class="th-center th-nowrap"
+                                    data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_46')}</th>
+                                <!--B6_6	経理締め日-->
+                                <th class="th-center th-nowrap"
+                                    data-bind="css: { hidden: !show() }">#{i18n.getText('QMM005_47')}</th>
+                            </tr>
+                            <com:ko-foreach bind="settingPaymentList">
+                                <tr>
+                                    <td class="bg-header">
+                                        <!--B4_8	対象月-->
+                                        <div style="width: 75px" class="label" data-bind="text: targetMonth"></div>
+                                    </td>
+                                    <td>
+                                        <!--B4_10	支払年月日-->
+                                        <div tabindex="4"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_29]', value: paymentDate, dateFormat: 'YYYY/MM/DD ddd', required: true}"></div>
+                                        <!--B4_11	支払曜日-->
+                                    </td>
+                                    <td>
+                                        <!--B4_12	社員抽出基準日-->
+                                        <div tabindex="5"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_30]', value: employeeExtractionReferenceDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 150px">
+                                            <!--B4_13	社会保険徴収月-->
+                                            <span tabindex="6"
+                                                  data-bind="ntsDatePicker: {name: '#[QMM005_31]', value: socialInsuranceCollectionMonth, dateFormat: 'yearmonth', required: true}"></span>
+                                            <!--B4_14	分を徴収-->
+                                            <span class="label"
+                                                  data-bind="if: socialInsuranceCollectionMonth">#{i18n.getText('QMM005_37')}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <!--B4_15	明細書印字年月-->
+                                        <div tabindex="7"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_32]', value: specificationPrintDate, dateFormat: 'yearmonth', required: true}"></div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 95px;">
+                                            <!--B4_16	要勤務日数-->
+                                            <input tabindex="8"
+                                                   data-bind="ntsNumberEditor: {option: {decimallength: 2}, name: '#[QMM005_33]', value: numberOfWorkingDays, constraint: 'ReqStandardWorkingDays', required: true,}"
+                                                   class="number-editor"/>
+                                            <!--B4_17	日-->
+                                            <span>#{i18n.getText('QMM005_40')}</span></div>
+                                    </td>
+                                    <td data-bind="css: { hidden: !$parent.show() }">
+                                        <!--B6_7	社会保険基準日-->
+                                        <div tabindex="11"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_44]', value: socialInsuranceStandardDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                    </td>
+                                    <td data-bind="css: { hidden: !$parent.show() }">
+                                        <!--B6_8	雇用保険基準日-->
+                                        <div tabindex="12"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_45]', value: employmentInsuranceStandardDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                    </td>
+                                    <td data-bind="css: { hidden: !$parent.show() }">
+                                        <!--B6_9	勤怠締め日-->
+                                        <div tabindex="13"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_112]', value: timeClosingDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                    </td>
+                                    <td data-bind="css: { hidden: !$parent.show() }">
+                                        <!--B6_10	所得税基準日-->
+                                        <div tabindex="14"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_46]', value: incomeTaxReferenceDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                    </td>
+                                    <td data-bind="css: { hidden: !$parent.show() }">
+                                        <!--B6_11	経理締め日-->
+                                        <div tabindex="15"
+                                             data-bind="ntsDatePicker: {name: '#[QMM005_47]', value: accountingClosureDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+                                    </td>
+                                </tr>
+                            </com:ko-foreach>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

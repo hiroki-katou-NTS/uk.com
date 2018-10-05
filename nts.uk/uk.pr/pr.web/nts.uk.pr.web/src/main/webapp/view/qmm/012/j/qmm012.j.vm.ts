@@ -23,10 +23,12 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
             let self = this;
             $("#J2_1").focus();
             //Fixed table
-            if (/Chrome/.test(navigator.userAgent)) {
-                $("#fixed-table").ntsFixedTable({ height: 503, width: 780 });
+            if (/Edge/.test(navigator.userAgent)) {
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 825 });
+            } else if (/Chrome/.test(navigator.userAgent)) {
+                $("#fixed-table").ntsFixedTable({ height: 505, width: 825 });
             } else {
-                $("#fixed-table").ntsFixedTable({ height: 499, width: 780 });
+                $("#fixed-table").ntsFixedTable({ height: 499, width: 825 });
             }
             let categoryAtrScreenB = getShared('QMM012_B');
             if (categoryAtrScreenB != null) {
@@ -85,10 +87,25 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
                     self.lstCustomes(dataSort.map(x => new DataScreen(x)));
                     self.currentCode(dataSort[0].itemNameCd);
                     self.isNewMode(false);
+
+                    setTimeout(function () {
+                        if(data.length > 15) {
+                            $('.nts-fixed-body-container').addClass('has-padding');
+                            $('.nts-fixed-table .scroll-header').addClass('scroll_header');
+                        } else {
+                            $('.nts-fixed-body-container').removeClass('has-padding');
+                            $('.nts-fixed-table .scroll-header').removeClass('scroll_header');
+                        }
+                    }, 100);
                 }
                 else{
                     self.lstCustomes([]);
                     self.isNewMode(true);
+
+                    setTimeout(function () {
+                        $('.nts-fixed-body-container').removeClass('has-padding');
+                        $('.nts-fixed-table .scroll-header').removeClass('scroll_header');
+                    }, 100);
                 }
             }).fail(function(error) {
                 alertError(error);
@@ -99,27 +116,30 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
 
         updateStatelmentItemName() {
             let self = this;
-            block.invisible();
-            // update
-            let data : Array<DataScreen> = ([]);
-            _.forEach(self.lstCustomes(), item =>{
-                if (_.isEmpty(item.englishName())){
-                    item.englishName = null;
-                }
-                if (_.isEmpty(item.otherLanguageName())){
-                    item.otherLanguageName = null;
-                }
-                data.push(item);
-            })
-            self.lstCustomes(data);
-            service.updateStatementItemName(ko.toJS(self.lstCustomes())).done(() => {
-                self.getData();
-                dialog.info({ messageId: "Msg_15" });
-            }).fail(function(error) {
-                alertError(error);
-            }).always(function() {
-                block.clear();
-            });
+
+            if(!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                // update
+                let data: Array<DataScreen> = ([]);
+                _.forEach(self.lstCustomes(), item => {
+                    if (_.isEmpty(item.englishName())) {
+                        item.englishName = null;
+                    }
+                    if (_.isEmpty(item.otherLanguageName())) {
+                        item.otherLanguageName = null;
+                    }
+                    data.push(item);
+                })
+                self.lstCustomes(data);
+                service.updateStatementItemName(ko.toJS(self.lstCustomes())).done(() => {
+                    self.getData();
+                    dialog.info({messageId: "Msg_15"});
+                }).fail(function (error) {
+                    alertError(error);
+                }).always(function () {
+                    block.clear();
+                });
+            }
         }
     }
 

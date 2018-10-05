@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.repository.mypage.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -93,12 +95,32 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 */
 	private MyPageSetting mpsToDomain(CcgmtMyPageSet c) {
 		// get list item setting
-		List<TopPagePartUseSetting> lstTopPagePartUseSetting = this.queryProxy()
-				.query(GET_ONE_PIS, CcgmtPartItemSet.class).setParameter("companyId", c.cid)
-				.getList(p -> pusToDomain(p));
+		List<CcgmtPartItemSet> lstCcgmtPartItemSet = this.queryProxy().query(GET_ONE_PIS, CcgmtPartItemSet.class)
+				.setParameter("companyId", c.cid)
+				.getList();
 		MyPageSetting mps = MyPageSetting.createFromJavaType(c.cid, c.useMyPageAtr, c.useStandarWidgetAtr, c.useOptionalWidgetAtr, c.useDashBoardAtr,
-				c.useFolowMenuAtr, c.externalUrlPermissionAtr, lstTopPagePartUseSetting);
+				c.useFolowMenuAtr, c.externalUrlPermissionAtr, this.pusToDomain2(lstCcgmtPartItemSet));
 		return mps;
+	}
+	
+	private static final String GET_MULTI_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID IN :topPagePartId";
+	
+	/**fix performance get List TopPagePartUseSetting from one company*/
+	private List<TopPagePartUseSetting> pusToDomain2(List<CcgmtPartItemSet> c) {
+		if(c.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<String> listTPPId = c.stream().map(TPPId -> TPPId.ccgmtPartItemSetPK.topPagePartId).collect(Collectors.toList());
+		List<CcgmtTopPagePart> tpp = this.queryProxy().query(GET_MULTI_TPP, CcgmtTopPagePart.class)
+				.setParameter("companyId", c.get(0).ccgmtPartItemSetPK.cid)
+				.setParameter("topPagePartId", listTPPId).getList();
+		return tpp.stream().map(t ->
+				TopPagePartUseSetting.createFromJavaType(t.ccgmtTopPagePartPK.companyID,
+														t.ccgmtTopPagePartPK.topPagePartID,
+														t.code, 
+														t.name, 
+														c.stream().filter(u -> u.ccgmtPartItemSetPK.topPagePartId.equals(t.ccgmtTopPagePartPK.topPagePartID)).findFirst().get().useAtr, 
+														t.topPagePartType)).collect(Collectors.toList());
 	}
 
 	/**
