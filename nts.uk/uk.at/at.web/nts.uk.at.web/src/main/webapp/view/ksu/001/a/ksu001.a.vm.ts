@@ -1452,7 +1452,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let arrObj: any[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     arrTmp: Cell[] = _.clone(arrCell),
-                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells");
+                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells"),
+                    newArrCell = [];
+                // distinct arrCell- do khi thay doi 1 cell co 2 row thi a Manh ban ra 2 cell vs innerIdx khac nhau
+                _.each(arrCell, cell => {
+                    if (!_.find(newArrCell, { 'rowIndex': cell.rowIndex, 'columnKey': cell.columnKey })) {
+                        newArrCell.push(cell);
+                    };
+                });
+                arrCell = newArrCell;
+                
                 // compare 2 array lockCell init and after
                 if (arrCell.length == 0 && _.isEqual(self.arrLockCellInit(), arrLockCellAfterSave)) {
                     return;
