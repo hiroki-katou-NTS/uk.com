@@ -104,39 +104,6 @@ public class ManageReGetClass {
 	
 	//
 	private Optional<DeductLeaveEarly> leaveLateSet;
-	
-	
-	
-//	/**
-//	 * Constructor 
-//	 */
-//	private ManageReGetClass(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
-//			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,
-//			List<WorkTimezoneOtherSubHolTimeSet> subHolTransferSetList,
-//			DailyCalculationPersonalInformation personalInfo, DailyUnit dailyUnit,
-//			Optional<FixRestTimezoneSet> fixRestTimeSeting,
-//			Optional<FixedWorkCalcSetting> ootsukaFixedWorkSet,
-//			Boolean calculatable,
-//			int breakCount,
-//			Optional<CoreTimeSetting> coreTimeSetting,
-//			Optional<WorkTimezoneCommonSet> WorkTimezoneCommonSet,
-//			List<OverTimeFrameNo> statutoryFrameNoList) {
-//		super();
-//		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
-//		this.integrationOfDaily = integrationOfDaily;
-//		this.workTimeSetting = workTimeSetting;
-//		this.workType = workType;
-//		this.subHolTransferSetList = subHolTransferSetList;
-//		this.personalInfo = personalInfo;
-//		this.fixRestTimeSetting = fixRestTimeSeting;
-//		this.dailyUnit = dailyUnit;
-//		this.ootsukaFixedWorkSet = ootsukaFixedWorkSet;
-//		this.calculatable = calculatable;
-//		this.breakCount = breakCount;
-//		this.coreTimeSetting = coreTimeSetting;
-//		this.WorkTimezoneCommonSet = WorkTimezoneCommonSet;
-//		this.statutoryFrameNoList = statutoryFrameNoList;
-//	}
 
 	public ManageReGetClass(CalculationRangeOfOneDay calculationRangeOfOneDay, IntegrationOfDaily integrationOfDaily,
 			Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType,

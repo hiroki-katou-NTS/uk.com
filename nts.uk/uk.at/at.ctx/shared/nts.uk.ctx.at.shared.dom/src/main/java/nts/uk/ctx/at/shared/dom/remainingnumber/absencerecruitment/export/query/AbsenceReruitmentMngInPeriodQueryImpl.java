@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -596,7 +598,39 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					lstRecMng.add(optRecMng.get());
 				}
 			}	
-		}		
+		}
+		//20181003 DuDT fix bug 101491 ↓
+		List<InterimRemain> lstTmpAbs = new ArrayList<>(lstInterimMngOfAbs);
+		List<InterimAbsMng> lstAbsUsen = new ArrayList<>(lstAbsMng);
+		List<InterimRemain> lstTmpRec = new ArrayList<>(lstInterimMngOfRec);
+		List<InterimRecMng> lstRecMngUsen = new ArrayList<>(lstRecMng);
+		if(paramInput.isOverwriteFlg() && !paramInput.getInterimMng().isEmpty()) {
+			for (InterimRemain interimRemain : paramInput.getInterimMng()) {
+				List<InterimRemain> lstInterimAbsUsen = lstTmpAbs.stream()
+						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstInterimAbsUsen.isEmpty()) {
+					InterimRemain temp = lstInterimAbsUsen.get(0);
+					lstInterimMngOfAbs.remove(temp);
+					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getAbsenceMngId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tmpAbsUsen.isEmpty()) {
+						lstAbsUsen.remove(tmpAbsUsen.get(0));
+					}
+				}
+				List<InterimRemain> lstRecUsen = lstTmpRec.stream()
+						.filter(b -> b.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstRecUsen.isEmpty()) {
+					InterimRemain temp = lstRecUsen.get(0);
+					lstInterimMngOfRec.remove(temp);
+					List<InterimRecMng> tempLstRec = lstRecMngUsen.stream().filter(b -> b.getRecruitmentMngId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tempLstRec.isEmpty()) {
+						lstRecMng.remove(tempLstRec.get(0));
+					}
+				}
+			}
+		}
+		//20181003 DuDT fix bug 101491 ↑
 		List<AbsRecDetailPara> lstOutputOfAbs = this.lstOutputOfAbs(lstAbsMng, lstInterimMngOfAbs, paramInput);
 		List<AbsRecDetailPara> lstOutputOfRec = this.lstOutputOfRec(lstRecMng, lstInterimMngOfRec, paramInput);
 		lstAbsRec.addAll(lstOutputOfAbs);

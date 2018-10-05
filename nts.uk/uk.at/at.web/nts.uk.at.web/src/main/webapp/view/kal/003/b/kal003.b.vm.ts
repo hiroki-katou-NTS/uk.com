@@ -63,6 +63,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             switch (self.category()) {
                 case sharemodel.CATEGORY.DAILY:{
                     self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+                    
+                    $('#display-target-item_category5').addClass("limited-label");
 
                     let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
                     self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
@@ -98,13 +100,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueField(false);
-//                         $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
-                            setTimeout(() => {
-                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                                }
-                            }, 25);
+                             $(".nts-input").ntsError("clear");
+                            if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator()==9){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                            if(self.comparisonRange().comparisonOperator()==6 || self.comparisonRange().comparisonOperator() ==8){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
                         } else {
                             $(".nts-input").ntsError("clear");
                         }
@@ -133,6 +144,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 //MinhVV add
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:{
                     self.setting = $.extend({}, shareutils.getDefaultMulMonCheckCondSet(0), option.data);
+                    
+                    // tooltip in IE11
+                    $('#display-target-item-category9').addClass("limited-label");
+                    
+                    
                     let mulMonCheckCondSet = shareutils.convertTransferDataToMulMonCheckCondSet(self.setting);
                     self.mulMonCheckCondSet = ko.observable(mulMonCheckCondSet);
                     // setting comparison value range
@@ -152,11 +168,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.comparisonRange().maxAmountOfMoneyValue(null);
                         self.comparisonRange().minTimeValue(null);
                         self.comparisonRange().maxTimeValue(null);
-                        //回数
                         self.comparisonRange().minTimesValue(null);
                         self.comparisonRange().maxTimesValue(null);
-                        
-                        
                         //check typeCheckItem initialization times = 0 
                         self.mulMonCheckCondSet().times(0);
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
@@ -171,13 +184,24 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
-                        $(".nts-input").ntsError("clear");
                         if (self.comparisonRange().comparisonOperator() > 5) {
-                            setTimeout(() => {
-                                if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
-                                }
-                            }, 25);
+                            $(".nts-input").ntsError("clear");
+                            if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator() ==9){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                            if(self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() ==8){
+                                 setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                    }
+                                }, 25);
+                            }
+                        } else {
+                            $(".nts-input").ntsError("clear");
                         }
                     });
                     break;
@@ -909,11 +933,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
             } else if (typeCheck == 2) {
                 //With type 金額 - AmountMoney
                 service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.AmountOfMoney, mode).done((lstAtdItem) => {
-                    dfd.resolve(lstAtdItem);
-                });
-            }else if (typeCheck == 2) {
-                //With type 時刻 - TimeWithDay
-                service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.TimeOfDay, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             }else{

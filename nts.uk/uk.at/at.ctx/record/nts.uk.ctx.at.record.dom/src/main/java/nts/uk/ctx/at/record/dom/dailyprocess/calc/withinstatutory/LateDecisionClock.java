@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -26,7 +29,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Value
 public class LateDecisionClock {
+	//遅刻判断時刻
 	private TimeWithDayAttr lateDecisionClock;
+	//勤務No
 	private int workNo;
 
 	
@@ -62,13 +67,21 @@ public class LateDecisionClock {
 				// 猶予時間帯の作成                                                                                                   
 				TimeSpanForCalc graceTimeSheet = new TimeSpanForCalc(calｃRange.get().getStart(),
 																	 calｃRange.get().getStart().forwardByMinutes(lateGraceTime.getGraceTime().valueAsMinutes()));
-				// 重複している控除分をずらす
-				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).map(t -> t.getTimeSheet()).collect(Collectors.toList());
-				for(TimeZoneRounding breakTime:breakTimeSheetList) {
-					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getStart(),breakTime.getEnd());
-					if(deductTime.contains(graceTimeSheet.getEnd())){
-						graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart(), deductTime.getEnd());
-					}
+				// 重複している控除分をずらす(休憩と育児)
+				List<TimeSheetOfDeductionItem> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(t -> t.getDeductionAtr().isBreak()==true).collect(Collectors.toList());
+				//EnterPriseでは短時間系との重複はとっていないためコメントアウト
+//				List<TimeZoneRounding> breakTimeSheetList = deductionTimeSheet.getForDeductionTimeZoneList().stream().filter(tc -> tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isChildCare()).map(t -> t.getTimeSheet()).collect(Collectors.toList());
+				
+				//控除時間帯(休憩＆短時間)と猶予時間帯の重複を調べ猶予時間帯の調整
+				for(TimeSheetOfDeductionItem breakTime:breakTimeSheetList) {
+					TimeSpanForCalc deductTime = new TimeSpanForCalc(breakTime.getTimeSheet().getStart(),breakTime.getTimeSheet().getEnd());
+//					if(deductTime.contains(graceTimeSheet.getEnd())){
+					val dupRange = deductTime.getDuplicatedWith(graceTimeSheet);
+						if(dupRange.isPresent()) {
+							graceTimeSheet = new TimeSpanForCalc(graceTimeSheet.getStart(), 
+																 graceTimeSheet.getEnd().forwardByMinutes(breakTime.calcTotalTime(DeductionAtr.Deduction).valueAsMinutes()));
+						}
+//					}
 				}
 				decisionClock = graceTimeSheet.getEnd();
 			}

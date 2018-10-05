@@ -228,7 +228,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="valign-center control-group" data-bind ="if: screenModeNew()">
+		<div class="valign-center control-group" data-bind ="if: screenModeNew() &amp;&amp; displayCaculationTime()">
 			<div class="table">
 				<div class="cell valign-top cm-column2">
 				<div class="lblTitle"></div>
@@ -257,7 +257,7 @@
 			</div>
 		</div>
 		<div class="valign-center control-group"
-			data-bind="if: !screenModeNew()">
+			data-bind="if: !screenModeNew() &amp;&amp; displayCaculationTime()">
 			<div class="table" style = "margin-bottom: 9px;">
 				<div class="cell valign-top cm-column2">
 					<div class="lblTitle"></div>

@@ -1,0 +1,66 @@
+#left-content {
+    margin-top: 12px;
+    padding: 20px;
+    float: left;
+    min-height: 500px;
+}
+
+.bg-header {
+    background-color: #cff1a5 !important;
+}
+
+#right-content {
+    float: left;
+    min-height: 500px;
+    margin-top: 12px;
+    padding: 20px;
+    white-space: nowrap;
+}
+
+td {
+    border: solid 1px #cccccc;
+    padding: 1px 2px;
+}
+
+th {
+    border: solid 1px #cccccc;
+    padding: 5px;
+}
+
+.th-center {
+    text-align: center;
+}
+
+.th-nowrap {
+    white-space: nowrap;
+}
+
+#row-nonboder th {
+    border: none !important;
+}
+
+.margin-top-12 {
+    margin-top: 12px;
+}
+
+.margin-right-12 {
+    margin-right: 12px;
+}
+
+.margin-top-6 {
+    margin-top: 6px;
+}
+
+.number-editor {
+    width: 45px;
+}
+
+
+
+#clf-component div.caret-background:after {
+    /*color: #cff1a5 !important;*/
+}
+
+.form_label {
+    width: 85px;
+}

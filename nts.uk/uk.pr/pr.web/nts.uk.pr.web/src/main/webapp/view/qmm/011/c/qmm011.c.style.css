@@ -1,0 +1,28 @@
+#C3_1{
+   margin-top: 18px;
+}
+#C3_1 td{
+    height: 20px
+}
+#C3_1 th{
+    height: 30px;
+    border: 1px solid #CCC;
+}
+#C3_6{
+    align-self: left;
+}
+#C1_1{
+    margin-left: 25px;
+}
+
+#C3_1 tr td{
+    border: 1px solid #CCC;
+    text-align: center;
+}
+#C3_1 th{
+    height: 40px;
+    text-align: center;
+}
+#C1_4 td{
+    text-align: center;
+}

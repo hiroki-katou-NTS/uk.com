@@ -226,15 +226,7 @@ module nts.uk.at.view.kdm002.b {
                                 }
                                 if (self.imErrorLog().length > 0) {
                                     var windowSize = nts.uk.ui.windows.getSelf();
-                                    windowSize.$dialog.dialog('option', {
-                                        position: {
-                                            my: "top+40",
-                                            at: "left+($(window).width() / 2)",
-                                            of: $("#content_dialog")
-                                        },
-                                        width: 650,
-                                        height: 550
-                                    });
+                                    windowSize.setSize(570, 670);
                                     windowSize.$dialog.resize();
 
                                     self.isError(true);

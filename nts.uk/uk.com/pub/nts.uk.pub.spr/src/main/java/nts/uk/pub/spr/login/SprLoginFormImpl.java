@@ -22,7 +22,7 @@ import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
 import nts.uk.pub.spr.login.output.RoleTypeSpr;
 import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
-import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 /**
  * 
  * @author Doan Duy Hung
@@ -45,6 +45,9 @@ public class SprLoginFormImpl implements SprLoginFormService {
 	
 	@Inject
 	private SyEmployeePub syEmployeePub;
+	
+	@Inject
+	private LoginUserContextManager loginUserContextManager;
 	
 	@Override
 	public LoginUserContextSpr loginFromSpr(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
@@ -143,6 +146,14 @@ public class SprLoginFormImpl implements SprLoginFormService {
 			throw new BusinessException("Msg_301");
 		}
 		UserSprExport userSpr = opUserSpr.get();
+		loginUserContextManager.loggedInAsEmployee(
+				userSpr.getUserID(), 
+				personID, 
+				"000000000000", 
+				"000000000000-0001", 
+				"0001", 
+				loginEmployeeID, 
+				loginEmployeeCD);
 		// 権限（ロール）情報を取得、設定する(lay thong tin quuyen han (role) roi setting)
 		List<RoleInfoSpr> roleList = this.getRoleInfo(userSpr.getUserID());
 		return new LoginUserContextSpr(

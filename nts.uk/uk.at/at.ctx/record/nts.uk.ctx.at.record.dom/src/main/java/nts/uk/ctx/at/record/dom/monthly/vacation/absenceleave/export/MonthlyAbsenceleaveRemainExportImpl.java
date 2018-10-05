@@ -20,7 +20,7 @@ public class MonthlyAbsenceleaveRemainExportImpl implements MonthlyAbsenceleaveR
 		List<AbsenceleaveCurrentMonthOfEmployee> lstOutputData = new ArrayList<AbsenceleaveCurrentMonthOfEmployee>();
 		for(YearMonth ym = startMonth; ym.lessThanOrEqualTo(endMonth); ym = ym.addMonths(1)) {
 			//ドメインモデル「振休月別残数データ」を取得
-			List<AbsenceLeaveRemainData> lstAbsenData = absenceLeaveRepos.getDataBySidYmClosureStatus(employeeId, ym, ClosureStatus.PROCESSED);
+			List<AbsenceLeaveRemainData> lstAbsenData = absenceLeaveRepos.findByYearMonthOrderByStartYmd(employeeId, ym);
 			if(lstAbsenData.isEmpty()) {
 				continue;
 			}

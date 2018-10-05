@@ -69,7 +69,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoItemOrder po "
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
-			+ " WHERE  c.abolitionAtr = 0 AND b.settingItemPk.settingId = :settingId AND pc.categoryCd = :categoryCd AND pc.cid = :cid  ORDER BY po.disporder";
+			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid  ORDER BY po.disporder";
 	// SONNLB
 
 	private static final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -284,8 +284,8 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	// sonnlb
 	@Override
-	public List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String categoryCd, String cid) {
-		return this.queryProxy().query(SEL_ALL_INIT_ITEM, Object[].class).setParameter("categoryCd", categoryCd)
+	public List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String perInfoCtgId, String cid) {
+		return this.queryProxy().query(SEL_ALL_INIT_ITEM, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
 				.setParameter("settingId", settingId)
 				.setParameter("cid", cid)
 				.getList(c -> toInitDomain(c));
