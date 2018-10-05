@@ -1232,7 +1232,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(null);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(null);
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(1);
             self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
@@ -1425,7 +1425,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.singleAtdItem(param ? param.singleAtdItem : null);
             self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, true) ? param.compareStartValue : null);
             self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, true) ? param.compareEndValue : null);
-            self.compareOperator(param ? param.compareOperator : 0);
+            self.compareOperator(param ? param.compareOperator : 1);
             self.setTextDisplay();
         }
     }
