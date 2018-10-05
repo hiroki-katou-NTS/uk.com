@@ -143,7 +143,7 @@
 							</thead>
 							<tbody data-bind="foreach: cndDetai().listOutCndDetailItem">
 								<tr
-									data-bind="attr: { 'data-id': seriNum() }, click: function() {$vm.selectDetailItem(seriNum())}">
+									data-bind="attr: { 'data-id': seriNum(), class: clazz }, click: function() {$vm.selectDetailItem(seriNum())}">
 									<td>
 										<div class="limited-label"
 											data-bind="text: $vm.getItemName(categoryItemNo())"></div>

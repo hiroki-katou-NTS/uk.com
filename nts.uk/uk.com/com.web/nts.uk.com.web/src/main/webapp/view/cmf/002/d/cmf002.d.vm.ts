@@ -72,6 +72,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
                     self.loadDetaiItemGrid();
+                    self.setCssClass();
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
@@ -188,6 +189,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             }).fail(res => {
                 alertError(res);
             }).always(() => {
+                self.setCssClass();
                 block.clear();
             });
         }
@@ -214,7 +216,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             newItemDetail.subscribeCondBetween(newItemDetail.conditionSymbol());
             newItemDetail.searchValueCd = item.searchValueCd;
             self.cndDetai().listOutCndDetailItem.push(newItemDetail);
-
+            self.setCssClass();
 
         }
 
@@ -230,6 +232,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 }
                 return false;
             });
+            self.setCssClass();
             self.selectedSeriNum(null);
         }
 
@@ -238,6 +241,22 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.selectedSeriNum(seriNum);
             $("#fixed-table tr").removeClass("my-active-row");
             $("#fixed-table tr[data-id='" + seriNum + "']").addClass("my-active-row");
+        }
+        
+        setCssClass(){
+            let self = this;
+            _.each(self.cndDetai().listOutCndDetailItem(), (item: OutCndDetailItemDto) => {
+                item.clazz("")
+            })
+            let length = self.cndDetai().listOutCndDetailItem().length;
+            if (length > 6) {
+                let lastItem1: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 1];
+                lastItem1.clazz("last-item");
+            }
+            if (length > 7) {
+                let lastItem2: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 2];
+                lastItem2.clazz("last-item");
+            }
         }
     }
 
@@ -342,6 +361,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         subTimeStart: any;
         subClockStart: any;
 
+        clazz: KnockoutObservable<string>;
+
         constructor(categoryId: string, categoryItemNo: number, seriNum: number,
             conditionSettingCd: string, conditionSymbol: number) {
             let self = this;
@@ -380,6 +401,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.switchView.subscribe(condSymbol => {
                 self.clearData();
             })
+            
+            self.clazz = ko.observable("");
         }
 
         subscribeCondBetween(condSymbol) {
