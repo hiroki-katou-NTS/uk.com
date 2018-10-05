@@ -2846,9 +2846,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 if (lock[i] == "CM") tempD += getText("KDW003_112") + '<br/>';
                                 if (lock[i] == "AM") tempD += getText("KDW003_68") + '<br/>';
                                 if (lock[i] == "H") tempD += getText("KDW003_70") + '<br/>';
-                                if (lock[i] == "A") tempD += getText("KDW003_69") + '</span>';
-                                $('#textLock').html(tempD);
+                                if (lock[i] == "A") tempD += getText("KDW003_69") + '<br/>'; 
                             }
+                            tempD += '</span>'
+                            $('#textLock').html(tempD);
                         }
                         self.helps(evt, "");
                     },
@@ -2981,6 +2982,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                         case 7:
                             //KAF010-休出時間申請
+                            transfer.uiType = 0;
                             nts.uk.request.jump("/view/kaf/010/a/index.xhtml", transfer);
                             break;
 
