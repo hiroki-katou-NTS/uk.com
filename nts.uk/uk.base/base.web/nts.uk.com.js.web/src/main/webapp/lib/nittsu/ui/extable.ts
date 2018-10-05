@@ -5308,9 +5308,14 @@ module nts.uk.ui.exTable {
                 let exTable = $.data($exTable, NAMESPACE);
                 if (!exTable) return;
                 let ui: any = evt.detail;
-                if (ui.value.constructor === Array && (util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
-                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                if ((util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                    if (ui.value.constructor === Array) {
+                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
+                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                    } else {
+                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 0));
+                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 1));
+                    }
                     return;
                 }
                 pushChange(exTable, ui.rowIndex, ui); 
