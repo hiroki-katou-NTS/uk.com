@@ -1359,7 +1359,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			
 			if(codeConvert.isPresent()) {
 				for (CdConvertDetail convertDetail : codeConvert.map(OutputCodeConvert::getListCdConvertDetails).orElseGet(ArrayList::new)) {
-					if (!targetValue.equals(convertDetail.getSystemCd())) {
+					if (!targetValue.equals(convertDetail.getSystemCd().v())) {
 						continue;
 					}
 					targetValue = convertDetail.getOutputItem().map(i->i.v()).orElse("");
