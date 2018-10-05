@@ -237,10 +237,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                                 return o.processDate;
                             }),
                         employeeString, employeeList,
-
-                        self.getYear(self.itemTable.setDaySupports, i)
-                        ,
-                        self.getListMonth(self.itemTable.setDaySupports, i)
+                        self.getYear(self.itemTable.setDaySupports, i),
+                        self.getListMonth(self.itemTable.setDaySupports, i),
+                        self.itemTable.currentProcessDates[i]
                     )
                     );
 
@@ -293,10 +292,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         months: KnockoutObservableArray<ItemComboBox>;
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
-
+        currentYaerMonthSelected:KnockoutObservable<number>=ko.observable(0);
         isNotAbolition:KnockoutObservable<boolean>=ko.observable(false);
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox> ) {
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
             let selfItemBinding = this;
             selfItemBinding.processInfomation = processInfomation;
             selfItemBinding.setDaySupports = ko.observableArray(setDaySupports);
@@ -307,7 +306,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             selfItemBinding.yaersSelected = ko.observable(0);
             selfItemBinding.months = ko.observableArray(months);
             selfItemBinding.monthsSelectd = ko.observable(0);
-
+            if(currentProcessDate){ selfItemBinding.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
 
 
 
@@ -322,8 +321,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
 
              let currentYear =new Date().getFullYear();
-             selfItemBinding.yaersSelected(currentYear);
-             selfItemBinding.monthsSelectd(0);
+            let startYearSelected=parseInt((selfItemBinding.currentYaerMonthSelected())/100);
+            let startMonthsSelected=selfItemBinding.currentYaerMonthSelected();
+            selfItemBinding.yaersSelected(startYearSelected);
+            selfItemBinding.monthsSelectd(startMonthsSelected);
 
              if(selfItemBinding.processInfomation.processCls() != '' && selfItemBinding.processInfomation.deprecatCate == model.Abolition.NOT_ABOLITION ){
                  selfItemBinding.isNotAbolition(true);
