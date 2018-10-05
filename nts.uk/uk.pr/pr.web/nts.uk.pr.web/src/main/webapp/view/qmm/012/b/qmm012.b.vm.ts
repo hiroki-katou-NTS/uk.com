@@ -598,8 +598,8 @@ module nts.uk.pr.view.qmm012.b {
                     self.paymentItemSet = ko.observable(new PaymentItemSet(data.paymentItemSet, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(data.statementItemDisplaySet));
                     self.itemRangeSet = ko.observable(new ItemRangeSet(data.itemRangeSet));
-                    self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet, screenModel));
-                    self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet, screenModel));
+                    self.deductionItemSet = ko.observable(new DeductionItemSet(data.deductionItemSet, self));
+                    self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet, self));
                     
                     if(data.validityPeriodAndCycleSet) {
                         self.isSetValidity(true);
@@ -618,8 +618,8 @@ module nts.uk.pr.view.qmm012.b {
                     self.paymentItemSet = ko.observable(new PaymentItemSet(null, screenModel));
                     self.statementItemDisplaySet = ko.observable(new StatementItemDisplaySet(null));
                     self.itemRangeSet = ko.observable(new ItemRangeSet(null));
-                    self.deductionItemSet = ko.observable(new DeductionItemSet(null, screenModel));
-                    self.timeItemSet = ko.observable(new TimeItemSet(null, screenModel));
+                    self.deductionItemSet = ko.observable(new DeductionItemSet(null, self));
+                    self.timeItemSet = ko.observable(new TimeItemSet(null, self));
                     
                     self.checkCreate = ko.observable(true);
                 }
@@ -1067,7 +1067,7 @@ module nts.uk.pr.view.qmm012.b {
             // deductionItemList switch button
             deductionItemList: KnockoutObservableArray<model.ItemModel>;
             
-            constructor(data: IDeductionItemSet, screenModel: ScreenModel) {
+            constructor(data: IDeductionItemSet, parent: StatementItemData) {
                 let self = this;
                 
                 self.deductionItemList = ko.observableArray([
@@ -1083,8 +1083,8 @@ module nts.uk.pr.view.qmm012.b {
                     self.note = ko.observable(data.note);
 
                     // show in screen because use same component
-                    screenModel.statementItemDataSelected().paymentItemSet().breakdownItemUseAtr(data.breakdownItemUseAtr);
-                    screenModel.statementItemDataSelected().paymentItemSet().note(data.note);
+                    parent.paymentItemSet().breakdownItemUseAtr(data.breakdownItemUseAtr);
+                    parent.paymentItemSet().note(data.note);
                 } else {
                     self.deductionItemAtr = ko.observable(model.DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM);
                     self.breakdownItemUseAtr = ko.observable(model.BreakdownItemUseAtr.NOT_USE);
@@ -1105,7 +1105,7 @@ module nts.uk.pr.view.qmm012.b {
             // coveredList switch button
             coveredList: KnockoutObservableArray<model.ItemModel>;
             
-            constructor(data: ITimeItemSet, screenModel: ScreenModel) {
+            constructor(data: ITimeItemSet, parent: StatementItemData) {
                 let self = this;
                 
                 self.timeCountList = ko.observableArray([
@@ -1125,7 +1125,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.note = ko.observable(data.note);
 
                     // show in screen because use same component
-                    screenModel.statementItemDataSelected().paymentItemSet().note(data.note);
+                    parent.paymentItemSet().note(data.note);
                 } else {
                     self.averageWageAtr = ko.observable(model.CoveredAtr.COVERED);
                     self.workingDaysPerYear = ko.observable(model.CoveredAtr.COVERED);
