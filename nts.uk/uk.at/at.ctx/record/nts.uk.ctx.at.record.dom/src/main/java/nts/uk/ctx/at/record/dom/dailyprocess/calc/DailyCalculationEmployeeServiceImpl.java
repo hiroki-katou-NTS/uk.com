@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -43,11 +44,13 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerf
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -62,7 +65,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：日別計算　（社員の日別実績を計算）
- * @author shuichu_ishida
+ * @author keisuke_hoshina
  */
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
@@ -137,6 +140,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
 	
+	/** リポジトリ：日別実績の備考 */
+	@Inject
+	private RemarksOfDailyPerformRepo remarksRepository;
+	
 	@Inject 
 	private ErAlCheckService determineErrorAlarmWorkRecordService;
 	
@@ -152,6 +159,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private ClosureStatusManagementRepository closureStatusManagementRepository;
 	
+	@Inject
+	private CommonCompanySettingForCalc commonCompanySettingForCalc;
+	
+	/** リポジトリ：対象者ログ */
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
 	
 	/**
 	 * 社員の日別実績を計算
@@ -164,7 +177,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter) {
+	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		//日別実績(WORK取得)
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
 		
@@ -172,8 +185,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		List<ClosureStatusManagement> closureList = getClosureList(employeeId,datePeriod);
 		
 		//計算処理を呼ぶ
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList);
-		
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),Optional.of(counter),closureList,reCalcAtr);
 		//実績が無い社員の数を検知
 		val empIds = createList.stream().map(tc -> tc.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
 		//実績が無い社員を成功としてカウントアップ
@@ -181,19 +193,38 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(!empIds.contains(tc)) {
 					counter.accept(ProcessState.SUCCESS);
 			}
+			//１：日別計算(ENUM)
+			//0:計算完了
+			targetPersonRepository.updateWithContent(tc, empCalAndSumExecLogID, 1, 0);
 		});
-		
-		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
-			// データ更新
-			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
-			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
-				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
-						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAffiliationInfor().getEmployeeId(),value.getAffiliationInfor().getYmd(),
-										  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
-				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
-			}
+		val result = afterCalcRecord.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
+		//データ更新
+		for(IntegrationOfDaily value:result) {
+			updateRecord(value);
 		}
+		//計算状態更新
+		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
+			upDateCalcState(stateInfo);
+		}
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	private void updateRecord(IntegrationOfDaily value) {
+		// データ更新
+		if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
+					value.getAttendanceTimeOfDailyPerformance().get().getYmd());
+			this.registAttendanceTime(value.getAffiliationInfor().getEmployeeId(),value.getAffiliationInfor().getYmd(),
+									  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
+			determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
+		}
+	}
+	
+	@Override
+	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
+		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
+		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
 	}
 	
 	/**
@@ -215,8 +246,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 		//締め一覧取得
 		List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId),datePeriod);
+		
+		ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
 		//計算処理
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createList, Optional.of(asyncContext),counter,closureList);
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList);
 		
 		
 		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
@@ -299,7 +332,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					attendanceLeavingGateOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の入退門 */
 					anyItemValueOfDailyRepo.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の任意項目 */
 					editStateOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績のの編集状態 */
-					temporaryTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd())/** リポジトリ：日別実績の臨時出退勤 */
+					temporaryTimeOfDailyPerformanceRepository.findByKey(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の臨時出退勤 */
+					remarksRepository.getRemarks(employeeId, attendanceTime.getYmd())
 					));
 		}
 		return returnList;

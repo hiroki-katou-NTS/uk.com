@@ -13,19 +13,19 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AnyItemOfMonthlyDto;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -42,7 +42,7 @@ public class AnyItemOfMonthlyFinder extends MonthlyFinderFacade {
 	public AnyItemOfMonthlyDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		List<AnyItemOfMonthly> domains = this.repo.findByMonthlyAndClosure(employeeId, yearMonth, closureId, closureDate);
-		List<Integer> itemIds = domains.stream().map(i -> i.getAnyItemId()).collect(Collectors.toList());
+		List<Integer> itemIds = domains.stream().map(i -> i.getAnyItemId()).distinct().collect(Collectors.toList());
 		if(!itemIds.isEmpty()){
 			Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 					.findByListNos(AppContexts.user().companyId(), itemIds).stream()
@@ -65,13 +65,12 @@ public class AnyItemOfMonthlyFinder extends MonthlyFinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth) {
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.MONTHLY_PERFORMANCE).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
+				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.MONTHLY_PERFORMANCE);
 		return (List<T>) repo.findBySidsAndMonths(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
 				.stream().collect(Collectors.groupingBy(c -> StringUtils.join(c.getEmployeeId(), c.getYearMonth()), 
 						Collectors.collectingAndThen(Collectors.toList(), 
-								list -> AnyItemOfMonthlyDto.from(list, optionalMaster))))
+								list -> AnyItemOfMonthlyDto.fromWith(list, optionalMaster))))
 				.entrySet().stream().map(dto -> dto.getValue()).collect(Collectors.toList());
 	}
 }

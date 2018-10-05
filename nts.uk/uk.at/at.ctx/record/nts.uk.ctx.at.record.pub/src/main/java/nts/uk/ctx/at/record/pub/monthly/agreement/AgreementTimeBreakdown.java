@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * 36協定時間内訳
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeBreakdown {
@@ -18,8 +18,10 @@ public class AgreementTimeBreakdown {
 	private AttendanceTimeMonth holidayWorkTime;
 	/** 振替時間 */
 	private AttendanceTimeMonth transferTime;
-	/** フレックス超過時間 */
-	private AttendanceTimeMonth flexExcessTime;
+	/** フレックス法定内時間 */
+	private AttendanceTimeMonth flexLegalTime;
+	/** フレックス法定外時間 */
+	private AttendanceTimeMonth flexIllegalTime;
 	/** 所定内割増時間 */
 	private AttendanceTimeMonth withinPrescribedPremiumTime;
 	/** 週割増時間 */
@@ -36,7 +38,8 @@ public class AgreementTimeBreakdown {
 		this.transferOverTime = new AttendanceTimeMonth(0);
 		this.holidayWorkTime = new AttendanceTimeMonth(0);
 		this.transferTime = new AttendanceTimeMonth(0);
-		this.flexExcessTime = new AttendanceTimeMonth(0);
+		this.flexLegalTime = new AttendanceTimeMonth(0);
+		this.flexIllegalTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
 		this.weeklyPremiumTime = new AttendanceTimeMonth(0);
 		this.monthlyPremiumTime = new AttendanceTimeMonth(0);
@@ -48,7 +51,8 @@ public class AgreementTimeBreakdown {
 	 * @param transferOverTime 振替残業時間
 	 * @param holidayWorkTime 休出時間
 	 * @param transferTime 振替時間
-	 * @param flexExcessTime フレックス超過時間
+	 * @param flexLegalTime フレックス法定内時間
+	 * @param flexIllegalTime フレックス法定外時間
 	 * @param withinPrescribedPremiumTime 所定内割増時間
 	 * @param weeklyPremiumTime 週割増時間
 	 * @param monthlyPremiumTime 月割増時間
@@ -59,7 +63,8 @@ public class AgreementTimeBreakdown {
 			AttendanceTimeMonth transferOverTime,
 			AttendanceTimeMonth holidayWorkTime,
 			AttendanceTimeMonth transferTime,
-			AttendanceTimeMonth flexExcessTime,
+			AttendanceTimeMonth flexLegalTime,
+			AttendanceTimeMonth flexIllegalTime,
 			AttendanceTimeMonth withinPrescribedPremiumTime,
 			AttendanceTimeMonth weeklyPremiumTime,
 			AttendanceTimeMonth monthlyPremiumTime){
@@ -69,7 +74,8 @@ public class AgreementTimeBreakdown {
 		domain.transferOverTime = transferOverTime;
 		domain.holidayWorkTime = holidayWorkTime;
 		domain.transferTime = transferTime;
-		domain.flexExcessTime = flexExcessTime;
+		domain.flexLegalTime = flexLegalTime;
+		domain.flexIllegalTime = flexIllegalTime;
 		domain.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		domain.weeklyPremiumTime = weeklyPremiumTime;
 		domain.monthlyPremiumTime = monthlyPremiumTime;
@@ -87,7 +93,8 @@ public class AgreementTimeBreakdown {
 		totalTime = totalTime.addMinutes(this.transferOverTime.v());
 		totalTime = totalTime.addMinutes(this.holidayWorkTime.v());
 		totalTime = totalTime.addMinutes(this.transferTime.v());
-		totalTime = totalTime.addMinutes(this.flexExcessTime.v());
+		totalTime = totalTime.addMinutes(this.flexLegalTime.v());
+		totalTime = totalTime.addMinutes(this.flexIllegalTime.v());
 		totalTime = totalTime.addMinutes(this.withinPrescribedPremiumTime.v());
 		totalTime = totalTime.addMinutes(this.weeklyPremiumTime.v());
 		totalTime = totalTime.addMinutes(this.monthlyPremiumTime.v());

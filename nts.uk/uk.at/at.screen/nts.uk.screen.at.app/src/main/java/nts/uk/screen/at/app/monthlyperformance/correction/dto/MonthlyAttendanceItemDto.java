@@ -34,5 +34,7 @@ public class MonthlyAttendanceItemDto {
 	/** The name line feed position. */
 	// ユーザーが値を変更できる
 	private int nameLineFeedPosition;
+	
+	private Integer primitive;
 
 }

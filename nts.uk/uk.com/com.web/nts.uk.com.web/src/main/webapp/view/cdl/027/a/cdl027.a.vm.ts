@@ -39,7 +39,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             self.items = ko.observableArray([]);
             self.params = getShared("CDL027Params");
             self.targetStart = self.formatTargetDate(self.params.functionId, self.params.period.startDate);
-            self.targetEnd = self.formatTargetDate(self.params.functionId, self.params.period.endDate);
+            self.targetEnd = self.params.functionId == FUNCTION_ID.Monthly ? null : self.formatTargetDate(self.params.functionId, self.params.period.endDate);
             switch (self.params.functionId) {
                 case FUNCTION_ID.Daily: 
                 case FUNCTION_ID.Salary:
@@ -55,7 +55,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            block.invisible();
+            block.grayout();
             service.getLogInfor(self.formatParams()).done((result: Array<any>) => {
                 if (result && result.length) {
                     for (var i = 0; i < result.length; i++) {
@@ -108,27 +108,33 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                 startYm: null, endYm: null, 
                 startY: null, endY: null
             };
-            
-            switch (self.params.functionId) {
-                case FUNCTION_ID.Schedule:
-                case FUNCTION_ID.Daily:
-                    _params.startYmd = moment.utc(self.params.period.startDate, "YYYY/MM/DD").toISOString();
-                    _params.endYmd = moment.utc(self.params.period.endDate, "YYYY/MM/DD").toISOString();
-                    return _params;
-                case FUNCTION_ID.Monthly:
-                case FUNCTION_ID.Any_period:
-                case FUNCTION_ID.Salary:
-                case FUNCTION_ID.Bonus:
-                case FUNCTION_ID.Monthly_calculation:
-                case FUNCTION_ID.Raising_rising_back:
-                    _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
-                    _params.endYm = parseInt(moment.utc(self.params.period.endDate, "YYYY/MM").format("YYYYMM"), 10);
-                    return _params;
-                default:
-                    _params.startY = parseInt(self.params.period.startDate, 10);
-                    _params.endY = parseInt(self.params.period.endDate, 10);
-                    return _params;
-            }
+//            if (self.params.functionId == null) {
+                switch (self.params.functionId) {
+                    case FUNCTION_ID.Schedule:
+                    case FUNCTION_ID.Daily:
+                        _params.startYmd = moment.utc(self.params.period.startDate, "YYYY/MM/DD").toISOString();
+                        _params.endYmd = moment.utc(self.params.period.endDate, "YYYY/MM/DD").toISOString();
+                        return _params;
+                    case FUNCTION_ID.Any_period:
+                    case FUNCTION_ID.Salary:
+                    case FUNCTION_ID.Bonus:
+                    case FUNCTION_ID.Monthly_calculation:
+                    case FUNCTION_ID.Raising_rising_back:
+                        _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
+                        _params.endYm = parseInt(moment.utc(self.params.period.endDate, "YYYY/MM").format("YYYYMM"), 10);
+                        return _params;
+                    case FUNCTION_ID.Monthly:
+                        _params.endYmd = moment.utc(self.params.period.endDate, "YYYY/MM/DD").toISOString();
+                        _params.startYm = parseInt(moment.utc(self.params.period.startDate, "YYYY/MM").format("YYYYMM"), 10);
+                        return _params;
+                    default:
+                        _params.startY = parseInt(self.params.period.startDate, 10);
+                        _params.endY = parseInt(self.params.period.endDate, 10);
+                        return _params;
+                }
+//            } else {
+                
+//            }
         }
         
         private formatTargetDate(functionId: number, date: string): string {

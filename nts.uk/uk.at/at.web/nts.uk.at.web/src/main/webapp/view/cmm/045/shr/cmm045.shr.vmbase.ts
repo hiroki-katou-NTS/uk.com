@@ -507,9 +507,12 @@ module cmm045.shr {
             relationshipName: string;
             /**喪主フラグ*/
             mournerFlag: boolean;
+            /**勤務種類名称*/
+            workTypeName: string;
             constructor(appID: string, holidayAppType: number, day: number, workTimeName: string,
                 allDayHalfDayLeaveAtr: number, startTime1: string,endTime1: string,startTime2: string,
-                endTime2: string, relationshipCode: string, relationshipName: string, mournerFlag: boolean)
+                endTime2: string, relationshipCode: string, relationshipName: string,
+                mournerFlag: boolean, workTypeName: string)
             {
                 this.appID = appID;
                 this.holidayAppType = holidayAppType;
@@ -522,7 +525,8 @@ module cmm045.shr {
                 this.endTime2 = endTime2;
                 this.relationshipCode = relationshipCode;
                 this.relationshipName = relationshipName;
-                this.mournerFlag = mournerFlag;    
+                this.mournerFlag = mournerFlag;
+                this.workTypeName = workTypeName;  
             }
         }
         export class AppCompltLeaveFull {

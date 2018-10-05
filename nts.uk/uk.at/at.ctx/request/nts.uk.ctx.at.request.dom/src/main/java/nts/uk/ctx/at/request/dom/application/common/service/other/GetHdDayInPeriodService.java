@@ -8,6 +8,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -20,6 +21,7 @@ public class GetHdDayInPeriodService {
 	private JudgeHdSystemOneDayService judgeHdSysOneDaySv;
 	/**
 	 * 19.指定する期間での休日日数を取得する
+	 * 20.指定する期間での休日日数を取得する
 	 * @author hoatt
 	 * @param 社員ID //employeeID
 	 * @param 期間//period
@@ -39,10 +41,12 @@ public class GetHdDayInPeriodService {
 				date = period.start().addDays(i);
 				continue;
 			}
-			//1日休暇系か判定する-(kiểm tra xem có phải hệ thống nghỉ cả ngày ko)
-			boolean checkOneDay = judgeHdSysOneDaySv.judgeHdSysOneDay(ach.getWorkType().getWorkTypeCode());
+			//#100574 - #100575 2018.10.02
+			//1日半日出勤・1日休日系の判定
+			AttendanceHolidayAttr checkOneDay = judgeHdSysOneDaySv.judgeHdOnDayWorkPer(ach.getWorkType().getWorkTypeCode());
+			//outputがTrue：1日休日系 (True)
 			//休日日数+=1-(holidayNumber + =1)
-			hdDays = checkOneDay ? hdDays + 1 : hdDays;
+			hdDays = checkOneDay.equals(AttendanceHolidayAttr.HOLIDAY) ? hdDays + 1 : hdDays;
 			date = period.start().addDays(i);
 		}
 		return hdDays;

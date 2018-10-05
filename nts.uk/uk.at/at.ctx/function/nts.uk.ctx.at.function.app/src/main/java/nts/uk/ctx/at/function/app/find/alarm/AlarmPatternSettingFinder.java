@@ -129,7 +129,7 @@ public class AlarmPatternSettingFinder {
 		String roleId = AppContexts.user().roles().forAttendance();
 		List<CodeNameAlarmDto> result = alarmPatternRepo.findByCompanyIdAndUser(companyId).stream()
 				.filter(a -> !a.isAuthSetting() || a.isAuthSetting() && intersectTwoListRoleId(a.getRoleIds(), roleId))
-				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName())).collect(Collectors.toList());
+				.map(a -> new CodeNameAlarmDto(a.getAlarmCode(), a.getAlarmName(),a.getAlarmCode()+" "+ a.getAlarmName())).collect(Collectors.toList());
 		result.sort((a, b) -> a.getAlarmCode().compareTo(b.getAlarmCode()));
 		return result;
 	}

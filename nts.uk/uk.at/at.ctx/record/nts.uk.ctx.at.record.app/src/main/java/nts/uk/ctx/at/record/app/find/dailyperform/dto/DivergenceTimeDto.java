@@ -44,17 +44,27 @@ public class DivergenceTimeDto implements ItemConst {
 	/** 乖離時間NO: 乖離時間NO */
 	private Integer no;
 	
+	@Override
+	public DivergenceTimeDto clone(){
+		return new DivergenceTimeDto(divergenceTime, 
+									deductionTime,
+									divergenceReasonCode, 
+									divergenceReason, 
+									divergenceTimeAfterDeduction, 
+									no);
+	}
+	
 	public static DivergenceTimeDto fromDivergenceTime(DivergenceTime domain){
 		return domain == null ? null : new DivergenceTimeDto(
 				getAttendanceTime(domain.getDivTime()), 
 				getAttendanceTime(domain.getDeductionTime()),
-				domain.getDivResonCode() == null ? null : domain.getDivResonCode().v(), 
-				domain.getDivReason() == null ? null : domain.getDivReason().v(), 
+				!domain.getDivResonCode().isPresent() ? null : domain.getDivResonCode().get().v(), 
+				!domain.getDivReason().isPresent() ? null : domain.getDivReason().get().v(), 
 				getAttendanceTime(domain.getDivTimeAfterDeduction()), 
 				domain.getDivTimeId());
 	}
 
 	private static Integer getAttendanceTime(AttendanceTime domain) {
-		return domain == null ? null : domain.valueAsMinutes();
+		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }

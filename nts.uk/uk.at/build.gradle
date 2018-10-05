@@ -380,6 +380,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
+		compile(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
 	}
 }
 
@@ -747,6 +748,13 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
 		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: version)
 		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: version)
+		
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.app', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.dom', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.infra', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pubimp', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.ac', version: version)
 		
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: version)
 		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: version)

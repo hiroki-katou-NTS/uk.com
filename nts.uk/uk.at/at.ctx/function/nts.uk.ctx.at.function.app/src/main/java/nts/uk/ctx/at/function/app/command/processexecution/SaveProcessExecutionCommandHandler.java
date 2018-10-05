@@ -11,6 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
+import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
@@ -21,8 +23,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAlarmExtraction;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
@@ -40,7 +40,6 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSettin
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionScopeItemRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
-import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,9 +50,6 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 	@Inject
 	private ProcessExecutionRepository procExecRepo;
 
-	@Inject
-	private ProcessExecutionLogRepository procExecLogRepo;
-	
 	@Inject
 	private LastExecDateTimeRepository lastDateTimeRepo;
 	
@@ -80,10 +76,11 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 				new ProcessExecutionScope(EnumAdaptor.valueOf(command.getExecScopeCls(), ExecutionScopeClassification.class),
 						command.getRefDate(),
 						workplaceIdList);
-		IndividualAlarmExtraction indvAlarm = new IndividualAlarmExtraction(command.isIndvAlarmCls(),
-				command.isIndvMailPrin(),
-				command.isIndvMailMng());
-		WorkplaceAlarmExtraction wkpAlarm = new WorkplaceAlarmExtraction(command.isWkpAlarmCls(), command.isWkpMailMng());
+		
+		AlarmExtraction alarmExtraction = new AlarmExtraction(command.isAlarmAtr(), new AlarmPatternCode(command.getAlarmCode()),
+				command.getMailPrincipal(),
+				command.getMailAdministrator()
+				);
 		
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
 										/*command.getCreationPeriod() == null ? null : */new CreationPeriod(command.getCreationPeriod()),
@@ -97,10 +94,10 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		DailyPerformanceCreation dailyPerfCreation =
 								new DailyPerformanceCreation(command.isDailyPerfCls(),
 										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
-										,new TargetGroupClassification(command.isRecreateTypeChangePerson(), command.isMidJoinEmployee(), command.isRecreateTransfers()));
+										,new TargetGroupClassification(command.isRecreateTransfer(), command.isMidJoinEmployee(), command.isRecreateWorkType()));
 
 		ProcessExecutionSetting execSetting = 
-				new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls(),
+				new ProcessExecutionSetting(alarmExtraction, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls(),
 						new AppRouteUpdateDaily(
 								EnumAdaptor.valueOf(command.isAppRouteUpdateAtr()?1:0, NotUseAtr.class),
 								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)

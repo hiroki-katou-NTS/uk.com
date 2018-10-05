@@ -40,12 +40,16 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
+	//休出枠時間帯No
 	private HolidayWorkFrameTime frameTime;
 	
+	//拘束時間として扱う
 	private boolean TreatAsTimeSpentAtWork;
 	
+	//休出枠時間
 	private EmTimezoneNo HolidayWorkTimeSheetNo; 
 	
+	//法定区分
 	private Finally<StaturoryAtrOfHolidayWork> statutoryAtr;
 	
 	/**
@@ -161,7 +165,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 			holidayWorkTime = new AttendanceTime(0);
 		}
 		else {
-			holidayWorkTime = this.calcTotalTime();
+			holidayWorkTime = this.calcTotalTime(DeductionAtr.Deduction);
 		}
 		return  new HolidayWorkFrameTime(this.frameTime.getHolidayFrameNo()
 				,this.frameTime.getTransferTime()
@@ -181,7 +185,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		//一旦、打刻から計算する場合　を入れとく
 		val forceAtr = AutoCalAtrOvertime.CALCULATEMBOSS;
 		
-		AttendanceTime calcTime = this.afterMinusDeductionTime(dedAtr);
+		AttendanceTime calcTime = this.calcTotalTime(dedAtr);
 		
 		if(!forceAtr.isCalculateEmbossing()) {
 			calcTime = new AttendanceTime(0);

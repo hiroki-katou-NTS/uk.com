@@ -26,7 +26,8 @@
             allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
             allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
             allHiragana: /^[ぁ-ん　ー ]*$/,
-            workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/
+            workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/,
+            employeeCode: /^[a-zA-Z0-9 ]*$/
         };
 
         /**
@@ -270,6 +271,13 @@
                 messageId: 'FND_E_ALPHANUMERIC'
             };            
         }
+        
+        export function employeeCode(text: string) {
+            return {
+                probe: regexp.employeeCode.test(text),
+                messageId: 'FND_E_ALPHANUMERIC'
+            };            
+        }
 
         /**
          * 文字列中のHTML記号をサニタイズする
@@ -491,7 +499,11 @@
             WorkplaceCode: new CharType(
                 '半角英数字',
                 0.5,
-                nts.uk.text.workplaceCode)
+                nts.uk.text.workplaceCode),
+            EmployeeCode: new CharType(
+                '半角英数字',
+                0.5,
+                nts.uk.text.employeeCode)
         };
 
         export function getCharType(primitiveValueName: string): CharType {

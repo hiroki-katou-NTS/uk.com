@@ -108,8 +108,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 					.getApplicationSettingByComID(companyID);
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
-			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(displayFixedReason||displayAppReason){
 				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 						&& Strings.isBlank(typicalReason+displayReason)) {
 					throw new BusinessException("Msg_115");
@@ -139,7 +138,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 				1, 
 				appAbsence.getAppID(), 
 				appAbsence.getApplication().getPrePostAtr(), command.getVersion());
-		//check update
+		//check update 7.登録時のエラーチェック
 		insertAppAbsence.checkBeforeRegister(convert(command),
 				opAppAbsence.get().getApplication().getAppDate(),
 				opAppAbsence.get().getApplication().getEndDate().isPresent() ?opAppAbsence.get().getApplication().getEndDate().get() : opAppAbsence.get().getApplication().getAppDate(),false);
@@ -150,15 +149,23 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		//update appAbsence
 		repoAppAbsence.updateAbsence(appAbsence);
 		SpecHolidayCommand specHdCm = command.getSpecHd();
-		if(command.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && specHdCm != null){
+		//TH don nghi ngay dac biet
+		if(command.getHolidayAppType() == HolidayAppType.SPECIAL_HOLIDAY.value && specHdCm != null){//TH update
 			AppForSpecLeave specHd = AppForSpecLeave.createFromJavaType(command.getAppID(), specHdCm.getMournerCheck(), specHdCm.getRelationCD(), specHdCm.getRelaReason());
 			repoSpecLeave.updateSpecHd(specHd);
+		}else{//TH delete or nothing
+			//get 特別休暇申請
+			Optional<AppForSpecLeave> appSpec = repoSpecLeave.getAppForSpecLeaveById(companyID, command.getAppID());
+			if(appSpec.isPresent()){//TH co specHd old
+				AppForSpecLeave specLeave = appSpec.get();
+				repoSpecLeave.deleteSpecHd(specLeave);
+			}
 		}
 		//update application
 		repoApplication.updateWithVersion(appAbsence.getApplication());
 		// 暫定データの登録
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
-		GeneralDate cmdEndDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
+		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			listDate.add(loopDate);
@@ -176,6 +183,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		creat.setPrePostAtr(command.getPrePostAtr());
 		creat.setHolidayAppType(command.getHolidayAppType());
 		creat.setWorkTypeCode(command.getWorkTypeCode());
+		creat.setSpecHd(command.getSpecHd());
 		return creat;
 	}
 

@@ -179,11 +179,13 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if(inputParam.isChkSpecial()) {
 			//暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
 			specialHolidayData.stream().forEach(a -> {
+				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
+						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
 				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(inputParam.getCid(),
 						inputParam.getSid(),
 						inputParam.getDatePeriod(),
 						inputParam.isMode(),
-						inputParam.getBaseDate(),
+						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
 						a.getSpecialHolidayCode(),
 						false,
 						true,
@@ -205,9 +207,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if(inputParam.isChkAnnual()) {
 			mngWork = annualHolidayData.stream()
 					.map(o -> {
-						GeneralDate annalDate = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-								.collect(Collectors.toList()).get(0).getYmd();
-						return TmpAnnualLeaveMngWork.of(o.getAnnualId(), annalDate, o.getWorkTypeCode(), o.getUseDays());
+						InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
+								.collect(Collectors.toList()).get(0);
+						return TmpAnnualLeaveMngWork.of(annualInterim, o);
 					}).collect(Collectors.toList());
 			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(),
@@ -232,9 +234,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if(inputParam.isChkFundingAnnual()) {
 			List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
 					.map(l -> {
-						GeneralDate annalDate = annualMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
-								.collect(Collectors.toList()).get(0).getYmd();
-						return TmpReserveLeaveMngWork.of(l.getResereId(), annalDate, l.getUseDays());
+						InterimRemain reserveInterim = resereMng.stream().filter(a -> a.getRemainManaID() == l.getResereId())
+								.collect(Collectors.toList()).get(0);
+						return TmpReserveLeaveMngWork.of(reserveInterim, l);
 					}).collect(Collectors.toList());
 			List<ReserveLeaveErrorImport> reserveLeaveErrors = annualService.reserveLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(),

@@ -13,12 +13,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -38,9 +40,14 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
+import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -61,21 +68,17 @@ public class DPLoadRowProcessor {
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
     
     @Inject
-	private ApplicationListForScreen applicationListFinder;
+    private DPMonthFlexProcessor dPMonthFlexProcessor;
     
     @Inject
-	private ApprovalStatusAdapter approvalStatusAdapter;
+	private DPLock findLock;
     
-
-	private static final String LOCK_EDIT_APPROVAL = "A";
-	private static final String LOCK_APPLICATION = "Application";
-	private static final String COLUMN_SUBMITTED = "Submitted";
-	public static final int MINUTES_OF_DAY = 24 * 60;
-	private static final String STATE_DISABLE = "ntsgrid-disable";
-	private static final String LOCK_SIGN = "sign";
-
-
-	
+    @Inject
+	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+    
+    @Inject
+	private ClosureService closureService;
+    
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
 		
@@ -84,7 +87,7 @@ public class DPLoadRowProcessor {
 		Integer displayFormat = param.getDisplayFormat();
 		List<DPDataDto> lstDataTemp = param.getLstData();
 		List<Integer> itemIds = param.getLstAttendanceItem().stream().map(x -> x.getId()).collect(Collectors.toList());
-		
+		result.setIdentityProcessDto(param.getIdentityProcess());
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
@@ -93,7 +96,25 @@ public class DPLoadRowProcessor {
 		List<String> listEmployeeId = param.getLstData().stream().map(x -> x.getEmployeeId()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 		result.setLstData(lstDataTemp);
 		
-		
+		if (displayFormat == 0) {
+			// フレックス情報を表示する
+			OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+			//if (!listEmployeeId.isEmpty()){
+			String emp = param.getOnlyLoadMonth() ? param.getLstEmployee().get(0).getId() : listEmployeeId.get(0);
+				result.setMonthResult(dPMonthFlexProcessor
+						.getDPMonthFlex(new DPMonthFlexParam(companyId, emp, param.getDateMonth(),
+								process.getEmploymentCode(companyId, new DateRange(null, param.getDateMonth()), emp), dailyPerformanceDto, param.getAutBussCode())));
+			// screenDto.setFlexShortage(null);
+			//}
+			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
+				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
+				result.checkShowTighProcess(displayFormat, true,
+						checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+			}
+		}
+		if(param.getOnlyLoadMonth()){
+			return result;
+		}
 		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
 				.collect(Collectors.toMap(x -> process.mergeString(String.valueOf(x.getAttendanceItemId()), "|", x.getEmployeeId(), "|",
@@ -101,7 +122,7 @@ public class DPLoadRowProcessor {
 						x -> x.getEditState()));
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
 		List<DPErrorDto> lstError = listEmployeeId.isEmpty() ? new ArrayList<>()
-				: repo.getListDPError(dateRange, listEmployeeId);;
+				: repo.getListDPError(dateRange, listEmployeeId);
 				
 		Map<String, String> listEmployeeError = lstError.stream()
 				.collect(Collectors.toMap(e -> e.getEmployeeId(), e -> "", (x, y) -> x));
@@ -114,15 +135,24 @@ public class DPLoadRowProcessor {
 		}
 		
 		
-		List<DailyModifyResult> results = new GetDataDaily(listEmployeeId, dateRange, itemIds, dailyModifyQueryProcessor).call();
-		
-		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
+		//List<DailyModifyResult> results = new GetDataDaily(listEmployeeId, dateRange, itemIds, dailyModifyQueryProcessor).call();
+		Map<String, List<GeneralDate>> mapDate = param.getLstData().stream()
+				.collect(Collectors.groupingBy(x -> x.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
+						x -> x.stream().map(y -> y.getDate()).collect(Collectors.toList()))));
+		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(mapDate, dailyModifyQueryProcessor).getDataRow();
+		List<DailyModifyResult> resultDailys = resultPair.getLeft();
+		//List<DailyRecordDto> dailyRow = resultPair.getRight();
+		Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange = resultPair.getRight().stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
+		result.setDomainOld(param.getDailys().stream().map(x ->{
+			return mapDtoChange.getOrDefault(Pair.of(x.getEmployeeId(), x.getDate()), x);
+		}).collect(Collectors.toList()));
+		Map<String, DailyModifyResult> resultDailyMap = resultDailys.stream().collect(Collectors
 				.toMap(x -> process.mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
 		
-		Map<Integer, DPAttendanceItem> mapDP =param.getLstAttendanceItem().stream()
+		Map<Integer, DPAttendanceItem> mapDP = param.getLstAttendanceItem().stream()
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setLstEmployee(param.getLstEmployee());
 		
@@ -143,8 +173,8 @@ public class DPLoadRowProcessor {
 		
 		Set<Integer> types = param.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
 						.collect(Collectors.toSet());
-		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
-				.getAllCodeName(new ArrayList<>(types), companyId);
+		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
+				.getAllCodeName(new ArrayList<>(types), companyId, dateRange.getEndDate());
 		CodeNameType codeNameReason = dataDialogWithTypeProcessor.getReason(companyId);
 		Map<String, CodeName> codeNameReasonMap = codeNameReason != null
 				? codeNameReason.getCodeNames().stream()
@@ -155,8 +185,6 @@ public class DPLoadRowProcessor {
 		// disable check box sign
 		Map<String, Boolean> disableSignMap = new HashMap<>();
 		Map<String, String> appMapDateSid = process.getApplication(listEmployeeId, dateRange, disableSignMap);
-		//get  check box sign(Confirm day)
-		Map<String, Boolean> signDayMap = repo.getConfirmDay(companyId, listEmployeeId, dateRange);
 		
 		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
 		result.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
@@ -166,56 +194,48 @@ public class DPLoadRowProcessor {
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
 		//get status check box 
-		Map<String, ApproveRootStatusForEmpDto> approvalDayMap =  process.getCheckApproval(approvalStatusAdapter, listEmployeeId, dateRange, sId, mode);
+		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt, approvalUseSettingDtoOpt);
 		for (DPDataDto data : result.getLstData()) {
 			data.resetData();
 			data.setEmploymentCode(result.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
-				result.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+				result.setCellSate(data.getId(), DPText.LOCK_APPLICATION, DPText.STATE_DISABLE);
 			}
 			// map name submitted into cell
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
-				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED,
+				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED,
 						appMapDateSid.get(data.getEmployeeId() + "|" + data.getDate()), "", ""));
 			} else {
-				data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
+				data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
 			}
-			data.addCellData(new DPCellDataDto(COLUMN_SUBMITTED, "", "", ""));
-			data.addCellData(new DPCellDataDto(LOCK_APPLICATION, "", "", ""));
+			data.addCellData(new DPCellDataDto(DPText.COLUMN_SUBMITTED, "", "", ""));
+			data.addCellData(new DPCellDataDto(DPText.LOCK_APPLICATION, "", "", ""));
 			//set checkbox sign
-			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
+			data.setSign(dpLock.getSignDayMap().containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			if(disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())){
-				result.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				result.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 			}
 			
-			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
+			ApproveRootStatusForEmpDto approveRootStatus =  dpLock.getLockCheckApprovalDay().get(data.getEmployeeId() + "|" + data.getDate());
 		//	if(mode == ScreenMode.APPROVAL.value){
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
 		//	}
+			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 			DailyModifyResult resultOfOneRow = process.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
-			Map<String, DatePeriod> employeeAndDateRange = process.extractEmpAndRange(dateRange, companyId, employmentWithSidMap);
+			
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
-
-				boolean lock = process.checkLockAndSetState(employeeAndDateRange, data);
-
-				if (lock || data.isApproval()) {
-					if(lock) process.lockCell(result, data, true);
-					if (data.isApproval()) {
-						val typeLock = data.getState();
-						if (typeLock.equals(""))
-							data.setState("lock|" + LOCK_EDIT_APPROVAL);
-						else
-							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
-						 process.lockCell(result, data, false);
-						lock = true;
-					}
-				}
-				
-				if(data.isSign() && mode == ScreenMode.NORMAL.value){
-					process.lockCell(result, data, false);
-					lock = true;
+				process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
+				boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+				if (param.isShowLock()) {
+					lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+					lockHist = process.lockHist(dpLock.getLockHist(), data);
+					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
+					lockConfirmMonth = process.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, data.isApproval(), lockHist,
+							data.isSign(), lockApprovalMonth, lockConfirmMonth);
+				} else {
+					lockDaykWpl = process.lockAndDisable(result, data, mode, lockDaykWpl, false, lockHist,
+							false, lockApprovalMonth, lockConfirmMonth);
 				}
 				
 				itemValueMap = resultOfOneRow.getItems().stream()
@@ -224,7 +244,7 @@ public class DPLoadRowProcessor {
 				DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 				dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
 				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap,
-						itemValueMap,  data, lock, dailyRecEditSetsMap, null);
+						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

@@ -20,7 +20,7 @@ public interface SingleDayScheduleGetMemento {
 	 *
 	 * @return the work type code
 	 */
-	WorkTypeCode getWorkTypeCode();
+	Optional<WorkTypeCode> getWorkTypeCode();
 
 	/**
 	 * Gets the working hours.

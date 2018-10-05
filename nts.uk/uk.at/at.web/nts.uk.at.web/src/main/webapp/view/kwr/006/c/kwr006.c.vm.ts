@@ -32,6 +32,10 @@ module nts.uk.at.view.kwr006.c {
             currentRemarkInputContent: KnockoutObservable<number>;
             isEnableRemarkInputContents: KnockoutComputed<boolean>;
 
+            // store map to convert id and code attendance item
+            mapIdCodeAtd: any;
+            mapCodeIdAtd: any;
+
             constructor() {
                 var self = this;
                 self.C3_2_value = ko.observable("");
@@ -82,6 +86,8 @@ module nts.uk.at.view.kwr006.c {
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
+                self.mapIdCodeAtd = {};
+                self.mapCodeIdAtd = {};
             }
 
             /*
@@ -90,12 +96,12 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(lstDisplayedAttendance?: any): void {
                 let self = this;
 
-                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => parseInt(i.code));
+                const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
                     lstSwapRight = lstDisplayedAttendance.map(item => {
-                        return { code: item.attendanceDisplay + "", name: item.attendanceName };
-                    }).sort((a, b) => parseInt(a.code) - parseInt(b.code));
+                        return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
+                    });
                 }
 
                 // refresh data for C7_8
@@ -106,12 +112,7 @@ module nts.uk.at.view.kwr006.c {
 
             public sortItems(): void {
                 let self = nts.uk.ui._viewModel.content;
-                self.items(_.sortBy(self.items(), item => parseInt(item.code)));
-            }
-
-            public sortCurrentCodeListSwap(): void {
-                let self = nts.uk.ui._viewModel.content;
-                self.currentCodeListSwap(_.sortBy(self.currentCodeListSwap(), item => parseInt(item.code)));
+                self.items(_.sortBy(self.items(), item => item.code));
             }
 
             /*
@@ -129,6 +130,9 @@ module nts.uk.at.view.kwr006.c {
                     if (!_.isNil(KWR006DOutput)) {
                         self.selectedCodeC2_3('');
                         if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
+                            _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
+                                value.code = self.mapIdCodeAtd[value.id];
+                            })
                             const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
@@ -145,6 +149,7 @@ module nts.uk.at.view.kwr006.c {
 
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR006_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR006_D').nameCopy);
+                        self.saveData();
                     } else {
                         self.selectedCodeC2_3(self.storeCurrentCodeBeforeCopy());
                     }
@@ -186,8 +191,9 @@ module nts.uk.at.view.kwr006.c {
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
-                _.forEach(self.currentCodeListSwap(), function(value, index) {
-                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
+
+                _.map(self.currentCodeListSwap(), function(value, index) {
+                    command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code] });
                 });
 
                 if (self.selectedCodeA8_2() == 1) {
@@ -263,6 +269,8 @@ module nts.uk.at.view.kwr006.c {
                 Close C screen
             */
             public closeScreenC(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared('selectedCodeScreenC', self.selectedCodeC2_3(), true)
                 nts.uk.ui.windows.close();
             }
 
@@ -290,18 +298,19 @@ module nts.uk.at.view.kwr006.c {
                     self.allMainDom(data.outputItemMonthlyWorkSchedule);
 
                     // variable temporary 
-                    let temp: any[] = [];
-                    _.forEach(data.monthlyAttendanceItem, function(value) {
-                        temp.push(value);
-                    })
-                    self.outputItemPossibleLst(temp);
+                    self.outputItemPossibleLst(data.monthlyAttendanceItem);
 
-                    let arrCodeName: ItemModel[] = [];
-                    _.forEach(data.outputItemMonthlyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode + "", name: value.itemName });
+                    let arrCodeName = _.map(data.outputItemMonthlyWorkSchedule, value => {
+                        return { code: value.itemCode, name: value.itemName };
                     });
                     self.outputItemList(arrCodeName);
-                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
+
+                    _.forEach(data.monthlyAttendanceItem, (value) => {
+                        self.mapCodeIdAtd[value.code] = value.id;
+                        self.mapIdCodeAtd[value.id] = value.code;
+                    })
+
+                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : _.sortBy(data.monthlyAttendanceItem, o => o.code));
                     dfd.resolve();
                 })
 
@@ -361,9 +370,11 @@ module nts.uk.at.view.kwr006.c {
         class ItemModel {
             code: string;
             name: string;
-            constructor(code: string, name: string) {
+            id: string;
+            constructor(code: string, name: string, id: string) {
                 this.code = code;
                 this.name = name;
+                this.id = id;
             }
         }
 

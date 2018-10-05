@@ -32,6 +32,7 @@ module nts.uk.ui.koExtentions {
             let onchange: (filename: string) => void = (data.onchange !== undefined) ? data.onchange : $.noop;
             let onfilenameclick: (filename: string) => void = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
             let uploadFinished: (fileInfo: any) => void = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
+            let maxSize = data.maxSize;
             
             // Container
             let $container = $(element);
@@ -75,6 +76,13 @@ module nts.uk.ui.koExtentions {
                         $container.data(IS_RESTORED_BY_CANCEL, true);
                         this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                     }
+                    return;
+                }
+                
+                // check file's size if maxSize is defined
+                if (maxSize && this.files[0].size > (maxSize * 1048576)) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [maxSize] });
+                    $container.ntsFileUpload("clear");
                     return;
                 }
                 

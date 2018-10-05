@@ -69,4 +69,15 @@ public class UserInfoAdaptorForLogImpl implements UserInfoAdaptorForLog {
 				.map(u -> UserInfo.employee(u.getUserID(), employee.getEmployeeId(), employee.getPName()))
 				.get();
 	}
+	
+	@Override
+	public UserInfo findByEmployeeIdAndCompanyId(String employeeId, String companyId) {
+		
+		val employee = this.employeePub.findBySIdAndCompanyId(employeeId, companyId);
+		if (employee == null) {
+			throw new RuntimeException("employee not found: " + employeeId);
+		}
+		
+		return this.getUserInfoByEmployee(employee);
+	}
 }

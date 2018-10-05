@@ -11,6 +11,7 @@ import nts.uk.ctx.pereg.app.find.common.AnnLeaEmpBasicInfo;
 import nts.uk.ctx.pereg.app.find.common.GetYearHolidayInfo;
 import nts.uk.ctx.pereg.app.find.common.NextTimeEventDto;
 import nts.uk.ctx.pereg.app.find.common.NextTimeEventParam;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Path("at/record/remainnumber/annlea/event")
 @Produces("application/json")
@@ -28,7 +29,6 @@ public class NextTimeEventService extends WebService{
 	 * パラメータ＝労働条件の期間：NULL
 	 * パラメータ＝契約時間：NULL
 	 * パラメータ＝入社年月日：NULL
-	 * パラメータ＝退職年月日：NULL
 	 * @return 次回年休付与日, 次回年休付与日数, 次回時間年休付与上限
 	 */
 	@POST
@@ -38,8 +38,9 @@ public class NextTimeEventService extends WebService{
 			return new NextTimeEventDto();
 		}
 		AnnLeaEmpBasicInfo annLea = new AnnLeaEmpBasicInfo(param.getEmployeeId(),
-				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(), null, null, null,
-				null);
+				GeneralDate.fromString(param.getStandardDate(), "yyyy/MM/dd"), param.getGrantTable(),
+				new DatePeriod(param.getStartWorkCond(), param.getEndWorkCond()), param.getContactTime(),
+				param.getEntryDate());
 		return NextTimeEventDto.fromDomain(getYearHolidayInfo.getYearHolidayInfo(annLea));
 	}
 

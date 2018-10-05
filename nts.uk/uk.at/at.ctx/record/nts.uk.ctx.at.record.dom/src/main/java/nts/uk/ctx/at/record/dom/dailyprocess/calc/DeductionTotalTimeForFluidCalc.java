@@ -28,8 +28,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @AllArgsConstructor
 public class DeductionTotalTimeForFluidCalc {
-
+	//合計時間
 	private AttendanceTime totalTime;
+	//外出相殺残時間
 	private AttendanceTime goOutTimeOffsetRemainingTime;
 	
 	
@@ -146,7 +147,7 @@ public class DeductionTotalTimeForFluidCalc {
 			//for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : duplicateList) {
 			for(int itemNumber = 0 ; itemNumber < duplicateList.size() ; itemNumber++) {
 				//外出時間を計算
-				AttendanceTime calcTime = duplicateList.get(itemNumber).calcTotalTime();
+				AttendanceTime calcTime = duplicateList.get(itemNumber).calcTotalTime(DeductionAtr.Deduction);
 				//丸め処理(今は一時的に丸めていない値を直接入れている)
 				//int goOutdeductionTime = calcTime;
 				//控除時間分、流動休憩時間の開始をズラす
@@ -266,7 +267,7 @@ public class DeductionTotalTimeForFluidCalc {
 		AttendanceTime breakTime = new AttendanceTime(0);
 		//or(TimeSheetOfDeductionItem goOutTimeSheet : goOutTimeSheetList) {
 		for(int itemNumber = 0 ; itemNumber < goOutTimeSheetList.size();itemNumber++) {
-			AttendanceTime goOutTime = goOutTimeSheetList.get(itemNumber).calcTotalTime();
+			AttendanceTime goOutTime = goOutTimeSheetList.get(itemNumber).calcTotalTime(DeductionAtr.Deduction);
 			//goOutTime全てを休憩時間に帰る
 			if(offSetTime.greaterThan(goOutTime.v())) {
 				breakTime = goOutTime;

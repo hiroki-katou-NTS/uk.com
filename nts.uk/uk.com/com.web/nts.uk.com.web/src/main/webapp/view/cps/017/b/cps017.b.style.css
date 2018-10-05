@@ -7,3 +7,7 @@
 #item_register_grid2 tbody tr td:NTH-CHILD(1) {
 	text-align: center;
 }
+
+#item_register_grid2_scroll{
+	height: 230px !important;
+}

@@ -5,7 +5,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public interface SysFixedCheckConMonPub {
 		//5:36協定のチェック

@@ -4,6 +4,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class KTG030QueryProcessor {
@@ -21,11 +23,6 @@ public class KTG030QueryProcessor {
 	@Inject
 	private ShClosurePub shClosurePub;
 
-	/**
-	 * 日別実績確認すべきデータ有無表示
-	 * 
-	 * @return
-	 */
 	@Inject
 	private DailyPerformanceAdapter dailyPerformanceAdapter;
 
@@ -54,18 +51,21 @@ public class KTG030QueryProcessor {
 			throw new RuntimeException("Not found PresentClosingPeriodExport by closureID" + closureID );
 			
 		}
+		YearMonth yearMonth = presentClosingPeriod.get().getProcessingYm();
 		GeneralDate closureStartDate = presentClosingPeriod.get().getClosureStartDate();
 		GeneralDate closureEndDate = presentClosingPeriod.get().getClosureEndDate();
 
 		// "Acquire 「日別実績確認有無取得」"
 		/*
 		 * input · Employee ID · Date (start date) <= Tightening start date ·
-		 * Date (end date) <= closing end date + 1 month · 
+		 * 
+		 * Date (end date) <= closing end date
 		 * Route type <= Employment application
 		 */
 
 		// RootType(就業日別確認) = 2
-		boolean checkMonthApproved = dailyPerformanceAdapter.checkDataApproveed(closureStartDate, closureEndDate.addMonths(1), employeeID, 2, cid);
+		DatePeriod period = new DatePeriod(closureStartDate, closureEndDate);
+		boolean checkMonthApproved = dailyPerformanceAdapter.dataMonth(employeeID, period, yearMonth);
 
 		return checkMonthApproved;
 	}

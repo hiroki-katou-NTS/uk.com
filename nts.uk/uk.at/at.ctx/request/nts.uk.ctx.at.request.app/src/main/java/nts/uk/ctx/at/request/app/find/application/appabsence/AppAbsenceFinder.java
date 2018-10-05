@@ -276,6 +276,7 @@ public class AppAbsenceFinder {
 		}
 		AppAbsence appAbsence = opAppAbsence.get();
 		result = AppAbsenceDto.fromDomain(appAbsence);
+		result.setDisplayReasonDtoLst(displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
 		//アルゴリズム「詳細画面起動前モードの判断」を実行する-「Kiểm tra mode trước khi khởi động màn hình detail」
 		//アルゴリズム「14-2.詳細画面起動前申請共通設定を取得する」を実行する
 		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID,
@@ -408,7 +409,6 @@ public class AppAbsenceFinder {
 		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, appAbsence.getApplication().getEmployeeID(),
 				appAbsence.getApplication().getAppDate(), appEmpSetAs);
 		result.setNumberRemain(numberRemain);
-		result.setDisplayReasonDtoLst(displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList()));
 		return result;
 	}
 
@@ -786,7 +786,13 @@ public class AppAbsenceFinder {
 			//取得したメインモデル「事象に対する特別休暇」．上限日数．種類をチェックする-(Check domain [SpecialHolidayEvent]. GrantDay.Type)
 			//指定する特休枠の続柄に対する上限日数を取得する-(get MaxDay SpecHd ByRela FrameNo)
 			List<DateSpecHdRelationOutput> lstRela = specHdEventAlg.getMaxDaySpecHdByRelaFrameNo(companyID, checkSpecHd.getFrameNo().get());
-			if(specHd.getMaxNumberDay().equals(MaxNumberDayType.REFER_RELATIONSHIP)){
+			//取得したメインモデル「事象に対する特別休暇」．上限日数．種類をチェックする-(Check domain [SpecialHolidayEvent]. GrantDay.Type)
+			if(specHd.getMaxNumberDay().equals(MaxNumberDayType.LIMIT_FIXED_DAY)){//種類が固定日数を上限とする(type = FixedDayGrant)
+				//指定する特休枠の上限日数を取得する
+				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, lstRela.size() == 0 ? Optional.empty() : Optional.of(lstRela.get(0).getRelationCD()));
+			}else{//その以外
+				//指定する特休枠の続柄に対する上限日数を取得する-(get MaxDay SpecHd ByRela FrameNo)
+				lstRela = specHdEventAlg.getMaxDaySpecHdByRelaFrameNo(companyID, checkSpecHd.getFrameNo().get());
 				//指定する特休枠の上限日数を取得する - (get MaxDay SpecHd)
 				maxDay = specHdEventAlg.getMaxDaySpecHd(companyID, checkSpecHd.getFrameNo().get(), specHd, lstRela.size() == 0 ? Optional.empty() : Optional.of(lstRela.get(0).getRelationCD()));
 			}
@@ -796,6 +802,7 @@ public class AppAbsenceFinder {
 			result.setMaxNumberDayType(specHd.getMaxNumberDay().value);
 			result.setMakeInvitation(specHd.getMakeInvitation().value);
 		}
+		result.setHolidayAppType(holidayType);
 		return result;
 	}
 

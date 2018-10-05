@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.closurestatus;
 
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,16 +14,9 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
-import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
-import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
-import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
-import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
-import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMng;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMngPk;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -69,9 +60,15 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 		List<KrcdtClosureSttMng> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
 		query.append("WHERE a.pk.employeeId IN :employeeId ");
+		query.append("AND a.start <= :endDate ");
+		query.append("AND a.end >= :startDate ");
 		TypedQueryWrapper<KrcdtClosureSttMng> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSttMng.class);
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).getList());
+			result.addAll(tQuery
+					.setParameter("employeeId", empIds)
+					.setParameter("startDate", span.start())
+					.setParameter("endDate", span.end())
+					.getList());
 		});
 		return toDomainFromJoin(result);
 	}

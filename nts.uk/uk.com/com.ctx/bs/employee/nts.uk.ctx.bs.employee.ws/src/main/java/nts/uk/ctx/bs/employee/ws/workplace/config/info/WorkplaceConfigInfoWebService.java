@@ -63,4 +63,5 @@ public class WorkplaceConfigInfoWebService extends WebService {
 		
 		return this.wkpConfigInfoFinder.findAllByBaseDateForKcp010(findObject);
 	}
+
 }

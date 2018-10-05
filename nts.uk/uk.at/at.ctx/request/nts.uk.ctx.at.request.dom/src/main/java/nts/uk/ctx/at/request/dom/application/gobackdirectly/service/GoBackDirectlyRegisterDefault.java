@@ -167,8 +167,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 						application.getAppDate(), 
 						validOut1.workTypeCD, 
 						validOut1.siftCd, 
-						new AttendanceTime(validOut1.workTimeStart.v()), 
-						new AttendanceTime(validOut1.workTimeEnd.v()), 
+						validOut1.workTimeStart == null ? null : new AttendanceTime(validOut1.workTimeStart.v()), 
+						validOut1.workTimeEnd == null ? null : new AttendanceTime(validOut1.workTimeEnd.v()), 
 						goBackDirectly.getWorkTimeStart2().map(x -> new AttendanceTime(x.v())).orElse(null), 
 						goBackDirectly.getWorkTimeEnd2().map(x -> new AttendanceTime(x.v())).orElse(null));
 				DailyAttenTimeLateLeaveImport dailyAttenTimeLateLeaveImport = dailyAttendanceTimeCaculation.calcDailyLateLeave(dailyAttenTimeParam);

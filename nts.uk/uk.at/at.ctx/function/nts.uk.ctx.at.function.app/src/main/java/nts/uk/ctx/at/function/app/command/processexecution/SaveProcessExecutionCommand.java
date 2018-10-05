@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,21 +65,6 @@ public class SaveProcessExecutionCommand {
 	
 	/* 月別集計 */
 	private boolean monthlyAggCls;
-	
-	/* アラーム抽出（個人別） */
-	private boolean indvAlarmCls;
-	
-	/* 本人にメール送信する */
-	private boolean indvMailPrin;
-	
-	/* 管理者にメール送信する */
-	private boolean indvMailMng;
-	
-	/* アラーム抽出（職場別） */
-	private boolean wkpAlarmCls;
-	
-	/* 管理者にメール送信する */
-	private boolean wkpMailMng;
 
 	private int execScopeCls;
 
@@ -104,5 +90,12 @@ public class SaveProcessExecutionCommand {
 	/* 実行種別*/
 	private int processExecType;
 	
+	private boolean alarmAtr;
+	
+	private String alarmCode;
+	
+	private Boolean mailPrincipal;
+	
+	private Boolean mailAdministrator;
 
 }

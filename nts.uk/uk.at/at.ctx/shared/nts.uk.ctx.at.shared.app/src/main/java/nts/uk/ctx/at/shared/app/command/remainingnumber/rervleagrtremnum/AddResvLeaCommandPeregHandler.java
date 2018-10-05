@@ -37,7 +37,7 @@ implements PeregAddCommandHandler<AddResvLeaRemainPeregCommand>{
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddResvLeaRemainPeregCommand> context) {
 		AddResvLeaRemainPeregCommand c = context.getCommand();
 		String annLeavId = IdentifierUtil.randomUniqueId();
-		boolean check = validate(c.getGrantDate(), c.getDeadline(), c.getGrantDays(),
+		boolean check = ReserveLeaveGrantRemainingData.validate(c.getGrantDate(), c.getDeadline(), c.getGrantDays(),
 				c.getUseDays(), c.getRemainingDays() , c.grantDateItemName , c.deadlineDateItemName);
 		if (check) {
 			ReserveLeaveGrantRemainingData data = ReserveLeaveGrantRemainingData.createFromJavaType(annLeavId,
@@ -51,37 +51,5 @@ implements PeregAddCommandHandler<AddResvLeaRemainPeregCommand>{
 			resvLeaRepo.add(data, AppContexts.user().companyId());
 		}
 		return new PeregAddCommandResult(annLeavId);
-	}
-	
-	
-	
-	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
-			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays , String grantDateItemName, String  deadlineDateItemName) {
-		if (grantDate == null && deadlineDate == null && grantDays == null && usedDays == null && remainDays == null)
-			return false;
-
-		if (grantDays != null || usedDays != null || remainDays != null) {
-			if (deadlineDate == null || grantDate == null) {
-				if (grantDate == null) {
-					throw new BusinessException("Msg_925", grantDateItemName);
-				}
-				if (deadlineDate == null) {
-					throw new BusinessException("Msg_925", deadlineDateItemName);
-				}
-			}
-		}
-		if (grantDate == null && deadlineDate != null) {
-			throw new BusinessException("Msg_925", grantDateItemName);
-		}
-		if (deadlineDate == null && grantDate != null) {
-			throw new BusinessException("Msg_925", deadlineDateItemName);
-		}
-		if (grantDate != null && deadlineDate != null) {
-			// 付与日＞使用期限の場合はエラー #Msg_1023
-			if (grantDate.compareTo(deadlineDate) > 0) {
-				throw new BusinessException("Msg_1023");
-			}
-		}
-		return true;
 	}
 }

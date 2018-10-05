@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
@@ -87,7 +89,9 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 
 	private KrqdtAppWorkChange toEntity(AppWorkChange domain) {
 		return new KrqdtAppWorkChange(domain.getVersion(), new KrqdtAppWorkChangePk(domain.getCid(), domain.getAppId()),
-				domain.getWorkTypeCd(), domain.getWorkTimeCd(), domain.getExcludeHolidayAtr(),
+				Strings.isBlank(domain.getWorkTypeCd()) ? null : domain.getWorkTypeCd(), 
+				Strings.isBlank(domain.getWorkTimeCd()) ? null : domain.getWorkTimeCd(), 
+				domain.getExcludeHolidayAtr(),
 				domain.getWorkChangeAtr(), domain.getGoWorkAtr1(), domain.getBackHomeAtr1(),
 				domain.getBreakTimeStart1(), domain.getBreakTimeEnd1(), domain.getWorkTimeStart1(),
 				domain.getWorkTimeEnd1(), domain.getWorkTimeStart2(), domain.getWorkTimeEnd2(), domain.getGoWorkAtr2(),

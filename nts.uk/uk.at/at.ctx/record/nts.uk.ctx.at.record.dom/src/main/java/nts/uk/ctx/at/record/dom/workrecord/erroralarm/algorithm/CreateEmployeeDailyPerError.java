@@ -73,9 +73,10 @@ public class CreateEmployeeDailyPerError {
 	 *            対象日一覧：List＜年月日＞
 	 * @return 対象日一覧の確認が済んでいる：boolean
 	 */
-	public boolean employeeDailyRecordErrorCheck(String companyID, String employeeID, DatePeriod durationDate) {
-		return employeeDailyPerErrorRepository.checkExistRecordErrorListDate(companyID, employeeID,
-				getDaysBetween(durationDate.start(), durationDate.end()));
+	public boolean employeeDailyRecordErrorCheck(String companyID, String employeeID, DatePeriod durationDate,boolean checkExistRecordErrorListDate) {
+//		return employeeDailyPerErrorRepository.checkExistRecordErrorListDate(companyID, employeeID,
+//				getDaysBetween(durationDate.start(), durationDate.end()));
+		return checkExistRecordErrorListDate;
 	}
 	
 	/**
@@ -85,6 +86,7 @@ public class CreateEmployeeDailyPerError {
 	 * @param date
 	 * @param errorCode
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void removeByCidSidDateAndErrorCode(String companyID, String employeeID, GeneralDate date, String errorCode){
 		this.employeeDailyPerErrorRepository.removeByCidSidDateAndCode(companyID, employeeID, date, errorCode);
 	}

@@ -108,7 +108,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              * reload page by action stop execution
              */
             private reloadPage(): void {
-                var self = this;
+                let self = this;
                 nts.uk.ui.block.invisible();
                 service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
                     service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
@@ -119,13 +119,13 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             self.isError(true);
                             
                             // resize windows
-                            var windowSize = nts.uk.ui.windows.getSelf();
+                            let windowSize = nts.uk.ui.windows.getSelf();
                             windowSize.$dialog.dialog('option', {
                                 width: 750,
-                                height: 700
+                                height: 640
                             });
                             $("#exportButton").focus();
-                            windowSize.$dialog.resize();
+//                            windowSize.$dialog.resize();
                             // update error to view
                             let order = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);
                             let array = _.forEach(order,(object,index)=>{ object.noID = index+1;});

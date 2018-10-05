@@ -44,8 +44,7 @@
 		      				width: '100px',
 						columns: [
 							{ prop: 'name', length: 5 },
-						],
-						dropDownAttachedToBody: true}"></div>
+						]}"></div>
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_94')}</div>
 					<div
 						data-bind="ntsRadioBoxGroup: {
@@ -59,7 +58,7 @@
 				<div class="valign-center control-group">
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_95')}</div>
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_96')}</div>
-					<button data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KDW007_73')}</button>
+					<button data-bind="click: openSelectAtdItemDialogTarget, timeClick: 600">#{i18n.getText('KDW007_73')}</button>
 					<input id="display-target-item"
 						class="display-list-label need-check"
 						data-bind="ntsTextEditor: {
@@ -177,8 +176,7 @@
 						 				constraint: 'CheckedTimeDuration',
 						 				inputFormat: 'time',
 						 				mode: 'time',
-						 				required: currentAtdItemCondition.conditionType() == 0,
-										option: {decimallength: 0}
+						 				required: currentAtdItemCondition.conditionType() == 0
 				 					}" />
 							<input id="endValue" class="value-input needcheck"
 								data-bind="ntsTimeEditor: {value: currentAtdItemCondition.compareEndValue, 
@@ -187,8 +185,7 @@
 						 														constraint: 'CheckedTimeDuration',  
 																			 	inputFormat: 'time',
 																			 	mode: 'time', 
-																			 	required: currentAtdItemCondition.conditionType() == 0,
-										option: {decimallength: 0}}" />
+																			 	required: currentAtdItemCondition.conditionType() == 0}" />
 						</com:ko-if>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 2">
 							<input id="startValue" class="value-input needcheck"

@@ -25,10 +25,10 @@ public class DivergenceTime {
 	private int divTimeId;
 	
 	//乖離理由
-	private DivergenceReasonContent divReason;
+	private Optional<DivergenceReasonContent> divReason;
 	
 	//乖離理由コード
-	private DiverdenceReasonCode divResonCode;
+	private Optional<DiverdenceReasonCode> divResonCode;
 
 	public DivergenceTime(AttendanceTime divTimeAfterDeduction, AttendanceTime deductionTime, AttendanceTime divTime,
 			int divTimeId, DivergenceReasonContent divReason, DiverdenceReasonCode divResonCode) {
@@ -37,8 +37,19 @@ public class DivergenceTime {
 		this.deductionTime = deductionTime;
 		this.divTime = divTime;
 		this.divTimeId = divTimeId;
-		this.divReason = divReason;
-		this.divResonCode = divResonCode;
+		this.divReason = Optional.ofNullable(divReason);
+		this.divResonCode = Optional.ofNullable(divResonCode);
+	}
+	
+	public DivergenceTime(AttendanceTime divTimeAfterDeduction, AttendanceTime deductionTime, AttendanceTime divTime,
+			int divTimeId, Optional<DivergenceReasonContent> divReason, Optional<DiverdenceReasonCode> divResonCode) {
+		super();
+		this.divTimeAfterDeduction = divTimeAfterDeduction;
+		this.deductionTime = deductionTime;
+		this.divTime = divTime;
+		this.divTimeId = divTimeId;
+		this.divReason = (divReason);
+		this.divResonCode = (divResonCode);
 	}
 	
 	/**

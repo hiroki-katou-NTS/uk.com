@@ -25,4 +25,11 @@ public class WorkTimeOfDailyDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = "")
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer workTime;
+	
+	@Override
+	public WorkTimeOfDailyDto clone(){
+		return new WorkTimeOfDailyDto(workFrameNo, 
+									timeSheet == null ? null : timeSheet.clone(),
+									workTime);
+	}
 }

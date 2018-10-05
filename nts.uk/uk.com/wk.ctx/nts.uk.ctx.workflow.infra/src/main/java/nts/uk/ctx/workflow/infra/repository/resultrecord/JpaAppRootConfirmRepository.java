@@ -13,10 +13,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
@@ -30,6 +33,8 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppPhaseConfirmPK;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseConfirm;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -39,7 +44,7 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootConfirm;
 public class JpaAppRootConfirmRepository extends JpaRepository implements AppRootConfirmRepository {
 	
 	private final String BASIC_SELECT = 
-			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, " +
+			/*"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, " +
 			"phaseJoin.PHASE_ORDER, phaseJoin.APP_PHASE_ATR, phaseJoin.FRAME_ORDER, phaseJoin.APPROVER_ID, phaseJoin.REPRESENTER_ID, phaseJoin.APPROVAL_DATE " + 
 			"FROM WWFDT_APP_ROOT_CONFIRM appRoot LEFT JOIN " +
 			"(SELECT phase.ROOT_ID, phase.PHASE_ORDER, phase.APP_PHASE_ATR, " +
@@ -47,7 +52,16 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 			"FROM WWFDT_APP_PHASE_CONFIRM phase " +
 			"LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame " +
 			"ON phase.ROOT_ID = frame.ROOT_ID and phase.PHASE_ORDER = frame.PHASE_ORDER) phaseJoin " +
-			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";
+			"ON appRoot.ROOT_ID = phaseJoin.ROOT_ID";*/
+			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.RECORD_DATE, appRoot.ROOT_TYPE, "+
+			"appRoot.YEARMONTH, appRoot.CLOSURE_ID, appRoot.CLOSURE_DAY, appRoot.LAST_DAY_FLG, "+
+			"phase.PHASE_ORDER, phase.APP_PHASE_ATR, frame.FRAME_ORDER, frame.APPROVER_ID, frame.REPRESENTER_ID, frame.APPROVAL_DATE "+   
+			"FROM WWFDT_APP_ROOT_CONFIRM appRoot "+
+			"LEFT JOIN WWFDT_APP_PHASE_CONFIRM phase "+
+			"ON appRoot.ROOT_ID = phase.ROOT_ID "+
+			"LEFT JOIN WWFDT_APP_FRAME_CONFIRM frame "+
+			"ON phase.ROOT_ID = frame.ROOT_ID "+
+			"AND phase.PHASE_ORDER = frame.PHASE_ORDER";
 	
 	private final String FIND_BY_ID = BASIC_SELECT + " WHERE appRoot.ROOT_ID = 'rootID'";
 	
@@ -69,9 +83,54 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	
 	private final String FIND_BY_EMP_DATE = BASIC_SELECT +
 			" WHERE appRoot.CID = 'companyID'" +
-			" AND appRoot.ROOT_TYPE = 'rootType'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
 			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
 			" AND appRoot.RECORD_DATE = 'recordDate'";
+	
+	private final String DELETE_APP_ROOT_CONFIRM = 
+			"DELETE FROM WWFDT_APP_ROOT_CONFIRM  "+
+			"WHERE CID = 'companyID' " +
+			"AND EMPLOYEE_ID = 'employeeID' " +
+			"AND ROOT_TYPE = rootType " +
+			"AND RECORD_DATE >= 'recordDate' ";
+	
+	private final String DELETE_PHASE_APPROVER_FOR_424 = 
+			"DELETE FROM WWFDT_APP_PHASE_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = 'companyID' " +
+			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+			"AND appRoot.ROOT_TYPE = rootType " +
+			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+	
+	private final String DELETE_FRAME_APPROVER_FOR_424 = 
+			"DELETE FROM WWFDT_APP_FRAME_CONFIRM WHERE ROOT_ID IN ( " +
+			"SELECT appRoot.ROOT_ID FROM WWFDT_APP_ROOT_CONFIRM appRoot " +
+			"WHERE appRoot.CID = 'companyID' " +
+			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
+			"AND appRoot.ROOT_TYPE = rootType " +
+			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+	
+	private final String FIND_BY_EMP_MONTH = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.YEARMONTH = yearMonth" +
+			" AND appRoot.CLOSURE_ID = closureID" +
+			" AND appRoot.CLOSURE_DAY = closureDay" +
+			" AND appRoot.LAST_DAY_FLG = lastDayFlg";
+	
+	private final String FIND_BY_EMP_PERIOD_MONTH = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.RECORD_DATE >= 'startDate'"+
+			" AND appRoot.RECORD_DATE <= 'endDate'";
+	
+	private final String FIND_BY_EMP_YEARMONTH = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = rootType" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.YEARMONTH = yearMonth";
 
 	@Override
 	public Optional<AppRootConfirm> findByID(String rootID) {
@@ -107,6 +166,54 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	public void delete(AppRootConfirm appRootConfirm) {
 		this.commandProxy().remove(WwfdtAppRootConfirm.class, appRootConfirm.getRootID());
 	}
+	
+	@Override
+	public void deleteByRequestList424(String companyID,String employeeID, GeneralDate date, Integer rootType) {
+		
+		//delete phase
+		String query1 = DELETE_PHASE_APPROVER_FOR_424.replaceAll("employeeID", employeeID);
+		query1 = query1.replaceAll("companyID", companyID);
+		query1 = query1.replaceAll("rootType", String.valueOf(rootType));
+		query1 = query1.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		
+		//delete frame
+		String query2 = DELETE_FRAME_APPROVER_FOR_424.replaceAll("employeeID", employeeID);
+		query2 = query2.replaceAll("companyID", companyID);
+		query2 = query2.replaceAll("rootType", String.valueOf(rootType));
+		query2 = query2.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		
+		
+		//delete root
+		String query3 = DELETE_APP_ROOT_CONFIRM.replaceAll("employeeID", employeeID);
+		query3 = query3.replaceAll("companyID", companyID);
+		query3 = query3.replaceAll("rootType", String.valueOf(rootType));
+		query3 = query3.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
+		try {
+			PreparedStatement pstatement1 = con.prepareStatement(query1);
+			pstatement1.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
+		try {
+			PreparedStatement pstatement2 = con.prepareStatement(query2);
+			pstatement2.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
+		try {
+			PreparedStatement pstatement3 = con.prepareStatement(query3);
+			pstatement3.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new BusinessException(e.getMessage());
+		}
+		
+	}
 
 	private WwfdtAppRootConfirm fromDomain(AppRootConfirm appRootConfirm){
 		return new WwfdtAppRootConfirm(
@@ -115,6 +222,10 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 				appRootConfirm.getEmployeeID(), 
 				appRootConfirm.getRecordDate(), 
 				appRootConfirm.getRootType().value, 
+				appRootConfirm.getYearMonth().map(x -> x.v()).orElse(null),
+				appRootConfirm.getClosureID().orElse(null),
+				appRootConfirm.getClosureDate().map(x -> x.getClosureDay().v()).orElse(null),
+				appRootConfirm.getClosureDate().map(x -> x.getLastDayOfMonth()?1:0).orElse(null),
 				appRootConfirm.getListAppPhase().stream()
 					.map(x -> new WwfdtAppPhaseConfirm(
 							new WwfdpAppPhaseConfirmPK(
@@ -144,23 +255,33 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 					GeneralDate recordDate = x.getValue().get(0).getRecordDate();
 					RecordRootType rootType = EnumAdaptor.valueOf(x.getValue().get(0).getRootType(), RecordRootType.class);
 					String employeeID = x.getValue().get(0).getEmployeeID();
-					List<AppPhaseConfirm> listAppPhase =
-					x.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getPhaseOrder)).entrySet()
-					.stream().map(y -> {
-						Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
-						ApprovalBehaviorAtr appPhaseAtr =  EnumAdaptor.valueOf(y.getValue().get(0).getAppPhaseAtr(), ApprovalBehaviorAtr.class);
-						List<AppFrameConfirm> listAppFrame =
-						y.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getFrameOrder)).entrySet()
-						.stream().map(z -> { 
-							Integer frameOrder = z.getValue().get(0).getFrameOrder();
-							Optional<String> frameApproverID =  Optional.ofNullable(z.getValue().get(0).getApproverID());
-							Optional<String> representerID = Optional.ofNullable(z.getValue().get(0).getRepresenterID());
-							GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
-							return new AppFrameConfirm(frameOrder, frameApproverID, representerID, approvalDate);
+					Integer yearMonth = x.getValue().get(0).getYearMonth();
+					Integer closureID = x.getValue().get(0).getClosureID();
+					Integer closureDay = x.getValue().get(0).getClosureDay();
+					Integer lastDayFlg = x.getValue().get(0).getLastDayFlg();
+					List<AppPhaseConfirm> listAppPhase = new ArrayList<>();
+					Optional<FullJoinAppRootConfirm> isEmptyConfirm = x.getValue().stream().filter(y1 -> y1.getPhaseOrder()==null).findAny();
+					if(!isEmptyConfirm.isPresent()){
+						listAppPhase = x.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getPhaseOrder)).entrySet()
+						.stream().map(y -> {
+							Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
+							ApprovalBehaviorAtr appPhaseAtr =  EnumAdaptor.valueOf(y.getValue().get(0).getAppPhaseAtr(), ApprovalBehaviorAtr.class);
+							List<AppFrameConfirm> listAppFrame =
+							y.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootConfirm::getFrameOrder)).entrySet()
+							.stream().map(z -> { 
+								Integer frameOrder = z.getValue().get(0).getFrameOrder();
+								Optional<String> frameApproverID =  Optional.ofNullable(z.getValue().get(0).getApproverID());
+								Optional<String> representerID = Optional.ofNullable(z.getValue().get(0).getRepresenterID());
+								GeneralDate approvalDate = z.getValue().get(0).getApprovalDate();
+								return new AppFrameConfirm(frameOrder, frameApproverID, representerID, approvalDate);
+							}).collect(Collectors.toList());
+							return new AppPhaseConfirm(phaseOrder, appPhaseAtr, listAppFrame);
 						}).collect(Collectors.toList());
-						return new AppPhaseConfirm(phaseOrder, appPhaseAtr, listAppFrame);
-					}).collect(Collectors.toList());
-					return new AppRootConfirm(rootID, companyID, employeeID, recordDate, rootType, listAppPhase);
+					}
+					return new AppRootConfirm(rootID, companyID, employeeID, recordDate, rootType, listAppPhase,
+							yearMonth == null ? Optional.empty() : Optional.of(new YearMonth(yearMonth)),
+							closureID == null ? Optional.empty() : Optional.of(closureID),
+							closureDay == null ?  Optional.empty() : Optional.of(new ClosureDate(closureDay, lastDayFlg == 1)));
 				}).collect(Collectors.toList());
 	}
 	
@@ -173,13 +294,17 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 						rs.getString("CID"), 
 						rs.getString("EMPLOYEE_ID"), 
 						GeneralDate.fromString(rs.getString("RECORD_DATE"), "yyyy-MM-dd HH:mm:ss"), 
-						Integer.valueOf(rs.getString("ROOT_TYPE")), 
-						Integer.valueOf(rs.getString("PHASE_ORDER")), 
-						Integer.valueOf(rs.getString("APP_PHASE_ATR")), 
-						Integer.valueOf(rs.getString("FRAME_ORDER")), 
+						Strings.isNotBlank(rs.getString("ROOT_TYPE")) ? Integer.valueOf(rs.getString("ROOT_TYPE")) : null, 
+						Strings.isNotBlank(rs.getString("YEARMONTH")) ? Integer.valueOf(rs.getString("YEARMONTH")) : null, 
+						Strings.isNotBlank(rs.getString("CLOSURE_ID")) ? Integer.valueOf(rs.getString("CLOSURE_ID")) : null, 
+						Strings.isNotBlank(rs.getString("CLOSURE_DAY")) ? Integer.valueOf(rs.getString("CLOSURE_DAY")) : null, 
+						Strings.isNotBlank(rs.getString("LAST_DAY_FLG")) ? Integer.valueOf(rs.getString("LAST_DAY_FLG")) : null, 
+						Strings.isNotBlank(rs.getString("PHASE_ORDER")) ? Integer.valueOf(rs.getString("PHASE_ORDER")) : null, 
+						Strings.isNotBlank(rs.getString("APP_PHASE_ATR")) ? Integer.valueOf(rs.getString("APP_PHASE_ATR")) : null, 
+						Strings.isNotBlank(rs.getString("FRAME_ORDER")) ? Integer.valueOf(rs.getString("FRAME_ORDER")) : null, 
 						rs.getString("APPROVER_ID"), 
 						rs.getString("REPRESENTER_ID"), 
-						GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss")));
+						Strings.isNotBlank(rs.getString("APPROVAL_DATE")) ? GeneralDate.fromString(rs.getString("APPROVAL_DATE"), "yyyy-MM-dd HH:mm:ss") : null ));
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -219,7 +344,8 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 	@Override
 	public void createNewStatus(String companyID, String employeeID, GeneralDate date, RecordRootType rootType) {
 		String rootID = UUID.randomUUID().toString();
-		AppRootConfirm appRootInstanceNew = new AppRootConfirm(rootID, companyID, employeeID, date, rootType, Collections.emptyList());
+		AppRootConfirm appRootInstanceNew = new AppRootConfirm(rootID, companyID, employeeID, date, rootType, 
+				Collections.emptyList(), Optional.empty(), Optional.empty(), Optional.empty());
 		this.insert(appRootInstanceNew);
 	}
 
@@ -244,6 +370,80 @@ public class JpaAppRootConfirmRepository extends JpaRepository implements AppRoo
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<AppRootConfirm> findByEmpMonth(String companyID, String employeeID, YearMonth yearMonth,
+			Integer closureID, ClosureDate closureDate, RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_MONTH;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("yearMonth", yearMonth.v().toString());
+			query = query.replaceAll("closureID", closureID.toString());
+			query = query.replaceAll("closureDay", closureDate.getClosureDay().v().toString());
+			query = query.replaceAll("lastDayFlg", closureDate.getLastDayOfMonth() ? "1" : "0");
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<AppRootConfirm> findByEmpPeriodMonth(String companyID, String employeeID, DatePeriod period) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_PERIOD_MONTH;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public List<AppRootConfirm> findByEmpYearMonth(String companyID, String employeeID, YearMonth yearMonth) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_YEARMONTH;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(RecordRootType.CONFIRM_WORK_BY_MONTH.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("yearMonth", yearMonth.v().toString());
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootConfirm> listResult = toDomain(createFullJoinAppRootConfirm(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Collections.emptyList();
+			} else {
+				return listResult;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
 		}
 	}
 	

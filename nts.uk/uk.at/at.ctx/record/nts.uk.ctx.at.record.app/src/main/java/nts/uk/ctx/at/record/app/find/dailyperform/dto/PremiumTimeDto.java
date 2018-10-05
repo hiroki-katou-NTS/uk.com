@@ -22,4 +22,8 @@ public class PremiumTimeDto implements ItemConst {
 	/** 割増時間NO: 割増時間NO */
 	private Integer no;
 
+	@Override
+	public PremiumTimeDto clone() {
+		return new PremiumTimeDto(premitumTime, no);
+	}
 }

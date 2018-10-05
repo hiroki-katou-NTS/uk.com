@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -56,14 +55,35 @@ public class GoOutTimeDto implements ItemConst {
 										domain.getReasonForGoOut().value);
 	}
 	
+	@Override
+	public GoOutTimeDto clone() {
+		return new GoOutTimeDto(comeBack == null ? null : comeBack.clone(),
+								outing == null ? null : outing.clone(),
+								outingTime, outingTimeCalc, no, outingReason);
+	}
+	
 	public OutingTimeSheet toDomain(){
 		return new OutingTimeSheet(new OutingFrameNo(no), createTimeActual(outing), 
-				outingTimeCalc == null ? new AttendanceTime(0) : new AttendanceTime(outingTimeCalc),
-				outingTime == null ? new AttendanceTime(0) : new AttendanceTime(outingTime), 
-				ConvertHelper.getEnum(outingReason, GoingOutReason.class), createTimeActual(comeBack));
+				outingTimeCalc == null ? AttendanceTime.ZERO : new AttendanceTime(outingTimeCalc),
+				outingTime == null ? AttendanceTime.ZERO : new AttendanceTime(outingTime), 
+				reason(), createTimeActual(comeBack));
 	}
 	
 	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {
 		return c == null ? Optional.empty() : Optional.of(c.toDomain());
+	}
+	
+	public GoingOutReason reason() {
+		switch (outingReason) {
+		case 0:
+			return GoingOutReason.PRIVATE;
+		case 1:
+			return GoingOutReason.PUBLIC;
+		case 2:
+			return GoingOutReason.COMPENSATION;
+		case 3:
+		default:
+			return GoingOutReason.UNION;
+		}
 	}
 }

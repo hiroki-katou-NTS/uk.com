@@ -22,4 +22,10 @@ public class WorkInfoDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = WORK_TIME)
 	@AttendanceItemValue
 	private String workTimeCode;
+
+	@Override
+	protected WorkInfoDto clone() {
+		return new WorkInfoDto(workTypeCode, workTimeCode);
+	}
+	
 }

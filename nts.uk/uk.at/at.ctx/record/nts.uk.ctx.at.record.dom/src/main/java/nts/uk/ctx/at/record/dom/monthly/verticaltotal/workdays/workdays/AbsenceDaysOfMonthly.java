@@ -6,7 +6,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;

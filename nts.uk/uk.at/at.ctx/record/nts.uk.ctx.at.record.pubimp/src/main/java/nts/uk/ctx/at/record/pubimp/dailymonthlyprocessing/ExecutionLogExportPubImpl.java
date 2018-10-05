@@ -6,9 +6,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExeStateOfCalAndSumExport;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionContentExport;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionLogExportPub;
 import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.ExecutionTypeExport;
@@ -16,8 +20,13 @@ import nts.uk.ctx.at.record.pub.dailymonthlyprocessing.SetInforReflAprResultExpo
 
 @Stateless
 public class ExecutionLogExportPubImpl implements ExecutionLogExportPub{
+	
 	@Inject
 	private ExecutionLogRepository logRepo;
+	@Inject
+	private EmpCalAndSumExeLogRepository calAndSumLog;
+	@Inject
+	private TargetPersonRepository targetPerson;
 	@Override
 	public Optional<SetInforReflAprResultExport> optReflectResult(String empCalAndSumExecLogID, int executionContent) {
 		Optional<ExecutionLog> optExeLog = logRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent);
@@ -35,6 +44,26 @@ public class ExecutionLogExportPubImpl implements ExecutionLogExportPub{
 				refInfo.getCalExecutionSetInfoID(),
 				refInfo.isForciblyReflect());
 		return Optional.of(output);
+	}
+	@Override
+	public Optional<ExeStateOfCalAndSumExport> executionStatus(String empCalAndSumExecLogID) {
+		Optional<EmpCalAndSumExeLog> optCalAndSumLog = calAndSumLog.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+		if(!optCalAndSumLog.isPresent()
+				|| !optCalAndSumLog.get().getExecutionStatus().isPresent()) {
+			return Optional.empty();
+		}
+		ExeStateOfCalAndSumExport outData = EnumAdaptor.valueOf(optCalAndSumLog.get().getExecutionStatus().get().value, 
+				ExeStateOfCalAndSumExport.class);
+		return Optional.of(outData);
+	}
+	@Override
+	public void updateLogInfo(String employeeID, String empCalAndSumExecLogId, int executionContent, int state) {
+		targetPerson.updateWithContent(employeeID, empCalAndSumExecLogId, executionContent, state);
+	}
+	@Override
+	public void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus) {
+		logRepo.updateLogInfo(empCalAndSumExecLogID, executionContent, processStatus);
+		
 	}
 
 }

@@ -276,32 +276,46 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.allowPersonRef = EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class);
 		this.allowOtherRef = EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class);
     	this.allowOtherCompanyRef = EnumAdaptor.valueOf(allowOtherCompanyRef, PersonInfoPermissionType.class);
-		
-         switch(EnumAdaptor.valueOf(ctgType, CategoryType.class)) {
-         case MULTIINFO:
-
-     		this.selfAllowAddMulti = EnumAdaptor.valueOf(selfAllowAddMulti, PersonInfoPermissionType.class);
-    		this.selfAllowDelMulti = EnumAdaptor.valueOf(selfAllowDelMulti, PersonInfoPermissionType.class);
-    		this.otherAllowAddMulti = EnumAdaptor.valueOf(otherAllowAddMulti, PersonInfoPermissionType.class);
-    		this.otherAllowDelMulti = EnumAdaptor.valueOf(otherAllowDelMulti, PersonInfoPermissionType.class);
-    		break;
-         case CONTINUOUSHISTORY:
-         case DUPLICATEHISTORY:
-         case NODUPLICATEHISTORY:
-    		this.selfPastHisAuth = EnumAdaptor.valueOf(selfPastHisAuth, PersonInfoAuthType.class);
-    		this.selfFutureHisAuth = EnumAdaptor.valueOf(selfFutureHisAuth, PersonInfoAuthType.class);
-    		this.selfAllowAddHis = EnumAdaptor.valueOf(selfAllowAddHis, PersonInfoPermissionType.class);
-    		this.selfAllowDelHis = EnumAdaptor.valueOf(selfAllowDelHis, PersonInfoPermissionType.class);
-    		this.otherPastHisAuth = EnumAdaptor.valueOf(otherPastHisAuth, PersonInfoAuthType.class);
-    		this.otherFutureHisAuth = EnumAdaptor.valueOf(otherFutureHisAuth, PersonInfoAuthType.class);
-    		this.otherAllowAddHis = EnumAdaptor.valueOf(otherAllowAddHis, PersonInfoPermissionType.class);
-    		this.otherAllowDelHis = EnumAdaptor.valueOf(otherAllowDelHis, PersonInfoPermissionType.class);
+    	// save data theo từng trường hợp của category type
+        switch(EnumAdaptor.valueOf(ctgType, CategoryType.class)) {
+        	case MULTIINFO:
+	     		this.selfAllowAddMulti = EnumAdaptor.valueOf(selfAllowAddMulti, PersonInfoPermissionType.class);
+	    		this.selfAllowDelMulti = EnumAdaptor.valueOf(selfAllowDelMulti, PersonInfoPermissionType.class);
+	    		this.otherAllowAddMulti = EnumAdaptor.valueOf(otherAllowAddMulti, PersonInfoPermissionType.class);
+	    		this.otherAllowDelMulti = EnumAdaptor.valueOf(otherAllowDelMulti, PersonInfoPermissionType.class);
+	    		break;
+	    		
+    		case CONTINUOUSHISTORY:
+    			
+    		case DUPLICATEHISTORY:
+    			
+    		case NODUPLICATEHISTORY:
+	    		this.selfPastHisAuth = EnumAdaptor.valueOf(selfPastHisAuth, PersonInfoAuthType.class);
+	    		this.selfFutureHisAuth = EnumAdaptor.valueOf(selfFutureHisAuth, PersonInfoAuthType.class);
+	    		this.selfAllowAddHis = EnumAdaptor.valueOf(selfAllowAddHis, PersonInfoPermissionType.class);
+	    		this.selfAllowDelHis = EnumAdaptor.valueOf(selfAllowDelHis, PersonInfoPermissionType.class);
+	    		this.otherPastHisAuth = EnumAdaptor.valueOf(otherPastHisAuth, PersonInfoAuthType.class);
+	    		this.otherFutureHisAuth = EnumAdaptor.valueOf(otherFutureHisAuth, PersonInfoAuthType.class);
+	    		this.otherAllowAddHis = EnumAdaptor.valueOf(otherAllowAddHis, PersonInfoPermissionType.class);
+	    		this.otherAllowDelHis = EnumAdaptor.valueOf(otherAllowDelHis, PersonInfoPermissionType.class);
+	        	break;
+	        	
+    		case SINGLEINFO:
         	 break;
-         case SINGLEINFO:
-        	 break;
+        	 
+    		case CONTINUOUS_HISTORY_FOR_ENDDATE:
+				this.selfPastHisAuth = EnumAdaptor.valueOf(selfPastHisAuth, PersonInfoAuthType.class);
+				this.selfFutureHisAuth = EnumAdaptor.valueOf(selfFutureHisAuth, PersonInfoAuthType.class);
+				this.selfAllowAddHis = EnumAdaptor.valueOf(selfAllowAddHis, PersonInfoPermissionType.class);
+				this.selfAllowDelHis = EnumAdaptor.valueOf(selfAllowDelHis, PersonInfoPermissionType.class);
+				this.otherPastHisAuth = EnumAdaptor.valueOf(otherPastHisAuth, PersonInfoAuthType.class);
+				this.otherFutureHisAuth = EnumAdaptor.valueOf(otherFutureHisAuth, PersonInfoAuthType.class);
+				this.otherAllowAddHis = EnumAdaptor.valueOf(otherAllowAddHis, PersonInfoPermissionType.class);
+				this.otherAllowDelHis = EnumAdaptor.valueOf(otherAllowDelHis, PersonInfoPermissionType.class);
+				break;
 		default:
 			break;
-         }
+        }
 	}
 
 	// multi type - 複数情報権限
