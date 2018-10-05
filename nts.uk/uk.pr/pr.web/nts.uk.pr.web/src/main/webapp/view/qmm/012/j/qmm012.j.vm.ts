@@ -101,6 +101,11 @@ module nts.uk.pr.view.qmm012.j.viewmodel {
                 else{
                     self.lstCustomes([]);
                     self.isNewMode(true);
+
+                    setTimeout(function () {
+                        $('.nts-fixed-body-container').removeClass('has-padding');
+                        $('.nts-fixed-table .scroll-header').removeClass('scroll_header');
+                    }, 100);
                 }
             }).fail(function(error) {
                 alertError(error);
