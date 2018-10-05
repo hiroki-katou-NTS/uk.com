@@ -38,8 +38,6 @@ public class GetAgreementTimeProc {
 	private ClosureId closureId;
 	/** 締め日 */
 	private ClosureDate closureDate;
-	/** エラーメッセージ */
-	private String errorMessage;
 	
 	public GetAgreementTimeProc(
 			RepositoriesRequiredByMonthlyAggr repositories) {
@@ -62,12 +60,17 @@ public class GetAgreementTimeProc {
 		this.companyId = companyId;
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
-		this.errorMessage = null;
+
+		if (employeeIds.size() == 0) return results;
 		
 		// 月別集計で必要な会社別設定を取得　（36協定時間用）
 		this.companySets = MonAggrCompanySettings.loadSettingsForAgreement(companyId, this.repositories);
 		if (this.companySets.getErrorInfos().size() > 0){
-			this.errorMessage = this.companySets.getErrorInfos().values().stream().findFirst().get().v();
+			
+			// 会社単位エラーメッセージ　（先頭の社員IDに紐づけて返却）
+			val companyError = AgreementTimeDetail.of(employeeIds.get(0), null, null,
+					this.companySets.getErrorInfos().values().stream().findFirst().get().v());
+			results.add(companyError);
 			return results;
 		}
 		
@@ -103,9 +106,16 @@ public class GetAgreementTimeProc {
 
 			// 確定情報の取得
 			val confirmed = this.getConfirmed(employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
+			
+			// エラーがあるか確認する
 			if (confirmed.getConfirmedErrorMessage() != null){
 				errorMessages.add(confirmed.getConfirmedErrorMessage());
-				break;
+				
+				// 36協定時間一覧にエラーメッセージを入れる
+				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null,
+						confirmed.getConfirmedErrorMessage());
+				results.add(employeeError);
+				continue;
 			}
 			
 			// 社員の申請を反映　（反映結果の取得）
@@ -117,13 +127,8 @@ public class GetAgreementTimeProc {
 			//val afterAppReflect = this.getConfirmed(employeeId, aggrPeriod, workConditionItem,
 			//		Optional.of(appReflectAttdTimeList));
 			
-			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect, this.errorMessage);
+			aggrTimeDetail = AgreementTimeDetail.of(employeeId, confirmed, afterAppReflect, null);
 			results.add(aggrTimeDetail);
-		}
-		
-		if (errorMessages.size() > 0) {
-			this.errorMessage = errorMessages.get(0);
-			return new CopyOnWriteArrayList<>();
 		}
 		
 		return results;

@@ -479,8 +479,10 @@ public class AppOvertimeFinder {
 		});
 		List<OvertimeInputDto> overtimeRestTimes = overTimeInputs.stream().filter(x -> x.getAttendanceID() == AttendanceType.RESTTIME.value).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(overtimeRestTimes)){
-			restStartTimes = overtimeRestTimes.stream().map(x-> x.getStartTime()).collect(Collectors.toList());
-			restEndTimes = overtimeRestTimes.stream().map(x-> x.getEndTime()).collect(Collectors.toList());
+			restStartTimes = overtimeRestTimes.stream().filter(x -> x.getStartTime() != null).map(x -> x.getStartTime())
+					.collect(Collectors.toList());
+			restEndTimes = overtimeRestTimes.stream().filter(x -> x.getEndTime() != null).map(x -> x.getEndTime())
+					.collect(Collectors.toList());
 		}
 		overTimeDto.setOverTimeInputs(overTimeInputs);
 		
