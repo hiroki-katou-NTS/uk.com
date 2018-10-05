@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 535,
+                height : 520
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="../share/model.js"/>
+        <com:stylefile path="qmm005.e.style.css"/>
+        <com:scriptfile path="qmm005.e.start.js"/>
+        <com:scriptfile path="qmm005.e.service.js"/>
+        <com:scriptfile path="qmm005.e.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" style="padding: 0px">
+            <div style="height: 520px;">
+                <div class="margin-left-12 margin-top-12 margin-right-12">
+                <!--    E1_1    給与・賞与の処理年月の設定を行います。 -->
+                <div class="label" style="margin-bottom: 15px;">#{i18n.getText('QMM005_6')}</div>
+                <div class="flex valign-center" style="margin-bottom: 15px">
+                    <!--    E1_2	処理区分	-->
+                    <div style="width: 135px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_7')}</div>
+                    <!--    E1_3    処理区分	 processingDivision-->
+                    <div class="label" data-bind="text: processingClassification"></div>
+                </div>
+                <div class="flex valign-center" style="margin-bottom: 15px">
+                    <!--    E1_4    処理年 -->
+                    <div style="width: 110px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_25')}</div>
+                    <!--    E1_5	処理年西暦   -->
+                    <span class="label" data-bind="text: processingYearAD">1.5</span>
+                    <!--    E1_6	処理年和暦  (heisei) -->
+                    <span class="label" data-bind="text: treatmentYearJapaneseCalendar"></span>
+                </div>
+
+                <!--    E1_7	罫線 hr tag-->
+                <hr/>
+                </div>
+                <table class="margin-left-12">
+                    <tr>
+                        <td>
+                            <!--    E2_1	反映開始月   -->
+                            <div class="margin-bottom-12"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_82')}</div>
+                        </td>
+                        <td colspan="2">
+                            <div class="vertical-container margin-bottom-12">
+                                <!--    E2_2	反映開始年-->
+                                <span class="label padding-left-6 padding-top-12"
+                                      data-bind="text: reflectionStartYear"></span>
+                                <!--    E2_3	反映開始月-->
+                                <span tabindex="1" class="margin-left-6 margin-top-6" id="E2_3" data-bind="ntsComboBox: {
+                                name: 'Sample List',
+                                options: reflectionStartMonthList,
+                                optionsValue: 'code',
+                                visibleItemsCount: 8,
+                                value: startMonth,
+                                optionsText: 'name',
+                                required: true}">
+                                </span>
+                                <!--    E2_4    月選択区分-->
+                                <!--    E2_5	反映終了年月-->
+                                <span class="label padding-left-6 padding-top-12" data-bind="text: reflectionEndYear"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <!--    E2_6	反映する情報-->
+                            <div id="E2_6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM005_83')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_7	毎月の支払日-->
+                            <div tabindex="2" data-bind="ntsCheckBox: {checked: dailyPaymentDateCheck}">#{i18n.getText('QMM005_49')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_8		支払日設定-->
+                            <div class="label" data-bind="text: dailyPaymentDate"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_9		社員抽出基準日-->
+                            <div tabindex="3" data-bind="ntsCheckBox: { checked: empExtractionRefDateCheck }">#{i18n.getText('QMM005_30')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_10		社員抽出基準日設定-->
+                            <div class="label" data-bind="text: empExtractionRefDate"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_11		給与社会保険徴収月-->
+                            <div tabindex="4" data-bind="ntsCheckBox: { checked:  socialInsuranceMonthCheck }">#{i18n.getText('QMM005_64')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_12		社会保険徴収月設定-->
+                            <div class="label" data-bind="text: socialInsuranceCollectionMonthSetting"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_13		明細書印字年月-->
+                            <div tabindex="5" data-bind="ntsCheckBox: { checked: specPrintDateCheck }">#{i18n.getText('QMM005_32')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_14		明細書印字年月設定-->
+                            <div class="label" data-bind="text: specificationPrintoutYearMonthSetting"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E4_1	要勤務日数-->
+                            <div tabindex="6" data-bind="ntsCheckBox: { checked: numWorkingDaysCheck}">#{i18n.getText('QMM005_33')}</div>
+                        </td>
+                        <td>
+                            <!--    E4_2	要勤務日数設定-->
+                            <div class="label" data-bind="text: numberOfWorkingDaysSetting"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="2">
+                            <!--    E2_15		以下の設定は原則チェックありの状態としてください。-->
+                            <div style="padding: 10px 5px;" class="label">#{i18n.getText('QMM005_86')}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_16		社会保険基準日-->
+                            <div tabindex="7" data-bind="ntsCheckBox: { checked: socialInsuranceDateCheck }">#{i18n.getText('QMM005_44')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_17		社会保険基準日設定-->
+                            <div class="label" data-bind="text: socialInsuranceStandardDateSetting"></div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_18		雇用保険基準日-->
+                            <div tabindex="8" data-bind="ntsCheckBox: { checked: empInsuranceStandardDateCheck }">#{i18n.getText('QMM005_45')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_19		雇用保険基準日設定-->
+                            <div class="label" data-bind="text: employmentInsuranceStandardDateSetting"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_20		勤怠締め日-->
+                            <div tabindex="9" data-bind="ntsCheckBox: { checked: timeClosingDateCheck }">#{i18n.getText('QMM005_112')}</div>
+
+                        </td>
+                        <td>
+                            <!--    E2_21		勤怠締め基準日設定-->
+                            <div class="label" data-bind="text: settingOfStandardReferenceDayForClosingTime"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_22		所得税基準日-->
+                            <div tabindex="10" data-bind="ntsCheckBox: { checked: incomeTaxReferenceCheck  }">#{i18n.getText('QMM005_46')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_23		所得税基準日設定-->
+                            <div class="label" data-bind="text: incomeTaxBaseDateSetting"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <!--    E2_24		経理締め日-->
+                            <div tabindex="11" data-bind="ntsCheckBox: { checked: accountingClosureDateCheck }">#{i18n.getText('QMM005_47')}</div>
+                        </td>
+                        <td>
+                            <!--    E2_25		経理締め日設定-->
+                            <div class="label" data-bind="text: accountingClosingDateSetting "></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+        </div>
+        <div id="functions-area-bottom" class="margin-top-12">
+                <!--    E3_1	反映-->
+                <button tabindex="12" type="button" class="proceed x-large"
+                        data-bind="click: reflect">#{i18n.getText('QMM005_89')}</button>
+                <!--    E3_2	キャンセル-->
+                <button tabindex="13" type="button" data-bind="click: cancel">#{i18n.getText('QMM005_61')}</button>
+            </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

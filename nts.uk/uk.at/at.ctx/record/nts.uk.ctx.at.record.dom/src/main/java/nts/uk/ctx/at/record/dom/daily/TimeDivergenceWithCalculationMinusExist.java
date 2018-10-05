@@ -12,9 +12,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
  */
 @Getter
 public class TimeDivergenceWithCalculationMinusExist {
+	//時間
 	@Setter
 	private AttendanceTimeOfExistMinus time;
+	//計算時間
 	private AttendanceTimeOfExistMinus calcTime;
+	//乖離時間
 	private AttendanceTimeOfExistMinus divergenceTime;
 	
 	private TimeDivergenceWithCalculationMinusExist(AttendanceTimeOfExistMinus time,AttendanceTimeOfExistMinus calcTime) {

@@ -47,7 +47,7 @@ public class Ksu001Webservice extends WebService {
 
 	@Inject
 	private PublicHolidayScreenProcessor publicHolidayScreenProcessor;
-
+	
 	/**
 	 * Get list data of workType and workTime for combo-box
 	 * 
@@ -70,15 +70,6 @@ public class Ksu001Webservice extends WebService {
 		return this.bScheduleScreenProces.getDataWkpPattern(workplaceId);
 	}
 
-	@POST
-	@Path("getDataBasicSchedule")
-	public BasicScheduleScreenAtDto getDataBasicScheduleScreenAtDto(BasicScheduleScreenParams params) {
-		BasicScheduleScreenAtDto result = new BasicScheduleScreenAtDto(
-				this.bScheduleScreenProces.getByListSidAndDate(params),
-				this.bScheduleScreenProces.getDataWorkScheTimezone(params));
-		return result;
-	}
-	
 	@POST
 	@Path("getBasicScheduleWithJDBC")
 	public List<BasicScheduleScreenDto> getBasicScheduleWithJDBC(BasicScheduleScreenParams params) {

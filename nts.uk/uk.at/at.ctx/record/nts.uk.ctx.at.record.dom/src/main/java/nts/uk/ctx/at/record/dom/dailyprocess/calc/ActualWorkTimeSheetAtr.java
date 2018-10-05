@@ -5,11 +5,11 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum ActualWorkTimeSheetAtr {
-	WithinWorkTime,
-	OverTimeWork,
-	EarlyWork,
-	StatutoryOverTimeWork,
-	HolidayWork;
+	WithinWorkTime,//就業時間内
+	OverTimeWork,//残業
+	EarlyWork,//早出残業
+	StatutoryOverTimeWork,//法定内残業
+	HolidayWork;//休出
 	
 	/**
 	 * 就内時間であるか判定する

@@ -64,6 +64,13 @@ public interface SpecialHolidayRemainDataRepository {
 	void persistAndUpdate(SpecialHolidayRemainData domain);
 	
 	/**
+	 * 登録および更新
+	 * @param domains 特別休暇月別残数データ
+	 */
+	// add 2018.9.30 shuichi_ishida
+	void persistAndUpdate(List<SpecialHolidayRemainData> domains);
+	
+	/**
 	 * 削除
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月

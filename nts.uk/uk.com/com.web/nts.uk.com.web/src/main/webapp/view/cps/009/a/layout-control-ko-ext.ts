@@ -13,7 +13,7 @@ module CPS009Constraint {
             constraint: any = {
                 itemName: data.itemName,
                 itemCode: data.itemCode,
-                required: !!data.isRequired// !!x.isRequired
+                required: false
             },
             constraints: any,
             itemSpecial: Array<string> = [];

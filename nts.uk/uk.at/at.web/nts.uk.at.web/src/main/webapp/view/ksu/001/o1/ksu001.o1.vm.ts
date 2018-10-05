@@ -41,7 +41,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 { 
                     headerText: getText("KSU001_1408"), key: 'note', width: 160,
                     formatter: function(note, record) {
-                        return "<label class = 'limited-label'> " + note + " </label>";
+                        return "<label class = 'limited-label'> " + _.escape(note) + " </label>";
                     } },
                 { headerText: 'data-id', key: 'codeName', width: 160, hidden: true, formatter: _.escape }
             ]);
