@@ -289,6 +289,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
                 self.isSelectFirstOfficeAndHistory = true;
                 self.jumpTopPageIfNoData = true;
                 self.showAllOfficeAndHistory();
+                $('#C1_5').focus();
             });
         }
 

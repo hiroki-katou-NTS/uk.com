@@ -8,6 +8,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
     import model = nts.uk.pr.view.qmm008.share.model;
     import service = nts.uk.pr.view.qmm008.i.service;
     export class ScreenModel {
+        jumpTopPageIfNoData: boolean = false;
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
         isOnStartUp: boolean = true;
         socialInsuranceOfficeList: KnockoutObservableArray<model.SocialInsuranceOffice> = ko.observableArray([]);
@@ -52,7 +53,7 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
             let childContribution = String(command.contributionRate.childContributionRatio);
-            command.contributionRate.childContributionRatio = childContribution.substring(0, childContribution.indexOf('')+ 4);
+            command.contributionRate.childContributionRatio = Number(childContribution.substring(0, childContribution.indexOf('.')+ 4)).toFixed(3);
 
             if (command.contributionRate.automaticCalculationCls == 0 || self.isUpdateMode() == false) {
                 // Update historyId for case clone previous data                    
@@ -86,7 +87,10 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             command.contributionRate.historyId = command.yearMonthHistoryItem.historyId;
             service.addContributionRateHis(command).done(function(data) {
                 block.clear();
-                dialog.info({ messageId: 'Msg_15' });
+                self.selectedHealthInsurance.valueHasMutated();
+                dialog.info({ messageId: 'Msg_15' }).then(function(){
+                    $('#I2_7').focus();
+                });
                 self.isUpdateMode(true);
             }).fail(function(err) {
                 block.clear();
@@ -102,7 +106,10 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
         registerBusinessEstablishment() {
             let self = this;
             modal("/view/qmm/008/d/index.xhtml").onClosed(() => {
-                if (getShared("QMM008_D_RES_PARAMS")) self.showAllOfficeAndHistory();
+                self.isOnStartUp = true;
+                self.jumpTopPageIfNoData = true;
+                self.showAllOfficeAndHistory();
+                $('#I1_5').focus();
             });
         }
 
@@ -131,8 +138,10 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
             service.findAllOfficeAndHistory().done(function(data) {
                 if (data) {
                     if (data.length == 0) {
+                        if (self.jumpTopPageIfNoData) {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        }
                         self.registerBusinessEstablishment();
-                        return;
                     }
                     let socailInsuranceOfficeList: Array<model.SocialInsuranceOffice> = [];
                     data.forEach(office => {

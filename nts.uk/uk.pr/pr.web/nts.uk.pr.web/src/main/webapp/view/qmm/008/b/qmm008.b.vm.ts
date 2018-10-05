@@ -128,6 +128,7 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
                 self.isSelectFirstOfficeAndHistory = true;
                 self.jumpTopPageIfNoData = true;
                 self.showAllOfficeAndHistory();
+                $("#B1_5").focus();
             });
         }
 
