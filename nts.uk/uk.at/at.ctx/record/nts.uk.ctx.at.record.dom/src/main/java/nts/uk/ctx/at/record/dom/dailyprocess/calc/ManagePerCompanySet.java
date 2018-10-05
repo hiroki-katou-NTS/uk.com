@@ -54,7 +54,7 @@ public class ManagePerCompanySet {
 	Optional<BPUnitUseSetting> bpUnitSetting;
 	
 	@Setter
-	MasterShareContainer shareContainer;
+	MasterShareContainer<String> shareContainer;
 	
 	//任意項目
 	List<OptionalItem> optionalItems;

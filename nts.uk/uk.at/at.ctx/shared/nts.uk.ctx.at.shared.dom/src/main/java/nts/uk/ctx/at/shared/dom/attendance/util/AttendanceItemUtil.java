@@ -994,7 +994,7 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 	
 	private static class AttendanceItemUtilCacheHolder {
-		private final MasterShareContainer cache;
+		private final MasterShareContainer<String> cache;
 		
 		private AttendanceItemUtilCacheHolder(){
 			this.cache = MasterShareBus.open();
