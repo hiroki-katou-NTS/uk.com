@@ -635,16 +635,6 @@ module nts.uk.pr.view.qmm012.b {
                     let isSetting = getShared("QMM012_I_IS_SETTING");
                     self.isSetBreakdownItem(isSetting);
                     
-                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
-                    
-                    if(index >= 0) {
-                        if(isSetting) {
-                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [{breakdownItemCode: 1, breakdownItemName: "1"}];
-                        } else {
-                            self.screenModel.statementItemDataList()[index].breakdownItemSet = [];
-                        }
-                    }
-                    
                     $("#C3_8").focus();
                 });
             }
@@ -662,28 +652,8 @@ module nts.uk.pr.view.qmm012.b {
                 nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                     let isSetting = getShared("QMM012_H_IS_SETTING");
                     
-                    let index: number = _.findIndex(self.screenModel.statementItemDataList(), function(o) { return o.salaryItemId == self.salaryItemId(); });
-                    
                     if(isSetting && (isSetting.exitStatus == 1)) {
                         self.isSetValidity(isSetting);
-                        if(index >= 0) {
-                            self.screenModel.statementItemDataList()[index].validityPeriodAndCycleSet = {cycleSettingAtr: 0,
-                                                                                                        january: 0,
-                                                                                                        february: 0,
-                                                                                                        march: 0,
-                                                                                                        april: 0,
-                                                                                                        may: 0,
-                                                                                                        june: 0,
-                                                                                                        july: 0,
-                                                                                                        august: 0,
-                                                                                                        september: 0,
-                                                                                                        october: 0,
-                                                                                                        november: 0,
-                                                                                                        december: 0,
-                                                                                                        periodAtr: 0,
-                                                                                                        yearPeriodStart: 0,
-                                                                                                        yearPeriodEnd: 0};
-                        }
                     }
                     
                     $("#C3_2").focus();
