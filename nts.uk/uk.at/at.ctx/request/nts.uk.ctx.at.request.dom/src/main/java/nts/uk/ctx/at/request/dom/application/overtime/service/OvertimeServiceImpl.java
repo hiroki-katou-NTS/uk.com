@@ -118,15 +118,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 				&& !CollectionUtil.isEmpty(appEmploymentSettings)) {
 			//ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する(hien thi list(申請別対象勤務種類))
 			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
-			if(CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
+				List<String> workTypeCodes = new ArrayList<>();
+				lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
+				result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
+						.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
 				return result;
 			}
-			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-			List<String> workTypeCodes = new ArrayList<>();
-			lstEmploymentWorkType.forEach(x -> {workTypeCodes.add(x.getWorkTypeCode());});			
-			result = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCodes).stream()
-					.map(x -> new WorkTypeOvertime(x.getWorkTypeCode().v(), x.getName().v())).collect(Collectors.toList());
-			return result;
 		}
 		List<Integer> allDayAtrs = allDayAtrs();
 		List<Integer> halfAtrs = halfAtrs();
@@ -225,8 +224,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 			if(Strings.isNotBlank(achievementOutput.getWorkType().getWorkTypeCode())){
 				workTypeAndSiftType.setWorkType(new WorkTypeOvertime(achievementOutput.getWorkType().getWorkTypeCode(), achievementOutput.getWorkType().getName()));
 				workTypeAndSiftType.setSiftType(new SiftType(achievementOutput.getWorkTime().getWorkTimeCD(), achievementOutput.getWorkTime().getWorkTimeName()));
+				String workTypeCode = workTypeAndSiftType.getWorkType().getWorkTypeCode();
+				String siftCD = workTypeAndSiftType.getSiftType().getSiftCode();
+				BreakTimeZoneSharedOutPut breakTime = getBreakTimes(companyID, workTypeCode, siftCD);
+				workTypeAndSiftType.setBreakTimes(breakTime.getLstTimezone());
+				return workTypeAndSiftType;
 			}
-		} else {
+		}
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 		
@@ -238,21 +242,20 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeAndSiftType.setSiftType(siftTypes.get(0));
 			}
 		}else{
-			WorkType workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString())
+			WorkType workType = workTypeRepository.findByPK(companyID, personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().get().v().toString())
 					.orElseGet(()->{
 						return workTypeRepository.findByCompanyId(companyID).get(0);
 					});
 			workTypeOvertime.setWorkTypeCode(workType.getWorkTypeCode().toString());
 			workTypeOvertime.setWorkTypeName(workType.getName().toString());
 			workTypeAndSiftType.setWorkType(workTypeOvertime);
-			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
+			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v().toString())
 					.orElseGet(()->{
 						return workTimeRepository.findByCompanyId(companyID).get(0);
 					});
 			siftType.setSiftCode(workTime.getWorktimeCode().toString());
 			siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 			workTypeAndSiftType.setSiftType(siftType);
-			}
 		}
 		//休憩時間帯を取得する
 		if (workTypeAndSiftType.getWorkType() != null && workTypeAndSiftType.getSiftType() != null) {
