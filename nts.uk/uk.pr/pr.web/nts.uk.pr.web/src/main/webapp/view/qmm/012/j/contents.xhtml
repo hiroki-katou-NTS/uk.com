@@ -27,14 +27,15 @@
 				<tr>
 					<td data-bind="text: $index() + 1 "></td>
 					<td><span class="label"
-						data-bind="text: itemNameCd, enable: false"></span></td>
-					<td><span class="label limited-label" data-bind="text: name, enable: false"></span></td>
-					<td><span class="label limited-label"
-						data-bind="text: shortName, enable: false"></span></td>
+						data-bind="text: itemNameCd"></span></td>
+					<td><span class="limited-label" data-bind="text: name"></span></td>
+					<td><span class="limited-label"
+						data-bind="text: shortName"></span></td>
 					<td class="control-group valign-center">
 						<div class="cell">
 							<input class="validate_form"
 								data-bind="ntsTextEditor: {
+												name: '#[QMM012_120]',
 												constraint: 'EnglishName',
 												option: {width: '163px'},
 												value: englishName,
@@ -45,6 +46,7 @@
 						<div class="cell">
 							<input class="validate_form"
 								data-bind="ntsTextEditor: {
+												name: '#[QMM012_121]',
 												constraint: 'OtherLanguageName',
 												option: {width: '163px'},
 												value: otherLanguageName,
