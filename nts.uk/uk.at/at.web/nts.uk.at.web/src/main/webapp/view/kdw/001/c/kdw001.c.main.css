@@ -7,10 +7,10 @@
 }
 
 #kcp005{
-	height: 352px;
+	height: 335px;
 	width: 562px;
     margin-left: 105px;
-    margin-top: 7px;
+    margin-top: 2px;
 }
 
 #panel11{
@@ -30,6 +30,6 @@
 	    margin-top: -25px;
 }
 #contents-area{
-	overflow-y: hidden;
 	overflow-x: hidden;
 }
+
