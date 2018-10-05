@@ -407,23 +407,13 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
         reSize(): void {
             let self=this;
             let windowSize = nts.uk.ui.windows.getSelf();
-            let element = document.getElementById('openAdvanceSetting');
-            let expanClass =document.getElementsByClassName("ui-dialog")[0];
-            
+
             if (!self.isAdvanceSetting()) {
                 windowSize.$dialog.height(510);
                 self.isAdvanceSetting(true);
-                
-                //expanClass.addClass('expanDialog');
-                //element.style.display = "block";
-               // windowSize.setHeight(windowSize.parent.globalContext.innerHeight + 100);
-
-                //element.attr('style','top: 0px!important');
-                //$('.ui-dialog').attr('style','top: 0px!important');
             }else {
                 self.isAdvanceSetting(false);
                 windowSize.$dialog.height(420);
-                //element.style.display = "none";
             }
         }
 
@@ -589,12 +579,6 @@ module nts.uk.pr.view.qmm005.d.viewmodel {
             }
             itemList.push(new model.ItemModel(31,'末日'));
 
-//            let i = 1;
-//            for (let data in codeEnum) {
-//                if (isNaN(data)) continue;
-//                itemList.push(new model.ItemModel(data, i + '日'));
-//                i++;
-//            }
         }
 
 

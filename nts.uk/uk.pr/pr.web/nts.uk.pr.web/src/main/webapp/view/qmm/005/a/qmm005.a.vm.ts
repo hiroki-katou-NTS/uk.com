@@ -1,14 +1,10 @@
 module nts.uk.pr.view.qmm005.a.viewmodel {
-    import close = nts.uk.ui.windows.close;
-    import getText = nts.uk.resource.getText;
     import model = nts.uk.pr.view.qmm005.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
 
     import modal = nts.uk.ui.windows.sub.modal;
     import SetDaySupport = nts.uk.pr.view.qmm005.share.model.SetDaySupport;
-    import current = nts.uk.request.location.current;
     const MAX_NUMBER_SETTING = 5;
 
     export class ScreenModel {
@@ -21,8 +17,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         constructor() {
             var self = this;
-            // $("#A2_2").ntsFixedTable({height: 247, width: 1000});
-            // $("#A3_1").ntsFixedTable({height: 247, width: 400});
              if(/Edge/.test(navigator.userAgent)){
                 $("#A2_2").ntsFixedTable({height: 248, width: 1000});
                 $("#A3_1").ntsFixedTable({height: 247, width: 400});
@@ -55,7 +49,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 if (action == 0) {
                     self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.processCls(processInformationUpdate.processCls);
 
-
                     if(processInformationUpdate.deprecatCate==model.Abolition.NOT_ABOLITION){
                         self.itemBinding()[processInformationUpdate.processCateNo-1].isNotAbolition(true);
                         self.itemBinding()[processInformationUpdate.processCateNo-1].processInfomation.deprecatCate=model.Abolition.NOT_ABOLITION;
@@ -69,10 +62,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         });
                     }
                     $('#A2_2 #button_register').eq(processInfomation-1).focus();
-
-
-
-
                 }
                 if (action == 1) {
                     self.showDialogB(processInformationUpdate.processCateNo).done(function () {
@@ -199,24 +188,21 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             service.findDisplayRegister().done(data => {
                 self.itemTable=new ItemTable();
                 if (data) {
-                    // data.informationDto.forEach(item =>{
-                    //     self.itemTable.processInfomations.push(new model.ProcessInfomation(item));
-                    // });
                     self.itemTable.setData(data);
                 }
 
-                let datontai:Array<number>=new Array();
+                let isExists:Array<number>=new Array();
                 for(let i=0;i<self.itemTable.processInfomations.length;i++){
-                    datontai.push(self.itemTable.processInfomations[i].processCateNo)
+                    isExists.push(self.itemTable.processInfomations[i].processCateNo)
                 }
-                let arrItemBindingProcessinformationsTemp:Array<model.ProcessInfomation>=new Array();
+                let arrItemBindingProcessinformations:Array<model.ProcessInfomation>=new Array();
                 for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
-                    if(_.includes(datontai,i+1)){
-                        let index=_.indexOf(datontai,i+1);
-                        arrItemBindingProcessinformationsTemp.push(self.itemTable.processInfomations[index]);
+                    if(_.includes(isExists,i+1)){
+                        let index=_.indexOf(isExists,i+1);
+                        arrItemBindingProcessinformations.push(self.itemTable.processInfomations[index]);
                     }
                     else{
-                        arrItemBindingProcessinformationsTemp.push(new model.ProcessInfomation({
+                        arrItemBindingProcessinformations.push(new model.ProcessInfomation({
                                 processCateNo: i + 1,
                                 processCls: '',
                                 deprecatCate: 0
@@ -225,16 +211,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     }
                 }
 
-
-
-                for (let i: number = self.itemTable.processInfomations.length; i < MAX_NUMBER_SETTING; i++) {
-                    self.itemTable.processInfomations.push(new model.ProcessInfomation({
-                            processCateNo: i + 1,
-                            processCls: '',
-                            deprecatCate: 0
-                        }
-                    ));
-                }
                 for (let i: number = 0; i < MAX_NUMBER_SETTING; i++) {
                     let employeeString = '';
                     let employeeList = [];
@@ -253,8 +229,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         }
                     }
                     self.itemBinding.push(new ItemBinding(
-                        //self.itemTable.processInfomations[i],
-                        arrItemBindingProcessinformationsTemp[i],
+                        arrItemBindingProcessinformations[i],
                         _.sortBy(_.filter(self.itemTable.setDaySupports, function (o) {
                                 return o.processCateNo == i + 1;
                             }),
@@ -265,8 +240,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
                         self.getYear(self.itemTable.setDaySupports, i)
                         ,
-                        self.getListMonth(self.itemTable.setDaySupports, i),
-                        self.itemTable.currentProcessDates[i]
+                        self.getListMonth(self.itemTable.setDaySupports, i)
                     )
                     );
 
@@ -295,7 +269,6 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                         commandData.empTiedProYearCommand.push({employmentCodes: codeList});
                     } else {
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_217", message: nts.uk.resource.getMessage("MsgQ_217",[i+1])});
-                      //  nts.uk.resource.getText("MsgQ_217",[i+1]);
                         return;
                     }
                 }
@@ -320,10 +293,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
         months: KnockoutObservableArray<ItemComboBox>;
         monthsSubcriceYear: KnockoutObservableArray<ItemComboBox> = ko.observableArray([]);
         monthsSelectd: KnockoutObservable<number>;
-        currentYaerMonthSelected:KnockoutObservable<number>=ko.observable(0);
+
         isNotAbolition:KnockoutObservable<boolean>=ko.observable(false);
 
-        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox>,currentProcessDate:model.CurrentProcessDate ) {
+        constructor(processInfomation: model.ProcessInfomation, setDaySupports: Array<model.SetDaySupport>, employeeString: string, employeeList: Array, years: Array<ItemComboBox>, months: Array<ItemComboBox> ) {
             let selfItemBinding = this;
             selfItemBinding.processInfomation = processInfomation;
             selfItemBinding.setDaySupports = ko.observableArray(setDaySupports);
@@ -334,7 +307,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             selfItemBinding.yaersSelected = ko.observable(0);
             selfItemBinding.months = ko.observableArray(months);
             selfItemBinding.monthsSelectd = ko.observable(0);
-            if(currentProcessDate){ selfItemBinding.currentYaerMonthSelected(currentProcessDate.giveCurrTreatYear)}
+
 
 
 
@@ -347,9 +320,9 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 )
             })
 
-             let startYearSelected=parseInt((selfItemBinding.currentYaerMonthSelected())/100);
-             let startMonthsSelected=selfItemBinding.currentYaerMonthSelected();
-             selfItemBinding.yaersSelected(0);
+
+             let currentYear =new Date().getFullYear();
+             selfItemBinding.yaersSelected(currentYear);
              selfItemBinding.monthsSelectd(0);
 
              if(selfItemBinding.processInfomation.processCls() != '' && selfItemBinding.processInfomation.deprecatCate == model.Abolition.NOT_ABOLITION ){
