@@ -179,7 +179,6 @@ module kcp.share.tree {
         isFullView: KnockoutObservable<boolean>;
         isShowNoSelectRow: boolean;
 
-        isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
 
         treeStyle: TreeStyle;
@@ -250,13 +249,7 @@ module kcp.share.tree {
             } else {
                 self.maxRows = data.maxRows;
             }
-            self.tabindex = data.tabindex;
-            self.isSetTabindex = ko.computed(() => {
-                if (self.tabindex) {
-                    return true;
-                }
-                return false;
-            });
+            self.tabindex = data.tabindex ? data.tabindex : 1;
 
             // subscribe change selected level
             self.levelSelected.subscribe(function(level) {
@@ -717,12 +710,10 @@ module kcp.share.tree {
                 }
             });
             
-            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selecteds) => {
-                if (self.isMultiSelect) {
-                    self.selectedWorkplaceIds(selecteds);
-                } else {
-                    self.selectedWorkplaceIds(selecteds[0]);
-                }
+            $(document).delegate('#' + self.getComIdSearchBox(), "ntstreeselectionchanged", (evt, selectedId) => {
+                // multiple-case: selectedId is an array
+                // single-case: selectedId is a string
+                self.selectedWorkplaceIds(selectedId);
             });
 
             self.selectedWorkplaceIds.subscribe(ids => {
@@ -992,17 +983,17 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
             <div data-bind="ntsFormLabel: {}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
                 style="margin-left: 17px; margin-right: 5px;"
-                data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 1},
+                data-bind="attr: {tabindex: tabindex},
                 ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
             <button
-                data-bind="click: reload, attr: {tabindex: isSetTabindex() ? tabindex : 2}"
+                data-bind="click: reload, attr: {tabindex: tabindex}"
                 style="width: 100px">`+TreeComponentTextResource.KCP004_3+`</button>
         </div>
         <div style="margin-top: 10px; margin-bottom: 10px;">
             <div data-bind="ntsFormLabel: {}" style="float: left;">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
                 style="width: 107px; margin-left: 35px;"
-                data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 3}, ntsComboBox: {
+                data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
                     options: levelList,
                     optionsValue: 'level',
                     value: levelSelected,
@@ -1015,24 +1006,22 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         </div>
 
         <div style="width: 420px">
-            <div tabindex="4" style="width: 264px; display: inline-block;" data-bind="attr: {id: searchBoxId}">
+            <div style="width: 327px; display: inline-block;" data-bind="attr: {id: searchBoxId, tabindex: tabindex}">
             </div>
             <div style="display: inline-block; margin-left: 2px;">
                 <!-- ko if: isShowSelectButton -->
                     <button
-                        data-bind="click: selectAll, attr: {tabindex: isSetTabindex() ? tabindex : 5}">`+TreeComponentTextResource.KCP004_7+`</button>
-                    <button
-                        data-bind="click: selectSubParent, attr: {tabindex: isSetTabindex() ? tabindex : 6}">`+TreeComponentTextResource.KCP004_8+`</button>
+                        data-bind="click: selectSubParent, attr: {tabindex: tabindex}">`+TreeComponentTextResource.KCP004_8+`</button>
                 <!-- /ko -->
             </div>
         </div>
         <div class="cf"></div>
         <!-- ko if: !isMultiSelect -->
-            <table id="single-tree-grid" class="cf">
+            <table id="single-tree-grid" class="cf" data-bind="attr: {tabindex: tabindex}">
             </table>
         <!-- /ko -->
         <!-- ko if: isMultiSelect -->
-            <table id="multiple-tree-grid" class="cf">
+            <table id="multiple-tree-grid" class="cf" data-bind="attr: {tabindex: tabindex}">
             </table>
         <!-- /ko -->
     </div>`;

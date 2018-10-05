@@ -88,15 +88,17 @@
 					<div class="right-content">
 						<div data-bind="with: selectedAlarmCheckCondition">
 							<div class="valign-center control-group">
-								<label class="flabel">#{i18n.getText('KAL003_11')}</label> <input
-									tabindex="7" id="A3_2"
+								<div class="flabel" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_11')}</div>
+								<input
+									tabindex="7" id="A3_2" style = "margin-right: 30px"
 									data-bind="ntsTextEditor: {name: '#[KAL003_11]', value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '80px'}}" />
-								<label style="padding-left: 50px;padding-right: 30px; ">#{i18n.getText('KAL003_12')}</label>
-								<input tabindex="8" id="A3_4"
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_12')}</div>
+								<input tabindex="8" id="A3_4"  style = "margin-left: 35px"
 									data-bind="ntsTextEditor: {name: '#[KAL003_12]', value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
 							</div>
 							<div class="valign-center control-group">
-								<label class="flabel">#{i18n.getText('KAL003_9')}</label> <label
+								<div class="flabel" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_9')}</div>
+								<label
 									data-bind="text: displayCategory"></label>
 							</div>
 							<!-- <div class="valign-center control-group"
@@ -112,7 +114,8 @@
 							</div> -->
 							<div class="valign-center control-group"
 								data-bind="visible: false">
-								<label class="flabel">#{i18n.getText('KAL003_13')}</label> <input
+								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
+								<input
 									data-bind="ntsTextEditor: {name: '#[KAL003_13]', value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="10">#{i18n.getText('KAL003_14')}</button>
 							</div>
@@ -124,9 +127,9 @@
 									<ui:include src="common/scopecheck.xhtml" />
 								</div>
 							</div>
-							<!-- <div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
+							<div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
 								<ui:include src="daily/dailyperformance/dailyperfor.xhtml" />
-							</div> -->
+							</div> 
 							<div class="tab-content-3" data-bind="with: tabCheckCondition">
 								<ui:include src="common/checkconditions.xhtml" />
 							</div>

@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -39,8 +37,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrecti
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -162,7 +160,9 @@ public class CheckBeforeCalcFlexChange {
 			if (attTiemOpt.get().getMonthlyCalculation() == null
 					|| attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime() == null)
 				return TIME_DEFAULT;
-			timeSum = attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime().v();
+			timeSum = attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime().v()
+					- attTiemOpt.get().getMonthlyCalculation().getAggregateTime().getPrescribedWorkingTime()
+							.getSchedulePrescribedWorkingTime().v();
 			// timeCarryoverTime = String.format("%d:%02d", time);
 		} else {
 			// 社員と基準日から雇用履歴項目を取得する
@@ -186,22 +186,24 @@ public class CheckBeforeCalcFlexChange {
 			// x.getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)).collect(Collectors.toList());
 			List<DateRange> dates = dailyPerformanceScreenRepo.getWorkConditionFlexDatePeriod(calc.getEmployeeId(),
 					new DatePeriod(periodExportOptNext.get().getClosureStartDate(),
-							periodExportOptNext.get().getClosureStartDate()));
-			List<AttendanceTimeOfDailyPerformance> listAttTime = attendanceTime.find(calc.getEmployeeId(),
+							periodExportOptNext.get().getClosureEndDate()));
+			List<Integer> listAttTime = attendanceTime.findAtt(calc.getEmployeeId(),
 					convertToListDate(dates));
 			// 「法定労働時間」-「所定労働時間」をパラメータ「翌月繰越可能時間」にセットする
 
 			timeSum = (monthFlex != null && monthFlex.getStatutorySetting() != null)
 					? monthFlex.getStatutorySetting().v() - calcSumTime(listAttTime) : 0 - calcSumTime(listAttTime);
-			if (timeSum <= 0) {
-				timeSum = 0;
-			}
 		}
 
+		if (timeSum <= 0) {
+			timeSum = 0;
+		}
+		
 		// ドメインモデル「フレックス不足の繰越上限管理」を取得する
-		int valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth();
+		Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+		if(valueLimit == null) valueLimit = 0;
 		if (valueLimit >= timeSum) {
-			return timeCheck;
+			return converMinutesToHours((int)timeSum);
 		} else {
 			return converMinutesToHours(valueLimit);
 		}
@@ -231,12 +233,11 @@ public class CheckBeforeCalcFlexChange {
 		return mins;
 	}
 
-	private long calcSumTime(List<AttendanceTimeOfDailyPerformance> listAttTime) {
+	private long calcSumTime(List<Integer> listAttTime) {
 		long sum = 0;
-		for (AttendanceTimeOfDailyPerformance data : listAttTime) {
-			if (data.getWorkScheduleTimeOfDaily() != null
-					&& data.getWorkScheduleTimeOfDaily().getSchedulePrescribedLaborTime() != null) {
-				sum += data.getWorkScheduleTimeOfDaily().getSchedulePrescribedLaborTime().v();
+		for (Integer data : listAttTime) {
+			if (data != null) {
+				sum += data;
 			}
 		}
 		;

@@ -50,11 +50,13 @@ module nts.uk.at.view.kdw009.a.viewmodel {
                     $("#inpPattern").focus();
                     self.checkUpdateMode();
                 }else{
-                    self.registerHide(false);
-                    self.isHide(false);
-                    self.selectedOption(null);
-                    self.selectedName("");
-                    self.codeObject("")
+                    if(self.checkUpdate() == true){
+                        self.registerHide(false);
+                        self.isHide(false);
+                        self.selectedOption(null);
+                        self.selectedName("");
+                        self.codeObject("");
+                    }
                 }
             });
             

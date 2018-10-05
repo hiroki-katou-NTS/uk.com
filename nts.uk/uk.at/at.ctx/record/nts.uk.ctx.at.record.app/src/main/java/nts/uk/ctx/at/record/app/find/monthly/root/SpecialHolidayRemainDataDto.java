@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialLeaveDto;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialLeaveGrantUseDay;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -55,7 +54,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	/** 特別休暇コード */
 	@AttendanceItemLayout(jpPropertyName = SPECIAL_HOLIDAY + CODE, layout = LAYOUT_C)
 	@AttendanceItemValue(type = ValueType.CODE)
-	private int specialHolidayCd;
+	private int no;
 	
 	/** 実特別休暇 */
 	@AttendanceItemLayout(jpPropertyName = REAL + SPECIAL_HOLIDAY, layout = LAYOUT_D)
@@ -89,7 +88,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 			dto.setClosureDate(domain.getClosureDate() == null ? null : ClosureDateDto.from(domain.getClosureDate()));
 			dto.setDatePeriod(DatePeriodDto.from(domain.getClosurePeriod()));
 			dto.setClosureStatus(domain.getClosureStatus().value);
-			dto.setSpecialHolidayCd(domain.getSpecialHolidayCd());
+			dto.setNo(domain.getSpecialHolidayCd());
 			dto.setActualSpecial(SpecialLeaveDto.from(domain.getActualSpecial()));
 			dto.setSpecialLeave(SpecialLeaveDto.from(domain.getSpecialLeave()));
 			dto.setGrantAtr(domain.isGrantAtr());
@@ -101,13 +100,17 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	
 	@Override
 	public SpecialHolidayRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return new SpecialHolidayRemainData(employeeId, closureID, 
+		return new SpecialHolidayRemainData(
+				employeeId,
+				ym,
+				closureID, 
 				datePeriod == null ? null : datePeriod.toDomain(), 
-				ConvertHelper.getEnum(closureStatus, ClosureStatus.class), 
-				closureDate == null ? null : closureDate.toDomain(), ym, closureID, 
-				actualSpecial == null ? null : actualSpecial.toActualDomain(), 
-				specialLeave == null ? null : specialLeave.toDomain(), 
-				grantAtr, Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
+				closureDate == null ? null : closureDate.toDomain(),
+				no, actualSpecial == null ? null : actualSpecial.toActualDomain(), 
+				specialLeave == null ? null : specialLeave.toDomain(),
+				grantAtr,
+				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 	}
 	@Override
 	public YearMonth yearMonth() {

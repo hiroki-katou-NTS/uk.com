@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.dom.common.time;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -222,32 +224,37 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	 * @param other 比較対象
 	 * @return 重複してない部分
 	 */
-	public Optional<TimeSpanForCalc> getNotDuplicationWith(TimeSpanForCalc other){
-		TimeSpanForCalc result;
+	public List<TimeSpanForCalc> getNotDuplicationWith(TimeSpanForCalc other){
+		List<TimeSpanForCalc> result = new ArrayList<>();
 		
 		switch(this.checkDuplication(other))
 		{
 		case SAME_SPAN:
 		case CONTAINED:
 			/*時間帯をクリア*/
-			return Optional.empty();
-		case CONNOTATE_BEGINTIME:
-		case CONTAINS:
-			/*自分の終了を相手の開始にズラす*/
-			result = new TimeSpanForCalc(this.start,other.start);
 			break;
+		//相手の開始を跨ぐ
+		case CONNOTATE_BEGINTIME:
+			/*自分の終了を相手の開始にズラす*/
+			result.add(new TimeSpanForCalc(this.start,other.start));
+			break;
+		case CONTAINS:
+			result.add(new TimeSpanForCalc(this.start,other.start));
+			result.add(new TimeSpanForCalc(other.end,this.end));
+			break;
+		//相手の終了を跨ぐ
 		case CONNOTATE_ENDTIME:
 			/*自分の開始を相手の終了にずらす*/
-			result = new TimeSpanForCalc(other.end,this.end);
+			result.add(new TimeSpanForCalc(other.end,this.end));
 			break;
 		case NOT_DUPLICATE:
 			/*何もしない*/
-			result = this;
+			result.add(this);
 			break;
 		default:
 			throw new RuntimeException("unknown duplicatoin");
 		}
-		return Optional.of(result);
+		return result;
 	}
 	
 	

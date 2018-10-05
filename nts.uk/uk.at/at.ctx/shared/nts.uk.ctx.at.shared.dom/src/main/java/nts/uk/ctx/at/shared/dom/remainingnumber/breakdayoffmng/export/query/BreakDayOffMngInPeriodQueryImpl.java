@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.jpa.jpql.utility.CollectionTools;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -48,6 +51,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	private AbsenceTenProcess tenProcess;
 	@Inject
 	private InterimRemainOffMonthProcess createDataService;
+	@Inject
+	private ClosureService closureService;
 	@Override
 	public BreakDayOffRemainMngOfInPeriod getBreakDayOffMngInPeriod(BreakDayOffRemainMngParam inputParam) {
 		//アルゴリズム「未相殺の代休(確定)を取得する」を実行する
@@ -117,10 +122,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid, GeneralDate startDate) {
 		//ドメインモデル「代休管理データ」
-		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySidDate(cid, sid, startDate);
-		
-		return lstDayOffConfirm.stream().filter(x -> x.getRemainDays().v() > 0 || x.getRemainTimes().v() > 0)
-				.collect(Collectors.toList());
+		List<CompensatoryDayOffManaData> lstDayOffConfirm =  dayOffConfirmRepo.getBySid(cid, sid);
+		List<CompensatoryDayOffManaData> output = new ArrayList<>();
+		for (CompensatoryDayOffManaData x : lstDayOffConfirm) {
+			if((x.getRemainDays().v() <= 0 && x.getRemainTimes().v() <= 0)
+					|| (x.getDayOffDate().getDayoffDate().isPresent() && x.getDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+				continue;
+			}
+			output.add(x);
+		}
+		return output;
 	}
 
 	@Override
@@ -175,9 +186,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	public List<LeaveManagementData> lstConfirmBreakData(String sid, GeneralDate startDate) {
 		//ドメインモデル「休出管理データ」
 		String cid = AppContexts.user().companyId();
-		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySidDate(cid, sid, startDate);
-		return lstBreackConfirm.stream().filter(x -> x.getUnUsedDays().v() > 0 || x.getUnUsedTimes().v() > 0)
-				.collect(Collectors.toList());
+		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySid(cid, sid);
+		List<LeaveManagementData> lstOutput = new ArrayList<>();
+		for (LeaveManagementData x : lstBreackConfirm) {
+			if((x.getUnUsedDays().v() <= 0 && x.getUnUsedTimes().v() <= 0)
+					|| (x.getComDayOffDate().getDayoffDate().isPresent() && x.getComDayOffDate().getDayoffDate().get().afterOrEquals(startDate))) {
+				continue;
+			}
+			lstOutput.add(x);
+		}
+		return lstOutput;
 	}
 
 	@Override
@@ -685,6 +703,37 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				dayOffData.ifPresent(y -> lstBreakMng.add(y));
 			});		
 		}
+		//20181003 DuDT fix bug 101491 ↓
+		List<InterimRemain> lstTmpDayoff = new ArrayList<>(lstInterimDayoff);
+		List<InterimDayOffMng> lstDayoffUsen = new ArrayList<>(lstDayoffMng);
+		List<InterimRemain> lstTmpBreak = new ArrayList<>(lstInterimBreak);
+		List<InterimBreakMng> lstBreakMngUsen = new ArrayList<>(lstBreakMng);
+		if(inputParam.isReplaceChk() && !inputParam.getInterimMng().isEmpty()) {
+			for (InterimRemain interimRemain : inputParam.getInterimMng()) {
+				List<InterimRemain> lstInterimDayoffUsen = lstTmpDayoff.stream()
+						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstInterimDayoffUsen.isEmpty()) {
+					InterimRemain temp = lstInterimDayoffUsen.get(0);
+					lstInterimDayoff.remove(temp);
+					List<InterimDayOffMng> tmpDayoffUsen = lstDayoffUsen.stream().filter(b -> b.getDayOffManaId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tmpDayoffUsen.isEmpty()) {
+						lstDayoffUsen.remove(tmpDayoffUsen.get(0));
+					}
+				}
+				List<InterimRemain> lstBreakUsen = lstTmpBreak.stream()
+						.filter(b -> b.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstBreakUsen.isEmpty()) {
+					lstInterimBreak.remove(lstBreakUsen.get(0));
+					List<InterimBreakMng> tempLstBreak = lstBreakMngUsen.stream().filter(b -> b.getBreakMngId().equals(lstBreakUsen.get(0).getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tempLstBreak.isEmpty()) {
+						lstBreakMng.remove(tempLstBreak.get(0));
+					}
+				}
+			}
+		}
+		//20181003 DuDT fix bug 101491 ↑
 		List<BreakDayOffDetail> lstOutputDayoff = this.lstOutputDayoff(inputParam, lstDayoffMng, lstInterimDayoff);
 		lstDetailData.addAll(lstOutputDayoff);
 		
@@ -708,7 +757,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 						.filter(z -> z.getRemainManaID().equals(dayOffInput.getDayOffManaId()))
 						.collect(Collectors.toList());
 				if(!lstInterimInput.isEmpty()) {
-					InterimRemain interimData = lstInterimInput.get(0);
+					InterimRemain interimData = lstInterimInput.get(0);					
 					List<InterimRemain> lstTmp = lstInterimDataTmp.stream().filter(a -> a.getYmd().equals(interimData.getYmd()))
 					.collect(Collectors.toList());
 					if(!lstTmp.isEmpty()) {
@@ -754,7 +803,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 						.filter(x -> x.getRemainManaID().equals(breakReplace.getBreakMngId()))
 						.collect(Collectors.toList());
 				if(!lstRemainReplace.isEmpty()) {
-					InterimRemain remainReplace = lstRemainReplace.get(0);
+					InterimRemain remainReplace = lstRemainReplace.get(0);					
 					List<InterimRemain> lstRemainData = lstInterimDataTmp.stream()
 							.filter(z -> z.getYmd().equals(remainReplace.getYmd()))
 							.collect(Collectors.toList());
@@ -765,6 +814,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 								.collect(Collectors.toList());
 						if(!lstBreakData.isEmpty()) {
 							InterimBreakMng breakData = lstBreakData.get(0);
+							
 							lstBreakMng.remove(breakData);
 						}
 						lstInterimBreak.remove(remainData);
@@ -793,14 +843,16 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 	@Override
 	public double getBreakDayOffMngRemain(String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
+		//社員に対応する締め期間を取得する
+		DatePeriod period = closureService.findClosurePeriod(employeeID, date);
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(
-				companyID, 
-				employeeID, 
-				new DatePeriod(date, date.addYears(1)), 
-				false, 
-				date, 
-				false, 
-				Collections.emptyList(), 
+				companyID, //・ログイン会社ID
+				employeeID, //・INPUT．社員ID
+				new DatePeriod(period.start(), period.start().addYears(1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年
+				false, //・モード＝その他モード
+				date, //・基準日＝INPUT．基準日
+				false, //・上書きフラグ=false
+				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
 				Collections.emptyList());
 		return this.getBreakDayOffMngInPeriod(inputParam).getRemainDays();

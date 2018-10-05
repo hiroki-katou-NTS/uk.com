@@ -39,7 +39,7 @@
 						<!-- H1_9 -->
 						<span style="padding-left: 20px;"  data-bind="text:nameClosue , visible: clouseEnable"></span></td>
 					</tr>
-					<tr>
+					<tr data-bind="visible: false">
 						<td>
 							<!-- H1_3 -->
 							<div style="float:left;" data-bind="ntsFormLabel: {}, visible: feriodEnable">#{i18n.getText('KDW001_15')}</div>
@@ -72,6 +72,7 @@
 	                             optionsValue: 'GUID',
 	                             columns: columns,
 	                             multiple: false,
+							     rows : 10,
 	                             value: currentSelectedRow}"
 						class="cf table-infor">
 					</table>

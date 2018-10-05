@@ -46,6 +46,12 @@ public class AuditTrailTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public UserInfo findByEmployeeIdAndCompanyId(String employeeId, String companyId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	};
 
 	@Test

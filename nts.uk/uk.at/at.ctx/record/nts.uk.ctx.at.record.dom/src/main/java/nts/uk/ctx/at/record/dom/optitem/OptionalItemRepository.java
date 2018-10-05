@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.optitem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Interface OptionalItemRepository.
@@ -70,4 +71,22 @@ public interface OptionalItemRepository {
 	 * @return the list
 	 */
 	List<OptionalItem> findByPerformanceAtr(String companyId, PerformanceAtr atr);
+	
+	/**
+	 * Find by performance atr.
+	 *
+	 * @param companyId the company id
+	 * @param atr the atr
+	 * @return the list
+	 */
+	List<OptionalItem> findUsedByPerformanceAtr(String companyId, PerformanceAtr atr);
+	
+	/**
+	 * Find by performance atr.
+	 *
+	 * @param companyId the company id
+	 * @param atr the atr
+	 * @return the list
+	 */
+	Map<Integer, OptionalItemAtr> findOptionalTypeBy(String companyId, PerformanceAtr atr);
 }

@@ -52,9 +52,8 @@ public class AddAffCompanyHistoryCommandHandler
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
 		String newHistId = IdentifierUtil.randomUniqueId();
-		String companyId = AppContexts.user().companyId();
 		
-		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId, command.getSId());
+		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(command.getSId());
 
 		AffCompanyHistByEmployee itemToBeAdded = new AffCompanyHistByEmployee(command.getSId(), new ArrayList<>());
 		if (listHist != null) {

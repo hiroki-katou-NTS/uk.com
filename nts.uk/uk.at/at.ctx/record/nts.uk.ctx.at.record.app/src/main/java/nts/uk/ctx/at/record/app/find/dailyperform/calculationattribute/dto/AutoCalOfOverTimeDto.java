@@ -35,4 +35,15 @@ public class AutoCalOfOverTimeDto implements ItemConst {
 	/** 法定内深夜残業時間: 自動計算設定 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = LEGAL + LATE_NIGHT)
 	private AutoCalculationSettingDto legalMidnightOverTime;
+
+	@Override
+	protected AutoCalOfOverTimeDto clone() {
+		return new AutoCalOfOverTimeDto(earlyOverTime == null ? null : earlyOverTime.clone(), 
+										earlyMidnightOverTime == null ? null : earlyMidnightOverTime.clone(),
+										normalOverTime == null ? null : normalOverTime.clone(), 
+										normalMidnightOverTime == null ? null : normalMidnightOverTime.clone(),
+										legalOverTime == null ? null : legalOverTime.clone(), 
+										legalMidnightOverTime == null ? null : legalMidnightOverTime.clone());
+	}
+	
 }

@@ -20,4 +20,6 @@ public class OptionalItemExport {
 
 	/** The optional item name. */
 	private String optionalItemName;
+	
+	private String optionalItemUnit;
 }

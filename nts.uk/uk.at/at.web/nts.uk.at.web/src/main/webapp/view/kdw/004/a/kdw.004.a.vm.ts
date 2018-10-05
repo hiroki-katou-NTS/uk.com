@@ -12,13 +12,13 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         SUNDAY_BACKGROUND_COLOR = "#FABF8F",
         SATURDAY_TEXT_COLOR = "#0031FF",
         SUNDAY_TEXT_COLOR = "#FF0000",
-        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
+        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='javascript:void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
         getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
-            <a class='approved' href='void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
+            <a class='approved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.UnApproved}' }}
-            <a class='unapproved' href='void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
+            <a class='unapproved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
-            <a class='cannotApproved' href='void(0);'>＿</a>
+            <a class='cannotApproved' href='javascript:void(0);'>＿</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.Disable}' }}
             <span class='disable'></span>
             {{/if}}`;
@@ -86,8 +86,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     startDate: moment(result.startDate).format("YYYY/MM/DD"),
                     endDate: moment(result.endDate).format("YYYY/MM/DD")
                 });
-
+                if(result.lstEmployee != null)
                 self.lstData = self.convertToGridData(result.lstEmployee);
+                else {
+                    nts.uk.ui.dialog.alert({ messageId: result.messageID  });
+                }
                 self.generateColumns();
                 self.loadGrid();
                 self.addClickEventDateHeader();
@@ -113,11 +116,10 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             nts.uk.ui.block.grayout();
 
             service.extractApprovalStatusData(param).done((result: OneMonthApprovalStatus) => {
-                let approvalSttGrid = document.getElementById('approvalSttGrid'),
-                    approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+                let approvalSttGrid = document.getElementById('approvalSttGrid');
 
-                ko.cleanNode(approvalSttGrid);
                 ko.cleanNode(approvalSttGrid_headers);
+                ko.cleanNode(approvalSttGrid);
 
                 self.lstData = self.convertToGridData(result.lstEmployee);
                 self.generateColumns();
@@ -144,13 +146,14 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     lstEmployee: _.map(self.lstData, data => data.employeeId),
                     //エラー参照を起動する
                     errorRefStartAtr: false,
+                    // fix bug 101435
                     //期間を変更する
-                    changePeriodAtr: false,
+                    changePeriodAtr: true,
                     //処理締め
                     targetClosue: self.selectedClosure(),
                     //Optional
                     //打刻初期値
-                    initClock: undefined,
+                    initClock: null,
                     //遷移先の画面
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
                 },
@@ -164,7 +167,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     lstExtractedEmployee: _.map(self.lstData, data => data.employeeId),
                     //Optional
                     //日付別で起動
-                    dateTarget: moment(date).format("YYYY/MM/DD"),
+                    dateTarget: date,
                     individualTarget: undefined
                 };
 
@@ -180,7 +183,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     lstEmployee: [employeeId],
                     errorRefStartAtr: false,
-                    changePeriodAtr: false,
+                    // fix bug 101435
+                    //期間を変更する
+                    changePeriodAtr: true,
                     targetClosue: self.selectedClosure(),
                     initClock: undefined,
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
@@ -190,7 +195,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     startDate: startDate,
                     endDate: startDate,
                     lstExtractedEmployee: [employeeId],
-                    dateTarget: undefined,
+                    dateTarget: startDate,
                     individualTarget: employeeId
                 };
 
@@ -206,16 +211,19 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //画面モード
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     //社員一覧
-                    lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    //fix bug 
+                    //lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    lstEmployee:[employeeId],
                     //エラー参照を起動する
                     errorRefStartAtr: false,
+                    // fix bug 101435
                     //期間を変更する
-                    changePeriodAtr: false,
+                    changePeriodAtr: true,
                     //処理締め
                     targetClosue: self.selectedClosure(),
                     //Optional
                     //打刻初期値
-                    initClock: undefined,
+                    initClock: null,
                     //遷移先の画面
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
                 }, extractionParam: DPCorrectionExtractionParam = {
@@ -226,7 +234,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     endDate: self.datePeriod().endDate,
                     //抽出した社員一覧
                     lstExtractedEmployee: employeeId,
-                    'dateTarget': undefined,
+                    //初期表示年月日
+                    dateTarget: null,
+                    //初期表示社員
                     individualTarget: employeeId
                 };
 

@@ -2,6 +2,7 @@ module nts.uk.at.view.kal001.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
+     import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
             //table
@@ -82,8 +83,16 @@ module nts.uk.at.view.kal001.c {
              closeDialog(){
                  nts.uk.ui.windows.close();
             }
-             sendEmail(){
+             //Start send mail
+             sendEmail(): JQueryPromise<any> {
                  let self = this;
+                 self.doSendEmail().done(function() {
+                 });
+             }
+             doSendEmail(){
+                 let self = this;
+                 let dfd = $.Deferred<any>();
+                 block.grayout();
                  service.getAllMailSet().done(function(data: MailAutoAndNormalDto) {
                      if (data && (data.mailSettingNormalDto.mailSettings != null || data.mailSettingNormalDto.mailSettingAdmins != null)) {
                          let mailSetings = data.mailSettingNormalDto.mailSettings;
@@ -112,14 +121,13 @@ module nts.uk.at.view.kal001.c {
                                  self.listEmployeeChecked.push(item);
                                  //set to employeee list taget
                                  self.listEmployeeSendTaget.push(item.employeeId);
-                                 self.listManagerSendTaget.push(item.workplaceId);
+                                 self.listManagerSendTaget.push(item.employeeId);
                                      
                              }
                              else if (item.isSendToMe == true )
                              {
                                  isHaveChecked = true;
                                  self.listEmployeeChecked.push(item);
-                                 
                                  //set to employeee list taget
                                  self.listEmployeeSendTaget.push(item.employeeId);
                              }
@@ -127,9 +135,8 @@ module nts.uk.at.view.kal001.c {
                              {
                                  isHaveChecked = true;
                                  self.listEmployeeChecked.push(item);
-                                 
                                  //set to Manager list taget
-                                 self.listManagerSendTaget.push(item.workplaceId);
+                                 self.listManagerSendTaget.push(item.employeeId);
                              }
                          });
                          
@@ -146,32 +153,35 @@ module nts.uk.at.view.kal001.c {
                                  let returnParam = data.split(";");
                                  let isSendMailError = returnParam[0];
                                  let errorStr = returnParam[1];
-                                 if (isSendMailError == 'false') {
-                                     info({ messageId: 'Msg_207' }).then(() => {
-                                         if (errorStr.length > 0) {
-                                             let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
-                                             info({ message: strDisplay });
-                                         }
-                                     });
-                                 }else{
+                                 if (errorStr.length > 0) {
                                      let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
                                      info({ message: strDisplay });
+                                     block.clear();
+                                 } else {
+                                     info({ messageId: 'Msg_207' });
+                                     block.clear();
                                  }
                                 }
+                             }).always(() => {
+                                 block.clear();
+                             }).fail(function(error) {
+                                 alertError(error);
+                                 block.clear();
+                                 dfd.resolve();
                              });
                          } else {
                              alertError({ messageId: 'Msg_657' });
+                             block.clear();
                          }
                          
                      } else {
                          alertError({ messageId: 'Msg_1169' });
+                         block.clear();
                      }
                      
                  });       
-                 return;
+                 return dfd.promise();
             }
-
-
 
         }//end screenModel
     }//end viewmodel  

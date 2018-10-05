@@ -19,7 +19,23 @@ import java.util.stream.Collectors;
  *
  */
 public class ProgramsManager {
-
+	
+	/**
+	 * QMM011
+	 */
+	public static final Program QMM011A = new Program(WebAppId.PR, ProgramIdConsts.QMM011A, "QMM011_60",
+			"/view/qmm/011/a/index.xhtml");
+	public static final Program QMM011B = new Program(WebAppId.PR, ProgramIdConsts.QMM011B, "QMM011_61",
+			"/view/qmm/011/b/index.xhtml");
+	public static final Program QMM011C = new Program(WebAppId.PR, ProgramIdConsts.QMM011C, "QMM011_62",
+			"/view/qmm/011/c/index.xhtml");
+	public static final Program QMM011D = new Program(WebAppId.PR, ProgramIdConsts.QMM011D, "QMM011_63",
+			"/view/qmm/011/d/index.xhtml");
+	public static final Program QMM011E = new Program(WebAppId.PR, ProgramIdConsts.QMM011E, "QMM011_64",
+			"/view/qmm/011/e/index.xhtml");
+	public static final Program QMM011F = new Program(WebAppId.PR, ProgramIdConsts.QMM011F, "QMM011_65",
+			"/view/qmm/011/f/index.xhtml");
+	
 	/**
 	 * CCG008A
 	 */
@@ -397,6 +413,12 @@ public class ProgramsManager {
 	 */
 	public static final Program KDL014B = new Program(WebAppId.AT, ProgramIdConsts.KDL014B, "KDL014_1",
 			"/view/kdl/014/b/index.xhtml");
+	
+	/**
+	 * KDL020A
+	 */
+	public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL020_1",
+			"/view/kdl/020/a/index.xhtml");
 	////////////////////
 	/**
 	 * KBT002A
@@ -616,10 +638,10 @@ public class ProgramsManager {
 	public static final Program KSU001R = new Program(WebAppId.AT, ProgramIdConsts.KSU001R, "",
 			"/view/ksu/001/r/index.xhtml");
 	/**
-	 * KSU001O
+	 * KSU001O1
 	 */
-	public static final Program KSU001O = new Program(WebAppId.AT, ProgramIdConsts.KSU001O, "",
-			"/view/ksu/001/o/index.xhtml");
+	public static final Program KSU001O = new Program(WebAppId.AT, ProgramIdConsts.KSU001O, "KSU001_104",
+			"/view/ksu/001/o1/index.xhtml");
 	/**
 	 * KSU001Q
 	 */
@@ -942,7 +964,13 @@ public class ProgramsManager {
 	 */
 	public static final Program KMF004J = new Program(WebAppId.AT, ProgramIdConsts.KMF004J, "KMF004_145",
 			"/view/kmf/004/j/index.xhtml");
-
+	
+	/**
+	 * KMF004X
+	 */
+	public static final Program KMF004X = new Program(WebAppId.AT, ProgramIdConsts.KMF004X, "KMF004_112",
+			"/view/kmf/004/x/index.xhtml");
+	
 	/**
 	 * KMK007A
 	 */
@@ -1208,6 +1236,26 @@ public class ProgramsManager {
 	 */
 	public static final Program KWR001D = new Program(WebAppId.AT, ProgramIdConsts.KWR001D, "KWR001_4",
 			"/view/kwr/001/d/index.xhtml");
+	
+	
+	/**
+	 * KWR006A
+	 */
+	public static final Program KWR006A = new Program(WebAppId.AT, ProgramIdConsts.KWR006A, "KWR006_1",
+			"/view/kwr/006/a/index.xhtml");
+
+	/**
+	 * KWR006C
+	 */
+	public static final Program KWR006C = new Program(WebAppId.AT, ProgramIdConsts.KWR006C, "KWR006_3",
+			"/view/kwr/006/c/index.xhtml");
+
+	/**
+	 * KWR006D
+	 */
+	public static final Program KWR006D = new Program(WebAppId.AT, ProgramIdConsts.KWR006D, "KWR006_4",
+			"/view/kwr/006/d/index.xhtml");
+
 
 	/**
 	 * CPS006A
@@ -1719,6 +1767,20 @@ public class ProgramsManager {
 	/** KAF011C */
 	public static final Program KAF011C = new Program(WebAppId.AT, ProgramIdConsts.KAF011C, "KAF011_62",
 			"/view/kaf/011/c/index.xhtml");
+	
+	public static final Program QMM012A = new Program(WebAppId.PR, ProgramIdConsts.QMM012A, "QMM012_1",
+			"/view/qmm/012/a/index.xhtml");
+	public static final Program QMM012B = new Program(WebAppId.PR, ProgramIdConsts.QMM012B, "QMM012_2",
+			"/view/qmm/012/b/index.xhtml");
+	public static final Program QMM012H = new Program(WebAppId.PR, ProgramIdConsts.QMM012H, "QMM012_8",
+			"/view/qmm/012/h/index.xhtml");
+	public static final Program QMM012I = new Program(WebAppId.PR, ProgramIdConsts.QMM012I, "QMM012_9",
+			"/view/qmm/012/i/index.xhtml");
+	public static final Program QMM012J = new Program(WebAppId.PR, ProgramIdConsts.QMM012J, "QMM012_10",
+			"/view/qmm/012/j/index.xhtml");
+	public static final Program QMM012K = new Program(WebAppId.PR, ProgramIdConsts.QMM012K, "QMM012_11",
+			"/view/qmm/012/k/index.xhtml");
+	
 	// TODO: Define new programs here.
 	/**
 	 * CMM051A
@@ -1768,6 +1830,8 @@ public class ProgramsManager {
 			"/view/kal/003/b/index.xhtml");
 	public static final Program KAL003C = new Program(WebAppId.AT, ProgramIdConsts.KAL003C, "KAL003_3",
 			"/view/kal/003/c/index.xhtml");
+	public static final Program KAL003C2 = new Program(WebAppId.AT, ProgramIdConsts.KAL003C2, "KAL003_3",
+			"/view/kal/003/c1/index.xhtml");
 	public static final Program KAL003D = new Program(WebAppId.AT, ProgramIdConsts.KAL003D, "KAL003_4",
 			"/view/kal/003/d/index.xhtml");
 	/** KAL004 */
@@ -1923,7 +1987,7 @@ public class ProgramsManager {
 	 */
 	public static final Program CMM053A = new Program(WebAppId.COM, ProgramIdConsts.CMM053A, "CMM053_1",
 			"/view/cmm/053/a/index.xhtml");
-	public static final Program CMM053B = new Program(WebAppId.COM, ProgramIdConsts.CMM053B, "CMM053_2",
+	public static final Program CMM053B = new Program(WebAppId.COM, ProgramIdConsts.CMM053B, "CMM053_1",
 			"/view/cmm/053/b/index.xhtml");
 	/**
 	 * KRD001
@@ -1935,6 +1999,9 @@ public class ProgramsManager {
 
 	public static final Program CMM001E = new Program(WebAppId.COM, ProgramIdConsts.CMM001E, "CMM001_68",
 			"/view/cmm/001/e/index.xhtml");
+	/** KMW003 */
+	public static final Program KMW003A = new Program(WebAppId.AT, ProgramIdConsts.KMW003A, "KMW003_1",
+			"/view/kmw/003/a/index.xhtml");
 	/** KMW006 */
 	public static final Program KMW006A = new Program(WebAppId.AT, ProgramIdConsts.KMW006A, "KMW006_41",
 			"/view/kmw/006/a/index.xhtml");
@@ -2123,6 +2190,20 @@ public class ProgramsManager {
 			"/view/kdp/003/b/index.xhtml");
 	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
 			"/view/kdp/003/c/index.xhtml");
+
+	/**
+	* QMM005 
+	*/
+	 public static final Program QMM005A = new Program(WebAppId.PR, ProgramIdConsts.QMM005A, "QMM005_122",
+	 "/view/qmm/005/a/index.xhtml");
+	 public static final Program QMM005B = new Program(WebAppId.PR, ProgramIdConsts.QMM005B, "QMM005_123",
+	 "/view/qmm/005/b/index.xhtml");
+	 public static final Program QMM005D = new Program(WebAppId.PR, ProgramIdConsts.QMM005D, "QMM005_125",
+	 "/view/qmm/005/d/index.xhtml");
+	 public static final Program QMM005E = new Program(WebAppId.PR, ProgramIdConsts.QMM005E, "QMM005_27",
+	 "/view/qmm/005/e/index.xhtml");
+	 public static final Program QMM005F = new Program(WebAppId.PR, ProgramIdConsts.QMM005F, "QMM005_127",
+	 "/view/qmm/005/f/index.xhtml");
 
 	/**
 	 * QMM008

@@ -4,20 +4,20 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
+		<span tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
 			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-		<button class="proceed" tabindex="3" data-bind="click: addUpdateWorkPlace, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
+		<button class="proceed" tabindex="3" data-bind="click: addUpdateWorkPlace, enable: $root.errors.isEmpty, timeClick: 1000">#{i18n.getText('KMK008_14')}</button>
 		<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
 		<button class="danger" tabindex="5" data-bind="click: removeDataWorkPlace, enable: isRemove">#{i18n.getText('KMK008_16')}</button>
 
 	</div>
 	<div class="contents-area">
-		<div class="tabpanel-1-contents-area-left" id="tabpanel-1-contents-area-left-e">
+		<div tabindex="-1" class="tabpanel-1-contents-area-left" id="tabpanel-1-contents-area-left-e">
 
-			<div id="tree-grid-screen-e" style="width: 450px;"></div>
+			<div tabindex="-1" id="tree-grid-screen-e" style="width: 450px;"></div>
 
 		</div>
-		<div class="tabpanel-1-contents-area-right" id="tabpanel-1-contents-area-right-e">
+		<div tabindex="-1" class="tabpanel-1-contents-area-right" id="tabpanel-1-contents-area-right-e">
 			<div class="lbl-title-employeer-name">
 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Workplace'])}</div>
 				<span class="label" data-bind="text: currentWorkplaceName"></span>

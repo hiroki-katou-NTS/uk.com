@@ -36,4 +36,10 @@ public class OverTimeFrameTimeDto implements ItemConst {
 	// @AttendanceItemLayout(layout = "E")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer no;
+	
+	@Override
+	public OverTimeFrameTimeDto clone() {
+		return new OverTimeFrameTimeDto(transferTime == null ? null : transferTime.clone(), 
+				overtime == null ? null : overtime.clone(), beforeApplicationTime, orderTime, no);
+	}
 }

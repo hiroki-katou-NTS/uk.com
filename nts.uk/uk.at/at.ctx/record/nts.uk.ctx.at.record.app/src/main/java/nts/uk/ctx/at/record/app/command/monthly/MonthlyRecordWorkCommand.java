@@ -10,7 +10,10 @@ import nts.uk.ctx.at.record.app.command.monthly.affliation.AffiliationInfoOfMont
 import nts.uk.ctx.at.record.app.command.monthly.annualleave.AnnLeaRemNumEachMonthCommand;
 import nts.uk.ctx.at.record.app.command.monthly.anyitem.AnyItemOfMonthlyCommand;
 import nts.uk.ctx.at.record.app.command.monthly.attendancetime.AttendanceTimeOfMonthlyCommand;
+import nts.uk.ctx.at.record.app.command.monthly.care.MonthCareRemainCommand;
+import nts.uk.ctx.at.record.app.command.monthly.childcare.MonthChildCareRemainCommand;
 import nts.uk.ctx.at.record.app.command.monthly.dayoff.DayOffRemainMonthlyCommand;
+import nts.uk.ctx.at.record.app.command.monthly.remarks.MonthlyRemarksCommand;
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommand;
 import nts.uk.ctx.at.record.app.command.monthly.specialholiday.SpecialHolidayRemainMonthlyCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
@@ -54,6 +57,18 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	@Getter
 	private final AbsenceLeaveRemainMonthlyCommand absence = new AbsenceLeaveRemainMonthlyCommand();
 
+	/** 月別実績の備考 */
+	@Getter
+	private final MonthlyRemarksCommand remarks = new MonthlyRemarksCommand();
+	
+	/** 介護休暇月別残数データ */
+	@Getter
+	private final MonthCareRemainCommand care = new MonthCareRemainCommand();
+	
+	/** 子の看護月別残数データ */
+	@Getter
+	private final MonthChildCareRemainCommand childCare = new MonthChildCareRemainCommand();
+
 	public MonthlyWorkCommonCommand getCommand(String group){
 		MonthlyWorkCommonCommand command = null;
 		switch (group) {
@@ -81,6 +96,15 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		case MONTHLY_OFF_REMAIN_CODE:
 			command = this.dayOff;
 			break;
+		case MONTHLY_REMARKS_CODE:
+			command = this.remarks;
+			break;
+		case MONTHLY_CARE_HD_REMAIN_CODE:
+			command = this.care;
+			break;
+		case MONTHLY_CHILD_CARE_HD_REMAIN_CODE:
+			command = this.childCare;
+			break;
 		default:
 			break;
 		}
@@ -95,9 +119,12 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.setRecords(fullDto.getAnyItem());
 		this.annualLeave.setRecords(fullDto.getAnnLeave());
 		this.reserveLeave.setRecords(fullDto.getRsvLeave());
-		this.specialHoliday.setRecords(fullDto.getSpecialHoliday());
+		fullDto.getSpecialHoliday().stream().forEach(d -> this.specialHoliday.setRecords(d));
 		this.dayOff.setRecords(fullDto.getDayOff());
 		this.absence.setRecords(fullDto.getAbsenceLeave());
+		fullDto.getRemarks().stream().forEach(d -> this.remarks.setRecords(d));
+		this.care.setRecords(fullDto.getCare());
+		this.childCare.setRecords(fullDto.getChildCare());
 	}
 
 	@Override
@@ -111,6 +138,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.forEmployee(employeId);
 		this.dayOff.forEmployee(employeId);
 		this.absence.forEmployee(employeId);
+		this.remarks.forEmployee(employeId);
+		this.care.forEmployee(employeId);
+		this.childCare.forEmployee(employeId);
 	}
 	
 	public MonthlyRecordWorkCommand fromItems(List<ItemValue> itemValues){
@@ -120,6 +150,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	
 	public MonthlyRecordWorkCommand withData(MonthlyRecordWorkDto data){
 		this.setRecords(data);
+		if (this.dayOff.getData().getDatePeriod() == null) this.dayOff.getData().setDatePeriod(this.attendanceTime.getData().getDatePeriod());
 		return this;
 	}
 	
@@ -142,6 +173,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.yearMonth(yearMonth);
 		this.dayOff.yearMonth(yearMonth);
 		this.absence.yearMonth(yearMonth);
+		this.remarks.yearMonth(yearMonth);
+		this.care.yearMonth(yearMonth);
+		this.childCare.yearMonth(yearMonth);
 	}
 
 	@Override
@@ -155,6 +189,9 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.closureId(closureId);
 		this.dayOff.closureId(closureId);
 		this.absence.closureId(closureId);
+		this.remarks.closureId(closureId);
+		this.care.closureId(closureId);
+		this.childCare.closureId(closureId);
 	}
 
 	@Override
@@ -168,5 +205,8 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.specialHoliday.closureDate(closureDate);
 		this.dayOff.closureDate(closureDate);
 		this.absence.closureDate(closureDate);
+		this.remarks.closureDate(closureDate);
+		this.care.closureDate(closureDate);
+		this.childCare.closureDate(closureDate);
 	}
 }

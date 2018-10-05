@@ -11,7 +11,9 @@ module nts.uk.at.view.kal003.b.service {
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
             getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
+            //update #100050 daily
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
+            getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
             getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
             // start MinhVV Edit
             getEnumTypeCheckWorkRecordMultipleMonth: "/at/function/alarm/checkcondition/kal003b/get-enum-type-check-work-record-multiple-month",
@@ -27,12 +29,13 @@ module nts.uk.at.view.kal003.b.service {
             getSpecialholidayframe : "at/share/worktype/specialholidayframe/findspecbyabolish",
             
             getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
-            getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
             getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
             getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
             
             //getname monthly
             getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+
+            
             
 
     }
@@ -83,6 +86,9 @@ module nts.uk.at.view.kal003.b.service {
     
     export function getAttendanceItemByAtr(atr) : JQueryPromise<any>  {
         return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
+    }
+    export function getMonthlyAttendanceItemByCodes(atr): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByCodes ,atr);
     }
     /**
      * Find work type by list codes.

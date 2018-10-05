@@ -12,6 +12,7 @@ module nts.uk.com.view.cmm018.l {
             }
             //Excel出力
             printExcel(){
+                if(nts.uk.ui.errors.hasError()) { return; }
                 var self = this;
                 nts.uk.ui.block.grayout();
                 service.saveExcel(self.date())

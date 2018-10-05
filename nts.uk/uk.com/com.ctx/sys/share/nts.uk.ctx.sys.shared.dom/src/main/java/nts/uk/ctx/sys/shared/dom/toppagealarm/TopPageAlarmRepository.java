@@ -27,4 +27,10 @@ public interface TopPageAlarmRepository {
 	List<TopPageAlarmDetail> findDetail(String executionLogId);
 	
 	void updateRoger(String executionLogId, int rogerFlag);
+	
+	void insertTopPage(String executionLogId, String managerId, int executionContent, int isCancelled, int existenceError);
+	
+	void insertDetail(TopPageAlarmDetail domain);
+	
+	List<TopPageAlarm> findByExecutionContent(String companyId, int executionContent);
 }

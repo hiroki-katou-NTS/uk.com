@@ -37,6 +37,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId " + "AND a.ccgstWebMenuPK.webMenuCd != :webMenuCd ";
 	private static final String SELECT_SIMPLE_WEBMENU = "SELECT a.ccgstWebMenuPK.webMenuCd, a.webMenuName FROM CcgstWebMenu a "
 			+ "WHERE a.ccgstWebMenuPK.companyId = :companyId";
+	private static final String SEL_ORDER = SELECT_SIMPLE_WEBMENU + " ORDER BY a.ccgstWebMenuPK.webMenuCd ASC ";
 
 	@Override
 	public List<WebMenu> findAll(String companyId) {
@@ -47,7 +48,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public List<WebMenuSimple> findAllSimpleValue(String companyId) {
-		return this.queryProxy().query(SELECT_SIMPLE_WEBMENU, Object[].class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SEL_ORDER, Object[].class).setParameter("companyId", companyId)
 				.getList(c -> {
 					return new WebMenuSimple((String) c[0], (String) c[1]);
 				});
@@ -85,6 +86,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	@Override
 	public void add(WebMenu webMenu) {
 		this.commandProxy().insert(toEntity(webMenu));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -102,6 +104,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	public void remove(String companyId, String webMenuCode) {
 		CcgstWebMenuPK key = new CcgstWebMenuPK(companyId, webMenuCode);
 		this.commandProxy().remove(CcgstWebMenu.class, key);
+		this.getEntityManager().flush();
 	}
 
 	@Override

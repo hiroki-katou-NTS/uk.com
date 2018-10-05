@@ -33,7 +33,7 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "CATEGORY_ID")
-	public String categoryId;
+	public int categoryId;
 
 	/**
 	 * 区切り文字

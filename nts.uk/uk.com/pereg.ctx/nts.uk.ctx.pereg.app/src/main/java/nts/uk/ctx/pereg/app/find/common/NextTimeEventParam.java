@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.common;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 public class NextTimeEventParam {
@@ -11,4 +12,11 @@ public class NextTimeEventParam {
 	
 	private String grantTable;
 	
+	private GeneralDate entryDate;
+	
+	private GeneralDate startWorkCond;
+	
+	private GeneralDate endWorkCond;
+	
+	private Integer contactTime;
 }

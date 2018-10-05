@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +106,6 @@ public class PeregCommandFacade {
 	@Inject
 	private FacadeUtils facadeUtils;
 	
-	private final static String nameStartDate = "開始日";
-	
 	private final static String nameEndate = "終了日";
 	
 	private final static String valueEndate = "9999/12/31";
@@ -190,6 +187,7 @@ public class PeregCommandFacade {
 		PersonCorrectionLogParameter target  = null;
 		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
 		String employeeId = inputContainer.getEmployeeId();
+		// get user info
 		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
 		
@@ -197,17 +195,13 @@ public class PeregCommandFacade {
 			user = userAuth.get(0);
 		}
 		
-		List<ItemsByCategory> deleteInputs = inputContainer.getInputs().stream().filter(p -> p.isDelete()).collect(Collectors.toList());
-			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
+		target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.UPDATE, null);
-		
-		if(deleteInputs.size() == 0) {
-			// ADD COMMAND
-			recordId = this.add(inputContainer, target, user);
+		// ADD COMMAND
+		recordId = this.add(inputContainer, target, user);
 
-			// UPDATE COMMAND
-			this.update(inputContainer, target, user);
-		}
+		// UPDATE COMMAND
+		this.update(inputContainer, target, user);
 
 		// DELETE COMMAND
 		this.delete(inputContainer, ctgCode);
@@ -261,13 +255,47 @@ public class PeregCommandFacade {
 		List<String> recordIds = new ArrayList<String>();
 		String personId = container.getPersonId();
 		String employeeId = container.getEmployeeId();
-		
-		// getall required items by category id
+
+		// Getall items by category id
 		Map<String, List<ItemBasicInfo>> itemByCtgId = perInfoItemDefRepositoty
-				.getItemCDByListCategoryIdWithoutAbolition(container.getInputs().stream()
+				.getItemCDByListCategoryIdWithAbolition(container.getInputs().stream()
 						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
 						AppContexts.user().contractCode());
 		
+		// Filter required item
+		Map<String, List<ItemBasicInfo>> requiredItemByCtgId = itemByCtgId.entrySet().stream()
+				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
+						.filter(info -> info.getRequiredAtr() == 1 && info.getAbolitionAtr() == 0).collect(Collectors.toList())));
+		
+		// Check is enough item to regist
+		// Item missing
+		List<ItemBasicInfo> itemExclude = new ArrayList<>();
+		
+		addInputs.forEach(ctg -> {
+			List<String> listScreenItem = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
+			// Set all default item
+			List<ItemValue>	 listDefault = facadeUtils.getListDefaultItem(ctg.getCategoryCd(), listScreenItem,
+					container.getEmployeeId(),itemByCtgId.get(ctg.getCategoryId()) );
+			ctg.getItems().addAll(listDefault);
+
+			List<String> listItemAfter = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
+
+			if (requiredItemByCtgId.containsKey(ctg.getCategoryId())) {
+
+				itemExclude.addAll(requiredItemByCtgId.get(ctg.getCategoryId()).stream()
+						.filter(i -> !listItemAfter.contains(i.getItemCode())).collect(Collectors.toList()));
+			}
+
+		});
+		
+		// If there is missing item throw error
+		if (!itemExclude.isEmpty() && isCps002) {
+			throw new BusinessException("Msg_1351",
+					String.join(",", itemExclude.stream().map(i -> i.getItemName()).collect(Collectors.toList())));
+		} else if (!itemExclude.isEmpty() && !isCps002) {
+			throw new BusinessException("Msg_1353");
+		}
+
 		if (isCps002 == false) {
 			if (addInputs.size() > 0) {
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
@@ -276,39 +304,13 @@ public class PeregCommandFacade {
 				DataCorrectionContext.transactionFinishing();
 			}
 		}
-		
+
 		addInputs.forEach(itemsByCategory -> {
 			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
-			
-			// Check is enough item to regist
-			List<String> listScreenItem = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
-			
-			// Set all default item
-			List<ItemValue> listDefault = facadeUtils.getListDefaultItem(itemsByCategory.getCategoryCd(),listScreenItem, container.getEmployeeId());
-			itemsByCategory.getItems().addAll(listDefault);
-			
-			List<String> listItemAfter = itemsByCategory.getItems().stream().map(i->i.itemCode()).collect(Collectors.toList());
-			
-			// Item missing 
-			List<ItemBasicInfo> itemExclude = Collections.emptyList();
-			
-			if (itemByCtgId.containsKey(itemsByCategory.getCategoryId())) {
 
-				itemExclude = itemByCtgId.get(itemsByCategory.getCategoryId()).stream().filter(i -> !listItemAfter.contains(i.getItemCode()))
-						.collect(Collectors.toList());
-			}
-			
-			// If there is missing item throw error
-			if (!itemExclude.isEmpty() && isCps002) {
-				throw new BusinessException("Msg_1351",
-						String.join(",", itemExclude.stream().map(i -> i.getItemName()).collect(Collectors.toList())));
-			} else if (!itemExclude.isEmpty() && !isCps002) {
-				throw new BusinessException("Msg_1353");
-			}
-			
 			// In case of optional category fix category doesn't exist
 			String recordId = null;
-			
+
 			if (handler != null && itemsByCategory.isHaveSomeSystemItems()) {
 				val result = handler.handlePeregCommand(personId, employeeId, itemsByCategory);
 				// pass new record ID that was generated by add domain command
@@ -323,7 +325,7 @@ public class PeregCommandFacade {
 			// Keep record id to focus in UI
 			recordIds.add(recordId);
 		});
-		
+
 		if (recordIds.size() == 1) {
 			return recordIds.get(0);
 		}
@@ -464,8 +466,8 @@ public class PeregCommandFacade {
 							boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
 							if(historyLst.size() == 1) {
 								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-									item.setContentAfter(isContinuousHistory ? valueEndate: item.contentAfter());
+									item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals(category21)) == true ? valueEndate: item.valueAfter());
+									item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals(category21))== true? valueEndate: item.valueAfter());
 								}
 								
 							}else {									
@@ -479,8 +481,8 @@ public class PeregCommandFacade {
 											info = InfoOperateAttr.ADD_HISTORY;
 											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
 											if (item.itemCode().equals(dateRange.getEndDateCode())) {
-												item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-												item.setContentAfter(isContinuousHistory? valueEndate: item.contentAfter());
+												item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.valueAfter());
+												item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.contentAfter());
 											}else {
 												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 													if(item.itemCode().equals(dateRange.getStartDateCode())) {
@@ -516,14 +518,6 @@ public class PeregCommandFacade {
 									}
 								}
 							}
-						
-							
-						}else {
-							if(historyLst.size() > 1 && isAdd == PersonInfoProcessAttr.ADD) {
-								info = InfoOperateAttr.ADD;
-							}else {
-								info = InfoOperateAttr.UPDATE;
-							}
 						}
 						break;
 						
@@ -533,7 +527,8 @@ public class PeregCommandFacade {
 					if (ItemValue.filterItem(item) != null) {
 						input.getItems().stream().forEach(c ->{
 							if(item.itemCode().equals(c.itemCode())) {
-								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+								ItemValue convertItem = ItemValue.setContentForCPS001(item);
+								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
 							}
 						});
 						
@@ -592,7 +587,7 @@ public class PeregCommandFacade {
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(), input.getCategoryName(), 
 						infoOperateAttr, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null,
-						code.equals(specialItemCode.get(0)) == true  || code.equals(specialItemCode.get(1)) == true? stringKey : code), Optional.ofNullable(reviseInfo));
+						code == null? null: (code.equals(specialItemCode.get(0)) == true  || code.equals(specialItemCode.get(1)) == true? stringKey : code)), Optional.ofNullable(reviseInfo));
 			}
 			return ctgTarget;
 

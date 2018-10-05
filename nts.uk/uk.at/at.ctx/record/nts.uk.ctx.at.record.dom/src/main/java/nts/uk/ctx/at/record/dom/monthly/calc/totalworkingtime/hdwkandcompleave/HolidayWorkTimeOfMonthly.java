@@ -370,7 +370,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalTransferTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addTransferTimeInHolidayWorkTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							transferTimeWork, holidayWorkFrameTime.getHolidayWorkTime().get().getCalcTime()));
+							transferTimeWork, holidayWorkFrameTime.getTransferTime().get().getCalcTime()));
 					break;
 				}
 				break;

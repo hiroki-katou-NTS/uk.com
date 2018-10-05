@@ -92,6 +92,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), self.selectUppper());
+                self.clearError();
             });
 
             //subscribe upper Limit
@@ -557,14 +558,16 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: nts.uk.resource.getText('KDL021') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
                     let atdSelected: Array<any> = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                    $.when( service.findAllDailyAttendanceItem()).done(function( dataRes: Array<DailyAttendanceItemDto>) {
-                        let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
-                        if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem)) {
-                            self.attendanceModel.update(null, null);                        
-                        } else {
-                            self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);    
-                        }  
-                    });
+                    if (!_.isNil(atdSelected)) {
+                        $.when( service.findAllDailyAttendanceItem()).done(function( dataRes: Array<DailyAttendanceItemDto>) {
+                            let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
+                            if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem)) {
+                                self.attendanceModel.update(null, null);                        
+                            } else {
+                                self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);    
+                            }  
+                        });
+                    }
                 });
             });
         }

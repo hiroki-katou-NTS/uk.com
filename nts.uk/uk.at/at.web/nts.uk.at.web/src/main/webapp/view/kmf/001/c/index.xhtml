@@ -207,7 +207,7 @@
 						<!-- END 年次有給休暇の扱い -->
 
 						<!-- BEGIN 年休取得の設定 -->
-						<tr>
+						<tr style="">
 							<td colspan="4"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_39')}</div>
 								<div class="hr_width">
 									<hr />
@@ -235,7 +235,7 @@
 						<!-- END 年休取得の設定 -->
 
 						<!-- BEGIN 表示設定 -->
-						<tr>
+						<!-- <tr>
 							<td colspan="4"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_125')}</div>
 								<div class="hr_width">
 									<hr />
@@ -266,7 +266,7 @@
 
 							<td><div></div></td>
 							<td><div></div></td>
-						</tr>
+						</tr> -->
 						<!-- END 表示設定 -->
 
 						<!-- BEGIN 時間年休 -->
@@ -321,7 +321,7 @@
 							<td><div></div></td>
 							<td><div></div></td>
 						</tr>
-						<tr>
+						<tr data-bind="if: selectedAnnualManage()">
 							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
 							<td><div tabindex="20" id="combo-box"
 									data-bind="ntsComboBox: {

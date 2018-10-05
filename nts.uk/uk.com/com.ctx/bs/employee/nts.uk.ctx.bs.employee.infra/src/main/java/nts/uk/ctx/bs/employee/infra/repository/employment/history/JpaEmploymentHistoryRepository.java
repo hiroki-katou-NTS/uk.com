@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
@@ -73,12 +77,26 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-		Optional<BsymtEmploymentHist> optionData = this.queryProxy()
-				.query(GET_BY_EMPID_AND_STD, BsymtEmploymentHist.class).setParameter("sid", employeeId)
-				.setParameter("stdDate", standardDate).getSingle();
-		if (optionData.isPresent()) {
-			BsymtEmploymentHist entity = optionData.get();
-			return Optional.of(new DateHistoryItem(entity.hisId, new DatePeriod(entity.strDate, entity.endDate)));
+		try {
+			val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?");
+			statement.setString(1, employeeId);
+			statement.setDate(2, Date.valueOf(standardDate.localDate()));
+			statement.setDate(3, Date.valueOf(standardDate.localDate()));
+			Optional<BsymtEmploymentHist> optionData = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				val entity = new BsymtEmploymentHist();
+				entity.companyId = rec.getString("CID");
+				entity.endDate = rec.getGeneralDate("END_DATE");
+				entity.hisId = rec.getString("HIST_ID");
+				entity.sid = employeeId;
+				entity.strDate = rec.getGeneralDate("START_DATE");
+				return entity;
+			});
+			if (optionData.isPresent()) {
+				BsymtEmploymentHist entity = optionData.get();
+				return Optional.of(new DateHistoryItem(entity.hisId, new DatePeriod(entity.strDate, entity.endDate)));
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 		return Optional.empty();
 	}

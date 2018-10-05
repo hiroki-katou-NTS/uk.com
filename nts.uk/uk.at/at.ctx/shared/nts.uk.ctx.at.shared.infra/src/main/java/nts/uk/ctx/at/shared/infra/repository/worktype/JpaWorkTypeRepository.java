@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypePK;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTypeOrder;
 
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
@@ -52,8 +55,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
-	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
-			+ " AND a.closeAtr = :closeAtr" + " ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
+	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR = "SELECT a FROM KshmtWorkTypeSet a LEFT JOIN KshmtWorkType c"
+			+ " ON a.kshmtWorkTypeSetPK.companyId = c.kshmtWorkTypePK.companyId AND a.kshmtWorkTypeSetPK.workTypeCode = c.kshmtWorkTypePK.workTypeCode"
+			+ " WHERE a.kshmtWorkTypeSetPK.companyId = :companyId AND a.closeAtr = :closeAtr AND c.deprecateAtr = :deprecateAtr" 
+			+ " ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
 
 	private static final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
@@ -235,17 +240,20 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
+		return toDomain(entity, entity.kshmtWorkTypeOrder, entity.worktypeSetList);
+	}
+	
+	private static WorkType toDomain(KshmtWorkType entity, KshmtWorkTypeOrder order, List<KshmtWorkTypeSet> set) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
 				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
 				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
 				entity.deprecateAtr, entity.calculatorMethod);
-		if (entity.kshmtWorkTypeOrder != null) {
-			domain.setDisplayOrder(entity.kshmtWorkTypeOrder.dispOrder);
+		if (order != null) {
+			domain.setDisplayOrder(order.dispOrder);
 		}
 
-		if (entity.worktypeSetList != null) {
-			domain.setWorkTypeSet(
-					entity.worktypeSetList.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
+		if (set != null) {
+			domain.setWorkTypeSet(set.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
 		}
 		return domain;
 	}
@@ -306,6 +314,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	@Override
 	public List<WorkTypeInfor> getPossibleWorkTypeAndOrder(String companyId, List<String> lstPossible) {
+		if(CollectionUtil.isEmpty(lstPossible)){
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(SELECT_WORKTYPE_AND_ORDER, WorkTypeInfor.class).setParameter("companyId", companyId)
 							.setParameter("lstPossible", lstPossible).getList();
 	}
@@ -315,6 +326,31 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		return this.queryProxy().query(SELECT_WORKTYPE_ALL_ORDER, WorkTypeInfor.class).setParameter("companyId", companyId).getList();
 	}
 
+	@Override
+	public List<WorkType> getPossibleWorkTypeV2(String companyId, List<String> lstPossible) {
+		StringBuilder builder = new StringBuilder("SELECT c, o, s FROM KshmtWorkType c ");
+		builder.append(" LEFT JOIN c.kshmtWorkTypeOrder o");
+		builder.append(" LEFT JOIN c.worktypeSetList s");
+//		builder.append(" LEFT JOIN workTypeLanguage l");
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible");
+		List<Object[]> datas = new ArrayList<Object[]>();
+		CollectionUtil.split(lstPossible, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subPossibleList -> {
+			datas.addAll(
+					this.queryProxy().query(builder.toString(), Object[].class).setParameter("companyId", companyId)
+							.setParameter("lstPossible", subPossibleList).getList());
+		});
+		return datas.stream().collect(Collectors.groupingBy(d -> (KshmtWorkType) d[0], Collectors.toList()))
+				.entrySet().stream().map(d -> {
+					KshmtWorkType tw = d.getKey();
+					KshmtWorkTypeOrder order = d.getValue().stream().filter(o -> o[1] != null)
+							.findFirst().map(o -> (KshmtWorkTypeOrder) o[1]) .orElse(null);
+					List<KshmtWorkTypeSet> set = d.getValue().stream().filter(o -> o[2] != null)
+							.distinct().map(o -> (KshmtWorkTypeSet) o[2]).collect(Collectors.toList());
+			return toDomain(tw, order, set);
+		}).collect(Collectors.toList());
+	}
+	
 	@Override
 	public List<WorkType> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
@@ -341,9 +377,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	@Override
-	public List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr) {
-		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR, KshmtWorkTypeSet.class)
-				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr)
+	public List<WorkTypeSet> findWorkTypeSetCloseAtrDeprecateAtr(String companyId, int closeAtr, int deprecateAtr) {
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET_CLOSE_ATR_DEPRECATE_ATR, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId).setParameter("closeAtr", closeAtr).setParameter("deprecateAtr", deprecateAtr)
 				.getList(x -> toDomainWorkTypeSet(x));
 	}
 

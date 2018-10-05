@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 /**
  * @author phongtq
  * 0時跨ぎ計算設定
@@ -43,7 +44,7 @@ public class ZeroTime extends AggregateRoot {
 	private int nonLegalPublicHd1;
 
 	
-	/*法定外祝日*/
+	/*法定外休日*/
 	/** 平日 */
 	private int weekday2;
 
@@ -54,14 +55,14 @@ public class ZeroTime extends AggregateRoot {
 	private int nonLegalHd2;
 
 	
-	/*法定外休日*/
+	/*法定外祝日*/
 	/** 平日 */
 	private int weekday3;
 
 	/** 法定内休日 */
 	private int legalHd3;
 
-	/** 法定外祝日 */
+	/** 法定外休日 */
 	private int nonLegalPublicHd3;
 	
 	
@@ -79,5 +80,163 @@ public class ZeroTime extends AggregateRoot {
 		return new ZeroTime(companyId, calcFromZeroTime, legalHd, nonLegalHd, nonLegalPublicHd,
 				weekday1, nonLegalHd1, nonLegalPublicHd1, weekday2, legalHd2,
 				nonLegalHd2, weekday3, legalHd3, nonLegalPublicHd3, weekdayHoliday, overdayHolidayAtten, overdayCalcHoliday);
+	}
+	
+	public boolean isCalcOneOverYesterDayToDay(WorkType beforeWorkType,WorkType nowWorkType) {
+		//休日
+		if(nowWorkType.getDailyWork().isHolidayOrPause() || nowWorkType.getDailyWork().isHolidayWork()) {
+			//休日→休日
+			if(beforeWorkType.getDailyWork().isHolidayOrPause() || beforeWorkType.getDailyWork().isHolidayWork()) {
+				switch(beforeWorkType.afterDay()) {
+				case STATUTORY_HOLIDAYS:
+					switch(nowWorkType.beforeDay()) {
+					case STATUTORY_HOLIDAYS:
+						return false;
+					case NON_STATUTORY_HOLIDAYS:
+						return nonLegalHd1 == 1 ? true : false;
+					case PUBLIC_HOLIDAY:
+						return nonLegalPublicHd1 == 1 ? true : false; 
+					default:
+						throw new RuntimeException("unknown HolidayAtr otherDay"+nowWorkType.beforeDay());
+					}
+				case NON_STATUTORY_HOLIDAYS:
+					switch(nowWorkType.beforeDay()) {
+					case STATUTORY_HOLIDAYS:
+						return legalHd2 == 1 ? true : false;
+					case NON_STATUTORY_HOLIDAYS:
+						return false;
+					case PUBLIC_HOLIDAY:
+						return nonLegalHd2 == 1 ? true : false;
+					default:
+						throw new RuntimeException("unknown HolidayAtr otherDay"+nowWorkType.beforeDay());
+					}
+				case PUBLIC_HOLIDAY:
+					switch(nowWorkType.beforeDay()) {
+					case STATUTORY_HOLIDAYS:
+						return legalHd3 == 1 ? true : false;
+					case NON_STATUTORY_HOLIDAYS:
+						return nonLegalPublicHd3 == 1 ? true : false;
+					case PUBLIC_HOLIDAY:
+						return false;
+					default:
+						throw new RuntimeException("unknown HolidayAtr otherDay"+nowWorkType.beforeDay());
+					}
+				default:
+					throw new RuntimeException("unknown HolidayAtr nowDay:"+nowWorkType.afterDay());
+				}
+			}
+			//平日→休日
+			else {
+				switch(nowWorkType.beforeDay()) {
+				case STATUTORY_HOLIDAYS:
+					return legalHd == 1 ? true : false ;
+				case NON_STATUTORY_HOLIDAYS:
+					return nonLegalHd == 1 ? true : false ;
+				case PUBLIC_HOLIDAY:
+					return nonLegalPublicHd == 1 ? true : false ;
+				default:
+					throw new RuntimeException("unknown HolidayAtr otherDay"+beforeWorkType.beforeDay());
+				}
+			}
+		}
+		//平日
+		else {
+			//休日 →　平日
+			if(beforeWorkType.getDailyWork().isHolidayOrPause()) {
+				switch(beforeWorkType.afterDay()) {
+				case STATUTORY_HOLIDAYS:
+					return weekday1 == 1 ? true : false ;
+				case NON_STATUTORY_HOLIDAYS:
+					return weekday3 == 1 ? true : false ;
+				case PUBLIC_HOLIDAY:
+					return weekday2 == 1 ? true : false ;
+				default:
+					throw new RuntimeException("unknown HolidayAtr otherDay"+beforeWorkType.beforeDay());
+				}
+			}
+			//平日→平日
+			else {
+				return false;
+			}
+		}
+	}
+	
+	public boolean isCalcOneOverToDayTomorrow(WorkType otherWorkType,WorkType nowWorkType) {
+		//休日
+		if(nowWorkType.getDailyWork().isHolidayOrPause() || nowWorkType.getDailyWork().isHolidayWork()) {
+			//休日→休日
+			if(otherWorkType.getDailyWork().isHolidayOrPause() || otherWorkType.getDailyWork().isHolidayWork()) {
+				switch(nowWorkType.afterDay()) {
+				case STATUTORY_HOLIDAYS:
+					switch(otherWorkType.beforeDay()) {
+					case STATUTORY_HOLIDAYS:
+						return false;
+					case NON_STATUTORY_HOLIDAYS:
+						return nonLegalHd1 == 1 ? true : false;
+					case PUBLIC_HOLIDAY:
+						return nonLegalPublicHd1 == 1 ? true : false; 
+					default:
+						throw new RuntimeException("unknown HolidayAtr otherDay"+otherWorkType.beforeDay());
+					}
+				case NON_STATUTORY_HOLIDAYS:
+					switch(otherWorkType.beforeDay()) {
+					case STATUTORY_HOLIDAYS:
+						return legalHd2 == 1 ? true : false;
+					case NON_STATUTORY_HOLIDAYS:
+						return false;
+					case PUBLIC_HOLIDAY:
+						return nonLegalHd2 == 1 ? true : false;
+					default:
+						throw new RuntimeException("unknown HolidayAtr otherDay"+otherWorkType.beforeDay());
+					}
+				case PUBLIC_HOLIDAY:
+					switch(otherWorkType.beforeDay()) {
+					case STATUTORY_HOLIDAYS:
+						return legalHd3 == 1 ? true : false;
+					case NON_STATUTORY_HOLIDAYS:
+						return nonLegalPublicHd3 == 1 ? true : false;
+					case PUBLIC_HOLIDAY:
+						return false;
+					default:
+						throw new RuntimeException("unknown HolidayAtr otherDay"+otherWorkType.beforeDay());
+					}
+				default:
+					throw new RuntimeException("unknown HolidayAtr nowDay:"+nowWorkType.afterDay());
+				}
+			}
+			//休日→平日
+			else {
+				switch(nowWorkType.afterDay()) {
+				case STATUTORY_HOLIDAYS:
+					return weekday1 == 1 ? true : false;
+				case NON_STATUTORY_HOLIDAYS:
+					return weekday3 == 1 ? true : false;
+				case PUBLIC_HOLIDAY:
+					return weekday2 == 1 ? true : false;
+				default:
+					throw new RuntimeException("unknown HolidayAtr:"+otherWorkType.beforeDay());				
+				}
+			}
+		}
+		//平日
+		else {
+			//平日→休日
+			if(otherWorkType.getDailyWork().isHolidayOrPause() || otherWorkType.getDailyWork().isHolidayWork()) {
+				switch(otherWorkType.beforeDay()) {
+				case STATUTORY_HOLIDAYS:
+					return legalHd == 1 ? true : false;
+				case NON_STATUTORY_HOLIDAYS:
+					return nonLegalHd == 1 ? true : false;
+				case PUBLIC_HOLIDAY:
+					return nonLegalPublicHd == 1 ? true : false;
+				default:
+					throw new RuntimeException("unknown HolidayAtr:"+otherWorkType.beforeDay());
+				}
+			}
+			//平日→平日
+			else {
+				return false;
+			}
+		}
 	}
 }

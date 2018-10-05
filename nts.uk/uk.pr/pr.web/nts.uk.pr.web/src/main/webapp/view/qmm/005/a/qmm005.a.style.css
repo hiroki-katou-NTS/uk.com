@@ -1,0 +1,33 @@
+.table-left {
+	float: left;
+}
+
+#A2_8_label {
+	width: 100px;
+	float: left;
+	margin-left: 10px;
+}
+
+#A2_8 {
+	float: left
+}
+
+#A3_1 td {
+	height: 39px;
+}
+
+.fixed-table tr th {
+	text-align: center;
+}
+
+td {
+	height: 39px;
+}
+
+.nts-fixed-body-container {
+	
+}
+ 
+.limited-label-view {
+	max-width: 75%!important;
+}

@@ -38,7 +38,8 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 		//付与日数情報を取得する
 		GrantDaysInforByDates grantDaysInfor = this.getGrantDays(param, speHoliday);
 		//Output「付与日数一覧」の件数をチェックする
-		if(grantDaysInfor.getLstGrantDaysInfor().isEmpty()) {
+		if(grantDaysInfor == null 
+				|| grantDaysInfor.getLstGrantDaysInfor().isEmpty()) {
 			outputData.setStatus(InforStatus.NOTGRANT);
 			return outputData;
 		}
@@ -63,11 +64,11 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			//パラメータ「入社年月日」をパラメータ「付与基準日」にセットする
 			baseDate = param.getInputDate();
 		} else if (grantDateInfor == GrantDate.GRANT_BASE_HOLIDAY) {
-			//パラメータ「特別休暇付与基準日」をパラメータ「付与基準日」にセットする
-			baseDate = param.getSpeGrantDate();
-		} else {
 			//パラメータ「年休付与基準日」をパラメータ「付与基準日」にセットする
 			baseDate = param.getAnnGrantDate();
+		} else {
+			//パラメータ「特別休暇付与基準日」をパラメータ「付与基準日」にセットする
+			baseDate = param.getSpeGrantDate();
 		}
 		//取得している「特別休暇．付与情報．付与するタイミングの種類」をチェックする
 		TypeTime typeTime = speHoliday.getGrantRegular().getTypeTime();
@@ -98,17 +99,15 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
 		GeneralDate startLoopDate = param.getGrantDate();
 		GrantDaysInforByDates outputData = new GrantDaysInforByDates(startLoopDate, new ArrayList<>());
+		int inteval = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
+		if(inteval == 0) {
+			return outputData;
+		}
 		//パラメータ「比較年月日」に取得している「特別休暇．付与情報．固定付与日．周期」を加算する
 		List<GrantDaysInfor> lstGrantDays = new ArrayList<>();
-		for(GeneralDate loopData = param.getGrantDate(); loopData.beforeOrEquals(param.getDatePeriod().end());) {
-			//パラメータ「比較年月日」とパラメータ「期間」を比較する
-			outputData.setGrantDate(loopData);
-			if(loopData.before(param.getDatePeriod().start())) {
-				loopData = loopData.addYears(speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v());
-				continue;
-			}			
-			if(param.getDatePeriod().start().beforeOrEquals(loopData)
-					&& loopData.beforeOrEquals(param.getDatePeriod().end())) {
+		for(GeneralDate loopDate = startLoopDate; loopDate.beforeOrEquals(param.getDatePeriod().end());) {
+			if(param.getDatePeriod().start().beforeOrEquals(loopDate)
+					&& loopDate.beforeOrEquals(param.getDatePeriod().end())) {
 				double grantDays = 0;
 				if(param.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED) {
 					grantDays = param.getFixedGrantDays().isPresent() ? param.getFixedGrantDays().get() : 0;
@@ -116,14 +115,15 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 					grantDays = speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
 				}
 				//パラメータ「付与日数一覧」を追加する
-				GrantDaysInfor infor = new GrantDaysInfor(loopData, Optional.empty(), grantDays);
+				GrantDaysInfor infor = new GrantDaysInfor(loopDate, Optional.empty(), grantDays);
 				lstGrantDays.add(infor);
 				if(param.isSignFlg()) {
 					break;
-				}
-				loopData = loopData.addYears(speHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v());
+				}				
 			}
+			loopDate = loopDate.addYears(inteval);
 		}
+		
 		if(!lstGrantDays.isEmpty()) {
 			lstGrantDays = lstGrantDays.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
@@ -133,13 +133,15 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 	}
 	@Override
 	public GrantDaysInforByDates getGrantDaysOfTable(RequestGrantData param, SpecialHoliday speHoliday) {
-		GrantDaysInforByDates outputData = new GrantDaysInforByDates(GeneralDate.today(), new ArrayList<>());
+		GrantDaysInforByDates outputData = new GrantDaysInforByDates(param.getGrantDate(), new ArrayList<>());
 		//ドメインモデル「特別休暇付与テーブル」を取得する
 		List<ElapseYear> elapseYear = new ArrayList<>();
 		//パラメータ「特別休暇適用設定」≠所定の条件を適用する　の場合
 		//パラメータ「付与テーブルコード」		
-		if(param.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED
-				&& param.getGrantTblCd().isPresent()) {
+		if(param.getSpecialSetting() != SpecialLeaveAppSetting.PRESCRIBED) {
+			if(!param.getGrantTblCd().isPresent()) {
+				return outputData;
+			}
 			elapseYear = grantTblRepos.findElapseByGrantDateCd(param.getCid(),
 					speHoliday.getSpecialHolidayCode().v(),
 					param.getGrantTblCd().get());
@@ -150,18 +152,18 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 			Optional<GrantDateTbl> optGranDateTbl = grantTblRepos.findByCodeAndIsSpecified(param.getCid(),
 					speHoliday.getSpecialHolidayCode().v());
 			if(optGranDateTbl.isPresent()) {
-				elapseYear = optGranDateTbl.get().getElapseYear();
+				elapseYear = grantTblRepos.findElapseByGrantDateCd(param.getCid(), speHoliday.getSpecialHolidayCode().v(), optGranDateTbl.get().getGrantDateCode().v());
 			}
 		}
 		if(elapseYear.isEmpty()) {
 			return outputData;
 		}
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
-		GeneralDate loopDate = param.getGrantDate();
+		GeneralDate baseDate = param.getGrantDate();
 		List<GrantDaysInfor> lstGrantDays = new ArrayList<>();
 		for (ElapseYear yearData : elapseYear) {
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
-			loopDate = loopDate.addYears(yearData.getYears().v());
+			GeneralDate loopDate = baseDate.addYears(yearData.getYears().v());
 			loopDate = loopDate.addMonths(yearData.getMonths().v());
 			outputData.setGrantDate(loopDate);
 			//パラメータ「比較年月日」とパラメータ「期間」を比較する

@@ -56,6 +56,6 @@ public class TimeMonthWithCalculationDto implements ItemConst {
 	}
 
 	private AttendanceTimeMonthWithMinus toTimeWithMinus(Integer time) {
-		return new AttendanceTimeMonthWithMinus(time);
+		return time == null ? new AttendanceTimeMonthWithMinus(0) : new AttendanceTimeMonthWithMinus(time);
 	}
 }

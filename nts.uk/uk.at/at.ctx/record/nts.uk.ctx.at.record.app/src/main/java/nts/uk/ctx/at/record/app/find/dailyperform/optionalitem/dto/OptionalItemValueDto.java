@@ -46,6 +46,13 @@ public class OptionalItemValueDto implements ItemConst {
 		this.itemAttr = itemAttr;
 	}
 
+	@Override
+	public OptionalItemValueDto clone() {
+		OptionalItemValueDto dto = new OptionalItemValueDto(value, no, itemAttr);
+		dto.autoInit = autoInit;
+		return dto;
+	}
+	
 	public static OptionalItemValueDto from(AnyItemValue c) {
 		return from(c, null);
 	}

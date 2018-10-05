@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 
 public interface BusinessTypeEmpOfHistoryRepository {
 
@@ -57,5 +59,6 @@ public interface BusinessTypeEmpOfHistoryRepository {
 	 * @return BusinessTypeOfEmployeeHistory
 	 */
 	Optional<BusinessTypeOfEmployeeHistory> findByHistoryId(String historyId);
+	
 
 }

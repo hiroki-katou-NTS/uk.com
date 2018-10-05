@@ -18,8 +18,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BundledBusinessException;
-import nts.arc.error.I18NErrorMessage;
-import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.data.TaskDataSetter;
@@ -45,9 +43,7 @@ import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentServic
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -68,6 +64,7 @@ import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -235,7 +232,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
 					request.getEndDate());
-			ClosureDate closureDate = new ClosureDate(0, false);
+			ClosureDate closureDate = new ClosureDate(1, false);
 			if (optionalClosure.isPresent()) {
 				Closure closure = optionalClosure.get();
 
@@ -846,14 +843,26 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 				} else {
 					// If closure not found
-					invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+					String info = "\n " + employee.employeeCode + " " + employee.employeeName;
+					if (info.length() + invidual.length() > 164) {
+						if (!invidual.contains("\n..."))
+							invidual = invidual.concat("\n...");
+					} else {
+						invidual = invidual.concat(info);
+					}
 
 				}
 
 			} else {
 
 				// If closure is wrong
-				invidual = invidual.concat("\n " + employee.employeeCode + " " + employee.employeeName);
+				String info = "\n " + employee.employeeCode + " " + employee.employeeName;
+				if (info.length() + invidual.length() > 164) {
+					if (!invidual.contains("\n..."))
+						invidual = invidual.concat("\n...");
+				} else {
+					invidual = invidual.concat(info);
+				}
 
 			}
 
@@ -1063,14 +1072,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			// calculate add
 			if (!addValueCalUpper.isEmpty()) {
 				for (ItemValue i : addValueCalUpper) {
-					if (i.getValue() != null)
+					if (i.getValue() != null && !i.getValue().isEmpty())
 						sum = Double.parseDouble(sum.toString()) + Double.parseDouble(i.value().toString());
 				}
 			}
 			// calculate sub
 			if (!subValueCalUpper.isEmpty()) {
 				for (ItemValue i : subValueCalUpper) {
-					if (i.getValue() != null)
+					if (i.getValue() != null && !i.getValue().isEmpty())
 						sum = Double.parseDouble(sum.toString()) - Double.parseDouble(i.value().toString());
 				}
 			}

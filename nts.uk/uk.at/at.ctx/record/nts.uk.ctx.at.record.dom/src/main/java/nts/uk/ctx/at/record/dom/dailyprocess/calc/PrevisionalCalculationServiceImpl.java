@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -104,7 +105,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			integraionList.add(provisionalDailyRecord);
 		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(integraionList, companySetting);
+		return calculateDailyRecordServiceCenter.calculateForSchedule(new CalculateOption(true, true), integraionList, companySetting);
 	}
 
 	/**
@@ -191,7 +192,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
 				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
 				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
-				Collections.emptyList(), Optional.empty()));
+				Collections.emptyList(), Optional.empty(), new ArrayList<>()));
 	}
 
 	private IntegrationOfDaily replaceDeductionTimeSheet(IntegrationOfDaily provisionalRecord,
@@ -202,7 +203,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				.setOutingTime(Optional.of(new OutingTimeOfDailyPerformance(employeeId, ymd, outingTimeSheets)));
 		List<BreakTimeOfDailyPerformance> addElement = new ArrayList<>();
 		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
-		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_WORK_TIME, breakTimeSheets, ymd));
+		addElement.add(new BreakTimeOfDailyPerformance(employeeId, BreakType.REFER_SCHEDULE, breakTimeSheets, ymd));
 		provisionalRecord.setBreakTime(addElement);
 		provisionalRecord
 				.setShortTime(Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortWorkingTimeSheets, ymd)));

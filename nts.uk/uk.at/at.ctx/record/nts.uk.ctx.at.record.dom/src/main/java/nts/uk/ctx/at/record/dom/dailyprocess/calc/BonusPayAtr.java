@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum BonusPayAtr {
-	BonusPay,
-	SpecifiedBonusPay;
+	BonusPay,          //加給
+	SpecifiedBonusPay; //特定日加給
 	
 	/**
 	 * 加給であるか判定する

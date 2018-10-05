@@ -23,4 +23,19 @@ public enum ExecutionType {
 		this.nameId = nameId;
 	}
 
+	/**
+	 * 通常実行であるか判定する
+	 * @return　通常実行である
+	 */
+	public boolean isNormalExcecution() {
+		return this.equals(NORMAL_EXECUTION);
+	}
+	
+	/**
+	 * 再実行である
+	 * @return　再実行である
+	 */
+	public boolean isRerun() {
+		return this.equals(RERUN);
+	}
 }

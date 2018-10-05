@@ -1,18 +1,21 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.diagnose.stopwatch.Stopwatches;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CheckExcessAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerPersonDailySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.DivTimeSysFixedCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -41,8 +44,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private DailyRecordCreateErrorAlermService dailyRecordCreateErrorAlermService;
 	
 	@Override
-	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerCompanySet master) {
-		Stopwatches.start("ERALALL");
+	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master) {
 		String companyID = AppContexts.user().companyId();
 		List<EmployeeDailyPerError> addItemList = integrationOfDaily.getEmployeeError() == null? integrationOfDaily.getEmployeeError() :new ArrayList<>();
 		List<ErrorAlarmWorkRecord> divergenceError = new ArrayList<>();
@@ -73,9 +75,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		
 		//乖離系のエラーはここでまとめてチェック(レスポンス対応のため)
 		addItemList.addAll(divergenceErrorCheck(integrationOfDaily, master, divergenceError));
-		
+		addItemList = addItemList.stream().filter(tc -> tc != null).collect(Collectors.toList());
 		integrationOfDaily.setEmployeeError(addItemList);
-		Stopwatches.stop("ERALALL");
 		return integrationOfDaily;
 	}
 	
@@ -223,7 +224,14 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			//休日打刻
 			case HOLIDAY_STAMP:
 				//アルゴリズムが存在しない(2018.07.02)
-				return Collections.emptyList();
+				val result = dailyRecordCreateErrorAlermService.checkHolidayStamp(integrationOfDaily);
+				if(!result.isPresent()) {
+					return Collections.emptyList();
+				}
+				else {
+					return Arrays.asList(result.get());
+				}
+				
 			//二重打刻
 			case DOUBLE_STAMP:
 				return dailyRecordCreateErrorAlermService.doubleStampAlgorithm(integrationOfDaily);

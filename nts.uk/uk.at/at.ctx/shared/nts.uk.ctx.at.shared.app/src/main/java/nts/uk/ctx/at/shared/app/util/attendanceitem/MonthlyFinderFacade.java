@@ -7,8 +7,8 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public abstract class MonthlyFinderFacade extends FinderFacade {
@@ -31,4 +31,9 @@ public abstract class MonthlyFinderFacade extends FinderFacade {
 	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth);
 
 	public abstract <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth);
+	
+	public <T extends ConvertibleAttendanceItem> List<T> finds(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate) {
+		return new ArrayList<>();
+	}
 }

@@ -249,6 +249,7 @@ public class DeductionTimeSheet {
 								timeSheet.midNightTimeSheet, timeSheet.getWorkingBreakAtr(),timeSheet.getGoOutReason(), timeSheet.getBreakAtr(),
 								timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
 					});
+				
 				}
 				break;
 			default:
@@ -269,7 +270,7 @@ public class DeductionTimeSheet {
 
 		/* stream.collect.summingInt() */
 		for (TimeSheetOfDeductionItem dedItem : duplicatitedworkTime) {
-			sumTime = sumTime.addMinutes(dedItem.calcTotalTime().valueAsMinutes());
+			sumTime = sumTime.addMinutes(dedItem.calcTotalTime(dedAtr).valueAsMinutes());
 		}
 		return sumTime;
 	}
@@ -280,10 +281,10 @@ public class DeductionTimeSheet {
 	 * @param deductionTimeSheetList
 	 * @return
 	 */
-	public AttendanceTime calcDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionItemTimeSheetList) {
+	public AttendanceTime calcDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionItemTimeSheetList,DeductionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
 		for (TimeSheetOfDeductionItem deductionItemTimeSheet : deductionItemTimeSheetList) {
-			totalTime.addMinutes(deductionItemTimeSheet.calcTotalTime().valueAsMinutes());
+			totalTime.addMinutes(deductionItemTimeSheet.calcTotalTime(atr).valueAsMinutes());
 		}
 		return totalTime;
 	}
@@ -308,11 +309,11 @@ public class DeductionTimeSheet {
 		switch (dedAtr) {
 		case Appropriate:
 			dedTotalTime = getDeductionTotalTime(forDeductionTimeZoneList.stream()
-					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()),dedAtr);
 			break;
 		case Deduction:
 			dedTotalTime = getDeductionTotalTime(forRecordTimeZoneList.stream()
-					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()),dedAtr);
 			break;
 		default:
 			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
@@ -332,30 +333,30 @@ public class DeductionTimeSheet {
 		case Appropriate:
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList())));
+																		   .filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList()),dedAtr));
 			break;
 		case Deduction:
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList()),dedAtr));
 			dedTotalTimeList.add(
 					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList())));
+							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList()),dedAtr));
 			break;
 		default:
 			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
@@ -369,13 +370,13 @@ public class DeductionTimeSheet {
 	 * @param deductionTimeSheetList
 	 * @return
 	 */
-	public DeductionTotalTime getDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionTimeSheetList) {
+	public DeductionTotalTime getDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionTimeSheetList,DeductionAtr atr) {
 		AttendanceTime statutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
 				// .filter(tc -> tc) 一時的に
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList()),atr);
 		AttendanceTime excessOfStatutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
 				// .filter(tc -> tc.getWithinStatutoryAtr().isExcessOfStatutory()) 一時的に
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList()),atr);
 		return DeductionTotalTime.of(
 				TimeWithCalculation
 						.sameTime(statutoryTotalTime.addMinutes(excessOfStatutoryTotalTime.valueAsMinutes())),
@@ -732,12 +733,13 @@ public class DeductionTimeSheet {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for(ShortWorkingTimeSheet sts:shortTimeSheet) {
 			if(sts.getStartTime() == null || sts.getEndTime() == null) continue;
-			//出退勤と重複している部分削除
-			val notDupRange = attendanceLeaveWork.getNotDuplicateSpan(new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()));
+
 			if(isCalcShortTime) {
-				if(notDupRange.isPresent()) {
-					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(notDupRange.get().getStart(), notDupRange.get().getEnd(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)), 
-																							  notDupRange.get(),
+				//出退勤と重複している部分削除
+				val notDupSpanList = attendanceLeaveWork.getNotDuplicateSpan(new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()));
+				for(TimeSpanForCalc notDupRange : notDupSpanList)
+					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(notDupRange.getStart(), notDupRange.getEnd(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)), 
+																							  notDupRange,
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
 																							  new ArrayList<>(),
@@ -750,7 +752,6 @@ public class DeductionTimeSheet {
 																							  DeductionClassification.CHILD_CARE,
 																							  Optional.of(getChildCareAtr(sts.getChildCareAttr()))
 																							  ));
-				}
 			}
 			else {
 				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(sts.getStartTime(), sts.getEndTime(), new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)), 

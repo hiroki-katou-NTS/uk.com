@@ -11,11 +11,11 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.uk.ctx.sys.assist.app.command.mastercopy.ErrorContentDto;
 import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataCommand;
 import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataCommandHanlder;
 import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataExecutionRespone;
 import nts.uk.ctx.sys.assist.app.export.mastercopy.error.MasterCopyExportErrorService;
-import nts.uk.ctx.sys.assist.app.command.mastercopy.ErrorContentDto;
 
 /**
  * The Class MasterCopyDataWs.
@@ -31,7 +31,7 @@ public class MasterCopyDataWs extends WebService{
     /** The export service. */
     @Inject
     private MasterCopyExportErrorService exportService;
-	
+    
 	/**
 	 * Execute master copy data.
 	 *
@@ -44,17 +44,6 @@ public class MasterCopyDataWs extends WebService{
 		MasterCopyDataExecutionRespone response = new MasterCopyDataExecutionRespone();
 		response.setTaskInfo(taskInfor);
 		return response;
-	}
-	
-	/**
-	 * Interrupt.
-	 *
-	 * @param interrupt the execution
-	 */
-	@POST
-	@Path("interrupt")
-	public void interrupt() {
-		this.asyncHandler.interrupt();
 	}
 	
 	@POST

@@ -11,7 +11,6 @@
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.shr.com.time.TimeWithDayAttr
 				nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ItemGridHeight
-				nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime
 			</com:ValidatorScript>
 
 			<!-- COMPONENT CCG001 -->
@@ -301,14 +300,14 @@
 								<div class="square bg-daily-reflect-application"></div>
 								<span>#{i18n.getText('KSU001_313')}</span>
 							</div>
-							<div class="popup-div">
+							<!-- <div class="popup-div">
 								<div class="square bg-schedule-fixed"></div>
 								<span>#{i18n.getText('KSU001_5')}</span>
 							</div>
 							<div class="popup-div">
 								<div class="square bg-schedule-support"></div>
 								<span>#{i18n.getText('KSU001_314')}</span>
-							</div>
+							</div> -->
 						</div>
 					</div>
 
@@ -325,7 +324,7 @@
 						</div>
 						<div class="popup-div">
 							<div id="color-9" class="square"></div>
-							<span>#{i18n.getText('KSU001_317')}</span>
+							<span>#{i18n.getText('KSU001_349')}</span>
 						</div>
 					</div>
 
@@ -341,20 +340,24 @@
 								<div class="square bg-schedule-sunday"></div>
 								<span>#{i18n.getText('KSU001_319')}</span>
 							</div>
-						</div>
-						<div class="div-popup">
 							<div class="popup-div">
 								<div class="square bg-schedule-that-day"></div>
 								<span>#{i18n.getText('KSU001_320')}</span>
 							</div>
+						</div>
+						<!-- <div class="div-popup">
 							<div class="popup-div">
+								<div class="square bg-schedule-that-day"></div>
+								<span>#{i18n.getText('KSU001_320')}</span>
+							</div>
+							 <div class="popup-div">
 								<div class="square bg-schedule-specific-date"></div>
 								<span>#{i18n.getText('KSU001_321')}</span>
-							</div>
-						</div>
+							</div> 
+						</div> -->
 					</div>
 
-					<span>#{i18n.getText('KSU001_309')}</span>
+					<!-- <span>#{i18n.getText('KSU001_309')}</span>
 					<hr />
 					<div class="ml-2">
 						<div>
@@ -377,7 +380,7 @@
 								<span>#{i18n.getText('KSU001_314')}</span>
 							</div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 
 				<div id="ccgcomponent_contents">
@@ -392,12 +395,12 @@
 							</div>
 							<div id="top-area-right">
 								<button tabindex="-1" id="prevMonth" class="size-image-button1"
-									data-bind="click: backMonth"></button>
+									data-bind="click: backMonth, timeClick: -1"></button>
 								<span id="date-time-prev" data-bind="text: dateTimePrev"></span><span
 									id="special">#{i18n.getText('KSU001_66')}</span> <span
 									id="date-time-after" data-bind="text: dateTimeAfter"></span>
 								<button tabindex="-1" id="nextMonth" class="size-image-button1"
-									data-bind="click: nextMonth"></button>
+									data-bind="click: nextMonth, timeClick: -1"></button>
 
 								<!-- <label class="ml-2">#{i18n.getText('KSU001_38')}:</label>
 								<div tabindex="-1" class="cf"
@@ -426,6 +429,8 @@
 								<button tabindex="-1"
 									class="color-button ml-2 size-image-button1"></button>
 								<button tabindex="-1" class="setting-button size-image-button1"></button> -->
+								<button tabindex="-1"
+									class="color-button ml-2 size-image-button1"></button>
 							</div>
 						</div>
 						<div id="contain-view">
@@ -436,7 +441,7 @@
 									data-bind="click: copyData"></button>
 								<br />
 								<button id="undo" class="size-image-button2"
-									data-bind="click: undoData"></button>
+									data-bind="click: undoData, timeClick: -1"></button>
 							</div>
 							<div id="oViewModel">
 								<div data-bind="with: $parent.viewO">

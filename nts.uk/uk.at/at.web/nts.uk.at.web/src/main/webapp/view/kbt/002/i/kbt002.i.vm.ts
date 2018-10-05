@@ -37,9 +37,14 @@ module nts.uk.at.view.kbt002.i {
                 this.columns = ko.observableArray([
                     { headerText: 'id', key: 'employeeId', width: 100, hidden: true },
                     { headerText: getText('KBT002_184'), key: 'employeeCode', width: 100 },
-                    { headerText: getText('KBT002_185'), key: 'pname', width: 130 },
-                    { headerText: getText('KBT002_186'), key: 'date', width: 170 }, 
-                    { headerText: getText('KBT002_187'), key: 'errorMessage', width: 300 }
+                    { headerText: getText('KBT002_185'), key: 'pname', width: 130,formatter: _.escape },
+                    { headerText: getText('KBT002_186'), key: 'date', width: 170,formatter: _.escape }, 
+                    { headerText: getText('KBT002_187'), key: 'errorMessage', width: 300,
+                            formatter: function (errorMessage, record) {
+                                    return "<label class='limited-label'> " + errorMessage + " </label>";       
+                            }
+                    
+                    }
                 ]);
             }
             

@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.Ab
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -30,7 +30,10 @@ public class AbsenceLeaveRemainMonthFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public AbsenceLeaveRemainDataDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return null;
+		return find(Arrays.asList(employeeId), yearMonth).stream().map(c -> (AbsenceLeaveRemainDataDto) c)
+				.filter(c -> c.getClosureID() == closureId.value && c.getClosureDate().getLastDayOfMonth().equals(closureDate.getLastDayOfMonth())
+				&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay().v())
+			.findFirst().orElse(null);
 	}
 	
 	@Override

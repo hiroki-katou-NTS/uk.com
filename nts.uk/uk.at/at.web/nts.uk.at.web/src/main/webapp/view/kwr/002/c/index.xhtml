@@ -9,7 +9,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1260, height: 720 };</script>
+			<script>var dialogSize = { width: 845, height: 700 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 			</com:ValidatorScript>
@@ -112,12 +112,12 @@
 							</td>
 						</tr>
 					</table>
-					<div id="left-content" style="float: left; width: 360px"
+					<!-- <div id="left-content" style="float: left; width: 360px"
 						class="bg-green caret-right caret-background fixed-flex-layout-left">
 						<div
 							data-bind="ntsPanel:{width: '320px', direction: 'right', showIcon: true, visible: true}">
 
-							<!-- <span class="nts-editor-wrapped ntsControl search"><input
+							<span class="nts-editor-wrapped ntsControl search"><input
 								class="ntsSearchBox nts-editor ntsSearchBox_Component"
 								type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
 								tabindex="0" style="width: 210px;" /></span>
@@ -139,7 +139,7 @@
 								}">
 
 								</table>
-							</div> -->
+							</div>
 							<div style="width: 300px" tabindex="8"
 								data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'attendanceItemId', comId: 'single-list', 
 											items: attendanceItemList, selected: currentCode, selectedKey: 'attendanceItemId', fields: ['attendanceItemId', 'attendanceItemName'], mode: 'igGrid'}" />
@@ -154,7 +154,7 @@
 										}"></table>
 						</div>
 
-					</div>
+					</div> -->
 
 					<div id="right-content" class="fixed-flex-layout-right">
 						<div id="tab-panel" class="tab-master" tabindex="10"
@@ -529,7 +529,7 @@
 						</div>
 					</div>
 					<div class="clear"></div>
-					<hr style="margin-top: 20px; width:108%"></hr>
+					<hr style="margin-top: 35px; width:105%"></hr>
 					<div id="foot-area" class="fixed-flex-layout clear">
 						<div class="buttons">
 							<button tabindex="53" class="proceed x-large"
