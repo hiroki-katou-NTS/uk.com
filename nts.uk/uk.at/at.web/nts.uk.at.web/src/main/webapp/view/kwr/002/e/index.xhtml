@@ -82,8 +82,9 @@
 																		value: selectionTypeValue,
 																		optionsText: 'name',
 																		enable: true,
-																		required: false,
-																		selectFirstIfNull: false
+																		editable:false,
+																		required: true,
+																		selectFirstIfNull: true
 																		}">
 									</div>
 								</div>
@@ -168,7 +169,7 @@
 						data-bind="ntsMultilineEditor: {value: formulaContent, readonly: true, name: '#{i18n.getText('KWR002_191')}'}" />
 				</div>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" style="margin-top:30px; position: static">
 				<!-- E10_1 -->
 				<button tabindex="10" id="" class="button x-large proceed"
 					data-bind="click: decide">#{i18n.getText('KWR002_192')}</button>

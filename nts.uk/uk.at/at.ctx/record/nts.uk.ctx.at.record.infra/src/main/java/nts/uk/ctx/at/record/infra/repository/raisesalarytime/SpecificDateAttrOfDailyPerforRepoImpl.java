@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.raisesalarytime;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -155,9 +157,18 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate baseDate) {
-		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
-				.setParameter("ymd", baseDate).executeUpdate();
-		this.getEntityManager().flush();
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KRCDT_DAI_SPE_DAY_CLA Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+//		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEEID_AND_DATE).setParameter("employeeId", employeeId)
+//				.setParameter("ymd", baseDate).executeUpdate();
+//		this.getEntityManager().flush();
 	}
 
 }

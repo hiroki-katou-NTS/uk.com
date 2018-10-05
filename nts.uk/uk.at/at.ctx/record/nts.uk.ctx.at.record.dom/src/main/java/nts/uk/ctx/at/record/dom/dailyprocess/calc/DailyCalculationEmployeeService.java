@@ -22,11 +22,14 @@ public interface DailyCalculationEmployeeService {
 	 * @param employeeId 社員ID
 	 * @param datePeriod 期間
 	 * @param counter 
+	 * @param reCalcAtr 
+	 * @param empCalAndSumExecLogID 
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionType 実行種別　（通常、再実行）
 	 * @param companyCommonSetting 
+	 * @return 
 	 */
-	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, Consumer<ProcessState> counter);
+	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, Consumer<ProcessState> counter, ExecutionType reCalcAtr, String empCalAndSumExecLogID);
 	
 	/**
 	 * 社員の日別実績を計算(承認一覧から呼び出す用)
@@ -40,4 +43,11 @@ public interface DailyCalculationEmployeeService {
 	 * @param companyCommonSetting 
 	 */
 	ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter);
+
+	
+	/**
+	 * 計算状態の更新
+	 * @param stateInfo
+	 */
+	public void upDateCalcState(ManageCalcStateAndResult stateInfo);
 }

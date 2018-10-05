@@ -27,15 +27,15 @@ input.txtEmpCodeFirstChar {
 }
 
 #empCodeLetter {
-	position: fixed;
-	left: 290px;
-	top: 62px;
+	position: absolute;
+	left: 80px;
+	top: 5px;
 }
 
 #cardNoLetter {
-	position: fixed;
-	left: 290px;
-	top: 164px;
+	position: absolute;
+	left: 80px;
+	top: 5px;
 }
 
 #empInitGroup, #initCardNoGroup {

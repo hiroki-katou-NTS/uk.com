@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.KrcmtMonAttendanceItemPK;
 
@@ -103,6 +106,16 @@ public class JpaMonthlyAttendanceItemSetMemento implements MonthlyAttendanceItem
 	@Override
 	public void setNameLineFeedPosition(int nameLine) {
 		this.entity.setLineBreakPosName(nameLine);
+	}
+
+	/**
+	 * Sets the primitiveValue.
+	 *
+	 * @param nameLine the new name primitiveValue
+	 */
+	@Override
+	public void setPrimitiveValue(Optional<PrimitiveValueOfAttendanceItem> primitiveValue) {
+		this.entity.setPrimitiveValue(primitiveValue.map(x -> x.value).orElse(null));
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichu_ishida
  */
 @Getter
+@NoArgsConstructor
 public class AggregateDivergenceTime {
 
 	/** 乖離時間No */
@@ -53,6 +55,28 @@ public class AggregateDivergenceTime {
 			DivergenceAtrOfMonthly divergenceAtr){
 		
 		val domain = new AggregateDivergenceTime(divergenceTimeNo);
+		domain.divergenceTime = divergenceTime;
+		domain.deductionTime = deductionTime;
+		domain.divergenceTimeAfterDeduction = divergenceTimeAfterDeduction;
+		domain.divergenceAtr = divergenceAtr;
+		return domain;
+	}
+	/**
+	 * for using table KRCDT_MON_MERGE
+	 * @author lanlt
+	 * @param divergenceTime
+	 * @param deductionTime
+	 * @param divergenceTimeAfterDeduction
+	 * @param divergenceAtr
+	 * @return
+	 */
+	public static AggregateDivergenceTime of(
+			AttendanceTimeMonth divergenceTime,
+			AttendanceTimeMonth deductionTime,
+			AttendanceTimeMonth divergenceTimeAfterDeduction,
+			DivergenceAtrOfMonthly divergenceAtr){
+		
+		val domain = new AggregateDivergenceTime();
 		domain.divergenceTime = divergenceTime;
 		domain.deductionTime = deductionTime;
 		domain.divergenceTimeAfterDeduction = divergenceTimeAfterDeduction;

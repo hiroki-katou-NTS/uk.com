@@ -18,8 +18,6 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.query.infra.repository.employee.JpaRegulationInfoEmployeeRepository;
-import nts.uk.query.model.employee.EmployeeSearchQuery;
 
 /**
  * The Class EmployeeDataView.
@@ -229,48 +227,4 @@ public class EmployeeDataView implements Serializable {
 		super();
 	}
 
-	public boolean isIncluded(EmployeeSearchQuery paramQuery) {
-		GeneralDateTime retireStart = paramQuery.getRetireStart() == null ? paramQuery.getPeriodStart()
-				: paramQuery.getRetireStart();
-		GeneralDateTime retireEnd = paramQuery.getRetireEnd() == null ? paramQuery.getPeriodEnd()
-				: paramQuery.getRetireEnd();
-		GeneralDateTime start = paramQuery.getPeriodStart();
-		GeneralDateTime end = paramQuery.getPeriodEnd();
-		
-		// check employee in company or not.
-		if (this.isNotInCompany(paramQuery.getPeriodStart(), paramQuery.getPeriodEnd())) {
-			return false;
-		}
-		
-		boolean isIncludeIncumbents = paramQuery.getIncludeIncumbents() && this.isWorking(start, end);
-		boolean isIncludeWorkersOnLeave = paramQuery.getIncludeWorkersOnLeave() && this.isWorkersOnLeave(start, end);
-		boolean isIncludeOccupancy = paramQuery.getIncludeOccupancy() && this.isOccupancy(start, end);
-		boolean isIncludeRetirees = paramQuery.getIncludeRetirees() && this.isRetire(retireStart, retireEnd);
-		
-		return isIncludeIncumbents || isIncludeWorkersOnLeave || isIncludeOccupancy || isIncludeRetirees;
-	}
-	
-	public boolean isNotInCompany(GeneralDateTime start, GeneralDateTime end) {
-		return this.comStrDate.after(end) || this.comEndDate.before(start);
-	}
-
-	private boolean isWorking(GeneralDateTime start, GeneralDateTime end) {
-		boolean isWorking = this.tempAbsFrameNo == null && this.absStrDate == null;
-		return isWorking || this.absStrDate.after(end) || this.absEndDate.before(start);
-	}
-
-	public boolean isWorkersOnLeave(GeneralDateTime start, GeneralDateTime end) {
-		return !this.isWorking(start, end)
-				&& this.tempAbsFrameNo == JpaRegulationInfoEmployeeRepository.LEAVE_ABSENCE_QUOTA_NO;
-	}
-
-	public boolean isOccupancy(GeneralDateTime start, GeneralDateTime end) {
-		return !this.isWorking(start, end)
-				&& this.tempAbsFrameNo != JpaRegulationInfoEmployeeRepository.LEAVE_ABSENCE_QUOTA_NO;
-	}
-
-	public boolean isRetire(GeneralDateTime start, GeneralDateTime end) {
-		return this.comEndDate.afterOrEquals(start) && this.comEndDate.beforeOrEquals(end);
-	}
-	
 }

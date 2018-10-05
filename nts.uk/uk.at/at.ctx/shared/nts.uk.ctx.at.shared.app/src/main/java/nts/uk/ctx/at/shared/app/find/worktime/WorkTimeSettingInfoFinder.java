@@ -151,6 +151,9 @@ public class WorkTimeSettingInfoFinder {
 			} else// case FLEX_WORK
 			{
 				FlexWorkSetting flexWorkSetting = this.flexWorkSettingRepository.find(companyId, workTimeCode).get();
+				//sort element by time
+				flexWorkSetting.getOffdayWorkTime().sortWorkTimeOfOffDay();
+				
 				flexWorkSetting.saveToMemento(flexWorkSettingDto);
 			}
 		}

@@ -84,9 +84,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				// get Person
 				Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
 				String nameBefore = person.getPersonNameGroup().getBusinessName().v();
-				PersonNameGroup nameGroup = person.getPersonNameGroup();
-				nameGroup.setBusinessName(new BusinessName(command.getName()));
-				person.setPersonNameGroup(nameGroup);
+				person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
 				personRepo.update(person);
 				
 				setDataLogPersonCorrection(command);
@@ -136,8 +134,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				List<PersonInfoItemDefinition> lstItemDf = perItemDf.getAllPerInfoItemDefByCategoryId(
 						perInfoCtgCS00001.get().getPersonInfoCategoryId(), AppContexts.user().contractCode());
 	
-				Optional<PersonInfoItemDefinition> itCS00001 = lstItemDf.stream()
-						.filter(c -> c.getItemCode().compareTo("IS00001") > 0).findFirst();
+				Optional<PersonInfoItemDefinition> itCS00001 = lstItemDf.stream().filter(c -> c.getItemCode().equals("IS00001")).findFirst();
 	
 				if (itCS00001.isPresent()) {
 					lstItemInfoCS00001.add(new PersonCorrectionItemInfo(
@@ -169,8 +166,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				List<PersonInfoItemDefinition> lstItemDf = perItemDf.getAllPerInfoItemDefByCategoryId(
 						perInfoCtgCS00002.get().getPersonInfoCategoryId(), AppContexts.user().contractCode());
 	
-				Optional<PersonInfoItemDefinition> itCS00003 = lstItemDf.stream()
-						.filter(c -> c.getItemCode().compareTo("IS00003") > 0).findFirst();
+				Optional<PersonInfoItemDefinition> itCS00003 = lstItemDf.stream().filter(c -> c.getItemCode().equals("IS00009")).findFirst();
 	
 				if (itCS00003.isPresent()) {
 					

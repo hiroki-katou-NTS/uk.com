@@ -64,21 +64,6 @@ public class ProcessExecutionDto {
 	
 	/* 月別集計 */
 	private boolean monthlyAggCls;
-	
-	/* アラーム抽出（個人別） */
-	private boolean indvAlarmCls;
-	
-	/* 本人にメール送信する */
-	private boolean indvMailPrin;
-	
-	/* 管理者にメール送信する */
-	private boolean indvMailMng;
-	
-	/* アラーム抽出（職場別） */
-	private boolean wkpAlarmCls;
-	
-	/* 管理者にメール送信する */
-	private boolean wkpMailMng;
 
 	private int execScopeCls;
 
@@ -103,6 +88,14 @@ public class ProcessExecutionDto {
 	
 	/* 実行種別*/
 	private int processExecType;
+	
+	private boolean alarmAtr;
+	
+	private String alarmCode;
+	
+	private Boolean mailPrincipal;
+	
+	private Boolean mailAdministrator;
 	
 	public ProcessExecutionDto() {
 		super();
@@ -129,18 +122,17 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee(),
 				domain.getExecSetting().isReflectResultCls(),
 				domain.getExecSetting().isMonthlyAggCls(),
-				domain.getExecSetting().getIndvAlarm().isIndvAlarmCls(),
-				domain.getExecSetting().getIndvAlarm().isIndvMailPrin(),
-				domain.getExecSetting().getIndvAlarm().isIndvMailMng(),
-				domain.getExecSetting().getWkpAlarm().isWkpAlarmCls(),
-				domain.getExecSetting().getWkpAlarm().isWkpMailMng(),
 				domain.getExecScope().getExecScopeCls().value,
 				domain.getExecScope().getRefDate(),
 				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson(),domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer(),
 				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value==1?true:false,
 				!domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent()?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value==1?true:false,
 				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false,
-				domain.getProcessExecType().value
+				domain.getProcessExecType().value,
+				domain.getExecSetting().getAlarmExtraction().isAlarmAtr(),
+				!domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
+				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get().booleanValue(),
+				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue()
 				);
 	}
 }

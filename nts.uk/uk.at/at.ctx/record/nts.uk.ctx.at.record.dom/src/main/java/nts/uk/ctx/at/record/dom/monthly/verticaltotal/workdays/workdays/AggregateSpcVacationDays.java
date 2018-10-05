@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**

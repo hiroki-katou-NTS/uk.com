@@ -3,7 +3,9 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.SetInforReflAprResultImport;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
@@ -17,7 +19,7 @@ public interface AppReflectManagerFromRecord {
 	 * @param workDate ・対象期間開始日 ・対象期間終了日
 	 * @return True: 完了処理、False：　中断
 	 */
-	boolean applicationRellect(String workId, WorkReflectAtr workAtr, DatePeriod workDate, AsyncCommandHandlerContext asyncContext);	
+	ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext);	
 	/**
 	 * 社員の申請を反映
 	 * @param workId
@@ -26,7 +28,7 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	boolean reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
-			ExecutionTypeExImport refAppResult);
+			ExecutionTypeExImport refAppResult,TaskDataSetter dataSetter);
 	/**
 	 * 申請の取得
 	 * @param sid 社員ID
@@ -35,4 +37,12 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
+	/**
+	 * 社員の申請を反映
+	 * @param workId
+	 * @param sid
+	 * @param datePeriod
+	 * @return
+	 */
+	ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod);
 }

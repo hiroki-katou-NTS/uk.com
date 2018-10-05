@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;

@@ -33,14 +33,20 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class LateTimeSheet{
 	
 	// 遅刻していない場合はempty
+	//計上用時間帯
 	private Optional<LateLeaveEarlyTimeSheet> forRecordTimeSheet;
 	
+	//控除用時間帯
 	private Optional<LateLeaveEarlyTimeSheet> forDeducationTimeSheet;
 	
-	//今は一時的にint型で作成しているが、本来はworkNo型
+	//勤務No
 	private int workNo;
 	
+	//相殺時間
 	private Optional<DeductionOffSetTime> OffsetTime;
+	
+	//コアなしフレックス遅刻時間
+	private Optional<AttendanceTime> noCoreFlexLateTime = Optional.empty();
 	
 	
 	public LateTimeSheet(
@@ -263,7 +269,7 @@ public class LateTimeSheet{
 			boolean late //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 			) {
 		//遅刻時間の計算
-		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime(DeductionAtr.Appropriate);
 		//インターバル免除時間を控除する
 		
 		//遅刻計上時間の作成
@@ -281,10 +287,22 @@ public class LateTimeSheet{
 			) {
 		TimeWithCalculation lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		if(notUseAtr==NotUseAtr.USE) {//控除する場合
-			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime():new AttendanceTime(0);
+			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime(DeductionAtr.Deduction):new AttendanceTime(0);
 			lateDeductionTime =  late?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}
 		return lateDeductionTime;
+	}
+	
+	/**
+	 * 自身が持つ短時間勤務時間帯(控除)を収集
+	 * @return　短時間勤務時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> getShortTimeSheet(){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		if(this.getForRecordTimeSheet() != null && this.getForRecordTimeSheet().isPresent()) {
+			returnList.addAll(this.getForRecordTimeSheet().get().collectShortTimeSheet());
+		}
+		return returnList;
 	}
 	
 	

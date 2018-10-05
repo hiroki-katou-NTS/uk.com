@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,5 +78,8 @@ public class AnyItemValueOfDaily {
         
         return result;
     }
-    
+
+    public Optional<AnyItemValue> getNo(int no) {
+    	return items.stream().filter(i -> i.getItemNo().v() == no).findFirst();
+    }
 }

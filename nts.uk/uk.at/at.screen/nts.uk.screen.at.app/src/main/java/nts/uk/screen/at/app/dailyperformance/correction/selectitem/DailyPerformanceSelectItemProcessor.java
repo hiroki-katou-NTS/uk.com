@@ -36,6 +36,7 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
@@ -90,6 +91,9 @@ public class DailyPerformanceSelectItemProcessor {
 	@Inject
 	private OptionalItemRepository optionalItemRepository;
 	
+	@Inject
+	private DisplayRemainingHolidayNumber remainHolidayService;
+	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
 	private static final String NO = "NO";
@@ -107,7 +111,7 @@ public class DailyPerformanceSelectItemProcessor {
 	private static final String LOCK_EDIT_CELL_DAY = "D";
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
-	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String STATE_DISABLE = "mgrid-disable";
 
 	/**
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
@@ -280,14 +284,17 @@ public class DailyPerformanceSelectItemProcessor {
 
 	/** アルゴリズム「休暇の管理状況をチェックする」を実行する */
 	private void getHolidaySettingData(DailyPerformanceCorrectionDto dailyPerformanceCorrectionDto) {
-		// アルゴリズム「年休設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(this.repo.getYearHolidaySetting());
-		// アルゴリズム「振休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setSubstVacationDto(this.repo.getSubstVacationDto());
-		// アルゴリズム「代休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
-		// アルゴリズム「60H超休管理設定を取得する」を実行する
-		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
+//		String companyId = AppContexts.user().companyId();
+//		String employeeId = "";
+//		GeneralDate baseDate = GeneralDate.today();
+//		// アルゴリズム「年休設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setYearHolidaySettingDto(remainHolidayService.getAnnualLeaveSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「振休管理設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setSubstVacationDto(remainHolidayService.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「代休管理設定を取得する」を実行する
+//		dailyPerformanceCorrectionDto.setCompensLeaveComDto(remainHolidayService.getCompensatoryLeaveSetting(companyId, employeeId, baseDate));
+//		// アルゴリズム「60H超休管理設定を取得する」を実行する
+////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
@@ -373,7 +380,7 @@ public class DailyPerformanceSelectItemProcessor {
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
-		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
+		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId,  new DateRange(GeneralDate.today(), GeneralDate.today()));
 		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		/// TODO : アルゴリズム「対象日に対応する承認者確認情報を取得する」を実行する | Execute "Acquire Approver
 		/// Confirmation Information Corresponding to Target Date"
@@ -476,12 +483,12 @@ public class DailyPerformanceSelectItemProcessor {
 				}
 			}
 			if(lock){
-				screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_DATE, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_ERROR, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_PIC, STATE_DISABLE);
 			}
 			DailyModifyResult resultOfOneRow = resultDailyMap.isEmpty() ? null : resultDailyMap.get(data.getEmployeeId()+"|"+data.getDate());
 			if(resultOfOneRow != null){
@@ -504,8 +511,8 @@ public class DailyPerformanceSelectItemProcessor {
 							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						if(attendanceAtr == DailyAttendanceAtr.Code.value){
 							if(lock){
-								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()), STATE_DISABLE);
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), CODE + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
 							}
 							cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
@@ -521,8 +528,8 @@ public class DailyPerformanceSelectItemProcessor {
 							
 						}else{
 							if(lock){
-								screenDto.setLock(data.getId(), NO + String.valueOf(item.getId()), STATE_DISABLE);
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), NO + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
 							}
 							cellDatas.add(new DPCellDataDto(NO + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
@@ -532,7 +539,7 @@ public class DailyPerformanceSelectItemProcessor {
 						
 					} else {
 						if (lock) {
-							screenDto.setLock(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()), STATE_DISABLE);
+							screenDto.setCellSate(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()), STATE_DISABLE);
 						}
 						if (attendanceAtr == DailyAttendanceAtr.Time.value
 								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {

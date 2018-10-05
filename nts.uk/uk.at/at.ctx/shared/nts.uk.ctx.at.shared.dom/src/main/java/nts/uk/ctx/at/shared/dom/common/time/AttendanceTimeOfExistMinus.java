@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.common.time;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
+import nts.uk.shr.com.enumcommon.DayAttr;
 
 /**
  * 勤怠時間(マイナス有り)
@@ -10,6 +11,9 @@ import nts.arc.primitive.constraint.TimeRange;
  */
 @TimeRange(max = "48:00", min = "-48:00")
 public class AttendanceTimeOfExistMinus extends TimeDurationPrimitiveValue<AttendanceTimeOfExistMinus>{
+	
+	public static AttendanceTimeOfExistMinus ZERO = new AttendanceTimeOfExistMinus(0);
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -30,7 +30,20 @@ public class SpecialHolidayRemainMonthFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public SpecialHolidayRemainDataDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return null;
+		return find(Arrays.asList(employeeId), yearMonth).stream().map(c -> (SpecialHolidayRemainDataDto) c)
+				.filter(c -> c.getClosureID() == closureId.value && c.getClosureDate().getLastDayOfMonth().equals(closureDate.getLastDayOfMonth())
+				&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay().v())
+			.findFirst().orElse(null);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SpecialHolidayRemainDataDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate) {
+		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
+				.filter(c -> c.getClosureId() == closureId.value && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
+							&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay())
+				.map(c -> SpecialHolidayRemainDataDto.from(c)).collect(Collectors.toList());
 	}
 	
 	@Override

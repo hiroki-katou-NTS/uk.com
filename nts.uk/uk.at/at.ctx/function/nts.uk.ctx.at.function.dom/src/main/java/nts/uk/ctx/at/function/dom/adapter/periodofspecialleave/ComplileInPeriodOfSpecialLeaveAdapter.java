@@ -32,5 +32,14 @@ public interface ComplileInPeriodOfSpecialLeaveAdapter {
 	 * @return
 	 */
 	List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth, YearMonth endMonth);
+	/**
+	 * 
+	 * @param sid
+	 * @param startMonth
+	 * @param endMonth
+	 * @param speCode
+	 * @return
+	 */
+	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth, YearMonth endMonth, List<Integer> listSpeCode);
 	
 }

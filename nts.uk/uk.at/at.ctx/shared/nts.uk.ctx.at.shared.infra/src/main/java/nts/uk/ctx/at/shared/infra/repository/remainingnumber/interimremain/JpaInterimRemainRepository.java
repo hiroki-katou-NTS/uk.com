@@ -90,12 +90,12 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.remainAtr = domain.getRemainAtr().value;
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteById(String mngId) {
-		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("remainMngId", mngId);
+		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("remainMngId", mngId).executeUpdate();
 	}
 
 	@Override

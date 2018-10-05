@@ -24,21 +24,16 @@ public class UseDateDeadlineFromDatePeriodImpl implements UseDateDeadlineFromDat
 		if(closureData == null) {
 			return null;
 		}
-		if(expirationDate == ExpirationTime.THIS_MONTH) {
-			//締め->アルゴリズム「当月の期間を算出する」を実行する
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureData.getClosureId().value, closureData.getClosureMonth().getProcessingYm());
-			return datePeriod.end();
-		} else {
-			//休暇使用期限年月を算出する
-			YearMonth ym = this.yearMonthUseDeadline(baseDate, expirationDate);
-			//休暇使用期限基準日を作成する
-			GeneralDate ymd = this.getUseDeadlineDate(ym, baseDate.day());
-			//締め->アルゴリズム「指定した年月日時点の締め期間を取得する」を実行する
-			Optional<ClosurePeriod> periodByYmd = closureData.getClosurePeriodByYmd(ymd);
-			if(periodByYmd.isPresent()) {
-				return periodByYmd.get().getPeriod().end();
-			}
+		//休暇使用期限年月を算出する
+		YearMonth ym = this.yearMonthUseDeadline(baseDate, expirationDate);
+		//休暇使用期限基準日を作成する
+		GeneralDate ymd = this.getUseDeadlineDate(ym, baseDate.day());
+		//締め->アルゴリズム「指定した年月日時点の締め期間を取得する」を実行する
+		Optional<ClosurePeriod> periodByYmd = closureData.getClosurePeriodByYmd(ymd);
+		if(periodByYmd.isPresent()) {
+			return periodByYmd.get().getPeriod().end();
 		}
+		
 		return null;
 	}
 	/**
@@ -50,20 +45,22 @@ public class UseDateDeadlineFromDatePeriodImpl implements UseDateDeadlineFromDat
 	private YearMonth yearMonthUseDeadline(GeneralDate baseDate, ExpirationTime expirationDate) {
 		int year = baseDate.year();
 		int month = baseDate.month();
-		if(expirationDate == ExpirationTime.EIGHT_MONTH
-				|| expirationDate == ExpirationTime.ELEVEN_MONTH
-				|| expirationDate == ExpirationTime.FIVE_MONTH
-				|| expirationDate == ExpirationTime.FOUR_MONTH
-				|| expirationDate == ExpirationTime.NINE_MONTH
-				|| expirationDate == ExpirationTime.ONE_MONTH
-				|| expirationDate == ExpirationTime.SEVEN_MONTH
-				|| expirationDate == ExpirationTime.SIX_MONTH
-				|| expirationDate == ExpirationTime.TEN_MONTH
+		//休暇使用期限をチェックする
+		if(expirationDate == ExpirationTime.ONE_MONTH
+				|| expirationDate == ExpirationTime.TWO_MONTH
 				|| expirationDate == ExpirationTime.THREE_MONTH
-				|| expirationDate == ExpirationTime.TWO_MONTH) {
-			return YearMonth.of(year, month).addMonths(expirationDate.value);
+				|| expirationDate == ExpirationTime.FOUR_MONTH
+				|| expirationDate == ExpirationTime.FIVE_MONTH
+				|| expirationDate == ExpirationTime.SIX_MONTH
+				|| expirationDate == ExpirationTime.SEVEN_MONTH
+				|| expirationDate == ExpirationTime.EIGHT_MONTH
+				|| expirationDate == ExpirationTime.NINE_MONTH
+				|| expirationDate == ExpirationTime.TEN_MONTH
+				|| expirationDate == ExpirationTime.ELEVEN_MONTH) {
+			//休暇使用期限年月を使用期限までの月数分進める
+			return YearMonth.of(year, month).addMonths(expirationDate.addValue);
 		} else if (expirationDate == ExpirationTime.ONE_YEAR) {
-			return YearMonth.of(year, month).addMonths(expirationDate.value * 12);
+			return YearMonth.of(year + 1, month);
 		}
 		return YearMonth.of(year, month);
 	}

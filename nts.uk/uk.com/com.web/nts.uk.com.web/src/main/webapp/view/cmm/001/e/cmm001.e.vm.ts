@@ -9,6 +9,7 @@ module nts.uk.com.view.cmm001.e {
             switchOptions: KnockoutObservableArray<any>;
             isCheckedAll: KnockoutObservable<boolean>;
             switchHeader: KnockoutObservable<number>;
+            comName: string;
 
             constructor() {
                 let self = this;
@@ -22,20 +23,30 @@ module nts.uk.com.view.cmm001.e {
                 });
                 self.switchHeader = ko.observable(0);
                 self.switchHeader.subscribe((value) => {
-                    ko.utils.arrayForEach(self.dataSource(), function(item) {
-                        if(item.flag()) {
+                    let listItems = self.dataSource();
+                    if (self.selectedCopyItems().length == 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1433" });
+                        return;
+                    }
+                    ko.utils.arrayForEach(listItems, function(item) {
+                        if (item.flag()) {
                             item.copyMethod(value);
-                        } 
-                    })
+                        }
+                    });
                 });
                 self.dataSource = ko.observableArray([]);
                 self.selectedCopyItems = ko.observableArray([]);
                 self.selectedCopyItems = ko.computed(function() {
                     return self.dataSource().filter(function(item) {
-                        return item.flag() === true;
+                        if (item.flag() === true) {
+                            if (item.copyMethod != self.switchHeader())
+                                item.copyMethod(self.switchHeader());
+                            return item;
+                        }
                     });
                 });
 
+                self.comName = nts.uk.text.format(nts.uk.resource.getText('CMM001_75'), nts.uk.ui.windows.getShared('companyName'));
             }
 
             start(): JQueryPromise<any> {
@@ -88,12 +99,13 @@ module nts.uk.com.view.cmm001.e {
             openFDialog() {
                 var self = this;
                 var selectedItems: model.CopyItem[];
+                let companyName = nts.uk.ui.windows.getShared('companyName');
                 selectedItems = self.selectedCopyItems();
                 if (selectedItems.length == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1145" })
                 }
                 else {
-                    nts.uk.ui.dialog.confirm({ messageId: "Msg_1162" }).ifYes(() => {
+                    nts.uk.ui.dialog.confirm({ messageId: "Msg_1162",messageParams: [companyName] }).ifYes(() => {
                         var cid = nts.uk.ui.windows.getShared('companyId');
                         var IMasterDataList: model.MasterCopyCategoryDto[] = [];
                         var copyMethod : number;

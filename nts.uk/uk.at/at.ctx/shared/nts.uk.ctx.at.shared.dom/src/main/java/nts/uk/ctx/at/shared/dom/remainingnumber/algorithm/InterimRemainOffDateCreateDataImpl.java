@@ -103,7 +103,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		}
 		//残数関連の申請を抽出する
 		List<AppRemainCreateInfor> lstAppInfor = lstAppData.stream()
-				.filter(x -> x.getSid().equals(sid) && x.getAppDate().equals(baseDate) && x.getWorkTypeCode().isPresent())
+				.filter(x -> x.getSid().equals(sid) && x.getWorkTypeCode().isPresent() && (x.getAppDate().equals(baseDate) 
+						|| (x.getStartDate().isPresent() && x.getEndDate().isPresent() && x.getStartDate().get().beforeOrEquals(baseDate) && x.getEndDate().get().afterOrEquals(baseDate))))
 				.collect(Collectors.toList());
 		if(lstAppInfor.isEmpty()) {
 			return null;
@@ -149,9 +150,6 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		WorkTypeClassification workTypeClass = WorkTypeClassification.Attendance;
 		if(workTypeData.getDailyWork().isOneDay()) {
 			workTypeClass = workTypeData.getDailyWork().getOneDay();
-			if(!this.lstZansu().contains(workTypeClass)) {
-				return lstOutputData;
-			}
 			outputData.setWorkTypeClass(workTypeClass);
 			lstOutputData.add(this.createWithOneDayWorkType(cid, workTypeData, outputData));
 			//勤務区分をチェックする
@@ -198,7 +196,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
 			for (WorkTypeSet x : workTypeSetList) {
 				//アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
-				List<Integer> holidaySpecialCd = holidayRepo.findByAbsframeNo(cid, x.getSumSpHodidayNo());				
+				List<Integer> holidaySpecialCd = holidayRepo.findBySphdSpecLeave(cid, x.getSumSpHodidayNo());				
 				if(!holidaySpecialCd.isEmpty()) {
 					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), days);
 					lstSpeUseDetail.add(detailData);

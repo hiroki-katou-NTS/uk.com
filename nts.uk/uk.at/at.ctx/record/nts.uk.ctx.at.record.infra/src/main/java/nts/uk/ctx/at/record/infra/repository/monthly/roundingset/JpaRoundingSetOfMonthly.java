@@ -51,6 +51,8 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 				.setParameter("companyId", companyId)
 				.getList();
 		
+		if (!excoutRound.isPresent() && itemRoundList.size() == 0) return Optional.empty();
+		
 		return Optional.of(toDomain(companyId, excoutRound, itemRoundList));
 	}
 	

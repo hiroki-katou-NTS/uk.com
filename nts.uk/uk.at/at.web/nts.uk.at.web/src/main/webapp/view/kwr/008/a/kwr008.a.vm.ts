@@ -51,8 +51,7 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
-            permissionOfEmploymentForm: KnockoutObservable<model.PermissionOfEmploymentFormModel>
-            = ko.observable(new model.PermissionOfEmploymentFormModel('', '', 4, false));
+            isEmployeeCharge: KnockoutObservable<boolean> =  ko.observableArray(false);
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
@@ -136,10 +135,6 @@ module nts.uk.at.view.kwr008.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-            checkInput(): boolean {
-                var self = this;
-                return self.dateValue().startDate && self.dateValue().endDate && self.selectedOutputItem();
             }
 
             exportReport() {
@@ -323,12 +318,8 @@ module nts.uk.at.view.kwr008.a {
                 var self = this;
                 var dfd = $.Deferred();
 
-                var getPermissionOfEmploymentForm = service.getPermissionOfEmploymentForm().done((permission: any) => {
-                    self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
-                        permission.companyId,
-                        permission.roleId,
-                        permission.functionNo,
-                        permission.availability));
+                var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
+                    self.isEmployeeCharge(role.employeeCharge);
                 });
                 //A3
                 var getPeriod = service.getPeriod().done((data) => {
@@ -367,7 +358,7 @@ module nts.uk.at.view.kwr008.a {
                     console.log(`fail : ${enumError}`);
                 });
 
-                $.when(getPermissionOfEmploymentForm,
+                $.when(getCurrentLoginerRole,
                     getPeriod,
                     restoreOutputConditionAnnualWorkSchedule,
                     getPageBreakSelection).done(() => {
@@ -380,6 +371,8 @@ module nts.uk.at.view.kwr008.a {
                 let self = this;
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
+                }else{
+                    $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
@@ -412,7 +405,7 @@ module nts.uk.at.view.kwr008.a {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };
@@ -486,23 +479,6 @@ module nts.uk.at.view.kwr008.a {
 
         /** model */
         export module model {
-            /**
-             * Permission Of Employment Form model
-             */
-            export class PermissionOfEmploymentFormModel {
-                companyId: string;
-                roleId: string;
-                functionNo: number;
-                availability: KnockoutObservable<boolean> = ko.observable(false);
-                constructor(companyId: string, roleId: string, functionNo: number, availability: boolean) {
-                    let self = this;
-                    self.companyId = companyId || '';
-                    self.roleId = roleId || '';
-                    self.functionNo = functionNo || 0;
-                    self.availability(availability || false);
-                }
-            }
-
             export interface PeriodDto {
                 startYearMonth: Date;
                 endYearMonth: Date;

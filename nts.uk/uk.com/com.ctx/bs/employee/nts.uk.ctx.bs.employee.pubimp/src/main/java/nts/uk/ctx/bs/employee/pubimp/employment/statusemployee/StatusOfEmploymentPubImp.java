@@ -27,8 +27,7 @@ public class StatusOfEmploymentPubImp implements StatusOfEmploymentPub {
 
 	@Override
 	public StatusOfEmploymentExport getStatusOfEmployment(String employeeId, GeneralDate referenceDate) {
-		String cid = AppContexts.user().companyId();
-		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,employeeId)
+		AffCompanyHistByEmployee employeeHistory = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(employeeId)
 				.getAffCompanyHistByEmployee(employeeId);
 
 		if (employeeHistory == null) {

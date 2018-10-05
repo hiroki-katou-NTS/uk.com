@@ -326,8 +326,11 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         	AttendanceTime workTime = new AttendanceTime(0);
         	if(createWithinWorkTimeSheet != null)
         	{
+        		Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting.isPresent() && commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()
+        																	?Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet())
+        																	:commonSetting;
         		workTime = createWithinWorkTimeSheet.calcWorkTime(PremiumAtr.RegularWork, 
-        														  CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, 
+        														  regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(), 
         														  vacationClass, 
         														  timevacationUseTimeOfDaily, 
         														  StatutoryDivision.Nomal, 
@@ -342,7 +345,8 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  regularAddSetting, 
         														  holidayAddtionSet, 
         														  holidayCalcMethodSet,
-        														  dailyUnit,commonSetting,
+        														  dailyUnit,
+        														  leaveLatesetForWorkTime,
         														  conditionItem,
         														  predetermineTimeSetByPersonInfo,coreTimeSetting
         														  ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
@@ -351,8 +355,10 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         				
         				
         	}
+        	
         	AttendanceTime ableRangeTime = new AttendanceTime(dailyUnit.getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
         	if(ableRangeTime.greaterThan(0))
+        		//
         		return reclassified(ableRangeTime,overTimeWorkFrameTimeSheetList.stream()
         									   								    .filter(tc -> tc.getPayOrder().isPresent())
         									   								    .sorted((first,second) -> first.getPayOrder().get().compareTo(second.getPayOrder().isPresent()
@@ -584,9 +590,11 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
 	public AttendanceTime overTimeCalculationByAdjustTime(DeductionAtr dedAtr) {
 		//調整時間を加算
 		this.calcrange = new TimeSpanForCalc(this.calcrange.getStart(), this.calcrange.getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()));
-		AttendanceTime time = this.afterMinusDeductionTime(dedAtr);
+		this.timeSheet = new TimeZoneRounding(this.getTimeSheet().getStart(), this.getTimeSheet().getEnd().forwardByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()), this.getTimeSheet().getRounding());
+		AttendanceTime time = this.calcTotalTime(dedAtr);
 		//調整時間を減算(元に戻す)
 		this.calcrange = new TimeSpanForCalc(this.calcrange.getStart(), this.calcrange.getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()));
+		this.timeSheet = new TimeZoneRounding(this.getTimeSheet().getStart(), this.getTimeSheet().getEnd().backByMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()), this.getTimeSheet().getRounding());
 		time = time.minusMinutes(this.adjustTime.orElse(new AttendanceTime(0)).valueAsMinutes()) ;
 		return time;
 		

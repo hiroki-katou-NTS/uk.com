@@ -42,9 +42,15 @@ public class DPControlDisplayItem {
 	
 	private List<EnumCodeName> comboItemReason;
 	
+	private List<EnumCodeName> comboItemCalcCompact;
+	
+	private List<EnumCodeName> comboTimeLimit;
+	
 	private List<Integer> itemIds;
 	
 	Map<Integer, DPAttendanceItem> mapDPAttendance;
+	
+	private Map<Integer, String> itemInputName;
 
 	public DPControlDisplayItem() {
 		super();
@@ -53,6 +59,7 @@ public class DPControlDisplayItem {
 		this.columnSettings = new ArrayList<>();
 		this.itemIds = new ArrayList<>();
 		this.mapDPAttendance = new HashMap<>();
+		this.itemInputName = new HashMap<>();
 	}
 	
 	private boolean isExistHeader(DPHeaderDto header) {

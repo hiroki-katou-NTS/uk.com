@@ -83,7 +83,7 @@ public class SettingItemDto {
 			return new SaveDataDto(SaveDataType.STRING, null);
 		}
 
-		if (value.getClass().equals(Integer.class) || value.getClass().equals(BigDecimal.class)) {
+		if (value.getClass().equals(Integer.class) || value.getClass().equals(BigDecimal.class)|| value.getClass().equals(Double.class)) {
 			return new SaveDataDto(SaveDataType.NUMBERIC, value);
 		}
 		if (value.getClass().equals(String.class)) {
@@ -140,7 +140,7 @@ public class SettingItemDto {
 			return;
 		}
 		
-		if (value.getClass().equals(Integer.class)) {
+		if (value.getClass().equals(Integer.class)|| value.getClass().equals(BigDecimal.class)|| value.getClass().equals(Double.class)) {
 			this.setSaveData(new SaveDataDto(SaveDataType.NUMBERIC, value));
 		}
 		if (value.getClass().equals(String.class)) {

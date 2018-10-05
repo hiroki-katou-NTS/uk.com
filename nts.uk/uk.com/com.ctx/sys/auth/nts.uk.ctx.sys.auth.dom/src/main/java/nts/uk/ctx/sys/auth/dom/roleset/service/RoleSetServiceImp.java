@@ -171,7 +171,8 @@ public class RoleSetServiceImp implements RoleSetService{
 		
 		// Get RoleSet granted for Person
 		EmpInfoByCidSidImport importEmployee = optImportEmployee.get();
-		Optional<RoleSetGrantedPerson> optRoleSetGrantedPerson = roleSetGrantedPersonRepository.getByEmployeeId(importEmployee.getSid());
+		// Update EAP No.2709
+		Optional<RoleSetGrantedPerson> optRoleSetGrantedPerson = roleSetGrantedPersonRepository.getByEmployeeDate(importEmployee.getSid(), baseDate);
 		if (optRoleSetGrantedPerson.isPresent())
 			return roleSetRepository.findByRoleSetCdAndCompanyId(optRoleSetGrantedPerson.get().getRoleSetCd().v(), companyId).get();
 		

@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthAc
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
@@ -38,8 +39,11 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
@@ -122,6 +126,8 @@ public class MonAggrCompanySettings {
 	@Getter
 	private Optional<InsufficientFlexHolidayMnt> insufficientFlexOpt;
 	/** フレックス不足の繰越上限管理 */
+	@Getter
+	private Optional<FlexShortageLimit> flexShortageLimitOpt;
 	/** 休暇加算設定 */
 	@Getter
 	private VacationAddSet vacationAddSet;
@@ -170,8 +176,17 @@ public class MonAggrCompanySettings {
 	/** 雇用積立年休設定 */
 	@Getter
 	private ConcurrentHashMap<String, EmptYearlyRetentionSetting> emptYearlyRetentionSetMap;
+	/** 振休管理設定 */
+	@Getter
+	private Optional<ComSubstVacation> absSettingOpt;
+	/** 代休管理設定 */
+	@Getter
+	private CompensatoryLeaveComSetting dayOffSetting;
 	/** 実績ロック */
 	private ConcurrentMap<Integer, ActualLock> actualLockMap;
+	/** 日別実績の運用開始設定 */
+	@Getter
+	private Optional<OperationStartSetDailyPerform> operationStartSet;
 	
 	/** エラー情報 */
 	@Getter
@@ -197,6 +212,7 @@ public class MonAggrCompanySettings {
 		this.comIrgSetOpt = Optional.empty();
 		this.comFlexSetOpt = Optional.empty();
 		this.insufficientFlexOpt = Optional.empty();
+		this.flexShortageLimitOpt = Optional.empty();
 		this.outsideOTBDItems = new CopyOnWriteArrayList<>();
 		this.outsideOTOverTimes = new CopyOnWriteArrayList<>();
 		this.agreementOperationSet = Optional.empty();
@@ -207,7 +223,10 @@ public class MonAggrCompanySettings {
 		this.lengthServiceTblListMap = new ConcurrentHashMap<>();
 		this.retentionYearlySet = Optional.empty();
 		this.emptYearlyRetentionSetMap = new ConcurrentHashMap<>();
+		this.absSettingOpt = Optional.empty();
+		this.dayOffSetting = null;
 		this.actualLockMap = new ConcurrentHashMap<>();
+		this.operationStartSet = Optional.empty();
 		this.errorInfos = new ConcurrentHashMap<>();
 	}
 	
@@ -271,12 +290,21 @@ public class MonAggrCompanySettings {
 			domain.emptYearlyRetentionSetMap.put(employmentCode, emptYearlyRetentionSet);
 		}
 		
+		// 振休管理設定
+		domain.absSettingOpt = repositories.getSubstVacationMng().findById(companyId);
+		
+		// 代休管理設定
+		domain.dayOffSetting = repositories.getCompensLeaveMng().find(companyId);
+		
 		// 実績ロック
 		val actualLocks = repositories.getActualLock().findAll(companyId);
 		for (val actualLock : actualLocks){
 			Integer closureId = actualLock.getClosureId().value;
 			domain.actualLockMap.put(closureId, actualLock);
 		}
+		
+		// 日別実績の運用開始設定
+		domain.operationStartSet = repositories.getOperationStartSet().findByCid(new CompanyId(companyId));
 		
 		// 設定読み込み処理　（36協定時間用）
 		domain.loadSettingsForAgreementProc(companyId, repositories);
@@ -418,6 +446,7 @@ public class MonAggrCompanySettings {
 		this.insufficientFlexOpt = repositories.getInsufficientFlex().findByCId(companyId);
 		
 		// フレックス不足の繰越上限管理
+		this.flexShortageLimitOpt = repositories.getFlexShortageLimit().get(companyId);
 		
 		// 休暇加算設定
 		this.vacationAddSet = repositories.getVacationAddSet().get(companyId);

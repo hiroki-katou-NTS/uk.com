@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata;
 
-
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -12,27 +11,33 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 特別休暇月別残数データ
+ * 
  * @author do_dt
  *
  */
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class SpecialHolidayRemainData extends AggregateRoot{
+public class SpecialHolidayRemainData extends AggregateRoot {
 	/**
 	 * 社員ID
 	 */
 	private String sid;
 	/**
+	 * 年月
+	 */
+	private YearMonth ym;
+	/**
 	 * 締めID
 	 */
 	private int closureId;
+
 	/**
 	 * 締め期間
 	 */
@@ -45,10 +50,7 @@ public class SpecialHolidayRemainData extends AggregateRoot{
 	 * 締め日付
 	 */
 	private ClosureDate closureDate;
-	/**
-	 * 年月
-	 */
-	private YearMonth ym;
+
 	/**
 	 * 特別休暇コード
 	 */
@@ -69,8 +71,8 @@ public class SpecialHolidayRemainData extends AggregateRoot{
 	 * 特別休暇付与情報: 付与日数
 	 */
 	private Optional<SpecialLeaveGrantUseDay> grantDays;
-	
-	/**
+
+	/*
 	 * 特別休暇月別残数データを更新
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月
@@ -189,5 +191,31 @@ public class SpecialHolidayRemainData extends AggregateRoot{
 		domain.grantDays = Optional.ofNullable(grantDays);
 		
 		return domain;
+	}
+
+	public SpecialHolidayRemainData(
+			String sid,
+			YearMonth ym,
+			int closureId,
+			ClosureDate closureDate,
+			DatePeriod closurePeriod,
+			ClosureStatus closureStatus,
+			int specialHolidayCd,
+			ActualSpecialLeave actualSpecial,
+			SpecialLeave specialLeave,
+			Optional<SpecialLeaveGrantUseDay> grantDays,
+			boolean grantAtr) {
+		super();
+		this.sid = sid;
+		this.ym = ym;
+		this.closureId = closureId;
+		this.closurePeriod = closurePeriod;
+		this.closureStatus = closureStatus;
+		this.closureDate = closureDate;
+		this.specialHolidayCd = specialHolidayCd;
+		this.actualSpecial = actualSpecial;
+		this.specialLeave = specialLeave;
+		this.grantAtr = grantAtr;
+		this.grantDays = grantDays;
 	}
 }

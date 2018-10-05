@@ -20,7 +20,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -61,7 +60,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduleti
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfoPK;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
@@ -138,7 +136,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -191,7 +189,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -241,21 +239,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * #delete(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public void delete(String employeeId, GeneralDate baseDate) {
-		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
-		this.removeAllChildCare(employeeId, baseDate);
+	public void delete(String employeeId, GeneralDate baseDate, BasicSchedule basicSchedule) {
+		this.removeScheduleBasic(employeeId, baseDate);
 		this.removeAllTimeZone(employeeId, baseDate);
+		this.removeAllChildCare(employeeId, baseDate);
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
 		this.removeScheduleMaster(employeeId, baseDate);
-	}
-
-	@Override
-	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate) {
-		this.removeAllTimeZone(employeeId, baseDate);
-		this.removeAllScheduleBreakTime(employeeId, baseDate);
-		this.removeAllChildCare(employeeId, baseDate);
-		this.removeScheduleTime(employeeId, baseDate);
+		this.removeScheStateWithoutListScheState(employeeId, baseDate);
 	}
 
 	/*
@@ -309,7 +300,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				listNewBasicSchedule.add(new BasicSchedule(sId, date, workTypeCode, workTimeCode, EnumAdaptor.valueOf(confirmAtr, ConfirmedAtr.class), scheMasterInfo));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return listNewBasicSchedule;
 	}
@@ -389,7 +380,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			listNewBasicSchedule.addAll(this.mapData(mapPairBasicSche));
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return listNewBasicSchedule;
 	}
@@ -747,10 +738,25 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		
+	}
+	
+	/**
+	 * Removes schedule basic.
+	 * @param employeeId
+	 * @param baseDate
+	 */
+	private void removeScheduleBasic(String employeeId, GeneralDate baseDate){
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_BASIC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -763,32 +769,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	private void removeAllChildCare(String employeeId, GeneralDate baseDate) {
 
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCMT_CHILD_CARE_SCH (KscdtScheChildCare SQL)
-		CriteriaDelete<KscdtScheChildCare> cq = criteriaBuilder.createCriteriaDelete(KscdtScheChildCare.class);
-
-		// root data
-		Root<KscdtScheChildCare> root = cq.from(KscdtScheChildCare.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.sid), employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KscdtScheChildCare_.kscdtScheChildCarePK).get(KscdtScheChildCarePK_.ymd), baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_CHILD_CARE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -802,35 +790,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	private void removeAllTimeZone(String employeeId, GeneralDate baseDate) {
 
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleTimeZone SQL)
-		CriteriaDelete<KscdtWorkScheduleTimeZone> cq = criteriaBuilder
-				.createCriteriaDelete(KscdtWorkScheduleTimeZone.class);
-
-		// root data
-		Root<KscdtWorkScheduleTimeZone> root = cq.from(KscdtWorkScheduleTimeZone.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.sId),
-				employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleTimeZone_.kscdtWorkScheduleTimeZonePk).get(KscdtWorkScheduleTimeZonePK_.date),
-				baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_TIMEZONE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -888,19 +855,27 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	private void insertScheduleMaster(ScheMasterInfo scheMasterInfo) {
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
 		String classificationCd = scheMasterInfo.getClassificationCd() != null
 				? "'" + scheMasterInfo.getClassificationCd() + "'" : null;
 		String businessTypeCd = scheMasterInfo.getBusinessTypeCd() != null
 				? "'" + scheMasterInfo.getBusinessTypeCd() + "'" : null;
+		// jobId, workplaceId, employmentCd trong DB khac null nhung van can check do nhieu truong hop no van = null
+		String jobId = scheMasterInfo.getJobId() != null
+				? "'" + scheMasterInfo.getJobId() + "'" : null;
+		String workplaceId = scheMasterInfo.getWorkplaceId() != null
+				? "'" + scheMasterInfo.getWorkplaceId() + "'" : null;
+		String employmentCd = scheMasterInfo.getEmploymentCd() != null
+				? "'" + scheMasterInfo.getEmploymentCd() + "'" : null;
 
 		String sqlQuery = "INSERT INTO KSCDT_SCHE_MASTER (SID, YMD, EMP_CD, CLS_CD, BUSINESS_TYPE_CD, JOB_ID, WKP_ID) VALUES ("
-				+ "'" + scheMasterInfo.getSId() + "', " + "'" + scheMasterInfo.getGeneralDate() + "', " + "'"
-				+ scheMasterInfo.getEmploymentCd() + "', " + classificationCd + ", " + businessTypeCd + ", " + "'"
-				+ scheMasterInfo.getJobId() + "', " + "'" + scheMasterInfo.getWorkplaceId() + "'" + ")";
+				+ "'" + scheMasterInfo.getSId() + "', " + "'" + scheMasterInfo.getGeneralDate() + "', "
+				+ employmentCd + ", " + classificationCd + ", " + businessTypeCd + ", "
+				+ jobId + ", " + workplaceId + ")";
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -926,7 +901,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -937,9 +912,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 */
 	private void removeScheduleMaster(String employeeId, GeneralDate baseDate) {
-		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(employeeId, baseDate);
-		if (this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).isPresent()) {
-			this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = null;
+		sqlQuery = "Delete From KSCDT_SCHE_MASTER Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -968,7 +948,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -990,7 +970,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -1018,7 +998,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -1039,7 +1019,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -1060,12 +1040,23 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// remove last , in string and add )
 		listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
 				+ "'"+ " and SCHE_ITEM_ID IN " + listItemIdString ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void removeScheStateWithoutListScheState(String employeeId, GeneralDate baseDate) {
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd") + "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1078,36 +1069,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 *            the base date
 	 */
 	private void removeAllScheduleBreakTime(String employeeId, GeneralDate baseDate) {
-
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleBreak SQL)
-		CriteriaDelete<KscdtWorkScheduleBreak> cq = criteriaBuilder.createCriteriaDelete(KscdtWorkScheduleBreak.class);
-
-		// root data
-		Root<KscdtWorkScheduleBreak> root = cq.from(KscdtWorkScheduleBreak.class);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal employee id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.sId),
-				employeeId));
-
-		// equal year month date base date
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.date),
-				baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		em.createQuery(cq).executeUpdate();
-
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = "Delete From KSCDT_SCHE_BREAK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate.toString("yyyy-MM-dd")
+				+ "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -1135,7 +1104,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toInsertWithCommonField(sqlQuery));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 
 	}
@@ -1169,7 +1138,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 			
 		} else {
@@ -1188,7 +1157,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -1217,14 +1186,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	}
 
 	@Override
-	public List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate) {
-		List<BasicSchedule> result = this.queryProxy().query(GET_LIST_BY_LIST_SID_DATE, KscdtBasicSchedule.class)
-				.setParameter("sIds", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.getList(x -> toDomain(x));
-		return result;
-	}
-	
-	@Override
 	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String sqlQuery = null;
@@ -1235,7 +1196,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}

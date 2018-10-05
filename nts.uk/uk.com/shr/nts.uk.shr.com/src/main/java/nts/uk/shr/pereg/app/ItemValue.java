@@ -199,6 +199,17 @@ public class ItemValue {
 		return item;
 	}
 	
+	public static ItemValue setContentForCPS001(ItemValue item) {
+		if(item.logType() == 2) {
+			item.setValueAfter(item.valueAfter() == ""? null: item.valueAfter());
+			item.setValueBefore(item.valueBefore() == ""? null: item.valueBefore());
+			item.setContentAfter(item.valueAfter() == ""? null: item.valueAfter());
+			item.setContentBefore(item.valueBefore() == ""? null: item.valueBefore());
+		}
+		
+		return item;
+	}
+	
 	public static  ItemValue filterItem(ItemValue item){
 			Object oldValue = formatValue(item, item.valueBefore());
 			Object newValue = formatValue(item, item.valueAfter());
@@ -253,7 +264,7 @@ public class ItemValue {
 		if (viewContent == null || value == null) return null;
 		if (viewContent.equals("") && logType != ItemValueType.STRING.value) return null;
 		if (value.equals("") && logType != ItemValueType.STRING.value) return null;
-		
+		BigDecimal valueAfter  = null;
 		switch(itemValueType) {
 		case STRING:
 		case DATE:
@@ -267,15 +278,17 @@ public class ItemValue {
 		case RELATE_CATEGORY:
 			return viewContent;
 		case TIME:
-			return formatMinutesToTime(Integer.valueOf(value));
+			valueAfter = new BigDecimal(value);
+			return valueAfter == null? null: formatMinutesToTime(valueAfter.intValue());
 		case TIMEPOINT:
-			return new TimeWithDayAttr(Integer.valueOf(value)).getFullText();
+			valueAfter = new BigDecimal(value);
+			return valueAfter == null? null: new TimeWithDayAttr(valueAfter.intValue()).getFullText();
 		default:
 			throw new RuntimeException("invalid attribute: " + value);
 		}
 	}
 	
-	private static String formatMinutesToTime(int valueAsMinutes) {
+	public static String formatMinutesToTime(int valueAsMinutes) {
 		
 		boolean isMinus = valueAsMinutes < 0;
 		int value = Math.abs(valueAsMinutes);
@@ -295,6 +308,14 @@ public class ItemValue {
 
 	public void setValueBefore(String defValue) {
 		this.defValue = defValue;
+	}
+	
+	public void setDataType(int type) {
+		this.type = type;
+	}
+	
+	public void setLogType(int logType) {
+		this.logType = logType;
 	}
 	
 	public void setValueBefore(Object defValue) {

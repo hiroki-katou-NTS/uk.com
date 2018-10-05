@@ -69,6 +69,8 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         isExistCompressPasswordFlg: KnockoutObservable<boolean>;
         passwordForCompressFile: KnockoutObservable<string>;
         confirmPasswordForCompressFile: KnockoutObservable<string>;
+        // check password constraint 
+        passwordConstraint: KnockoutObservable<string>;
 
         //B9_2
         supplementExplanation: KnockoutObservable<string>;
@@ -178,7 +180,6 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 self.yearValue.valueHasMutated();
             });
 
-
             //B7_1
             self.saveBeforDeleteOption = ko.observableArray([
                 new model.ItemModel(model.SAVE_BEFOR_DELETE_ATR.YES, getText('CMF005_35')),
@@ -224,7 +225,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 { headerText: getText('CMF005_57'), key: 'name', width: 200 }
             ]);
             self.delId = ko.observable("");
-            
+
         }
 
         /**
@@ -245,7 +246,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             //set B3_1 "ON"
             self.rdSelected = ko.observable(1);
-
+            
             //B6_2_2
             self.dateValue = ko.observable({
                 startDate: moment.utc().subtract(1, "M").add(1, "d").format("YYYY/MM/DD"),
@@ -258,16 +259,36 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             self.isSaveBeforeDeleteFlg = ko.observable(model.SAVE_BEFOR_DELETE_ATR.YES);
             //B8_2_1
             self.isExistCompressPasswordFlg = ko.observable(true);
+            self.passwordConstraint = ko.observable("");
             /**
             * Clear validate
              */
              self.isExistCompressPasswordFlg.subscribe(function(value) {
-                 console.log(value);
-                 if (!value) {
-                     nts.uk.ui.errors.removeByElement($("#B8_2_2"));
-                     nts.uk.ui.errors.removeByElement($("#B8_3_2"));
+                 if (value) {
+                     self.passwordConstraint("PasswordCompressFile");
+                     $(".passwordInput").trigger("validate");
+                 } else {
+                     nts.uk.util.value.reset($("#B8_2_2"), $("#B8_2_2").val());
+                     nts.uk.util.value.reset($("#B8_3_2"), $("#B8_3_2").val());
+                     self.passwordConstraint("");
+                     $('.passwordInput').ntsError('clear');
                  }
             });
+            
+             self.dateValue.subscribe(function(value) {
+                 nts.uk.ui.errors.clearAll();
+                 $(".validate_form .ntsDatepicker").trigger("validate");
+             });
+
+             self.monthValue.subscribe(function(value) {
+                 nts.uk.ui.errors.clearAll();
+                 $(".validate_form .ntsDatepicker").trigger("validate");
+             });
+
+             self.yearValue.subscribe(function(value) {
+                 nts.uk.ui.errors.clearAll();
+                 $(".validate_form .ntsDatepicker").trigger("validate");
+             }); 
         }
 
         /**
@@ -289,6 +310,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             var self = this;
             setShared("CMF005CParams_ListCategory", self.listDataCategory());
             setShared("CMF005CParams_SystemType", self.systemTypeCbb);
+            nts.uk.ui.errors.clearAll();
             modal("/view/cmf/005/c/index.xhtml").onClosed(() => {
 
                 let categoryC = getShared('CMF005COutput_ListCategoryChose');
@@ -302,17 +324,17 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 if (categoryC && (categoryC.length > 0)) {
                     self.listDataCategory.removeAll();
                     self.requiredDate(false);
-                    self.requiredMonth = ko.observable(false);
-                    self.requiredYear = ko.observable(false);
+                    self.requiredMonth(false);
+                    self.requiredYear(false);
                     for (let i = 0; i < categoryC.length; i++) {
                         self.listDataCategory.push(categoryC[i]);
 
                         if (!self.requiredMonth() && categoryC[i].timeStore == model.TIME_STORE.MONTHLY) {
-                            self.requiredMonth = ko.observable(true);
+                            self.requiredMonth(true);
                         }
 
                         if (!self.requiredYear() && categoryC[i].timeStore == model.TIME_STORE.ANNUAL) {
-                            self.requiredYear = ko.observable(true);
+                            self.requiredYear(true);
                         }
 
                         if (!self.requiredDate() && categoryC[i].timeStore == model.TIME_STORE.DAILY) {
@@ -332,17 +354,22 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         private nextScreenD(): void {
             let self = this;
             if (self.validateForm()) {
-                if (self.listDataCategory().length > 0) {
-                    // check so sanh hang ngay hang thang hang nam
-                    if (self.validateDatePicker()) {
-                        // check pass word
-                        if (self.checkPass()) {
+                if (self.isExistCompressPasswordFlg()) {
+                    if (self.passwordForCompressFile() == self.confirmPasswordForCompressFile()) {
+                        if (self.listDataCategory().length > 0) {
                             self.nextFromBToD();
+                        } else {
+                            alertError({ messageId: 'Msg_463' });
                         }
-                    } 
-
+                    } else {
+                        alertError({ messageId: 'Msg_566' });
+                    }
                 } else {
-                    alertError({ messageId: 'Msg_463' });
+                    if (self.listDataCategory().length > 0) {
+                        self.nextFromBToD();
+                    } else {
+                        alertError({ messageId: 'Msg_463' });
+                    }
                 }
             }
         }
@@ -350,8 +377,9 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         /**
          *Check validate client
          */
-        private validateForm() {
+        private validateForm() : boolean {
             $(".validate_form").trigger("validate");
+            $(".validate_form .ntsDatepicker").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return false;
             }

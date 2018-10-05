@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAlarmExtraction;
-import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -16,12 +14,9 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ProcessExecutionSetting extends DomainObject {
-	/* アラーム抽出（個人別） */
-	private IndividualAlarmExtraction indvAlarm;
-	
-	/* アラーム抽出（職場別） */
-	private WorkplaceAlarmExtraction wkpAlarm;
+public class ProcessExecutionSetting extends DomainObject {	
+	/* アラーム抽出 */
+	private AlarmExtraction alarmExtraction;
 	
 	/* 個人スケジュール作成 */
 	private PersonalScheduleCreation perSchedule;

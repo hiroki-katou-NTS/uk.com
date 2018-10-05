@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -30,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -45,6 +48,8 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	private InterimRemainRepository interimRepo;
 	@Inject
 	private InterimRemainOffMonthProcess createDataService;
+	@Inject
+	private ClosureService closureService;
 	@Override
 	public AbsRecRemainMngOfInPeriod getAbsRecMngInPeriod(AbsRecMngInPeriodParamInput paramInput) {
 		//アルゴリズム「未相殺の振休(確定)を取得する」を実行する
@@ -104,8 +109,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public List<SubstitutionOfHDManagementData> getAbsOfUnOffsetFromConfirm(String cid, String sid, GeneralDate ymd) {
 		// ドメインモデル「振休管理データ」
-		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBySidDate(cid, sid, ymd);		
-		return lstAbsConfirmData.stream().filter(x -> x.getRemainDays().v() > 0).collect(Collectors.toList());
+		List<SubstitutionOfHDManagementData> lstAbsConfirmData = confirmAbsMngRepo.getBysiD(cid, sid);
+		List<SubstitutionOfHDManagementData> lstOutput = new ArrayList<>();
+		for (SubstitutionOfHDManagementData x : lstAbsConfirmData) {
+			if(x.getRemainDays().v() <= 0 
+					||(x.getHolidayDate().getDayoffDate().isPresent() && x.getHolidayDate().getDayoffDate().get().afterOrEquals(ymd))) {
+				continue;
+			}
+			lstOutput.add(x);
+		}
+		return lstOutput;
 	}	
 
 	@Override
@@ -136,14 +149,17 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public List<AbsRecDetailPara> getUnUseDaysConfirmRec(String cid, String sid, List<AbsRecDetailPara> lstDataDetail, GeneralDate ymd) {
 		//2-1.確定振出から未使用の振出を取得する
-		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCodDate(cid, sid, DigestionAtr.UNUSED.value, ymd)
+		List<PayoutManagementData> lstConfirmRec = confirmRecRepo.getSidWithCod(cid, sid, DigestionAtr.UNUSED.value)
 				.stream().filter(x -> x.getUnUsedDays().v() > 0)
 				.collect(Collectors.toList());
 		if(lstConfirmRec.isEmpty()) {
 			return lstDataDetail;
 		}
 		for (PayoutManagementData confirmRecData : lstConfirmRec) {
-			
+			if(confirmRecData.getPayoutDate().getDayoffDate().isPresent()
+					&& confirmRecData.getPayoutDate().getDayoffDate().get().afterOrEquals(ymd)) {
+				continue;
+			}
 			//アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
 			List<InterimRecAbsMng> lstInterim = recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
 			double unUseDays = confirmRecData.getUnUsedDays().v();
@@ -582,7 +598,39 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					lstRecMng.add(optRecMng.get());
 				}
 			}	
-		}		
+		}
+		//20181003 DuDT fix bug 101491 ↓
+		List<InterimRemain> lstTmpAbs = new ArrayList<>(lstInterimMngOfAbs);
+		List<InterimAbsMng> lstAbsUsen = new ArrayList<>(lstAbsMng);
+		List<InterimRemain> lstTmpRec = new ArrayList<>(lstInterimMngOfRec);
+		List<InterimRecMng> lstRecMngUsen = new ArrayList<>(lstRecMng);
+		if(paramInput.isOverwriteFlg() && !paramInput.getInterimMng().isEmpty()) {
+			for (InterimRemain interimRemain : paramInput.getInterimMng()) {
+				List<InterimRemain> lstInterimAbsUsen = lstTmpAbs.stream()
+						.filter(a -> a.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstInterimAbsUsen.isEmpty()) {
+					InterimRemain temp = lstInterimAbsUsen.get(0);
+					lstInterimMngOfAbs.remove(temp);
+					List<InterimAbsMng> tmpAbsUsen = lstAbsUsen.stream().filter(b -> b.getAbsenceMngId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tmpAbsUsen.isEmpty()) {
+						lstAbsUsen.remove(tmpAbsUsen.get(0));
+					}
+				}
+				List<InterimRemain> lstRecUsen = lstTmpRec.stream()
+						.filter(b -> b.getYmd().equals(interimRemain.getYmd())).collect(Collectors.toList());
+				if(!lstRecUsen.isEmpty()) {
+					InterimRemain temp = lstRecUsen.get(0);
+					lstInterimMngOfRec.remove(temp);
+					List<InterimRecMng> tempLstRec = lstRecMngUsen.stream().filter(b -> b.getRecruitmentMngId().equals(temp.getRemainManaID()))
+							.collect(Collectors.toList());
+					if(!tempLstRec.isEmpty()) {
+						lstRecMng.remove(tempLstRec.get(0));
+					}
+				}
+			}
+		}
+		//20181003 DuDT fix bug 101491 ↑
 		List<AbsRecDetailPara> lstOutputOfAbs = this.lstOutputOfAbs(lstAbsMng, lstInterimMngOfAbs, paramInput);
 		List<AbsRecDetailPara> lstOutputOfRec = this.lstOutputOfRec(lstRecMng, lstInterimMngOfRec, paramInput);
 		lstAbsRec.addAll(lstOutputOfAbs);
@@ -688,14 +736,16 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 	@Override
 	public double getAbsRecMngRemain(String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
+		//社員に対応する締め期間を取得する
+		DatePeriod period = closureService.findClosurePeriod(employeeID, date);
 		AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(
-				companyID, 
-				employeeID, 
-				new DatePeriod(date, date.addYears(1)), 
-				date, 
-				false, 
-				false, 
-				Collections.emptyList(), 
+				companyID, //・ログイン会社ID
+				employeeID, //・INPUT．社員ID
+				new DatePeriod(period.start(), period.start().addYears(1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年
+				date, //・基準日＝INPUT．基準日
+				false, //・モード＝その他モード
+				false, //・上書きフラグ=false
+				Collections.emptyList(), //上書き用の暫定管理データ：なし
 				Collections.emptyList(), 
 				Collections.emptyList());
 		return this.getAbsRecMngInPeriod(paramInput).getRemainDays();

@@ -22,4 +22,9 @@ public class ExcessOfStatutoryMidNightTimeDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = BEFOR_APPLICATION)
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer beforeApplicationTime;
+	
+	@Override
+	public ExcessOfStatutoryMidNightTimeDto clone() {
+		return new ExcessOfStatutoryMidNightTimeDto(time == null ? null : time.clone(), beforeApplicationTime);
+	}
 }

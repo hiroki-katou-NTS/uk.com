@@ -53,3 +53,23 @@
 	margin-bottom: -18px;
 	position: fixed;
 }
+
+
+#multi-list1_tooltips,
+#multi-list2_tooltips {
+	border: none;
+	background: none;
+	box-shadow: none;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+#multi-list1_tooltips .ui-tooltip-content,
+#multi-list2_tooltips .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
+	width: auto !important;
+	max-width: 800px !important;
+}

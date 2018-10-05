@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -87,11 +88,14 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 年休付与テーブル */
 	@Inject
 	private GrantYearHolidayRepository grantYearHolidayRepo;
+	/** 日別実績の運用開始設定 */
+	@Inject
+	private OperationStartSetDailyPerformRepository operationStartSetRepo;
 	
 	/** 期間中の年休残数を取得 */
 	@Override
 	public Optional<AggrResultOfAnnualLeave> algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt, Optional<Boolean> noCheckStartDate) {
@@ -113,7 +117,8 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getAnnLeaRemNumWithinPeriod,
 				this.closureSttMngRepo,
 				this.calcAnnLeaAttendanceRate,
-				this.grantYearHolidayRepo);
+				this.grantYearHolidayRepo,
+				this.operationStartSetRepo);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt, noCheckStartDate);
@@ -122,7 +127,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 期間中の年休残数を取得　（月別集計用） */
 	@Override
 	public Optional<AggrResultOfAnnualLeave> algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
@@ -148,7 +153,8 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getAnnLeaRemNumWithinPeriod,
 				this.closureSttMngRepo,
 				this.calcAnnLeaAttendanceRate,
-				this.grantYearHolidayRepo);
+				this.grantYearHolidayRepo,
+				this.operationStartSetRepo);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,

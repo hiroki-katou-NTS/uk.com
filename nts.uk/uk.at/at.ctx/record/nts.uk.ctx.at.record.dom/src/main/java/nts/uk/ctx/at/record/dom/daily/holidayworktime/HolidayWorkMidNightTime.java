@@ -14,7 +14,9 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 @Getter
 @AllArgsConstructor
 public class HolidayWorkMidNightTime {
+	//時間
 	private TimeDivergenceWithCalculation time;
+	//法定区分
 	private StaturoryAtrOfHolidayWork statutoryAtr;
 	
 	/**

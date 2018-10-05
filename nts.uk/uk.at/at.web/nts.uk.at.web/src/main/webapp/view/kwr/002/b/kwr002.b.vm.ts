@@ -49,7 +49,7 @@ module nts.uk.com.view.kwr002.b {
                         newModeFlag = false;
                     })
                 } else {
-                    this.onNew(false);
+                    this.onNew(true);
                 }
             });
         };
