@@ -167,16 +167,16 @@ public class WithinStatutoryTimeOfDaily {
 					  							  recordReget.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
 					  							  recordReget.getPersonalInfo().getWorkingSystem(),
 					  							  recordReget.getWorkDeformedLaborAdditionSet(),
-//					  							  recordReget.getWorkFlexAdditionSet(),
-					  							  new WorkFlexAdditionSet(recordReget.getWorkFlexAdditionSet().getCompanyId(),
-					  									  				  new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,recordReget.getWorkFlexAdditionSet().getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-					  									  										   new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, recordReget.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
-					  									  				  ),
-//					  							  recordReget.getWorkRegularAdditionSet(),
-					  							  new WorkRegularAdditionSet(recordReget.getWorkRegularAdditionSet().getCompanyId(),
-					  									  					new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,recordReget.getWorkRegularAdditionSet().getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
-					  									  											 new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, recordReget.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
-					  									  					),
+					  							  recordReget.getWorkFlexAdditionSet(),
+//					  							  new WorkFlexAdditionSet(recordReget.getWorkFlexAdditionSet().getCompanyId(),
+//					  									  				  new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,recordReget.getWorkFlexAdditionSet().getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+//					  									  										   new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, recordReget.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
+//					  									  				  ),
+					  							  recordReget.getWorkRegularAdditionSet(),
+//					  							  new WorkRegularAdditionSet(recordReget.getWorkRegularAdditionSet().getCompanyId(),
+//					  									  					new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,recordReget.getWorkRegularAdditionSet().getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+//					  									  											 new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, recordReget.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
+//					  									  					),
 					  							  recordReget.getHolidayAddtionSet().get(),
 					  							  recordReget.getHolidayCalcMethodSet(),
 					  							  calcMethod,
@@ -482,5 +482,22 @@ public class WithinStatutoryTimeOfDaily {
 	public static WithinStatutoryTimeOfDaily defaultValue(){
 		return new WithinStatutoryTimeOfDaily(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, 
 				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue()));
+	}
+	
+	/**
+	 * 所定内休憩未取得時間を計算
+	 * @param unUseBreakTime 休憩未取得時間
+	 * @param attendanceTime 
+	 * @return 休憩未取得時間
+	 */
+	public AttendanceTime calcUnUseWithinBreakTime(AttendanceTime unUseBreakTime, AttendanceTime predTime) {
+		//所定内時間
+		AttendanceTime withinPredTime = predTime.minusMinutes(this.getActualWorkTime().valueAsMinutes());
+		if(withinPredTime.greaterThan(unUseBreakTime.valueAsMinutes())) {
+			return withinPredTime;
+		}
+		else {
+			return unUseBreakTime;
+		}
 	}
 }

@@ -372,7 +372,9 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			String workTimeCode, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 
 		Optional<FlexWorkSetting> fws = this.flexWorkSettingRepo.find(companyId, workTimeCode);
-		
+		if(!fws.isPresent()){
+			return false;
+		}
 		if (weekdayHolidayClassification == 0) {
 			fws.get().getLstHalfDayWorkTimezone().stream().forEach(c -> {
 				if(c.getAmpmAtr() == AmPmAtr.ONE_DAY 

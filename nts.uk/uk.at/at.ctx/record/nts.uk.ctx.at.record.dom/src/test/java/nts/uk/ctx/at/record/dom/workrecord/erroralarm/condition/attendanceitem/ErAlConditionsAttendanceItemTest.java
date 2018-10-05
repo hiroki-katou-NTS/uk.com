@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
@@ -20,13 +21,13 @@ public class ErAlConditionsAttendanceItemTest {
 	@Test
 	public void test() {
 		ErAlConditionsAttendanceItem condition = createCondition(LogicalOperator.OR);
-		assertTrue(condition.check(c -> c));
+		assertTrue(condition.check(c -> c) == WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test2() {
 		ErAlConditionsAttendanceItem condition = createCondition(LogicalOperator.AND);
-		assertTrue(!condition.check(c -> c));
+		assertTrue(condition.check(c -> c) != WorkCheckResult.ERROR);
 	}
 
 	private ErAlConditionsAttendanceItem createCondition(LogicalOperator logic){

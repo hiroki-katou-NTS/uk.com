@@ -38,8 +38,11 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
@@ -243,7 +246,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// 6. どのメニューから起動したのかをチェックする (Check xem khởi động từ menu nào)
 		// 「月別実績の修正」からの場合         
-		//todo request list 133 is not available, fixed add param.getInitMenuMode() == 2
 		if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
 			// 7. アルゴリズム「通常モードで起動する」を実行する
 			// アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
@@ -347,8 +349,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 				ApprovalProcessingUseSetting approvalProcessingUseSetting = optApprovalProcessingUseSetting.get();
 				if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
 					 //アルゴリズム「ログイン社員の承認対象者の取得」を実行する	
-					//Imported（就業）「基準社員の承認対象者」を取得する request list 133
-					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
+					// request list 534
+					ApprovalRootOfEmployeeImport approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
+							AppContexts.user().employeeId(), new YearMonth(yearMonth), screenDto.getClosureId(),
+							screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 					
 					if(approvalRootOfEmloyee==null){
 						throw new BusinessException("Msg_916");
@@ -565,7 +569,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	/**
 	 * 月別実績を表示する
 	 */
-	private void displayMonthlyResult(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId,ApprovalProcessingUseSetting approvalProcessingUseSetting, String companyId) {
+	private void displayMonthlyResult(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId, ApprovalProcessingUseSetting approvalProcessingUseSetting, String companyId) {
 		/**
 		 * Create Grid Sheet DTO
 		 */
@@ -667,17 +671,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
 		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
 			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
-				// *10 request list 155
-				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter
-						.getApprovalByListEmplAndListApprovalRecordDateNew(
-								Arrays.asList(screenDto.getSelectedActualTime().getEndDate()), listEmployeeIds,
-								Integer.valueOf(2));
+				// *10 request list 533
+				List<EmpPerformMonthParamImport> params = new ArrayList<>();
+				for (MonthlyPerformanceEmployeeDto emp : screenDto.getLstEmployee()) {
+					EmpPerformMonthParamImport p = new EmpPerformMonthParamImport(new YearMonth(yearMonth), closureId,
+							screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate(), emp.getId());
+					params.add(p);
+				}
+				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(params);
 			} else if (param.getInitMenuMode() == 2) {
-				// *8 request list 133
-				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalRootOfEmloyeeNew(
-						screenDto.getSelectedActualTime().getEndDate(),
-						screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId,
-						Integer.valueOf(2));
+				// *8 request list 534
+				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
+						AppContexts.user().employeeId(), new YearMonth(yearMonth), closureId,
+						screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 			}
 		}
 		
@@ -711,11 +717,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
+			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			if (rowData == null) continue;
+			
 			// lock check box1 identify
 			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 			}
-			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
+			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) || param.getInitMenuMode() == 1 ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 			
 			// set state approval
@@ -762,23 +771,26 @@ public class MonthlyPerformanceCorrectionProcessor {
 			if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
 				if(param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1){
 					//*10 
-					if(approvalByListEmplAndListApprovalRecordDate!=null){
+					if (approvalByListEmplAndListApprovalRecordDate != null) {
 						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
-							if(approvalApprovalRecordDate.getEmployeeID().equals(employeeId)){
-								//承認状況　＝　承認済 or 承認中　の場合
-								if(approvalApprovalRecordDate.getApprovalStatus().value==1 || approvalApprovalRecordDate.getApprovalStatus().value==2 ){
-									approve =true;
-								}
+							// 承認状況 ＝ 承認済 or 承認中 の場合
+							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)
+									&& approvalApprovalRecordDate
+											.getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL
+									|| approvalApprovalRecordDate
+											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
+								approve = true;
 							}
 						}
 					}
-				}else if(param.getInitMenuMode()==2){
+				} else if (param.getInitMenuMode() == 2) {
 					//*8 
 					if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
 						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
 							//◆基準社員の承認アクション　＝　承認した　の場合
 							if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED){
-								approve =true;
+								approve = true;
+								break;
 							}
 						}
 					}
@@ -791,8 +803,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			
 			// Setting data for dynamic column
-			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
-			
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream().filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
 				if (null != rowData.getItems()) {
@@ -807,24 +817,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 						if (pA.getAttendanceAtr() == 1) {
 							int minute = 0;
 							if (item.getValue() != null) {
-								if (Integer.parseInt(item.getValue()) >= 0) {
-									minute = Integer.parseInt(item.getValue());
-								} else {
-									minute = (Integer.parseInt(item.getValue())
-											+ (1 + -Integer.parseInt(item.getValue()) / (24 * 60)) * (24 * 60));
-								}
+								minute = Integer.parseInt(item.getValue());
 							}
-							int hours = minute / 60;
+							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
-							String valueConvert = (minute < 0 && hours == 0)
+							String valueConvert = (minute < 0)
 									? "-" + String.format("%d:%02d", hours, minutes)
 									: String.format("%d:%02d", hours, minutes);
 
 							mpdata.addCellData(
 									new MPCellDataDto(attendanceKey, valueConvert, attendanceAtrAsString, "label"));
-						}
-						mpdata.addCellData(new MPCellDataDto(attendanceKey,
-								item.getValue() != null ? item.getValue() : "", "String", ""));
+						} else
+							mpdata.addCellData(new MPCellDataDto(attendanceKey,
+								item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
 						if (!StringUtil.isNullOrEmpty(lockStatus, true)) {
 							cellStatus.add(STATE_DISABLE);
 						}

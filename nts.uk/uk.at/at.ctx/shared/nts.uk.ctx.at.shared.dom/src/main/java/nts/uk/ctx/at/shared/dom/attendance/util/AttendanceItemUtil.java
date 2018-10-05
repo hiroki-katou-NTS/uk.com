@@ -96,8 +96,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		int layout = root.isContainer() ? DEFAULT_IDX : DEFAULT_NEXT_IDX;
 
-		return getItemValues(attendanceItems, layout, EMPTY_STRING, root.isContainer() ? EMPTY_STRING : root.rootName(), 
-					EMPTY_STRING, DEFAULT_IDX, getItemMap(type, itemIds, null, layout));
+		return getItemValues(attendanceItems, layout, root.isContainer() ? EMPTY_STRING : root.rootName(), getItemMap(type, itemIds, null, layout));
 	}
 	
 	public static <T extends ConvertibleAttendanceItem> T fromItemValues(Class<T> classType, Collection<ItemValue> attendanceItems) {
@@ -135,14 +134,13 @@ public class AttendanceItemUtil implements ItemConst {
 								getItemMap(type, itemMap.keySet(), c -> itemMap.get(c.itemId()).withPath(c.path()), layout));
 	}
 
-	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String layoutCode, String path,
-			String extraCondition, int index, Map<String, List<ItemValue>> groups){
+	private static <T> Map<T, List<ItemValue>> getItemValues(List<T> attendanceItems, int layoutIdx, String path, Map<String, List<ItemValue>> groups){
 		Map<Integer, T> atMap = attendanceItems.stream().collect(HashMap::new,
 																(m,v)->m.put(v == null ? 0 : v.hashCode(), v), 
 																HashMap::putAll);
 		Map<Integer, List<ItemValue>> result = atMap.entrySet().stream().collect(Collectors.toMap(t -> t.getKey(), t -> new ArrayList<>()));
 		
-		getItemValues(atMap, layoutIdx, layoutCode, path, extraCondition, index, groups, result);
+		getItemValues(atMap, layoutIdx, EMPTY_STRING, path, new HashMap<>(), DEFAULT_IDX, groups, result);
 		
 		return result.entrySet().stream().collect(HashMap::new,
 													(m,v)->m.put(atMap.get(v.getKey()), v.getValue()), 
@@ -151,7 +149,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 	@SuppressWarnings("unchecked")
 	private static <T> void getItemValues(Map<Integer, T> attendanceItems, int layoutIdx, String layoutCode, String path,
-														String extraCondition, int index, Map<String, List<ItemValue>> groups,
+														Map<Integer, String> extraCondition, int index, Map<String, List<ItemValue>> groups,
 														Map<Integer, List<ItemValue>> result) {
 		if(attendanceItems.isEmpty()){
 			return;
@@ -175,8 +173,9 @@ public class AttendanceItemUtil implements ItemConst {
 					() -> layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType());
 
 			String pathName = getPath(path, layout, getRootAnnotation(field)),
-					currentLayout = mergeLayout(layoutCode, layout.layout()),
-					exCon = getExCondition(extraCondition, oneV, layout);
+					currentLayout = mergeLayout(layoutCode, layout.layout());
+			
+			Map<Integer, String> exConMap = getExCondition(extraCondition, attendanceItems, layout);
 
 			if (isList) {
 				Map<Integer, List<T>> list = getListAndSort(attendanceItems, field, className, layout);
@@ -191,7 +190,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					getItemValues(fieldValue(className, idxValue, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX,
 										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
-										pathName, exCon, layout.listNoIndex() ? -1 : idx.getKey(),
+										pathName, exConMap, layout.listNoIndex() ? -1 : idx.getKey(),
 										mapByPath(idx.getValue(),
 												id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)), 
 										result);
@@ -203,33 +202,31 @@ public class AttendanceItemUtil implements ItemConst {
 			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 
 			if (valueAnno == null) {
-				getItemValues(fieldValue(className, value, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exCon, index,
+				getItemValues(fieldValue(className, value, attendanceItems), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exConMap, index,
 							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)),
 							result);
 				return;
 			}
 
-			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
+//			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
 
 			c.getValue().stream().filter(id -> getTextWithNoCondition(id.path()).equals(pathName)).forEach(item -> {
 				String fLayout = currentLayout + getTextWithCondition(item.path());
-				if (item.path().equals(currentFullPath)) {
 					result.entrySet().stream().forEach(r -> {
-						r.getValue().add(ItemValue.build(item.path(), item.itemId())
+						String currentFullPath = getKey(pathName, exConMap.get(r.getKey()), index > DEFAULT_IDX, index);
+						if (item.path().equals(currentFullPath)) {
+							r.getValue().add(ItemValue.build(item.path(), item.itemId())
 													.value(value.get(r.getKey()))
 													.layout(fLayout)
 													.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
 													.completed());
+						} else {
+							r.getValue().add(ItemValue.build(item.path(), item.itemId())
+									.layout(fLayout)
+									.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
+									.completed());
+						}
 					});
-
-				} else {
-					result.entrySet().stream().forEach(r -> {
-						r.getValue().add(ItemValue.build(item.path(), item.itemId())
-													.layout(fLayout)
-													.valueType(getItemValueType(attendanceItems.get(r.getKey()), valueAnno))
-													.completed());
-					});
-				}
 			});
 		});
 	}
@@ -948,7 +945,11 @@ public class AttendanceItemUtil implements ItemConst {
 
 	@SuppressWarnings("unchecked")
 	private static <T> String getExCondition(String exCondition, T object, AttendanceItemLayout layout) {
-
+		
+		if(exCondition == null){
+			exCondition = EMPTY_STRING;
+		}
+		
 		return CACHE_HOLDER.getAndCache(StringUtils.join("EX_", exCondition, "_", object.getClass().hashCode()), () -> {
 			String fieldExCondition = getExConditionField(object, layout);
 
@@ -962,6 +963,12 @@ public class AttendanceItemUtil implements ItemConst {
 
 			return fieldExCondition;
 		});
+	}
+	
+	private static <T> Map<Integer, String> getExCondition(Map<Integer, String> exCondition, Map<Integer, T> object, AttendanceItemLayout layout) {
+
+		return object.entrySet().stream().collect(Collectors.toMap(c -> c.getKey(), c -> 
+		 								getExCondition(exCondition.get(c.getKey()), c.getValue(), layout)));
 	}
 
 	@SuppressWarnings("unchecked")

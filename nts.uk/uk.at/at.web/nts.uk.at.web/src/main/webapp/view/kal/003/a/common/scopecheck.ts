@@ -11,7 +11,10 @@ module nts.uk.at.view.kal003.a.tab {
             if (targetCondition) {
                 this.targetCondition(targetCondition);
             }
-            
+            $('#scopechecktab1').addClass("limited-label");
+            $('#scopechecktab2').addClass("limited-label");
+            $('#scopechecktab3').addClass("limited-label");
+            $('#scopechecktab4').addClass("limited-label");
             this.targetCondition.subscribe(() => {
                 this.targetCondition().targetEmployment.valueHasMutated();
                 this.targetCondition().targetClassification.valueHasMutated();

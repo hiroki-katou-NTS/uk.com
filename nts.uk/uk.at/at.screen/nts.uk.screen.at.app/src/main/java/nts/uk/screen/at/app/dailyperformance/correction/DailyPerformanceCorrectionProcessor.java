@@ -252,7 +252,7 @@ public class DailyPerformanceCorrectionProcessor {
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);	
 		
-		setHideCheckbok(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
+		setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 		getHolidaySettingData(screenDto);
@@ -648,11 +648,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
-				if(mode == ScreenMode.APPROVAL.value) {
-					lock = lock && false;
-				}else {
-					lock = true;
-				}
+				if(mode != ScreenMode.APPROVAL.value) lock = true;
 				
 			}
 			
@@ -669,8 +665,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if (lockSign) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
 				//lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lock = lock && false;
-				else lock = true;
+				if(mode != ScreenMode.APPROVAL.value)  lock = true;
 			}
 			
 			if (lockHist) {
@@ -1053,7 +1048,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return StringUtils.join(x);
 	}
 
-	public void setHideCheckbok(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
+	public void setHideCheckbox(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
 			screenDto.setShowPrincipal(indentity.isPresent() && indentity.get().isUseConfirmByYourself());
 			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm());
 	}
@@ -1501,10 +1496,10 @@ public class DailyPerformanceCorrectionProcessor {
 				OptionalItemAtr atr = optionalItemAtr.get(itemNo);
 				if(atr != null && atr.value == OptionalItemAtr.TIME.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
-					item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
+					//item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
-					item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
+					//item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
 				}

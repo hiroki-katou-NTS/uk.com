@@ -247,7 +247,7 @@ public class ScheCreExeWorkTypeHandler {
 			}
 			// find work type set by close atr employment status
 			List<WorkTypeSet> worktypeSets = this.workTypeRepository
-					.findWorkTypeSetCloseAtr(command.getBaseGetter().getCompanyId(), closeAtr);
+					.findWorkTypeSetCloseAtrDeprecateAtr(command.getBaseGetter().getCompanyId(), closeAtr, DeprecateClassification.NotDeprecated.value);
 
 			// check empty work type set
 			if (CollectionUtil.isEmpty(worktypeSets)) {

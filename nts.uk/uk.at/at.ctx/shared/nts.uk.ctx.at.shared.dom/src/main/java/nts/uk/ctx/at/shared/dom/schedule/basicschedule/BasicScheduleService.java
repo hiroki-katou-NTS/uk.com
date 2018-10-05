@@ -33,7 +33,7 @@ public interface BasicScheduleService {
 	 * @param workTimeCode
 	 * @param listWorkType
 	 */
-	String checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType);
+	void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType);
 
 	/**
 	 * 勤務種類のマスタチェック

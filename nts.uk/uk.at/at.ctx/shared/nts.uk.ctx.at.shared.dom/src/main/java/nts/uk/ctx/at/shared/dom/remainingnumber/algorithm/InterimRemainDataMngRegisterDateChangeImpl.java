@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemainDataMngRegisterDateChange{
 	@Inject
@@ -59,7 +58,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private InterimSpecialHolidayMngRepository specialHoliday;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
 		//「残数作成元情報(実績)」を取得する
