@@ -359,6 +359,13 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 */
 	private ManageReGetClass createRecord(IntegrationOfDaily integrationOfDaily,TimeSheetAtr timeSheetAtr, ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting, Optional<WorkInfoOfDailyPerformance> yesterDayInfo, Optional<WorkInfoOfDailyPerformance> tomorrowDayInfo) {
 		
+		//休暇加算時間設定
+		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
+		if(!holidayAddtionSetting.isPresent()) {
+			throw new BusinessException("Msg_1446");
+		}
+		HolidayAddtionSet holidayAddtionSet = holidayAddtionSetting.get();
+		
 		MasterShareContainer shareContainer = companyCommonSetting.getShareContainer();
 		
 		Optional<WorkInformation> yesterInfo = yesterDayInfo.isPresent()?Optional.of(yesterDayInfo.get().getRecordInfo()):Optional.empty();
@@ -558,12 +565,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		Optional<FlexCalcSetting> flexCalcSetting = Optional.empty();
 		//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 			
-		//休暇加算時間設定
-		Optional<HolidayAddtionSet> holidayAddtionSetting = companyCommonSetting.getHolidayAdditionPerCompany();
-		if(!holidayAddtionSetting.isPresent()) {
-			throw new BusinessException("Msg_1446");
-		}
-		HolidayAddtionSet holidayAddtionSet = holidayAddtionSetting.get();
+
 		
 		// 休暇クラス
 		VacationClass vacation = new VacationClass(new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
