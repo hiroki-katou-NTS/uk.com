@@ -11,7 +11,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 900,
+					width : 750,
 					height : 600
 				};
 			</script>
@@ -31,7 +31,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div style="margin-bottom: 15px;">
-					<button class="proceed" id="J1_1" tabindex="1" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
+					<button class="proceed" id="J1_1" style="margin-left: 50px;" tabindex="1" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 					<button id="J1_2" tabindex="2" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM008_2')}</button>
 					<button id="J1_3" tabindex="3" data-bind="click: countReview">#{i18n.getText('QMM008_141')}</button>
 					<button id="J1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
@@ -39,12 +39,12 @@
 			</div>
 			<div id="contents-area" style="margin-left: 15px;">
 				<div id="content" class="cf">
-					<div style="min-width: 800px;">
-						<div id="J2_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
+					<div style="min-width: 600px;">
+						<div id="J2_1" style="margin-left: 32px;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_142')}</div>
 						<span style="margin-bottom: 15px;" id="J2_2"
 							data-bind="text: officeCode"></span> <span
-							style="margin-bottom: 15px;margin-left: 10px;" id="J2_3"
-							data-bind="text: socialInsuranceName"></span>
+							style="margin-left: 10px;width: 250px;" id="J2_3"
+							data-bind="text: socialInsuranceName" class="limited-label"></span>
 						<div id="J2_4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM008_12')}</div>
 						<span style="margin-bottom: 15px;" id="J2_5"
 							data-bind="text: displayStart"></span> <span
@@ -53,7 +53,7 @@
 							data-bind="text: displayEnd"></span>
 					</div>
 
-					<div class="flex"  id="J3_1_container" style="margin-left: 35px; margin-top: 15px; width: 790px;min-width: 790px;" >
+					<div class="flex"  id="J3_1_container" style="margin-left: 35px; margin-top: 15px; width: 590px;min-width: 390px;" >
 						<table id="fixed-table" >
 							<colgroup >
 								<col width="40px" />

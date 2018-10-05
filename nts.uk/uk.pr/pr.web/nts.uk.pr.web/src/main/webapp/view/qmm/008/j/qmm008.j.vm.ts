@@ -40,13 +40,13 @@ module nts.uk.pr.view.qmm008.j {
                            }
 
                        }
-                   }, 500);
+                   }, 100);
 
                });
 
-               $("#fixed-table").ntsFixedTable({ height: 363, width: 1000 });
+               $("#fixed-table").ntsFixedTable({ height: 363, width: 500 });
 
-
+                console.log("3333");
            }
            
             

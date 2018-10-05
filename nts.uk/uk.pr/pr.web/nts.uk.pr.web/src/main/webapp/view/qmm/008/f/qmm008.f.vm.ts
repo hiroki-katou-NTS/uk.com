@@ -46,17 +46,23 @@ module nts.uk.pr.view.qmm008.f {
                             }
 
                         }
-                    }, 500);
+                    }, 100);
                     if (!response.display){
-                        currentScreen.setWidth(1250);
+                        setTimeout(function () {
+                             currentScreen.setWidth(1250);
+                        }, 100);
+                        // dialogSize = { width: 1200, height: 600 };
                     } else {
-                        currentScreen.setWidth(1000);
+                        //setTimeout(function () {
+                            currentScreen.setWidth(900);
+                        //}, 100);
+                        //var dialogSize = { width: 800, height: 600 };
                     }
-
+                    console.log("7777");
                     //Fixed table
                     if (/Chrome/.test(navigator.userAgent)) {
                         $("#fixed-table1").ntsFixedTable({height: 412, width: 1140});
-                        $("#fixed-table").ntsFixedTable({height: 412, width: 800});
+                        $("#fixed-table").ntsFixedTable({height: 412, width: 750});
                     } else {
                         $("#fixed-table1").ntsFixedTable({height: 410, width: 1140});
                         $("#fixed-table").ntsFixedTable({height: 410, width: 800});
