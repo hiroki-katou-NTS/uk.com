@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm008.j {
 
                });
 
-               $("#fixed-table").ntsFixedTable({ height: 363, width: 790 });
+               $("#fixed-table").ntsFixedTable({ height: 363, width: 1000 });
 
 
            }
@@ -98,7 +98,7 @@ module nts.uk.pr.view.qmm008.j {
                        self.dataList.push(new RowData(response[i]));
                    }
                    setTimeout(function () {
-                       $(".nts-fixed-table").attr('tabindex', '0');
+                       $(".nts-fixed-table").attr('tabindex', '5');
                        $(".nts-fixed-table").focus();
                    }, 500);
                });

@@ -48,18 +48,18 @@ module nts.uk.pr.view.qmm008.f {
                         }
                     }, 500);
                     if (!response.display){
-                        currentScreen.setWidth(1200);
+                        currentScreen.setWidth(1250);
                     } else {
                         currentScreen.setWidth(900);
                     }
 
                     //Fixed table
                     if (/Chrome/.test(navigator.userAgent)) {
-                        $("#fixed-table1").ntsFixedTable({height: 412, width: 1040});
-                        $("#fixed-table").ntsFixedTable({height: 412, width: 1040});
+                        $("#fixed-table1").ntsFixedTable({height: 412, width: 1140});
+                        $("#fixed-table").ntsFixedTable({height: 412, width: 1140});
                     } else {
-                        $("#fixed-table1").ntsFixedTable({height: 410, width: 1040});
-                        $("#fixed-table").ntsFixedTable({height: 410, width: 1040});
+                        $("#fixed-table1").ntsFixedTable({height: 410, width: 1140});
+                        $("#fixed-table").ntsFixedTable({height: 410, width: 1140});
                     }
 
 

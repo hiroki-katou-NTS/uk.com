@@ -9,11 +9,8 @@
 		
         <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
-            	<script>var dialogSize = { width: 1100, height: 600 };</script>
+            	<script>var dialogSize = { width: 1100, height: 700 };</script>
 				<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-					nts.arc.time.YearMonth
-					nts.uk.shr.com.primitive.sample.ResidenceCode
 					nts.uk.ctx.core.dom.socialinsurance.InsuranceFee
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
@@ -48,21 +45,21 @@
 						data-bind="text: displayEnd"></span>
 				</div>
 				<div data-bind="if: !display()" id="test">
-					<div class="flex"  id ="f3_1_container" style="width: 1040px;min-width: 500px;">
+					<div class="flex"  id ="f3_1_container" style="width: 1130px;min-width: 500px;">
 						<table id="fixed-table1" >
 						<colgroup>
 							<col width="40px" />
-							<col width="70px" />
-							<col width="70px" />
-							<col width="70px" />
-							<col width="92px" />
-							<col width="92px" />
-							<col width="92px" />
-							<col width="92px" />
-							<col width="92px" />
-							<col width="92px" />
-							<col width="92px" />
-							<col width="92px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="90px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
 						</colgroup>
 						<thead>
 						<tr>
@@ -151,7 +148,7 @@
 							<td>
 								<input tabindex="6" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -164,7 +161,7 @@
 							<td>
 								<input tabindex="7" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -177,7 +174,7 @@
 							<td>
 								<input tabindex="8" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -190,7 +187,7 @@
 							<td>
 								<input tabindex="9" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -203,7 +200,7 @@
 							<td data-bind="css: { hidden: $parent.display() }">
 								<input tabindex="10" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -216,7 +213,7 @@
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input tabindex="11" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -228,7 +225,7 @@
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input tabindex="12" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -241,7 +238,7 @@
 							<td data-bind="css: { hidden: $parent.display()  }">
 								<input tabindex="13" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '65px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -258,17 +255,17 @@
 
 
 				<div data-bind="if: display()">
-					<div class="flex" id ="f3_1_2_container" style="width: 700px;min-width: 500px;" >
+					<div class="flex" id ="f3_1_2_container" style="width: 1000px;min-width: 500px;" >
 					<table id="fixed-table"  >
 						<colgroup>
-							<col width="30px" />
-							<col width="70px" />
-							<col width="70px" />
-							<col width="70px" />
+							<col width="40px" />
 							<col width="90px" />
 							<col width="90px" />
 							<col width="90px" />
-							<col width="90px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
+							<col width="100px" />
 
 						</colgroup>
 						<thead>
@@ -334,7 +331,7 @@
 							<td>
 								<input tabindex="6" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '63px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -347,7 +344,7 @@
 							<td>
 								<input tabindex="7" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '63px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -360,7 +357,7 @@
 							<td>
 								<input tabindex="8" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '63px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
@@ -373,7 +370,7 @@
 							<td>
 								<input tabindex="9" data-bind="ntsNumberEditor: {
  													option: {
- 														width: '63px',
+ 														width: '73px',
 														decimallength: 2,
 														grouplength: 3
 													},
