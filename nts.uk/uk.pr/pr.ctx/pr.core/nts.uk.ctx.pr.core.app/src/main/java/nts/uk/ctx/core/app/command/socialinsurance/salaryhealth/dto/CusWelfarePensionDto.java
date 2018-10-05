@@ -25,11 +25,13 @@ public class CusWelfarePensionDto {
 	
 	public GradeWelfarePensionInsurancePremium fromToDomain() {
 		return new GradeWelfarePensionInsurancePremium(this.welfarePensionGrade,
-				new BigDecimal(this.inFemaleInsurancePremium), new BigDecimal(this.inMaleInsurancePremium),
-				this.inFemaleExemptionInsurance != null ? new BigDecimal(this.inFemaleExemptionInsurance) : null, this.inMaleExemptionInsurance != null ? new BigDecimal(this.inMaleExemptionInsurance) : null,
-				new BigDecimal(this.emFemaleInsurancePremium), new BigDecimal(this.emMaleInsurancePremium),
-				this.emFemaleExemptionInsurance != null ? new BigDecimal(this.emFemaleExemptionInsurance) : null , this.emMaleExemptionInsurance != null ?new BigDecimal(this.emMaleExemptionInsurance) : null);
+				fromString(this.inFemaleInsurancePremium), fromString(this.inMaleInsurancePremium),
+				this.inFemaleExemptionInsurance != null ? fromString(this.inFemaleExemptionInsurance) : null, this.inMaleExemptionInsurance != null ? fromString(this.inMaleExemptionInsurance) : null,
+				fromString(this.emFemaleInsurancePremium), fromString(this.emMaleInsurancePremium),
+				this.emFemaleExemptionInsurance != null ? fromString(this.emFemaleExemptionInsurance) : null , this.emMaleExemptionInsurance != null ?fromString(this.emMaleExemptionInsurance) : null);
 	}
-	
-	
+
+	public BigDecimal fromString(String pa) {
+		return new BigDecimal(pa).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
 }

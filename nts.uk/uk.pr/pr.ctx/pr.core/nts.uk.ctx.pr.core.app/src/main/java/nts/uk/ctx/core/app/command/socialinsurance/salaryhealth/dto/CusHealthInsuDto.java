@@ -25,8 +25,12 @@ public class CusHealthInsuDto {
 	
 	public HealthInsurancePerGradeFee fromCommandToDomain (){
 		return new HealthInsurancePerGradeFee(this.healthInsuranceGrade,
-				new BigDecimal(emHealthInsurancePremium),new BigDecimal(emNursingCare),new BigDecimal(emSpecInsurancePremium),new BigDecimal(emBasicInsurancePremium),
-						new BigDecimal (inHealthInsurancePremium),new BigDecimal (inNursingCare),new BigDecimal (inSpecInsurancePremium) ,new BigDecimal (inBasicInsurancePremium));
+				 fromString(emHealthInsurancePremium),fromString(emNursingCare),fromString(emSpecInsurancePremium),fromString(emBasicInsurancePremium),
+				fromString(inHealthInsurancePremium),fromString(inNursingCare),fromString(inSpecInsurancePremium) ,fromString(inBasicInsurancePremium));
 	}
-	
+
+	public BigDecimal fromString(String pa) {
+		return new BigDecimal(pa).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
 }
