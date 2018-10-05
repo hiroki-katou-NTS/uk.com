@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 430, height: 400 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="qmm011.f.vm.js" />
+			<com:scriptfile path="qmm011.f.start.js" />
+			<com:scriptfile path="qmm011.f.service.js" />
+			<com:stylefile path="qmm011.f.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="title" style="margin-bottom: 10px">
+					<!-- F1_1 履歴編集 -->
+					<span id="F1_1" class="label">#{i18n.getText('QMM011_51')}</span>
+				</div>
+				<!-- F1_2 名称 -->
+				<div id="F1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px;">
+					<span class="label">#{i18n.getText('QMM011_44')}</span>
+					<!-- F1_3 保険名称 -->
+					<span id="F1_3" class="label"  style="margin-left: 89px" data-bind = "text: insuranceName"></span>
+				</div>
+				<!-- F1_4 編集方法の選択 -->
+				<div id="F1_4" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM011_52')}</span>
+					<!-- F1_5 履歴編集方法 -->
+					<div id = "F1_5" tabindex = "1" style= "display: inline-block;text-align: left;margin-left: 30px">
+						<div id="F1_6"  class="cell" 
+										data-bind="ntsRadioButton: {
+										checked: methodEditing, 
+										option: itemList()[0], 
+										optionValue: 'code',
+										enable: canDelete, 
+										optionText: 'name',
+										group: 'periodOption'}">
+						</div>
+						<br/>
+						<div id="F1_7"  class="cell"
+							data-bind="ntsRadioButton: {
+										checked: methodEditing, 
+										option: itemList()[1], 
+										optionValue: 'code', 
+										optionText: 'name',
+										group: 'periodOption'}">
+						</div>
+				</div>
+						
+				</div>
+				<div class = "F1_8">
+					<!-- F1_8 期間 -->
+					<div id = "F1_8" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')}</div>
+					<!-- F1_9 最新の履歴から引き継ぐ -->
+					<div id = "F1_9" tabindex = "2" data-bind="ntsDatePicker: { 
+												name: '#{i18n.getText('QMM011_45')}',
+												value: startYearMonth,
+												required: hasRequired(),
+												enable: hasRequired(),
+												valueFormat: 'YYYYMM',
+												dateFormat: 'yearmonth'}">
+					</div>
+					<!-- F1_10 初めから作成する。 -->
+					
+					<span id="F1_10" class="label" data-bind="text: endYearMonth"></span>
+				</div>
+			</div>
+			<div id= "functions-area-bottom">
+				<!-- F2_1 登録 -->
+				<button id="F2_1" tabindex="3" class="proceed large"
+					data-bind="click: update,enable: $root.errors.isEmpty">#{i18n.getText('QMM011_50')}</button>
+				<!-- F2_2 削除 -->
+				<button id="F2_2" tabindex="4"
+					data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
