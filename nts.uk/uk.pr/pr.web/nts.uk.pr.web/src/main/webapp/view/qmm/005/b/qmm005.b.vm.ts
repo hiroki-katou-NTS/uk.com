@@ -70,6 +70,11 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     nts.uk.ui.errors.clearAll();
                 }
             });
+            self.processingYearInput.subscribe(function (newValue) {
+                if(self.isNewMode()){
+                    self.blankData();
+                }
+            })
         }
 
         blankData() {
@@ -229,7 +234,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                                 month = month - SOCI_INSU_BASE_MONTH_INDEX;
                             }
                             let date = data.advancedSetting.sociInsuStanDate.refeDate;
-                            let socialInsuranceStandardDate = self.preDateTime(year, month, date);
+                            let socialInsuranceStandardDate = self.preDateTime(self.passYear(year, month, false).year, self.passYear(year, month, false).month, date);
                             let timeClosingDate;
                             if (data.advancedSetting.closeDate.timeCloseDate == model.TimeCloseDateClassification.SAME_DATE) {
                                 month = index - data.basicSetting.employeeExtractionReferenceDate.refeMonth;
