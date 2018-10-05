@@ -95,7 +95,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
 
         showDialogF(processCateNo, employeeList): void {
             let self = this;
-            $('#A3_1 #EmployeeString').eq(processCateNo-1).focus();
+
             let existList = [];
             for (let i = 0; i < self.itemBinding().length; i++) {
                 existList = existList.concat(self.itemBinding()[i].employeeList());
