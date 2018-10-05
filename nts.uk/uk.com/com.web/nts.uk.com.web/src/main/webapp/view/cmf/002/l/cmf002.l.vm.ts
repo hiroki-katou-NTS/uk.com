@@ -90,7 +90,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         sendData() {
 
             let self = this;
-            if (!self.decimalSelectionCls() && self.timeDataFormatSetting().fixedValue() == 0) {
+            if (self.decimalSelectionCls() && self.timeDataFormatSetting().fixedValue() == 0) {
                 $("#L3_1").trigger("validate");
             }
             if (self.timeDataFormatSetting().fixedValueOperation() == 1 && self.timeDataFormatSetting().fixedValue() == 0) {
@@ -210,12 +210,21 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         //※L6
         decimalSelectionCls() {
             let self = this;
-            let enable = (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
-            if (enable) {
+            let enable = self.checkEnableL6();
+            if (!enable) {
                 $('#L3_1').ntsError('clear');
                 self.timeDataFormatSetting().minuteFractionDigit(null);
             }
             return enable;
+        }
+        
+        checkEnableL6() {
+            let self = this;
+            if (self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE) return false;
+            if (self.timeDataFormatSetting().decimalSelection() == model.getDecimalSelect()[0].code) return false;
+            if (self.timeDataFormatSetting().decimalSelection() == model.getDecimalSelect()[1].code
+                && self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[1].code) return false;
+            return true;
         }
 
         enableFixedValueCls() {

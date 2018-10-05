@@ -59,8 +59,8 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: !$vm.decimalSelectionCls(),
-								enable: !$vm.decimalSelectionCls(),
+								required: $vm.decimalSelectionCls(),
+								enable: $vm.decimalSelectionCls(),
 								option : {width : '45px'}}" />
 						</div>
 						<div class="div-table-col-small div-inline"
@@ -79,8 +79,8 @@
 								value: minuteFractionDigitProcessCls,
 								optionsText: 'name',
 								editable: false,
-								enable: !$vm.decimalSelectionCls(),
-								required: !$vm.decimalSelectionCls(),
+								enable: $vm.decimalSelectionCls(),
+								required: $vm.decimalSelectionCls(),
 								selectFirstIfNull : true,
 								columns: [
 									{ prop: 'name', length: 5 },
