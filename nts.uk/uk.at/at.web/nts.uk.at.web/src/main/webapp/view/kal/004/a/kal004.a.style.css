@@ -28,7 +28,7 @@
 }
 #selected-text{
 	float: right;
-    margin-right: 0px;
+    margin-right: 20px;
     border-bottom: 1px solid;
     width: 380px;
     padding-bottom: 3px;
@@ -46,3 +46,7 @@
 	 width: 921px;
 	
 }
+
+/* #swap-list-grid1_horizontalScrollContainer {
+	overflow: hidden !important; 
+} */
