@@ -100,7 +100,7 @@ module nts.uk.pr.view.qmm012.b {
                             setTimeout(function(){
                                 $("tr[data-id='" + x + "'] ").focus();
                                 $("#B3_3").focus();
-                            }, 1000);
+                            }, 500);
                         } else {
                             self.statementItemDataSelected(new StatementItemData(null, self));
                         }
