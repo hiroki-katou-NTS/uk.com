@@ -464,9 +464,16 @@ public class WithinStatutoryTimeOfDaily {
 						  														  late,  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 						  														  leaveEarly,  //日別実績の計算区分.遅刻早退の自動計算設定.早退
 						  														  workingSystem,
-						  														  illegularAddSetting,
-						  														  flexAddSetting,
-						  														  regularAddSetting,
+													  							  illegularAddSetting, 
+																				  new WorkFlexAdditionSet(flexAddSetting.getCompanyId(),
+																						  new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+							  									  										   new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
+							  									  				  ),
+//																	   regularAddSetting,
+																				  new WorkRegularAdditionSet(regularAddSetting.getCompanyId(),
+																						   new HolidayCalcMethodSet(new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,regularAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getAdvanceSet()),
+						  									  											 new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet()))
+						  									  					  ), 
 						  														  holidayAddtionSet,
 						  														  holidayCalcMethodSet,
 						  														  dailyUnit,commonSetting,
