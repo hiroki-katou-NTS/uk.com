@@ -181,18 +181,18 @@ public class ZeroTime extends AggregateRoot {
 				case NON_STATUTORY_HOLIDAYS:
 					switch(otherWorkType.beforeDay()) {
 					case STATUTORY_HOLIDAYS:
-						return legalHd3 == 1 ? true : false;
+						return legalHd2 == 1 ? true : false;
 					case NON_STATUTORY_HOLIDAYS:
 						return false;
 					case PUBLIC_HOLIDAY:
-						return nonLegalPublicHd3 == 1 ? true : false;
+						return nonLegalHd2 == 1 ? true : false;
 					default:
 						throw new RuntimeException("unknown HolidayAtr otherDay"+otherWorkType.beforeDay());
 					}
 				case PUBLIC_HOLIDAY:
 					switch(otherWorkType.beforeDay()) {
 					case STATUTORY_HOLIDAYS:
-						return legalHd2 == 1 ? true : false;
+						return legalHd3 == 1 ? true : false;
 					case NON_STATUTORY_HOLIDAYS:
 						return nonLegalPublicHd3 == 1 ? true : false;
 					case PUBLIC_HOLIDAY:
