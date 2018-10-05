@@ -194,7 +194,7 @@ module nts.uk.pr.view.qmm008.c.viewmodel {
         register() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            $('.tab-c .nts-input').filter(':enable').trigger("validate");
+            $('.tab-c .nts-input').filter(':enabled').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }

@@ -51,8 +51,8 @@ module nts.uk.pr.view.qmm008.i.viewmodel {
                 contributionRate: ko.toJS(self.contributionRate),
                 yearMonthHistoryItem: ko.toJS(self.selectedHistoryPeriod)
             }
-            let childContribution = command.contributionRate.childContributionRatio;
-            command.contributionRate.childContributionRatio = childContribution.substring(0, childContribution.indexOf(''), 4);
+            let childContribution = String(command.contributionRate.childContributionRatio);
+            command.contributionRate.childContributionRatio = childContribution.substring(0, childContribution.indexOf('')+ 4);
 
             if (command.contributionRate.automaticCalculationCls == 0 || self.isUpdateMode() == false) {
                 // Update historyId for case clone previous data                    
