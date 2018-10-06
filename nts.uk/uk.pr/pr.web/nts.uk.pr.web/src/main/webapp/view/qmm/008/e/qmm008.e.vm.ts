@@ -30,8 +30,8 @@ module nts.uk.pr.view.qmm008.e {
                    }
                    self.header(response.premiumRate);
                    setTimeout(function () {
-                       $(".flex").attr('tabindex', '5');
-                       $(".flex").focus();
+                       $(".nts-fixed-table").attr('tabindex', '5');
+                       $(".nts-fixed-table").focus();
                        if(self.dataList().length > 8) {
                            if (/Edge/.test(navigator.userAgent)) {
                                $('#E3_1_container .scroll-header').addClass('edge_scroll_header');

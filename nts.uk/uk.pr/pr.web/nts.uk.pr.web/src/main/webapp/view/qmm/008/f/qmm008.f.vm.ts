@@ -86,6 +86,7 @@ module nts.uk.pr.view.qmm008.f {
            
             private update(): void {
                 $('#f3_1_2_container .nts-input').trigger("validate");
+                $('#f3_1_container .nts-input').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }

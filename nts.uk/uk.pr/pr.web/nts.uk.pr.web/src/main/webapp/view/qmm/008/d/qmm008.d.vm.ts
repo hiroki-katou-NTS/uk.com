@@ -86,6 +86,7 @@ module nts.uk.pr.view.qmm008.d {
 
                 self.currentCode.subscribe(function(codeId) {
                     nts.uk.ui.errors.clearAll();
+                    self.isEnableBtnDelete(true);
                     if (codeId) {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
