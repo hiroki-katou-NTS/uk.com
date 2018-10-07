@@ -944,11 +944,9 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> String getExCondition(String exCondition, T object, AttendanceItemLayout layout) {
+	private static <T> String getExCondition(String exConditionParam, T object, AttendanceItemLayout layout) {
 		
-		if(exCondition == null){
-			exCondition = EMPTY_STRING;
-		}
+		String exCondition = exConditionParam == null ? EMPTY_STRING : exConditionParam;
 		
 		return CACHE_HOLDER.getAndCache(StringUtils.join("EX_", exCondition, "_", object.getClass().hashCode()), () -> {
 			String fieldExCondition = getExConditionField(object, layout);
