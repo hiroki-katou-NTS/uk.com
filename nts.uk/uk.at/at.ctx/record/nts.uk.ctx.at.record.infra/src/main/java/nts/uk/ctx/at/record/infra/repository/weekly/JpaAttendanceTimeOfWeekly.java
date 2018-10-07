@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.weekly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,30 +48,31 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class JpaAttendanceTimeOfWeekly extends JpaRepository implements AttendanceTimeOfWeeklyRepository {
 
-	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
+	private static final String WHERE_YM = "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+
+	private static final String WHERE_CLOSURE = WHERE_YM
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
+	
+	private static final String WHERE_PK = WHERE_CLOSURE
+			+ "AND a.PK.weekNo = :weekNo ";
+	
+	private static final String FIND_BY_CLOSURE = "SELECT a FROM KrcdtWekAttendanceTime a "
+			+ WHERE_CLOSURE
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_YEARMONTH = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
+			+ WHERE_YM
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay "
+			+ WHERE_CLOSURE
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ WHERE_YM
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtWekAttendanceTime a "
@@ -78,24 +80,21 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			+ "AND a.startYmd <= :endDate "
 			+ "AND a.endYmd >= :startDate ";
 	
-	private static final String DELETE_BY_PK = "DELETE FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay "
-			+ "AND a.PK.weekNo = :weekNo ";
-	
-	private static final String DELETE_BY_CLOSURE = "DELETE FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay ";
-	
-	private static final String DELETE_BY_YEARMONTH = "DELETE FROM KrcdtWekAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+	private static final List<String> DELETE_TABLES = Arrays.asList(
+			"DELETE FROM KrcdtWekAttendanceTime a ",
+			"DELETE FROM KrcdtWekAggrOverTime a ",
+			"DELETE FROM KrcdtWekAggrHdwkTime a ",
+			"DELETE FROM KrcdtWekAggrAbsnDays a ",
+			"DELETE FROM KrcdtWekAggrSpecDays a ",
+			"DELETE FROM KrcdtWekAggrSpvcDays a ",
+			"DELETE FROM KrcdtWekAggrBnspyTime a ",
+			"DELETE FROM KrcdtWekAggrDivgTime a ",
+			"DELETE FROM KrcdtWekAggrGoout a ",
+			"DELETE FROM KrcdtWekAggrPremTime a ",
+			"DELETE FROM KrcdtWekMedicalTime a ",
+			"DELETE FROM KrcdtWekExcoutTime a ",
+			"DELETE FROM KrcdtWekTotalTimes a ",
+			"DELETE FROM KrcdtWekAnyItemValue a ");
 
 	/** 検索 */
 	@Override
@@ -483,14 +482,16 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
 			int weekNo) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_PK)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.setParameter("closureId", closureId.value)
-				.setParameter("closureDay", closureDate.getClosureDay().v())
-				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-				.setParameter("weekNo", weekNo)
-				.executeUpdate();
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_PK)
+					.setParameter("employeeId", employeeId)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.setParameter("weekNo", weekNo)
+					.executeUpdate();
+		}
 	}
 
 	/** 削除　（締め） */
@@ -498,22 +499,26 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	public void removeByClosure(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_CLOSURE)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.setParameter("closureId", closureId.value)
-				.setParameter("closureDay", closureDate.getClosureDay().v())
-				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-				.executeUpdate();
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_CLOSURE)
+					.setParameter("employeeId", employeeId)
+					.setParameter("yearMonth", yearMonth.v())
+					.setParameter("closureId", closureId.value)
+					.setParameter("closureDay", closureDate.getClosureDay().v())
+					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+					.executeUpdate();
+		}
 	}
 	
 	/** 削除　（年月） */
 	@Override
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
-		this.getEntityManager().createQuery(DELETE_BY_YEARMONTH)
-				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth.v())
-				.executeUpdate();
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_YM)
+					.setParameter("employeeId", employeeId)
+					.setParameter("yearMonth", yearMonth.v())
+					.executeUpdate();
+		}
 	}
 }
