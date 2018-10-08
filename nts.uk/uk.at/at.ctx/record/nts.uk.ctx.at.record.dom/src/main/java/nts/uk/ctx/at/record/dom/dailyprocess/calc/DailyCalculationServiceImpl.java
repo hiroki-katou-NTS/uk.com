@@ -30,7 +30,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * ドメインサービス：日別計算
  * @author shuichi_ishida
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class DailyCalculationServiceImpl implements DailyCalculationService {
 

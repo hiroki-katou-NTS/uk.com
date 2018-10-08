@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSetPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		implements EditStateOfDailyPerformanceRepository {

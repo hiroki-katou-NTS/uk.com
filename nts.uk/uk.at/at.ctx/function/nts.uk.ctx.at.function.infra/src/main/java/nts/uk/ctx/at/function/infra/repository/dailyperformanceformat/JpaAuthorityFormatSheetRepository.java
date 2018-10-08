@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheetPK;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaAuthorityFormatSheetRepository extends JpaRepository implements AuthorityFormatSheetRepository {
 

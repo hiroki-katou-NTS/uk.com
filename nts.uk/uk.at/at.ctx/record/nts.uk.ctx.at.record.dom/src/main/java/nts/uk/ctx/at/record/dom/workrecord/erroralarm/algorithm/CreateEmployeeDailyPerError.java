@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 
  * @author nampt Minh Hùng 社員の日別実績のエラーを作成する
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class CreateEmployeeDailyPerError {
 

@@ -33,7 +33,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 

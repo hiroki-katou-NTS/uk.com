@@ -43,7 +43,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyRecordServiceCenter{
 	
 	//リポジトリ：労働条件

@@ -90,7 +90,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
 

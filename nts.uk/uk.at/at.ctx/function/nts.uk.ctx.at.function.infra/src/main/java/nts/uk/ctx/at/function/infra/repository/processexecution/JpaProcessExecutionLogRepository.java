@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutio
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaProcessExecutionLogRepository extends JpaRepository
 		implements ProcessExecutionLogRepository {

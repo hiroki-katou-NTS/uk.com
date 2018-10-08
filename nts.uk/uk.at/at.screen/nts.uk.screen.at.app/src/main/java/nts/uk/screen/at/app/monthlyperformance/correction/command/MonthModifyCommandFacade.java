@@ -23,7 +23,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class MonthModifyCommandFacade {
 
 	@Inject

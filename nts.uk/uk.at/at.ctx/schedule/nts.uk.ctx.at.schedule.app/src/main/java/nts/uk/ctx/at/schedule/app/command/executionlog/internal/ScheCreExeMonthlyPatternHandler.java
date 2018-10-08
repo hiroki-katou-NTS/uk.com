@@ -37,7 +37,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
  * @author chinhbv
  *
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheCreExeMonthlyPatternHandler {
 	@Inject

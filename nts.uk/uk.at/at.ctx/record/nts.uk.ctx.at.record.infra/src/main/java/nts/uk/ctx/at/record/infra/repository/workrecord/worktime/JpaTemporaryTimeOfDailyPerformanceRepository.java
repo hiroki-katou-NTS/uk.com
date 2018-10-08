@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		implements TemporaryTimeOfDailyPerformanceRepository {

@@ -47,7 +47,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	private TmpResereLeaveMngRepository tmpReserveLeaveMng;
 	
 	/** 基準日時点の積立年休残数を取得する */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<RsvLeaNumByCriteriaDate> algorithm(String employeeId, GeneralDate criteria) {
 		

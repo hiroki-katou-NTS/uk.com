@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author phongtq
  * 社員の任意期間別実績を集計する
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class AggregatePeriodDomainServiceImpl implements AggregatePeriodDomainService{
 	

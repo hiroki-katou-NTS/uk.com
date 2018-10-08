@@ -64,7 +64,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	private AggrPeriodInforRepository inforRepo;
 	
 	/** 任意期間集計Mgrクラス */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public <C> void manager(String companyId, String executeId, AsyncCommandHandlerContext<C> async) {
 

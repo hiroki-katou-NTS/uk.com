@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyp
 import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.dailyperformance.KrcmtAppDataInfoDaily;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.dailyperformance.KrcmtAppDataInfoDailyPK;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaAppDataInfoDailyRepository extends JpaRepository implements AppDataInfoDailyRepository {
 

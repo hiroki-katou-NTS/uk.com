@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthl
 import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.monthlyperformance.KrcmtAppDataInfoMonthly;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.monthlyperformance.KrcmtAppDataInfoMonthlyPK;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaAppDataInfoMonthlyRepository extends JpaRepository implements AppDataInfoMonthlyRepository {
 

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFor
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaBusinessFormatSheetRepository extends JpaRepository implements BusinessFormatSheetRepository {
 

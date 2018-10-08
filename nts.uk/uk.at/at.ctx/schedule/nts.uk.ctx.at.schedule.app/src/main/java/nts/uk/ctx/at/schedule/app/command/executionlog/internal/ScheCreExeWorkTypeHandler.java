@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 /**
  * The Class ScheCreExeWorkTypeHandler.
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheCreExeWorkTypeHandler {
 
