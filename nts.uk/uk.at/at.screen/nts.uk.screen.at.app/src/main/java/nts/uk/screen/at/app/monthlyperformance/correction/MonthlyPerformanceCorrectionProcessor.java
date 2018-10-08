@@ -251,7 +251,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// 6. どのメニューから起動したのかをチェックする (Check xem khởi động từ menu nào)
 		// 「月別実績の修正」からの場合         
-		if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
+		if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {// normal mode hoac unlock mode
 			// 7. アルゴリズム「通常モードで起動する」を実行する
 			// アルゴリズム「<<Public>> 就業条件で社員を検索して並び替える」を実行する
 			if (param.getLstEmployees() != null && !param.getLstEmployees().isEmpty()) {
@@ -391,6 +391,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					throw new BusinessException("Msg_916");
 				}
 
+				// lay thong tin nhan vien theo empID thu duoc
 				EmployeeInformationQueryDtoImport params = new EmployeeInformationQueryDtoImport(employeeIds,
 						screenDto.getSelectedActualTime().getEndDate(), true, false, false, true, false, false);
 				List<MonthlyPerformanceEmployeeDto> lstEmployee = employeeInformationAdapter.getEmployeeInfo(params)
@@ -700,8 +701,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 		//get data approve
 		List<ApproveRootStatusForEmpImport> approvalByListEmplAndListApprovalRecordDate = null;
 		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
-		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) {
-			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) {
+		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) { // neu hien thi cot approve
+			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) { // lay data approve mode normal hoac unlock
 				// *10 request list 533
 				List<EmpPerformMonthParamImport> params = new ArrayList<>();
 				for (MonthlyPerformanceEmployeeDto emp : screenDto.getLstEmployee()) {
@@ -710,7 +711,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					params.add(p);
 				}
 				approvalByListEmplAndListApprovalRecordDate = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(params);
-			} else if (param.getInitMenuMode() == 2) {
+			} else if (param.getInitMenuMode() == 2) { // lay data approve mode approve
 				// *8 request list 534
 				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
 						AppContexts.user().employeeId(), new YearMonth(yearMonth), closureId,
@@ -751,7 +752,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
 			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
-			if (rowData == null) continue;
+			if (rowData == null) continue; //neu khong co data cua nhan vien thi bo qua
 			
 			// lock check box1 identify
 			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2) {
@@ -761,7 +762,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 			
 			// set state approval
-			if (param.getInitMenuMode() == 2) {
+			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
 				if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
 					for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
 						// 基準社員の承認状況　＝　フェーズ最中　の場合 => unlock
@@ -771,7 +772,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 						}
 					}
 				}
-			} else {
+			} else { // mode khac luon disable cot approve
 				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
 			}
 			
@@ -802,7 +803,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			// check true false approve
 			boolean approve = false;
 			if(approvalProcessingUseSetting.getUseMonthApproverConfirm()){
-				if(param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1){
+				if(param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1){ //lay gia tri checkbox approve mode normal hoac unlock theo no.533
 					//*10 
 					if (approvalByListEmplAndListApprovalRecordDate != null) {
 						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
@@ -813,10 +814,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 									|| approvalApprovalRecordDate
 											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
 								approve = true;
+								break;
 							}
 						}
 					}
-				} else if (param.getInitMenuMode() == 2) {
+				} else if (param.getInitMenuMode() == 2) { //lay gia tri checkbox approve theo ket qua no.534
 					//*8 
 					if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
 						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
@@ -848,7 +850,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 						PAttendanceItem pA = param.getLstAtdItemUnique().get(item.getItemId());
 						List<String> cellStatus = new ArrayList<>();
 
-						if (pA.getAttendanceAtr() == 1) {
+						if (pA.getAttendanceAtr() == 1) { // neu item loai thoi gian thi format lai dinh dang
 							int minute = 0;
 							if (item.getValue() != null) {
 								minute = Integer.parseInt(item.getValue());
@@ -863,10 +865,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 						} else
 							mpdata.addCellData(new MPCellDataDto(attendanceKey,
 									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
-						if (param.getInitMenuMode() == 2) {
+						if (param.getInitMenuMode() == 2) { // mode approve disable neu co bat ki lock nao khac month approve lock
 							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
 								cellStatus.add(STATE_DISABLE);
-						} else {
+						} else { // mode khac cu co lock la approve
 							if (!StringUtil.isNullOrEmpty(lockStatus, true))
 								cellStatus.add(STATE_DISABLE);
 						}
@@ -875,7 +877,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 						Optional<EditStateOfMonthlyPerformanceDto> dto = newList.stream()
 								.filter(item2 -> item2.getAttendanceItemId().equals(item.getItemId())).findFirst();
-						if (dto.isPresent()) {
+						if (dto.isPresent()) { // set mau sua tay cho cell
 							if (dto.get().getStateOfEdit() == 0) {
 								screenDto.setStateCell(attendanceKey, employeeId, HAND_CORRECTION_MYSELF);
 							} else {

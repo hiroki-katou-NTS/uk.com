@@ -47,6 +47,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
+import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -85,6 +86,9 @@ public class DailyCalculationCommandFacade {
 	@Inject
 	private CommonCompanySettingForCalc commonCompanySettingForCalc;
 	
+	@Inject
+	private DPLoadRowProcessor dpLoadRowProcessor;
+	
 	public static final int MINUTES_OF_DAY = 24 * 60;
 
 	private static final String FORMAT_HH_MM = "%d:%02d";
@@ -96,6 +100,8 @@ public class DailyCalculationCommandFacade {
 		// chuan bi data
 		String companyId = AppContexts.user().companyId();
 		List<DailyRecordDto> editedDtos = dataParent.getDailyEdits();
+		//List<DailyRecordDto> oldDtos = dataParent.getDailyOlds();
+		val mapDtoOld = editedDtos.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
 		List<IntegrationOfDaily> editedDomains = editedDtos.stream()
 				.map(d -> d.toDomain(d.getEmployeeId(), d.getDate())).collect(Collectors.toList());
 
@@ -142,12 +148,16 @@ public class DailyCalculationCommandFacade {
 						}).collect(Collectors.toList())).workingDate(c.workingDate()).employeeId(c.employeeId())
 								.completed())
 						.collect(Collectors.toList());
+				// set state calc 
+				val mapDtoEdits = calculatedDtos.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
+				val cellStates = dpLoadRowProcessor.itemCalcScreen(mapDtoEdits, mapDtoOld, dataParent.getLstData(), dataParent.getLstAttendanceItem(), dataParent.getCellEdits());
+				
 				DailyPerformanceCalculationDto returnData = new DailyPerformanceCalculationDto(calculatedDtos,
-						resultValues, null);
+						resultValues, null, cellStates);
 				return returnData;
 			}
 		}
-		return new DailyPerformanceCalculationDto(null, null, new DataResultAfterIU(resultError, flexShortage));
+		return new DailyPerformanceCalculationDto(null, null, new DataResultAfterIU(resultError, flexShortage), Collections.emptyList());
 	}
 
 	/**

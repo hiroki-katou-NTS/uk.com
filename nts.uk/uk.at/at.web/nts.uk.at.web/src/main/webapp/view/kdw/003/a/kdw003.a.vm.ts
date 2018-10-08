@@ -1084,6 +1084,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         btnReCalculation_Click() {
             let self = this;
             if (!self.hasEmployee) return;
+            //update All
             self.calculate(true);
         }
 
@@ -1161,6 +1162,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                 });
+                // get cell Edit
+                let dataChageUI = updateAll ? [] :  _.map(_.filter(dataChange, row => {
+                    return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey.indexOf("Name") == -1;
+                }), allValue => {
+                    let itemTemp, keyIdRow;
+                    keyIdRow = Number(allValue.columnKey.replace(/\D/g, ""));
+                    return new CellEdit(allValue.rowId, keyIdRow)
+                });
+                
                 //if (!_.isEmpty(self.lstDomainOld)) {
                     let dataParent = {
                         itemValues: dataChangeProcess,
@@ -1170,7 +1180,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         spr: sprStampSourceInfo,
                         //dailyOlds: self.lstDomainOld,
                         //dailyEdits: self.lstDomainEdit,
-                        flagCalculation: updateAll
+                        flagCalculation: updateAll,
+                        cellEdits: dataChageUI
                     }
                     if (self.displayFormat() == 0) {
                         if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null) {
@@ -1203,7 +1214,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 let rrow = _.find(lstValue, (r: any) => { return row.employeeId == r.employeeId && r.date == row.date });
                                 _.forEach(cellDatas, cell => {
                                     if (cell.columnKey != 'Code623' && cell.columnKey != 'Code625') {
+                                        // cell chinh sua man hinh
                                         let editedCell = _.find(dataChangeProcess, (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
+                                        // cell sau tinh toan
                                         let editedCell2 = _.find(self.cellStates(), (item: any) => { return (item.rowId.indexOf(row.id) >= 0 && item.columnKey == cell.columnKey); });
                                         if ((editedCell == null
                                             && (editedCell2 == null || (!editedCell2.state.contains("mgrid-manual-edit-other") && !editedCell2.state.contains("mgrid-manual-edit-target"))))
@@ -1211,10 +1224,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                             let itemId = self.getItemIdFromColumnKey(cell.columnKey);
                                             let itemValue = _.find(rrow.items, (i: any) => { return i.itemId == itemId });
                                             if (itemValue)
-                                                $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, false, true);
+                                                $("#dpGrid").mGrid("updateCell", "_" + row.id, cell.columnKey, itemValue.value == null ? "" : itemValue.value, true, true);
+                                               // $("#dpGrid").mGrid("setState", "_" + row.id, cell.columnKey, ["mgrid-calc"]);
                                         }
                                     }
                                 });
+                            });
+                            
+                            _.each(data.lstCellStateCalc, (valt) => {
+                                console.log("column key:" + valt.columnKey);
+                                $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                             });
                             self.flagCalculation = true;
                             nts.uk.ui.block.clear();
