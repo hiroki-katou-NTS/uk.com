@@ -1,7 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceSettingRepository;
+
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSettingRepository;
 
 import java.util.List;
 import java.util.Optional;

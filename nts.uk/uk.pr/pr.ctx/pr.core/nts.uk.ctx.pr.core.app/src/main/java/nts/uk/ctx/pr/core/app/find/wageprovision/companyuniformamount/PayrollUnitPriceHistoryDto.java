@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 
 import java.util.List;
 import java.util.stream.Collectors;

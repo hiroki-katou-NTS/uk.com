@@ -1,4 +1,4 @@
-package entity.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount;
 
 import java.io.Serializable;
 

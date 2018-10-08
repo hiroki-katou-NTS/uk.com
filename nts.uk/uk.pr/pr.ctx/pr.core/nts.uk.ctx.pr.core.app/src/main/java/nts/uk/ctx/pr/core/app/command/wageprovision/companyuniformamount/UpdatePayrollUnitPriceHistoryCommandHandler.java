@@ -3,12 +3,9 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistoryService;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistoryService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

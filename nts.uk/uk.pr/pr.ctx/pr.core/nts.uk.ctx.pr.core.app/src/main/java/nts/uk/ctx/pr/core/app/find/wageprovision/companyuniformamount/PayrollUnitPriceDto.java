@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPrice;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPrice;
 
 /**
 * 給与会社単価: DTO

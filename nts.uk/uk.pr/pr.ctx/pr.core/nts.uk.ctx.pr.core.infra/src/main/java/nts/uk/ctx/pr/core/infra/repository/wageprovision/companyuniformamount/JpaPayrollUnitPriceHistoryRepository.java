@@ -1,12 +1,12 @@
-package repository.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.companyuniformamount;
 
-import entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHis;
-import entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHisPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.CompanyUnitPriceCode;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.CompanyUnitPriceCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHis;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriceHisPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 

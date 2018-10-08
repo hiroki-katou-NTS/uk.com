@@ -1,6 +1,7 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.*;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -19,7 +20,7 @@ public class PayrollUnitPriceSettingService {
     @Inject
     PayrollUnitPriceSettingRepository payrollUnitPriceSettingRepository;
 
-    public void register(PayrollUnitPrice payrollUnitPrice, PayrollUnitPriceHistory payrollUnitPriceHistory,PayrollUnitPriceSetting payrollUnitPriceSetting){
+    public void register(PayrollUnitPrice payrollUnitPrice, PayrollUnitPriceHistory payrollUnitPriceHistory, PayrollUnitPriceSetting payrollUnitPriceSetting){
 
         YearMonthHistoryItem history = payrollUnitPriceHistory.getHistory().get(0);
         payrollUnitPriceRepository.add(payrollUnitPrice);

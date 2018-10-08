@@ -1,4 +1,4 @@
-package entity.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount;
 
 import java.io.Serializable;
 
@@ -10,11 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.CompanyUnitPriceCode;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
-import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

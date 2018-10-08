@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
 import java.math.BigDecimal;
 import java.util.Optional;

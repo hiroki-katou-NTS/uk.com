@@ -1,16 +1,11 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Stateless
