@@ -976,21 +976,28 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 				output.getRemainDays().getGrantDetailBefore().setRemainDays(output.getRemainDays().getGrantDetailBefore().getRemainDays() - speInterimUsedays);
 			} else {
 				List<SpecialLeaveGrantRemainingData> specialLeaverDataTmp = new ArrayList<>(lstGrantData);
+				int count = 0;
+				double remainDays = speInterimUsedays;
 				for (SpecialLeaveGrantRemainingData grantData : specialLeaverDataTmp) {
+					count += 1;
 					lstGrantData.remove(grantData);
 					//特別休暇暫定データ．特休使用をDBから取得した付与日の古い特別休暇付与残数データから引く
-					Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(grantData.getSpecialId());
-					grantDataById.ifPresent(a -> {
-						DayNumberOfRemain remainDaysInfor = grantData.getDetails().getRemainingNumber().getDayNumberOfRemain();
-						//「特別休暇付与残数データ」．残数 -= 特別休暇暫定データ．特休使用
-						double remainDays = remainDaysInfor.v() - speInterimUsedays;				
-						grantData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain(remainDays));
-					});					
+					DayNumberOfRemain remainDaysInfor = grantData.getDetails().getRemainingNumber().getDayNumberOfRemain();
+					//「特別休暇付与残数データ」．残数 -= 特別休暇暫定データ．特休使用
+					remainDays -= remainDaysInfor.v();
+					if(count < specialLeaverDataTmp.size() && remainDays > 0) {
+						grantData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain(0.0));
+					} else {
+						grantData.getDetails().getRemainingNumber().setDayNumberOfRemain(new DayNumberOfRemain(-remainDays));
+					}
 					//特別休暇暫定データ．特休使用を該当特別休暇付与残数データに特休使用に計上する
 					//「特別休暇付与残数データ」．使用数 += 特別休暇暫定データ．特休使用
 					double userDay = grantData.getDetails().getUsedNumber().getDayNumberOfUse().v();
 					grantData.getDetails().getUsedNumber().setDayNumberOfUse(new DayNumberOfUse(userDay + speInterimUsedays));
 					lstGrantData.add(grantData);	
+					if(remainDays <=0) {
+						break;
+					}
 				}
 			}
 		}
