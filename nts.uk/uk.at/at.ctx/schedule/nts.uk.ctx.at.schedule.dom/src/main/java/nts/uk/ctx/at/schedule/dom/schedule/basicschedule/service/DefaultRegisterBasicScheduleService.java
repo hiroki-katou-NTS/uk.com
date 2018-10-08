@@ -78,7 +78,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author sonnh1
  *
  */
-@Transactional(value=TxType.NOT_SUPPORTED)
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject
