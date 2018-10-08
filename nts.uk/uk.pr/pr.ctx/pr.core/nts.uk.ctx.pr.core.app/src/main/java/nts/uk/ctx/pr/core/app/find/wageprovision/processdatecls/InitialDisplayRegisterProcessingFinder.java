@@ -33,11 +33,11 @@ public class InitialDisplayRegisterProcessingFinder {
 	@Inject
 	private EmpTiedProYearRepository finderEmpTiedProYear;
 
-	//@Inject
-	//private SysEmploymentAdapter syEmploymentAdapter;
+	@Inject
+	private SysEmploymentAdapter syEmploymentAdapter;
 
 	public InitialDisplayRegisterProcessingDto getInitialDisplayRegisterProcessing() {
-	/*	String cid = AppContexts.user().companyId();
+		String cid = AppContexts.user().companyId();
 		List<ProcessInformation> optProcessInformation = finderProcessInformation.getProcessInformationByCid(cid);
 
 		List<SetDaySupportDto> setDaySupportDto = new ArrayList<SetDaySupportDto>();
@@ -74,7 +74,7 @@ public class InitialDisplayRegisterProcessingFinder {
 			InitialDisplayRegisterProcessingDto returnData = new InitialDisplayRegisterProcessingDto(informationDto,
 					setDaySupportDto, currProcessDateDto, empTiedProYearDto, employeeList);
 			return returnData;
-		}*/
+		}
 
 		return null;
 	}
