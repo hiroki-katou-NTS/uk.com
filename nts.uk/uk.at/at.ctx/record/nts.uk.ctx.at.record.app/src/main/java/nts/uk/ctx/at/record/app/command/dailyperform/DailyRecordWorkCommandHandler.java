@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
@@ -80,7 +81,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class DailyRecordWorkCommandHandler extends RecordHandler {
@@ -416,12 +419,14 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		registerNotCalcDomain(commandNew, isUpdate);
 		updateDomainAfterCalc(domainDailyNew, null);
 		
-		lstMonthDomain.forEach(x ->{
-			if (!x.getEmployeeMonthlyPerErrorList().isEmpty()) {
-				val error = x.getEmployeeMonthlyPerErrorList().get(0);
-				employeeMonthlyPerErrorRepository.removeAll(error.getEmployeeID(), error.getYearMonth(), error.getClosureId(), error.getClosureDate());
-			}
-		});
+//		lstMonthDomain.forEach(x ->{
+		if (month != null && month.getEmployeeId() != null) {
+			// val error = x.getEmployeeMonthlyPerErrorList().get(0);
+			employeeMonthlyPerErrorRepository.removeAll(month.getEmployeeId(), new YearMonth(month.getYearMonth()),
+					ClosureId.valueOf(month.getClosureId()), new ClosureDate(month.getClosureDate().getClosureDay(),
+							month.getClosureDate().getLastDayOfMonth()));
+		}
+//		});
 		updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)

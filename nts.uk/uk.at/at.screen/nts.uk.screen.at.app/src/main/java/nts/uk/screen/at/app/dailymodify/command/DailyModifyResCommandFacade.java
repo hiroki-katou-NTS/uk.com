@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.RCDailyCorrection
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ParamDayApproval;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
@@ -52,15 +53,18 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -89,13 +93,13 @@ public class DailyModifyResCommandFacade {
 
 	@Inject
 	private MonthModifyCommandFacade monthModifyCommandFacade;
-	
+
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	
+
 	@Inject
 	private RegisterProvisionalData registerProvisionalData;
-	
+
 	@Inject
 	private InsertAllData insertAllData;
 
@@ -110,10 +114,12 @@ public class DailyModifyResCommandFacade {
 		if (!flagCalculation) {
 			return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
 		} else {
-			List<EmployeeDailyPerErrorDto> lstErrorDto = dtoNews.stream().map(result -> result.getErrors()).flatMap(List::stream)
-				                                                  .collect(Collectors.toList());
-			List<EmployeeDailyPerError> lstError = lstErrorDto.stream().map(x -> x.toDomain(x.getEmployeeID(), x.getDate())).collect(Collectors.toList());
-			this.handler.handlerNoCalc(commandNew, commandOld, lstError, dailyItems, true, month, mode, lstAttendanceItem);
+			List<EmployeeDailyPerErrorDto> lstErrorDto = dtoNews.stream().map(result -> result.getErrors())
+					.flatMap(List::stream).collect(Collectors.toList());
+			List<EmployeeDailyPerError> lstError = lstErrorDto.stream()
+					.map(x -> x.toDomain(x.getEmployeeID(), x.getDate())).collect(Collectors.toList());
+			this.handler.handlerNoCalc(commandNew, commandOld, lstError, dailyItems, true, month, mode,
+					lstAttendanceItem);
 			return null;
 		}
 	}
@@ -127,8 +133,9 @@ public class DailyModifyResCommandFacade {
 		return editData;
 	}
 
-	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent, List<DailyModifyQuery> querys,
-			Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate, List<DailyModifyQuery> queryNotChanges){
+	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
+			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
+			List<DailyModifyQuery> queryNotChanges) {
 		if (!querys.isEmpty() && !dataParent.isFlagCalculation()) {
 			dailyOlds.addAll(dataParent.getDailyOlds().stream()
 					.filter(x -> mapSidDate.containsKey(Pair.of(x.getEmployeeId(), x.getDate())))
@@ -141,16 +148,15 @@ public class DailyModifyResCommandFacade {
 			dailyOlds.addAll(dataParent.getDailyOlds());
 			dailyEdits.addAll(dataParent.getDailyEdits());
 		}
-		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findAll(AppContexts.user().companyId())
+		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
-		
+
 		dailyOlds.stream().forEach(o -> {
 			o.getOptionalItem().ifPresent(optional -> {
 				optional.correctItemsWith(optionalMaster);
 			});
 		});
-		
+
 		dailyEdits.stream().forEach(o -> {
 			o.getOptionalItem().ifPresent(optional -> {
 				optional.correctItemsWith(optionalMaster);
@@ -160,7 +166,7 @@ public class DailyModifyResCommandFacade {
 
 	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
-		
+
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
@@ -168,9 +174,9 @@ public class DailyModifyResCommandFacade {
 			if (!itemChanges.isPresent())
 				return o;
 			List<ItemValue> itemValues = itemChanges.get().getItemValues();
-			
+
 			AttendanceItemUtil.fromItemValues(o, itemValues);
-			
+
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
 					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
@@ -254,12 +260,14 @@ public class DailyModifyResCommandFacade {
 		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
 		List<DailyRecordDto> dailyOlds = new ArrayList<>(), dailyEdits = new ArrayList<>();
-		
+
 		processDto(dailyOlds, dailyEdits, dataParent, querys, mapSidDate, queryNotChanges);
-		
-		List<DailyModifyResult> resultOlds = AttendanceItemUtil.toItemValues(dailyOlds).entrySet().stream().map(dto -> DailyModifyResult.builder().items(dto.getValue())
-						.employeeId(dto.getKey().getEmployeeId()).workingDate(dto.getKey().getDate()).completed()).collect(Collectors.toList());
-		
+
+		List<DailyModifyResult> resultOlds = AttendanceItemUtil.toItemValues(dailyOlds).entrySet().stream()
+				.map(dto -> DailyModifyResult.builder().items(dto.getValue()).employeeId(dto.getKey().getEmployeeId())
+						.workingDate(dto.getKey().getDate()).completed())
+				.collect(Collectors.toList());
+
 		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = resultOlds.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
@@ -305,9 +313,10 @@ public class DailyModifyResCommandFacade {
 			} else {
 				// if (querys.isEmpty() ? !dataParent.isFlagCalculation() :
 				// true) {
-				Map<Integer, DPAttendanceItemRC> itemAtr = dataParent.getLstAttendanceItem().entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x-> convertItemAtr(x.getValue())));
-				resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam,
-						dataParent.getMode(), dataParent.isFlagCalculation(), itemAtr);
+				Map<Integer, DPAttendanceItemRC> itemAtr = dataParent.getLstAttendanceItem().entrySet().stream()
+						.collect(Collectors.toMap(x -> x.getKey(), x -> convertItemAtr(x.getValue())));
+				resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode(),
+						dataParent.isFlagCalculation(), itemAtr);
 				if (resultIU != null) {
 					val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
 							resultIU.getLstMonthDomain());
@@ -319,8 +328,10 @@ public class DailyModifyResCommandFacade {
 						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
 								monthParam);
 						dataResultAfterIU.setFlexShortage(flexShortageRCDto);
-						if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty())
+						if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
 							hasError = true;
+							if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), dataParent.getMonthValue()));
+						}
 					}
 					val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
 					if (!errorMonth.isEmpty()) {
@@ -330,17 +341,19 @@ public class DailyModifyResCommandFacade {
 
 					if (!hasError) {
 						this.insertAllData.handlerInsertAll(resultIU.getCommandNew(), resultIU.getLstDailyDomain(),
-								resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(),
-								resultIU.isUpdate(), monthParam, itemAtr);
+								resultIU.getCommandOld(), dailyItems, resultIU.getLstMonthDomain(), resultIU.isUpdate(),
+								monthParam, itemAtr);
 						// insert sign
 						insertSign(dataParent.getDataCheckSign());
 						// insert approval
 						insertApproval(dataParent.getDataCheckApproval());
 					}
-				}else{
-					if(dataParent.getDataCheckSign() != null && !dataParent.getDataCheckSign().isEmpty()) insertSign(dataParent.getDataCheckSign());
+				} else {
+					if (dataParent.getDataCheckSign() != null && !dataParent.getDataCheckSign().isEmpty())
+						insertSign(dataParent.getDataCheckSign());
 					// insert approval
-					if(dataParent.getDataCheckApproval() != null && !dataParent.getDataCheckApproval().isEmpty()) insertApproval(dataParent.getDataCheckApproval());
+					if (dataParent.getDataCheckApproval() != null && !dataParent.getDataCheckApproval().isEmpty())
+						insertApproval(dataParent.getDataCheckApproval());
 				}
 			}
 			// 暫定データを登録する - Register provisional data
@@ -357,15 +370,15 @@ public class DailyModifyResCommandFacade {
 			// return resultError;
 		}
 
-		if(hasError){
+		if (hasError) {
 			dataResultAfterIU.setErrorMap(resultError);
 			return dataResultAfterIU;
 		}
-		
+
 		if (dataParent.getMode() == 0 && !dataParent.isFlagCalculation() && resultIU.getCommandNew() != null) {
 			val dataCheck = validatorDataDaily.checkContinuousHolidays(dataParent.getEmployeeId(),
-					dataParent.getDateRange(), resultIU.getCommandNew().stream()
-														.map(c -> c.getWorkInfo().getData()).filter(c -> c != null).collect(Collectors.toList()));
+					dataParent.getDateRange(), resultIU.getCommandNew().stream().map(c -> c.getWorkInfo().getData())
+							.filter(c -> c != null).collect(Collectors.toList()));
 			if (!dataCheck.isEmpty()) {
 				resultError.put(TypeError.CONTINUOUS.value, dataCheck);
 			}
@@ -373,7 +386,7 @@ public class DailyModifyResCommandFacade {
 		dataResultAfterIU.setErrorMap(resultError);
 		return dataResultAfterIU;
 	}
-	
+
 	private List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
 		List<DailyModifyQuery> querys = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
@@ -410,7 +423,7 @@ public class DailyModifyResCommandFacade {
 		final Set<Object> seen = new HashSet<>();
 		return t -> seen.add(keyExtractor.apply(t));
 	}
-	
+
 	public void registerTempData(int displayFormat, List<DailyModifyResult> resultOlds,
 			List<DailyModifyResult> resultNews) {
 		switch (displayFormat) {
@@ -463,10 +476,48 @@ public class DailyModifyResCommandFacade {
 		}
 		return new ArrayList<>(editedDate);
 	}
-	
+
 	private DPAttendanceItemRC convertItemAtr(DPAttendanceItem item) {
 		return new DPAttendanceItemRC(item.getId(), item.getName(), item.getDisplayNumber(), item.isUserCanSet(),
 				item.getLineBreakPosition(), item.getAttendanceAtr(), item.getTypeGroup(), item.getPrimitive());
 	}
-	
+
+	private ItemFlex convertMonthToItem(MonthlyRecordWorkDto monthDto, DPMonthValue monthValue) {
+		ItemFlex itemResult = new ItemFlex();
+		MonthlyModifyResult result = MonthlyModifyResult.builder()
+				.items(AttendanceItemUtil.toItemValues(monthDto, Arrays.asList(18, 21, 189, 190, 191),
+						AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM))
+				.employeeId(monthValue.getEmployeeId()).yearMonth(monthValue.getYearMonth())
+				.closureId(monthValue.getClosureId()).closureDate(monthValue.getClosureDate()).completed();
+		mapValue(result.getItems(), itemResult);
+		return itemResult;
+	}
+
+	private void mapValue(List<ItemValue> items, ItemFlex dataCalc) {
+		for (ItemValue item : items) {
+			setValueMonth(dataCalc, item);
+		}
+	}
+
+	private void setValueMonth(ItemFlex dataCalc, ItemValue item) {
+		switch (item.getItemId()) {
+		case 18:
+			dataCalc.setValue18(item);
+			break;
+		case 21:
+			dataCalc.setValue21(item);
+			break;
+		case 189:
+			dataCalc.setValue189(item);
+			break;
+		case 190:
+			dataCalc.setValue190(item);
+			break;
+		case 191:
+			dataCalc.setValue191(item);
+			break;
+		default:
+			break;
+		}
+	}
 }

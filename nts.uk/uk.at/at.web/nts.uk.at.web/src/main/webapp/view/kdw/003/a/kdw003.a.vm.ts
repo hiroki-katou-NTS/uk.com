@@ -993,6 +993,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 });
                                 $("#next-month").attr('style', 'background-color: red !important');
                                 errorFlex = true;
+                                self.flexShortage().binDataChangeError(dataAfter.flexShortage.dataCalc);
                             } else {
                                 $("#next-month").attr('style', 'background-color: white !important');
                                 $("#next-month").ntsError("clear");
@@ -4294,9 +4295,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.messageRedValue(redConditionMessage);
             self.messageNoForward(messageNotForward);
 
+            //フレックス不足(内前月繰越)
             self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            //翌月繰越
             self.nextMonthTransferredMoneyTime(getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
+            //年休
             self.noOfHolidays(Number(val189));
+            //欠勤控除
             self.absentDeductionTime(Number(val190));
             if (error && __viewContext.vm.canFlex()) {
                 $("#next-month").attr('style', 'background-color: red !important');
@@ -4307,6 +4312,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.displayListError(lstError);
             }
             self.initLoad = 1;
+        }
+
+        binDataChangeError(dataCalc: CalcFlex) {
+            let self = this,
+                val18 = dataCalc.value18 == null ? 0 : dataCalc.value18.value,
+                val19 = dataCalc.value19 == null ? 0 : dataCalc.value19.value,
+                val21 = dataCalc.value21 == null ? 0 : dataCalc.value21.value,
+                val189 = dataCalc.value189 == null ? 0 : dataCalc.value189.value,
+                val190 = dataCalc.value190 == null ? 0 : dataCalc.value190.value,
+                val191 = dataCalc.value191 == null ? 0 : dataCalc.value191.value;
+            //フレックス不足(内前月繰越)
+            self.shortageTime(getText("KDW003_89", [self.convertToHours((Number(val191) + Number(val19))), self.convertToHours(Number(val19))]));
+            //翌月繰越
+            self.nextMonthTransferredMoneyTime(getText("KDW003_111", [self.convertToHours((Number(val18) + Number(val21)))]));
         }
 
         calc(): JQueryPromise<any> {
