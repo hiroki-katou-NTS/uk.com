@@ -265,7 +265,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								type = "残業時間";
 								List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
 								Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 								if(!CollectionUtil.isEmpty(normalLst)){
 									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 									if (!lstFramOt.isEmpty()){
@@ -363,7 +363,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 									type = "残業時間";
 									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
 									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 									if(!CollectionUtil.isEmpty(normalLst)){
 										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 										if (!lstFramOt.isEmpty()){
