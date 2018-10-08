@@ -36,11 +36,9 @@
 				<button id="closeBtn" style="visibility: hidden;"
 					data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CPS016_4')}</button>
 				<!-- A1_005: link label 個人情報定義へ -->
-				<div class='float-right'>
-					<a class='goout'
-						data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }"
+				<a class='goout link-button'
+						data-bind="ntsLinkButton: {jump: '/view/cps/002/a/index.xhtml' }, style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? '607px' : '625px'}"
 						tabindex="5">#{i18n.getText('CPS009_7')}</a>
-				</div>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
@@ -106,7 +104,7 @@
 									selectedKey: 'perInfoCtgId',
 									fields: ['categoryName'],
 									placeHolder:'名称で検索・・・'}" />
-								<div id="history" class="flex valign-center">
+								<div id="history" class="flex valign-center" data-bind="style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? '345px' : '362px'}">
 									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<!-- A3_13: button ヘルプボタン -->
@@ -169,7 +167,7 @@
 											<td id="COL_3">#{i18n.getText('CPS009_23')}</td>
 										</tr>
 									</thead>
-									<tbody data-bind="foreach: currentCategory().itemList()">
+									<tbody data-bind="foreach: currentCategory().itemList(), style: { 'overflow-y': _.size(currentCategory().itemList()) &lt; 15 ? 'hidden' : 'scroll'}">
 										<tr>
 											<td class="input-units-1" data-bind="css:{ requiredCell: isRequired(), notrequiredCell:!isRequired()}">
 											<span class="months-input limited-label" data-bind='text: itemName,attr: {
@@ -307,7 +305,7 @@
 																	enable: true,
 																	dropDownAttachedToBody:true,
 																	selectFirstIfNull: false,
-																	required: isRequired,
+																	required: false,
 																	columns: [
 																		{ prop: 'optionText', length: 10 },
 																	]},
@@ -368,7 +366,7 @@
 							                                    "data-title": itemName,
 							                                    "data-code": itemCode,
 							                                    "data-category": ctgCode,
-	                                							"data-required": isRequired,
+	                                							"data-required": false,
 	                                							"data-defv": selectionName}'>#{i18n.getText('CPS009_37')}</button>
 														<span class="caret-right caret-inline"></span>
 														<span class="limited-label selectionName" data-bind="text: selectionName"></span>

@@ -60,8 +60,8 @@ public class HolidayWorkWebService extends WebService{
 															param.getInputDate() == null ? null :GeneralDateTime.fromString(param.getInputDate(), "yyyy/MM/dd HH:mm"),
 															param.getStartTime(),
 															param.getEndTime(),
-															param.getStartTimeRest(),
-															param.getEndTimeRest());
+															param.getStartTimeRests(),
+															param.getEndTimeRests());
 	}
 	@POST
 	@Path("create")

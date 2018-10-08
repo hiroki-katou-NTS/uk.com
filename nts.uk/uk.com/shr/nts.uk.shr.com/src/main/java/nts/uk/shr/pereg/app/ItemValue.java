@@ -199,6 +199,17 @@ public class ItemValue {
 		return item;
 	}
 	
+	public static ItemValue setContentForCPS001(ItemValue item) {
+		if(item.logType() == 2) {
+			item.setValueAfter(item.valueAfter() == ""? null: item.valueAfter());
+			item.setValueBefore(item.valueBefore() == ""? null: item.valueBefore());
+			item.setContentAfter(item.valueAfter() == ""? null: item.valueAfter());
+			item.setContentBefore(item.valueBefore() == ""? null: item.valueBefore());
+		}
+		
+		return item;
+	}
+	
 	public static  ItemValue filterItem(ItemValue item){
 			Object oldValue = formatValue(item, item.valueBefore());
 			Object newValue = formatValue(item, item.valueAfter());
@@ -277,7 +288,7 @@ public class ItemValue {
 		}
 	}
 	
-	private static String formatMinutesToTime(int valueAsMinutes) {
+	public static String formatMinutesToTime(int valueAsMinutes) {
 		
 		boolean isMinus = valueAsMinutes < 0;
 		int value = Math.abs(valueAsMinutes);

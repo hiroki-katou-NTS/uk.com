@@ -8,7 +8,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         grantDateCode: KnockoutObservable<string>;
         grantDateName: KnockoutObservable<string>;
         provisionCheck: KnockoutObservable<boolean>;
-        provisionDeactive: KnockoutObservable<boolean>;
         items: KnockoutObservableArray<Item>;
         editMode: KnockoutObservable<boolean>;
         fixedAssignCheck: KnockoutObservable<boolean>;
@@ -19,6 +18,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         daysReq: KnockoutObservable<boolean>;
         newModeEnable: KnockoutObservable<boolean>;
         isDelete: KnockoutObservable<boolean>;
+        
+        provisionActive: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -38,7 +39,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.grantDateName = ko.observable("");
 
             self.provisionCheck = ko.observable(false);
-            self.provisionDeactive = ko.observable(true);
             
             self.newModeEnable = ko.observable(true);
             self.isDelete = ko.observable(false);
@@ -67,7 +67,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.provisionCheck(selectedItem.specified);
                     self.fixedAssignCheck(selectedItem.fixedAssign);
                     self.numberOfDays(selectedItem.numberOfDays);
-                    
+                    if (self.provisionCheck() == true) {
+                        self.provisionActive(false);
+                    } else {
+                        self.provisionActive(true);
+                    }
                     self.codeEnable(false);
                     self.editMode(true);
                     self.newModeEnable(true);
@@ -295,7 +299,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     });
                 }
             }
-        } 
+        }
+        
+        prescribedEnable() {
+            let self = this;
+            return !(self.editMode() == true && self.provisionCheck() == true);
+        }
         
         //  new mode 
         newMode() {
@@ -307,7 +316,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.selectedCode("");
             self.grantDateCode("");
             self.grantDateName("");
-            self.provisionCheck(false);
+            if (self.lstGrantDate().length) {
+                self.provisionCheck(false);
+            } else {
+                self.provisionCheck(true);
+            }
+            self.provisionActive(true);
             self.fixedAssignCheck(false);
             self.numberOfDays("");
             self.elapseBind([]);

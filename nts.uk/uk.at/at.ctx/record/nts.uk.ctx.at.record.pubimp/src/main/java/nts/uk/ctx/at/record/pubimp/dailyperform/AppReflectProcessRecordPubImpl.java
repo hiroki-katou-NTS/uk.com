@@ -289,12 +289,11 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 			}
 			List<ApprovalRootStateStatusImport> lstRootStatus = appAdapter.getStatusByEmpAndDate(chkParam.getSid(), 
 					new DatePeriod(chkParam.getAppDate(), chkParam.getAppDate()), 1);
-			if(!lstRootStatus.isEmpty()
-					&& lstRootStatus.get(0).getDailyConfirmAtr() == 0) {
+			if(lstRootStatus.isEmpty() 
+					|| lstRootStatus.get(0).getDailyConfirmAtr() == 0) {
 				return output;
-			} else {
-				return false;
 			}
+			return false;
 		} else {
 			//ドメインモデル「反映情報」．予定強制反映をチェックする
 			if(chkParam.isScheReflect()) {

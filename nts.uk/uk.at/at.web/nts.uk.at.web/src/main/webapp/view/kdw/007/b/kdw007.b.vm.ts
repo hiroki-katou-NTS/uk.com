@@ -21,12 +21,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         ]);
 
         enumCompareOperator: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: "等しい（＝）" },
-            { code: 1, name: "等しくない（≠）" },
-            { code: 2, name: "より大きい（＞）" },
+            { code: 1, name: "等しい（＝）" },
+            { code: 0, name: "等しくない（≠）" },
+            { code: 5, name: "より大きい（＞）" },
             { code: 3, name: "以上（≧）" },
             { code: 4, name: "より小さい（＜）" },
-            { code: 5, name: "以下（≦）" },
+            { code: 2, name: "以下（≦）" },
             { code: 6, name: "範囲の間（境界値を含まない）（＜＞）" },
             { code: 7, name: "範囲の間（境界値を含む）（≦≧）" },
             { code: 8, name: "範囲の外（境界値を含まない）（＞＜）" },
@@ -61,10 +61,9 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 countableSubAtdItems: _.values(param.data.countableSubAtdItems || [])
             });
 
-            if (param.data.countableAddAtdItems.length == 0 && param.data.countableSubAtdItems.length == 0 && param.data.uncountableAtdItem == null) {
+            if (_.isEmpty(param.data.countableAddAtdItems) && _.isEmpty(param.data.countableSubAtdItems) && (param.data.uncountableAtdItem == null || param.data.uncountableAtdItem == 0)) {
                 param.data.compareStartValue = null;
                 param.data.compareEndValue = null;
-                param.data.uncountableAtdItem = null;
             }
             
             self.currentAtdItemCondition = caic = ko.mapping.fromJS(param.data);

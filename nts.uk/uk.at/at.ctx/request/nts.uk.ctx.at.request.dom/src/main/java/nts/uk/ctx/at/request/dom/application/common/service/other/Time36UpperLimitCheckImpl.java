@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 @Stateless
@@ -59,6 +60,9 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
 	@Inject
 	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
+	
+	@Inject
+	private ClosureRepository closureRepository;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyId, String employeeId, GeneralDate appDate,
@@ -69,47 +73,52 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		// 「時間外時間の詳細」をクリア
 		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
 
-		Closure closure = closureService.getClosureDataByEmployee(employeeId, appDate);
-		// 指定した年月日時点の締め期間を取得する
-		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(appDate);
+		
+		
 		// 社員所属雇用履歴を取得
 		Optional<SEmpHistoryImport> empHistOtp = sysEmploymentHisAdapter.findSEmpHistBySid(companyId, employeeId,
 				GeneralDate.today());
 		if (empHistOtp.isPresent()) {
 			employmentCD = empHistOtp.get().getEmploymentCode();
 		}
-		// 締めIDを取得する
+		// 雇用に紐づく締めを取得する
 		Optional<ClosureEmployment> closureEmpOtp = closureEmploymentRepository.findByEmploymentCD(companyId,
 				employmentCD);
-		// 申請日を含む「締め期間」を取得する
-		if (closurePeriodOpt.isPresent() && closureEmpOtp.isPresent()) {
-			ClosurePeriod closurePeriod = closurePeriodOpt.get();
-			ClosureEmployment closureEmp = closureEmpOtp.get();
-			// 締め期間．締めID=取得した締めID
-			if (closurePeriod.getClosureId().value == closureEmp.getClosureId()) {
-				appOvertimeDetail.setYearMonth(closurePeriod.getYearMonth());
-				// 36協定時間の取得
-				agreementTimeList = agreementTimeAdapter.getAgreementTime(companyId, Arrays.asList(employeeId),
-						appOvertimeDetail.getYearMonth(), closurePeriod.getClosureId());
-			}
+		Optional<Closure> opClosureSystem = closureRepository.findById(companyId, closureEmpOtp.get().getClosureId());
+		if(!opClosureSystem.isPresent()){
+			throw new RuntimeException("khong co closure");
 		}
-		if (!agreementTimeList.isEmpty()) {
-			AgreementTimeImport agreementTime = agreementTimeList.get(0);
-			if (agreementTime.getConfirmed().isPresent()) {
-				AgreeTimeOfMonthExport confirmed = agreementTime.getConfirmed().get();
-				// 「時間外時間の詳細」．限度エラー時間=「36協定時間一覧」．確定情報．限度エラー時間
-				appOvertimeDetail.setLimitErrorTime(confirmed.getLimitErrorTime());
-				// 「時間外時間の詳細」．実績時間=「36協定時間一覧」．確定情報．36協定時間
-				appOvertimeDetail.setActualTime(confirmed.getAgreementTime());
-				// 「時間外時間の詳細」．限度アラーム時間=「36協定時間一覧」．確定情報．限度アラーム時間
-				appOvertimeDetail.setLimitAlarmTime(confirmed.getLimitAlarmTime());
-				// 「時間外時間の詳細」．特例限度エラー時間=「36協定時間一覧」．確定情報．特例限度エラー時間
-				appOvertimeDetail.setExceptionLimitErrorTime(confirmed.getExceptionLimitErrorTime().isPresent()
-						? confirmed.getExceptionLimitErrorTime().get() : null);
-				// 「時間外時間の詳細」．特例限度アラーム時間=「36協定時間一覧」．確定情報．特例限度アラーム時間
-				appOvertimeDetail.setExceptionLimitAlarmTime(confirmed.getExceptionLimitAlarmTime().isPresent()
-						? confirmed.getExceptionLimitAlarmTime().get() : null);
-			}
+		Closure closureSystem = opClosureSystem.get();
+		
+		// 指定した年月日時点の締め期間を取得する
+		Closure closure = closureService.getClosureDataByEmployee(employeeId, appDate);
+		Optional<ClosurePeriod> closurePeriodOpt = closure.getClosurePeriodByYmd(appDate);
+		
+		appOvertimeDetail.setYearMonth(closurePeriodOpt.get().getYearMonth());
+		
+		// 36協定時間の取得
+		agreementTimeList = agreementTimeAdapter.getAgreementTime(companyId, Arrays.asList(employeeId),
+				closureSystem.getClosureMonth().getProcessingYm(), closureSystem.getClosureId());
+		
+		if (agreementTimeList.isEmpty()) {
+			return new Time36UpperLimitCheckResult(errorFlg, Optional.ofNullable(appOvertimeDetail));
+		}
+		
+		AgreementTimeImport agreementTime = agreementTimeList.get(0);
+		if (agreementTime.getConfirmed().isPresent()) {
+			AgreeTimeOfMonthExport confirmed = agreementTime.getConfirmed().get();
+			// 「時間外時間の詳細」．限度エラー時間=「36協定時間一覧」．確定情報．限度エラー時間
+			appOvertimeDetail.setLimitErrorTime(confirmed.getLimitErrorTime());
+			// 「時間外時間の詳細」．実績時間=「36協定時間一覧」．確定情報．36協定時間
+			appOvertimeDetail.setActualTime(confirmed.getAgreementTime());
+			// 「時間外時間の詳細」．限度アラーム時間=「36協定時間一覧」．確定情報．限度アラーム時間
+			appOvertimeDetail.setLimitAlarmTime(confirmed.getLimitAlarmTime());
+			// 「時間外時間の詳細」．特例限度エラー時間=「36協定時間一覧」．確定情報．特例限度エラー時間
+			appOvertimeDetail.setExceptionLimitErrorTime(confirmed.getExceptionLimitErrorTime().isPresent()
+					? confirmed.getExceptionLimitErrorTime().get() : null);
+			// 「時間外時間の詳細」．特例限度アラーム時間=「36協定時間一覧」．確定情報．特例限度アラーム時間
+			appOvertimeDetail.setExceptionLimitAlarmTime(confirmed.getExceptionLimitAlarmTime().isPresent()
+					? confirmed.getExceptionLimitAlarmTime().get() : null);
 		}
 		// 36協定対象項目一覧を取得
 		Time36AgreementTargetItem targetItem = outsideOTSettingService.getTime36AgreementTargetItem(companyId);

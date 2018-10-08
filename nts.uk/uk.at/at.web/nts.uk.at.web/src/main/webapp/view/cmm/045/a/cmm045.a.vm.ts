@@ -199,9 +199,8 @@ module cmm045.a.viewmodel {
                         }
                         let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
                         character.save('AppListExtractCondition', paramSave);
-//                        console.log(data);
                         let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
                         let lstAppGroup: Array<vmbase.AppPrePostGroup> = [];
                         self.displaySet(new vmbase.ApprovalListDisplaySetDto(data.displaySet.advanceExcessMessDisAtr,
@@ -1666,7 +1665,7 @@ module cmm045.a.viewmodel {
             }else{
                 paramNew = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
             }
             //luu
                 character.save('AppListExtractCondition', paramNew);
