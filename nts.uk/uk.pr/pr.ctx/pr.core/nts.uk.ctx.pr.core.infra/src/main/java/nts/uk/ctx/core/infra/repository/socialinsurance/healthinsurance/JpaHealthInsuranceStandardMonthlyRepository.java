@@ -21,7 +21,7 @@ import nts.uk.ctx.core.infra.entity.socialinsurance.healthinsurance.QpbmtHealthI
 public class JpaHealthInsuranceStandardMonthlyRepository extends JpaRepository implements HealthInsuranceStandardMonthlyRepository {
 
     private static final String GET_HEALTH_INSURANCE_STANDARD_MONTHLY_BY_START_YEAR_MONTH = "SELECT a FROM QpbmtHealthInsuranceStandardMonthly a WHERE a.healthInsStdMonPk.targetStartYm <=:targetStartYm AND a.healthInsStdMonPk.targetEndYm >=:targetStartYm";
-    private static final String GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID = "SELECT a FROM QpbmtHealthInsuranceStandardGradePerMonth a WHERE a.healthStdGraMonPk.targetStartYm=:targetStartYm AND a.healthStdGraMonPk.targetEndYm=:targetEndYm";
+    private static final String GET_HEALTH_INSURANCE_STANDARD_GRADE_PER_MONTH_BY_ID = "SELECT a FROM QpbmtHealthInsuranceStandardGradePerMonth a WHERE a.healthStdGraMonPk.targetStartYm=:targetStartYm AND a.healthStdGraMonPk.targetEndYm=:targetEndYm order by a.healthStdGraMonPk.healthInsuranceGrade ASC ";
 
     @Override
     public Optional<HealthInsuranceStandardMonthly> getHealthInsuranceStandardMonthlyByStartYearMonth(int targetStartYm) {

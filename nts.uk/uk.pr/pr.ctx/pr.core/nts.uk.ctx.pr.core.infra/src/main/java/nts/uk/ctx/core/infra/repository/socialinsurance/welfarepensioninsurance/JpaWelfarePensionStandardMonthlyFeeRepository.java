@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class JpaWelfarePensionStandardMonthlyFeeRepository extends JpaRepository implements WelfarePensionStandardMonthlyFeeRepository {
 
     private static final String GET_WELFARE_PENSION_STANDARD_MONTHLY_FEE_BY_START_YEAR_MONTH = "SELECT a FROM QpbmtWelfarePensionStandardMonthlyFee a WHERE a.welfareStdMonFeePk.targetStartYm <=:targetStartYm AND a.welfareStdMonFeePk.targetEndYm >=:targetStartYm";
-    private static final String GET_WELFARE_PENSION_STANDARD_MONTHLY_FEE_BY_YEAR_MONTH = "SELECT a FROM QpbmtWelfarePensionStandardGradePerMonth a WHERE a.penStdGraMonPk.targetStartYm=:targetStartYm AND a.penStdGraMonPk.targetEndYm=:targetEndYm";
+    private static final String GET_WELFARE_PENSION_STANDARD_MONTHLY_FEE_BY_YEAR_MONTH = "SELECT a FROM QpbmtWelfarePensionStandardGradePerMonth a WHERE a.penStdGraMonPk.targetStartYm=:targetStartYm AND a.penStdGraMonPk.targetEndYm=:targetEndYm order by a.penStdGraMonPk.welfarePensionGrade ASC";
 
     @Override
     public Optional<WelfarePensionStandardMonthlyFee> getWelfarePensionStandardMonthlyFeeByStartYearMonth(int startYearMonth) {
