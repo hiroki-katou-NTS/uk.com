@@ -1454,19 +1454,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     arrTmp: Cell[] = _.clone(arrCell),
                     arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells"),
                     newArrCell = [];
-                // distinct arrCell- do khi thay doi 1 cell co 2 row thi a Manh ban ra 2 cell vs innerIdx khac nhau
-                _.each(arrCell, cell => {
-                    if (!_.find(newArrCell, { 'rowIndex': cell.rowIndex, 'columnKey': cell.columnKey })) {
-                        newArrCell.push(cell);
-                    };
-                });
-                arrCell = newArrCell;
                 
                 // compare 2 array lockCell init and after
                 if (arrCell.length == 0 && _.isEqual(self.arrLockCellInit(), arrLockCellAfterSave)) {
                     return;
                 }
-
+                
                 self.stopRequest(false);
                                     
                 let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
@@ -1504,9 +1497,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }));
                         }
                     });
-                    //distinct arrCell
-                    arrCell = _.uniqWith(arrCell, _.isEqual);    
                 }
+                
+                // distinct arrCell- do khi thay doi 1 cell co 2 row thi a Manh ban ra 2 cell vs innerIdx khac nhau
+                _.each(arrCell, cell => {
+                    if (!_.find(newArrCell, { 'rowIndex': cell.rowIndex, 'columnKey': cell.columnKey })) {
+                        newArrCell.push(cell);
+                    };
+                });
+                arrCell = newArrCell;
+                
                 arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, ['rowIndex', 'columnKey']);
                 arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
                 arrCell = _.differenceBy(arrCell, arrNewCellIsLocked, ['rowIndex', 'columnKey']);

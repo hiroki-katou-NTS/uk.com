@@ -1,7 +1,9 @@
 module nts.uk.at.view.kmw003.a {
     let __viewContext: any = window["__viewContext"] || {};
     __viewContext.ready(function() {
-        var screenModel = __viewContext.vm = new nts.uk.at.view.kmw003.a.viewmodel.ScreenModel();
+        let screenModel = __viewContext.vm = new nts.uk.at.view.kmw003.a.viewmodel.ScreenModel();
+        // set pg-name if pg-name = ''
+        if ($("#pg-name").text() == '') $("#pg-name").text("KMW003A " + nts.uk.resource.getText("KMW003_1"));
         screenModel.startPage().done(() => {
             //this.bind(screenModel, dialogOptions);
             //cursor move direction 

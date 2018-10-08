@@ -1402,14 +1402,16 @@ module nts.uk.at.view.kmw003.a.viewmodel {
          */
         signAll() {
             let self = this;
-            $("#dpGrid").mGrid("checkAll", "identify");
+            $("#dpGrid").mGrid("checkAll", "identify", true);
+            $("#dpGrid").mGrid("checkAll", "approval", true);
         }
         /**
          * UnCheck all CheckBox
          */
         releaseAll() {
             let self = this;
-            $("#dpGrid").mGrid("uncheckAll", "identify");
+            $("#dpGrid").mGrid("uncheckAll", "identify", true);
+            $("#dpGrid").mGrid("uncheckAll", "approval", true);
         }
         /**
          * ロック解除ボタン　クリック
