@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,14 +19,13 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.createmonthlyapprover.CreateMonthlyApproverAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerRepository;
+import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
@@ -95,6 +95,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	
 	@Inject
 	private StoredProcdureProcess storedProcedureProcess;
+	
+	@Inject 
+	private UpdateAllDomainMonthService monthService;
 	
 	/** 社員の月別実績を集計する */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -283,68 +286,75 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				}
 			}
 			
-			// 登録する
-			MonthMergeKey domainsKey = new MonthMergeKey();
-			domainsKey.setEmployeeId(employeeId);
-			domainsKey.setYearMonth(yearMonth);
-			domainsKey.setClosureId(closureId);
-			domainsKey.setClosureDate(closureDate);
-			if (value.getAttendanceTime().isPresent()){
-				this.timeOfMonthlyRepo.persistAndUpdate(new TimeOfMonthly(
-						value.getAttendanceTime(), value.getAffiliationInfo()));
-				// 月別実績の就業実績確認状態を作成する
-				this.createMonthlyApproverAd.createApprovalStatusMonth(
-						employeeId, datePeriod.end(), yearMonth, closureId.value, closureDate);
-			}
-			if (value.getAttendanceTimeWeeks().size() > 0){
-				for (val attendanceTimeWeek : value.getAttendanceTimeWeeks()){
-					this.attendanceTimeWeekRepo.persistAndUpdate(attendanceTimeWeek);
-				}
-			}
-//			for (val anyItem : value.getAnyItemList()){
-//				this.anyItemRepository.persistAndUpdate(anyItem);
-//			}
-			// 出力したデータに関連するキー値でストアドプロシージャを実行する
-			/** ストアドといってもJava上で処理です　*/
-			this.storedProcedureProcess.monthlyProcessing(
-					companyId,
-					employeeId,
-					aggrPeriod.getYearMonth(),
-					aggrPeriod.getClosureId(),
-					aggrPeriod.getClosureDate(),
-					value.getAttendanceTime(),
-					value.getAnyItemList());
+			IntegrationOfMonthly integration = new IntegrationOfMonthly(value.getAttendanceTime(), value.getAffiliationInfo(), value.getAnyItemList(), 
+					value.getAgreementTime(), Optional.of(value.getAnnLeaRemNumEachMonthList().get(0)), Optional.of(value.getRsvLeaRemNumEachMonthList().get(0)), 
+					Optional.of(value.getAbsenceLeaveRemainList().get(0)), Optional.of(value.getMonthlyDayoffRemainList().get(0)), value.getSpecialLeaveRemainList(), 
+					new ArrayList<>(), value.getMonCareHdRemain(), value.getMonChildHdRemain());
 			
-			if (value.getAgreementTime().isPresent()){
-				this.agreementTimeRepository.persistAndUpdate(value.getAgreementTime().get());
-			}
-			RemainMerge remainMerge = new RemainMerge();
-			{
-				if (value.getAnnLeaRemNumEachMonthList().size() > 0){
-					remainMerge.setAnnLeaRemNumEachMonth(value.getAnnLeaRemNumEachMonthList().get(0));
-				}
-				if (value.getRsvLeaRemNumEachMonthList().size() > 0){
-					remainMerge.setRsvLeaRemNumEachMonth(value.getRsvLeaRemNumEachMonthList().get(0));
-				}
-				if (value.getAbsenceLeaveRemainList().size() > 0){
-					remainMerge.setAbsenceLeaveRemainData(value.getAbsenceLeaveRemainList().get(0));
-				}
-				if (value.getMonthlyDayoffRemainList().size() > 0){
-					remainMerge.setMonthlyDayoffRemainData(value.getMonthlyDayoffRemainList().get(0));
-				}
-				if (value.getSpecialLeaveRemainList().size() > 0){
-					remainMerge.setSpecialHolidayRemainDataMerge(value.getSpecialLeaveRemainList());
-				}
-				if (value.getMonCareHdRemain().isPresent()){
-					remainMerge.setMonCareHdRemain(value.getMonCareHdRemain().get());
-				}
-				if (value.getMonChildHdRemain().isPresent()){
-					remainMerge.setMonChildHdRemain(value.getMonChildHdRemain().get());
-				}
-			}
-			if (!remainMerge.isEmpty()){
-				this.remainMergeRepo.persistAndUpdate(domainsKey, remainMerge);
-			}
+			monthService.merge(Arrays.asList(integration), datePeriod.end());
+			
+//			// 登録する
+//			MonthMergeKey domainsKey = new MonthMergeKey();
+//			domainsKey.setEmployeeId(employeeId);
+//			domainsKey.setYearMonth(yearMonth);
+//			domainsKey.setClosureId(closureId);
+//			domainsKey.setClosureDate(closureDate);
+//			if (value.getAttendanceTime().isPresent()){
+//				this.timeOfMonthlyRepo.persistAndUpdate(new TimeOfMonthly(
+//						value.getAttendanceTime(), value.getAffiliationInfo()));
+//				// 月別実績の就業実績確認状態を作成する
+//				this.createMonthlyApproverAd.createApprovalStatusMonth(
+//						employeeId, datePeriod.end(), yearMonth, closureId.value, closureDate);
+//			}
+//			if (value.getAttendanceTimeWeeks().size() > 0){
+//				for (val attendanceTimeWeek : value.getAttendanceTimeWeeks()){
+//					this.attendanceTimeWeekRepo.persistAndUpdate(attendanceTimeWeek);
+//				}
+//			}
+////			for (val anyItem : value.getAnyItemList()){
+////				this.anyItemRepository.persistAndUpdate(anyItem);
+////			}
+//			// 出力したデータに関連するキー値でストアドプロシージャを実行する
+//			/** ストアドといってもJava上で処理です　*/
+//			this.storedProcedureProcess.monthlyProcessing(
+//					companyId,
+//					employeeId,
+//					aggrPeriod.getYearMonth(),
+//					aggrPeriod.getClosureId(),
+//					aggrPeriod.getClosureDate(),
+//					value.getAttendanceTime(),
+//					value.getAnyItemList());
+//			
+//			if (value.getAgreementTime().isPresent()){
+//				this.agreementTimeRepository.persistAndUpdate(value.getAgreementTime().get());
+//			}
+//			RemainMerge remainMerge = new RemainMerge();
+//			{
+//				if (value.getAnnLeaRemNumEachMonthList().size() > 0){
+//					remainMerge.setAnnLeaRemNumEachMonth(value.getAnnLeaRemNumEachMonthList().get(0));
+//				}
+//				if (value.getRsvLeaRemNumEachMonthList().size() > 0){
+//					remainMerge.setRsvLeaRemNumEachMonth(value.getRsvLeaRemNumEachMonthList().get(0));
+//				}
+//				if (value.getAbsenceLeaveRemainList().size() > 0){
+//					remainMerge.setAbsenceLeaveRemainData(value.getAbsenceLeaveRemainList().get(0));
+//				}
+//				if (value.getMonthlyDayoffRemainList().size() > 0){
+//					remainMerge.setMonthlyDayoffRemainData(value.getMonthlyDayoffRemainList().get(0));
+//				}
+//				if (value.getSpecialLeaveRemainList().size() > 0){
+//					remainMerge.setSpecialHolidayRemainDataMerge(value.getSpecialLeaveRemainList());
+//				}
+//				if (value.getMonCareHdRemain().isPresent()){
+//					remainMerge.setMonCareHdRemain(value.getMonCareHdRemain().get());
+//				}
+//				if (value.getMonChildHdRemain().isPresent()){
+//					remainMerge.setMonChildHdRemain(value.getMonChildHdRemain().get());
+//				}
+//			}
+//			if (!remainMerge.isEmpty()){
+//				this.remainMergeRepo.persistAndUpdate(domainsKey, remainMerge);
+//			}
 			
 			status.getOutAggrPeriod().add(aggrPeriod);
 			
