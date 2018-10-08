@@ -202,7 +202,8 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		if (StringUtil.isNullOrEmpty(code, true)) {// login menu code: empty
 			// display my page
 			check = false;
-			layoutTopPage = null;
+			layoutTopPage = getTopPageByCode(companyId, tpSelfSet.getCode(), System.COMMON.value,
+					MenuClassification.TopPage.value, true);
 			if (!checkMyPage) {// not use my page
 				check = true;
 				return new LayoutAllDto(null, layoutTopPage, check, checkMyPage, checkTopPage);
