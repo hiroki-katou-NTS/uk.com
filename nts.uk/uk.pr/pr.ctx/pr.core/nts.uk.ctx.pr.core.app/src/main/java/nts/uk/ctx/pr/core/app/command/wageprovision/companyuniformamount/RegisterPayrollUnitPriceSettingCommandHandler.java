@@ -34,6 +34,9 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
     @Inject
     PayrollUnitPriceSettingRepository payrollUnitPriceSettingRepository;
 
+    @Inject
+    private PayrollUnitPriceHistoryService mPayrollUnitPriceHistoryService;
+
     @Override
     protected void handle(CommandHandlerContext<RegisterPayrollUnitPriceSettingCommand> context) {
 
@@ -47,10 +50,9 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
         if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_ADD_HISTORY || payrollUnitPriceHistoryCommand.getIsMode() == MODE_NEW){
             hisId = IdentifierUtil.randomUniqueId();
         }
-
-        YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,
-                new YearMonthPeriod(new YearMonth(payrollUnitPriceHistoryCommand.getStartYearMonth()),
-                        new YearMonth(payrollUnitPriceHistoryCommand.getEndYearMonth())));
+        YearMonth startYearMonth = new YearMonth(payrollUnitPriceHistoryCommand.getStartYearMonth());
+        YearMonth endYearMonth = new YearMonth(payrollUnitPriceHistoryCommand.getEndYearMonth());
+        YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,new YearMonthPeriod(startYearMonth,endYearMonth));
 
         PayrollUnitPrice payrollUnitPrice = new PayrollUnitPrice(cid,payrollUnitPriceCommand.getCode(),payrollUnitPriceCommand.getName());
 
@@ -63,10 +65,12 @@ public class RegisterPayrollUnitPriceSettingCommandHandler extends CommandHandle
             payrollUnitPriceSettingRepository.add(payrollUnitPriceSetting);
         } else if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_UPDATE) {
             payrollUnitPriceRepository.update(payrollUnitPrice);
+            mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid,hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
             payrollUnitPriceHistoryRepository.update(history,cid,payrollUnitPriceHistoryCommand.getCode());
             payrollUnitPriceSettingRepository.update(payrollUnitPriceSetting);
         } else if(payrollUnitPriceHistoryCommand.getIsMode() == MODE_ADD_HISTORY){
             payrollUnitPriceRepository.update(payrollUnitPrice);
+            mPayrollUnitPriceHistoryService.historyCorrectionProcecessing(cid,hisId,payrollUnitPriceHistoryCommand.getCode(),startYearMonth,endYearMonth);
             payrollUnitPriceHistoryRepository.add(history,cid,payrollUnitPriceHistoryCommand.getCode());
             payrollUnitPriceSettingRepository.add(payrollUnitPriceSetting);
         }

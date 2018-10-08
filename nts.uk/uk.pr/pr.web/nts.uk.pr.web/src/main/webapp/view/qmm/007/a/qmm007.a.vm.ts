@@ -53,7 +53,16 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         targetClassBySalaryConType: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        selectedRuleCode1: any;
+        selectedClassification: any;
+        selectedTargetClass: any;
+        selectedMonthSalaryPerDay: any;
+        selectedADayPayee:any;
+        selectedHourlyPay:any;
+        selectedMonthlySalary: any;
+
+
+
+
         //
         multilineeditor: any;
 
@@ -62,6 +71,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         payrollUnitPrice: KnockoutObservableArray<PayrollUnitPrice> = ko.observableArray([]);
         constructor() {
             var self = this;
+            self.init();
             self.selectedId = ko.observable(1);
             self.selectedId.subscribe((data)=>{
                 if(!data){
@@ -77,6 +87,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 let code = params[0];
                 let hisId = params[1];
                 self.mode(MODE.UPDATE);
+                $("#A3_2").focus();
                 service.getPayrollUnitPriceById(code).done((data)=>{
                     self.code(data.code);
                     self.name(data.name);
@@ -87,6 +98,11 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 service.getPayrollUnitPriceSettingById(hisId).done((data) =>{
                     if(data != undefined){
                         self.amountOfMoney(data.amountOfMoney);
+                        self.selectedId(data.targetClass);
+                        self.selectedMonthlySalary(data.monthlySalary);
+                        self.selectedADayPayee(data.adayPayee);
+                        self.selectedHourlyPay(data.hourlyPay)
+                        self.notes(data.notes);
                     }
                 });
             });
@@ -113,16 +129,21 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 { code: '0', name: '対象' },
                 { code: '1', name: '対象外' },
             ]);
-            self.selectedRuleCode = ko.observable(1);
-            self.selectedRuleCode1 = ko.observable(0);
+            self.selectedRuleCode = ko.observable(0);
+            self.selectedClassification = ko.observable(0);
+            self.selectedTargetClass = ko.observable(0);
+            self.selectedMonthSalaryPerDay = ko.observable(0);
+            self.selectedADayPayee = ko.observable(0);
+            self.selectedHourlyPay = ko.observable(0);
+            self.selectedMonthlySalary = ko.observable(0);
             //
             self.itemList = ko.observableArray([
                 new BoxModel(1, '全員一律で指定する'),
                 new BoxModel(2, '給与契約形態ごとに指定する')
             ]);
             self.fixedWageClassList = ko.observableArray([
-                new BoxModel(0, getText('FixedWageClass.DES_FOR_EACH_SALARY_CON_TYPE')),
-                new BoxModel(1, getText('FixedWageClass.DES_BY_ALL_MEMBERS'))
+                new BoxModel(0, getText('全員一律で指定する')),
+                new BoxModel(1, getText('給与契約形態ごとに指定する'))
             ]);
 
 
@@ -175,28 +196,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-
-            //
-            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                new Node('0003', 'Bangkok Thailand', []),
-                //new Node('0004', 'Tokyo Japan', []),
-                //new Node('0005', 'Jakarta Indonesia', []),
-                //new Node('0002', 'Seoul Korea', []),
-                //new Node('0006', 'Paris France', []),
-                //new Node({'code':'0007','name':'taitt'}, 'United States', []),
-                //new Node('0010', 'Beijing China', []),
-                //new Node('0011', 'London United Kingdom', []),
-                //new Node('0012', '', [])]);
-            self.dataSource2 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                new Node('0003', 'Bangkok Thailand', []),
-                new Node('0004', 'Tokyo Japan', []),
-                new Node('0005', 'Jakarta Indonesia', []),
-                new Node('0002', 'Seoul Korea', []),
-                new Node('0006', 'Paris France', []),
-                new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),
-                new Node('0010', 'Beijing China', []),
-                new Node('0011', 'London United Kingdom', []),
-                new Node('0012', '', [])]);
             //self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode2 = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);
@@ -223,7 +222,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         }
 
 
-        openFscreen(){
+        init(){
             let self = this;
             let db = [];
             service.getPayrollUnitPriceHistoryByCidCode("002").done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory> )=>{
@@ -311,16 +310,19 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 payrollUnitPriceSettingCommand: new PayrollUnitPriceSetting({
                     historyId: self.singleSelectedCode().split(';')[1],
                     amountOfMoney: self.amountOfMoney(),
-                    targetClass: 1,
-                    monthSalaryPerDay: 1,
-                    monthlySalary: 1,
-                    hourlyPay: 1,
-                    aDayPayee: 1,
-                    setClassification: 1,
+                    targetClass: self.selectedId(),
+                    monthSalaryPerDay: self.selectedMonthSalaryPerDay(),
+                    monthlySalary: self.selectedMonthlySalary(),
+                    hourlyPay: self.selectedHourlyPay(),
+                    aDayPayee: self.selectedADayPayee(),
+                    setClassification: self.selectedClassification(),
                     notes: self.notes()
                 })
             }
 
+            service.getPayrollUnitPriceById(self.code()).done((data)=>{
+
+            });
             service.register(data).done(()=>{
                 dialog.info({ messageId: "Msg_15" }).then(() => {
                     close();

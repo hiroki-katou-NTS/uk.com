@@ -26,10 +26,10 @@
                     data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_2')}</button>
 
             <button id="A1_3" tabindex="3"
-                    data-bind="click: openFscreen,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_3')}</button>
+                    data-bind="enable: false">#{i18n.getText('QMM007_3')}</button>
 
             <button id="A1_4" tabindex="4"
-                    data-bind="click: openFscreen,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_4')}</button>
+                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM007_4')}</button>
 
         </div>
 
@@ -125,51 +125,51 @@
                             options: targetClassBySalaryConType,
                             optionsValue: 'code',
                             optionsText: 'name',
-                            value: selectedRuleCode1,
+                            value: selectedClassification,
                             required: required,
                             enable: enableTargetClassification }"></div>
                 <div style="display: inline-table;margin-left: 80px">
-                    <div  class="label" style="margin-bottom: 15px;display:inline">月給者</div>
+                    <div  id="A3_12" class="label" style="margin-bottom: 15px;display:inline">月給者</div>
 
-                    <div  style="margin-left:60px" class="cf" data-bind="ntsSwitchButton: {
+                    <div id="A3_13" style="margin-left:60px" class="cf" data-bind="ntsSwitchButton: {
                                 name: 'Sample Switch',
                                 options: targetClassBySalaryConType,
                                 optionsValue: 'code',
                                 optionsText: 'name',
-                                value: selectedRuleCode,
+                                value: selectedMonthSalaryPerDay,
                                 required: required,
                                 enable: enable }"></div>
                     <br/>
-                    <div  class="label" style="margin-bottom: 15px;display:inline">月給者</div>
+                    <div id="A3_14" class="label" style="margin-bottom: 15px;display:inline">日給月給者</div>
 
-                    <div  style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
+                    <div id="A3_15" style = "margin-top:10px;margin-left: 32px" class="cf" data-bind="ntsSwitchButton: {
                                 name: 'Sample Switch',
                                 options: targetClassBySalaryConType,
                                 optionsValue: 'code',
                                 optionsText: 'name',
-                                value: selectedRuleCode,
+                                value: selectedADayPayee,
                                 required: required,
                                 enable: enable }"></div>
                     <br/>
-                    <div  class="label" style="margin-bottom: 15px;display:inline">月給者</div>
+                    <div id="A3_16" class="label" style="margin-bottom: 15px;display:inline">日給者</div>
 
-                    <div  style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
+                    <div id="A3_17" style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
                                 name: 'Sample Switch',
                                 options: targetClassBySalaryConType,
                                 optionsValue: 'code',
                                 optionsText: 'name',
-                                value: selectedRuleCode,
+                                value: selectedHourlyPay,
                                 required: required,
                                 enable: enable }"></div>
                     <br/>
-                    <div  class="label" style="margin-bottom: 15px;display:inline">月給者</div>
+                    <div id="A3_18" class="label" style="margin-bottom: 15px;display:inline">時給者</div>
 
-                    <div  style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
+                    <div id="A3_19" style = "margin-top:10px;margin-left: 60px" class="cf" data-bind="ntsSwitchButton: {
                                 name: 'Sample Switch',
                                 options: targetClassBySalaryConType,
                                 optionsValue: 'code',
                                 optionsText: 'name',
-                                value: selectedRuleCode,
+                                value: selectedMonthlySalary,
                                 required: required,
                                 enable: enable }"></div>
                 </div>
