@@ -215,7 +215,7 @@ public class DailyPerformanceCorrectionWebService {
 		}
 		dataParent.setDailyEdits(dailyEdits);
 		dataParent.setDailyOlds((List<DailyRecordDto>) session.getAttribute("domainOlds"));
-		
+		dataParent.setLstAttendanceItem((Map<Integer, DPAttendanceItem>) session.getAttribute("itemIdRCs"));
         return dailyModifyResCommandFacade.insertItemDomain(dataParent);
 	}
 	
