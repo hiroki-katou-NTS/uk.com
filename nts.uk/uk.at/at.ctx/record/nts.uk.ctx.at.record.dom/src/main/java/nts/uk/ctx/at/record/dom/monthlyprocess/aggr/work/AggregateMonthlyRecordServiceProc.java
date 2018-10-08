@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -129,6 +130,8 @@ public class AggregateMonthlyRecordServiceProc {
 	private SpecialHolidayRepository specialHolidayRepo;
 	/** 期間内の特別休暇残を集計する */
 	private SpecialLeaveManagementService specialLeaveMng;
+	/** 休暇残数エラーから月別残数エラー一覧を作成する */
+	private CreatePerErrorsFromLeaveErrors createPerErrorFromLeaveErrors;
 	/** 月別実績の編集状態 */
 	private EditStateOfMonthlyPerRepository editStateRepo;
 	
@@ -183,6 +186,7 @@ public class AggregateMonthlyRecordServiceProc {
 			GetDaysForCalcAttdRate getDaysForCalcAttdRate,
 			SpecialHolidayRepository specialHolidayRepo,
 			SpecialLeaveManagementService specialLeaveMng,
+			CreatePerErrorsFromLeaveErrors createPerErrorFromLeaveErrors,
 			EditStateOfMonthlyPerRepository editStateRepo){
 
 		this.repositories = repositories;
@@ -194,6 +198,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.getDaysForCalcAttdRate = getDaysForCalcAttdRate;
 		this.specialHolidayRepo = specialHolidayRepo;
 		this.specialLeaveMng = specialLeaveMng;
+		this.createPerErrorFromLeaveErrors = createPerErrorFromLeaveErrors;
 		this.editStateRepo = editStateRepo;
 	}
 	
@@ -1136,27 +1141,10 @@ public class AggregateMonthlyRecordServiceProc {
 					asOfPeriodEnd.isAfterGrantAtr());
 			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
 			
-			// 年休エラー処理
-			for (val annualLeaveError : aggrResult.getAnnualLeave().get().getAnnualLeaveErrors()){
-				switch (annualLeaveError){
-				case SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT:
-				case SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT:
-				case SHORTAGE_TIMEAL_BEFORE_GRANT:
-				case SHORTAGE_TIMEAL_AFTER_GRANT:
-				case EXCESS_MAX_TIMEAL_BEFORE_GRANT:
-				case EXCESS_MAX_TIMEAL_AFTER_GRANT:
-					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-							ErrorType.YEARLY_HOLIDAY,
-							this.yearMonth,
-							this.employeeId,
-							this.closureId,
-							this.closureDate,
-							null,
-							annualLeaveError,
-							null));
-					break;
-				}
-			}
+			// 年休エラーから月別残数エラー一覧を作成する
+			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromAnnualLeave(
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					aggrResult.getAnnualLeave().get().getAnnualLeaveErrors()));
 		}
 		
 		if (aggrResult.getReserveLeave().isPresent()){
@@ -1181,23 +1169,10 @@ public class AggregateMonthlyRecordServiceProc {
 					asOfPeriodEnd.isAfterGrantAtr());
 			this.aggregateResult.getRsvLeaRemNumEachMonthList().add(rsvLeaRemNum);
 			
-			// 積立年休エラー処理
-			for (val reserveLeaveError : aggrResult.getReserveLeave().get().getReserveLeaveErrors()){
-				switch (reserveLeaveError){
-				case SHORTAGE_RSVLEA_BEFORE_GRANT:
-				case SHORTAGE_RSVLEA_AFTER_GRANT:
-					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-							ErrorType.NUMBER_OF_MISSED_PIT,
-							this.yearMonth,
-							this.employeeId,
-							this.closureId,
-							this.closureDate,
-							null,
-							null,
-							reserveLeaveError));
-					break;
-				}
-			}
+			// 積立年休エラーから月別残数エラー一覧を作成する
+			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromReserveLeave(
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					aggrResult.getReserveLeave().get().getReserveLeaveErrors()));
 		}
 		
 		// 集計結果を前回集計結果に引き継ぐ
@@ -1257,20 +1232,9 @@ public class AggregateMonthlyRecordServiceProc {
 					new RemainDataDaysMonth(aggrResult.getUnDigestedDays()));
 			this.aggregateResult.getAbsenceLeaveRemainList().add(absLeaRemNum);
 			
-			// 振休エラー処理
-			if (aggrResult.getPError() != null){
-				if (aggrResult.getPError().size() > 0){
-					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-							ErrorType.REMAIN_LEFT,
-							this.yearMonth,
-							this.employeeId,
-							this.closureId,
-							this.closureDate,
-							null,
-							null,
-							null));
-				}
-			}
+			// 振休エラーから月別残数エラー一覧を作成する
+			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromPause(
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate, aggrResult.getPError()));
 		}
 	}
 	
@@ -1337,20 +1301,9 @@ public class AggregateMonthlyRecordServiceProc {
 							Optional.of(new RemainDataTimesMonth(aggrResult.getUnDigestedTimes()))));
 			this.aggregateResult.getMonthlyDayoffRemainList().add(monDayRemNum);
 			
-			// 代休エラー処理
-			if (aggrResult.getLstError() != null){
-				if (aggrResult.getLstError().size() > 0){
-					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-							ErrorType.REMAINING_ALTERNATION_NUMBER,
-							this.yearMonth,
-							this.employeeId,
-							this.closureId,
-							this.closureDate,
-							null,
-							null,
-							null));
-				}
-			}
+			// 代休エラーから月別残数エラー一覧を作成する
+			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromDayOff(
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate, aggrResult.getLstError()));
 		}
 	}
 	
@@ -1402,22 +1355,10 @@ public class AggregateMonthlyRecordServiceProc {
 					remainNoMinus);
 			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
 			
-			// 特別休暇エラーがあるか
-			if (inPeriod.getLstError() != null){
-				if (inPeriod.getLstError().size() > 0){
-					// 特別休暇エラー処理
-					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
-							specialLeaveCode,
-							ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER,
-							this.yearMonth,
-							this.employeeId,
-							this.closureId,
-							this.closureDate,
-							null,
-							null,
-							null));
-				}
-			}
+			// 特別休暇エラーから月別残数エラー一覧を作成する
+			this.aggregateResult.getPerErrors().addAll(this.createPerErrorFromLeaveErrors.fromSpecialLeave(
+					this.employeeId, this.yearMonth, this.closureId, this.closureDate, specialLeaveCode,
+					inPeriod.getLstError()));
 		}
 	}
 	

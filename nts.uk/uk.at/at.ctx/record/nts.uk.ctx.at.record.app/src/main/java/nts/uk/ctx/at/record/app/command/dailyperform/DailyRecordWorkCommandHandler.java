@@ -408,7 +408,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	public void handlerInsertAll(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,
-			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate) {
+			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate, UpdateMonthDailyParam month) {
 		// get error after caculator
 		// update data
 		long time = System.currentTimeMillis();
@@ -421,7 +421,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 				employeeMonthlyPerErrorRepository.removeAll(error.getEmployeeID(), error.getYearMonth(), error.getClosureId(), error.getClosureDate());
 			}
 		});
-		updateAllDomainMonthService.merge(lstMonthDomain);
+		updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream)
 				.collect(Collectors.toList()));
@@ -470,7 +470,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 							error.getClosureId(), error.getClosureDate());
 				}
 			});
-			updateAllDomainMonthService.merge(lstMonthDomain);
+			updateAllDomainMonthService.merge(lstMonthDomain, month.getDatePeriod().end());
 		}
 
 		ExecutorService executorService = Executors.newFixedThreadPool(1);

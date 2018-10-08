@@ -5,8 +5,7 @@ module nts.uk.com.view.cmm001.f {
          */
         var path: any = {
             executionMasterCopyData: "sys/assist/mastercopy/data/execute",
-            exportFileError: "sys/assist/mastercopy/data/log/export",
-            interrupt: "sys/assist/mastercopy/data/interrupt"
+            exportFileError: "sys/assist/mastercopy/data/log/export"
             };
         
         /**
@@ -23,12 +22,6 @@ module nts.uk.com.view.cmm001.f {
             return nts.uk.request.exportFile(path.exportFileError, data);
         }
         
-        /**
-         * pause process
-         */
-        export function pause(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.interrupt);
-        }
     }
     
     export module model {
