@@ -199,7 +199,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		}
 		String code = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
 		// not top page person or not login menu code
-		if (StringUtil.isNullOrEmpty(code, true)) {// login menu code: empty
+		if (StringUtil.isNullOrEmpty(code, true) && tpSelfSet != null) {// login menu code: empty
 			// display my page
 			check = false;
 			layoutTopPage = getTopPageByCode(companyId, tpSelfSet.getCode(), System.COMMON.value,
