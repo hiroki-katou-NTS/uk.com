@@ -2996,6 +2996,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<CodeName> lstPosition = queryData.getLstPosition();
 		List<CodeName> lstEmployment = queryData.getLstEmployment();
 		
+		// Not set -> won't check master unregistered
+		if (StringUtils.isEmpty(code)) {
+			return "";
+		}
+		
 		if (IntStream.of(ATTENDANCE_ID_WORK_TYPE).anyMatch(id -> id == attendanceId)) {
 			Optional<WorkType> optWorkType = lstWorkType.stream()
 					.filter(type -> type.getWorkTypeCode().v().equalsIgnoreCase(code)).findFirst();
