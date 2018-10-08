@@ -124,7 +124,7 @@ module nts.uk.com.view.cmm001.f {
                                                 message: nts.uk.resource.getMessage(error.message),
                                                 categoryName: error.categoryName,
                                                 order: error.order,
-                                                systemType: error.systemType
+                                                systemType: nts.uk.resource.getText(error.systemType)
                                             };
                                             self.errorLogs.push(errorContent);
                                         });
