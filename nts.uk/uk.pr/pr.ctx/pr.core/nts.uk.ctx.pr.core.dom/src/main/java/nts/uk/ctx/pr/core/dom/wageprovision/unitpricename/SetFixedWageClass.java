@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.wageprovision.unitpricename;
+package nts.uk.ctx.pr.core.dom.wageprovision.unitpricename;
 
 
 /**
@@ -15,7 +15,7 @@ public enum SetFixedWageClass
     * 給与契約形態ごとに指定する
     * */
     DES_BY_ALL_MEMBERS(1);
-    
+
     /** The value. */
     public final int value;
     private SetFixedWageClass(int value)

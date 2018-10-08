@@ -1,15 +1,16 @@
-package repository.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.infra.repository.wageprovision.companyuniformamount;
 
-import java.util.Optional;
-import java.util.List;
 
 import javax.ejb.Stateless;
 
-import entity.wageprovision.companyuniformamount.QpbmtPayUnitPriSet;
-import entity.wageprovision.companyuniformamount.QpbmtPayUnitPriSetPk;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceSettingRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSettingRepository;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriSet;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPriSetPk;
+
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class JpaPayrollUnitPriceSettingRepository extends JpaRepository implements PayrollUnitPriceSettingRepository

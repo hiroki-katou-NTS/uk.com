@@ -18,6 +18,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         isHisFirst:              KnockoutObservable<boolean> = ko.observable(true);
         insuranceName:          KnockoutObservable<string> = ko.observable('');
         mPayrollUnitPriceHis : KnockoutObservableArray<PayrollUnitPriceHistoryDto> = ko.observableArray(null);
+        // data
+        name :KnockoutObservable<string> = ko.observable('項目移送');
+        code :KnockoutObservable<string> = ko.observable('項目移送');
         constructor() {
             let self = this;
             self.innitView();
@@ -69,16 +72,16 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
 
         innitView(){
             let self = this;
-            let to = getText('QMM011_9');
-            self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(999912));
-
             // start
             let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
             if (params) {
+                self.name(params.name);
+                self.code(params.code);
+                self.startYearMonth(params.startYearMonth);
                 self.isHisFirst(params.isHisFirst);
                 self.getPayrollUnitPriceHis(params.hisId,params.code);
             }
-            self.getPayrollUnitPriceHis("0000000101",'1');
+            // self.getPayrollUnitPriceHis("8f4befef-29a0-4e0c-bfca-517c370df452",'001');
         }
 
         getPayrollUnitPriceHis(hisId: string, code: string) {

@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.core.wageprovision.unitpricename.SetFixedWageClass;
+import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.SetFixedWageClass;
 
 /**
 * 固定的賃金の設定

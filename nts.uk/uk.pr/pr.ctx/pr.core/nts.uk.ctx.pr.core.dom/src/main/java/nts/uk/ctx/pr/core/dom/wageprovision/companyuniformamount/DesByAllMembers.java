@@ -1,10 +1,10 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.core.wageprovision.unitpricename.FixedWageClassification;
+import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.FixedWageClassification;
 
 /**
 * 全員一律で指定する

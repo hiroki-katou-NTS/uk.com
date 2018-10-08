@@ -1,12 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryDto;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Value
 public class PayrollUnitPriceHistoryCommand
 {

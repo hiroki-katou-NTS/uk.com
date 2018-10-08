@@ -1,10 +1,10 @@
-package nts.uk.ctx.pr.core.wageprovision.unitpricename;
+package nts.uk.ctx.pr.core.dom.wageprovision.unitpricename;
 
 
 /**
-* 給与契約形態ごとの対象区分
+* 固定的賃金区分
 */
-public enum TargetClassBySalaryConType
+public enum FixedWageClassification
 {
     /*
     * 対象
@@ -17,7 +17,9 @@ public enum TargetClassBySalaryConType
     
     /** The value. */
     public final int value;
-    private TargetClassBySalaryConType(int value)
+    
+    /** The name id. */
+    private FixedWageClassification(int value)
     {
         this.value = value;
     }

@@ -1,15 +1,14 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPrice;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPrice;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
 
 
 /**

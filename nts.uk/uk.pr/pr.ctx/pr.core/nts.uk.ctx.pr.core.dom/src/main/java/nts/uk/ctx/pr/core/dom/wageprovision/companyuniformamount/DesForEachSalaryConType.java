@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.pr.core.wageprovision.unitpricename.TargetClassBySalaryConType;
+import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.TargetClassBySalaryConType;
 
 /**
 * 給与契約形態ごとに指定する

@@ -1,4 +1,4 @@
-package entity.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

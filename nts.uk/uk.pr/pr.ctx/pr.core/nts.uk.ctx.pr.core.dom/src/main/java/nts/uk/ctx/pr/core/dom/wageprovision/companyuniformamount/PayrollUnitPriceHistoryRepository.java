@@ -1,5 +1,6 @@
-package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistory;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.Optional;
