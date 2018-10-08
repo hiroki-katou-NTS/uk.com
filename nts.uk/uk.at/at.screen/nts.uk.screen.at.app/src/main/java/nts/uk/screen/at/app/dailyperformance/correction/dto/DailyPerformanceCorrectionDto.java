@@ -47,6 +47,8 @@ public class DailyPerformanceCorrectionDto {
 	private DPControlDisplayItem lstControlDisplayItem;
 
 	private List<DPCellStateDto> lstCellState;
+	
+	private List<DPCellStateDto> lstCellStateCalc;
 
 	private List<DPDataDto> lstData;
 
@@ -86,7 +88,7 @@ public class DailyPerformanceCorrectionDto {
 	private boolean showTighProcess;
 	
 	private boolean showErrorDialog;
-
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
@@ -99,6 +101,7 @@ public class DailyPerformanceCorrectionDto {
 		this.textStyles = new ArrayList<>();
 		this.autBussCode = new HashSet<>();
 		this.showTighProcess = false;
+		this.lstCellStateCalc = new ArrayList<>();
 	}
 
 	/** Check if employeeId is login user */

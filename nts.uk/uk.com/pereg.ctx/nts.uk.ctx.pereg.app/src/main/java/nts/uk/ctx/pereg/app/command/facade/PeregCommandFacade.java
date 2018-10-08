@@ -527,7 +527,8 @@ public class PeregCommandFacade {
 					if (ItemValue.filterItem(item) != null) {
 						input.getItems().stream().forEach(c ->{
 							if(item.itemCode().equals(c.itemCode())) {
-								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+								ItemValue convertItem = ItemValue.setContentForCPS001(item);
+								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
 							}
 						});
 						
