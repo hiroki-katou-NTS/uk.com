@@ -94,6 +94,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 });
                 service.getPayrollUnitPriceHisById(code,hisId).done((data)=>{
                     self.yearMonth(data.startYearMonth);
+                    self.endYearMonth(data.endYearMonth);
                 });
                 service.getPayrollUnitPriceSettingById(hisId).done((data) =>{
                     if(data != undefined){
@@ -267,14 +268,15 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let self = this;
             let params = self.singleSelectedCode().split(';');
             let index;
-            index = _.findIndex(self.payrollUnitPriceHistory(), (o) =>{
+            index = _.findIndex(self.payrollUnitPriceHistory()[0], (o) =>{
                 return o.hisId === params[1];
             });
-            setShared('QMM07_C_PARAMS_INPUT', {
+            setShared('QMM007_PARAMS_TO_SCREEN_C', {
                 code: params[0],
                 hisId: params[1],
                 name: params[2],
                 startYearMonth: self.yearMonth(),
+                endYearMonth:self.endYearMonth(),
                 isFirst: index === 0 ? true : false,
             });
             modal("/view/qmm/007/c/index.xhtml").onClosed(function () {

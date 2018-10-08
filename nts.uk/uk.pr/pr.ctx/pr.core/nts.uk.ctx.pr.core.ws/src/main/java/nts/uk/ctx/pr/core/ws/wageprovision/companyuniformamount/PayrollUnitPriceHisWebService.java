@@ -1,4 +1,4 @@
-package wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.ws.wageprovision.companyuniformamount;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

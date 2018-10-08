@@ -8,6 +8,10 @@
     margin-left: 90px;
 }
 
+#C1_6{
+    display: inline;
+}
+
 .datepicker-container {
     z-index: 10010;
 }

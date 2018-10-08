@@ -35,6 +35,11 @@ public class ProgramsManager {
 			"/view/qmm/011/e/index.xhtml");
 	public static final Program QMM011F = new Program(WebAppId.PR, ProgramIdConsts.QMM011F, "QMM011_65",
 			"/view/qmm/011/f/index.xhtml");
+	/**
+	 * QMM007
+	 */
+	public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM011_60",
+			"/view/qmm/007/c/index.xhtml");
 	
 	/**
 	 * CCG008A
