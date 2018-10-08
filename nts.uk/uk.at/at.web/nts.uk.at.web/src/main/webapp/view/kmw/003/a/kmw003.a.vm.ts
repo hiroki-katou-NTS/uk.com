@@ -155,6 +155,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //実績期間を変更する
                 self.updateActualTime();
             });
+            
+            self.selectedDirection.subscribe((value) => {
+                if (value == 0) {
+                    $("#dpGrid").mGrid("directEnter", "below");
+                } else {
+                    $("#dpGrid").mGrid("directEnter", "right");
+                }
+            });
+            
             self.yearMonth.subscribe(value => {
                 //期間を変更する
                 if (nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen())
@@ -1471,8 +1480,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
-                container.css("top", "0px");
-                container.css("left", "0px");
+                container.css("top", "-5px");
+                container.css("left", "255px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container

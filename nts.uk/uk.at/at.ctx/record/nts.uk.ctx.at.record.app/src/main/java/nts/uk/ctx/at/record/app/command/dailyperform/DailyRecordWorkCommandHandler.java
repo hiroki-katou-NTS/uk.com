@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLog
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DPAttendanceItemRC;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
@@ -373,7 +374,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
 									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
 							.collect(Collectors.toList());
-					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew, new HashMap<>()));
 				});
 		executorService.submit(task);
 
@@ -408,7 +409,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	public void handlerInsertAll(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,
-			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate, UpdateMonthDailyParam month) {
+			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate, UpdateMonthDailyParam month,  Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
 		// get error after caculator
 		// update data
 		long time = System.currentTimeMillis();
@@ -441,13 +442,13 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 //							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
 //									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
 //							.collect(Collectors.toList());
-					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew, lstAttendanceItem));
 				});
 		executorService.submit(task);
 	}
 
 	public void handlerNoCalc(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<EmployeeDailyPerError> lstError,
-			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode) {
+			List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, int mode, Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
 		
 		employeeErrorRepo.removeParam(toMapParam(commandNew));
 
@@ -486,7 +487,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 						.createEmpAndDate(et.getKey().getEmployeeId(), et.getKey().getDate());
 					}).collect(Collectors.toList());
 					
-					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew, lstAttendanceItem));
 				});
 		executorService.submit(task);
 	}
