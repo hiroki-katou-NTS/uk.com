@@ -2,6 +2,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         mode: KnockoutObservable<number> = ko.observable(0);
         amountOfMoney: KnockoutObservable<number> = ko.observable(null);
@@ -49,13 +51,15 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         enable: KnockoutObservable<boolean> ;
         //
         roundingRules: KnockoutObservableArray<any>;
+        targetClassBySalaryConType: KnockoutObservableArray<any>;
         selectedRuleCode: any;
+        selectedRuleCode1: any;
         //
         multilineeditor: any;
 
         //
-        payrollUnitPriceHistory = [];
-        payrollUnitPrice: Array<PayrollUnitPrice>;
+        payrollUnitPriceHistory:  KnockoutObservableArray<PayrollUnitPriceHistory> = ko.observableArray([]);
+        payrollUnitPrice: KnockoutObservableArray<PayrollUnitPrice> = ko.observableArray([]);
         constructor() {
             var self = this;
             self.selectedId = ko.observable(1);
@@ -105,7 +109,12 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 { code: '1', name: '四捨五入' },
                 { code: '2', name: '切り上げ' },
             ]);
+            self.targetClassBySalaryConType = ko.observableArray([
+                { code: '0', name: '対象' },
+                { code: '1', name: '対象外' },
+            ]);
             self.selectedRuleCode = ko.observable(1);
+            self.selectedRuleCode1 = ko.observable(0);
             //
             self.itemList = ko.observableArray([
                 new BoxModel(1, '全員一律で指定する'),
@@ -134,7 +143,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             //
             self.date = ko.observable('20000101');
             self.yearMonth = ko.observable(200001);
-            self.price = ko.observable(1000);
             //
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
@@ -220,15 +228,15 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let db = [];
             service.getPayrollUnitPriceHistoryByCidCode("002").done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory> )=>{
                 console.dir(listPayrollUnitPriceHistory);
-                self.payrollUnitPriceHistory = _.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc'])
+                self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
             });
             service.getAllPayrollUnitPriceByCID().done((list: Array<PayrollUnitPrice> )=>{
-                console.dir(list);
-                self.payrollUnitPrice = list;
-                _.each(self.payrollUnitPrice,(value)=>{
-                    let node = new Node(value.code + ';' + '' + ';' + value.name, value.code + value.name, []);
+                self.payrollUnitPrice(list);
+                _.each(self.payrollUnitPrice(),(value)=>{
+                    let node = new Node(value.code + ';' + '0000' + ';' + value.name, value.code + value.name, []);
                     service.getPayrollUnitPriceHistoryByCidCode(value.code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>)=>{
                         if(listPayrollUnitPriceHistory.length > 0){
+                            listPayrollUnitPriceHistory = _.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']);
                             _.each(listPayrollUnitPriceHistory,(val)=>{
                                 let childs = new Node(val.code + ';' + val.hisId + ';' + value.name, '' + val.startYearMonth + '～' + val.endYearMonth , []);
                                 node.childs.push(childs);
@@ -244,11 +252,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 });
             });
 
-           /* _.each(self.payrollUnitPriceHistory,(value)=>{
-                _.each(value,(val) =>{
-                    let node = new Node(val.code, val.hisId, []);
-                });
-            });*/
 
 
         }
@@ -263,6 +266,18 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
 
         openCscreen(){
             let self = this;
+            let params = self.singleSelectedCode().split(';');
+            let index;
+            index = _.findIndex(self.payrollUnitPriceHistory(), (o) =>{
+                return o.hisId === params[1];
+            });
+            setShared('QMM07_C_PARAMS_INPUT', {
+                code: params[0],
+                hisId: params[1],
+                name: params[2],
+                startYearMonth: self.yearMonth(),
+                isFirst: index === 0 ? true : false,
+            });
             modal("/view/qmm/007/c/index.xhtml").onClosed(function () {
             });
 
@@ -431,10 +446,14 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         DES_FOR_EACH_SALARY_CON_TYPE = 0,
         DES_BY_ALL_MEMBERS = 1
     }
-
+    //給与契約形態ごとの対象区分
+    export enum TargetClassBySalaryConType{
+        NOT_COVERED = 0,
+        OBJECT = 1
+    }
     export enum MODE {
         NEW = 0,
         UPDATE = 1,
-        ADD_HISTORY = 2;
+        ADD_HISTORY = 2
     }
 }

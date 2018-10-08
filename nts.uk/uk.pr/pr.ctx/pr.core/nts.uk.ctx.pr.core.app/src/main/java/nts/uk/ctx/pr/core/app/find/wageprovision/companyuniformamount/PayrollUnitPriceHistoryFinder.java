@@ -47,12 +47,14 @@ public class PayrollUnitPriceHistoryFinder {
         Optional<PayrollUnitPriceHistory> payrollUnitPriceHistory = finder.getPayrollUnitPriceHistoryById(cid,code,hisId);
 
         if(payrollUnitPriceHistory.isPresent()){
-            return Optional.ofNullable(new PayrollUnitPriceHistoryDto(payrollUnitPriceHistory.get().getCId(),
-                    payrollUnitPriceHistory.get().getHistory().get(0).identifier(),
-                    payrollUnitPriceHistory.get().getCode().v(),
-                    payrollUnitPriceHistory.get().getHistory().get(0).start().v(),
-                    payrollUnitPriceHistory.get().getHistory().get(0).end().v()
-            ));
+            if(payrollUnitPriceHistory.get().getHistory().size() > 0) {
+                return Optional.ofNullable(new PayrollUnitPriceHistoryDto(payrollUnitPriceHistory.get().getCId(),
+                        payrollUnitPriceHistory.get().getHistory().get(0).identifier(),
+                        payrollUnitPriceHistory.get().getCode().v(),
+                        payrollUnitPriceHistory.get().getHistory().get(0).start().v(),
+                        payrollUnitPriceHistory.get().getHistory().get(0).end().v()
+                ));
+            }
         }
         return Optional.empty();
     }
