@@ -99,7 +99,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		FIND_BY_KEY = builderString.toString();
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		

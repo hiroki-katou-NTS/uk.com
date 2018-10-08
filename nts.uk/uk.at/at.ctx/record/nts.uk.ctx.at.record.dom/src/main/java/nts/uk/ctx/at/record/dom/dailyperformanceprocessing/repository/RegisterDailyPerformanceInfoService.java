@@ -77,7 +77,7 @@ public class RegisterDailyPerformanceInfoService {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void registerDailyPerformanceInfo(String companyId, String employeeID, GeneralDate day,
 			ReflectStampOutput stampOutput, AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,

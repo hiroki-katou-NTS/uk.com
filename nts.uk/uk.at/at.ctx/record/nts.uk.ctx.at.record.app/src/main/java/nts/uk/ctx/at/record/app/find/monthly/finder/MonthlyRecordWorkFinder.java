@@ -107,7 +107,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		return find(employeeId, Arrays.asList(yearMonth));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId,

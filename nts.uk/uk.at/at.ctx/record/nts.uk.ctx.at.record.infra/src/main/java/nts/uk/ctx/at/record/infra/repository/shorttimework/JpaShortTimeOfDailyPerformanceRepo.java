@@ -133,7 +133,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		return result;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		

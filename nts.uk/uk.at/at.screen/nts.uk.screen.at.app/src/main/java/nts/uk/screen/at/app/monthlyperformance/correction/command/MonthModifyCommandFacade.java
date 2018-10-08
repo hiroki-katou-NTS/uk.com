@@ -38,7 +38,7 @@ public class MonthModifyCommandFacade {
 		this.commandHandler.handleUpdate(comand);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void handleUpdate(List<MonthlyModifyQuery> query) {
 		this.commandHandler.handleUpdate(createMultiCommand(query));
 	}

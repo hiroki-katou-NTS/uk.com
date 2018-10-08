@@ -20,7 +20,7 @@ public class InsertAllData {
 	@Inject
 	private DailyRecordWorkCommandHandler hander;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void handlerInsertAll(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,
 			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate) {

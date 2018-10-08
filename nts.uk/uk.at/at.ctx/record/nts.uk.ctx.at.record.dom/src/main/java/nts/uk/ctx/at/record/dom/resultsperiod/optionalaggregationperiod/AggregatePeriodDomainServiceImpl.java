@@ -25,7 +25,7 @@ public class AggregatePeriodDomainServiceImpl implements AggregatePeriodDomainSe
 	@Inject
 	private AggrPeriodExcutionRepository repo;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public <C> AggProcessState checkAggrPeriod(String companyId, String excuteId,
 			DatePeriod datePeriod, AsyncCommandHandlerContext<C> asyn) {

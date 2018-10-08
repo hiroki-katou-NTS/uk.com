@@ -14,7 +14,7 @@ public class UpdateLogInfoWithNewTransaction {
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void updateLogInfo(String empCalAndSumExecLogID,int executionContent, int processStatus) {
 		empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent, processStatus);
 	};

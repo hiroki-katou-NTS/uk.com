@@ -153,7 +153,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	}
 	
 	/** 社員の任意期間別実績を集計する */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public ProcessState aggregate(
 			AsyncCommandHandlerContext async, String companyId, String employeeId, DatePeriod period,

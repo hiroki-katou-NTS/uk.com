@@ -233,7 +233,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * command.CommandHandlerContext)
 	 */
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -293,7 +293,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 *            the domain
 	 */
 	// スケジュールを再設定する
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, List<GeneralDate> betweenDates,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
@@ -503,7 +503,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param mapFlowWorkSetting
 	 * @param mapDiffTimeWorkSetting
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void createScheduleBasedPersonWithMultiThread(
 			ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator,

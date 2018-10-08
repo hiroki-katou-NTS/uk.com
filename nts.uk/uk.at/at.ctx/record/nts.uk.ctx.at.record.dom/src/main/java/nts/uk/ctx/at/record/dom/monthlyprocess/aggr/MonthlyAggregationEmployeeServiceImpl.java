@@ -135,7 +135,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	}
 	
 	/** 社員の月別実績を集計する */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,

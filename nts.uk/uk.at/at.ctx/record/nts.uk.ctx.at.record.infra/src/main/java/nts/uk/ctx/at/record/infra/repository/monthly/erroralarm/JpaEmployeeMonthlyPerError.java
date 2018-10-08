@@ -32,7 +32,7 @@ public class JpaEmployeeMonthlyPerError extends JpaRepository implements Employe
 				
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void insertAll(EmployeeMonthlyPerError domain) {
 	

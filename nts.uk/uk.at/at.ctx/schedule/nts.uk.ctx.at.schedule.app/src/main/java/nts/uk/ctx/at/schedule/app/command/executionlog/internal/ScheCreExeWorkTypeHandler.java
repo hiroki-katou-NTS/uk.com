@@ -75,7 +75,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createWorkSchedule(
 			ScheduleCreatorExecutionCommand command,
 			GeneralDate dateInPeriod,

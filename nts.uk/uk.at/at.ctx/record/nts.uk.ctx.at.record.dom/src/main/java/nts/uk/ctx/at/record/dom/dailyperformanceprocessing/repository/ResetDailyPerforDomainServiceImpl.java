@@ -132,7 +132,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void resetDailyPerformance(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, PeriodInMasterList periodInMasterList,

@@ -62,7 +62,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createScheduleWithMonthlyPattern(
 			ScheduleCreatorExecutionCommand command,
 			GeneralDate dateInPeriod,

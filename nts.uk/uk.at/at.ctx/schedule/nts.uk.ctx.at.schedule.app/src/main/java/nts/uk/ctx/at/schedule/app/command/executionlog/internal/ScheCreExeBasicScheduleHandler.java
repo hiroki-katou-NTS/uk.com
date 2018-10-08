@@ -347,7 +347,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param BasicScheduleResetCommand,
 	 *            GeneralDate
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
@@ -616,7 +616,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param baseDate
 	 *            the base date (input from screen A)
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void registerBasicScheduleSaveCommand(String companyId, Optional<BasicSchedule> optBasicSchedule,
 			Optional<PrescribedTimezoneSetting> optPrescribedSetting, WorkTimeSetGetterCommand command,
 			String employeeId, GeneralDate baseDate, WorkType workType) {

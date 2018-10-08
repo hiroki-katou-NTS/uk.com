@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepositor
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemainDataMngRegisterDateChange{
 	@Inject
 	private RemainCreateInforByScheData remainScheData;

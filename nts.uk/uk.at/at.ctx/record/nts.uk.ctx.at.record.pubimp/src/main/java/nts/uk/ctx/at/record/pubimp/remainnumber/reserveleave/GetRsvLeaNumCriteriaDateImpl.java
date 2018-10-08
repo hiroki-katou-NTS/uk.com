@@ -119,7 +119,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	 * @param criteria 基準日
 	 * @return 年休積立年休の集計結果
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private AggrResultOfAnnAndRsvLeave getResult(
 			String companyId, String employeeId, GeneralDate closureStart, GeneralDate criteria){
 		

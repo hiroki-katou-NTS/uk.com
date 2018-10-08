@@ -42,13 +42,13 @@ public class JpaAppDataInfoMonthlyRepository extends JpaRepository implements Ap
 		return data;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void addAppDataInfoMonthly(AppDataInfoMonthly appDataInfoMonthly) {
 		this.commandProxy().insert(KrcmtAppDataInfoMonthly.toEntity(appDataInfoMonthly));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateAppDataInfoMonthly(AppDataInfoMonthly appDataInfoMonthly) {
 		KrcmtAppDataInfoMonthly newEntity = KrcmtAppDataInfoMonthly.toEntity(appDataInfoMonthly);
@@ -59,7 +59,7 @@ public class JpaAppDataInfoMonthlyRepository extends JpaRepository implements Ap
 		updateEntity.errorMessage = newEntity.errorMessage;
 		this.commandProxy().update(updateEntity);
 	}
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteAppDataInfoMonthly(String employeeId,String executionId) {
 		Optional<AppDataInfoMonthly> newEntity = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcmtAppDataInfoMonthly.class)

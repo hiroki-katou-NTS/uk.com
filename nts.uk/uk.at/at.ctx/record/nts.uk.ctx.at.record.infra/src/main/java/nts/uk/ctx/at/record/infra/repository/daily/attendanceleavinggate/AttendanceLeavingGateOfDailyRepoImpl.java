@@ -171,7 +171,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		removeByKey(domain.getEmployeeId(), domain.getYmd());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
 		

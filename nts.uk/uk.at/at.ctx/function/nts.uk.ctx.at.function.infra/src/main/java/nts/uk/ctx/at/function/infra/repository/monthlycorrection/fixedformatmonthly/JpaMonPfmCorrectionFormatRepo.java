@@ -66,7 +66,7 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateMonPfmCorrectionFormat(MonPfmCorrectionFormat monPfmCorrectionFormat) {
 		KrcmtMonPfmCorrectionFormat newEntity = KrcmtMonPfmCorrectionFormat.toEntity(monPfmCorrectionFormat);

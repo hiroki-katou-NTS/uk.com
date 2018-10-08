@@ -54,7 +54,7 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 				.getSingle(c -> c.toDomain());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public String addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		this.commandProxy().insert(KfnmtAlarmListExtraProcessStatus.toEntity( alarmListExtraProcessStatus));

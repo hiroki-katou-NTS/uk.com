@@ -60,7 +60,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		DEL_BY_LIST_ITEM_ID = builderString.toString();
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		
@@ -196,7 +196,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 				.getList(c -> toDomain(c));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByListItemId(String employeeId, GeneralDate ymd, List<Integer> itemIdList) {
 //		this.getEntityManager().createQuery(DEL_BY_LIST_ITEM_ID).setParameter("employeeId", employeeId)

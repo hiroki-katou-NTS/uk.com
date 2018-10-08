@@ -80,7 +80,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		try {

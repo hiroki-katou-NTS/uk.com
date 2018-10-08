@@ -42,13 +42,13 @@ public class JpaAppDataInfoDailyRepository extends JpaRepository implements AppD
 		return data;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void addAppDataInfoDaily(AppDataInfoDaily appDataInfoDaily) {
 		this.commandProxy().insert(KrcmtAppDataInfoDaily.toEntity(appDataInfoDaily));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateAppDataInfoDaily(AppDataInfoDaily appDataInfoDaily) {
 		KrcmtAppDataInfoDaily newEntity = KrcmtAppDataInfoDaily.toEntity(appDataInfoDaily);
@@ -59,7 +59,7 @@ public class JpaAppDataInfoDailyRepository extends JpaRepository implements AppD
 		updateEntity.errorMessage = newEntity.errorMessage;
 		this.commandProxy().update(updateEntity);
 	}
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteAppDataInfoDaily(String employeeId, String executionId) {
 		Optional<AppDataInfoDaily> newEntity = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcmtAppDataInfoDaily.class)

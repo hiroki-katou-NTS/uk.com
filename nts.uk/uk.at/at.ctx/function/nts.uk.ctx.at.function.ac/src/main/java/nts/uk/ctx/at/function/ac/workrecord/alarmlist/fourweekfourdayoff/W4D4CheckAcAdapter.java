@@ -24,7 +24,7 @@ public class W4D4CheckAcAdapter implements W4D4CheckAdapter {
 	@Inject
 	private W4D4CheckPub w4D4CheckPub;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public Optional<ValueExtractAlarm> checkHoliday(String workplaceID, String employeeID, DatePeriod period,List<String> listHolidayWorkTypeCode,List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID) {
 

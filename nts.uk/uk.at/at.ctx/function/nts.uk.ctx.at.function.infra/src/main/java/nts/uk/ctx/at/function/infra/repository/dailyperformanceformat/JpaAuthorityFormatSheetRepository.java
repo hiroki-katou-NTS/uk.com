@@ -140,7 +140,7 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 			+ " AND c.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode "
 			+ " AND c.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ";
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteBySheetNo(String companyId, String dailyPerformanceFormatCode, BigDecimal sheetNo) {
 		this.commandProxy().remove(KfnmtAuthorityFormSheet.class,new KfnmtAuthorityFormSheetPK(

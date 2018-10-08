@@ -156,7 +156,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		removeByKey(domain.getEmployeeId(), domain.getYmd());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
 		

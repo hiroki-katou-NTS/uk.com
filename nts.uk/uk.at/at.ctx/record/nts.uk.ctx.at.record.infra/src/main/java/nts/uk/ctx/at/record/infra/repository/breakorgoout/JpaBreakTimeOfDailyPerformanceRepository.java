@@ -168,7 +168,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return time == null ? null : new TimeWithDayAttr(time);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void insert(BreakTimeOfDailyPerformance breakTimes) {
 //		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
@@ -293,7 +293,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return result;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public Optional<BreakTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd, int breakType) {
 
@@ -307,7 +307,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return Optional.ofNullable(group(krcdtDaiBreakTimes).get(0));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType) {
 		this.getEntityManager().createQuery(REMOVE_BY_BREAKTYPE).setParameter("employeeId", employeeId)

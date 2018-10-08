@@ -119,7 +119,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	 * @param empCalAndSumExecLogID 実行ログID
 	 * @param executionContent 設定情報（日別計算を実行するか）
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void updatelog(String empCalAndSumExecLogID, ExecutionContent executionContent,ExecutionStatus state) {
 		//実行ログ
 		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,state.value);		
