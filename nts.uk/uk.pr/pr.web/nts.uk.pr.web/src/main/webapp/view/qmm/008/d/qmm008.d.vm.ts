@@ -67,12 +67,6 @@ module nts.uk.pr.view.qmm008.d {
                     { headerText: text('QMM008_111'), key: 'name', width: 200, formatter: _.escape }
                 ]);
 
-                this.switchOptions = ko.observableArray([
-                    { code: "1", name: '四捨五入' },
-                    { code: "2", name: '切り上げ' },
-                    { code: "3", name: '切り捨て' }
-                ]);
-
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: text('QMM008_112'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: text('QMM008_113'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -135,8 +129,18 @@ module nts.uk.pr.view.qmm008.d {
                                 self.items.push(new SocialOfficeOverView(response.dataOffice[i].code, response.dataOffice[i].name));
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+
+                                /**
+                                 *  selected
+                                 */
                                 self.currentCode(response.code);
                                 self.isEnableCode(false);
+                                $("tr[data-id='code'] ").focus();
+                                /**
+                                 * not selected
+                                 */
+                                /*self.detail(new SocialOfficeDetail());
+                                self.isEnableCode(false);*/
                             });
                             _.defer(function() {
                                 $("#D4_3").focus();
@@ -147,6 +151,9 @@ module nts.uk.pr.view.qmm008.d {
                 } else {
                     nts.uk.pr.view.qmm008.d.service.update(ko.toJS(self.detail)).done(function(response) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            /**
+                             *  selected
+                             */
                             for (let i = 0; i < self.items().length; i++) {
                                 if (self.items()[i].code == response[0]) {
                                     self.items()[i].name = response[1];
@@ -155,6 +162,22 @@ module nts.uk.pr.view.qmm008.d {
                             }
                             self.isEnableCode(false);
                             $("#D4_3").focus();
+                            $("tr[data-id='code'] ").focus()
+
+                            /**
+                             *   not selected
+                             */
+                            /*for (let i = 0; i < self.items().length; i++) {
+                                if (self.items()[i].code == response[0]) {
+                                    self.items()[i].name = response[1];
+                                    self.items.valueHasMutated()
+                                }
+                            }
+                            self.currentCode(null);
+                            self.detail(new SocialOfficeDetail());
+                            self.isEnableCode(false);
+                            $("#D4_3").focus();*/
+
                         });
                         block.clear();
                     });
