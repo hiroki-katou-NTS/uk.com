@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.core.dom.socialinsurance.InsuranceRate
+        </com:ValidatorScript>
+        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="qmm010.a.service.js"/>
+        <com:scriptfile path="qmm010.a.vm.js"/>
+        <com:scriptfile path="qmm010.a.start.js"/>
+
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <div id="">
+                <button id="A1_1" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_1')}</button>
+                <button id="A1_2" class="proceed" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_2')}</button>
+                <button id="A1_3" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_3')}</button>
+                <button id="A1_4" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_4')}</button>
+                <button id="A1_5" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_5')}</button>
+                <button id="A1_6" class="danger" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_6')}</button>
+            </div>
+
+
+        </div>
+        <div class="contents-area">
+            <div class="fixed-flex-layout">
+                <div style = "margin-left: 25px; margin-top: 40px;" class="fixed-flex-layout-left">
+                    <div data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
+                         id="D2_1" style="margin-left: 10px;">
+                        <div id="D2_2" style="width: 330px" tabindex="7"
+                             data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'laborOfficeCode', comId: 'A2_3',
+                        items: laborInsuranceOfficeList, selected: selectedLaborOfficeCode, selectedKey: 'laborOfficeCode', fields: ['laborOfficeCode', 'officeName'], mode: 'igGrid'}"/>
+                        <table id="A2_3" tabindex="8"
+                               data-bind="ntsGridList: {
+                            rows: 20,
+                            name: '#[QMM008_109]',
+                            options: laborInsuranceOfficeList,
+                            optionsValue: 'laborOfficeCode',
+                            columns: [
+                                { headerText: '#{i18n.getText('QMM010_8')}', key: 'laborOfficeCode', width: 120, formatter: _.escape},
+                                { headerText: '#{i18n.getText('QMM010_9')}', key: 'officeName', width: 200, formatter: _.escape }
+                            ],
+                            multiple: false,
+                            value: selectedLaborOfficeCode
+                        }"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
