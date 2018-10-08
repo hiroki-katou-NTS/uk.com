@@ -1136,7 +1136,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			PreparedStatement statement = this.connection().prepareStatement(SELECT_ALL_DIVREASON_JDBC);
 			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> { 
-				return new CodeName(rs.getString("REASON_CD"), rs.getString("REASON"), rs.getInt("[NO]").toString());
+				return new CodeName(rs.getString("REASON_CD"), rs.getString("REASON"), rs.getInt("NO").toString());
 			});
 			
 		} catch (SQLException e) {
