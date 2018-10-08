@@ -106,6 +106,10 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         self.notes(data.notes);
                     }
                 });
+
+                service.getPayrollUnitPriceHistoryByCidCode(code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory> )=>{
+                    self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
+                });
             });
             //
             self.multilineeditor = {
@@ -226,10 +230,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         init(){
             let self = this;
             let db = [];
-            service.getPayrollUnitPriceHistoryByCidCode("002").done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory> )=>{
-                console.dir(listPayrollUnitPriceHistory);
-                self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
-            });
             service.getAllPayrollUnitPriceByCID().done((list: Array<PayrollUnitPrice> )=>{
                 self.payrollUnitPrice(list);
                 _.each(self.payrollUnitPrice(),(value)=>{
@@ -242,9 +242,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                                 node.childs.push(childs);
                                 self.dataSource(db);
                             });
-
-                            self.payrollUnitPriceHistory.push(listPayrollUnitPriceHistory);
-                            console.dir(self.payrollUnitPriceHistory);
                         }
                     });
                     db.push(node);
