@@ -92,7 +92,7 @@ public class CreateHolidayWorkCommandHandler extends CommandHandlerWithResult<Cr
 		
 		// 暫定データの登録
 		interimRemainDataMngRegisterDateChange.registerDateChange(
-				command.getCompanyID(), 
+				AppContexts.user().companyId(), 
 				command.getApplicantSID(), 
 				Arrays.asList(command.getApplicationDate()));
 
