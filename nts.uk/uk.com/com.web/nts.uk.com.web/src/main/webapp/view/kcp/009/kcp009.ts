@@ -34,7 +34,7 @@ module kcp009.viewmodel {
             self.empDisplayCode = ko.observable(null);
             self.empBusinessName = ko.observable(null);
             self.organizationDesignation = ko.observable(null);
-            self.organizationName = ko.observable(null);
+            self.organizationName = ko.observable('');
 
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
@@ -305,7 +305,7 @@ module kcp009.viewmodel {
                     self.selectedItem(employee.employeeId);
                     self.empDisplayCode(employee.employeeCode);
                     self.empBusinessName(employee.businessName);
-                    self.organizationName(employee.orgName);
+                    self.organizationName(employee.wkpDisplayName);
                 }
 
             }).fail(function(res) {
@@ -391,7 +391,7 @@ module kcp009.viewmodel {
                 employeeId: string;
                 employeeCode: string;
                 businessName: string;
-                orgName: string
+                wkpDisplayName: string;
             }
         }
     }
