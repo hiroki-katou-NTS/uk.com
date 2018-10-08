@@ -1,17 +1,18 @@
+<!-- all tabindex will be set to 1 to prevent user from tab to tree grid, button in switch button and wrong tabindex after binding in IE-->
 <div class="tab-b">
 	<div class="sidebar-content-header " style = "min-width: 1000px;">
 		<!-- A2_3 厚生年金 -->
 		<span class="title" style="min-width: 170px;">#{i18n.getText('QMM008_6')}</span>
 		<!-- A2_1 -> A1_5 -->
-		<button id="A1_1" class="proceed" tabindex="1"
+		<button class="proceed" tabindex="1"
 			data-bind="click: register, enable: isSelectedHistory() ? $root.errors.isEmpty : false">#{i18n.getText('QMM008_1')}</button>
-		<button id="A1_2" tabindex="1"
+		<button tabindex="1"
 			data-bind="click: printPDF, enable: false">#{i18n.getText('QMM008_2')}</button>
-		<button id="A1_3" tabindex="1"
+		<button tabindex="1"
 			data-bind="click: standardRemunerationMonthlyAmount, enable: isUpdateMode() ? isSelectedHistory : false">#{i18n.getText('QMM008_3')}</button>
-		<button id="A1_4" tabindex="1"
+		<button tabindex="1"
 			data-bind="click: registerBusinessEstablishment, enable: true">#{i18n.getText('QMM008_4')}</button>
-		<button id="A1_5" tabindex="1"
+		<button tabindex="1"
 			data-bind="click: masterCorrectionLog, enable: false">#{i18n.getText('QMM008_5')}</button>
 	</div>
 	<div style="margin-top: 30px;" class="contents-area fixed-flex-layout">
@@ -30,13 +31,13 @@
 								selectedKey: 'code', 
 								childField: 'child', 
 								fields: ['officeCode', 'officeName']}" />
-				<div style="width: 100%">
-					<button id="B1_3" tabindex="2"
+				<div>
+					<button id="B1_3" tabindex="1"
 						data-bind="click: createNewHistory, enable: $vm.viewmodelB.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
-					<button style="float: right" id="B1_4" tabindex="3"
+					<button style="float: right" id="B1_4" tabindex="1"
 						data-bind="click: editHistory, enable: $vm.viewmodelB.isUpdateMode() ? $vm.viewmodelB.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
 				</div>
-				<div id="B1_5" tabindex="4"
+				<div id="B1_5" tabindex="1"
 					style="background-color: white; margin-top: 15px;"
 					data-bind="ntsTreeDragAndDrop:{
 										width: 290,
@@ -72,7 +73,7 @@
 				<div style="display: inline-block; margin-top: 15px;">
 					<div style = " width: 130px;" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM008_13')}</div>
 					<!-- B2_7 自動計算区分 -->
-					<div id="B2_7" class="cf" tabindex="5"
+					<div id="B2_7" class="cf" tabindex="1"
 						data-bind="ntsSwitchButton: {
 											name: '#[QMM008_13]',
 											options: autoCalculationClsItem,
@@ -82,7 +83,7 @@
 											required: true,
 											enable: $vm.viewmodelB.isSelectedHistory }"></div>
 				</div>
-				<button style="display: inline-block" tabindex="6"
+				<button style="display: inline-block" tabindex="1"
 					data-bind="ntsHelpButton: {image: '../resource/QMM008_01.png', position: 'bottom left', enable: $vm.viewmodelB.isSelectedHistory}">?</button>
 			</div>
 			<hr></hr>
@@ -118,7 +119,7 @@
 							<td>
 								<div>
 									<!--B3_9 介護なし健保給与個人負担率-->
-									<input tabindex="7"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -135,7 +136,7 @@
 							<td>
 								<div>
 									<!-- B3_11 介護なし健保給与事業主負担率	-->
-									<input tabindex="8"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -153,7 +154,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().individualBurdenRatio">
 									<!-- B3_13 介護なし健保賞与個人負担率 -->
-									<input tabindex="9"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -171,7 +172,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().employeeBurdenRatio">
 									<!-- B3_15 介護なし健保賞与事業主負担率 -->
-									<input tabindex="10"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -192,7 +193,7 @@
 							<td>
 								<div>
 									<!--B3_18 介護あり健保給与個人負担率-->
-									<input tabindex="11"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -209,7 +210,7 @@
 							<td>
 								<div>
 									<!-- B3_20 介護あり健保給与事業主負担率	-->
-									<input tabindex="12"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -227,7 +228,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().individualBurdenRatio">
 									<!-- B3_22 介護あり健保賞与個人負担率 -->
-									<input tabindex="13"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -245,7 +246,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().employeeBurdenRatio">
 									<!-- B3_24 介護あり健保賞与事業主負担率 -->
-									<input tabindex="14"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -272,7 +273,7 @@
 							<td>
 								<div>
 									<!--B3_28 特定保険給与個人負担率-->
-									<input tabindex="15"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -289,7 +290,7 @@
 							<td>
 								<div>
 									<!-- B3_30 特定保険給与事業主負担率	-->
-									<input tabindex="16"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -307,7 +308,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().individualBurdenRatio">
 									<!-- B3_32 特定保険賞与個人負担率 -->
-									<input tabindex="17"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -325,7 +326,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().employeeBurdenRatio">
 									<!-- B3_34 特定保険賞与事業主負担率 -->
-									<input tabindex="18"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -346,7 +347,7 @@
 							<td>
 								<div>
 									<!--B3_37 基本保険給与個人負担率-->
-									<input tabindex="19"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -363,7 +364,7 @@
 							<td>
 								<div>
 									<!-- B3_39  基本保険給与事業主負担率	-->
-									<input tabindex="20"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -381,7 +382,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().individualBurdenRatio">
 									<!-- B3_41 基本保険賞与個人負担率 -->
-									<input tabindex="21"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -399,7 +400,7 @@
 								<div
 									data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().employeeBurdenRatio">
 									<!-- B3_43 基本保険賞与事業主負担率 -->
-									<input tabindex="22"
+									<input tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -448,7 +449,7 @@
 							<td class="td-widget" style="border-top: none;"></td>
 							<td data-bind="with: healthInsuranceRate().individualBurdenRatio">
 								<!-- B4_8 給与個人端数区分 -->
-								<div class="table-combobox" tabindex="23"
+								<div class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_48]',
@@ -465,7 +466,7 @@
 							</td>
 							<td data-bind="with: healthInsuranceRate().employeeBurdenRatio">
 								<!-- B4_10  給与事業主端数区分 -->
-								<div class="table-combobox" tabindex="24"
+								<div class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_49]',
@@ -483,7 +484,7 @@
 							<td
 								data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().individualBurdenRatio">
 								<!-- B4_12 賞与個人端数区分 -->
-								<div class="table-combobox" tabindex="25"
+								<div class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_50]',
@@ -501,7 +502,7 @@
 							<td
 								data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate().employeeBurdenRatio">
 								<!-- B4_14 賞与事業主端数区分 -->
-								<div class="table-combobox" tabindex="26"
+								<div class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_51]',
@@ -527,7 +528,7 @@
 				<div style="display: inline-block"
 					data-bind="with: healthInsuranceRate">
 					<!-- B2_23 給与事業主負担分計算方法 -->
-					<div class="table-combobox" tabindex="28"
+					<div class="table-combobox" tabindex="1"
 						data-bind="ntsComboBox: {
 													width: '280px',
 													name: '#[QMM008_184]',
@@ -549,7 +550,7 @@
 				<div style="display: inline-block"
 					data-bind="with: $vm.viewmodelB.bonusHealthInsuranceRate">
 					<!-- B2_26 賞与事業主負担分計算方法 -->
-					<div class="table-combobox" tabindex="29"
+					<div class="table-combobox" tabindex="1"
 						data-bind="ntsComboBox: {
 													width: '280px',
 													name: '#[QMM008_185]',

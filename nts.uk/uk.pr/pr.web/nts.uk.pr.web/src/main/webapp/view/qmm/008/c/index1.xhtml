@@ -1,3 +1,4 @@
+<!-- all tabindex will be set to 1 to prevent user from tab to tree grid, button in switch button and wrong tabindex after binding in IE-->
 <div class="tab-c">
 	<div class="sidebar-content-header" style="min-width: 1000px;">
 		<!-- A2_3 厚生年金 -->
@@ -30,13 +31,13 @@
 								selectedKey: 'code', 
 								childField: 'child', 
 								fields: ['officeCode', 'officeName']}" />
-				<div style="width: 100%">
-					<button id="C1_3" tabindex="2"
+				<div>
+					<button id="C1_3" tabindex="1"
 						data-bind="click: createNewHistory, enable: $vm.viewmodelC.isUpdateMode()">#{i18n.getText('QMM008_8')}</button>
-					<button style="float: right" id="C1_4" tabindex="3"
+					<button style="float: right" id="C1_4" tabindex="1"
 						data-bind="click: editHistory, enable: $vm.viewmodelC.isUpdateMode() ? $vm.viewmodelC.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
 				</div>
-				<div id="C1_5" tabindex="4"
+				<div id="C1_5" tabindex="1"
 					style="background-color: white; margin-top: 15px;"
 					data-bind="ntsTreeDragAndDrop:{
 									width: 290,
@@ -75,7 +76,7 @@
 					data-bind="with: $vm.viewmodelC.welfareInsuranceClassification">
 					<div style="width: 130px;" data-bind="ntsFormLabel: {}" id="C2_6">#{i18n.getText('QMM008_53')}</div>
 					<!-- C2_7 厚生年金基金加入区分 -->
-					<div class="cf" id="C2_7" tabindex="5"
+					<div class="cf" id="C2_7" tabindex="1"
 						data-bind="ntsSwitchButton: {
 									name: '#[QMM008_53]',
 									options: fundClsItem,
@@ -89,7 +90,7 @@
 				<div style="display: inline-block; margin-left: 50px;">
 					<div data-bind="ntsFormLabel: {}" id="C2_1">#{i18n.getText('QMM008_13')}</div>
 					<!-- C2_11 自動計算区分 -->
-					<div class="cf" tabindex="6"
+					<div class="cf" tabindex="1"
 						data-bind="ntsSwitchButton: {
 									name: '#[QMM008_13]',
 									options: autoCalculationClsItem,
@@ -99,7 +100,7 @@
 									required: true,
 									enable: $vm.viewmodelC.isSelectedHistory }"></div>
 				</div>
-				<button style="display: inline-block" tabindex="7"
+				<button style="display: inline-block" tabindex="1"
 					data-bind="ntsHelpButton: {image: '../resource/QMM008_01.png', position: 'bottom left', enable: $vm.viewmodelC.isSelectedHistory}">?</button>
 			</div>
 			<hr></hr>
@@ -135,7 +136,7 @@
 							<td>
 								<div>
 									<!--C3_9 男子給与個人負担率-->
-									<input id="C3_9" tabindex="8"
+									<input id="C3_9" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -152,7 +153,7 @@
 							<td>
 								<div>
 									<!-- C3_11 男子給与事業主負担率	-->
-									<input id="C3_11" tabindex="9"
+									<input id="C3_11" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -170,7 +171,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
 									<!-- C3_13 男子賞与個人負担率 -->
-									<input id="C3_13" tabindex="10"
+									<input id="C3_13" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -189,7 +190,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
 									<!-- C3_15 男子賞与事業主負担率 -->
-									<input id="C3_15" tabindex="11"
+									<input id="C3_15" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -209,7 +210,7 @@
 							<td>
 								<div>
 									<!-- C3_18  女子給与個人負担率 -->
-									<input id="C3_18" tabindex="12"
+									<input id="C3_18" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -226,7 +227,7 @@
 							<td>
 								<div>
 									<!-- C3_20  女子給与事業主負担率 -->
-									<input id="C3_20" tabindex="13"
+									<input id="C3_20" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -244,7 +245,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 									<!-- C3_22  女子賞与個人負担率 -->
-									<input id="C3_22" tabindex="14"
+									<input id="C3_22" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -262,7 +263,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 									<!-- C3_24  女子賞与事業主負担率 -->
-									<input id="C3_24" tabindex="15"
+									<input id="C3_24" tabindex="1"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -390,7 +391,7 @@
 							<td>
 								<div>
 									<!-- C4_19  男子給与個人免除保険料率 -->
-									<input tabindex="16" id = "C4_19"
+									<input tabindex="1" id = "C4_19"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -407,7 +408,7 @@
 							<td>
 								<div>
 									<!-- C4_21  男子給与事業主免除保険料率 -->
-									<input tabindex="17" id = "C4_21"
+									<input tabindex="1" id = "C4_21"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -425,7 +426,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
 									<!-- C4_23  男子賞与個人免除保険料率 -->
-									<input tabindex="18" id = "C4_23"
+									<input tabindex="1" id = "C4_23"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -443,7 +444,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().maleContributionRate">
 									<!-- C4_25  男子賞与事業主免除保険料率 -->
-									<input tabindex="19" id = "C4_25"
+									<input tabindex="1" id = "C4_25"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -535,7 +536,7 @@
 							<td>
 								<div>
 									<!-- C4_38  女子給与個人免除保険料率 -->
-									<input tabindex="20" id = "C4_38"
+									<input tabindex="1" id = "C4_38"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -552,7 +553,7 @@
 							<td>
 								<div>
 									<!-- C4_40  女子給与事業主免除保険料率 -->
-									<input tabindex="21" id = "C4_40"
+									<input tabindex="1" id = "C4_40"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -570,7 +571,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 									<!-- C4_42  女子賞与個人免除保険料率 -->
-									<input tabindex="22" id = "C4_42"
+									<input tabindex="1" id = "C4_42"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -588,7 +589,7 @@
 								<div
 									data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().femaleContributionRate">
 									<!-- C4_44  女子賞与事業主免除保険料率 -->
-									<input tabindex="23" id = "C4_44"
+									<input tabindex="1" id = "C4_44"
 										data-bind="ntsNumberEditor: {
  													option: {
  														width: '60px',
@@ -638,7 +639,7 @@
 							<td
 								data-bind="with: salaryEmployeesPensionInsuranceRate().fractionClassification">
 								<!-- C5_8  給与個人端数区分 -->
-								<div id="C5_8" class="table-combobox" tabindex="24"
+								<div id="C5_8" class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_48]',
@@ -656,7 +657,7 @@
 							<td
 								data-bind="with: salaryEmployeesPensionInsuranceRate().fractionClassification">
 								<!-- C5_10  給与事業主端数区分 -->
-								<div id="C5_10" class="table-combobox" tabindex="25"
+								<div id="C5_10" class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_49]',
@@ -674,7 +675,7 @@
 							<td
 								data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().fractionClassification">
 								<!-- C5_12 賞与個人端数区分 -->
-								<div id="C5_14" class="table-combobox" tabindex="26"
+								<div id="C5_14" class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_50]',
@@ -692,7 +693,7 @@
 							<td
 								data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate().fractionClassification">
 								<!-- C5_14 賞与事業主端数区分 -->
-								<div id="C5_14" class="table-combobox" tabindex="27"
+								<div id="C5_14" class="table-combobox" tabindex="1"
 									data-bind="ntsComboBox: {
 													width: '120px',
 													name: '#[QMM008_51]',
@@ -718,7 +719,7 @@
 				<div style="display: inline-block"
 					data-bind="with: salaryEmployeesPensionInsuranceRate">
 					<!-- C2_34 賞与事業主端数区分 -->
-					<div id="C2_34" class="table-combobox" tabindex="28"
+					<div id="C2_34" class="table-combobox" tabindex="1"
 						data-bind="ntsComboBox: {
 													width: '280px',
 													name: '#[QMM008_184]',
@@ -740,7 +741,7 @@
 				<div style="display: inline-block"
 					data-bind="with: $vm.viewmodelC.bonusEmployeePensionInsuranceRate">
 					<!-- C2_37賞与事業主負担分計算方法 -->
-					<div id="C2_37" class="table-combobox" tabindex="29"
+					<div id="C2_37" class="table-combobox" tabindex="1"
 						data-bind="ntsComboBox: {
 													width: '280px',
 													name: '#[QMM008_185]',
