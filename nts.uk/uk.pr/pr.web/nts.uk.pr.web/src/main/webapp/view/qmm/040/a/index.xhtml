@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/sidebar.xhtml">
+
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="qmm040.a.start.js"/>
+        <com:scriptfile path="qmm040.a.service.js"/>
+        <com:scriptfile path="qmm040.a.vm.js"/>
+        <com:stylefile path="qmm040.a.style.css"/>
+    </ui:define>
+
+    <ui:define name="sidebar">
+        <ul class="navigator">
+            <li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('QMM040_3')}</a></li>
+            <li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('QMM040_4')}</a></li>
+            <li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('QMM040_5')}</a></li>
+            <li><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('QMM040_6')}</a></li>
+
+
+        </ul>
+
+    </ui:define>
+    <ui:define name="sidebar-content">
+        <div id="tabpanel-1" role="tabpanel1">
+            <div class="sidebar-content-header flex valign-center">
+
+                <span class="title">chua co title</span>
+                <button class="proceed">#{i18n.getText('QMM040_2')}</button>
+                <a class="goout" style="margin-left: 200px"
+                   data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM040_21')}</a>
+
+            </div>
+            <div class="contents-area">
+                <table style="height: 600px">
+                    <colgroup>
+                        <col width="100px"/>
+                        <col width="400px"/>
+                        <col width="700px"/>
+
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <div class="flex valign-center margin-top-item">
+                                <!--A5_1 項目区分-->
+
+                                <div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('QMM040_10')}</div>
+                                <!--A5_2 項目区分-->
+                                <div class="label margin-left-item">#{i18n.getText('QMM040_11')}</div>
+                            </div>
+
+                            <div class="flex valign-center margin-top-item">
+                                <!--A5_3 コード・名称-->
+                                <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM040_12')}</div>
+                                <!--A5_4 コード-->
+                                <span class="label margin-left-item">Demo</span>
+                                <!--A5_5 名称-->
+                                <span class="label">Demo</span>
+                            </div>
+
+                            <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">
+                                <!--A5_6 基準年月-->
+                                <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM040_13')}</div>
+                                <!--A5_7 基準年月-->
+                                <div class="margin-left-item"
+                                     data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yearmonth'}"></div>
+                                <!--A5_8 抽出-->
+                                <button class="caret-bottom"
+                                        style="margin-left: 13px">#{i18n.getText('QMM040_14')}</button>
+
+                            </div>
+
+                            <table id="A5_9">
+                                <colgroup>
+                                    <col width="130px"/>
+                                    <col width="100px"/>
+                                    <col width="170px"/>
+                                    <col width="120px"/>
+
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th class="ui-widget-header">#{i18n.getText('QMM040_16')}</th>
+                                    <th class="ui-widget-header">#{i18n.getText('QMM040_17')}</th>
+                                    <th class="ui-widget-header">#{i18n.getText('QMM040_18')}</th>
+                                    <th class="ui-widget-header">#{i18n.getText('QMM040_19')}</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </ui:define>
+
+
+</ui:composition>
+
+</body>
+</html>
