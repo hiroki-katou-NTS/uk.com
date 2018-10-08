@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
  */
 public interface EmployeeInfoPub {
 
-	/**
+	/**RequestList18
 	 * Find Employee by companyId,employeeCode For RequestList18
 	 *
 	 */

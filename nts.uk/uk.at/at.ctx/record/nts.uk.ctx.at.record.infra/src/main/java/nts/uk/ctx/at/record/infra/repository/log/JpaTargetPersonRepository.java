@@ -79,14 +79,16 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 
 	@Override
 	public void updateWithContent(String employeeID, String empCalAndSumExecLogId, int executionContent, int state) {
-		KrcdtEmpExeTarget krcdtEmpExeTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
-				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getSingle().get();
-		
-		KrcdtEmpExeTargetStt target = krcdtEmpExeTarget.lstEmpExeTargetStt.stream()
+		Optional<KrcdtEmpExeTarget> krcdtEmpExeTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
+				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getSingle();
+		if(!krcdtEmpExeTarget.isPresent()) {
+			return;
+		}
+		KrcdtEmpExeTargetStt target = krcdtEmpExeTarget.get().lstEmpExeTargetStt.stream()
 				.filter(item -> item.KrcdtEmpExeTargetSttPK.executionContent == executionContent)
 				.findFirst().get();
 		target.executionState = state;
-		this.commandProxy().update(krcdtEmpExeTarget);
+		this.commandProxy().update(krcdtEmpExeTarget.get());
 	}
 
 }

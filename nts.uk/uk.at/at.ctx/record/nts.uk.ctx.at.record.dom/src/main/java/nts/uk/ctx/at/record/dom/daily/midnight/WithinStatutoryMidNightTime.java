@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
  */
 @Getter
 public class WithinStatutoryMidNightTime {
+	//時間
 	private TimeDivergenceWithCalculation time; 
 	
 	public WithinStatutoryMidNightTime(TimeDivergenceWithCalculation time) {

@@ -7,9 +7,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.*;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceFinder;
+import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.PayrollUnitPriceHistoryCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.UpdatePayrollUnitPriceHistoryCommandHandler;
+import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHisKey;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,6 +40,22 @@ public class PayrollUnitPriceHisWebService extends WebService {
     @Inject
     private RegisterPayrollUnitPriceSettingCommandHandler registerPayrollUnitPriceSettingCommandHandler;
 
+
+    @Inject
+    private UpdatePayrollUnitPriceHistoryCommandHandler updatePayrollUnitPriceHistoryCommandHandler;
+
+
+
+    @POST
+    @Path("getPayrollUnitPriceHis")
+    public List<PayrollUnitPriceHistoryDto> getPayrollUnitPriceHis(PayrollUnitPriceHisKey mPayrollUnitPriceHisKey) {
+        return payrollUnitPriceHistoryFinder.getPayrollUnitPriceHis(mPayrollUnitPriceHisKey.getHisId(),mPayrollUnitPriceHisKey.getCode());
+    }
+    @POST
+    @Path("submitPayrollUnitPriceHis")
+    public void updatePayrollUnitPriceHis(PayrollUnitPriceHistoryCommand payrollUnitPriceHistoryCommand) {
+        updatePayrollUnitPriceHistoryCommandHandler.handle(payrollUnitPriceHistoryCommand);
+    }
     @POST
     @Path("getPayrollUnitPriceHistoryByCidCode/{code}")
     public List<PayrollUnitPriceHistoryDto> getPayrollUnitPriceHistoryByCidCode(@PathParam("code") String code) {

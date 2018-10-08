@@ -39,13 +39,6 @@ public class AddPayrollUnitPriceHistoryCommandHandler extends CommandHandler<Pay
         String cId = AppContexts.user().companyId();
         PayrollUnitPriceHistoryCommand command = context.getCommand();
 //        repository.add(new PayrollUnitPriceHistory(command.getCode(),command.getCId(),new YearMonthHistoryItem(command.getHisId() , new YearMonthPeriod(new YearMonth(command.getStartYearMonth()), new YearMonth(command.getEndYearMonth())))));
-        YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
-        YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
 
-        if (command.getIsMode() == MODE_DELETE ) {
-            mPayrollUnitPriceHistoryService.updatePayrollUnitPriceHistory(command.getHisId(),command.getCode(), startYearMonth, endYearMonth);
-        } else {
-            mPayrollUnitPriceHistoryService.deletePayrollUnitPriceHis(command.getHisId(),command.getCode());
-        }
     }
 }

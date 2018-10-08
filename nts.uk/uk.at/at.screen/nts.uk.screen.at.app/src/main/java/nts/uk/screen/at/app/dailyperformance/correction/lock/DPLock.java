@@ -227,11 +227,11 @@ public class DPLock {
 		dto.setLockDayAndWpl(extractEmpAndRange(dateRange, companyId, employeeIds, closureDtos));
 		if(identityProcessUseSetDto.isPresent()){
 			if(identityProcessUseSetDto.get().isUseConfirmByYourself()) dto.setSignDayMap(signDayMap(companyId, employeeIds, dateRange));
-			if(identityProcessUseSetDto.get().isUseIdentityOfMonth()) dto.setLockCheckMonth(lockCheckMonth(dateRange, employeeIds));
+			if(identityProcessUseSetDto.get().isUseIdentityOfMonth()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange, closureDtos)); 
 		}
 		
 		if(approvalUseSettingDto.isPresent()){
-			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockConfirmMonth(lockConfirmMonth(companyId, employeeIds, dateRange, closureDtos));
+			if(approvalUseSettingDto.get().getUseMonthApproverConfirm()) dto.setLockCheckMonth(lockCheckMonth(dateRange, employeeIds));
 			if(approvalUseSettingDto.get().getUseDayApproverConfirm()) dto.setLockCheckApprovalDay(getCheckApproval(employeeIds, dateRange, employeeIdApproval, mode));
 		}
 		dto.setLockHist(lockHistMap(companyId, employeeIds));
