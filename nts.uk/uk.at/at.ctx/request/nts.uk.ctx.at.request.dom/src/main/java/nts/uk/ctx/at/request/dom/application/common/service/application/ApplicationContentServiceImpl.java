@@ -659,13 +659,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if (!Objects.isNull(appWork.getApplication())) {
 				switch (appWork.getApplication().getPrePostAtr()) {
 				case PREDICT: {//don xin truoc
-					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
-					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
+					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
+					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.get().getName().v() : ""))
+					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									: (workTime.isPresent() ? " " + workTime.get()
-											.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+									: (workTime.isPresent() ? " " + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
@@ -757,13 +757,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					AppHolidayWork preAppWork = !Objects.isNull(preApp)
 							? holidayRepo.getAppHolidayWork(companyID, preApp.getAppID()).orElse(null) : null;
 					if (!Objects.isNull(preAppWork)) {
-						Optional<WorkType> workType =  repoWorkType.findByPK(companyID, preAppWork.getWorkTypeCode().v());
-						Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, preAppWork.getWorkTimeCode().v());
+						Optional<WorkType> workType =  repoWorkType.findByPK(companyID, preAppWork.getWorkTypeCode() == null ? "" : preAppWork.getWorkTypeCode().v());
+						Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, preAppWork.getWorkTimeCode() == null ? "" : preAppWork.getWorkTimeCode().v());
 						content += I18NText.getText("CMM045_272") + I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-						: (workType.isPresent() ? " " +  workType.get().getName().v() : ""))
+						: (workType.isPresent() ? " " +  workType.map(x -> x.getName().v()).orElse("") : ""))
 								+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-										: (workTime.isPresent() ? " " +  workTime.get()
-												.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+										: (workTime.isPresent() ? " " +  workTime.map(x -> 
+												x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 						if (!Objects.isNull(preAppWork.getWorkClock1())) {
 							if (!Objects.isNull(preAppWork.getWorkClock1().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock1().getEndTime())) {
@@ -846,13 +846,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							}
 						}
 					}
-					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
-					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
+					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
+					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.get().getName().v() : ""))
+					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									:  (workTime.isPresent() ? " " + workTime.get()
-											.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+									:  (workTime.isPresent() ? " " + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
