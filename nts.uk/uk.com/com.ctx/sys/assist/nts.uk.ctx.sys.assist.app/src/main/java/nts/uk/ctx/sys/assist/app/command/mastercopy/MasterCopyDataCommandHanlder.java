@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.assist.app.command.mastercopy;
 
 import java.util.ArrayList;
@@ -52,8 +56,9 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 	@Inject
 	private MasterCopyDataRepository repository;
 
+	/** The copy data repository. */
 	@Inject
-	CopyDataRepository copyDataRepository;
+	private CopyDataRepository copyDataRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<MasterCopyDataCommand> context) {
@@ -132,7 +137,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 					MasterCopyCategoryDto categoryDto = new MasterCopyCategoryDto();
 					categoryDto.setCategoryName(copyCategory.getCategoryName().v());
 					categoryDto.setOrder(copyCategory.getOrder().v());
-					categoryDto.setSystemType(copyCategory.getSystemType().nameId);
+					categoryDto.setSystemType(TextResource.localize(copyCategory.getSystemType().nameId));
 					ErrorContentDto errorContentDto = createErrorReport(categoryDto);
 
 					// Add to error list (save to DB every 5 error records)
