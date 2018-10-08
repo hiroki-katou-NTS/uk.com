@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.wageprovision.companyuniformamount;
 
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
-import java.util.List;
 import java.util.Optional;
 /**
  * 給与会社単価履歴

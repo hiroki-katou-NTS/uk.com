@@ -43,10 +43,10 @@ public class PayrollUnitPriceHistoryDto
 
     public static List<PayrollUnitPriceHistoryDto> fromDomain(PayrollUnitPriceHistory domain)
     {
-        List<PayrollUnitPriceHistoryDto> occAccIsHisDtoList = domain.getHistory().stream().map(item -> {
+        List<PayrollUnitPriceHistoryDto> payrollUnitPriceHistoryDto = domain.getHistory().stream().map(item -> {
             return new PayrollUnitPriceHistoryDto(domain.getCId(),item.identifier(),domain.getCode().v(), Integer.parseInt(item.start().toString()), Integer.parseInt(item.end().toString()));
         }).collect(Collectors.toList());
-        return occAccIsHisDtoList;
+        return payrollUnitPriceHistoryDto;
     }
     
 }

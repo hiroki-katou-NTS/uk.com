@@ -44,10 +44,10 @@ public class QpbmtPayUnitPrice extends UkJpaEntity implements Serializable
     }
 
     public PayrollUnitPrice toDomain() {
-        return new PayrollUnitPrice(this.payUnitPricePk.code, this.payUnitPricePk.cid, this.name);
+        return new PayrollUnitPrice(this.payUnitPricePk.cid,this.payUnitPricePk.code, this.name);
     }
     public static QpbmtPayUnitPrice toEntity(PayrollUnitPrice domain) {
-        return new QpbmtPayUnitPrice(new QpbmtPayUnitPricePk(domain.getCode().v(), domain.getCId()),domain.getName().v());
+        return new QpbmtPayUnitPrice(new QpbmtPayUnitPricePk( domain.getCId(),domain.getCode().v()),domain.getName().v());
     }
 
 }

@@ -18,7 +18,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 給与会社単価
+* 給与会社単価履歴
 */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,5 +58,6 @@ public class QpbmtPayUnitPriceHis extends UkJpaEntity implements Serializable
     public static QpbmtPayUnitPriceHis toEntity(YearMonthHistoryItem domain, String cId,String code) {
         return new QpbmtPayUnitPriceHis(new QpbmtPayUnitPriceHisPk(cId, code,domain.identifier()), domain.start().v(), domain.end().v());
     }
+
 
 }

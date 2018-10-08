@@ -8,23 +8,22 @@ import nts.arc.layer.dom.AggregateRoot;
 */
 @Getter
 public class PayrollUnitPrice extends AggregateRoot {
-    
+    /**
+     * 会社ID
+     */
+    private String cId;
+
     /**
     * コード
     */
     private CompanyUnitPriceCode code;
-    
-    /**
-    * 会社ID
-    */
-    private String cId;
-    
+
     /**
     * 名称
     */
     private SalaryUnitPriceName name;
     
-    public PayrollUnitPrice(String code, String cid, String name) {
+    public PayrollUnitPrice(String cid, String code, String name) {
         this.cId = cid;
         this.code = new CompanyUnitPriceCode(code);
         this.name = new SalaryUnitPriceName(name);
