@@ -933,7 +933,7 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
-
+                                setShared("KDL002_isShowNoSelectRow", true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -989,6 +989,7 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    setShared("KDL002_isShowNoSelectRow", true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
                                     setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -1380,6 +1381,34 @@ module nts.layout {
                         category: 'CS00020',
                         workTypeCode: 'IS00148',
                         workTypeTime: 'IS00149'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00193',
+                        workTypeTime: 'IS00194'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00202',
+                        workTypeTime: 'IS00203'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00211',
+                        workTypeTime: 'IS00212'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00220',
+                        workTypeTime: 'IS00221'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00229',
+                        workTypeTime: 'IS00230'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00238',
+                        workTypeTime: 'IS00239'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00184',
+                        workTypeTime: 'IS00185'
                     }
                 ],
                 initCDL008Data = (data: IItemData) => {

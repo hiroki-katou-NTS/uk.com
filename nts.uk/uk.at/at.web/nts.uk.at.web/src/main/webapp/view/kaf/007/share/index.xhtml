@@ -140,7 +140,7 @@
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart1, 
-															enable: $parent.editable() &amp;&amp; $parent.requiredCheckTime() , 
+															enable: $parent.enableTime() , 
 															readonly: false,
 															required: $parent.requiredCheckTime }" />
 
@@ -157,7 +157,7 @@
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr', 
 															value: workChange().workTimeEnd1, 
-															enable: $parent.editable() &amp;&amp; $parent.requiredCheckTime() , 
+															enable: $parent.enableTime() , 
 															readonly: false,
 															required: $parent.requiredCheckTime }" />
 						<label
