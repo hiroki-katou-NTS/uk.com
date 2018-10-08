@@ -27,6 +27,8 @@ public interface AppRootInstanceRepository {
 	
 	public List<AppRootInstance> findByEmpLstPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
 	
+	public List<AppRootInstance> findByEmpLstPeriod(String compID, List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
+	
 	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period, RecordRootType rootType);
 	
 	public List<AppRootInstance> findByEmpFromDate(String companyID, String employeeID, GeneralDate recordDate, RecordRootType rootType);

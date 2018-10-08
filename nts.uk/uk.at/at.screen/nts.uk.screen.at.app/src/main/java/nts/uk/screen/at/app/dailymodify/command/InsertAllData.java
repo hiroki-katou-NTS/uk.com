@@ -16,14 +16,14 @@ import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class InsertAllData {
 
 	@Inject
 	private DailyRecordWorkCommandHandler hander;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void handlerInsertAll(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,
 			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate, UpdateMonthDailyParam month, Map<Integer, DPAttendanceItemRC> itemAtr) {

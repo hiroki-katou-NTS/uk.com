@@ -97,7 +97,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private UpdateAllDomainMonthService monthService;
 	
 	/** 社員の月別実績を集計する */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType) {
@@ -135,7 +135,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	}
 	
 	/** 社員の月別実績を集計する */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
@@ -309,7 +309,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	 * @param closureId 締めID
 	 * @param closureDate 締め日
 	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private void deleteEditState(
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
 		

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -78,11 +79,8 @@ public class DPMonthFlexProcessor {
 
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
 		String companyId = param.getCompanyId();
-		List<Integer> itemIds = new ArrayList<>();
-		boolean hasItem = false;
 		List<MonthlyModifyResult> itemMonthResults = new ArrayList<>();
 		List<MonthlyModifyResult> itemMonthFlexResults = new ArrayList<>();
-		List<FormatDailyDto> formatDaily = new ArrayList<>();
 		// 社員に対応する処理締めを取得する
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, param.getEmploymentCode());
@@ -94,53 +92,11 @@ public class DPMonthFlexProcessor {
 		if (!closingPeriod.isPresent())
 			return null;
 
-		if (param.dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
-			List<String> listDailyPerformanceFormatCode = new ArrayList<>(param.getFormatCode());
-			if (listDailyPerformanceFormatCode.size() > 0) {
-				formatDaily = authorityFormatMonthlyRepository
-						.getListAuthorityFormatDaily(companyId, listDailyPerformanceFormatCode).stream()
-						.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),
-								x.getColumnWidth(), x.getDisplayOrder()))
-						.collect(Collectors.toList());
-			}
-		} else {
-			List<String> listBusinessTypeCode = new ArrayList<>(param.getFormatCode());
-			if (listBusinessTypeCode.size() > 0) {
-				formatDaily = businessTypeFormatMonthlyRepository
-						.getListBusinessTypeFormat(companyId, listBusinessTypeCode).stream()
-						.map(x -> new FormatDailyDto(x.getBusinessTypeCode().v(), new Integer(x.getAttendanceItemId()),
-								x.getColumnWidth(), x.getOrder()))
-						.collect(Collectors.toList());
-			}
-		}
-		// フォーマット．月次の勤怠項目一覧が存在するかチェックする
-		itemIds = formatDaily.stream().map(x-> x.getAttendanceItemId()).collect(Collectors.toList());
+		List<FormatDailyDto> formatDaily = getFormatCode(param, companyId);
 		
-		if (!itemIds.isEmpty()) {
-			// 対応するドメインモデル「権限別月次項目制御」を取得する
-			MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder
-					.getMonthlyItemControlByToUse(companyId, AppContexts.user().roles().forAttendance(), itemIds, 1);
-			// 取得したドメインモデル「権限別月次項目制御」の件数をチェックする
-			if (monthlyItemAuthDto != null) {
-				List<DisplayAndInputMonthlyDto> listDisplayAndInputMonthly = monthlyItemAuthDto
-						.getListDisplayAndInputMonthly();
-				if (!listDisplayAndInputMonthly.isEmpty()) {
-					hasItem = true;
-					// itemIds.addAll(DAFAULT_ITEM);
-					itemIds = listDisplayAndInputMonthly.stream().map(x -> x.getItemMonthlyId())
-							.collect(Collectors.toList());
-					// 対応する「月別実績」をすべて取得する
-
-					itemMonthResults = monthlyModifyQueryProcessor.initScreen(
-							new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), itemIds,
-							closingPeriod.get().getProcessingYm(),
-							ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
-							new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
-									closingPeriod.get().getClosureDate().getLastDayOfMonth()));
-
-				}
-			}
-		}
+		// フォーマット．月次の勤怠項目一覧が存在するかチェックする
+		List<Integer> itemIds = getItemIds(companyId, formatDaily);
+		
 		// ドメインモデル「月の本人確認」を取得する
 //		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,
 //				param.getEmployeeId(), ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
@@ -149,15 +105,40 @@ public class DPMonthFlexProcessor {
 		List<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
 				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
 				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
-		//フレックス情報を表示する
-		itemMonthFlexResults = monthlyModifyQueryProcessor.initScreen(
-				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), DAFAULT_ITEM,
+		
+		List<MonthlyModifyResult> mResult = monthlyModifyQueryProcessor.initScreen(
+				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), 
+				Stream.concat(itemIds.stream(), DAFAULT_ITEM.stream()).collect(Collectors.toList()),
 				closingPeriod.get().getProcessingYm(),
 				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
 				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
 		
-		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(companyId, param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
+		if(!mResult.isEmpty()){
+			MonthlyModifyResult firstDT = mResult.get(0);
+			if(!itemIds.isEmpty()){
+				itemMonthResults.add(MonthlyModifyResult.builder()
+						.closureDate(firstDT.getClosureDate())
+						.closureId(firstDT.getClosureId())
+						.yearMonth(firstDT.getYearMonth())
+						.employeeId(firstDT.getEmployeeId())
+						.items(firstDT.getItems().stream().filter(c -> itemIds.contains(c.itemId())).collect(Collectors.toList()))
+						.completed());
+			}
+
+			//フレックス情報を表示する
+			itemMonthFlexResults.add(MonthlyModifyResult.builder()
+					.closureDate(firstDT.getClosureDate())
+					.closureId(firstDT.getClosureId())
+					.yearMonth(firstDT.getYearMonth())
+					.employeeId(firstDT.getEmployeeId())
+					.items(firstDT.getItems().stream().filter(c -> DAFAULT_ITEM.contains(c.itemId())).collect(Collectors.toList()))
+					.completed());
+		}
+		
+		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(companyId, 
+				param.getEmployeeId(), param.getDate(), null, 
+				closingPeriod, itemMonthFlexResults, closureEmploymentOptional);
 		flexShortageDto.createError(errorMonth);
 		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closingPeriod.get().getProcessingYm().v(),
 				closureEmploymentOptional.get().getClosureId(),
@@ -168,8 +149,56 @@ public class DPMonthFlexProcessor {
 				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
 		setAgreeItem(itemMonthFlexResults, agreeDto);
 		
-		return new DPMonthResult(flexShortageDto, itemMonthResults, hasItem,
+		return new DPMonthResult(flexShortageDto, itemMonthResults, !itemIds.isEmpty(),
 				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
+	}
+
+	private List<FormatDailyDto> getFormatCode(DPMonthFlexParam param, String companyId) {
+		
+		if (param.getFormatCode().isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		if (param.dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
+			return authorityFormatMonthlyRepository
+					.getListAuthorityFormatDaily(companyId, param.getFormatCode()).stream()
+					.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),
+							x.getColumnWidth(), x.getDisplayOrder()))
+					.collect(Collectors.toList());
+		}
+		
+		return businessTypeFormatMonthlyRepository
+				.getListBusinessTypeFormat(companyId, param.getFormatCode()).stream()
+				.map(x -> new FormatDailyDto(x.getBusinessTypeCode().v(), new Integer(x.getAttendanceItemId()),
+						x.getColumnWidth(), x.getOrder()))
+				.collect(Collectors.toList());
+	}
+
+	private List<Integer> getItemIds(String companyId, List<FormatDailyDto> formatDaily) {
+		if (!formatDaily.isEmpty()) {
+			// 対応するドメインモデル「権限別月次項目制御」を取得する
+			MonthlyItemControlByAuthDto mItemAuthDto = monthlyItemControlByAuthFinder
+					.getMonthlyItemControlByToUse(companyId, AppContexts.user().roles().forAttendance(), 
+					formatDaily.stream().map(x-> x.getAttendanceItemId()).collect(Collectors.toList()), 1);
+			
+			// 取得したドメインモデル「権限別月次項目制御」の件数をチェックする
+			if (mItemAuthDto != null) {
+//				hasItem = true;
+				// itemIds.addAll(DAFAULT_ITEM);
+				return mItemAuthDto.getListDisplayAndInputMonthly().stream()
+									.map(x -> x.getItemMonthlyId())
+									.collect(Collectors.toList());
+				// 対応する「月別実績」をすべて取得する
+
+//				itemMonthResults = monthlyModifyQueryProcessor.initScreen(
+//						new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), itemIds,
+//						closingPeriod.get().getProcessingYm(),
+//						ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
+//						new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
+//								closingPeriod.get().getClosureDate().getLastDayOfMonth()));
+			}
+		}
+		return new ArrayList<>();
 	}
 
 	private void setAgreeItem(List<MonthlyModifyResult> itemMonthFlexResults, AgreementInfomationDto agreeDto){
