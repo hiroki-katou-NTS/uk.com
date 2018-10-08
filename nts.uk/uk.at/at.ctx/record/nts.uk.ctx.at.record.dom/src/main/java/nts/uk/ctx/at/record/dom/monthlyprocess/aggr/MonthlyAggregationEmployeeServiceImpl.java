@@ -16,11 +16,8 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.adapter.createmonthlyapprover.CreateMonthlyApproverAdapter;
-import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
@@ -56,7 +53,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	@Inject
 	private AggregateMonthlyRecordService aggregateMonthlyRecordService;
 	// （2018.3.1 shuichi_ishida）　単純入出力テスト用クラス
-	//private MonthlyRelatedDataInOutTest aggregateMonthlyRecordService;
+//	private MonthlyRelatedDataInOutTest aggregateMonthlyRecordService;
 	/** 集計期間を取得する */
 	@Inject
 	private GetClosurePeriod getClosurePeriod;
@@ -72,8 +69,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private TimeOfMonthlyRepository timeOfMonthlyRepo;
 //	private AttendanceTimeOfMonthlyRepository attendanceTimeRepository;		// 旧版
 	/** アダプタ：承認状態の作成（月次） */
-	@Inject
-	private CreateMonthlyApproverAdapter createMonthlyApproverAd;
+//	@Inject
+//	private CreateMonthlyApproverAdapter createMonthlyApproverAd;
 	/** リポジトリ：週別実績の勤怠時間 */
 	@Inject
 	private AttendanceTimeOfWeeklyRepository attendanceTimeWeekRepo;
@@ -81,8 +78,8 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	@Inject
 	private AnyItemOfMonthlyRepository anyItemRepository;
 	/** リポジトリ：管理時間の36協定時間 */
-	@Inject
-	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
+//	@Inject
+//	private AgreementTimeOfManagePeriodRepository agreementTimeRepository;
 	/** 残数系データ */
 	@Inject
 	private RemainMergeRepository remainMergeRepo;
@@ -92,11 +89,11 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	/** 月別実績データストアドプロシージャ */
 //	@Inject
 //	private ProcMonthlyData procMonthlyData;
+//	@Inject
+//	private StoredProcdureProcess storedProcedureProcess;
 	
+	/** 月別実績(WORK)を登録する */
 	@Inject
-	private StoredProcdureProcess storedProcedureProcess;
-	
-	@Inject 
 	private UpdateAllDomainMonthService monthService;
 	
 	/** 社員の月別実績を集計する */
@@ -286,75 +283,17 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				}
 			}
 			
-			IntegrationOfMonthly integration = new IntegrationOfMonthly(value.getAttendanceTime(), value.getAffiliationInfo(), value.getAnyItemList(), 
-					value.getAgreementTime(), Optional.of(value.getAnnLeaRemNumEachMonthList().get(0)), Optional.of(value.getRsvLeaRemNumEachMonthList().get(0)), 
-					Optional.of(value.getAbsenceLeaveRemainList().get(0)), Optional.of(value.getMonthlyDayoffRemainList().get(0)), value.getSpecialLeaveRemainList(), 
-					new ArrayList<>(), value.getMonCareHdRemain(), value.getMonChildHdRemain());
+			// 計算結果と同月・同締めの週次データのうち、不要になるデータを削除する
+			int maxWeekNo = value.getMaxWeekNo();
+			val oldCurrentWeeks = this.attendanceTimeWeekRepo.findByClosure(
+					employeeId, yearMonth, closureId, closureDate);
+			for (val oldWeek : oldCurrentWeeks){
+				if (oldWeek.getWeekNo() > maxWeekNo) this.attendanceTimeWeekRepo.remove(
+						employeeId, yearMonth, closureId, closureDate, oldWeek.getWeekNo());
+			}
 			
-			monthService.merge(Arrays.asList(integration), datePeriod.end());
-			
-//			// 登録する
-//			MonthMergeKey domainsKey = new MonthMergeKey();
-//			domainsKey.setEmployeeId(employeeId);
-//			domainsKey.setYearMonth(yearMonth);
-//			domainsKey.setClosureId(closureId);
-//			domainsKey.setClosureDate(closureDate);
-//			if (value.getAttendanceTime().isPresent()){
-//				this.timeOfMonthlyRepo.persistAndUpdate(new TimeOfMonthly(
-//						value.getAttendanceTime(), value.getAffiliationInfo()));
-//				// 月別実績の就業実績確認状態を作成する
-//				this.createMonthlyApproverAd.createApprovalStatusMonth(
-//						employeeId, datePeriod.end(), yearMonth, closureId.value, closureDate);
-//			}
-//			if (value.getAttendanceTimeWeeks().size() > 0){
-//				for (val attendanceTimeWeek : value.getAttendanceTimeWeeks()){
-//					this.attendanceTimeWeekRepo.persistAndUpdate(attendanceTimeWeek);
-//				}
-//			}
-////			for (val anyItem : value.getAnyItemList()){
-////				this.anyItemRepository.persistAndUpdate(anyItem);
-////			}
-//			// 出力したデータに関連するキー値でストアドプロシージャを実行する
-//			/** ストアドといってもJava上で処理です　*/
-//			this.storedProcedureProcess.monthlyProcessing(
-//					companyId,
-//					employeeId,
-//					aggrPeriod.getYearMonth(),
-//					aggrPeriod.getClosureId(),
-//					aggrPeriod.getClosureDate(),
-//					value.getAttendanceTime(),
-//					value.getAnyItemList());
-//			
-//			if (value.getAgreementTime().isPresent()){
-//				this.agreementTimeRepository.persistAndUpdate(value.getAgreementTime().get());
-//			}
-//			RemainMerge remainMerge = new RemainMerge();
-//			{
-//				if (value.getAnnLeaRemNumEachMonthList().size() > 0){
-//					remainMerge.setAnnLeaRemNumEachMonth(value.getAnnLeaRemNumEachMonthList().get(0));
-//				}
-//				if (value.getRsvLeaRemNumEachMonthList().size() > 0){
-//					remainMerge.setRsvLeaRemNumEachMonth(value.getRsvLeaRemNumEachMonthList().get(0));
-//				}
-//				if (value.getAbsenceLeaveRemainList().size() > 0){
-//					remainMerge.setAbsenceLeaveRemainData(value.getAbsenceLeaveRemainList().get(0));
-//				}
-//				if (value.getMonthlyDayoffRemainList().size() > 0){
-//					remainMerge.setMonthlyDayoffRemainData(value.getMonthlyDayoffRemainList().get(0));
-//				}
-//				if (value.getSpecialLeaveRemainList().size() > 0){
-//					remainMerge.setSpecialHolidayRemainDataMerge(value.getSpecialLeaveRemainList());
-//				}
-//				if (value.getMonCareHdRemain().isPresent()){
-//					remainMerge.setMonCareHdRemain(value.getMonCareHdRemain().get());
-//				}
-//				if (value.getMonChildHdRemain().isPresent()){
-//					remainMerge.setMonChildHdRemain(value.getMonChildHdRemain().get());
-//				}
-//			}
-//			if (!remainMerge.isEmpty()){
-//				this.remainMergeRepo.persistAndUpdate(domainsKey, remainMerge);
-//			}
+			// 月別実績(WORK)を登録する
+			this.monthService.merge(Arrays.asList(value.getIntegration()), datePeriod.end());
 			
 			status.getOutAggrPeriod().add(aggrPeriod);
 			

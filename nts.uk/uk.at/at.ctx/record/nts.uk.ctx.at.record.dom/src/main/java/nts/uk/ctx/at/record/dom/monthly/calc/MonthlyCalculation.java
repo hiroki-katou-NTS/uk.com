@@ -848,7 +848,7 @@ public class MonthlyCalculation {
 			val historyId = workingConditionItem.getHistoryId();
 			if (!this.workingConditions.containsKey(historyId)) continue;
 
-			// 処理期間を計算　（一か月の集計期間と労働条件履歴期間の重複を確認する）
+			// 処理期間を計算　（36協定の集計期間と労働条件履歴期間の重複を確認する）
 			val term = this.workingConditions.get(historyId);
 			DatePeriod period = MonthlyCalculation.confirmProcPeriod(aggrPeriod.getPeriod(), term);
 			if (period == null) {
@@ -895,7 +895,7 @@ public class MonthlyCalculation {
 				}
 				
 				// 履歴ごとに月別実績を集計する
-				calcWork.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+				calcWork.aggregate(period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 						annualLeaveDeductDays, absenceDeductTime, repositories);
 			}
 			
@@ -1326,6 +1326,8 @@ public class MonthlyCalculation {
 		this.aggregateTime.sum(target.aggregateTime);
 		this.totalWorkingTime = this.totalWorkingTime.addMinutes(target.totalWorkingTime.v());
 		this.totalTimeSpentAtWork.sum(target.totalTimeSpentAtWork);
-		this.agreementTime.sum(target.agreementTime);
+		// this.agreementTime.sum() は、下の this.agreementTimeOfManagePeriod.sum() に含まれる。参照関係に注意。
+		
+		this.agreementTimeOfManagePeriod.sum(target.agreementTimeOfManagePeriod);
 	}
 }
