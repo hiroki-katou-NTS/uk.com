@@ -743,8 +743,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             //            self.monthlyParam().initMenuMode = self.initMode();
-//            self.monthlyParam().closureId = self.closureId();
-            self.monthlyParam().yearMonth = date;
+            self.monthlyParam().closureId = self.closureId(); 
+            self.monthlyParam().yearMonth = date; 
             self.monthlyParam().lstEmployees = self.lstEmployee();
 
             if ($("#dpGrid").data('mGrid')) {
