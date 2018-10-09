@@ -1,11 +1,14 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount;
 
 import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Stateless
@@ -19,6 +22,25 @@ public class PayrollUnitPriceHistoryService {
 
     @Inject
     private PayrollUnitPriceRepository mPayrollUnitPriceRepository;
+
+
+
+    @Inject
+    private PayrollUnitPriceHistoryRepository payrollUnitPriceHistoryRepository;
+
+    public String addPayrollUnitPriceHistory(String code, YearMonth start, YearMonth end ){
+        String cId = AppContexts.user().companyId();
+        String newHistID = IdentifierUtil.randomUniqueId();
+        YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
+        PayrollUnitPriceHistory itemtoBeAdded = new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code), cId, new ArrayList<>());
+        Optional<PayrollUnitPriceHistory> payrollUnitPriceHistory = payrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId, code);
+        if (payrollUnitPriceHistory.isPresent()) {
+            itemtoBeAdded = payrollUnitPriceHistory.get();
+        }
+        itemtoBeAdded.add(yearMonthItem);
+        return newHistID;
+    }
+
 
 
     public void historyDeletionProcessing(String hisId, String cId,String code){

@@ -23,12 +23,12 @@ public class PayrollUnitPriceHistoryCommand
     /**
     * 開始年月
     */
-    private int startYearMonth;
+    private Integer startYearMonth;
     
     /**
     * 終了年月
     */
-    private int endYearMonth;
+    private Integer endYearMonth;
 
     /**
      * Mode

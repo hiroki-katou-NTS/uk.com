@@ -9,7 +9,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.*;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceFinder;
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.PayrollUnitPriceHistoryCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.UpdatePayrollUnitPriceHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHisKey;
@@ -29,13 +28,8 @@ public class PayrollUnitPriceHisWebService extends WebService {
     private PayrollUnitPriceHistoryFinder payrollUnitPriceHistoryFinder;
 
     @Inject
-    private PayrollUnitPriceFinder payrollUnitPriceFinder;
-
-    @Inject
     private AddPayrollUnitPriceHistoryCommandHandler addPayrollUnitPriceHistoryCommandHandler;
 
-    @Inject
-    private AddPayrollUnitPriceCommandHandler addPayrollUnitPriceCommandHandler;
 
     @Inject
     private RegisterPayrollUnitPriceSettingCommandHandler registerPayrollUnitPriceSettingCommandHandler;
@@ -43,6 +37,7 @@ public class PayrollUnitPriceHisWebService extends WebService {
 
     @Inject
     private UpdatePayrollUnitPriceHistoryCommandHandler updatePayrollUnitPriceHistoryCommandHandler;
+
 
 
 
@@ -85,4 +80,13 @@ public class PayrollUnitPriceHisWebService extends WebService {
         }
         return null;
     }
+
+
+
+    @POST
+    @Path("addPayrollUnitPriceHis")
+    public String addPayrollUnitPriceHis(PayrollUnitPriceHistoryCommand command) {
+        return addPayrollUnitPriceHistoryCommandHandler.handle(command);
+    }
+
 }

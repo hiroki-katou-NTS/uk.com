@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:com="http://xmlns.jcp.org/jsf/component"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+>
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
@@ -23,48 +23,59 @@
                 <span id="C1_1" class="label">#{i18n.getText('QMM007_38')}</span>
             </div>
             <!-- F1_2 名称 -->
-            <div id="C1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px; width: 100%;">
+            <div id="C1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px;">
                 <span class="label">#{i18n.getText('QMM007_5')}</span>
                 <!-- C1_3 保険名称 -->
                 <span id="C1_3" class="label"  style="margin-left: 50px" data-bind = "text: code"></span>
                 <!-- C1_4 保険名称 -->
                 <span id="C1_4" class="label"  style="margin-left: 15px" data-bind = "text: name"></span>
             </div>
-           <div>
-               <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px">
-                   <span class="label">#{i18n.getText('QMM007_39')}</span>
-               </div>
-               <!-- C1_5 履歴編集方法 -->
-               <div id="C1_6" tabindex = "1">
-                   <div style="" class="cell"
-                        data-bind="ntsRadioButton: {
+            <table>
+                <tr>
+                    <td>
+                        <div id="C1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 100px 10px;">
+                            <span class="label">#{i18n.getText('QMM007_39')}</span>
+                        </div>
+
+                    </td>
+                    <td id="C1_6" tabindex="1">
+
+                        <div>
+                            <div style="" class="cell"
+                                 data-bind="ntsRadioButton: {
 										checked: methodEditing,
 										option: itemList()[0],
 										optionValue: 'code',
 										enable: isFirst,
 										optionText: 'name',
 										group: 'periodOption'}">
-                   </div>
+                            </div>
 
-                   <br/>
-                   <div>
-                       <span class="label warning" style="margin-left: 170px">#{i18n.getText('QMM007_39')}</span>
-                   </div>
-                   <div class="cell" style="margin: 10px 0px 0px 145px;"
-                        data-bind="ntsRadioButton: {
+                            <br/>
+                            <div style="margin: 10px 10px 10px 20px;">
+                                <span class="label warning"
+                                      style="">#{i18n.getText('QMM007_39')}</span>
+                            </div>
+                            <div class="cell" style=""
+                                 data-bind="ntsRadioButton: {
 										checked: methodEditing,
 										option: itemList()[1],
 										optionValue: 'code',
 										enable: isFirst,
 										optionText: 'name',
 										group: 'periodOption'}">
-                   </div>
+                            </div>
 
 
+                        </div>
 
-               </div>
+                    </td>
 
-           </div>
+
+                </tr>
+
+
+            </table>
 
 
             <div class = "C1_8"  style="margin: 10px 0px 0px 165px;">

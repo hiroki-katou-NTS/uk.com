@@ -38,8 +38,12 @@ public class ProgramsManager {
 	/**
 	 * QMM007
 	 */
-	public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM011_60",
-			"/view/qmm/007/c/index.xhtml");
+	public static final Program QMM007A = new Program(WebAppId.PR, ProgramIdConsts.QMM007A, "QMM007_46",
+			"/view/qmm/007/a/index.xhtml");
+    public static final Program QMM007B = new Program(WebAppId.PR, ProgramIdConsts.QMM007B, "QMM007_46",
+            "/view/qmm/007/b/index.xhtml");
+    public static final Program QMM007C = new Program(WebAppId.PR, ProgramIdConsts.QMM007C, "QMM007_47",
+            "/view/qmm/007/c/index.xhtml");
 	
 	/**
 	 * CCG008A
