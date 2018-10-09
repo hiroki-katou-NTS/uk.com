@@ -1446,9 +1446,9 @@ module nts.uk.at.view.kmk002.a {
 
                 // Rounding
                 this.timeMonthlyRounding = ko.observable(0);
-                this.timeMonthlyUnit = ko.observable(1);
+                this.timeMonthlyUnit = ko.observable(0);
                 this.timeDailyRounding = ko.observable(0);
-                this.timeDailyUnit = ko.observable(1);
+                this.timeDailyUnit = ko.observable(0);
                 this.numberMonthlyRounding = ko.observable(0);
                 this.numberMonthlyUnit = ko.observable(0);
                 this.numberDailyRounding = ko.observable(0);
