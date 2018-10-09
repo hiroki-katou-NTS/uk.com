@@ -1,169 +1,119 @@
 module nts.uk.pr.view.qmm039.share.model {
-    export module service {
-        export module model{
+    export interface IPerProcessClsSet {
+        processCateNo: string;
+        uid: string;
+        cid: string;
+    }
+    export class PerProcessClsSet {
+        processCateNo: KnockoutObservable<string> = ko.observable(null);
+        uid: KnockoutObservable<string> = ko.observable(null);
+        cid: KnockoutObservable<string> = ko.observable(null);
 
-            export interface SearchEmployeeQuery {
-                systemType: number;
-                code?: string;
-                name?: string;
-                useClosure?: boolean;
-                closureId?: number;
-                period?: any;
-                referenceDate: any;
-            }
+        constructor(params: IPerProcessClsSet) {
+            this.processCateNo(params ? params.processCateNo : null);
+            this.uid(params ? params.uid : null);
+            this.cid(params ? params.cid : null);
+        }
+    }
 
-            export class EmployeeSearchDto {
-                employeeId: string;
-                employeeCode: string;
-                employeeName: string;
-                workplaceCode: string;
-                workplaceId: string;
-                workplaceName: string;
-            }
+    export interface ICurrentProcessDate {
+        processCategNo: string;
+        cID: string;
+        salCurProcessDate: number;
+    }
+    export class CurrentProcessDate {
+        processCategNo: KnockoutObservable<string> = ko.observable(null);
+        cID: KnockoutObservable<string> = ko.observable(null);
+        salCurProcessDate: KnockoutObservable<number> = ko.observable(null);
 
-            export interface GroupOption {
+        constructor(params: ICurrentProcessDate) {
+            this.processCategNo(params ? params.processCategNo : null);
+            this.cID(params ? params.cID : null);
+            this.salCurProcessDate(params ? params.salCurProcessDate : null);
+        }
+    }
 
-                /** Common properties */
-                showEmployeeSelection?: boolean; // 検索タイプ
-                systemType: number; // システム区分
-                showQuickSearchTab?: boolean; // クイック検索
-                showAdvancedSearchTab?: boolean; // 詳細検索
-                showBaseDate?: boolean; // 基準日利用
-                showClosure?: boolean; // 就業締め日利用
-                showAllClosure?: boolean; // 全締め表示
-                showPeriod?: boolean; // 対象期間利用
-                periodFormatYM?: boolean; // 対象期間精度
-                maxPeriodRange?: string; // 最長期間
-                showSort?: boolean; // 並び順利用
-                nameType?: number; // 氏名の種類
+    export interface ISalIndAmount {
+        historyId: string;
+        amountOfMoney: number;
+    }
+    export class SalIndAmount {
+        historyId: KnockoutObservable<string> = ko.observable(null);
+        amountOfMoney: KnockoutObservable<number> = ko.observable(null);
 
-                /** Required parameter */
-                baseDate?: any; // 基準日 KnockoutObservable<string> or string
-                periodStartDate?: any; // 対象期間開始日 KnockoutObservable<string> or string
-                periodEndDate?: any; // 対象期間終了日 KnockoutObservable<string> or string
-                dateRangePickerValue?: KnockoutObservable<any>;
-                inService: boolean; // 在職区分
-                leaveOfAbsence: boolean; // 休職区分
-                closed: boolean; // 休業区分
-                retirement: boolean; // 退職区分
+        constructor(params: ISalIndAmount) {
+            this.historyId(params ? params.historyId : null);
+            this.amountOfMoney(params ? params.amountOfMoney : null);
+        }
+    }
 
-                /** Quick search tab options */
-                showAllReferableEmployee?: boolean; // 参照可能な社員すべて
-                showOnlyMe?: boolean; // 自分だけ
-                showSameWorkplace?: boolean; // 同じ職場の社員
-                showSameWorkplaceAndChild?: boolean; // 同じ職場とその配下の社員
+    export interface ISalIndAmountHis {
+        perValCode: string;
+        cateIndicator: number;
+        historyID: string;
+        periodYearMonth: string;
+        empId: string;
+        salBonusCate: number;
+    }
+    export class SalIndAmountHis {
+        perValCode: KnockoutObservable<string> = ko.observable(null);
+        cateIndicator: KnockoutObservable<number> = ko.observable(null);
+        historyID: KnockoutObservable<string> = ko.observable(null);
+        periodYearMonth: KnockoutObservable<string> = ko.observable(null);
+        empId: KnockoutObservable<string> = ko.observable(null);
+        salBonusCate: KnockoutObservable<number> = ko.observable(null);
 
-                /** Advanced search properties */
-                showEmployment?: boolean; // 雇用条件
-                showWorkplace?: boolean; // 職場条件
-                showClassification?: boolean; // 分類条件
-                showJobTitle?: boolean; // 職位条件
-                showWorktype?: boolean; // 勤種条件
-                isMutipleCheck?: boolean; // 選択モード
-                // showDepartment: boolean; // 部門条件 not covered
-                // showDelivery: boolean; not covered
+        constructor(params: ISalIndAmountHis) {
+            this.perValCode(params ? params.perValCode : null);
+            this.cateIndicator(params ? params.cateIndicator : null);
+            this.historyID(params ? params.historyID : null);
+            this.periodYearMonth(params ? params.periodYearMonth : null);
+            this.empId(params ? params.empId : null);
+            this.salBonusCate(params ? params.salBonusCate : null);
+        }
+    }
 
-                /** Optional properties */
-                isInDialog?: boolean;
-                showOnStart?: boolean;
-                isTab2Lazy?: boolean;
-                tabindex?: number;
+    export interface ISetDaySupport {
+        cid: string;
+        processDate: number;
+        processCategoryNo: number;
+        closeDateTime: string;
+        paymentDate: string;
+        empExtraRefeDate: string;
+        socialInsurCollecMonth: number;
+        socialInsurStanDate: string;
+        empInsurStandDate: string;
+        incomeTaxDate: string;
+        accountingClosureDate: string;
+        numberWorkDay: number;
+    }
+    export class SetDaySupport {
+        cid: KnockoutObservable<string> = ko.observable(null);
+        processDate: KnockoutObservable<number> = ko.observable(null);
+        processCategoryNo: KnockoutObservable<number> = ko.observable(null);
+        closeDateTime: KnockoutObservable<string> = ko.observable(null);
+        paymentDate: KnockoutObservable<string> = ko.observable(null);
+        empExtraRefeDate: KnockoutObservable<string> = ko.observable(null);
+        socialInsurCollecMonth: KnockoutObservable<number> = ko.observable(null);
+        socialInsurStanDate: KnockoutObservable<string> = ko.observable(null);
+        empInsurStandDate: KnockoutObservable<string> = ko.observable(null);
+        incomeTaxDate: KnockoutObservable<string> = ko.observable(null);
+        accountingClosureDate: KnockoutObservable<string> = ko.observable(null);
+        numberWorkDay: KnockoutObservable<number> = ko.observable(null);
 
-                /** Data returned */
-                returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
-            }
-
-            export interface Ccg001ReturnedData {
-                baseDate: string; // 基準日
-                closureId?: number; // 締めID
-                periodStart: string; // 対象期間（開始)
-                periodEnd: string; // 対象期間（終了）
-                listEmployee: Array<EmployeeSearchDto>; // 検索結果
-            }
-
-            export class SelectedInformation {
-                sortOrder: number; // 前回選択していた並び順
-                selectedClosureId: number; // 前回選択していた締め
-                constructor() {
-                    let self = this;
-                    self.sortOrder = null;
-                    self.selectedClosureId = null;
-                }
-            }
-
-            export interface EmployeeQueryParam {
-                roleId: string;
-                baseDate: string;
-                referenceRange: number;
-                filterByEmployment: boolean;
-                employmentCodes: Array<string>;
-                filterByDepartment: boolean;
-                departmentCodes: Array<number>;
-                filterByWorkplace: boolean;
-                workplaceCodes: Array<string>;
-                filterByClassification: boolean;
-                classificationCodes: Array<any>;
-                filterByJobTitle: boolean;
-                jobTitleCodes: Array<string>;
-                filterByWorktype: boolean;
-                worktypeCodes: Array<string>;
-                filterByClosure: boolean;
-                closureIds: Array<number>;
-
-                periodStart: string;
-                periodEnd: string;
-
-                includeIncumbents: boolean;
-                includeWorkersOnLeave: boolean;
-                includeOccupancy: boolean;
-                includeRetirees: boolean;
-                retireStart: string;
-                retireEnd: string;
-
-                sortOrderNo: number;
-                nameType: number;
-                systemType: number;
-            }
-
-            export interface DatePeriodDto {
-                startDate: string;
-                endDate: string
-            }
-
-            export interface BusinessType {
-                businessTypeCode: string;
-                businessTypeName: string;
-            }
-
-            export class EmployeeRangeSelection {
-                userId: String; // ユーザID
-                companyId: String; // 会社ID
-                humanResourceInfo: SelectedInformation; // 人事の選択している情報
-                personalInfo: SelectedInformation; // 個人情報の選択している情報
-                employmentInfo: SelectedInformation; // 就業の選択している情報
-                salaryInfo: SelectedInformation; // 給与の選択している情報
-                constructor() {
-                    let self = this;
-                    self.userId = __viewContext.user.employeeId;
-                    self.companyId = __viewContext.user.companyId;
-                    self.humanResourceInfo = new SelectedInformation();
-                    self.personalInfo = new SelectedInformation();
-                    self.employmentInfo = new SelectedInformation();
-                    self.salaryInfo = new SelectedInformation();
-                }
-            }
-
-            export class EmployeeDto {
-                employeeID: string;
-                employeeCode: string;
-                hireDate: string;
-                classificationCode: string;
-                name: string;
-                jobTitleCode: string;
-                workplaceCode: string;
-                departmentCode: string;
-                employmentCode: string;
-            }
+        constructor(params: ISetDaySupport) {
+            this.cid(params ? params.cid : null);
+            this.processDate(params ? params.processDate : null);
+            this.processCategoryNo(params ? params.processCategoryNo : null);
+            this.closeDateTime(params ? params.closeDateTime : null);
+            this.paymentDate(params ? params.paymentDate : null);
+            this.empExtraRefeDate(params ? params.empExtraRefeDate : null);
+            this.socialInsurCollecMonth(params ? params.socialInsurCollecMonth : null);
+            this.socialInsurStanDate(params ? params.socialInsurStanDate : null);
+            this.empInsurStandDate(params ? params.empInsurStandDate : null);
+            this.incomeTaxDate(params ? params.incomeTaxDate : null);
+            this.accountingClosureDate(params ? params.accountingClosureDate : null);
+            this.numberWorkDay(params ? params.numberWorkDay : null);
         }
     }
 }
