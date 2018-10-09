@@ -1,27 +1,21 @@
 
 
    <div>
-        <div
-                class="sidebar-content-header flex" style="width: 103%">
+        <div class="sidebar-content-header" style="min-width: 1000px;">
             <span class="title">#{i18n.getText('QMM011_5')}</span>
-
-            <div style="margin-left: 100px; margin-top: 10px;">
-                <div>
-                    <!-- A1_1-->
-                    <button class="proceed" id="A1_1" tabindex="1"
-                            data-bind="click: register,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
-                    <!-- A1_2 -->
-                    <button id="A1_2" tabindex="2"
-                            data-bind="click: openDscreen,enable: !enableRegis() ">#{i18n.getText('QMM011_2')}</button>
-                    <!-- A1_3-->
-                    <button id="A1_3" tabindex="3"
-                            data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
-                </div>
-            </div>
+            <!-- A1_1-->
+            <button class="proceed" id="A1_1" tabindex="1"
+                    data-bind="click: register,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
+            <!-- A1_2 -->
+            <button id="A1_2" tabindex="2"
+                    data-bind="click: openDscreen,enable: !enableRegis() ">#{i18n.getText('QMM011_2')}</button>
+            <!-- A1_3-->
+            <button id="A1_3" tabindex="3"
+                    data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
 
         </div>
-        <div class = "content flex">
-            <div class = "left flex">
+        <div class = "fixed-flex-layout">
+            <div class = "left">
                 <div id="C1_1"
                      data-bind="ntsPanel:{width: '220px', height: '415px',direction: 'none', visible: true}">
                     <div id="action">
@@ -51,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class = "right">
+            <div class = "right" style="min-width: 700px; margin-top: 10px;">
                <div class="top">
                    <div id="C2_1" class="column-1" data-bind="ntsFormLabel: {required:true}">#{i18n.getText('QMM011_10')} </div>
                    <!--C2_2 開始年月 -->
