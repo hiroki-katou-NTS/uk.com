@@ -70,6 +70,17 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " INNER JOIN PpemtPerInfoItemOrder po "
 			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
 			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid  ORDER BY po.disporder";
+	
+	private static final String SEL_ALL_INIT_ITEM_FOR_COMBOBOX = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType ,pm.selectionItemRefType,pm.itemParentCd,pm.dateItemType,pm.selectionItemRefCode"
+			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
+			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm"
+			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoItemOrder po "
+			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
+			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid and c.abolitionAtr = 0 ORDER BY po.disporder";
 	// SONNLB
 
 	private static final String SEL_ALL_ITEM_BY_CTG_ID = " SELECT c FROM PpemtPersonInitValueSettingItem c"
@@ -289,7 +300,15 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 				.setParameter("settingId", settingId)
 				.setParameter("cid", cid)
 				.getList(c -> toInitDomain(c));
-
+	}
+	
+	@Override
+	public List<PerInfoInitValueSetItemDetail> getAllInitItemForComboBox(String settingId, String perInfoCtgId,
+			String cid) {
+		return this.queryProxy().query(SEL_ALL_INIT_ITEM_FOR_COMBOBOX, Object[].class).setParameter("perInfoCtgId", perInfoCtgId)
+				.setParameter("settingId", settingId)
+				.setParameter("cid", cid)
+				.getList(c -> toInitDomain(c));
 	}
 
 	private static PerInfoInitValueSetItemDetail toInitDomain(Object[] entity) {
@@ -449,4 +468,5 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		}
 		return false;
 	}
+
 }
