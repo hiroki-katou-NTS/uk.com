@@ -1866,11 +1866,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
-			if (iteratorWorkplaceData.hasNext()) {
-				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
-				rowPageTracker.resetRemainingRow();
-				sheet.getHorizontalPageBreaks().add(currentRow);
-			}
 		}
 		
 		if (condition.getTotalOutputSetting().isGrossTotal()) {

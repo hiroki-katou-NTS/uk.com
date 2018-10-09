@@ -1060,7 +1060,12 @@ module kcp.share.list {
         }
         
         export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
-            return _.sortBy(nts.uk.request.ajax('com', servicePath.findEmployments),['code']);
+            let dfd = $.Deferred<Array<UnitModel>>();
+            nts.uk.request.ajax('com', servicePath.findEmployments).done((data: any) =>{
+                data =_.sortBy(data,['code']);
+                dfd.resolve(data);
+            });
+            return dfd.promise();
         }
         
         /**

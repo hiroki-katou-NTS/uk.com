@@ -15,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class ExcessOfStatutoryMidNightTime {
+	//時間
 	private TimeDivergenceWithCalculation time;
+	//事前時間
 	private AttendanceTime beforeApplicationTime;
 	
 	public ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation time, AttendanceTime beforeApplicationTime) {

@@ -22,4 +22,8 @@ public class IntervalExemptionTime {
 	
 	//免除時間
 	private AttendanceTime exemptionTime;
+	
+	public static IntervalExemptionTime defaultValue() {
+		return new IntervalExemptionTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
+	}
 }

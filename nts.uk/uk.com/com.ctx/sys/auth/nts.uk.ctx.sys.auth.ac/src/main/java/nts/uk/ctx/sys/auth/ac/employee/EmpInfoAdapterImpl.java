@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.ac.employee;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,8 +14,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
+import nts.uk.ctx.sys.auth.dom.employee.dto.EmJobTitleHisImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.PersonInfoImport;
@@ -34,6 +38,8 @@ public class EmpInfoAdapterImpl implements EmpInfoAdapter {
 	@Inject
 	private SyEmployeePub syEmployeePub;
 
+	@Inject
+	private SyJobTitlePub syJobTitlePub;
 	@Override
 	public List<PersonInfoImport> getByListId(List<String> listPersonId) {
 		return this.personPub.findByListId(listPersonId).stream()
@@ -103,4 +109,21 @@ public class EmpInfoAdapterImpl implements EmpInfoAdapter {
 	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		return syEmployeePub.getListEmployee(jobTitleIds, baseDate);
 	}
+
+	@Override
+	public Optional<EmJobTitleHisImport> getTitleHist(String employeeId, GeneralDate baseDate) {
+		Optional<EmployeeJobHistExport> ex = syJobTitlePub.findBySid(employeeId, baseDate);
+		if(ex.isPresent()){
+			EmJobTitleHisImport data = new EmJobTitleHisImport(
+					ex.get().getEmployeeId(),
+					ex.get().getJobTitleID(),
+					ex.get().getJobTitleName(), 
+					ex.get().getStartDate(),
+					ex.get().getEndDate());
+			return Optional.of(data);
+		}
+		return Optional.empty();
+		
+	}
+
 }

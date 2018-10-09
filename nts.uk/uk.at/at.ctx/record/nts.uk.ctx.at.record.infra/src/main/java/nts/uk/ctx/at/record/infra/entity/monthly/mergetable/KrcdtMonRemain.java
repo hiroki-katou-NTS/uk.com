@@ -1746,52 +1746,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	/** KRCDT_MON_ANNLEA_REMAIN - エンティティ：年休月別残数データ */
 	public void toEntityMonAnnleaRemain(AnnLeaRemNumEachMonth domain) {
 		
-		// Optional列の初期化
-		this.annleaUsedDaysAfter = null;
-		this.annleaUsedMinutes = null;
-		this.annleaUsedMinutesBefore = null;
-		this.annleaUsedMinutesAfter = null;
-		this.annleaUsedTimes = null;
-		this.annleaFactUsedDaysAfter = null;
-		this.annleaFactUsedMinutes = null;
-		this.annleaFactUsedMinutesBefore = null;
-		this.annleaFactUsedMinutesAfter = null;
-		this.annleaFactUsedTimes = null;
-		this.annleaRemainingMinutes = null;
-		this.annleaFactRemainingMinutes = null;
-		this.annleaRemainingMinutesBefore = null;
-		this.annleaFactRemainingMinutesBefore = null;
-		this.annleaRemainingDaysAfter = null;
-		this.annleaRemainingMinutesAfter = null;
-		this.annleaFactRemainingDaysAfter = null;
-		this.annleaFactRemainingMinutesAfter = null;
-		this.annleaUnusedMinutes = null;
-		this.annleaHalfUsedTimes = null;
-		this.annleaHalfUsedTimesBefore = null;
-		this.annleaHalfUsedTimesAfter = null;
-		this.annleaHalfRemainingTimes = null;
-		this.annleaHalfRemainingTimesBefore = null;
-		this.annleaHalfRemainingTimesAfter = null;
-		this.annleaFactHalfUsedTimes = null;
-		this.annleaFactHalfUsedTimesBefore = null;
-		this.annleaFactHalfUsedTimesAfter = null;
-		this.annleaFactHalfRemainingTimes = null;
-		this.annleaFactHalfRemainingTimesBefore = null;
-		this.annleaFactHalfRemainingTimesAfter = null;
-		this.annleaTimeRemainingMinutes = null;
-		this.annleaTimeRemainingMinutesBefore = null;
-		this.annleaTimeRemainingMinutesAfter = null;
-		this.annleaFactTimeRemainingMinutes = null;
-		this.annleaFactTimeRemainingMinutesBefore = null;
-		this.annleaFactTimeRemainingMinutesAfter = null;
-		this.annleaGrantDays = null;
-		this.annleaGrantPredeterminedDays = null;
-		this.annleaGrantLaborDays = null;
-		this.annleaGrantDeductionDays = null;
-		this.annleaDeductionDaysBefore = null;
-		this.annleaDeductionDaysAfter = null;
-		this.annleaAttendanceRate = null;
-
+		this.deleteMonAnnleaRemain();
 		if (domain == null) return;
 		
 		val normal = domain.getAnnualLeave();
@@ -1948,19 +1903,72 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			this.annleaDeductionDaysAfter = grantInfo.getDeductedDaysAfterGrant().v().intValue();
 			this.annleaAttendanceRate = grantInfo.getAttendanceRate().v().doubleValue();
 		}
-
 	}
 
+	public void deleteMonAnnleaRemain(){
+		this.annleaUsedDays = 0.0;
+		this.annleaUsedDaysBefore = 0.0;
+		this.annleaUsedDaysAfter = null;
+		this.annleaUsedMinutes = null;
+		this.annleaUsedMinutesBefore = null;
+		this.annleaUsedMinutesAfter = null;
+		this.annleaUsedTimes = null;
+		this.annleaFactUsedDays = 0.0;
+		this.annleaFactUsedDaysBefore = 0.0;
+		this.annleaFactUsedDaysAfter = null;
+		this.annleaFactUsedMinutes = null;
+		this.annleaFactUsedMinutesBefore = null;
+		this.annleaFactUsedMinutesAfter = null;
+		this.annleaFactUsedTimes = null;
+		this.annleaRemainingDays = 0.0;
+		this.annleaRemainingMinutes = null;
+		this.annleaFactRemainingDays = 0.0;
+		this.annleaFactRemainingMinutes = null;
+		this.annleaRemainingDaysBefore = 0.0;
+		this.annleaRemainingMinutesBefore = null;
+		this.annleaFactRemainingDaysBefore = 0.0;
+		this.annleaFactRemainingMinutesBefore = null;
+		this.annleaRemainingDaysAfter = null;
+		this.annleaRemainingMinutesAfter = null;
+		this.annleaFactRemainingDaysAfter = null;
+		this.annleaFactRemainingMinutesAfter = null;
+		this.annleaUnusedDays = 0.0;
+		this.annleaUnusedMinutes = null;
+		this.annleaPredeterminedDays = 0;
+		this.annleaLaborDays = 0;
+		this.annleaDeductionDays = 0;
+		this.annleaHalfUsedTimes = null;
+		this.annleaHalfUsedTimesBefore = null;
+		this.annleaHalfUsedTimesAfter = null;
+		this.annleaHalfRemainingTimes = null;
+		this.annleaHalfRemainingTimesBefore = null;
+		this.annleaHalfRemainingTimesAfter = null;
+		this.annleaFactHalfUsedTimes = null;
+		this.annleaFactHalfUsedTimesBefore = null;
+		this.annleaFactHalfUsedTimesAfter = null;
+		this.annleaFactHalfRemainingTimes = null;
+		this.annleaFactHalfRemainingTimesBefore = null;
+		this.annleaFactHalfRemainingTimesAfter = null;
+		this.annleaTimeRemainingMinutes = null;
+		this.annleaTimeRemainingMinutesBefore = null;
+		this.annleaTimeRemainingMinutesAfter = null;
+		this.annleaFactTimeRemainingMinutes = null;
+		this.annleaFactTimeRemainingMinutesBefore = null;
+		this.annleaFactTimeRemainingMinutesAfter = null;
+		this.annleaGrantAtr = 0;
+		this.annleaGrantDays = null;
+		this.annleaGrantPredeterminedDays = null;
+		this.annleaGrantLaborDays = null;
+		this.annleaGrantDeductionDays = null;
+		this.annleaDeductionDaysBefore = null;
+		this.annleaDeductionDaysAfter = null;
+		this.annleaAttendanceRate = null;
+	}
+	
 	/** KRCDT_MON_RSVLEA_REMAIN */
 	public void toEntityRsvLeaRemNumEachMonth(RsvLeaRemNumEachMonth domain) {
 
-		// Optional列の初期化
-		this.rsvleaUsedDaysAfter = null;
-		this.rsvleaFactUsedDaysAfter = null;
-		this.rsvleaRemainingDaysAfter = null;
-		this.rsvleaFactRemainingDaysAfter = null;
-		this.rsvleaGrantDays = null;
-
+		this.deleteRsvLeaRemNumEachMonth();
 		if (domain == null) return;
 		
 		val normal = domain.getReserveLeave();
@@ -2015,6 +2023,24 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 			this.rsvleaGrantDays = grantInfo.getGrantDays().v();
 		}
 	}
+	
+	public void deleteRsvLeaRemNumEachMonth(){
+		this.rsvleaUsedDays = 0.0;
+		this.rsvleaUsedDaysBefore = 0.0;
+		this.rsvleaUsedDaysAfter = null;
+		this.rsvleaFactUsedDays = 0.0;
+		this.rsvleaFactUsedDaysBefore = 0.0;
+		this.rsvleaFactUsedDaysAfter = null;
+		this.rsvleaRemainingDays = 0.0;
+		this.rsvleaFactRemainingDays = 0.0;
+		this.rsvleaRemainingDaysBefore = 0.0;
+		this.rsvleaFactRemainingDaysBefore = 0.0;
+		this.rsvleaRemainingDaysAfter = null;
+		this.rsvleaFactRemainingDaysAfter = null;
+		this.rsvleaNotUsedDays = 0.0;
+		this.rsvleaGrantAtr = 0;
+		this.rsvleaGrantDays = null;
+	}
 
 	/** KRCDT_MON_SP_REMAIN **/
 	public void toEntitySpeRemain(SpecialHolidayRemainDataMerge domain) {
@@ -2039,7 +2065,68 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.toEntityMonthSpeRemain19(domain.getSpecialHolidayRemainData19());
 		this.toEntityMonthSpeRemain20(domain.getSpecialHolidayRemainData20());
 	}
+	
+	public void toEntitySpeRemain(SpecialHolidayRemainData domain) {
+		switch (domain.getSpecialHolidayCd()){
+		case 1:		this.toEntityMonthSpeRemain1(domain);	break;
+		case 2:		this.toEntityMonthSpeRemain2(domain);	break;
+		case 3:		this.toEntityMonthSpeRemain3(domain);	break;
+		case 4:		this.toEntityMonthSpeRemain4(domain);	break;
+		case 5:		this.toEntityMonthSpeRemain5(domain);	break;
+		case 6:		this.toEntityMonthSpeRemain6(domain);	break;
+		case 7:		this.toEntityMonthSpeRemain7(domain);	break;
+		case 8:		this.toEntityMonthSpeRemain8(domain);	break;
+		case 9:		this.toEntityMonthSpeRemain9(domain);	break;
+		case 10:	this.toEntityMonthSpeRemain10(domain);	break;
+		case 11:	this.toEntityMonthSpeRemain11(domain);	break;
+		case 12:	this.toEntityMonthSpeRemain12(domain);	break;
+		case 13:	this.toEntityMonthSpeRemain13(domain);	break;
+		case 14:	this.toEntityMonthSpeRemain14(domain);	break;
+		case 15:	this.toEntityMonthSpeRemain15(domain);	break;
+		case 16:	this.toEntityMonthSpeRemain16(domain);	break;
+		case 17:	this.toEntityMonthSpeRemain17(domain);	break;
+		case 18:	this.toEntityMonthSpeRemain18(domain);	break;
+		case 19:	this.toEntityMonthSpeRemain19(domain);	break;
+		case 20:	this.toEntityMonthSpeRemain20(domain);	break;
+		default:	break;
+		}
+	}
+	
+	public void toEntitySpeRemains(List<SpecialHolidayRemainData> domains) {
+		this.deleteAllSpeRemains();
+		for (val domain : domains) this.toEntitySpeRemain(domain);
+	}
+	
+	public void deleteAllSpeRemains(){
+		for (int i = 1; i <= 20; i++) this.deleteSpeRemain(i);
+	}
 
+	public void deleteSpeRemain(int speCode){
+		switch (speCode){
+		case 1:		this.toEntityMonthSpeRemain1(null);		break;
+		case 2:		this.toEntityMonthSpeRemain2(null);		break;
+		case 3:		this.toEntityMonthSpeRemain3(null);		break;
+		case 4:		this.toEntityMonthSpeRemain4(null);		break;
+		case 5:		this.toEntityMonthSpeRemain5(null);		break;
+		case 6:		this.toEntityMonthSpeRemain6(null);		break;
+		case 7:		this.toEntityMonthSpeRemain7(null);		break;
+		case 8:		this.toEntityMonthSpeRemain8(null);		break;
+		case 9:		this.toEntityMonthSpeRemain9(null);		break;
+		case 10:	this.toEntityMonthSpeRemain10(null);	break;
+		case 11:	this.toEntityMonthSpeRemain11(null);	break;
+		case 12:	this.toEntityMonthSpeRemain12(null);	break;
+		case 13:	this.toEntityMonthSpeRemain13(null);	break;
+		case 14:	this.toEntityMonthSpeRemain14(null);	break;
+		case 15:	this.toEntityMonthSpeRemain15(null);	break;
+		case 16:	this.toEntityMonthSpeRemain16(null);	break;
+		case 17:	this.toEntityMonthSpeRemain17(null);	break;
+		case 18:	this.toEntityMonthSpeRemain18(null);	break;
+		case 19:	this.toEntityMonthSpeRemain19(null);	break;
+		case 20:	this.toEntityMonthSpeRemain20(null);	break;
+		default:	break;
+		}
+	}
+	
 	private EntitySpeRemainAtom toEntityMonthSpeRemain(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom result = new EntitySpeRemainAtom();
@@ -2153,7 +2240,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		return result;
 	}
 
-	public void toEntityMonthSpeRemain1(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain1(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays1 = entity.useDays;
@@ -2188,7 +2275,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays1 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain2(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain2(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays2 = entity.useDays;
@@ -2223,7 +2310,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays2 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain3(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain3(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays3 = entity.useDays;
@@ -2258,7 +2345,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays3 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain4(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain4(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays4 = entity.useDays;
@@ -2293,7 +2380,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays4 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain5(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain5(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays5 = entity.useDays;
@@ -2328,7 +2415,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays5 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain6(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain6(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays6 = entity.useDays;
@@ -2363,7 +2450,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays6 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain7(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain7(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays7 = entity.useDays;
@@ -2398,7 +2485,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays7 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain8(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain8(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays8 = entity.useDays;
@@ -2433,7 +2520,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays8 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain9(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain9(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays9 = entity.useDays;
@@ -2468,7 +2555,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays9 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain10(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain10(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays10 = entity.useDays;
@@ -2503,7 +2590,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays10 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain11(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain11(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays11 = entity.useDays;
@@ -2538,7 +2625,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays11 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain12(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain12(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays12 = entity.useDays;
@@ -2573,7 +2660,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays12 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain13(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain13(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays13 = entity.useDays;
@@ -2608,7 +2695,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays13 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain14(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain14(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays14 = entity.useDays;
@@ -2643,7 +2730,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays14 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain15(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain15(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays15 = entity.useDays;
@@ -2678,7 +2765,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays15 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain16(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain16(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays16 = entity.useDays;
@@ -2713,7 +2800,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays16 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain17(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain17(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays17 = entity.useDays;
@@ -2748,7 +2835,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays17 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain18(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain18(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays18 = entity.useDays;
@@ -2783,7 +2870,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays18 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain19(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain19(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays19 = entity.useDays;
@@ -2818,7 +2905,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.grantDays19 = entity.grantDays;
 	}
 
-	public void toEntityMonthSpeRemain20(SpecialHolidayRemainData domain) {
+	private void toEntityMonthSpeRemain20(SpecialHolidayRemainData domain) {
 
 		EntitySpeRemainAtom entity = this.toEntityMonthSpeRemain(domain);
 		this.useDays20 = entity.useDays;
@@ -2856,12 +2943,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	/** KRCDT_MON_DAYOFF_REMAIN **/
 	public void toEntityDayOffRemainDayAndTimes(MonthlyDayoffRemainData domain) {
 		
-		this.dayOffOccurredTimes = null;
-		this.dayOffUsedMinutes = null;
-		this.dayOffRemainingMinutes = null;
-		this.dayOffCarryforwardMinutes  = null;
-		this.dayOffUnUsedTimes = null;
-		
+		this.deleteDayOffRemainDayAndTimes();
 		if (domain == null) return;
 		
 		this.closureStatus = domain.getClosureStatus().value;
@@ -2890,8 +2972,22 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		}
 	}
 	
+	public void deleteDayOffRemainDayAndTimes(){
+		this.dayOffOccurredDays = 0.0;
+		this.dayOffOccurredTimes = null;
+		this.dayOffUsedDays = 0.0;
+		this.dayOffUsedMinutes = null;
+		this.dayOffRemainingDays = 0.0;
+		this.dayOffRemainingMinutes = null;
+		this.dayOffCarryforwardDays = 0.0;
+		this.dayOffCarryforwardMinutes = null;
+		this.dayOffUnUsedDays = 0.0;
+		this.dayOffUnUsedTimes = null;
+	}
+	
 	/** KRCDT_MON_SUBOFHD_REMAIN */
 	public void toEntityAbsenceLeaveRemainData(AbsenceLeaveRemainData domain) {
+		this.deleteAbsenceLeaveRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getStartDate();
@@ -2903,8 +2999,17 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.subofHdUnUsedDays = domain.getUnUsedDays().v();
 	}
 	
+	public void deleteAbsenceLeaveRemainData(){
+		this.subofHdOccurredDays = 0.0;
+		this.subofHdUsedDays = 0.0;
+		this.subofHdRemainingDays = 0.0;
+		this.subofHdCarryForWardDays = 0.0;
+		this.subofHdUnUsedDays = 0.0;
+	}
+	
 	/** KRCDT_MON_CHILD_HD_REMAIN **/
 	public void toEntityChildRemainData(MonChildHdRemain domain){
+		this.deleteChildRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getStartDate();
@@ -2917,8 +3022,18 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.childUsedMinutesAfter = domain.getUsedMinutesAfter().v();
 	}
 	
+	public void deleteChildRemainData(){
+		this.childUsedDays = 0.0;
+		this.childUsedDaysBefore = 0.0;
+		this.childUsedDaysAfter = null;
+		this.childUsedMinutes = null;
+		this.childUsedMinutesBefore = null;
+		this.childUsedMinutesAfter = null;
+	}
+	
 	/** KRCDT_MON_CARE_HD_REMAIN **/
 	public void toEntityCareRemainData(MonCareHdRemain domain){
+		this.deleteCareRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
 		this.startDate = domain.getStartDate();
@@ -2926,9 +3041,18 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		this.careUsedDays = domain.getUsedDays().v();
 		this.careUsedDaysBefore = domain.getUsedDaysBefore().v();
 		this.careUsedDaysAfter = domain.getUsedDaysAfter().v();
-		this.careUsedMinutes = domain.getUsedMinutes().v();;
+		this.careUsedMinutes = domain.getUsedMinutes().v();
 		this.careUsedMinutesBefore = domain.getUsedMinutesBefore().v();
 		this.careUsedMinutesAfter = domain.getUsedMinutesAfter().v();
+	}
+	
+	public void deleteCareRemainData(){
+		this.careUsedDays = 0.0;
+		this.careUsedDaysBefore = 0.0;
+		this.careUsedDaysAfter = null;
+		this.careUsedMinutes = null;
+		this.careUsedMinutesBefore = null;
+		this.careUsedMinutesAfter = null;
 	}
 	
 	/**
@@ -3324,7 +3448,54 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		return results;
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData(
+	public Optional<SpecialHolidayRemainData> toDomainSpecialHolidayRemain(int speCode){
+		switch (speCode){
+		case 1:
+			return Optional.of(this.toDomainSpecialHolidayRemainData1());
+		case 2:
+			return Optional.of(this.toDomainSpecialHolidayRemainData2());
+		case 3:
+			return Optional.of(this.toDomainSpecialHolidayRemainData3());
+		case 4:
+			return Optional.of(this.toDomainSpecialHolidayRemainData4());
+		case 5:
+			return Optional.of(this.toDomainSpecialHolidayRemainData5());
+		case 6:
+			return Optional.of(this.toDomainSpecialHolidayRemainData6());
+		case 7:
+			return Optional.of(this.toDomainSpecialHolidayRemainData7());
+		case 8:
+			return Optional.of(this.toDomainSpecialHolidayRemainData8());
+		case 9:
+			return Optional.of(this.toDomainSpecialHolidayRemainData9());
+		case 10:
+			return Optional.of(this.toDomainSpecialHolidayRemainData10());
+		case 11:
+			return Optional.of(this.toDomainSpecialHolidayRemainData11());
+		case 12:
+			return Optional.of(this.toDomainSpecialHolidayRemainData12());
+		case 13:
+			return Optional.of(this.toDomainSpecialHolidayRemainData13());
+		case 14:
+			return Optional.of(this.toDomainSpecialHolidayRemainData14());
+		case 15:
+			return Optional.of(this.toDomainSpecialHolidayRemainData15());
+		case 16:
+			return Optional.of(this.toDomainSpecialHolidayRemainData16());
+		case 17:
+			return Optional.of(this.toDomainSpecialHolidayRemainData17());
+		case 18:
+			return Optional.of(this.toDomainSpecialHolidayRemainData18());
+		case 19:
+			return Optional.of(this.toDomainSpecialHolidayRemainData19());
+		case 20:
+			return Optional.of(this.toDomainSpecialHolidayRemainData20());
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData(
 			int dataNo,
 			double useDays,
 			double beforeUseDays,
@@ -3493,7 +3664,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				(grantAtr == 1));
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData1(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData1(){
 		return this.toDomainSpecialHolidayRemainData(
 				1,
 				this.useDays1,
@@ -3528,7 +3699,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays1);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData2(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData2(){
 		return this.toDomainSpecialHolidayRemainData(
 				2,
 				this.useDays2,
@@ -3563,8 +3734,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays2);
 	}
 	
-	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData3(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData3(){
 		return this.toDomainSpecialHolidayRemainData(
 				3,
 				this.useDays3,
@@ -3599,7 +3769,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays3);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData4(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData4(){
 		return this.toDomainSpecialHolidayRemainData(
 				4,
 				this.useDays4,
@@ -3634,7 +3804,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays4);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData5(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData5(){
 		return this.toDomainSpecialHolidayRemainData(
 				5,
 				this.useDays5,
@@ -3669,7 +3839,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays5);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData6(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData6(){
 		return this.toDomainSpecialHolidayRemainData(
 				6,
 				this.useDays6,
@@ -3704,7 +3874,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays6);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData7(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData7(){
 		return this.toDomainSpecialHolidayRemainData(
 				7,
 				this.useDays7,
@@ -3739,7 +3909,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays7);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData8(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData8(){
 		return this.toDomainSpecialHolidayRemainData(
 				8,
 				this.useDays8,
@@ -3774,7 +3944,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays8);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData9(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData9(){
 		return this.toDomainSpecialHolidayRemainData(
 				9,
 				this.useDays9,
@@ -3809,7 +3979,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays9);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData10(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData10(){
 		return this.toDomainSpecialHolidayRemainData(
 				10,
 				this.useDays10,
@@ -3844,7 +4014,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays10);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData11(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData11(){
 		return this.toDomainSpecialHolidayRemainData(
 				11,
 				this.useDays11,
@@ -3879,7 +4049,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays11);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData12(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData12(){
 		return this.toDomainSpecialHolidayRemainData(
 				12,
 				this.useDays12,
@@ -3914,7 +4084,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays12);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData13(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData13(){
 		return this.toDomainSpecialHolidayRemainData(
 				13,
 				this.useDays13,
@@ -3949,7 +4119,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays13);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData14(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData14(){
 		return this.toDomainSpecialHolidayRemainData(
 				14,
 				this.useDays14,
@@ -3984,7 +4154,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays14);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData15(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData15(){
 		return this.toDomainSpecialHolidayRemainData(
 				15,
 				this.useDays15,
@@ -4019,7 +4189,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays15);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData16(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData16(){
 		return this.toDomainSpecialHolidayRemainData(
 				16,
 				this.useDays16,
@@ -4054,7 +4224,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays16);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData17(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData17(){
 		return this.toDomainSpecialHolidayRemainData(
 				17,
 				this.useDays17,
@@ -4089,7 +4259,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays17);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData18(){
 		return this.toDomainSpecialHolidayRemainData(
 				18,
 				this.useDays18,
@@ -4124,7 +4294,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays18);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData19(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData19(){
 		return this.toDomainSpecialHolidayRemainData(
 				19,
 				this.useDays19,
@@ -4159,7 +4329,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				this.grantDays19);
 	}
 	
-	public SpecialHolidayRemainData toDomainSpecialHolidayRemainData20(){
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData20(){
 		return this.toDomainSpecialHolidayRemainData(
 				20,
 				this.useDays20,

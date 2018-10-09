@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -121,7 +120,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getItemNo().v());
 		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;
@@ -134,7 +133,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, OptionalItemValueDto c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getNo());
 		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;

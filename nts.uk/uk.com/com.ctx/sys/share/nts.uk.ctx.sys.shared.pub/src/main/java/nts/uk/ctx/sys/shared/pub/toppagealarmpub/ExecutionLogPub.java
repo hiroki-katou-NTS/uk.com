@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.shared.pub.toppagealarmpub;
 
 /**
  * interface ExecutionLogPub
- * @author loivt
+ * @author yennth
  *
  */
 public interface ExecutionLogPub {

@@ -25,12 +25,15 @@
 			<com:scriptfile path="kmf003.b.vm.js" />
 			<com:scriptfile path="kmf003.b.start.js" />
 			<com:scriptfile path="kmf003.b.service.js" />
+			<com:scriptfile path="kmf003.b1.vm.js" />
+			<com:scriptfile path="kmf003.b1.service.js" />
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 		
 			<!-- BEGIN FUNCTION AREA-->
+			
 			<div id="functions-area">
 				<button id="A_BTN_002" class="proceed" data-bind="click: submit, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
 				<button id="A_BTN_003"  data-bind="click: cancel">#{i18n.getText('KMF003_56')}</button>
@@ -39,6 +42,8 @@
 			
 			<!-- BEGIN CONTENT AREA-->
 			<div id="contents-area">
+			<!-- CONTENT B -->
+			<com:ko-if bind="dialogType()=='A'">
 				<table>
 					<tr>
 						<td width="170"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_10')}</div></td>
@@ -163,7 +168,103 @@
 						</tbody>
 					</table>
 				</div>
+				</com:ko-if>
+				<!-- END CONTENT B -->
+				<!-- CONTENT B 1-->
+				<com:ko-if bind="dialogType()=='B'">
+				<table class="top-tbl">
+					<tr>
+						<td width="170"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_10')}</div></td>
+						<td width="40"><span data-bind="text: code"></span></td>
+						<td width="150"><span data-bind="text: name"></span></td>
+					</tr>
+					<tr></tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_19')}</div></td>
+						<td colspan="2"><span data-bind="text: conditionValue"></span></td>
+					</tr>
+				</table>
+								
+				<table id="fixed-table" style="padding-top: 25px;">
+					<colgroup>
+						<col width="40px"/>
+						<col width="60px"/>
+						<col width="70px"/>
+						<col width="80px"/>
+						<col width="65px"/>
+						<col width="65px"/>
+					</colgroup>
+					<thead>
+						<tr>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_38')}</td>
+							<td colspan="2" class="ui-widget-header">#{i18n.getText('KMF003_40')}</td>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_43')}</td>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_44')}</td>
+							<td rowspan="2" class="ui-widget-header">#{i18n.getText('KMF003_45')}</td>
+						</tr>
+						<tr>
+							<td class="ui-widget-header">#{i18n.getText('KMF003_41')}</td>
+							<td class="ui-widget-header">#{i18n.getText('KMF003_42')}</td>
+						</tr>
+					</thead>
+					
+					<tbody data-bind="foreach: items">
+						<tr>
+							<td data-bind="text: $index() + 1" class="numbers"></td>
+							<td class="input-units"><input class="year-input" data-bind="attr: { class: ('year-input' + $index()) }, ntsNumberEditor: {
+										value: lengthOfServiceYears, 
+										constraint: 'LengthOfServiceYears',
+										name: '#[KMF003_48]',
+										enable: false,
+										option: ko.mapping.fromJS({
+											unitID: 'YEARS',
+											width: '50'
+										})}" /></td>
+							<td class="input-units"><input class="months-input" data-bind="ntsNumberEditor: {
+										value: lengthOfServiceMonths, 
+										constraint: 'LengthOfServiceMonths',
+										name: '#[KMF003_49]',
+										enable: false,
+										option: ko.mapping.fromJS({
+											unitID: 'MONTHS',
+											width: '60'
+										})}" /></td>
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: grantDays, 
+										constraint: 'GrantDays',
+										name: '#[KMF003_43]',
+										enable: gdEnable,
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '70',
+											decimallength: 1
+										})}" /></td>
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: limitedTimeHdDays, 
+										constraint: 'LimitedTimeHdDays',
+										name: '#[KMF003_44]',
+										enable: ltdEnable,
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '50'
+										})}" /></td>										
+							<td class="input-units"><input class="times-input" data-bind="ntsNumberEditor: {
+										value: limitedHalfHdCnt, 
+										constraint: 'LimitedHalfHdCnt',
+										name: '#[KMF003_45]',
+										enable: lthEnable,
+										option: ko.mapping.fromJS({
+											unitID: 'TIMES',
+											width: '50'
+										})}" /></td>
+						</tr>
+					</tbody>
+				</table>
+				</com:ko-if>
+				<!-- END CONTENT B1-->
 			</div>
+			
+			
 			<!-- END CONTENT AREA-->
 			
 		</ui:define>
