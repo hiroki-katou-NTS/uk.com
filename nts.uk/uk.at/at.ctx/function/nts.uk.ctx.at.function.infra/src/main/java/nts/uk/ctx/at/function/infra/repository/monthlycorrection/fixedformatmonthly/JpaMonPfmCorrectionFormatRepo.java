@@ -22,7 +22,7 @@ import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonPfmCorrectionFormatPK;
 import nts.uk.shr.com.context.AppContexts;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonPfmCorrectionFormatRepository {
 
@@ -66,7 +66,7 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateMonPfmCorrectionFormat(MonPfmCorrectionFormat monPfmCorrectionFormat) {
 		KrcmtMonPfmCorrectionFormat newEntity = KrcmtMonPfmCorrectionFormat.toEntity(monPfmCorrectionFormat);

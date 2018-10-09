@@ -475,7 +475,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private getSelectableFormulas(orderNo: number): Array<FormulaDto> {
                 let self = this;
-                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() > orderNo);
+                let filtered = _.filter(self.calcFormulas(), item => item.orderNo() < orderNo);
                 return _.map(filtered, item => item.toDto());
             }
 

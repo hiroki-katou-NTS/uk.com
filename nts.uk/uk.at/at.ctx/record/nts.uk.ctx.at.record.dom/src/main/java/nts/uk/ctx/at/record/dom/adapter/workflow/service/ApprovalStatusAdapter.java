@@ -34,6 +34,8 @@ public interface ApprovalStatusAdapter {
 	 */
 	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
 	
+	ApprovalRootOfEmployeeImport getApprovalRootOfEmloyee(DatePeriod date, String approverID, Integer rootType);
+	
 	/**
 	 * <=>RequestList133
 	 * @param startDate

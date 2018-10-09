@@ -16,13 +16,13 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlo
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcessCommand> {
 		
 	@Inject
 	private ProcessFlowOfDailyCreationDomainService processFlowOfDailyCreationDomainService;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	protected void handle(CommandHandlerContext<CheckProcessCommand> context) {
 		val asyncContext = context.asAsync();

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -145,6 +146,11 @@ public class JpaBusinessTypeFormatMonthlyRepository extends JpaRepository
 
 	@Override
 	public List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, List<String> listBusinessTypeCode) {
+		return getListBusinessTypeFormat(companyId, listBusinessTypeCode);
+	}
+	
+	@Override
+	public List<BusinessTypeFormatMonthly> getListBusinessTypeFormat(String companyId, Collection<String> listBusinessTypeCode) {
 		return this.queryProxy().query(FIND_BY_LIST_CODE, KrcmtBusinessTypeMonthly.class)
 				.setParameter("companyId", companyId)
 				.setParameter("listBusinessTypeCode", listBusinessTypeCode).getList(f -> toDomain(f));

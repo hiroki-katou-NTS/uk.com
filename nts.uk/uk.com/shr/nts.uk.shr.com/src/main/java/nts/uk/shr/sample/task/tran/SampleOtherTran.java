@@ -8,7 +8,7 @@ import javax.transaction.Transactional.TxType;
 import nts.uk.shr.infra.file.storage.info.StoredPackInfoRepository;
 
 @Stateless
-@Transactional(value = TxType.REQUIRES_NEW)
+@Transactional(value = TxType.REQUIRED)
 public class SampleOtherTran {
 
 	@Inject

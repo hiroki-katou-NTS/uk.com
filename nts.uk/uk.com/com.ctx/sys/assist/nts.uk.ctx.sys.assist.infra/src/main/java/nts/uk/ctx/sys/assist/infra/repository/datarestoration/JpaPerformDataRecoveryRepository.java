@@ -60,7 +60,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
     private EntityManager entityManager;*/
 	
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		List<SspmtTarget> targetData = this.queryProxy()
 				.query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class)
@@ -83,13 +83,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void remove(String dataRecoveryProcessId) {
 		this.commandProxy().remove(SspmtPerformDataRecovery.class, dataRecoveryProcessId);
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public List<TableList> getByStorageRangeSaved(String categoryId, String dataRecoveryProcessId, StorageRangeSaved storageRangeSaved) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
@@ -100,7 +100,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public List<Target> findByDataRecoveryId(String dataRecoveryProcessId) {
 		List<SspmtTarget> listTarget = this.getEntityManager().createQuery(SELECT_ALL_TARGET, SspmtTarget.class)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).getResultList();
@@ -116,7 +116,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 		
@@ -147,7 +147,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 
@@ -180,7 +180,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName, List<String> columnNotNull) {
 		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
@@ -283,7 +283,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 
 		EntityManager em = this.getEntityManager();
@@ -360,7 +360,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId) {
 
 		if (dataRecoveryProcessId != null) {
@@ -418,7 +418,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(value = TxType.REQUIRES_NEW)
+	@Transactional(value = TxType.REQUIRED)
 	public List<String> getTypeColumnNotNull(String tableName) {
 		List<String> data = new ArrayList<>();
 		if (tableName != null) {

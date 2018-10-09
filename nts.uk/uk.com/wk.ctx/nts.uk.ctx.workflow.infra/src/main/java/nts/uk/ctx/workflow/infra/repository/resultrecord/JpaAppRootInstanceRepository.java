@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.resultrecord;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,9 +14,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
@@ -195,26 +200,26 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	}
 	
 	private List<AppRootInstance> toDomain(List<FullJoinAppRootInstance> listFullJoin){
-		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoinAppRootInstance::getRootID)).entrySet()
-				.stream().map(x -> {
-					String companyID =  x.getValue().get(0).getCompanyID();
-					String rootID = x.getValue().get(0).getRootID();
-					GeneralDate startDate = x.getValue().get(0).getStartDate();
-					GeneralDate endDate = x.getValue().get(0).getEndDate();
-					RecordRootType rootType = EnumAdaptor.valueOf(x.getValue().get(0).getRootType(), RecordRootType.class);
-					String employeeID = x.getValue().get(0).getEmployeeID();
-					List<AppPhaseInstance> listAppPhase =
-					x.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootInstance::getPhaseOrder)).entrySet()
-					.stream().map(y -> {
+		return listFullJoin.stream().collect(Collectors.groupingBy(FullJoinAppRootInstance::getRootID))
+						.entrySet().stream().map(x -> {
+					FullJoinAppRootInstance first = x.getValue().get(0);
+					String companyID =  first.getCompanyID();
+					String rootID = first.getRootID();
+					GeneralDate startDate = first.getStartDate();
+					GeneralDate endDate = first.getEndDate();
+					RecordRootType rootType = EnumAdaptor.valueOf(first.getRootType(), RecordRootType.class);
+					String employeeID = first.getEmployeeID();
+					List<AppPhaseInstance> listAppPhase = x.getValue().stream()
+							.collect(Collectors.groupingBy(FullJoinAppRootInstance::getPhaseOrder))
+							.entrySet().stream().map(y -> {
 						Integer phaseOrder  = y.getValue().get(0).getPhaseOrder();
 						ApprovalForm approvalForm =  EnumAdaptor.valueOf(y.getValue().get(0).getApprovalForm(), ApprovalForm.class);
-						List<AppFrameInstance> listAppFrame =
-						y.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootInstance::getFrameOrder)).entrySet()
-						.stream().map(z -> { 
+						List<AppFrameInstance> listAppFrame = y.getValue().stream()
+								.collect(Collectors.groupingBy(FullJoinAppRootInstance::getFrameOrder))
+								.entrySet().stream().map(z -> { 
 							Integer frameOrder = z.getValue().get(0).getFrameOrder();
 							Boolean confirmAtr = z.getValue().get(0).getConfirmAtr()==1?true:false;
-							List<String> approvalIDLst = z.getValue().stream().collect(Collectors.groupingBy(FullJoinAppRootInstance::getApproverChildID)).entrySet()
-							.stream().map(t -> t.getValue().get(0).getApproverChildID()).collect(Collectors.toList());
+							List<String> approvalIDLst = z.getValue().stream().map(t -> t.getApproverChildID()).collect(Collectors.toList());
 							return new AppFrameInstance(frameOrder, confirmAtr, approvalIDLst);
 						}).collect(Collectors.toList());
 						return new AppPhaseInstance(phaseOrder, approvalForm, listAppFrame);
@@ -330,7 +335,73 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			return Collections.emptyList();
 		}
 	}
+	
+	@Override
+	public List<AppRootInstance> findByEmpLstPeriod(String compID, List<String> employeeIDLst, DatePeriod period,
+			RecordRootType rootType) {
+		if(employeeIDLst.isEmpty()){
+			return new ArrayList<>();
+		}
+		List<AppRootInstance> result = new ArrayList<>();
+		MutableValue<Exception> exception = new MutableValue<>(null);
+		
+		CollectionUtil.split(employeeIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, c -> {
+			if(exception.optional().isPresent()){
+				return;
+			}
+			try {
+				StringBuilder sql = new StringBuilder();
+				sql.append("SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, ");
+				sql.append(" frame.PHASE_ORDER, phase.APPROVAL_FORM, frame.FRAME_ORDER, frame.CONFIRM_ATR, a.APPROVER_CHILD_ID  ");
+				sql.append(" FROM WWFDT_APP_ROOT_INSTANCE appRoot LEFT JOIN WWFDT_APP_PHASE_INSTANCE phase ON appRoot.ROOT_ID = phase.ROOT_ID ");
+				sql.append(" LEFT JOIN WWFDT_APP_FRAME_INSTANCE frame ON phase.ROOT_ID = frame.ROOT_ID AND phase.PHASE_ORDER = frame.PHASE_ORDER ");
+				sql.append(" LEFT JOIN WWFDT_APP_APPROVE_INSTANCE a ON frame.ROOT_ID = a.ROOT_ID AND frame.PHASE_ORDER = a.PHASE_ORDER AND frame.FRAME_ORDER = a.FRAME_ORDER ");
+				sql.append(" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.END_DATE >= ? AND appRoot.START_DATE <= ? ");
+				sql.append(" AND appRoot.EMPLOYEE_ID IN ( ");
+				sql.append(joinParam(c));
+				sql.append(" ) ");
+				
+				PreparedStatement statement = this.connection().prepareStatement(sql.toString());
+				statement.setString(1, compID);
+				statement.setInt(2, rootType.value);
+				statement.setDate(3, Date.valueOf(period.end().localDate()));
+				statement.setDate(4, Date.valueOf(period.start().localDate()));
+				for (int i = 0; i < employeeIDLst.size(); i++) {
+					statement.setString(i + 5, employeeIDLst.get(i));
+				}
+				result.addAll(toDomain(new NtsResultSet(statement.executeQuery()).getList(rs -> createFullJoinAppRootInstance(rs,compID, rootType.value))));
+				
+			} catch (SQLException e) {
+				exception.set(e);
+			}
+		});
+		
+		if(exception.optional().isPresent()){
+			throw new RuntimeException(exception.get());
+		}
+		
+		return result;
+	}
 
+	private String joinParam(List<String> employeeIDLst) {
+		return employeeIDLst.stream().map(x -> "?").collect(Collectors.joining(","));
+	}
+
+	private FullJoinAppRootInstance createFullJoinAppRootInstance(NtsResultRecord rs, String comID, int rootType){
+		return new FullJoinAppRootInstance(
+				rs.getString("ROOT_ID"), 
+				comID, 
+				rs.getString("EMPLOYEE_ID"), 
+				rs.getGeneralDate("START_DATE"), 
+				rs.getGeneralDate("END_DATE"), 
+				rootType, 
+				rs.getInt("PHASE_ORDER"), 
+				rs.getInt("APPROVAL_FORM"), 
+				rs.getInt("FRAME_ORDER"), 
+				rs.getInt("CONFIRM_ATR"), 
+				rs.getString("APPROVER_CHILD_ID"));
+	}
+	
 	@Override
 	public List<AppRootInstance> findByApproverPeriod(String approverID, DatePeriod period,
 			RecordRootType rootType) {

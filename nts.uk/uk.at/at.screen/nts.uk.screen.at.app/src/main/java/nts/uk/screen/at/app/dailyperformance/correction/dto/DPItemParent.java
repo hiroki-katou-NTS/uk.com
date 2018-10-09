@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,4 +34,9 @@ public class DPItemParent {
 	
 	private boolean flagCalculation;
 	
+	private List<CellEdit> cellEdits;
+	
+	private Map<Integer, DPAttendanceItem> lstAttendanceItem;
+	
+	private List<DPDataDto> lstData;
 }
