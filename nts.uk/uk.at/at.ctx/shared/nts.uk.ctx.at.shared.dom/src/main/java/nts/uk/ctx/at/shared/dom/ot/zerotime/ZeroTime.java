@@ -147,9 +147,9 @@ public class ZeroTime extends AggregateRoot {
 				case STATUTORY_HOLIDAYS:
 					return weekday1 == 1 ? true : false ;
 				case NON_STATUTORY_HOLIDAYS:
-					return weekday3 == 1 ? true : false ;
-				case PUBLIC_HOLIDAY:
 					return weekday2 == 1 ? true : false ;
+				case PUBLIC_HOLIDAY:
+					return weekday3 == 1 ? true : false ;
 				default:
 					throw new RuntimeException("unknown HolidayAtr otherDay"+beforeWorkType.beforeDay());
 				}
