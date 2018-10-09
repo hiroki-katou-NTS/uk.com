@@ -2213,7 +2213,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         proceedUnLock() {
             let self = this;
             //Msg_982
-            nts.uk.ui.dialog.caution({ messageId: "Msg_982" }).then(() => {
+             nts.uk.ui.dialog.confirm({ messageId: "Msg_982" }).ifYes(() => {
                 if (!self.hasEmployee) return;
                 self.showLock(false);
                 self.unLock(true);

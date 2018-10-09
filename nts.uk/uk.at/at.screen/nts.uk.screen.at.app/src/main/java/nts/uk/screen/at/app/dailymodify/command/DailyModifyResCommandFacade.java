@@ -348,6 +348,17 @@ public class DailyModifyResCommandFacade {
 						insertSign(dataParent.getDataCheckSign());
 						// insert approval
 						insertApproval(dataParent.getDataCheckApproval());
+						
+						// 暫定データを登録する - Register provisional data
+						List<DailyModifyResult> resultNews = AttendanceItemUtil.toItemValues(dailyEdits).entrySet()
+																			.stream().map(dto -> DailyModifyResult.builder()
+																					.								items(dto.getValue())
+																													.employeeId(dto.getKey().getEmployeeId())
+																													.workingDate(dto.getKey().getDate())
+																													.completed())
+																			.collect(Collectors.toList());
+						
+						registerTempData(dataParent.getMode(), resultOlds, resultNews);
 					}
 				} else {
 					if (dataParent.getDataCheckSign() != null && !dataParent.getDataCheckSign().isEmpty())
@@ -357,16 +368,6 @@ public class DailyModifyResCommandFacade {
 						insertApproval(dataParent.getDataCheckApproval());
 				}
 			}
-			// 暫定データを登録する - Register provisional data
-			List<DailyModifyResult> resultNews = AttendanceItemUtil.toItemValues(dailyEdits).entrySet()
-																.stream().map(dto -> DailyModifyResult.builder()
-																		.								items(dto.getValue())
-																										.employeeId(dto.getKey().getEmployeeId())
-																										.workingDate(dto.getKey().getDate())
-																										.completed())
-																.collect(Collectors.toList());
-			
-			registerTempData(dataParent.getMode(), resultOlds, resultNews);
 		} else {
 			resultError.put(TypeError.DUPLICATE.value, itemErrors);
 			resultError.put(TypeError.COUPLE.value, itemInputErors);
