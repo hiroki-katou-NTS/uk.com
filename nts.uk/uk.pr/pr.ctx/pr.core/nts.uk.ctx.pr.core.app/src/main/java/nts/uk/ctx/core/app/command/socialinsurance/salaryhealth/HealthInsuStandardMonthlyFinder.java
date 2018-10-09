@@ -20,6 +20,7 @@ import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStanda
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.HealthInsuranceStandardMonthlyRepository;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.MonthlyHealthInsuranceCompensation;
 import nts.uk.ctx.core.dom.socialinsurance.healthinsurance.MonthlyHealthInsuranceCompensationRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class HealthInsuStandardMonthlyFinder {
@@ -79,14 +80,14 @@ public class HealthInsuStandardMonthlyFinder {
 					x.getEmployeeBurden().getBasicInsurancePremium().v().toString())).collect(Collectors.toList());
 			
 			
-			salaryHealthInsurancePremiumRateDto = new SalaryHealthInsurancePremiumRateDto(dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getHealthInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getLongCareInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getSpecialInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getBasicInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getHealthInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getLongCareInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getSpecialInsuranceRate().v().toString(), 
-					dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getBasicInsuranceRate().v().toString());
+			salaryHealthInsurancePremiumRateDto = new SalaryHealthInsurancePremiumRateDto(TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getHealthInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getLongCareInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getSpecialInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getIndividualBurdenRatio().getBasicInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getHealthInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getLongCareInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getSpecialInsuranceRate().v().toString()),
+					TextResource.localize("QMM008_156",dataFee.get().getHealthInsuranceRate().getEmployeeBurdenRatio().getBasicInsuranceRate().v().toString()));
 		}
 		List<CusHealthInsuDto> response = mappingArray(healthInsuranceStandardGradePerMonthDtos,healthInsuranceGradePerRewardMonthlyRangesDtos,healthInsurancePerGradeFeeDtos);
 		return new SalaryHealthDto(response,salaryHealthInsurancePremiumRateDto);
