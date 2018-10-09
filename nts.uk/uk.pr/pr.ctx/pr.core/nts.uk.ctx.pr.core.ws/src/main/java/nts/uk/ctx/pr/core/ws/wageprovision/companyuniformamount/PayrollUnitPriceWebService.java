@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.core.ws.wageprovision.companyuniformamount;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;

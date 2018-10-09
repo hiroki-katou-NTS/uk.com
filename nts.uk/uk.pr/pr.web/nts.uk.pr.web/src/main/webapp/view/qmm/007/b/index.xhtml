@@ -7,13 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 450 };</script>
+			<script>var dialogSize = { width: 430, height: 430 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="QMM007.b.vm.js" />
-			<com:scriptfile path="QMM007.b.start.js" />
-			<com:scriptfile path="QMM007.b.service.js" />
-			<com:stylefile path="QMM007.b.style.css" />
+			<com:scriptfile path="qmm007.b.vm.js" />
+			<com:scriptfile path="qmm007.b.start.js" />
+			<com:scriptfile path="qmm007.b.service.js" />
+			<com:stylefile path="qmm007.b.style.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -26,9 +26,9 @@
 				<div id="B1_2" data-bind="ntsFormLabel: {}" style="margin: 0px 10px 10px 10px">
 					<span class="label">#{i18n.getText('QMM007_5')}</span>
 					<!-- B2_3 会社単価コード -->
-					<span id="B1_3" class="label" style="margin-left: 80px" data-bind = "text: code"></span>
+					<span id="B1_3" class="label" style="margin-left: 40px" data-bind = "text: code"></span>
 					<!-- B1_4 会社単価名称 -->
-					<span id="B1_4" class="label" style="margin-left: 80px" data-bind = "text: name"></span>
+					<span id="B1_4" class="label" style="margin-left: 60px" data-bind = "text: name"></span>
 				</div>
 				<!-- B1_5 期間 -->
 				<div id="B1_5" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
@@ -44,18 +44,14 @@
 					<!-- B1_7 開始年月和暦 -->
 					<span id="B1_7" class="label" style="margin-left: 10px">#{i18n.getText('QMM007_12')}</span>
 					<!-- B1_8 9999/12 -->
-					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM007_33')}</span>
+					<span class="label">#{i18n.getText('QMM007_33')}</span>
 				</div>
 				<!-- B1_9 開始年月和暦 -->
-				<div id="B1_7" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
-					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM007_12')}</span>
-					
-					<!-- B1_8 9999/12 -->
-					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM007_33')}</span>
-					<div id = "B1_9" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
-						
-						
-							<div id="B1_9" class="cell" 
+				<div id="B1_9" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 10px 10px">
+					<span class="label" style= "line-height: 1em;vertical-align: 37px;">#{i18n.getText('QMM007_44')}</span>
+
+					<div id = "B1_10" tabIndex = "2" style= "display: inline-block;text-align: left;margin-left: 30px">
+							<div  class="cell"
 							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[0],
@@ -64,7 +60,7 @@
 										group: 'periodOption'}" >
 							</div>
 							<br/>
-							<div id="B1_10"  class="cell" 
+							<div  class="cell"
 							 	data-bind="ntsRadioButton: {
 										checked: takeOver,
 										option: listTakeOver()[1],
@@ -74,13 +70,14 @@
 							</div>
 					</div>
 			</div>
+			</div>
 			<div id="functions-area-bottom">
 				<!-- E2_1 登録 -->
 				<button id="B2_1" tabindex="3" class="proceed large"
-					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_50')}</button>
+					data-bind="click: register,enable: $root.errors.isEmpty">#{i18n.getText('QMM007_36')}</button>
 				<!-- E2_2 削除 -->
 				<button id="B2_2" tabindex="4"
-					data-bind="click: cancel">#{i18n.getText('QMM007_42')}</button>
+					data-bind="click: cancel">#{i18n.getText('QMM007_37')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
