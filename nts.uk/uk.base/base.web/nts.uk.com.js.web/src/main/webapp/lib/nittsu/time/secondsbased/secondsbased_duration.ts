@@ -83,8 +83,8 @@ module nts.uk.time.secondsBased {
                     return ResultParseSecondsBasedDuration.failed();
                 }
                 hourPart = Math.floor(regularized / 10000);
-                minutePart = regularized / 100;
-                secondPart = regularized % 100;
+                minutePart = Math.floor((regularized % 10000) /100);
+                secondPart = Math.floor(regularized % 100);
             }
             if (!isFinite(hourPart) || !isFinite(minutePart) || !isFinite(secondPart)) {
                 return ResultParseSecondsBasedDuration.failed();
