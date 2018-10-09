@@ -1839,7 +1839,7 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             let param = ko.mapping.toJS(self);
             if(modeX ==1){
-                //KAL003C
+                //KAL003C monthly
                 nts.uk.ui.windows.setShared("KAL003CParams", {mode: modeX, data: param}, true);
                 nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml").onClosed(() => {
                     let output = getShared("KAL003CResult");
@@ -1858,7 +1858,7 @@ module nts.uk.at.view.kal003.share.model {
                     }
                     self.setTextDisplay(modeX);
                 });
-            }else{
+            }else{ //daily
                 nts.uk.ui.windows.setShared("KAL003C1Params", {mode: modeX, data: param}, true);
                 nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c1/index.xhtml").onClosed(() => {
                     let output = getShared("KAL003C1Result");
