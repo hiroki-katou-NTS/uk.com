@@ -331,7 +331,8 @@ public class AppOvertimeFinder {
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				overTimeDto.setDisplayCaculationTime(true);
 				// 07_勤務種類取得: lay loai di lam 
-				WorkType workType = workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).isPresent()?  workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).get() : null;
+				String workTypeCD = appOverTime.getWorkTypeCode() == null ? "" : appOverTime.getWorkTypeCode().v();
+				WorkType workType = workTypeRepository.findByPK(companyID, workTypeCD).orElse(null);
 				if(workType != null){
 					overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 				}
@@ -352,7 +353,8 @@ public class AppOvertimeFinder {
 				}
 				overTimeDto.setSiftTypes(siftCodes);
 				
-				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).isPresent() ? workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get() : null;
+				String workTimeCD = appOverTime.getSiftCode() == null ? "" : appOverTime.getSiftCode().v();
+				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, workTimeCD).orElse(null);
 				if(workTime != null){
 					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
 				}else{
