@@ -1,5 +1,20 @@
 module nts.uk.pr.view.qmm039.a.viewmodel {
     export class ScreenModel {
+        itemList: KnockoutObservableArray<ItemModel>;
+        selectedCodes: KnockoutObservableArray<string>;
+        isEnable: KnockoutObservable<boolean>;
+        dataSource: any;
+        singleSelectedCode: any;
+        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        systemReference: KnockoutObservable<number>;
+        isDisplayOrganizationName: KnockoutObservable<boolean>;
+        targetBtnText: string;
+
+        listComponentOption: ComponentOption;
+        selectedItem: KnockoutObservable<string>;
+        tabindex: number;
+
+
         referenceDate: KnockoutObservable<string> = ko.observable('');
         //Help Button
         enable: KnockoutObservable<boolean>;
@@ -37,9 +52,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         selectedEmployeeCode: KnockoutObservableArray<string>;
         employeeList: KnockoutObservableArray<TargetEmployee>;
-
-        // date
         date: KnockoutObservable<string>;
+        value: KnockoutObservable<number>;
+        currencyeditor: any;
 
         constructor() {
             let self = this;
@@ -47,6 +62,36 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.setDefaultCcg001Option();
             // Init component.
             self.reloadCcg001();
+            self.selectedCodes = ko.observableArray([]);
+            self.isEnable = ko.observable(true);
+            self.itemList = ko.observableArray([
+                new ItemModel('1', '基本給', "description 1"),
+                new ItemModel('2', '役職手当', "description 2"),
+                new ItemModel('3', '基本給', "description 3")
+            ]);
+            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+                new Node('0003', 'Bangkok Thailand', []),
+                new Node('0004', 'Tokyo Japan', []),
+                new Node('0005', 'Jakarta Indonesia', []),
+                new Node('0002', 'Seoul Korea', []),
+                new Node('0006', 'Paris France', []),
+                new Node('0007', 'United States', [new Node('0008', 'Washington US', [new Node('0008-1', 'Wasford US', []),new Node('0008-2', 'Newmece US', [])]),new Node('0009', 'Newyork US', [])]),
+                new Node('0010', 'Beijing China', []),
+                new Node('0011', 'London United Kingdom', []),
+                new Node('0012', '', [])]);
+            self.singleSelectedCode = ko.observable(null);
+            self.currencyeditor = {
+                value: ko.observable(1200),
+                constraint: '',
+                option: new nts.uk.ui.option.CurrencyEditorOption({
+                    grouplength: 3,
+                    decimallength: 2,
+                    currencyformat: "JPY"
+                }),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
         }
 
         public startPage(): JQueryPromise<any> {
@@ -87,6 +132,37 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.showAllClosure = ko.observable(false); // 全締め表示
             self.showPeriod = ko.observable(false); // 対象期間利用
             self.periodFormatYM = ko.observable(false); // 対象期間精度
+
+
+
+            self.employeeInputList = ko.observableArray([
+                {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
+
+            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
+            self.isDisplayOrganizationName = ko.observable(false);
+            self.targetBtnText = nts.uk.resource.getText("QMM039_10");
+            self.selectedItem = ko.observable(null);
+            self.tabindex = 1;
+            // Initial listComponentOption
+            self.listComponentOption = {
+                systemReference: self.systemReference(),
+                isDisplayOrganizationName: self.isDisplayOrganizationName(),
+                employeeInputList: self.employeeInputList,
+                targetBtnText: self.targetBtnText,
+                selectedItem: self.selectedItem,
+                tabIndex: self.tabindex
+            };
+            $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
 
         public reloadCcg001(): void {
@@ -247,5 +323,56 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         sid: string;
         scd: string;
         businessname: string;
+    }
+
+
+
+
+    export interface ComponentOption {
+        systemReference: SystemType;
+        isDisplayOrganizationName: boolean;
+        employeeInputList: KnockoutObservableArray<EmployeeModel>;
+        targetBtnText: string;
+        selectedItem: KnockoutObservable<string>;
+        tabIndex: number;
+    }
+    export interface EmployeeModel {
+        id: string;
+        code: string;
+        businessName: string;
+        depName?: string;
+        workplaceName?: string;
+    }
+    export class SystemType {
+        static EMPLOYMENT = 1;
+        static SALARY = 2;
+        static PERSONNEL = 3;
+        static ACCOUNTING = 4;
+        static OH = 6;
+    }
+
+    class Node {
+        code: string;
+        name: string;
+        nodeText: string;
+        childs: any;
+        constructor(code: string, name: string, childs: Array<Node>) {
+            var self = this;
+            self.code = code;
+            self.name = name;
+            self.nodeText = self.code + ' ' + self.name;
+            self.childs = childs;
+        }
+    }
+    class ItemModel {
+        code: string;
+        period: string;
+        amount: string;
+
+        constructor(code: string, period: string, amount: string) {
+            this.code = code;
+            this.period = period;
+            this.amount = amount;
+        }
     }
 }

@@ -1,0 +1,26 @@
+.panel {
+    margin: 10px;
+}
+
+.row {
+    display: inline-block;
+    width: 100%;
+}
+
+.group-master {
+    margin-left: 80px;
+}
+
+.cell {
+    display: table-cell;
+}
+
+.caret-inline:after {
+    border-width: 10px;
+    color: #97D155 !important;
+}
+
+.label-space {
+    padding: 6px;
+    width: 150px;
+}
