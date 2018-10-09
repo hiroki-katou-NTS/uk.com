@@ -105,7 +105,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
             let command = { officeCode: self.socialInsuranceCode(), yearMonthHistoryItem: self.selectedHistory };
             if (self.screen == "B") {
                 service.deleteHealthInsuranceHistory(command).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     });
@@ -114,7 +114,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 });
             } else if (self.screen == "C") {
                 service.deleteWelfareInsuranceHistory(command).done(function() {
-                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                    dialog.info({ messageId: "Msg_16" }).then(function() {
                         setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     })
@@ -123,7 +123,7 @@ module nts.uk.pr.view.qmm008.h.viewmodel {
                 });
             } else if (self.screen == "I") {
                 service.deleteContributionHistory(command).done(function() {
-                    dialog.info({ messageId: "Msg_15" }).then(function() {
+                    dialog.info({ messageId: "Msg_16" }).then(function() {
                         setShared('QMM008_H_RES_PARAMS', { modifyMethod: self.modifyMethod() });
                         nts.uk.ui.windows.close();
                     })
