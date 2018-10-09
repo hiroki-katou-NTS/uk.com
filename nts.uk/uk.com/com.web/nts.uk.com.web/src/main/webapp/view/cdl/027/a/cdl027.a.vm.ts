@@ -55,7 +55,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            block.invisible();
+            block.grayout();
             service.getLogInfor(self.formatParams()).done((result: Array<any>) => {
                 if (result && result.length) {
                     for (var i = 0; i < result.length; i++) {

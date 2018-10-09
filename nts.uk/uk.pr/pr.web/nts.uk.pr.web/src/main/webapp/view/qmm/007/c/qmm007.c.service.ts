@@ -9,13 +9,13 @@ module nts.uk.pr.view.qmm007.c {
         };
 
         export function getPayrollUnitPriceHis(data :any): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.getPayrollUnitPriceHis, data);
-            return nts.uk.request.ajax('pr', _path);
+
+            return nts.uk.request.ajax(path.getPayrollUnitPriceHis, data);
 
         }
         export function submitPayrollUnitPriceHis(data :any): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.submitPayrollUnitPriceHis, data);
-            return nts.uk.request.ajax('pr', _path);
+
+            return nts.uk.request.ajax(path.submitPayrollUnitPriceHis, data);
         }
 
     }

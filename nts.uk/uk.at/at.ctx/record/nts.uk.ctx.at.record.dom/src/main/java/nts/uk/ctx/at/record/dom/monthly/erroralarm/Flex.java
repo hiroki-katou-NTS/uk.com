@@ -10,7 +10,9 @@ public enum Flex {
 	
 	FLEX_SHORTAGE_TIME_EXCESS_DEDUCTION(1,"フレックス不足時間過剰控除"),
 	
-	FLEX_YEAR_HOLIDAY_DEDUCTIBLE_DAYS(2,"フレックス年休控除可能日数超過");
+	FLEX_YEAR_HOLIDAY_DEDUCTIBLE_DAYS(2,"フレックス年休控除可能日数超過"),
+	
+	FLEX_INCOMPLETE_OF_CARRYFORWARD(3,"前月繰越の補填未完了");
 	
 	public int value;
 

@@ -18,8 +18,8 @@ import nts.uk.shr.find.postcode.PostCode;
 @Path("ctx/basic/postcode")
 @Produces("application/json")
 public class PostCodeWs extends WebService {
-	@Inject
-	private IPostCodeFinder finder;
+	//@Inject
+	//private IPostCodeFinder finder;
 
 	/**
 	 * Find all.
@@ -31,7 +31,8 @@ public class PostCodeWs extends WebService {
 	@POST
 	@Path("find/{zipCode}")
 	public List<PostCode> findAll(@PathParam("zipCode") String zipCode) {
-		return this.finder.findPostCodeList(zipCode);
+
+		return null;
 	}
 
 }

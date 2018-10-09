@@ -15,12 +15,13 @@ import nts.uk.shr.find.employment.processing.yearmonth.PaydayProcessingDto;
 @Produces("application/json")
 public class PaydayProcessingWebservice extends WebService {
 
-	@Inject
-	private IPaydayProcessingFinder processing;
+	//@Inject
+	//private IPaydayProcessingFinder processing;
 
 	@POST
 	@Path("paydayrocessing/getbyccd")
-	public List<PaydayProcessingDto> getPaydayProcessing() {
-		return this.processing.getPaydayProcessing("");
+	public List<PaydayProcessingDto> getPaydayProcessing()
+	{
+		return null;
 	}
 }

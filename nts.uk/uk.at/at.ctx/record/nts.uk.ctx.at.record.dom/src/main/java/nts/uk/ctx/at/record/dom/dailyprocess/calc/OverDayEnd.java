@@ -36,8 +36,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class OverDayEnd {
 	
+	//日跨ぎ処理後に存在している残業時間帯
 	private List<OverTimeFrameTimeSheetForCalc> overTimeList; 
 	
+	//日跨ぎ処理後に存在している休出時間帯
 	private List<HolidayWorkFrameTimeSheetForCalc> holList; 
 
 	/**

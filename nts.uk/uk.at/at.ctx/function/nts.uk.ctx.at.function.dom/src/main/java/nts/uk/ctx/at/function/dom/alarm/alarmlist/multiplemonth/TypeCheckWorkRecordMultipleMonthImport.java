@@ -20,11 +20,19 @@ public enum TypeCheckWorkRecordMultipleMonthImport {
 	
 	CONTINUOUS_AMOUNT(8,"連続金額"),
 	
-	NUMBER_TIME (9,"該当月数時間"),
+	NUMBER_TIME (9,"該当月数 時間"),
 	
-	NUMBER_TIMES (10,"該当月数回数"),
+	NUMBER_TIMES (10,"該当月数 回数"),
 	
-	NUMBER_AMOUNT (11,"該当月数金額");
+	NUMBER_AMOUNT (11,"該当月数 金額"),
+	
+	DAYS (12,"日数"),
+	
+	AVERAGE_DAYS (13,"平均日数"),
+	
+	CONTINUOUS_DAYS (14,"連続日数"),
+	
+	NUMBER_DAYS (15,"該当月数 日数");
 
 	
 	public int value;

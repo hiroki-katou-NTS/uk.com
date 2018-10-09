@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectExtractCondition;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author hungnm
@@ -33,6 +34,7 @@ public class UpdateMonthlyCorrectConCmdHandler extends CommandHandler<UpdateMont
 			this.monthlyCorrectConditionRepository.removeTimeItemCheckMonthly(domainMonthly.getErrorAlarmCheckID());
 			this.monthlyCorrectConditionRepository.updateTimeItemCheckMonthly(command.toTimeItemCheckMonthly(domainMonthly.getErrorAlarmCheckID()));
 		} else {
+			command.setCompanyId(AppContexts.user().companyId());
 			MonthlyCorrectExtractCondition domainMonthly = this.monthlyCorrectConditionRepository.createMonthlyCorrectExtractCondition(command.toMonthlyCorrectExtractCondition());
 			this.monthlyCorrectConditionRepository.createTimeItemCheckMonthly(command.toTimeItemCheckMonthly(domainMonthly.getErrorAlarmCheckID()));
 		}

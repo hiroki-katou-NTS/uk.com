@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.approvalmanagement.domainservice;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -232,9 +233,13 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					datePeriod.start(), datePeriod.end(), AppContexts.user().employeeId(),
 					AppContexts.user().companyId(), 1);
 			List<String> lstEmployment = new ArrayList<>();
+			// fix bug 91363
+			List<String> lstEmployees= new ArrayList<>();
 			if (approvalRootOfEmployeeImport == null
 					|| approvalRootOfEmployeeImport.getApprovalRootSituations().size() == 0) {
-				throw new BusinessException("Msg_874");
+				oneMonthApprovalStatusDto.setMessageID("Msg_874");
+				return oneMonthApprovalStatusDto;
+				//throw new BusinessException("Msg_874");
 			}
 			else//クエリ「社員を並び替える(任意)」を実行する (Sort employee)
 			{
@@ -243,7 +248,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					return item.getTargetID();
 				}).collect(Collectors.toList());
 				// list order conditions
-				lstEmployment = this.regulationInfoEmployeeAdapter.sortEmployees(companyId, employeeList,
+				lstEmployees = this.regulationInfoEmployeeAdapter.sortEmployees(companyId, employeeList,
 						this.createListConditions(), this.convertFromDateToDateTime(datePeriod.end()));
 			}
 			
@@ -264,10 +269,20 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 					.search(createQueryEmployee(lstEmployment, datePeriod.start(), datePeriod.end()));
 			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
 					approvalRootOfEmployeeImport);
-			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeData);
 			if (buildApprovalEmployeeData.isEmpty()) {
-				throw new BusinessException("Msg_875");
+				oneMonthApprovalStatusDto.setMessageID("Msg_875");
+				return oneMonthApprovalStatusDto;
+				//throw new BusinessException("Msg_875");
 			}
+			// fix bug 91363
+			List<ApprovalEmployeeDto> buildApprovalEmployeeDataResult = new ArrayList<>();
+			lstEmployees.forEach(item -> {
+				if(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().isPresent()){
+				buildApprovalEmployeeDataResult.add(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().get());
+				}
+			});
+			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeDataResult);
+			
 		} else {
 			throw new BusinessException("Msg_873");
 		}

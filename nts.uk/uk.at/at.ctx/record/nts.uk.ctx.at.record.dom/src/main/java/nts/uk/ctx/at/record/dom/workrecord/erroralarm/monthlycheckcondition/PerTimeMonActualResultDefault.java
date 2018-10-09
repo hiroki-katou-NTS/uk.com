@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -59,15 +60,14 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 		monthly.withAttendanceTime(attendanceTimeOfMonthly.get());
 		
 		//勤怠項目をチェックする
-		boolean check = attendanceItemCondition.check(item->{
+		return attendanceItemCondition.check(item->{
 			if (item.isEmpty()) {
 				return item;
 			}
 			return monthly.convert(item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 			
-		});
-		return check;
+		}) == WorkCheckResult.ERROR;
 	}
 	//HoiDD No.257
 	@Override
@@ -129,7 +129,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 				}
 				return monthlyRecord.getItemValues().stream().map(iv -> getValueNew(iv))
 						.collect(Collectors.toList());
-			});
+			}) == WorkCheckResult.ERROR;
 			if (check == true) {
 				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
 			}

@@ -1,13 +1,14 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPrice;
+import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.pr.core.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
 
 
 /**
@@ -25,8 +26,12 @@ public class PayrollUnitPriceFinder
                 .collect(Collectors.toList());
     }
 
-    public Optional<PayrollUnitPriceDto> getPayrollUnitPriceById(String cid, String code){
-        return finder.getPayrollUnitPriceById(cid,code).map(item ->PayrollUnitPriceDto.fromDomain(item));
+    public Optional<PayrollUnitPriceDto> getPayrollUnitPriceById(String code, String cid){
+        Optional<PayrollUnitPrice> payrollUnitPrice = finder.getPayrollUnitPriceById(code,cid);
+        if(payrollUnitPrice.isPresent()){
+            return payrollUnitPrice.map(item -> PayrollUnitPriceDto.fromDomain(item));
+        }
+        return Optional.empty();
     }
 
 

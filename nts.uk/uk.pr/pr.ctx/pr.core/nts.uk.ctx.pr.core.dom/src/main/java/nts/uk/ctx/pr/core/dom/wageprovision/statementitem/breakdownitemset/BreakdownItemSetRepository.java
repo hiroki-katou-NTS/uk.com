@@ -1,0 +1,27 @@
+package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.breakdownitemset;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * 
+ * @author thanh.tq 内訳項目設定
+ *
+ */
+public interface BreakdownItemSetRepository {
+
+	List<BreakdownItemSet> getAllBreakdownItemSt();
+	
+	List<BreakdownItemSet> getBreakdownItemStBySalaryId(String salaryItemId);
+
+	Optional<BreakdownItemSet> getBreakdownItemStById(String salaryItemId, String breakdownItemCode);
+
+	void add(BreakdownItemSet domain);
+
+	void update(BreakdownItemSet domain);
+
+	void remove(String salaryItemId, String breakdownItemCode);
+	
+	void removeAll(String salaryItemId);
+
+}

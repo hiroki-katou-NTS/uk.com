@@ -48,7 +48,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 	/** 期間中の年休積休残数を取得 */
 	@Override
 	public AggrResultOfAnnAndRsvLeave algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
@@ -65,7 +65,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 	/** 期間中の年休積休残数を取得　（月次集計用） */
 	@Override
 	public AggrResultOfAnnAndRsvLeave algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,

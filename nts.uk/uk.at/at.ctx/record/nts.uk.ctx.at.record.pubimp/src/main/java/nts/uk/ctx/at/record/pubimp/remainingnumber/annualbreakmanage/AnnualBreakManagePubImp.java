@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.pub.remainingnumber.annualbreakmanage.AnnualBreakManageExport;
@@ -96,7 +96,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 				algorithm(companyId, 
 						employeeId, 
 						new DatePeriod(startDate.get(), designatedPeriod.end().addDays(-1)), 
-						TempAnnualLeaveMngMode.OTHER, 
+						InterimRemainMngMode.OTHER, 
 						designatedPeriod.end(), 
 						false, 
 						false, 
