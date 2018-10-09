@@ -48,9 +48,9 @@ module nts.uk.pr.view.qmm008.e {
 
                //Fixed table
                if (/Chrome/.test(navigator.userAgent)) {
-                   $("#fixed-table").ntsFixedTable({height: 348, width: 1140});
+                   $("#fixed-table").ntsFixedTable({height: 344, width: 1140});
                } else {
-                   $("#fixed-table").ntsFixedTable({height: 377, width: 1140});
+                   $("#fixed-table").ntsFixedTable({height: 373, width: 1140});
                }
 
            }
