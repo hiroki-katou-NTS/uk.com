@@ -8,11 +8,6 @@ module nts.uk.pr.view.qmm007.c {
             submitPayrollUnitPriceHis: "core/wageprovision/companyuniformamount/submitPayrollUnitPriceHis"
         };
 
-        export function getPayrollUnitPriceHis(data :any): JQueryPromise<any> {
-
-            return nts.uk.request.ajax(path.getPayrollUnitPriceHis, data);
-
-        }
         export function submitPayrollUnitPriceHis(data :any): JQueryPromise<any> {
 
             return nts.uk.request.ajax(path.submitPayrollUnitPriceHis, data);
