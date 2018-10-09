@@ -3,6 +3,7 @@
 package nts.uk.ctx.at.request.ac.record.dailyattendancetime;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,14 +44,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
 		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
 		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
-		if (!CollectionUtil.isEmpty(breakStartTimes)) {
-			dailyAttendanceTimePubImport.setBreakStartTime(
-					breakStartTimes.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList()));
-		}
-		if (!CollectionUtil.isEmpty(breakEndTime)) {
-			dailyAttendanceTimePubImport.setBreakEndTime(
-					breakEndTime.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList()));
-		}
+		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
+		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
 		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		
@@ -63,6 +58,13 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		return dailyAttendanceTimeCaculationImport;
 	}
 	
+	private List<AttendanceTime> getTimes(List<Integer> inputTimes) {
+		List<AttendanceTime> startTimes = !CollectionUtil.isEmpty(inputTimes)
+				? inputTimes.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList())
+				: Collections.emptyList();
+		return startTimes;
+	}
+
 	/**
 	 * @param timeCal
 	 * @return
