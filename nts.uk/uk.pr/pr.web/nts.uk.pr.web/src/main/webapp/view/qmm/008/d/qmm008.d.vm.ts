@@ -86,6 +86,7 @@ module nts.uk.pr.view.qmm008.d {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
                             self.isEnableBtnDelete(true);
+                            self.isEnableBtnCreate(true);
                             self.detail(new SocialOfficeDetail(response));
                             let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
                             if (response.healthInsurancePrefectureNo)
