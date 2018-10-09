@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 
 /**
  * 36協定時間内訳
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeBreakdown {
@@ -264,5 +264,21 @@ public class AgreementTimeBreakdown {
 		totalTime = totalTime.addMinutes(this.weeklyPremiumTime.v());
 		totalTime = totalTime.addMinutes(this.monthlyPremiumTime.v());
 		return totalTime;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AgreementTimeBreakdown target){
+		this.overTime = this.overTime.addMinutes(target.overTime.v());
+		this.transferOverTime = this.transferOverTime.addMinutes(target.transferOverTime.v());
+		this.holidayWorkTime = this.holidayWorkTime.addMinutes(target.holidayWorkTime.v());
+		this.transferTime = this.transferTime.addMinutes(target.transferTime.v());
+		this.flexLegalTime = this.flexLegalTime.addMinutes(target.flexLegalTime.v());
+		this.flexIllegalTime = this.flexIllegalTime.addMinutes(target.flexIllegalTime.v());
+		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(target.withinPrescribedPremiumTime.v());
+		this.weeklyPremiumTime = this.weeklyPremiumTime.addMinutes(target.weeklyPremiumTime.v());
+		this.monthlyPremiumTime = this.monthlyPremiumTime.addMinutes(target.monthlyPremiumTime.v());
 	}
 }

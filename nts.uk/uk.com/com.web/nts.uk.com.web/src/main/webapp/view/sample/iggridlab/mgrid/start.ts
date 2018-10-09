@@ -229,7 +229,7 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'Address<br/>Code1', key: 'addressCode1', dataType: 'string', width: '150px', columnCssClass: 'currency-symbol',
                                                 constraint: {
                                                     cDisplayType: "Currency",
-                                                    min: 3, max: 9,
+                                                    min: 1, max: 99999,
                                                     required: true
                                                 }},
                                             { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px'}

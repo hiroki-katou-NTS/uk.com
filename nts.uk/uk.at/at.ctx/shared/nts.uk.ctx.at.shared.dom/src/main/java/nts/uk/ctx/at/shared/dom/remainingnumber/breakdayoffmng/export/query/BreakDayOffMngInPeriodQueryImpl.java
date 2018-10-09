@@ -718,7 +718,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 					List<InterimDayOffMng> tmpDayoffUsen = lstDayoffUsen.stream().filter(b -> b.getDayOffManaId().equals(temp.getRemainManaID()))
 							.collect(Collectors.toList());
 					if(!tmpDayoffUsen.isEmpty()) {
-						lstDayoffUsen.remove(tmpDayoffUsen.get(0));
+						lstDayoffMng.remove(tmpDayoffUsen.get(0));
 					}
 				}
 				List<InterimRemain> lstBreakUsen = lstTmpBreak.stream()

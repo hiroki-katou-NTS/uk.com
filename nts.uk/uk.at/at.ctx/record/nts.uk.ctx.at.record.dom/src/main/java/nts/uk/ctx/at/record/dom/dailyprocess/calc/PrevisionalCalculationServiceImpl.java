@@ -65,7 +65,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject

@@ -24,7 +24,7 @@ public class AddEmpCalSumAndTargetCommandAssembler {
 		String employeeID = AppContexts.user().employeeId();
 		// 実行ボタン押下時のシステム日付を取得する (lấy thời gian hệ thống)
 		GeneralDateTime systemTime = GeneralDateTime.now();
-		int yearMonth = systemTime.yearMonth().v();
+		int yearMonth = Integer.valueOf(command.getProcessingMonth());
 		String empCalAndSumExecLogID = IdentifierUtil.randomUniqueId();
 
 		EmpCalAndSumExeLog empCalAndSumExeLog = EmpCalAndSumExeLog.createFromJavaType(

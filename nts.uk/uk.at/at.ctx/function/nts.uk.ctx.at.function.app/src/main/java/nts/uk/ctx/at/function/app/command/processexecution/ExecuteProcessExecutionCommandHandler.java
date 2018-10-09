@@ -132,7 +132,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<ExecuteProcessExecutionCommand> {
 
@@ -1541,7 +1541,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if(isHasDailyCalculateException){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
 			//ドメインモデル「エラーメッセージ情報」を取得する
-			List<ErrMessageInfo> listErrMessageInfo =  errMessageInfoRepository.getAllErrMessageInfoByID(execId,ExecutionContent.DAILY_CREATION.value);
+			List<ErrMessageInfo> listErrMessageInfo =  errMessageInfoRepository.getAllErrMessageInfoByID(execId,ExecutionContent.DAILY_CALCULATION.value);
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
 			//会社ID　＝　パラメータ.更新処理自動実行.会社ID

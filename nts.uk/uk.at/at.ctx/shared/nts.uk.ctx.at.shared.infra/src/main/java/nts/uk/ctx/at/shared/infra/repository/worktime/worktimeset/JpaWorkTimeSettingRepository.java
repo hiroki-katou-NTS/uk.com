@@ -241,15 +241,14 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	@SneakyThrows
 	private Optional<KshmtWorkTimeSet> findByPk(String companyId, String worktimeCode) {
 		PreparedStatement statement = this.connection().prepareStatement(
-				"select * from KSHMT_WORK_TIME_SET"
-				+ " where CID = ? and WORKTIME_CD = ?");
+				"select * from KSHMT_WORK_TIME_SET where CID = ? and WORKTIME_CD = ?");
 		statement.setString(1, companyId);
 		statement.setString(2, worktimeCode);
 		
 		return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
 			KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
-			pk.setCid(rec.getString("CID"));
-			pk.setWorktimeCd(rec.getString("WORKTIME_CD"));
+			pk.setCid(companyId);
+			pk.setWorktimeCd(worktimeCode);
 			
 			KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
 			entity.setKshmtWorkTimeSetPK(pk);

@@ -186,6 +186,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.settingEnableComparisonMaxValueFieldExtra();
                         if (self.comparisonRange().comparisonOperator() > 5) {
                             $(".nts-input").ntsError("clear");
+                            self.comparisonRange().maxAmountOfMoneyValue(0);
+                            self.comparisonRange().maxTimeValue(0);
+                            self.comparisonRange().maxTimesValue(0);
                             if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator() ==9){
                                  setTimeout(() => {
                                     if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {

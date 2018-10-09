@@ -8,19 +8,18 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="cmf002.a.service.js" />
 				<com:scriptfile path="cmf002.a.vm.js" />
 				<com:scriptfile path="cmf002.a.start.js" />
 				<com:stylefile path="cmf002.a.style.css" />
 			</ui:define>
-			
 			<ui:define name="content">
-				<div tabindex="4" id="functions-area">
-					<div class="title-right"><label>#{i18n.getText('CMF002_25')}</label></div>
+				<div id="functions-area">
+					<div tabindex="4" class="title-right"><label>#{i18n.getText('CMF002_25')}</label></div>
 				</div>
-				<div id="ccgcomponent"></div>
 				<div id="contents-area">
-					<label class="title-left">#{i18n.getText('CMF002_26')}</label>
-					<div class="button-image">
+					<label class="title-left" style="display: flex">#{i18n.getText('CMF002_26')}</label>
+					<div style="display: flex; margin-top: 15px;">
 						<div class="image-left">
 							<button id="buttonImport" class="import-creation" 
 							data-bind="click : importScreen" tabindex="1"></button>
@@ -29,7 +28,7 @@
 							<button id="buttonSetting" class="setting-creation" 
 							data-bind="click : settingScreen" tabindex="2"></button>
 						</div>
-						<div class="image-right">
+						<div class="image-left">
 							<button class="history-reference" 
 							data-bind="click : referenceHistoryScreen"  tabindex="3"></button>
 						</div>

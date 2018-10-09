@@ -406,6 +406,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
         List<Predicate> lstpredicateWhere = new ArrayList<>();
         lstpredicateWhere.add(criteriaBuilder.equal(
                 root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.cid), companyId));
+        lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(BsymtWorkplaceHist_.strD), baseDate));
         lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(BsymtWorkplaceHist_.endD), baseDate));
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

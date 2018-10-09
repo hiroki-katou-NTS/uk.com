@@ -28,6 +28,8 @@ public interface AppRootInstanceService {
 	 */
 	public List<ApprovalRootStateStatus> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
 	
+	public List<ApprovalRootStateStatus> getAppRootStatusByEmpsPeriod(String compID, List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
+	
 	/**
 	 * 対象者と期間から承認ルート中間データを取得する
 	 * @param employeeIDLst
@@ -36,6 +38,8 @@ public interface AppRootInstanceService {
 	 * @return
 	 */
 	public List<AppRootInstancePeriod> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
+	
+	public List<AppRootInstancePeriod> getAppRootInstanceByEmpPeriod(String compID, List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
 	
 	/**
 	 * 対象日の承認ルート中間データを取得する
