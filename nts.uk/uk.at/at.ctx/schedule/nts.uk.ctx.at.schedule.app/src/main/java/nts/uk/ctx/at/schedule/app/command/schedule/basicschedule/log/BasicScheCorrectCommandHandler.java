@@ -32,7 +32,7 @@ import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
-@Transactional(value=TxType.NOT_SUPPORTED)
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorrectCommand> {
 	

@@ -166,7 +166,7 @@ module nts.uk.com.view.cps001.g.vm {
                 service.getItemDef().done((data) => {
                     if (!data[6].display && !data[9].display && !data[12].display) {
                         var currentDialog = nts.uk.ui.windows.getSelf();
-                        currentDialog.setWidth(595);
+                        currentDialog.$dialog.dialog('option','width',595);
                     }
 
                     self.itemDefs = data;

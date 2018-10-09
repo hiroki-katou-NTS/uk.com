@@ -115,7 +115,50 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		});
 		return result;
 	}
-
+	
+	@Override
+	public List<ApprovalRootStateStatus> getAppRootStatusByEmpsPeriod(String compID, List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
+		
+		// 対象者と期間から承認ルート中間データを取得する
+		List<AppRootInstance> aris = appRootInstanceRepository.findByEmpLstPeriod(compID, employeeIDLst, period, rootType);
+		List<AppRootConfirm> arcs = appRootConfirmRepository.findByEmpDate(compID, employeeIDLst, period, rootType);
+		// INPUT．対象者社員IDの先頭から最後へループ
+		List<ApprovalRootState> arses = period.datesBetween().stream().map(cd -> {
+			// INPUT．期間の開始日から終了日へループ
+			return employeeIDLst.stream().map(cei -> {
+				// 対象日の承認ルート中間データを取得する
+				AppRootInstance appRootInstance = aris.stream().filter(c -> c.getEmployeeID().equals(cei) 
+												&& c.getDatePeriod().start().beforeOrEquals(cd)).findFirst().orElse(null);
+				
+				if(appRootInstance==null){
+					throw new BusinessException("Msg_1430", cei);
+				}
+				// 対象日の就業実績確認状態を取得する
+				AppRootConfirm appRootConfirm = arcs.stream().filter(c -> c.getEmployeeID().equals(cei) && c.getRecordDate().equals(cd)).findFirst()
+						.orElseGet(() -> new AppRootConfirm(UUID.randomUUID().toString(), compID, cei, cd, rootType, new ArrayList<>(),
+								Optional.empty(), Optional.empty(), Optional.empty()));
+				// 中間データから承認ルートインスタンスに変換する
+				// 承認ルート状況を取得する
+				return this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+			}).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+		
+		return approvalRootStateStatusService.getApprovalRootStateStatus(arses);
+	}
+	
+	@Override
+	public List<AppRootInstancePeriod> getAppRootInstanceByEmpPeriod(String compID, List<String> employeeIDLst, DatePeriod period,
+			RecordRootType rootType) {
+		List<AppRootInstance> appRootInstanceLst = appRootInstanceRepository.findByEmpLstPeriod(compID, employeeIDLst, period, rootType);
+		
+		return employeeIDLst.stream().map(x -> {
+			List<AppRootInstance> opAppRootInstancePeriod = appRootInstanceLst.stream()
+																.filter(y -> y.getEmployeeID().equals(x)).collect(Collectors.toList());
+			
+			return new AppRootInstancePeriod(x, opAppRootInstancePeriod);
+		}).collect(Collectors.toList());
+	}
+	
 	@Override
 	public AppRootInstance getAppRootInstanceByDate(GeneralDate date, List<AppRootInstance> appRootInstanceLst) {
 		// 承認ルートなしフラグ=true

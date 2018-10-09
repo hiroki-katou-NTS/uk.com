@@ -83,7 +83,11 @@ public class Kal003bWebService extends WebService{
         		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT, 
         		TypeCheckWorkRecordMultipleMonth.NUMBER_TIME,
         		TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES,
-        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT);
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.DAYS,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_DAYS,
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS);
 
     }
 	

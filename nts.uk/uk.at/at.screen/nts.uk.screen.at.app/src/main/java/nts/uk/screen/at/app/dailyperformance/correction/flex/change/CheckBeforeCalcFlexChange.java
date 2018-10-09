@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
@@ -81,42 +80,69 @@ public class CheckBeforeCalcFlexChange {
 
 	// 社員のフレックス繰越上限時間を求める
 	public String getConditionCalcFlex(String companyId, CalcFlexChangeDto calc) {
+		return getConditionCalcFlex(companyId, calc, Optional.empty(), Optional.empty());
+	}
+	
+	// 社員のフレックス繰越上限時間を求める
+	public String getConditionCalcFlex(String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
+			Optional<PresentClosingPeriodExport> periodExportOpt) {
 		String timeCheck = "15:00";
-		String employment = processor.getEmploymentCode(companyId, new DateRange(null, calc.getDate()), calc.getEmployeeId());
-		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, employment);
-		if (!closureEmploymentOptional.isPresent())
+		
+		if(!closureEmployment.isPresent()){
+			closureEmployment = this.closureEmploymentRepository
+					.findByEmploymentCD(companyId, processor.getEmploymentCode(companyId, calc.getDate(), calc.getEmployeeId()));
+		}
+		if (!closureEmployment.isPresent())
 			return "";
 		// 指定した年月日時点の締め期間を取得する
-		Optional<PresentClosingPeriodExport> periodExportOpt = shClosurePub.find(companyId,
-				closureEmploymentOptional.get().getClosureId(), calc.getDate());
+		if(!periodExportOpt.isPresent()){
+			periodExportOpt = shClosurePub.find(companyId, closureEmployment.get().getClosureId(), calc.getDate());
+		}
+		
 		if (periodExportOpt.isPresent() && (calc.getDate().after(periodExportOpt.get().getClosureEndDate())
 				|| calc.getDate().after(periodExportOpt.get().getClosureStartDate()))) {
 			// TODO ドメインモデル「フレックス不足の繰越上限時間」を取得する
 		}
 
 		// 社員ID（List）と指定期間から所属会社履歴項目を取得
-		DatePeriod datePeriod = new DatePeriod(periodExportOpt.get().getClosureStartDate(),
-				periodExportOpt.get().getClosureEndDate());
-		List<AffCompanyHistImport> affCompanyHis = syCompanyRecordAdapter
-				.getAffCompanyHistByEmployee(Arrays.asList(calc.getEmployeeId()), datePeriod);
+		DatePeriod datePeriod = new DatePeriod(periodExportOpt.get().getClosureStartDate(), periodExportOpt.get().getClosureEndDate());
+		List<String> sIds = Arrays.asList(calc.getEmployeeId());
+		List<AffCompanyHistImport> affCompanyHis = syCompanyRecordAdapter.getAffCompanyHistByEmployee(sIds, datePeriod);
 		if (!affCompanyHis.isEmpty()) {
 			for (AffComHistItemImport his : affCompanyHis.get(0).getLstAffComHistItem()) {
-				DatePeriod datePeriodHis = his.getDatePeriod();
-				GeneralDate endDate = datePeriodHis.end();
 				// 「所属会社履歴項目．退職日」がパラメータ「当月の期間」に含まれているかチェックする
-				if (endDate != null
-						&& (endDate.afterOrEquals(datePeriod.start()) && endDate.beforeOrEquals(datePeriod.end()))) {
+				if (his.getDatePeriod().end() != null && datePeriod.contains(his.getDatePeriod().end())) {
 					return TIME_DEFAULT;
 				}
 			}
 		}
-
+		
 		if (calc.getWCItems().isEmpty()) {
 			return TIME_DEFAULT;
 		}
+		
 		// ドメインモデル「労働条件」を取得する
 		// Slow Perfomnace
+//		GeneralDate dateCheck = GeneralDate.today();
+//		Optional<WorkingConditionItem> todayWCI = workingConditionItemRepository.getBySidAndStandardDate(calc.getEmployeeId(), dateCheck);
+//		List<DateHistoryItem> WCes = workingConditionRepository.getBySidsAndDatePeriod(sIds, datePeriod)
+//																.stream().map(c -> c.getDateHistoryItem())
+//																.flatMap(List::stream).distinct().collect(Collectors.toList());
+//		for (WorkingConditionItem item : calc.getWCItems()) {
+////			Optional<WorkingCondition> workConditionOpt = workingConditionRepository.getByHistoryId(item.getHistoryId());
+////			if (workConditionOpt.isPresent() && periodExportOpt.isPresent()) {
+//				
+//			Optional<DateHistoryItem> dateHist = WCes.stream().filter(x -> x.identifier().equals(item.getHistoryId())).findFirst();
+//			if (dateHist.isPresent()) {
+//				dateCheck = dateHist.get().end().nextValue(true);
+//				
+//				if (!todayWCI.isPresent() || !todayWCI.get().getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)) {
+//					return TIME_DEFAULT;
+//				}
+//			}
+////			}
+//		}
+		/** TODO: replace below code with above code after confirm design? */
 		boolean checkFlex = true;
 		for (WorkingConditionItem item : calc.getWCItems()) {
 			Optional<WorkingCondition> workConditionOpt = workingConditionRepository
@@ -145,11 +171,11 @@ public class CheckBeforeCalcFlexChange {
 		// フレックス時間勤務の場合(là フレックス時間勤務)
 		// 指定した年月日時点の締め期間を取得する
 		Optional<PresentClosingPeriodExport> periodExportOptNext = shClosurePub.find(companyId,
-				closureEmploymentOptional.get().getClosureId(), periodExportOpt.get().getClosureEndDate().addDays(1));
+				closureEmployment.get().getClosureId(), periodExportOpt.get().getClosureEndDate().addDays(1));
 		// ドメインモデル「月別実績の勤怠時間」を取得する
 		Optional<AttendanceTimeOfMonthly> attTiemOpt = attendanceTimeOfMonthlyRepository.find(calc.getEmployeeId(),
 				periodExportOptNext.get().getProcessingYm(),
-				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
+				ClosureId.valueOf(closureEmployment.get().getClosureId()),
 				new ClosureDate(periodExportOptNext.get().getClosureDate().getClosureDay(),
 						periodExportOptNext.get().getClosureDate().getLastDayOfMonth()));
 
@@ -167,10 +193,9 @@ public class CheckBeforeCalcFlexChange {
 		} else {
 			// 社員と基準日から雇用履歴項目を取得する
 			AffEmploymentHistoryDto afEmpDto = dailyPerformanceScreenRepo.getAffEmploymentHistory(companyId, calc.getEmployeeId(),
-					new DateRange(periodExportOptNext.get().getClosureStartDate(),
-							periodExportOptNext.get().getClosureStartDate()));
-			List<AffWorkplaceHistoryItem> lstAffWorkplace = affWorkplaceHis
-					.getAffWrkplaHistItemByEmpIdAndDate(datePeriod.start(), calc.getEmployeeId());
+														periodExportOptNext.get().getClosureStartDate());
+//			List<AffWorkplaceHistoryItem> lstAffWorkplace = affWorkplaceHis
+//					.getAffWrkplaHistItemByEmpIdAndDate(datePeriod.start(), calc.getEmployeeId());
 			// 週、月の法定労働時間を取得(フレックス用)
 			MonthlyFlexStatutoryLaborTime monthFlex = monthlyStatutoryWorkingHours.getFlexMonAndWeekStatutoryTime(
 					companyId, afEmpDto.getEmploymentCode(), calc.getEmployeeId(), datePeriod.start(),

@@ -140,6 +140,7 @@ module nts.uk.ui.koExtentions {
                         })
                     if (selectedValue == value) {
                         btn.addClass(selectedCssClass);
+                        container.ctState("selected", "set", true);
                     }
                     container.append(btn);
                 }
