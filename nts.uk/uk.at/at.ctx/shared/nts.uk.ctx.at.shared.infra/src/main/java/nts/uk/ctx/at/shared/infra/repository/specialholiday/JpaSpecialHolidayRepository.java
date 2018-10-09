@@ -143,7 +143,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	
 	private final static String DELETE_SPEC_EMP = "DELETE FROM KshstSpecEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
-			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String DELETE_GRANT_DATE = "DELETE FROM KshstGrantDateTbl a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
+			+ "WHERE e.pk.companyId =:companyID "
+			+ "AND e.pk.specialHolidayCode =:specialHolidayCD ";
+	
 	
 	/**
 	 * For delete releated domain of KDR001 (team G)
@@ -159,6 +168,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	private String QUERY_BY_SPECLEAVE = "SELECT c FROM KshstSphdSpecLeave c"
 			+ " WHERE c.pk.companyId = :companyId"
 			+ " AND c.pk.sphdNo = :sphdNo";
+	
+	private final static String SELECT_SPHD_BY_COMPANY_AND_NO = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.memo FROM KshstSpecialHoliday e "
+			+ "WHERE e.pk.companyId = :companyId "
+			+ "AND e.pk.specialHolidayCode IN :specialHolidayCode";
 	
 	private SpecialHoliday createDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
@@ -449,6 +462,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			.setParameter("specialHolidayCD", specialHolidayCode)
 			.executeUpdate();
 		
+		this.getEntityManager().createQuery(DELETE_GRANT_DATE)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
 		/**
 		 * For delete releated domain of KDR001 (team G)
 		 */
@@ -557,5 +580,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				.map(c -> {
 					return c.pk.specialHolidayCode;
 				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes) {
+		if(specialHolidayCodes.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query(SELECT_SPHD_BY_COMPANY_AND_NO, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCodes)
+				.getList(c -> {
+					return createSphdDomainFromEntity(c);
+				});
 	}
 }

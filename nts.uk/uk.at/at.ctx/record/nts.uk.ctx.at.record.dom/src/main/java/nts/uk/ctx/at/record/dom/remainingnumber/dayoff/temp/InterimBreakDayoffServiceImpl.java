@@ -50,7 +50,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 @Stateless
-@Transactional(value = TxType.REQUIRES_NEW)
+@Transactional(value = TxType.REQUIRED)
 public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService {
 
 	/** 暫定残数管理データ */

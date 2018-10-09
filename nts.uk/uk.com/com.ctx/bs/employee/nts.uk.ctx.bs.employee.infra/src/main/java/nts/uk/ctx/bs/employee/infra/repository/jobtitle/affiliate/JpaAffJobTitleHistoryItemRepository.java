@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
@@ -121,19 +125,29 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	}
 
 	@Override
+	@SneakyThrows
 	public List<AffJobTitleHistoryItem> getByJobIdAndReferDate(String jobId, GeneralDate referDate) {
-		List<BsymtAffJobTitleHistItem> lstData = this.queryProxy()
-				.query(GET_BY_JID_DATE, BsymtAffJobTitleHistItem.class).setParameter("jobTitleId", jobId)
-				.setParameter("referDate", referDate).getList();
-		List<AffJobTitleHistoryItem> lstObj = new ArrayList<>();
-		if (!lstData.isEmpty()) {
-			for (BsymtAffJobTitleHistItem data: lstData) {
-				BsymtAffJobTitleHistItem ent = data;
-				lstObj.add(AffJobTitleHistoryItem.createFromJavaType(ent.hisId, ent.sid, ent.jobTitleId, ent.note));
-			}
-			return lstObj;
-		}
-		return null;
+		
+		PreparedStatement stmt = this.connection().prepareStatement(
+				"select * from BSYMT_AFF_JOB_HIST_ITEM i" + 
+				" inner join BSYMT_AFF_JOB_HIST h" + 
+				" on h.HIST_ID = i.HIST_ID" + 
+				" where i.JOB_TITLE_ID = ?" + 
+				" and h.START_DATE <= ?" + 
+				" and h.END_DATE >= ?");
+		stmt.setString(1, jobId);
+		stmt.setDate(2, Date.valueOf(referDate.toLocalDate()));
+		stmt.setDate(3, Date.valueOf(referDate.toLocalDate()));
+		
+		List<AffJobTitleHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+			return AffJobTitleHistoryItem.createFromJavaType(
+					rec.getString("HIST_ID"),
+					rec.getString("SID"),
+					rec.getString("JOB_TITLE_ID"),
+					rec.getString("NOTE"));
+		});
+
+		return lstObj.isEmpty() ? null : lstObj;
 	}
 
 	@Override

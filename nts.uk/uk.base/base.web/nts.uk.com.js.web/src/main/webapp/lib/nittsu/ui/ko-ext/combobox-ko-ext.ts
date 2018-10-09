@@ -182,6 +182,14 @@ module nts.uk.ui.koExtentions {
                     visibleItemsCount: visibleItemsCount,
                     dropDownAttachedToBody: dropDownAttachedToBody,
                     rendered: function(evt, ui) {
+                        setTimeout(() => {
+                            $(ui.owner.dropDown()[0])
+                                .css({
+                                    top: '-99999px',
+                                    left: '-99999px'
+                                });
+                        }, 100);
+
                         $element
                             .find('.ui-igcombo')
                             .css('background', '#fff')

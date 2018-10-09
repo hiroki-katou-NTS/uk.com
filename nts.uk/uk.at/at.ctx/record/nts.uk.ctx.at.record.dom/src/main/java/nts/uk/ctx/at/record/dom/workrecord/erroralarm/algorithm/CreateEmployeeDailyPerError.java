@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 
  * @author nampt Minh Hùng 社員の日別実績のエラーを作成する
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class CreateEmployeeDailyPerError {
 
@@ -39,7 +39,7 @@ public class CreateEmployeeDailyPerError {
 
 		}
 	}
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void createEmployeeError(EmployeeDailyPerError dailyPerError){
 		Boolean existErrorCode = this.employeeDailyPerErrorRepository.checkExistErrorCode(dailyPerError.getEmployeeID(), dailyPerError.getDate(),
 				dailyPerError.getErrorAlarmWorkRecordCode().v());
@@ -86,6 +86,7 @@ public class CreateEmployeeDailyPerError {
 	 * @param date
 	 * @param errorCode
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void removeByCidSidDateAndErrorCode(String companyID, String employeeID, GeneralDate date, String errorCode){
 		this.employeeDailyPerErrorRepository.removeByCidSidDateAndCode(companyID, employeeID, date, errorCode);
 	}

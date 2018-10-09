@@ -12,6 +12,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @param <S> type
  */
 public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveValue<S>> {
+	
+	private static final String STRING_MAX_LENGTH_NAME = StringMaxLength.class.getSimpleName();
 
 	/** 
 	 * serialVersionUID
@@ -101,7 +103,7 @@ public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveVal
     private int maxLength() {
     	String paramValue = Arrays.asList(this.getClass().getDeclaredAnnotations()).stream().map(a -> a.toString())
     			.filter(s -> s.contains(PrimitiveValueConstraintPackage.NAME) 
-    						&& StringMaxLength.class.getSimpleName().equals(getAnnotationName(s)))
+    						&& STRING_MAX_LENGTH_NAME.equals(getAnnotationName(s)))
     			.map(a -> getAnnotationParamValue(a)).findFirst()
     			.orElseThrow(() -> new RuntimeException("Code primitive value must have max length."));
     	

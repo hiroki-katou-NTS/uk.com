@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -151,6 +152,12 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	@Override
 	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
 			List<String> listDailyPerformanceFormatCode) {
+		return getListAuthorityFormatDaily(companyId, listDailyPerformanceFormatCode);
+	}
+	
+	@Override
+	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
+			Collection<String> listDailyPerformanceFormatCode) {
 		return this.queryProxy().query(FIND_BY_LIST_CODE, KfnmtAuthorityMonthlyItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("listDailyPerformanceFormatCode", listDailyPerformanceFormatCode).getList(f -> toDomain(f));

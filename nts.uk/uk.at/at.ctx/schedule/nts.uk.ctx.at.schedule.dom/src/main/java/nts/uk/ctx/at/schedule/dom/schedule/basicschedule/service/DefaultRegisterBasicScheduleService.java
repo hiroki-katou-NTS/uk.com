@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -76,6 +78,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author sonnh1
  *
  */
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject
@@ -201,23 +204,28 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				}
 
 				// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
-				String errMsgId = null;
-				if (workTimeSetting == null) {
-					errMsgId = basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode,
-							listWorkType);
-				} else {
-					errMsgId = basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode,
-							workTimeSetting.getWorktimeCode().v(), listWorkType);
-				}
-				if(errMsgId != null ){
-					// find and remove in listBefore because this data is not insert/update to DB
-					Optional<BasicSchedule> bsBefOpt  = basicScheduleListBefore.stream().filter(x-> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
-					if(bsBefOpt.isPresent()){
-						basicScheduleListBefore.remove(bsBefOpt.get());
+				try {
+					if (workTimeSetting == null) {
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode, workTimeCode, listWorkType);
+					} else {
+						basicScheduleService.checkPairWTypeTimeWithLstWType(workTypeCode,
+								workTimeSetting.getWorktimeCode().v(), listWorkType);
 					}
-					
-					addMessage(errList, errMsgId);
-					continue;
+				} catch (Exception ex) {
+					if (ex.getCause() instanceof BusinessException) {
+						BusinessException b = (BusinessException) ex.getCause();
+						// find and remove in listBefore because this data is
+						// not insert/update to DB
+						Optional<BasicSchedule> bsBefOpt = basicScheduleListBefore.stream()
+								.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0))
+								.findFirst();
+						if (bsBefOpt.isPresent()) {
+							basicScheduleListBefore.remove(bsBefOpt.get());
+						}
+
+						addMessage(errList, b.getMessageId());
+						continue;
+					}
 				}
 			}
 			
@@ -300,7 +308,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
 						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock,
 						breakStartTime, breakEndTime, childCareStartTime, childCareEndTime);
-				this.addScheTime(param, bSchedule);
+				if(this.addScheTime(param, bSchedule, errList, basicScheduleListBefore, employeeId, date)) continue;
 				// add scheMaster
 				// set scheMaster = scheMaster of basicSche from DB
 				// (compare to insert state and log, not to update in DB)
@@ -342,12 +350,16 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
 						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock,
 						breakStartTime, breakEndTime, childCareStartTime, childCareEndTime);
-				this.addScheTime(param, bSchedule);
+				if(this.addScheTime(param, bSchedule, errList, basicScheduleListBefore, employeeId, date)) continue;
 				// add scheMaster
 				this.addScheMaster(companyId, bSchedule);
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
-
+				
+				// delete truoc khi insert de tranh truong hop data sai
+				// co data cua con ma k co data cua cha
+				basicScheduleRepo.delete(employeeId, date, bSchedule);
+				
 				basicScheduleRepo.insert(bSchedule); 
 			}
 			
@@ -380,8 +392,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		
 		return errList;
 	}
-
 	/**
+
 	 * Check time zone for case update (mode show time)
 	 * 
 	 * @param errList
@@ -574,9 +586,36 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				null, EnumAdaptor.valueOf(0, ChildCareAtr.class)));
 		bSchedule.setChildCareSchedules(listChildCareSchedule);
 	}
-
-	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
-		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(null, param);
+	
+	/**
+	 * return true => dung xu ly, chuyen sang object tiep theo
+	 * 
+	 * @param param
+	 * @param bSchedule
+	 * @param errList
+	 * @return
+	 */
+	private boolean addScheTime(ScTimeParam param, BasicSchedule bSchedule, List<String> errList, List<BasicSchedule> basicScheduleListBefore, String employeeId,GeneralDate date) {
+		ScTimeImport scTimeImport = new ScTimeImport();
+		try {
+			scTimeImport = this.scTimeAdapter.calculation(null, param);
+		} catch (Exception e) {
+			// find and remove in listBefore because this data is
+			// not insert/update to DB
+			Optional<BasicSchedule> bsBefOpt = basicScheduleListBefore.stream()
+					.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0))
+					.findFirst();
+			if (bsBefOpt.isPresent()) {
+				basicScheduleListBefore.remove(bsBefOpt.get());
+			}
+			
+			if (e.getCause() instanceof BusinessException) {
+				BusinessException b = (BusinessException) e.getCause();
+				addMessage(errList, b.getMessageId());
+			}
+			return true;
+		}
+		
 		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for (int i = 0; i < listPersonFeeTime.size(); i++) {
@@ -587,6 +626,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				scTimeImport.getTotalWorkTime(), scTimeImport.getChildTime(), scTimeImport.getCareTime(),
 				scTimeImport.getFlexTime());
 		bSchedule.setWorkScheduleTime(scheduleTime);
+		return false;
 	}
 
 	/**

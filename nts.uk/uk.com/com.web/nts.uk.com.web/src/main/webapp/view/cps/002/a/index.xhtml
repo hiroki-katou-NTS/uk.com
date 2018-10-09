@@ -253,21 +253,20 @@
 													{ prop: 'name', length: 10 },
 												]}" tabindex="1"></div>
 									</div>
-									<div class="form-group">
+									<div class="form-group" data-bind="if: _.size(ko.toJS(itemSettingList))">
 										<div id="cover_table">
-											<table class="table_item"
-												data-bind="if:itemSettingList().length>0" tabindex="3">
+											<table class="table_item" tabindex="3">
 												<thead>
 													<tr>
 														<th class="bg-calendar-ym-set">#{i18n.getText('CPS002_36')}</th>
 														<th class="bg-calendar-ym-set">#{i18n.getText('CPS002_37')}</th>
 													</tr>
 												</thead>
-												<tbody data-bind="foreach:itemSettingList">
+												<tbody data-bind="foreach: itemSettingList, style: { 'overflow-y': _.size(ko.toJS(itemSettingList)) &lt; 10 ? 'hidden' : 'scroll'  }">
 													<tr>
 														<td
 															data-bind="text: itemName , css:{requiredCell: isRequired , notRequiredCell:  !isRequired}"></td>
-														<td class="disabledCell"><div class="valueCell"
+														<td class="disabledCell"><div class="valueCell limited-label"
 																data-bind="text:saveData.value"></div></td>
 													</tr>
 												</tbody>

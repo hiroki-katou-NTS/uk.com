@@ -67,7 +67,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * ドメインサービス：日別計算　（社員の日別実績を計算）
  * @author keisuke_hoshina
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmployeeService {
 
@@ -176,7 +176,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param executionType 実行種別　（通常、再実行）
 	 */
 	@Override
-	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		//日別実績(WORK取得)
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
@@ -200,19 +200,24 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		val result = afterCalcRecord.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList());
 		//データ更新
 		for(IntegrationOfDaily value:result) {
-			// データ更新
-			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
-			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
-				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
-						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAffiliationInfor().getEmployeeId(),value.getAffiliationInfor().getYmd(),
-										  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
-				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
-			}
+			updateRecord(value);
 		}
 		//計算状態更新
 		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
 			upDateCalcState(stateInfo);
+		}
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	private void updateRecord(IntegrationOfDaily value) {
+		// データ更新
+		if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
+					value.getAttendanceTimeOfDailyPerformance().get().getYmd());
+			this.registAttendanceTime(value.getAffiliationInfor().getEmployeeId(),value.getAffiliationInfor().getYmd(),
+									  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
+			determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 		}
 	}
 	
@@ -279,7 +284,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * データ更新
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
 		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
 	}

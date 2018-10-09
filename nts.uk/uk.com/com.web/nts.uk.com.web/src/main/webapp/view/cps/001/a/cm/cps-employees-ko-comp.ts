@@ -139,7 +139,6 @@ module nts.custom.component {
                 float: left;
                 display: block;
                 padding-left: 5px;
-                padding-right: 5px;
                 min-height: 31px;
                 max-height: 31px;
                 overflow: hidden;

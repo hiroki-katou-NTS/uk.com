@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements ShortTimeOfDailyPerformanceRepository {
 
@@ -133,7 +133,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		return result;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		

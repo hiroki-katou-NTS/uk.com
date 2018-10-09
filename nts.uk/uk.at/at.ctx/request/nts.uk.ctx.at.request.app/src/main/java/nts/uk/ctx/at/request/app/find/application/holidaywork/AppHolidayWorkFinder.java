@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.holidaywork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -266,8 +267,8 @@ public class AppHolidayWorkFinder {
 			GeneralDateTime inputDate,
 			Integer startTime,
 			Integer endTime,
-			Integer startTimeRest,
-			Integer endTimeRest){
+			List<Integer> startTimeRests,
+			List<Integer> endTimeRests){
 		if(inputDate == null){
 			inputDate = GeneralDateTime.now();
 		}
@@ -282,8 +283,8 @@ public class AppHolidayWorkFinder {
 																siftCD,
 																startTime,
 																endTime,
-																startTimeRest,
-																endTimeRest);
+																startTimeRests,
+																endTimeRests);
 		if (!employeeIDOrapproverID.equals(employeeID)) {
 			//  06-01-a_色表示チェック（承認者）
 			result = this.holidaySixProcess.checkDisplayColorForApprover(breakTime,
@@ -342,7 +343,8 @@ public class AppHolidayWorkFinder {
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				appHolidayWorkDto.setDisplayCaculationTime(true);
-				WorkType workType = workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).isPresent() ?  workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).get() : null ;
+				String workTypeCD = appHolidayWork.getWorkTypeCode() == null ? "" : appHolidayWork.getWorkTypeCode().v();
+				WorkType workType = workTypeRepository.findByPK(companyID, workTypeCD).orElse(null) ;
 				if(workType != null){
 					appHolidayWorkDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 				}
@@ -354,7 +356,8 @@ public class AppHolidayWorkFinder {
 				// 5_a.就業時間帯を取得する（詳細）
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
 				appHolidayWorkDto.setWorkTimes(listWorkTimeCodes);
-				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString()).isPresent() ? workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString()).get() : null;
+				String workTimeCD = appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().v();
+				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID, workTimeCD).orElse(null);
 				if(workTime != null){
 					appHolidayWorkDto.setWorkTime(new SiftType(appHolidayWork.getWorkTimeCode().toString(),workTime.getWorkTimeDisplayName().getWorkTimeName().toString()));
 				}
@@ -372,12 +375,12 @@ public class AppHolidayWorkFinder {
 		getDivigenceReason(overtimeRestAppCommonSet,appHolidayWorkDto,companyID);
 		// 01-09_事前申請を取得
 		//getPreAppPanel(overtimeRestAppCommonSet,companyID,employeeID,result,appDate);
-		Integer restStartTime = null;
-		Integer restEndTime = null;
+		List<Integer> restStartTimes = new ArrayList<Integer>();
+		List<Integer> restEndTimes = new ArrayList<Integer>();
 		List<HolidayWorkInputDto> overtimeRestTimes = appHolidayWorkDto.getHolidayWorkInputDtos().stream().filter(x -> x.getAttendanceType() == AttendanceType.RESTTIME.value).collect(Collectors.toList());
 		if(!CollectionUtil.isEmpty(overtimeRestTimes)){
-			restStartTime = overtimeRestTimes.get(0).getStartTime();
-			restEndTime = overtimeRestTimes.get(0).getEndTime();
+			restStartTimes = overtimeRestTimes.stream().map(x->x.getStartTime()).collect(Collectors.toList());
+			restEndTimes = overtimeRestTimes.stream().map(x->x.getEndTime()).collect(Collectors.toList()); 
 		}
 		// 6.計算処理 : TODO
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(appHolidayWork.getApplication().getEmployeeID(), 
@@ -385,7 +388,7 @@ public class AppHolidayWorkFinder {
 																								appHolidayWork.getWorkTypeCode() == null ? "" : appHolidayWork.getWorkTypeCode().v(),
 																								appHolidayWork.getWorkTimeCode() == null ?"" : appHolidayWork.getWorkTimeCode().toString(), 
 																								appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(), 
-																								appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(), restStartTime, restEndTime);
+																								appHolidayWork.getWorkClock1().getEndTime() == null ? null : appHolidayWork.getWorkClock1().getEndTime().v(), restStartTimes, restEndTimes);
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		getBreaktime(companyID, holidayWorkInputDtos);
 		List<HolidayWorkInputDto> breakTimes = appHolidayWorkDto.getHolidayWorkInputDtos().stream().filter(x -> x.getAttendanceType() == AttendanceType.BREAKTIME.value).collect(Collectors.toList());
@@ -411,7 +414,7 @@ public class AppHolidayWorkFinder {
 					appHolidayWork.getApplication().getAppDate(),
 					ApplicationType.BREAK_TIME_APPLICATION.value,
 					appHolidayWork.getApplication().getEmployeeID(), 
-					companyID, appHolidayWork.getWorkTimeCode().toString());
+					companyID, appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().v());
 			holidayWorkInputDtos.forEach(x -> {
 				breakTimeCal.forEach(breakTime -> {
 					if(x.getAttendanceType() == breakTime.getAttendanceID()){
@@ -503,10 +506,11 @@ public class AppHolidayWorkFinder {
 		endTime1 = recordWorkOutput.getEndTime1();
 		startTime2 = recordWorkOutput.getStartTime2();
 		endTime2 = recordWorkOutput.getEndTime2();
+		
 		// 01-18_実績の内容を表示し直す
 		//appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
 		
-		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
+		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference,Collections.emptyList());
 	}
 	
 	/**

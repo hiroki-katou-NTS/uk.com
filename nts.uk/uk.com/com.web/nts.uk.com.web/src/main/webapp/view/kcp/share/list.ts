@@ -1049,6 +1049,7 @@ module kcp.share.list {
                 if (empList && empList.length > 0) {
                     // Find by employment codes.
                     nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, empList).done(data => {
+                        data = _.sortBy(data,['code']);
                         dfd.resolve(data);
                     })
                     return dfd.promise();
@@ -1059,7 +1060,12 @@ module kcp.share.list {
         }
         
         export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
-            return nts.uk.request.ajax('com', servicePath.findEmployments);
+            let dfd = $.Deferred<Array<UnitModel>>();
+            nts.uk.request.ajax('com', servicePath.findEmployments).done((data: any) =>{
+                data =_.sortBy(data,['code']);
+                dfd.resolve(data);
+            });
+            return dfd.promise();
         }
         
         /**

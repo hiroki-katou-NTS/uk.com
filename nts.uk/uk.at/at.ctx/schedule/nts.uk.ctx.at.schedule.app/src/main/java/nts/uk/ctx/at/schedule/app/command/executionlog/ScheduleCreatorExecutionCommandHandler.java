@@ -90,7 +90,7 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
 
@@ -233,7 +233,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * command.CommandHandlerContext)
 	 */
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -293,7 +293,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 *            the domain
 	 */
 	// スケジュールを再設定する
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, List<GeneralDate> betweenDates,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
@@ -503,7 +503,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param mapFlowWorkSetting
 	 * @param mapDiffTimeWorkSetting
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void createScheduleBasedPersonWithMultiThread(
 			ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator,
@@ -516,7 +516,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
 //		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());
-		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(command.getEmployeeId(), new ArrayList<>());
+		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(creator.getEmployeeId(), new ArrayList<>());
 		
 		if (masterCache.getListWorkingConItem().size() > 1) {
 			// 労働条件が途中で変化するなら、計算キャッシュは利用しない

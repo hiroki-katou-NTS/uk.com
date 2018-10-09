@@ -15,8 +15,6 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -55,6 +53,12 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 			 "WHERE a.krcdtMonMergePk.employeeId = :employeeId ",
 			 "AND a.startYmd <= :endDate ",
 			 "AND a.endYmd >= :startDate ");
+	private static final String DELETE_BY_PK = String.join(" ", "DELETE FROM KrcdtMonMerge a ",
+			"WHERE  a.krcdtMonMergePk.employeeId = :employeeId ",
+			"AND    a.krcdtMonMergePk.yearMonth = :yearMonth ",
+			"AND    a.krcdtMonMergePk.closureId = :closureId",
+			"AND    a.krcdtMonMergePk.closureDay = :closureDay",
+			"AND    a.krcdtMonMergePk.isLastDay = :isLastDay");
 	private static final String DELETE_BY_YEAR_MONTH = String.join(" ", "DELETE FROM KrcdtMonMerge a ",
 			 "WHERE  a.krcdtMonMergePk.employeeId = :employeeId ",
 			 "AND 	 a.krcdtMonMergePk.yearMonth = :yearMonth ");	
@@ -170,7 +174,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		
 		// 登録・更新を判断　および　キー値設定
 		boolean isNeedPersist = false;
-		KrcdtMonMerge entity = queryProxy().find(key, KrcdtMonMerge.class).orElse(null);
+		KrcdtMonMerge entity = this.getEntityManager().find(KrcdtMonMerge.class, key);
 		if (entity == null){
 			isNeedPersist = true;
 			entity = new KrcdtMonMerge();
@@ -193,13 +197,13 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonAttendanceTime.class,
-				new KrcdtMonAttendanceTimePK(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		this.getEntityManager().createQuery(DELETE_BY_PK)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
 	}
 		
 	/** 削除　（年月） */

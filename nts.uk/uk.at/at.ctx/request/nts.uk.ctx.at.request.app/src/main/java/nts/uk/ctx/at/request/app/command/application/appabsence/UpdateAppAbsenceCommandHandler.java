@@ -108,8 +108,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 			Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 					.getApplicationSettingByComID(companyID);
 			ApplicationSetting applicationSetting = applicationSettingOp.get();
-			if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)
-				||appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(displayFixedReason||displayAppReason){
 				if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 						&& Strings.isBlank(typicalReason+displayReason)) {
 					throw new BusinessException("Msg_115");

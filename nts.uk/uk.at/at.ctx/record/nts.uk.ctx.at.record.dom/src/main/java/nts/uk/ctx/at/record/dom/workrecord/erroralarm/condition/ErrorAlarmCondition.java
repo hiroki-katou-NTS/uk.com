@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.management.RuntimeErrorException;
 
@@ -261,18 +262,31 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-		if (true && this.workTypeCondition != null && this.workTypeCondition.checkWorkType(workInfo)) {
-			return true;
+		WorkCheckResult  workTypeCheck = WorkCheckResult.NOT_CHECK;
+		if (true && this.workTypeCondition != null) {
+			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo);
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTimeCondition().isUse() &&
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-		if (true && this.workTimeCondition != null && this.workTimeCondition.checkWorkTime(workInfo)) {
-			return true;
+		WorkCheckResult workTimeCheck = WorkCheckResult.NOT_CHECK;
+		if (true && this.workTimeCondition != null) {
+			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo);
 		}
 		/** 勤怠項目をチェックする */
-		return this.atdItemCondition != null && this.atdItemCondition.check(getValueFromItemIds);
+		WorkCheckResult atdCheck = WorkCheckResult.NOT_CHECK;
+		if(this.atdItemCondition != null) { 
+			atdCheck = this.atdItemCondition.check(getValueFromItemIds);
+		}
+		
+		return evaluate(workTypeCheck, workTimeCheck, atdCheck);
+	}
+	
+	private boolean evaluate(WorkCheckResult workTypeCheck, WorkCheckResult workTimeCheck, WorkCheckResult atdCheck){
+		return Stream.of(workTypeCheck, workTimeCheck, atdCheck)
+						.filter(c -> c != WorkCheckResult.NOT_CHECK)
+						.allMatch(c -> c == WorkCheckResult.ERROR);
 	}
 	
 	/**

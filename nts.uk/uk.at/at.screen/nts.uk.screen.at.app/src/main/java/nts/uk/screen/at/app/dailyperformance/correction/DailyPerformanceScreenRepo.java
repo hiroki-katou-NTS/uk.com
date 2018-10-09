@@ -139,7 +139,7 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 	
-	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, DateRange dateRange);
+	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, GeneralDate dateRange);
 	
 	EmploymentDto findEmployment(String companyId, String employmentCode);
 	

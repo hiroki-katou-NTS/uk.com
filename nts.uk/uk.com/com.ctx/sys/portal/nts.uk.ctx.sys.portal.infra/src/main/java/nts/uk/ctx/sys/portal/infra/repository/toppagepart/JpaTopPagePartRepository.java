@@ -30,13 +30,6 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	private static final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
 
 	@Override
-	public Optional<TopPagePart> find(String topPagePartID) {
-		return this.queryProxy().query(SELECT_SINGLE, CcgmtTopPagePart.class)
-				.setParameter("topPagePartID", topPagePartID)
-				.getSingle(c -> toDomain(c));
-	}
-
-	@Override
 	public List<TopPagePart> findAll(String companyID) {
 		 return this.queryProxy().query(SELECT_BY_COMPANY, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)

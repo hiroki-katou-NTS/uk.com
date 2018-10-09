@@ -820,7 +820,7 @@ public class MonthlyCalculation {
 		if (!agreementOperationSetOpt.isPresent()) {
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
-			return Optional.empty();
+			return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, this.errorInfos));
 		}
 		val agreementOperationSet = agreementOperationSetOpt.get();
 		
@@ -833,7 +833,7 @@ public class MonthlyCalculation {
 		if (workingConditionItems.isEmpty()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"006", new ErrMessageContent(TextResource.localize("Msg_430"))));
-			return Optional.empty();
+			return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, this.errorInfos));
 		}
 		
 		// 同じ労働制の履歴を統合
@@ -848,7 +848,7 @@ public class MonthlyCalculation {
 			val historyId = workingConditionItem.getHistoryId();
 			if (!this.workingConditions.containsKey(historyId)) continue;
 
-			// 処理期間を計算　（一か月の集計期間と労働条件履歴期間の重複を確認する）
+			// 処理期間を計算　（36協定の集計期間と労働条件履歴期間の重複を確認する）
 			val term = this.workingConditions.get(historyId);
 			DatePeriod period = MonthlyCalculation.confirmProcPeriod(aggrPeriod.getPeriod(), term);
 			if (period == null) {
@@ -876,7 +876,7 @@ public class MonthlyCalculation {
 						period, workingConditionItem, weekNo,
 						companySets, employeeSets, monthlyCalcDailys, monthlyOldDatas, repositories);
 				if (calcWork.errorInfos.size() > 0){
-					return Optional.empty();
+					return Optional.of(AgreementTimeOfManagePeriod.of(employeeId, yearMonth, calcWork.errorInfos));
 				}
 				calcWork.year = aggrPeriod.getYear();
 				
@@ -895,7 +895,7 @@ public class MonthlyCalculation {
 				}
 				
 				// 履歴ごとに月別実績を集計する
-				calcWork.aggregate(aggrPeriod.getPeriod(), MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
+				calcWork.aggregate(period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 						annualLeaveDeductDays, absenceDeductTime, repositories);
 			}
 			
@@ -1315,11 +1315,19 @@ public class MonthlyCalculation {
 	 */
 	public void sum(MonthlyCalculation target){
 		
+		GeneralDate startDate = this.procPeriod.start();
+		GeneralDate endDate = this.procPeriod.end();
+		if (startDate.after(target.procPeriod.start())) startDate = target.procPeriod.start();
+		if (endDate.before(target.procPeriod.end())) endDate = target.procPeriod.end();
+		this.procPeriod = new DatePeriod(startDate, endDate);
+		
 		this.actualWorkingTime.sum(target.actualWorkingTime);
 		this.flexTime.sum(target.flexTime);
 		this.aggregateTime.sum(target.aggregateTime);
 		this.totalWorkingTime = this.totalWorkingTime.addMinutes(target.totalWorkingTime.v());
 		this.totalTimeSpentAtWork.sum(target.totalTimeSpentAtWork);
-		this.agreementTime.sum(target.agreementTime);
+		// this.agreementTime.sum() は、下の this.agreementTimeOfManagePeriod.sum() に含まれる。参照関係に注意。
+		
+		this.agreementTimeOfManagePeriod.sum(target.agreementTimeOfManagePeriod);
 	}
 }

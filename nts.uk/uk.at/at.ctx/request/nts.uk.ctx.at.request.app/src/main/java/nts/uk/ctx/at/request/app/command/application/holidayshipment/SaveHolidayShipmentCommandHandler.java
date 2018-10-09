@@ -304,14 +304,14 @@ public class SaveHolidayShipmentCommandHandler
 
 	public AbsenceLeaveApp createNewAbsDomainFromCmd(String absAppID, AbsenceLeaveAppCommand absCmd) {
 		WkTimeCommand wkTime1Cmd = absCmd.getWkTime1();
-		WkTimeCommand wkTime2Cmd = absCmd.getWkTime2();
+		//WkTimeCommand wkTime2Cmd = absCmd.getWkTime2();
 		AbsenceLeaveWorkingHour workTime1 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
 				new WorkTime(wkTime1Cmd.getEndTime()));
-		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
-				new WorkTime(wkTime2Cmd.getEndTime()));
+//		AbsenceLeaveWorkingHour workTime2 = new AbsenceLeaveWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
+//				new WorkTime(wkTime2Cmd.getEndTime()));
 		AbsenceLeaveApp absApp = new AbsenceLeaveApp(absAppID, new WorkTypeCode(absCmd.getWkTypeCD()),
 				EnumAdaptor.valueOf(absCmd.getChangeWorkHoursType(), NotUseAtr.class), absCmd.getWkTimeCD(), workTime1,
-				workTime2, Collections.emptyList(), Collections.emptyList());
+				null, Collections.emptyList(), Collections.emptyList());
 		return absApp;
 	}
 
@@ -339,17 +339,19 @@ public class SaveHolidayShipmentCommandHandler
 
 	private RecruitmentApp createNewRecDomainFromCmd(String recAppID, RecruitmentAppCommand appCmd) {
 		WkTimeCommand wkTime1Cmd = appCmd.getWkTime1();
-		WkTimeCommand wkTime2Cmd = appCmd.getWkTime2();
+		//WkTimeCommand wkTime2Cmd = appCmd.getWkTime2();
+		RecruitmentWorkingHour recHour1 = new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
+				EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class), new WorkTime(wkTime1Cmd.getEndTime()),
+				EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class));
+		
+		RecruitmentWorkingHour recHour2 = null;/* new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
+				EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
+				new WorkTime(wkTime2Cmd.getEndTime()),
+				EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class));*/
 		RecruitmentApp recApp = new RecruitmentApp(recAppID, new WorkTypeCode(appCmd.getWkTypeCD()),
 				new WorkTimeCode(appCmd.getWkTimeCD()),
-				new RecruitmentWorkingHour(new WorkTime(wkTime1Cmd.getStartTime()),
-						EnumAdaptor.valueOf(wkTime1Cmd.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime1Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime1Cmd.getEndType(), NotUseAtr.class)),
-				new RecruitmentWorkingHour(new WorkTime(wkTime2Cmd.getStartTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime2Cmd.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2Cmd.getEndType(), NotUseAtr.class)),
+				recHour1,
+				recHour2,
 				Collections.emptyList());
 
 		return recApp;
@@ -778,7 +780,7 @@ public class SaveHolidayShipmentCommandHandler
 	private void validateAbs(AbsenceLeaveAppCommand cmd) {
 
 		WkTimeCommand wkTime1 = cmd.getWkTime1();
-		WkTimeCommand wkTime2 = cmd.getWkTime2();
+		//WkTimeCommand wkTime2 = cmd.getWkTime2();
 
 		// 就業時間帯変更＝するしない区分.しないのとき、以下の項目が設定されていないこと
 		// ・就業時間帯
@@ -789,13 +791,13 @@ public class SaveHolidayShipmentCommandHandler
 			wkTime1.setStartTime(null);
 			wkTime1.setEndTime(null);
 			cmd.setWkTimeCD(null);
-			wkTime2.setStartTime(null);
-			wkTime2.setEndTime(null);
+			//wkTime2.setStartTime(null);
+			//wkTime2.setEndTime(null);
 			cmd.setWkTimeCD(null);
 		} else {
 			// 開始時刻＜終了時刻 (#Msg_966#)
 			checkTime(wkTime1.getStartTime(), wkTime1.getEndTime());
-			checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
+			//checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
 			// reason check trước đó ở hàm GenAndInspectionOfAppReason rồi
 		}
 
@@ -803,10 +805,10 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void validateRec(RecruitmentAppCommand cmd) {
 		WkTimeCommand wkTime1 = cmd.getWkTime1();
-		WkTimeCommand wkTime2 = cmd.getWkTime2();
+		//WkTimeCommand wkTime2 = cmd.getWkTime2();
 		// 開始時刻＜終了時刻 (#Msg_966#)
 		checkTime(wkTime1.getStartTime(), wkTime1.getEndTime());
-		checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
+		//checkTime(wkTime2.getStartTime(), wkTime2.getEndTime());
 		// reason check trước đó ở hàm GenAndInspectionOfAppReason rồi
 
 	}

@@ -9,6 +9,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
@@ -28,7 +30,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 
  * @author sonnh1
  *
- */
+ */	
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class DefaultBasicScheduleService implements BasicScheduleService {
 
@@ -219,6 +222,41 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 	
 	@Override
+	public WorkStyle checkWorkDay(Optional<WorkType> workTypeOpt) {
+
+		if (!workTypeOpt.isPresent()) {
+			return null;
+		}
+
+		WorkType workType = workTypeOpt.get();
+		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+
+		// All day
+		if (workType.isOneDay()) {
+			if (dailyWork.IsLeaveForADay()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.ONE_DAY_WORK;
+		}
+
+		// Half day
+		if (dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.AFTERNOON_WORK;
+		}
+
+		if (dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		}
+
+		return WorkStyle.ONE_DAY_WORK;
+	}
+	
+	@Override
 	public WorkStyle checkWorkDayByList(String workTypeCode, List<WorkType> listWorkType) {
 		Optional<WorkType> workTypeOpt = listWorkType.stream()
 				.filter(workType -> workType.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
@@ -307,20 +345,18 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	 * @param listWorkType
 	 */
 	@Override
-	public String checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType) {
+	public void checkPairWTypeTimeWithLstWType(String workTypeCode, String workTimeCode, List<WorkType> listWorkType) {
 		SetupType setupType = this.checkNeedWorkTimeSetByList(workTypeCode, listWorkType);
 
 		// In case of Required and work time is not set.
 		if (setupType == SetupType.REQUIRED && !this.isWorkTimeValid(workTimeCode)) {
-			return "Msg_435";
+			throw new BusinessException("Msg_435");
 		}
 
 		// In case of Not Required and work time is set.
 		if (setupType == SetupType.NOT_REQUIRED && this.isWorkTimeValid(workTimeCode)) {
-			return "Msg_434";
+			throw new BusinessException("Msg_434");
 		}
-		
-		return null;
 	}
 
 	@Override
