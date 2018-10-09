@@ -200,7 +200,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         /** update or insert data when click button register **/
         register() {  
             let self = this; 
-            nts.uk.ui.block.invisible();
             let checkErr = false;
                         
             $("#inpCode").trigger("validate");
@@ -210,7 +209,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 return;       
             }
             
-            nts.uk.ui.block.invisible();
+            
             
             let elapseData = [];
             _.forEach(self.items(), function(item, index) {
@@ -233,7 +232,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             _.forEach(elapseData, function(item) {
                 if(isNullOrEmpty(item.grantedDays)  && (!isNullOrEmpty(item.months)|| !isNullOrEmpty(item.months))) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
-                    nts.uk.ui.block.clear();
                     checkErr = true;
                     return;
                 }
@@ -242,7 +240,6 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             // 「経過年数に対する付与日数」は1件以上登録すること
             if(elapseData.length <= 0) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
-                nts.uk.ui.block.clear();
                 return;
             }
             
@@ -258,12 +255,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             
             if(self.daysReq() && dataItem.numberOfDays === "") {
                 $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "FND_E_REQ_INPUT");
-                nts.uk.ui.block.clear();
                 return;
             }
             
             if(!checkErr) {
                 if(!self.editMode()) {
+                    nts.uk.ui.block.invisible();
                     service.addGrantDate(dataItem).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
@@ -281,6 +278,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         nts.uk.ui.block.clear();
                     });
                 } else {
+                    nts.uk.ui.block.invisible();
                     service.updateGrantDate(dataItem).done(function(errors){
                         if (errors && errors.length > 0) {
                             self.addListError(errors);    
