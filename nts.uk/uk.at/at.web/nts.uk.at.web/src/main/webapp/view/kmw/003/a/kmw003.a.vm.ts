@@ -897,7 +897,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 userId: self.employIdLogin,
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
-                showErrorsOnPage: true,
+                errorsOnPage: true,
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
