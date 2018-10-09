@@ -32,7 +32,7 @@
 						data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 					<button id="E1_2" tabindex="2"
 						data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
-					<button id="E1_3" tabindex="3" data-bind="click: count">#{i18n.getText('QMM008_141')}</button>
+					<button id="E1_3" class="danger" tabindex="3" data-bind="click: count">#{i18n.getText('QMM008_141')}</button>
 					<button id="E1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
 				</div>
 			</div>

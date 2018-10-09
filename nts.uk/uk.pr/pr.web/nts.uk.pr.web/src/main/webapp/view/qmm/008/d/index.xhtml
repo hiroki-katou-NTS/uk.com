@@ -52,7 +52,7 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <button id="D1_1" tabindex="1" data-bind="click: create">#{i18n.getText('QMM008_106')}</button>
+            <button id="D1_1" tabindex="1" data-bind="click: create , enable: $vm.isEnableBtnCreate()">#{i18n.getText('QMM008_106')}</button>
             <button class="proceed" data-bind="click: update,enable: $root.errors.isEmpty" id="D1_2"
                     tabindex="2">#{i18n.getText('QMM008_1')}</button>
             <button id="D1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>

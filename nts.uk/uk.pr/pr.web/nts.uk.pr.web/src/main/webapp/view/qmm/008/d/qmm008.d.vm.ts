@@ -27,6 +27,7 @@ module nts.uk.pr.view.qmm008.d {
             isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnDelete: KnockoutObservable<boolean> = ko.observable(true);
             isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
+            isEnableBtnCreate: KnockoutObservable<boolean> = ko.observable(true);
 
             values: KnockoutObservable<string>;
 
@@ -118,29 +119,26 @@ module nts.uk.pr.view.qmm008.d {
                     return
                 }
                 if (self.currentCode() == null) {
+
                     nts.uk.pr.view.qmm008.d.service.create(ko.toJS(self.detail)).done(function(response) {
+
                         if (response.msg == 'Msg_3') {
                             nts.uk.ui.dialog.error({ messageId: "Msg_3" }).then(function() {
                                 self.isEnableBtnDelete(false);
                             });
                         } else {
+                            self.isEnableBtnCreate(true);
                             self.items([]);
                             for (let i = 0; i < response.dataOffice.length; i++) {
                                 self.items.push(new SocialOfficeOverView(response.dataOffice[i].code, response.dataOffice[i].name));
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 
-                                /**
-                                 *  selected
-                                 */
                                 self.currentCode(response.code);
                                 self.isEnableCode(false);
+
                                 $("tr[data-id='code'] ").focus();
-                                /**
-                                 * not selected
-                                 */
-                                /*self.detail(new SocialOfficeDetail());
-                                self.isEnableCode(false);*/
+
                             });
                             _.defer(function() {
                                 $("#D4_3").focus();
@@ -164,19 +162,7 @@ module nts.uk.pr.view.qmm008.d {
                             $("#D4_3").focus();
                             $("tr[data-id='code'] ").focus()
 
-                            /**
-                             *   not selected
-                             */
-                            /*for (let i = 0; i < self.items().length; i++) {
-                                if (self.items()[i].code == response[0]) {
-                                    self.items()[i].name = response[1];
-                                    self.items.valueHasMutated()
-                                }
-                            }
-                            self.currentCode(null);
-                            self.detail(new SocialOfficeDetail());
-                            self.isEnableCode(false);
-                            $("#D4_3").focus();*/
+
 
                         });
                         block.clear();
@@ -197,6 +183,7 @@ module nts.uk.pr.view.qmm008.d {
                 self.selectedNoD35(self.itemList()[0].code);
                 self.selectedNoD38(self.itemList()[0].code);
                 self.isEnableBtnDelete(false);
+                self.isEnableBtnCreate(false);
                 $("#D4_2").focus();
                 self.setTabIndex();
             }
