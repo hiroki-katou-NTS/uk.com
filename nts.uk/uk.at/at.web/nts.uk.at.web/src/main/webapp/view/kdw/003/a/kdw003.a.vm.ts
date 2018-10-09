@@ -454,14 +454,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     
                     self.selectedDirection(obj.moveMouse)
                 }
-
+                
                 var param = {
                     dateRange: dateRangeParam ? {
                         startDate: moment(dateRangeParam.startDate).utc().toISOString(),
                         endDate: moment(dateRangeParam.endDate).utc().toISOString()
                     } : null,
                     displayFormat: _.isEmpty(self.shareObject()) ? (_.isEmpty(self.characteristics) ? 0 : self.characteristics.formatExtract) : self.shareObject().displayFormat,
-                    initScreen: _.isEmpty(self.characteristics) ? 0 : 1,
+                    initScreen: (_.isEmpty(self.characteristics) || !_.isEmpty(self.shareObject())) ? 0 : 1,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: [],
                     formatCodes: self.formatCodes(),

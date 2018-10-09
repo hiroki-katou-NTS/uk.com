@@ -277,6 +277,7 @@ public class DailyPerformanceCorrectionProcessor {
 		DateRange datePeriodResult = dateRange;
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
+			datePeriodResult = dateRange;
 		}else if(displayFormat == 1 && !dateRange.getStartDate().equals(dateRange.getEndDate())){
 			dateRange = new DateRange(dateRange.getStartDate(), dateRange.getStartDate());
 		}
