@@ -51,7 +51,7 @@ public class InitValueSetItemFinder {
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002 , boolean getCombobox) {
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 		
 		String cid = AppContexts.user().companyId();
@@ -64,7 +64,13 @@ public class InitValueSetItemFinder {
 		
 		PersonInfoCategory ctg = getCategory(categoryCd, cid);
 
-		List<PerInfoInitValueSetItemDetail> itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		List<PerInfoInitValueSetItemDetail> itemList = new ArrayList<>();
+		if (getCombobox) {
+			itemList = this.settingItemRepo.getAllInitItemForComboBox(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		} else {
+			itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		}
+		
 
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
