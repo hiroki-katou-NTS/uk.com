@@ -172,6 +172,16 @@ module nts.uk.at.view.kaf007.b {
                 return dfd.promise();
             }
             
+            enableTime() {
+                let self = this;
+                let result = self.editable() && self.requiredCheckTime();
+                if (!result) {
+                    self.appWorkChange().workChange().workTimeStart1(null);
+                    self.appWorkChange().workChange().workTimeEnd1(null);
+                }
+                return result;
+            }
+            
             showReasonText(){
             let self =this;
                 if (self.screenModeNew()) {
