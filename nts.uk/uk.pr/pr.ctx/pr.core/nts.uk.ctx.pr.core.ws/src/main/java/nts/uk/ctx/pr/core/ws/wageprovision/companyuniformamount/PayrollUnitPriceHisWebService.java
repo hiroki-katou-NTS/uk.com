@@ -39,8 +39,6 @@ public class PayrollUnitPriceHisWebService extends WebService {
     private UpdatePayrollUnitPriceHistoryCommandHandler updatePayrollUnitPriceHistoryCommandHandler;
 
 
-
-
     @POST
     @Path("getPayrollUnitPriceHis")
     public List<PayrollUnitPriceHistoryDto> getPayrollUnitPriceHis(PayrollUnitPriceHisKey mPayrollUnitPriceHisKey) {
@@ -85,8 +83,8 @@ public class PayrollUnitPriceHisWebService extends WebService {
 
     @POST
     @Path("addPayrollUnitPriceHis")
-    public String addPayrollUnitPriceHis(PayrollUnitPriceHistoryCommand command) {
-        return addPayrollUnitPriceHistoryCommandHandler.handle(command);
+    public Object addPayrollUnitPriceHis(PayrollUnitPriceHistoryCommand command) {
+        String result = addPayrollUnitPriceHistoryCommandHandler.handle(command);
+        return new Object[] { result };
     }
-
 }
