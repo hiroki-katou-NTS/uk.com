@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthly
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaEmployeeMonthlyPerError extends JpaRepository implements EmployeeMonthlyPerErrorRepository {
 	
@@ -32,7 +32,7 @@ public class JpaEmployeeMonthlyPerError extends JpaRepository implements Employe
 				
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void insertAll(EmployeeMonthlyPerError domain) {
 	

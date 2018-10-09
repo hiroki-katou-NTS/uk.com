@@ -35,7 +35,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		implements BreakTimeOfDailyPerformanceRepository {
@@ -168,7 +168,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return time == null ? null : new TimeWithDayAttr(time);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void insert(BreakTimeOfDailyPerformance breakTimes) {
 //		commandProxy().insertAll(KrcdtDaiBreakTime.toEntity(breakTimes));
@@ -245,6 +245,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void update(List<BreakTimeOfDailyPerformance> breakTimes) {
 		if(breakTimes.isEmpty()) {
+			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());
 			return;
 		}
 		List<KrcdtDaiBreakTime> all = breakTimes.stream().map(c -> KrcdtDaiBreakTime.toEntity(c)).flatMap(List::stream)
@@ -259,11 +260,13 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 										.findFirst().isPresent())
 					.collect(Collectors.toList());
 			
-			toRemove.stream().forEach(c -> {
-				commandProxy().remove(getEntityManager().merge(c));
-			});
-			// commandProxy().removeAll(toRemove);
+//			toRemove.stream().forEach(c -> {
+//				commandProxy().remove(getEntityManager().merge(c));
+//			});
 			commandProxy().updateAll(toUpdate);
+			commandProxy().updateAll(toRemove);
+			commandProxy().removeAll(toRemove);
+			// commandProxy().removeAll(toRemove);
 		} else {
 			this.delete(breakTimes.get(0).getEmployeeId(), breakTimes.get(0).getYmd());
 		}
@@ -290,7 +293,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return result;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public Optional<BreakTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd, int breakType) {
 
@@ -304,7 +307,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		return Optional.ofNullable(group(krcdtDaiBreakTimes).get(0));
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByBreakType(String employeeId, GeneralDate ymd, int breakType) {
 		this.getEntityManager().createQuery(REMOVE_BY_BREAKTYPE).setParameter("employeeId", employeeId)

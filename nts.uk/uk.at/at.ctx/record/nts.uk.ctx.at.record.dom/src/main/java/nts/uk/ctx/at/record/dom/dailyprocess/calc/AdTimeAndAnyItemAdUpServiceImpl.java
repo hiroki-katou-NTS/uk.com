@@ -78,31 +78,31 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	}
 	
 	@Override
-	public void addAndUpdate(List<IntegrationOfDaily> daily) {
-		addAndUpdate(daily, null);
+	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily) {
+		return addAndUpdate(daily, null);
 	}
 	
 	@Override
-	public void addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
-		storedProcedureProcess.dailyProcessing(daily, workTypes).stream().forEach(d -> {
+	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
+		List<IntegrationOfDaily> processed = storedProcedureProcess.dailyProcessing(daily, workTypes);
+		
+		processed.stream().forEach(d -> {
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				attendanceTimeRepository.update(at);
 			});
 			//任意項目更新
 			d.getAnyItemValue().ifPresent(ai -> {
-				if(anyItemValueOfDailyRepo.find(ai.getEmployeeId(), ai.getYmd()).isPresent()){
-					anyItemValueOfDailyRepo.update(ai);
-				} else {
-					anyItemValueOfDailyRepo.add(ai);
-				}
+				anyItemValueOfDailyRepo.persistAndUpdate(ai);
 			});
 		});
+		
+		return processed;
 	}
 	
 	@Override
-	public void addAndUpdate(IntegrationOfDaily daily) {
-		addAndUpdate(Arrays.asList(daily));
+	public IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily) {
+		return addAndUpdate(Arrays.asList(daily)).get(0);
 	}
 
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.overtime.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
@@ -27,9 +28,33 @@ public class ParamChangeAppDate {
 	private String workTypeCode;
 	private Integer startTime;
 	private Integer endTime;
-	private Integer startTimeRest;
-	private Integer endTimeRest;
+	private List<Integer> startTimeRests;
+	private List<Integer> endTimeRests;
 	
 	private int overtimeAtr;
+	
+	public List<Integer> getStartTimeRests() {
+
+		List<Integer> result = new ArrayList<>();
+		startTimeRests.forEach(x -> {
+			if (x != null) {
+				result.add(x);
+			}
+		});
+
+		return result;
+	}
+	
+	public List<Integer> getEndTimeRests() {
+
+		List<Integer> result = new ArrayList<>();
+		endTimeRests.forEach(x -> {
+			if (x != null) {
+				result.add(x);
+			}
+		});
+
+		return result;
+	}
 
 }

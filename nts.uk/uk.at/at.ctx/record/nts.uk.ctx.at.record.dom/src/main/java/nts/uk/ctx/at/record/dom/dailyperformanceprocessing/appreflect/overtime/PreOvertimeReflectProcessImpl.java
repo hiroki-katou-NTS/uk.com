@@ -30,8 +30,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	public WorkInfoOfDailyPerformance workTimeWorkTimeUpdate(OvertimeParameter para, WorkInfoOfDailyPerformance dailyInfo) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする		
 		//INPUT．勤種反映フラグ(予定)をチェックする
-		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
-				|| para.getOvertimePara().getWorkTypeCode().isEmpty()
+		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
+				|| para.getOvertimePara().getWorkTypeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isScheReflectFlg()) {
 			return dailyInfo;
 		}
@@ -48,8 +48,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		boolean ischeck = false;
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
 		//INPUT．勤種反映フラグ(実績)をチェックする
-		if(para.getOvertimePara().getWorkTimeCode().isEmpty()
-				|| para.getOvertimePara().getWorkTypeCode().isEmpty()
+		if(para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTimeCode().isEmpty()
+				|| para.getOvertimePara().getWorkTimeCode() == null || para.getOvertimePara().getWorkTypeCode().isEmpty()
 				|| !para.isActualReflectFlg()) {
 			return new AppReflectRecordWork(ischeck, dailyInfo);
 		}
