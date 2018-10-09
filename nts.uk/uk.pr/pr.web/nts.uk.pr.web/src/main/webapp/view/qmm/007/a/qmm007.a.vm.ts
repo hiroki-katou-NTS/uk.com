@@ -5,7 +5,10 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
+        isExist:  KnockoutObservable<boolean> = ko.observable(false);
         mode: KnockoutObservable<number> = ko.observable(0);
+        currentSelected: KnockoutObservable<string> = ko.observable('');
+        historyTakeover: KnockoutObservable<number> = ko.observable(0);
         amountOfMoney: KnockoutObservable<number> = ko.observable(null);
         notes: KnockoutObservable<string> = ko.observable('taitt');
         dataSource: KnockoutObservableArray<Node> = ko.observableArray([]);
@@ -240,24 +243,32 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             _.each(listPayrollUnitPriceHistory,(val)=>{
                                 let childs = new Node(val.code + ';' + val.hisId + ';' + value.name, '' + val.startYearMonth + '～' + val.endYearMonth , []);
                                 node.childs.push(childs);
-                                self.dataSource(db);
+                                if(self.dataSource().length > 0 && self.dataSource()[0].childs.length > 0){
+                                    this.singleSelectedCode(self.dataSource()[0].childs[0].code);
+                                }
+                                if(self.code() == val.code){
+                                    this.singleSelectedCode(childs.code);
+                                }
                             });
+
+                            db.push(node);
+                            self.dataSource(db);
                         }
                     });
-                    db.push(node);
-                    self.dataSource(db);
                 });
             });
-
-
-
         }
 
         openBscreen(){
             let self = this;
+            let fistHistory = self.payrollUnitPriceHistory()[0];
 
-            modal("/view/qmm/007/b/index.xhtml").onClosed(function () {
+            modal("/view/qmm/007/b/index.xhtml").onClosed( ()=> {
+                if(self.mode() === MODE.ADD_HISTORY){
+                    if(self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY){
 
+                    }
+                }
             });
         }
 
@@ -273,10 +284,11 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 hisId: params[1],
                 name: params[2],
                 startYearMonth: self.yearMonth(),
-                endYearMonth:self.endYearMonth(),
+                endYearMonth: self.endYearMonth(),
                 isFirst: index === 0 ? true : false,
             });
             modal("/view/qmm/007/c/index.xhtml").onClosed(function () {
+
             });
 
         }
@@ -287,9 +299,9 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let self = this;
             self.code('');
             self.name('');
-            self.price(null);
+            self.amountOfMoney(null);
             self.yearMonth(null);
-            self.mode(0);
+            self.mode(MODE.NEW);
         }
         register(){
             let self = this;
@@ -299,7 +311,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                         'code':self.code(),
                         'name': self.name()}
                 ),
-                payrollUnitPriceHistoryCommand: new PayrollUnitPriceHistory({'cId':'000000000000-0001',
+                payrollUnitPriceHistoryCommand: new PayrollUnitPriceHistory({'cId':'',
                     'code':self.code(),
                     'hisId': self.singleSelectedCode().split(';')[1],
                     'startYearMonth':self.yearMonth(),
@@ -320,12 +332,22 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             }
 
             service.getPayrollUnitPriceById(self.code()).done((data)=>{
-
+                    if(data != undefined){
+                        self.isExist(true);
+                    }
             });
-            service.register(data).done(()=>{
-                dialog.info({ messageId: "Msg_15" }).then(() => {
+            /*if(!self.isExist() && self.mode() === MODE.NEW){
+                dialog.info({ messageId: "Msg_3" }).then(() => {
                     close();
                 });
+                return;
+            }*/
+            service.register(data).done((data)=>{
+                dialog.info({ messageId: "Msg_15" }).then(() => {
+
+                });
+                self.singleSelectedCode(self.singleSelectedCode());
+                self.init();
             }).fail(function(res: any) {
                 if (res)
                     dialog.alertError(res);
@@ -456,5 +478,10 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         NEW = 0,
         UPDATE = 1,
         ADD_HISTORY = 2
+    }
+
+    export  enum  HISTORYTAKEOVER{
+        CREATE_NEW = 0,
+        EXTENDS_LAST_HISTORY = 1
     }
 }
