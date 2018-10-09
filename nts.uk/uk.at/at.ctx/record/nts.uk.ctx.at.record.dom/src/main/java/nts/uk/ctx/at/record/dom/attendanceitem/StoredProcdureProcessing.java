@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.attendanceitem;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -66,10 +68,10 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 public class StoredProcdureProcessing implements StoredProcdureProcess {
 	
 	/**Iﾜｰｸ休*/
-	private static final String DEFAULT_WORK_TYPE = "100";
+	private static final WorkTypeCode DEFAULT_WORK_TYPE = new WorkTypeCode("100");
 	
 	/**Iﾜｰｸ*/
-	private static final List<String> DEFAULT_WORK_TIME = Arrays.asList("100", "101");
+	private static final List<WorkTimeCode> DEFAULT_WORK_TIME = Arrays.asList(new WorkTimeCode("100"), new WorkTimeCode("101"));
 	
 	private static final List<Integer> MONTHKY_ANYITEM_TO_PROCESS = Arrays.asList(20, 22, 24, 46, 1, 2);
 	
@@ -476,7 +478,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		if(downer == 0 || upper == 0){
 			return 0;
 		}
-		return BigDecimal.valueOf(upper).multiply(V100).divide(BigDecimal.valueOf(downer), RoundingMode.HALF_UP).doubleValue();
+		return BigDecimal.valueOf(upper).multiply(V100).divide(BigDecimal.valueOf(downer), RoundingMode.HALF_UP).round(new MathContext(1, RoundingMode.HALF_UP)).doubleValue();
 	}
 	
 	private boolean isWeekday(WorkTypeUnit atr, WorkTypeClassification oneDay, WorkTypeClassification morning,
@@ -535,7 +537,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			WorkTypeClassification morning, WorkTypeClassification afternoon) {
 		AttendanceTime actualWork = d.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime();
-		return (atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday 
+		return ((atr == WorkTypeUnit.OneDay && (oneDay == WorkTypeClassification.AnnualHoliday 
 				|| oneDay == WorkTypeClassification.SpecialHoliday || oneDay == WorkTypeClassification.SubstituteHoliday))
 			|| (atr == WorkTypeUnit.MonringAndAfternoon && 
 						((morning == WorkTypeClassification.AnnualHoliday && afternoon == WorkTypeClassification.SpecialHoliday) ||
@@ -543,7 +545,7 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
 						(morning == WorkTypeClassification.SpecialHoliday && afternoon == WorkTypeClassification.SubstituteHoliday) ||
 						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.AnnualHoliday) ||
-						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.SpecialHoliday)))
+						(morning == WorkTypeClassification.SubstituteHoliday && afternoon == WorkTypeClassification.SpecialHoliday))))
 			&&  (actualWork == null || actualWork.valueAsMinutes() == 0);
 	}
 
