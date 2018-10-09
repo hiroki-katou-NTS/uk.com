@@ -123,6 +123,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         stockDis: KnockoutObservable<boolean> = ko.observable(false);
         //ver20
         disAll: KnockoutObservable<boolean> = ko.observable(false);
+        //ver21
+        relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
+        hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
+        dataMax: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
 
             let self = this;
@@ -152,6 +156,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
+                $('#relaReason').ntsError('clear');
                 service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
                     let line1 = getText('KAF006_44');
@@ -163,12 +168,18 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     }
                     if(data.maxDayObj != null){
                         self.maxDay(data.maxDayObj.maxDay);
-                        self.dayOfRela(data.maxDayObj.dayOfRela);  
+                        self.dayOfRela(data.maxDayObj.dayOfRela);
+                        self.dataMax(true);  
+                    }else{
+                        self.dataMax(false);    
                     }
                     let line2 = getText('KAF006_46',[maxDay]);
                     
                     self.maxDayline1(line1);
                     self.maxDayline2(line2);
+                    //ver21
+                    let relaS = self.findRelaSelected(codeChange);
+                    self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
                 });
             });
             self.isCheck.subscribe(function(checkChange){
@@ -188,7 +199,12 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
             });
         }
-        
+        findRelaSelected(relaCD: string): any{
+            let self = this;
+            return _.find(self.relationCombo(), function(rela){
+                return rela.relationCd == relaCD;
+            });
+        }
         /**
          * 
          */
@@ -220,11 +236,11 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     }
                     if(data.numberRemain.subVacaRemain != null){//振休残数
                         self.subVacaRemain(data.numberRemain.subVacaRemain + '日');
+                        self.numberSubVaca(data.numberRemain.subVacaRemain);
                         self.subVacaDis(true);
                     }
                     if(data.numberRemain.stockRemain != null){//ストック休暇残数
                         self.stockRemain(data.numberRemain.stockRemain + '日');
-                        self.numberSubVaca(data.numberRemain.stockRemain);
                         self.stockDis(true);
                     }
                 }
@@ -267,14 +283,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                                 self.workTypecodes([]);
                                 self.selectedTypeOfDuty(null);
                             } else {
-                                self.typeOfDutys.removeAll();
+                                let a = [];
                                 self.workTypecodes.removeAll();
                                 for (let i = 0; i < data.workTypes.length; i++) {
-                                    self.typeOfDutys.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
+                                    a.push(new common.TypeOfDuty(data.workTypes[i].workTypeCode, data.workTypes[i].displayName));
                                     self.workTypecodes.push(data.workTypes[i].workTypeCode);
                                 }
-                                if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)){
-                                    self.selectedTypeOfDuty(data.workTypeCode);
+                                self.typeOfDutys(a);
+                                let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                                if (nts.uk.util.isNullOrUndefined(contain)){
+                                    self.selectedTypeOfDuty('');
                                 }
                                 
                             }
@@ -304,10 +322,18 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.findChangeDisplayHalfDay(value);
                 });
                 self.selectedTypeOfDuty.subscribe((value) => {
-                    if(nts.uk.util.isNullOrUndefined(value)){
-                        return;    
+                    if(nts.uk.util.isNullOrUndefined(value)||nts.uk.util.isNullOrEmpty(value)){
+                        self.changeWorkHourValueFlg(false);
+                        self.maxDayDis(false); 
+                        self.hdTypeDis(false);
+                    } else {
+                        self.findChangeWorkType(value);
+                        if(self.holidayTypeCode() == 3){
+                            self.hdTypeDis(true);
+                        }else{
+                            self.hdTypeDis(false);
+                        }
                     }
-                    self.findChangeWorkType(value);
                 });
                 self.displayWorkTimeName.subscribe((value) => {
                     self.changeDisplayWorkime();
@@ -371,7 +397,8 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.relationCombo([]);
             let lstRela = [];
             _.each(data.lstRela, function(rela){
-                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
+                        maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
             });
             self.relationCombo(lstRela);
             let fix = false;
@@ -405,7 +432,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 if(data.maxDayObj != null){
                     self.maxDay(data.maxDayObj.maxDay);
-                    self.dayOfRela(data.maxDayObj.dayOfRela);  
+                    self.dayOfRela(data.maxDayObj.dayOfRela);
+                    self.dataMax(true);  
+                }else{
+                    self.dataMax(false);    
                 }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
@@ -431,14 +461,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 alldayHalfDay: self.selectedAllDayHalfDayValue()
             }).done((result) => {
                 if (!nts.uk.util.isNullOrEmpty(result.workTypes)) {
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
-                        self.selectedTypeOfDuty(data.workTypeCode);
+                    self.typeOfDutys(a);
+                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                    if (nts.uk.util.isNullOrUndefined(contain)){
+                        self.selectedTypeOfDuty('');
                     }
                 }
                 self.prePostSelected(result.application.prePostAtr);
@@ -481,14 +513,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.isCheck(false);
                     self.relaReason('');
                 } else {
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
-                        self.selectedTypeOfDuty(result.workTypeCode);
+                    self.typeOfDutys(a);
+                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                    if (nts.uk.util.isNullOrUndefined(contain)){
+                        self.selectedTypeOfDuty('');
                     }
                 }
                 if (!nts.uk.util.isNullOrEmpty(result.workTimeCodes)) {
@@ -529,14 +563,16 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     self.isCheck(false);
                     self.relaReason('');
                 } else {
-                    self.typeOfDutys.removeAll();
+                    let a = [];
                     self.workTypecodes.removeAll();
                     for (let i = 0; i < result.workTypes.length; i++) {
-                        self.typeOfDutys.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
+                        a.push(new common.TypeOfDuty(result.workTypes[i].workTypeCode, result.workTypes[i].displayName));
                         self.workTypecodes.push(result.workTypes[i].workTypeCode);
                     }
-                    if (nts.uk.util.isNullOrEmpty(self.selectedTypeOfDuty)) {
-                        self.selectedTypeOfDuty(result.workTypeCode);
+                    self.typeOfDutys(a);
+                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
+                    if (nts.uk.util.isNullOrUndefined(contain)){
+                        self.selectedTypeOfDuty('');
                     }
                 }
                 if (!nts.uk.util.isNullOrEmpty(result.workTimeCodes)) {

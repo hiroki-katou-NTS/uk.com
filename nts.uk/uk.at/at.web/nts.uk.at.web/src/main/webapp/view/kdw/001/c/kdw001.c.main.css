@@ -3,19 +3,19 @@
 	height: 36px;
 	width: 111px;
 	margin-left: 502px;
-    margin-top: 10px;
+    margin-top: 4px;
 }
 
 #kcp005{
-	height: 388px;
+	height: 352px;
 	width: 562px;
-    margin-left: 89px;
+    margin-left: 105px;
     margin-top: 7px;
 }
 
 #panel11{
 	width: 562px;
-    margin-left: 89px;
+    margin-left: 105px;
 }
 
 #daterangepicker{
@@ -25,4 +25,11 @@
 
 #formLabe12{
 	float: left;
+}
+#component-items-list{
+	    margin-top: -25px;
+}
+#contents-area{
+	overflow-y: hidden;
+	overflow-x: hidden;
 }

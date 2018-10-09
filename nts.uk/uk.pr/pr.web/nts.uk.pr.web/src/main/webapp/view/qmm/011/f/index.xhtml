@@ -47,7 +47,8 @@
 							data-bind="ntsRadioButton: {
 										checked: methodEditing, 
 										option: itemList()[1], 
-										optionValue: 'code', 
+										optionValue: 'code',
+										enable: canDelete, 
 										optionText: 'name',
 										group: 'periodOption'}">
 						</div>

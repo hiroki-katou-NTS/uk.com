@@ -11,9 +11,9 @@ module nts.uk.at.view.kal001.d.service {
         }
         
         
-        export function extractAlarm(taskId :any ,numberEmpSuccess: any,listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
+        export function extractAlarm(taskId :any ,numberEmpSuccess: any, statusId:string ,listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
-                                                   _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
+                                                   _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}),statusId);
             
             let def = $.Deferred();
             
@@ -32,6 +32,7 @@ module nts.uk.at.view.kal001.d.service {
                             let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });
                             let dataX = []; 
                             _.forEach(sorted, item => {
+                                
                                 if(item.key === "extracting" ){
                                     data["extracting"] = item.valueAsBoolean;
                                 } else if(item.key === "nullData"){
@@ -63,9 +64,9 @@ module nts.uk.at.view.kal001.d.service {
             return nts.uk.request.ajax("at", paths.extractStarting);
         }
         
-        export function extractFinished(statusId): JQueryPromise<void>{
+        export function extractFinished(extraParam): JQueryPromise<void>{
             
-            return nts.uk.request.ajax("at", paths.extractFinished, { processStatusId: statusId });
+            return nts.uk.request.ajax("at", paths.extractFinished, extraParam);
         }
     
      export interface CheckConditionTimeDto{
@@ -140,11 +141,12 @@ module nts.uk.at.view.kal001.d.service {
             listEmployee: Array<model.UnitModel>;
             alarmCode: string;
             listPeriodByCategory: Array<PeriodByCategoryCommand>;
-            
-            constructor(listEmployee: Array<model.UnitModel>,  alarmCode: string, listPeriodByCategory: Array<PeriodByCategoryCommand>){
+            statusProcessId :string;
+            constructor(listEmployee: Array<model.UnitModel>,  alarmCode: string, listPeriodByCategory: Array<PeriodByCategoryCommand>, statusProcessId : string){
                 this.listEmployee = listEmployee;
                 this.alarmCode = alarmCode;
                 this.listPeriodByCategory = _.uniqWith(listPeriodByCategory, _.isEqual);
+                this.statusProcessId = statusProcessId;
             }
         }
         
@@ -169,5 +171,10 @@ module nts.uk.at.view.kal001.d.service {
             extracting: boolean;
             nullData: boolean;
         }
-    
+        export enum AlarmExtraStatus {
+            END_NORMAL = 0,   /**正常終了*/
+            END_ABNORMAL = 1, /**異常終了*/
+            PROCESSING = 2,   /**処理中*/
+            INTERRUPT = 3,    /**中断*/
+        }
 }

@@ -18,12 +18,12 @@ public class MPDataDto {
     private String typeGroup;
     private boolean identify;
     private boolean approval;
-    private boolean dailyConfirm;
+    private String dailyConfirm;
     private String dailyCorrectPerformance;
     private Set<MPCellDataDto> cellDatas;
     
     public MPDataDto(String id, String state, String error, String employeeCode, String employeeName, String employeeId, String typeGroup, boolean identify, boolean approval,
-			boolean dailyConfirm, String dailyCorrectPerformance) {
+			String dailyConfirm, String dailyCorrectPerformance) {
     	
 		this.id = id;
 		this.state = state;

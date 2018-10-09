@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * 実装：年間超過回数の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Stateless
 public class GetExcessTimesYearImpl implements GetExcessTimesYear {
@@ -35,9 +35,9 @@ public class GetExcessTimesYearImpl implements GetExcessTimesYear {
 		int excessCount = 0;
 		for (val agreementTime : agreementTimeList){
 			switch (agreementTime.getAgreementTime().getStatus()){
+			case EXCESS_LIMIT_ERROR_SP:
 			case EXCESS_EXCEPTION_LIMIT_ALARM:
 			case EXCESS_EXCEPTION_LIMIT_ERROR:
-			case EXCESS_LIMIT_ERROR_SP:
 				excessCount++;
 				yearMonths.add(agreementTime.getYearMonth());
 				break;

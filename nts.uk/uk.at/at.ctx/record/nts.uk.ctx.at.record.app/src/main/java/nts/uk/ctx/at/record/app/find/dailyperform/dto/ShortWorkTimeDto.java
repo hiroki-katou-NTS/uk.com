@@ -3,7 +3,10 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -45,12 +48,39 @@ public class ShortWorkTimeDto implements ItemConst {
 		}
 	}
 	
+	@Override
+	public ShortWorkTimeDto clone(){
+		return new ShortWorkTimeDto(totalDeductionTime == null ? null : totalDeductionTime.clone(), 
+				totalTime == null ? null : totalTime.clone(), times,  attr);
+	}
+	
 	public static ShortWorkTimeDto toDto(ShortWorkTimeOfDaily domain){
 		return domain == null ? null : new ShortWorkTimeDto(
 											TotalDeductionTimeDto.getDeductionTime(domain.getTotalDeductionTime()), 
 											TotalDeductionTimeDto.getDeductionTime(domain.getTotalTime()), 
 											domain.getWorkTimes() == null ? null : domain.getWorkTimes().v(), 
 											domain.getChildCareAttribute().value);
+	}
+	
+	public ShortWorkTimeOfDaily toDomain(){
+		return new ShortWorkTimeOfDaily(
+				new WorkTimes(times == null ? 0 : times),
+				createDeductionTime(totalTime),
+				createDeductionTime(totalDeductionTime),
+				attr == ChildCareAttribute.CARE.value 
+						? ChildCareAttribute.CARE : ChildCareAttribute.CHILD_CARE);
+	}
+	
+	public static ShortWorkTimeOfDaily defaultDomain(){
+		return new ShortWorkTimeOfDaily(
+				new WorkTimes(0),
+				DeductionTotalTime.defaultValue(),
+				DeductionTotalTime.defaultValue(),
+				ChildCareAttribute.CHILD_CARE);
+	}
+
+	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {
+		return dto == null ? DeductionTotalTime.defaultValue() : dto.createDeductionTime();
 	}
 	
 }

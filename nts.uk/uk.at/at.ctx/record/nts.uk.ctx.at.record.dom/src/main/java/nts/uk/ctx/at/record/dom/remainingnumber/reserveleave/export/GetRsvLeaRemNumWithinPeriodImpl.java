@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.GrantWork;
@@ -286,6 +287,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		for (val rsvGrantRemainingData : rsvGrantRemainingDatas){
 			if (rsvGrantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			if (rsvGrantRemainingData.getGrantDate().after(closureStart)) continue;
+			if (rsvGrantRemainingData.getDeadline().before(closureStart)) continue;
 			beforeClosureDatas.add(rsvGrantRemainingData);
 		}
 		
@@ -524,7 +526,7 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 			
 			// 集計期間をチェック
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd();
+			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 			DatePeriod workPeriod = new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd);
 			
 			// 上限日数をチェック
@@ -561,17 +563,8 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		
 		List<TmpReserveLeaveMngWork> results = new ArrayList<>();
 		
-		// 「上書きフラグ」をチェック
-		if (param.getIsOverWrite().isPresent()){
-			if (param.getIsOverWrite().get()){
-				
-				// 上書き用データがある時、使用する
-				if (param.getForOverWriteList().isPresent()) return param.getForOverWriteList().get();
-			}
-		}
-		
 		// 「モード」をチェック
-		if (param.getMode() == TempAnnualLeaveMngMode.MONTHLY){
+		if (param.getMode() == InterimRemainMngMode.MONTHLY){
 			// 月次モード
 			
 			// 「月次処理用の暫定残数管理データを作成する」を実行する
@@ -584,13 +577,10 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
 				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
 				val data = dailyInterimRemainMngData.getResereData().get();
-				results.add(TmpReserveLeaveMngWork.of(
-						data.getResereId(),
-						master.getYmd(),
-						data.getUseDays()));
+				results.add(TmpReserveLeaveMngWork.of(master, data));
 			}
 		}
-		if (param.getMode() == TempAnnualLeaveMngMode.OTHER){
+		if (param.getMode() == InterimRemainMngMode.OTHER){
 			// その他モード
 			
 			// 「暫定積立年休管理データ」を取得する
@@ -600,13 +590,32 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 				val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());
 				if (!tmpReserveLeaveMngOpt.isPresent()) continue;
 				val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
-				results.add(TmpReserveLeaveMngWork.of(
-						tmpReserveLeaveMng.getResereId(),
-						interimRemain.getYmd(),
-						tmpReserveLeaveMng.getUseDays()));
+				results.add(TmpReserveLeaveMngWork.of(interimRemain, tmpReserveLeaveMng));
 			}
 		}
 		
+		// 「上書きフラグ」をチェック
+		if (param.getIsOverWrite().isPresent()){
+			if (param.getIsOverWrite().get()){
+				
+				// 上書き用データがある時、使用する
+				if (param.getForOverWriteList().isPresent()){
+					val overWrites = param.getForOverWriteList().get();
+					for (val overWrite : overWrites){
+						// 重複データを削除
+						ListIterator<TmpReserveLeaveMngWork> itrResult = results.listIterator();
+						while (itrResult.hasNext()){
+							TmpReserveLeaveMngWork target = itrResult.next();
+							if (target.equals(overWrite)) itrResult.remove();
+						}
+						// 上書き用データを追加
+						results.add(overWrite);
+					}
+				}
+			}
+		}
+		
+		results.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		return results;
 	}
 }

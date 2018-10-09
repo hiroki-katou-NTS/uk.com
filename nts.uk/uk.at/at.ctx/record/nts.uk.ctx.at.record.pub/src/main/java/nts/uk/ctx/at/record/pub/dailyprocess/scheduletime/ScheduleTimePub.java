@@ -13,11 +13,13 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
  */
 public interface ScheduleTimePub {
 	//RequestList No.91
-	ScheduleTimePubExport calculationScheduleTime(ScheduleTimePubImport impTime);
+	ScheduleTimePubExport calculationScheduleTime(Object companySetting, ScheduleTimePubImport impTime);
 	
 	//RequestList No.91 
 	//For multi people
-	List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(List<ScheduleTimePubImport> impList);
+	List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(Object companySetting, List<ScheduleTimePubImport> impList);
+	
+	Object getCompanySettingForCalclationScheduleTimeForMultiPeople();
 	
 	//RequestList No91
 	//For able Common Company Setting

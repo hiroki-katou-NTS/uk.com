@@ -82,20 +82,20 @@ module nts.uk.at.view.kfp001.d {
                     peopleNo: self.peopleNo()
 
                 }
-                let resourceId = nts.uk.util.randomId().slice(0, 10);
-                self.addErrorInforCommand({
-                    resourceId: resourceId,
-                    periodArrgLogId: self.executionId(),
-                    processDay: moment(self.startDate()).utc(),
-                    errorMess: 'Loi roi'
-                })
+//                let resourceId = nts.uk.util.randomId().slice(0, 10);
+//                self.addErrorInforCommand({
+//                    resourceId: resourceId,
+//                    periodArrgLogId: self.executionId(),
+//                    processDay: moment(self.startDate()).utc(),
+//                    errorMess: 'Loi roi'
+//                })
 
                 let addAggrPeriodCommand = {
                     mode: self.mode(),
                     aggrPeriodCommand: aggrPeriodDto,
                     targetCommand: targetDto,
-                    executionCommand: executionDto,
-                    inforCommand: self.addErrorInforCommand()
+                    executionCommand: executionDto
+//                    ,inforCommand: self.addErrorInforCommand()
                 }
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
@@ -114,20 +114,23 @@ module nts.uk.at.view.kfp001.d {
                     nts.uk.ui.windows.setShared("KFP001_DATAD", data);
                     nts.uk.ui.windows.setShared("KFP001_DATA_EXC", exc);
                     nts.uk.ui.windows.setShared("KFP001_DATAE", addAggrPeriodCommand);
+                    nts.uk.ui.block.invisible();
                         nts.uk.ui.windows.sub.modal('/view/kfp/001/e/index.xhtml').onClosed(() => {
                             nts.uk.ui.block.clear();
                         });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    
                 })
 
 
             }
 
             opendScreenF() {
+                nts.uk.ui.block.invisible();
                 nts.uk.request.jump("/view/kfp/001/b/index.xhtml");
+                nts.uk.ui.block.clear();
             }
 
             prevC() {

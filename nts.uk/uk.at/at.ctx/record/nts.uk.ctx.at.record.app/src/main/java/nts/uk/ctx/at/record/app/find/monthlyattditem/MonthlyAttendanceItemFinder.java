@@ -25,10 +25,11 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -48,8 +49,8 @@ public class MonthlyAttendanceItemFinder {
 
 	/** The attd item name adapter. */
 	@Inject
-	private DailyAttendanceItemNameAdapter attdItemNameAdapter;
-	
+	private AtItemNameAdapter attdItemNameAdapter;
+
 	@Inject
     private OptionalItemRepository optItemRepo;
 	
@@ -63,26 +64,32 @@ public class MonthlyAttendanceItemFinder {
 	 * @return the list
 	 */
 	public List<AttdItemDto> findByAnyItem(AttdItemLinkRequest request) {
-		// Check empty selectable list
-		if (CollectionUtil.isEmpty(request.getAnyItemNos())) {
-			return Collections.emptyList();
+		// get list attendance item by atr
+		List<AttdItemDto> attdItems = this.findByAtr(this.convertToAttdItemType(request.getFormulaAtr()));
+
+		if (!CollectionUtil.isEmpty(request.getAnyItemNos())) {
+			// get unselectable attendance items
+			List<Integer> excludes = this.attdItemLinkingFinder
+					.findAttendanceByOptionalItem(request.getAnyItemNos(), request.getPerformanceAtr()).stream()
+					.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
+
+			// remove excluded attendance item
+			excludes.forEach(ex -> {
+				attdItems.removeIf(item -> item.getAttendanceItemId() == ex);
+			});
 		}
 
-		// get attendance item linking
-		List<Integer> attdItemLinks = this.attdItemLinkingFinder.findByAnyItem(request).stream()
-				.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
-
-		// get list attendance item filtered by attdItemLinks
-		List<AttdItemDto> attdItems = this.findAll().stream()
-				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(attdItems)) {
+			return attdItems;
+		}
 
 		// convert to map
 		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
 				.collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
 
 		// get attd item name list
-		List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.attdItemNameAdapter
-				.getDailyAttendanceItemName(new ArrayList<Integer>(attdItemsMap.keySet()));
+		List<AttItemName> attdItemNames = this.attdItemNameAdapter
+				.getNameOfAttendanceItem(new ArrayList<Integer>(attdItemsMap.keySet()), TypeOfItemImport.Monthly);
 
 		// set attendance item name
 		attdItemNames.forEach(item -> {
@@ -104,11 +111,8 @@ public class MonthlyAttendanceItemFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		List<AttdItemDto> attendanceItemDtos = this.monthlyRepo
-				.findByAtr(companyId, MonthlyAttendanceItemAtr.valueOf(atr)).stream().map(dom -> this.toDto(dom))
-				.collect(Collectors.toList());
-
-		return attendanceItemDtos;
+		return this.monthlyRepo.findByAtr(companyId, MonthlyAttendanceItemAtr.valueOf(atr)).stream()
+				.map(dom -> this.toDto(dom)).collect(Collectors.toList());
 	}
 
 	public List<AttdItemDto> findMonthlyAttendanceItemBy(int checkItem) {
@@ -170,6 +174,26 @@ public class MonthlyAttendanceItemFinder {
 
 	}
 
+	/**
+	 * Convert to attd item type.
+	 *
+	 * @param formulaAtr the formula atr
+	 * @return the int
+	 */
+	private int convertToAttdItemType(int formulaAtr) {
+		OptionalItemAtr vl = OptionalItemAtr.valueOf(formulaAtr);
+		switch (vl) {
+		case AMOUNT:
+			return MonthlyAttendanceItemAtr.AMOUNT.value;
+		case TIME:
+			return MonthlyAttendanceItemAtr.TIME.value;
+		case NUMBER:
+			return MonthlyAttendanceItemAtr.NUMBER.value;
+		default:
+			throw new RuntimeException("value not found");
+		}
+	}
+	
 	private int convertToOptionalItemAtr(int attr){
 		MonthlyAttendanceItemAtr monthlyAttendanceAtr = MonthlyAttendanceItemAtr.valueOf(attr);
     	switch (monthlyAttendanceAtr) {

@@ -33,7 +33,7 @@
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="company-tab" role="tabpanel">
+			<div id="company-tab" role="tabpanel" style="display: none" data-bind="visible: true">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/001/a/index.xhtml' }"  tabindex="2">#{i18n.getText('KMF001_27')}</a>
@@ -248,7 +248,7 @@
 
 			</div>
 
-			<div id="employment-tab" role="tabpanel">
+			<div id="employment-tab" role="tabpanel" style="display: none" data-bind="visible: true">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 <!-- 					<button data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button> -->

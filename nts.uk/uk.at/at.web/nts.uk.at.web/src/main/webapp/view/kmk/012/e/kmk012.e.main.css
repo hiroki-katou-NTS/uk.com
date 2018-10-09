@@ -12,10 +12,10 @@
 	margin-top: 11px;
 }
 
-.ui-iggrid-tablebody td[role="gridcell"], .ui-iggrid-tablebody td[role="gridcell"].ui-state-hover {
+/* .ui-iggrid-tablebody td[role="gridcell"], .ui-iggrid-tablebody td[role="gridcell"].ui-state-hover {
 	padding-top: 3px;
 }
 
 .ui-iggrid-tablebody td[role="gridcell"] > div {
 	display: inline-block;
-}
+} */

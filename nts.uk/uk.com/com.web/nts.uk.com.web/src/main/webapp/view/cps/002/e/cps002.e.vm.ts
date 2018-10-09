@@ -33,8 +33,11 @@ module cps002.e.vm {
         start(): JQueryPromise<any>{
             let self = this,
                 dfd = $.Deferred();
-            delete __viewContext.primitiveValueConstraints.EmployeeCode.formatOption;
+            delete __viewContext.primitiveValueConstraints.EmployeeCode.formatOption; 
             setTimeout(dfd.resolve(),100);
+            setTimeout(function(c){
+                $("#employeeCode").focus();    
+            },100);
             return dfd.promise();
         }
 

@@ -12,7 +12,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KrcstDisplayAndInputMonthly;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implements MonthlyItemControlByAuthRepository {
@@ -21,6 +23,15 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
 			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
 			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
+	
+	private static final String SELECT_BY_KEY = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
+			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID" 
+			+ " AND c.toUse = :toUse";
+
+	private static final String SELECT_BY_KEY_ATT_ITEM_ID = SELECT_BY_KEY 
+			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID IN :itemMonthlyIDs";
+
 //	
 //	private final String SELECT_BY_AUTHORITY_MONTHLY_ID_AND_TO_USE = "SELECT c FROM KrcstDisplayAndInputMonthly c"
 //			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
@@ -60,20 +71,38 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 				.setParameter("companyID", monthlyItemControlByAuthority.getCompanyId())
 				.setParameter("authorityMonthlyID", monthlyItemControlByAuthority.getAuthorityMonthlyId())
 				.getList();
-		for(int i=0;i<newEntity.size();i++) {
-			for(int j =0;j<updateEntity.size();j++) {
-				if(newEntity.get(i).krcstDisplayAndInputMonthlyPK.itemMonthlyID ==updateEntity.get(j).krcstDisplayAndInputMonthlyPK.itemMonthlyID) {
-					updateEntity.get(j).toUse = newEntity.get(i).toUse;
-					if(newEntity.get(i).toUse == 1) {
-						updateEntity.get(j).canBeChangedByOthers = newEntity.get(i).canBeChangedByOthers;
-						updateEntity.get(j).youCanChangeIt = newEntity.get(i).youCanChangeIt;
+		
+		for(int i=0;i<updateEntity.size();i++) {
+			boolean checkExist = false;
+			for(int j =0;j<newEntity.size();j++) {
+				if(updateEntity.get(i).krcstDisplayAndInputMonthlyPK.itemMonthlyID ==newEntity.get(j).krcstDisplayAndInputMonthlyPK.itemMonthlyID) {
+					updateEntity.get(i).toUse = newEntity.get(j).toUse;
+					if(newEntity.get(j).toUse == 1) {
+						updateEntity.get(i).canBeChangedByOthers = newEntity.get(j).canBeChangedByOthers;
+						updateEntity.get(i).youCanChangeIt = newEntity.get(j).youCanChangeIt;
 					}
-					this.commandProxy().update(updateEntity.get(j));
+					this.commandProxy().update(updateEntity.get(i));
+					checkExist = true;
 					break;
 				}
 			}
+			if(!checkExist) {
+				this.commandProxy().remove(KrcstDisplayAndInputMonthly.class,updateEntity.get(i).krcstDisplayAndInputMonthlyPK);
+			}
 		}
 		
+		for(int i=0;i<newEntity.size();i++) {
+			boolean checkExist = false;
+			for(int j =0;j<updateEntity.size();j++) {
+				if(newEntity.get(i).krcstDisplayAndInputMonthlyPK.itemMonthlyID ==updateEntity.get(j).krcstDisplayAndInputMonthlyPK.itemMonthlyID) {
+					checkExist = true;
+					break;
+				}
+			}
+			if(!checkExist) {
+				this.commandProxy().insert(newEntity.get(i));
+			}
+		}
 	}
 
 	@Override
@@ -109,12 +138,57 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 					.getList(c->c.toDomain()));
 			
 		});
-		if(data.isEmpty())
+		if(CollectionUtil.isEmpty(data))
 			return Optional.empty();
 		MonthlyItemControlByAuthority monthlyItemControlByAuthority = new MonthlyItemControlByAuthority(
 				companyID,authorityMonthlyId,data
 				);
 		return Optional.of(monthlyItemControlByAuthority);
+	}
+	
+	
+	private final String SELECT_ALL_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
+			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
+			+ " AND c.toUse = :toUse "
+			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
+	
+	@Override
+	public Optional<MonthlyItemControlByAuthority> getAllMonthlyAttdItemByUse(String companyID, String authorityMonthlyId, int toUse) {
+		List<DisplayAndInputMonthly> data = this.queryProxy().query(SELECT_ALL_BY_AUTHORITY_MONTHLY_LIST_ID,KrcstDisplayAndInputMonthly.class)
+					.setParameter("companyID", companyID)
+					.setParameter("authorityMonthlyID", authorityMonthlyId)
+					.setParameter("toUse", toUse)
+					.getList(c->c.toDomain());
+			
+		if(CollectionUtil.isEmpty(data))
+			return Optional.empty();
+		MonthlyItemControlByAuthority monthlyItemControlByAuthority = new MonthlyItemControlByAuthority(
+				companyID,authorityMonthlyId,data
+				);
+		return Optional.of(monthlyItemControlByAuthority);
+	}
+
+	@Override
+	public Optional<MonthlyItemControlByAuthority> getMonthlyAttdItemByAttItemId(String companyID,
+			String authorityMonthlyId, List<Integer> attendanceItemIds) {
+		List<DisplayAndInputMonthly> data = new ArrayList<>();
+		if (attendanceItemIds == null || attendanceItemIds.isEmpty()) {
+			data = this.queryProxy().query(SELECT_BY_KEY, KrcstDisplayAndInputMonthly.class)
+					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
+					.setParameter("toUse", NotUseAtr.USE.value)
+					.getList(c -> c.toDomain());
+		} else {
+			data = this.queryProxy().query(SELECT_BY_KEY_ATT_ITEM_ID, KrcstDisplayAndInputMonthly.class)
+					.setParameter("companyID", companyID).setParameter("authorityMonthlyID", authorityMonthlyId)
+					.setParameter("toUse", NotUseAtr.USE.value).setParameter("itemMonthlyIDs", attendanceItemIds)
+					.getList(c -> c.toDomain());
+		}
+		if (data.isEmpty())
+			return Optional.empty();
+		MonthlyItemControlByAuthority monthlyAttendanceItemAuthority = new MonthlyItemControlByAuthority(companyID,
+				authorityMonthlyId, data);
+		return Optional.of(monthlyAttendanceItemAuthority);
 	}
 
 }

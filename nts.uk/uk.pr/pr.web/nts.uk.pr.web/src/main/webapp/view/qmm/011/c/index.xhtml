@@ -8,7 +8,7 @@
                     data-bind="click: register,enable: !enableRegis() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM011_1')}</button>
             <!-- A1_2 -->
             <button id="A1_2" tabindex="2"
-                    data-bind="click: openDscreen,enable: !enableRegis() ">#{i18n.getText('QMM011_2')}</button>
+                    data-bind="click: openDscreen,enable: !enableRegis(), timeClick: 1000 ">#{i18n.getText('QMM011_2')}</button>
             <!-- A1_3-->
             <button id="A1_3" tabindex="3"
                     data-bind="enable: false">#{i18n.getText('QMM011_3')}</button>
@@ -20,9 +20,9 @@
                      data-bind="ntsPanel:{width: '220px', height: '415px',direction: 'none', visible: true}">
                     <div id="action">
                         <!-- C1_2 履歴追加 -->
-                        <button style="float: left" id ="C1_2" tabindex="20"  data-bind="click: openEscreen, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
+                        <button style="float: left" id ="C1_2" tabindex="20"  data-bind="click: openEscreen,timeClick: 1000, enable: !enableNew()">#{i18n.getText('QMM011_6')}</button>
                         <!-- C1_3 履歴編集 -->
-                        <button style="margin-left: 45px"  id ="C1_3" tabindex="21"  data-bind="click: openFscreen, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
+                        <button style="margin-left: 45px"  id ="C1_3" tabindex="21"  data-bind="click: openFscreen, timeClick: 1000, enable: enableUpdate()">#{i18n.getText('QMM011_7')}</button>
                     </div>
                     <div>
                         <!--C1_4 労災保険料率一覧 -->

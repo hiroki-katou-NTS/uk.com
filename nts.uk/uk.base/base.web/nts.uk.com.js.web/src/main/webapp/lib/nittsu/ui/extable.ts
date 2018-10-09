@@ -594,7 +594,7 @@ module nts.uk.ui.exTable {
         function groupHeader($container: HTMLElement, options: any, isUpdate: boolean) {
             let $table = selector.create("table").html("<tbody></tbody>").addClass(options.tableClass)
                         .css({ position: "relative", "table-layout": "fixed", width: "100%", 
-                                "border-collapse": "separate", "user-select": "none" }).getSingle();
+                                /**"border-collapse": "separate",**/ "user-select": "none" }).getSingle();
             $container.appendChild($table);
             let $tbody = $table.getElementsByTagName("tbody")[0];
             if (!isUpdate) {
@@ -639,7 +639,7 @@ module nts.uk.ui.exTable {
             $table.style.position = "relative";
             $table.style.tableLayout = "fixed";
             $table.style.width = "100%";
-            $table.style.borderCollapse = "separate";
+//            $table.style.borderCollapse = "separate";
             $table.style.userSelect = "none";
             $container.appendChild($table);
             let $tbody = $table.getElementsByTagName("tbody")[0];
@@ -796,7 +796,7 @@ module nts.uk.ui.exTable {
                 
                 let tdStyle = "";
                 tdStyle += "; border-width: 1px; overflow: hidden; white-space: " 
-                            + ws + "; position: relative;";
+                            + ws + ";";//"; position: relative;";
                 self.highlight(td);
                 
                 if (!self.visibleColumnsMap[key]) tdStyle += "; display: none;"; //td.style.display = "none";
@@ -832,7 +832,7 @@ module nts.uk.ui.exTable {
 //                       spread.bindSticker(div, rowIdx, key, self.options);
                    });
                    style.detCell(self.$container, td, rowIdx, key);
-                   tdStyle += "; padding: 0px;";
+                   tdStyle += "; position: relative; padding: 0px;";
                    td.style.cssText += tdStyle;
                     
                    if (self.options.overflowTooltipOn) widget.textOverflow(td);
@@ -1313,6 +1313,7 @@ module nts.uk.ui.exTable {
                         if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) { 
                             touched = mTouch;
                             touched.idx = i;
+                        } else if (touched && touched.dirty && (!mTouch || !mTouch.dirty)) {
                         } else if (touched && touched.dirty && mTouch && mTouch.dirty) {
                             touched.idx = -1;
                         } else touched = mTouch;
@@ -6675,6 +6676,7 @@ module nts.uk.ui.exTable {
             $.data($grid, EDIT_HISTORY, null);
             $.data($grid, STICK_HISTORY, null);
             $.data($grid, DET, null);
+            $.data($grid, D_CELLS_STYLE, null);
             let exTable = helper.getExTableFromGrid($grid);
             if (!exTable) return;
             exTable.modifications = {};

@@ -6,6 +6,7 @@
 
 .float-right {
 	float: right !important;
+	margin-right: 55px;
 }
 
 #content-left {
@@ -21,27 +22,6 @@
 
 .notrequiredCell {
 	background-color: #C7F391;
-}
-
-.input-units {
-	width: 209px !important;
-}
-
-.sub-input-units  {
-	width: 218px !important;
-	text-align: right !important;
-}
-
-input.sub-input-units  {
-	border: 1px solid transparent !important;
-}
-.ntsControl.error input{
-	border-color: #ff6666 !important;
-}
-
-.input.sub-input-units:focus{
-	 border: 1px solid #0096f2;
-     box-shadow: none;
 }
 
 #content-right {
@@ -90,7 +70,7 @@ input.ntsSearchBox {
 
 #sub-right {
 	float: left;
-	width: 634px;
+	width: 595px;
 	margin-left: 30px;
 }
 
@@ -100,7 +80,6 @@ input.ntsSearchBox {
 
 #sub-right>table>tbody {
 	max-height: 495px;
-	overflow-y: scroll;
 	overflow-x: hidden;
 }
 
@@ -143,65 +122,94 @@ table tr td, table tr th {
 .ui-igcombo-wrapper {
 	display: block;
 	width: initial;
-	width: auto;
+	width: 249px;
 }
 
 .contents-header {
-	width: 100%;
+	width: 94.5%;
 	border: 1px solid #ccc;
 }
 
 .contents-header tbody tr:first-child td {
 	border-top: none;
-}
+} 
 
 thead {
 	background-color: #CFF1A5;
 }
 
 #COL_1 {
-	min-width: 200px !important;
+	min-width: 180px !important;
 	border-left: none;
     border-top: none;
 }
 
 #COL_2 {
-	min-width: 190px !important;
+	min-width: 160px !important;
 	border-top: none;
 }
 
 #COL_3 {
-	min-width: 240px !important;
+	min-width: 249px !important;
 	border-right: none;
 	border-top: none;
 }
 
 #combo-box {
-	min-width: 100px !important;
+	width: 160px !important;
+} 
+
+.input-units {
+	width: 209px !important;
+}
+
+input.sub-input-units  {
+	border: 1px solid transparent !important;
 }
 
 .input-units-1 {
-	min-width: 200px;
-	max-width: 200px;
+	min-width: 179px;
+	max-width: 179px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
 .input-units-2 {
-	min-width: 190px;
-	max-width: 190px;
+	min-width: 160px;
+	max-width: 160px;
 }
 
 .input-units-3 {
-	min-width: 240px !important;
+	min-width: 249px !important;
+	max-width: 249px !important;
 }
 
-#notdata {
-	min-width: 240px !important;
-	max-width: 240px !important;
+ #notdata {
+	min-width: 249px !important;
+	max-width: 249px !important;
 }
 
+.sub-input-units  {
+	width: 249px !important;
+	text-align: right !important;
+}
+
+.ntsDatepicker.nts-input.reset-element.sub-input-units{
+	width: 225px !important;
+}
+.sub-input-units.nts-editor.nts-input{
+	width: 225px !important;
+}
+
+.ntsControl.error input{
+	border-color: #ff6666 !important;
+}
+
+.input.sub-input-units:focus{
+	 border: 1px solid #0096f2;
+     box-shadow: none;
+}
 
 
 th>div {
@@ -262,11 +270,4 @@ abbr[title] {
 
 .selectionName {
 	width: 180px;
-}
- .ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.no-close.ui-dialog-buttons.ui-draggable.ui-resizable{
-	position: absolute !important;
-    top: 160px !important;
-    left: 35px !important;
-    height: auto !important;
-    width: 442px !important;
 }

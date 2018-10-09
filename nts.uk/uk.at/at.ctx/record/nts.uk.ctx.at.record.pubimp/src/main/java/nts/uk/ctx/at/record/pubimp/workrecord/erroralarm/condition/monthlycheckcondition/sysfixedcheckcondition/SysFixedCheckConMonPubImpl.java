@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.service.LeaveManagementService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 
@@ -63,15 +63,17 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 			CompensatoryLeaveComSetting compensatoryLeaveComSetting) {
 		Boolean data = leaveManagementService.checkDeadlineCompensatoryLeaveCom(employeeID, closing, compensatoryLeaveComSetting);
 		if(data) {
+			int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
 			YearMonth currentYearMonth = closing.getClosureMonth().getProcessingYm();
-			return Optional.of(new ValueExtractAlarmWRPubExport(null,
+			
+			return Optional.of(new ValueExtractAlarmWRPubExport(
+					null,
 					employeeID,
 					GeneralDate.ymd(currentYearMonth.year(), currentYearMonth.month(), 1),
 					TextResource.localize("KAL010_100"),
-					TextResource.localize("KAL010_278"),	
-					TextResource.localize("KAL010_279"),
+					TextResource.localize("KAL010_278"),
+					TextResource.localize("KAL010_279",String.valueOf(deadlCheckMonth)),	
 					null));
-
 		}
 		return Optional.empty();
 	}

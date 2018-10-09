@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
@@ -339,7 +338,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							legalTransferTimeWork, new AttendanceTime(0)));
 					timeSeriesWork.addTransferTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
-							transferTimeWork, overTimeFrameTime.getOverTimeWork().getCalcTime()));
+							transferTimeWork, overTimeFrameTime.getTransferTime().getCalcTime()));
 					break;
 				}
 				break;
@@ -402,7 +401,6 @@ public class OverTimeOfMonthly implements Cloneable {
 			SettingRequiredByFlex settingsByFlex){
 		
 		val flexAggrSet = settingsByFlex.getFlexAggrSet();
-		val monthlyAggrSetOfFlexOpt = settingsByFlex.getMonthlyAggrSetOfFlexOpt();
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -421,18 +419,9 @@ public class OverTimeOfMonthly implements Cloneable {
 			// 「設定．残業を含める」を確認する
 			if (flexAggrSet.getIncludeOverTime() == NotUseAtr.USE){
 
-				// 残業フレックス加算を確認
-				if (monthlyAggrSetOfFlexOpt.isPresent()) {
-					val overTimeMap = monthlyAggrSetOfFlexOpt.get().getOutsideTimeAddSet().getOverTimeMap();
-					if (overTimeMap.containsKey(overTimeFrameNo)){
-						if (overTimeMap.get(overTimeFrameNo).getAddition() == UseAtr.USE){
-					
-							// 取得した残業枠時間を「フレックス時間」に入れる
-							flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
-							continue;
-						}
-					}
-				}
+				// 取得した残業枠時間を「フレックス時間」に入れる
+				flexTime.addOverTimeFrameTime(ymd, overTimeFrameSrc);
+				continue;
 			}
 				
 			// 取得した残業枠時間を「集計残業時間」に入れる

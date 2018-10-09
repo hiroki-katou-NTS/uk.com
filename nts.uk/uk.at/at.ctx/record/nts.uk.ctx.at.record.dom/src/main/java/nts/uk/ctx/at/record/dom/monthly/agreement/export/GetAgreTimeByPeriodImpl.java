@@ -59,6 +59,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			// 36協定時間を取得
 			val agreementTimeList =
 					this.agreementTimeOfMngPrdRepo.findBySidsAndYearMonths(employeeIds, periodYmList);
+			if (agreementTimeList.size() == 0) continue;
 			
 			// 期間をセット
 			AgreementTimeByPeriod result = new AgreementTimeByPeriod(
@@ -86,13 +87,23 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 						companyId, employeeId, criteria, workingSystem);
 				
 				// 取得した限度時間をセット
-				if (periodAtr == PeriodAtrOfAgreement.TWO_MONTHS){
+				switch (periodAtr){
+				case TWO_MONTHS:
 					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmTwoMonths().v()));
 					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorTwoMonths().v()));
-				}
-				else {
+					break;
+				case THREE_MONTHS:
 					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmThreeMonths().v()));
 					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorThreeMonths().v()));
+					break;
+				case ONE_YEAR:
+					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneYear().v()));
+					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneYear().v()));
+					break;
+				default:
+					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneMonth().v()));
+					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneMonth().v()));
+					break;
 				}
 				
 				// チェック処理

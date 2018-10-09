@@ -42,6 +42,15 @@ public interface WorkTypeRepository {
 	List<WorkTypeInfor> findAllByOrder(String companyId);
 
 	/**
+	 * Gets the possible work type with join.
+	 *
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
+	 * @return the possible work type
+	 */
+	List<WorkType> getPossibleWorkTypeV2(String companyId, List<String> lstPossible);
+	
+	/**
 	 * Find by company id.
 	 *
 	 * @param companyId the company id
@@ -123,13 +132,13 @@ public interface WorkTypeRepository {
 	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
 	
 	/**
-	 * Find work type set close atr.
+	 * Find work type set close atr and deprecateAtr.
 	 *
 	 * @param companyId the company id
 	 * @param closeAtr the close atr
 	 * @return the list
 	 */
-	List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr);
+	List<WorkTypeSet> findWorkTypeSetCloseAtrDeprecateAtr(String companyId, int closeAtr, int deprecateAtr);
 	
 	/**
 	 * Adds the.

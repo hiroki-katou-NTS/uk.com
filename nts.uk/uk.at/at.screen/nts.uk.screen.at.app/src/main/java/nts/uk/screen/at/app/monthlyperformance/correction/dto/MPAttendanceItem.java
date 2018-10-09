@@ -28,4 +28,7 @@ public class MPAttendanceItem {
 	 * 時間外の自動計算区分 11: 外出理由"
 	 */
 	private Integer typeGroup;
+	
+	private Integer primitive;
+	
 }

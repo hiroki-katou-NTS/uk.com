@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -77,13 +80,24 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 								: new FlexTimeDto(CalcAttachTimeDto.toTimeWithCal(domain.getFlexTime().getFlexTime()),
 										getAttendanceTime(domain.getFlexTime().getBeforeApplicationTime())));
 	}
+	
+	@Override
+	public OverTimeWorkDailyPerformDto clone() {
+		return new OverTimeWorkDailyPerformDto(
+				overTimeFrameTime == null ? null : overTimeFrameTime.stream().map(o -> o.clone()).collect(Collectors.toList()),
+				overTimeFrameTimeSheet == null ? null : overTimeFrameTimeSheet.stream().map(o -> o.clone()).collect(Collectors.toList()),
+				excessOfStatutoryMidNightTime == null ? null : excessOfStatutoryMidNightTime.clone(),
+				overTimeSpentAtWork,
+				irregularWithinPrescribedOverTimeWork,
+				flexTime == null ? null : flexTime.clone());
+	}
 
 	private static Integer getAttendanceTime(AttendanceTime time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 
 	private static Integer getAttendanceTime(TimeWithDayAttr time) {
-		return time == null ? null : time.valueAsMinutes();
+		return time == null ? 0 : time.valueAsMinutes();
 	}
 
 	public OverTimeOfDaily toDomain() {
@@ -95,29 +109,33 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
-				excessOfStatutoryMidNightTime == null ? Finally.empty() : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
+				excessOfStatutoryMidNightTime == null ? Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue())) 
+													  : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
-				new FlexTime(createTimeWithCalcMinus(), flexTime == null ? null : toAttendanceTime(flexTime.getBeforeApplicationTime())),
+				new FlexTime(createTimeWithCalcMinus(), 
+				flexTime == null ? AttendanceTime.ZERO : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 
 	private TimeDivergenceWithCalculationMinusExist createTimeWithCalcMinus() {
-		return flexTime == null || flexTime.getFlexTime() == null ? null : flexTime.getFlexTime().createTimeDivWithMinus();
+		return flexTime == null || flexTime.getFlexTime() == null ? 
+				TimeDivergenceWithCalculationMinusExist.sameTime(AttendanceTimeOfExistMinus.ZERO): flexTime.getFlexTime().createTimeDivWithMinus();
 	}
 
 	private TimeSpanForCalc createTimeSheet(TimeSpanForCalcDto c) {
-		return c == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getStart()), toTimeWithDayAttr(c.getEnd()));
+		return c == null ? new TimeSpanForCalc(TimeWithDayAttr.THE_PRESENT_DAY_0000, TimeWithDayAttr.THE_PRESENT_DAY_0000) 
+				: new TimeSpanForCalc(toTimeWithDayAttr(c.getStart()), toTimeWithDayAttr(c.getEnd()));
 	}
 
 	private TimeDivergenceWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : c.createTimeDivWithCalc();
+		return c == null ? TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)) : c.createTimeDivWithCalc();
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
-		return time == null ? null : new AttendanceTime(time);
+		return time == null ? AttendanceTime.ZERO : new AttendanceTime(time);
 	}
 
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {
-		return time == null ? null : new TimeWithDayAttr(time);
+		return time == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(time);
 	}
 }

@@ -106,8 +106,11 @@ module nts.uk.at.view.kbt002.f {
             openDialogH(execItemCd){
                 let self = this;
                 block.grayout();
-                
-                setShared('inputDialogH', {execItemCd: execItemCd});
+                let cd = execItemCd;
+                if(execItemCd<10)
+                    cd = "0"+cd;
+                    
+                setShared('inputDialogH', {execItemCd: cd});
                 modal("/view/kbt/002/h/index.xhtml").onClosed(function(){
                     block.clear();
                 });    

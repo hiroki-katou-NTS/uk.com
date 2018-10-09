@@ -120,7 +120,8 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		}
 		//対象日の申請を抽出する
 		List<AppRemainCreateInfor> appData = inputInfor.getAppData().stream()
-				.filter(y -> y.getSid().equals(inputInfor.getSid()) && y.getAppDate().equals(baseDate))
+				.filter(y -> y.getSid().equals(inputInfor.getSid()) && (y.getAppDate().equals(baseDate)
+						|| (y.getStartDate().isPresent() && y.getEndDate().isPresent() && y.getStartDate().get().beforeOrEquals(baseDate) && y.getEndDate().get().afterOrEquals(baseDate))))
 				.collect(Collectors.toList());
 		detailData.setAppData(appData);
 		//対象日の予定を抽出する

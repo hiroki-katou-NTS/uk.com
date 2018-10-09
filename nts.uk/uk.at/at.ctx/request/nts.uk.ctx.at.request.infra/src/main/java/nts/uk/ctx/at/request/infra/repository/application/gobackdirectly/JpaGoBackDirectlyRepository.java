@@ -83,7 +83,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				.setParameter("appID", appID)
 				.getSingle(c -> toDomain(c));
 		if(!item.isPresent()) {
-			return null;
+			return Optional.empty();
 		}
 		return item;
 	}

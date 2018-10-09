@@ -1,22 +1,24 @@
 div.form-label {
-    display: inline-block;
-    box-sizing: border-box;
-    height: 37px;
-    border-style: solid;
-    border-color: #97D155;
-    border-width: 0 0 0 5px;
-    padding: 0 10px 0 8px;
-
+	display: inline-block;
+	box-sizing: border-box;
+	border-style: solid;
+	border-width: 0 0 0 5px;
+	padding: 0 10px 0 8px;
 }
 
+.row_2_3_4 {
+	margin-top: 8px;
+	margin-left: 114px;
+	margin-right: 12px;
+}
 
 div.label {
-    width: 100%;
+	width: 100%;
 }
 
 .label {
-    display: inline-block;
-    box-sizing: border-box;
+	display: inline-block;
+	box-sizing: border-box;
 }
 
 .form-label lable {
@@ -27,16 +29,10 @@ div.label {
 	margin-left: 20px;
 }
 
-.title_content{
-	margin:20px;
-	font-size: 1.5em;
+.title_content {
+	margin: 20px;
+	font-size: 1.4em;
 }
-
-td{
-	width: 100px;
-	height: 40px;
-}
-
 
 .col_left {
 	width: 120px;
@@ -51,20 +47,20 @@ input {
 }
 
 button.x-large {
-    font-size: 22px;
-    padding: 6px 35px;
-    background-color: #A4EEB0;
-    margin-bottom: 5px;
-    height: 45px;
-    box-shadow: 0 5px #999;
+	font-size: 22px;
+	padding: 6px 35px;
+	background-color: #A4EEB0;
+	margin-bottom: 5px;
+	height: 45px;
+	box-shadow: 0 5px #999;
 }
 
 button.large {
-    font-size: 15px;
-    padding: 4px 10px;
-    margin-bottom: 4px;
-    height: 34px;
-    box-shadow: 0 4px rgba(0, 0, 0, 0.4);
+	font-size: 15px;
+	padding: 4px 10px;
+	margin-bottom: 4px;
+	height: 34px;
+	box-shadow: 0 4px rgba(0, 0, 0, 0.4);
 }
 
 #tbl_devision {
@@ -78,4 +74,52 @@ button.large {
 
 .col_right_dv {
 	width: 40px;
+}
+
+#master-wrapper {
+	overflow: hidden;
+}
+
+.div-table {
+	display: table;
+	border: 0, background-color: #eee;
+	border-spacing: 5px;
+	margin-left: 30px;
+	margin-top: 15px;
+}
+
+.div-table-row {
+	display: table-row;
+	clear: both;
+	height: 40px;
+}
+
+.div-table-row-small {
+	display: table-row;
+	clear: both;
+}
+
+.div-table-col-small {
+	float: left;
+	display: table-column;
+}
+
+.div-table-col-standard {
+	float: left;
+	display: table-column;
+}
+
+.div-table-col-big {
+	float: left;
+	display: table-column;
+}
+
+.div-table-col-big-big {
+	float: left;
+	display: table-column;
+}
+
+.div-table-col-medium {
+	float: left;
+	display: table-column;
 }

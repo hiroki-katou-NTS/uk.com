@@ -15,10 +15,11 @@ module nts.uk.at.view.kal001.b {
             currentSelectedRow: KnockoutObservable<any>;
 
             dataSource : Array<model.ValueExtractAlarmDto>=[];
+            flgActive : KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.currentSelectedRow = ko.observable(null);
-                
+                self.flgActive = ko.observable(true);
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'guid', width: 1 ,hidden :true },
                     { headerText: getText('KAL001_20'), key: 'workplaceName', width: 100 },
@@ -35,8 +36,7 @@ module nts.uk.at.view.kal001.b {
 
             startPage(): JQueryPromise<any> {
                 let self = this;
-                let dfd = $.Deferred();               
-                
+                let dfd = $.Deferred();
                 $("#grid").igGrid({ 
                         height: '500px',
                         dataSource: self.dataSource,

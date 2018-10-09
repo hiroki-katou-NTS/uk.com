@@ -66,6 +66,11 @@ module nts.uk.pr.view.ccg007.d {
                             blockUI.clear();
                         });
                 });
+                
+                service.ver().done(data => {
+                    $("#ver").html(data.ver);
+                });
+                
                 dfd.resolve();
                 return dfd.promise();
             }

@@ -52,5 +52,7 @@ public class MonthlyPerformanceParam {
 	
 	private Integer yearMonth;
 	
-	private  ActualTime actualTime;
+	private ActualTime actualTime;
+	
+	private Integer closureId;
 }

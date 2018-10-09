@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
  * 
@@ -47,5 +48,18 @@ public class WeekdayHoliday extends DomainObject {
 	public static WeekdayHoliday createFromJavaType(String companyId, BigDecimal overworkFrameNo, int weekdayNo,
 			int excessHolidayNo, int excessSphdNo) {
 		return new WeekdayHoliday(companyId, overworkFrameNo, weekdayNo,excessHolidayNo, excessSphdNo);
+	}
+	
+	public int useFrameNo(HolidayAtr atr) {
+		switch(atr) {
+		case NON_STATUTORY_HOLIDAYS:
+			return excessHolidayNo;
+		case PUBLIC_HOLIDAY:
+			return excessSphdNo;
+		case STATUTORY_HOLIDAYS:
+			return weekdayNo;
+		default:
+			throw new RuntimeException("unknown HolidayAtr:"+ atr);
+		}
 	}
 }

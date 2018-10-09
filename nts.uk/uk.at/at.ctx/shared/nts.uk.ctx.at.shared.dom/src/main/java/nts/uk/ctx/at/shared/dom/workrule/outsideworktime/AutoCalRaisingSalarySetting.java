@@ -17,4 +17,8 @@ public class AutoCalRaisingSalarySetting {
 		this.specificRaisingSalaryCalcAtr = specificRaisingSalaryCalcAtr;
 		this.raisingSalaryCalcAtr = raisingSalaryCalcAtr;
 	}
+	
+	public static AutoCalRaisingSalarySetting defaultValue(){
+		return new AutoCalRaisingSalarySetting(false, false);
+	}
 }

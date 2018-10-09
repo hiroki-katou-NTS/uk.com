@@ -82,10 +82,10 @@ public class GrantHdTblSet extends AggregateRoot {
 
 			// 条件NO：1、条件値 > 条件NO：2、条件値 > 条件NO：3、条件値 > 条件NO：4、条件値 > 条件NO：5、条件値
 			if(this.grantConditions.get(i - 1).getConditionValue() != null) {
-				int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
+				Double firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
 				
 				if(currentCondition.getConditionValue() != null) {
-					int secondValue = currentCondition.getConditionValue().v();
+					Double secondValue = currentCondition.getConditionValue().v();
 					
 					if (firstValue <= secondValue && currentCondition.getUseConditionAtr() == UseConditionAtr.USE) {
 						throw new BusinessException("Msg_264");
@@ -146,7 +146,8 @@ public class GrantHdTblSet extends AggregateRoot {
 		GrantCondition target = null;
 		this.grantConditions.sort((a, b) -> a.getConditionNo() - b.getConditionNo());
 		for (val grantCondition : this.grantConditions){
-			if (grantCondition.getUseConditionAtr() == UseConditionAtr.NOT_USE) continue;
+			if (grantCondition.getUseConditionAtr() != UseConditionAtr.USE) continue;
+			if (grantCondition.getConditionValue() == null) break;
 			
 			// 基準値と付与条件．条件値を比較
 			if (criteria >= grantCondition.getConditionValue().v().doubleValue()) {

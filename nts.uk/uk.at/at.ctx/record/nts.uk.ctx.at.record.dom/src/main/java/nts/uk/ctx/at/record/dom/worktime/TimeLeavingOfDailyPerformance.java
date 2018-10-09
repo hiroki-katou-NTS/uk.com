@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.worktime;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,10 +129,11 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		for(TimeLeavingWork attendanceLeave : timeLeavingWorks) {
 			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
-		timeLeavingWorks.clear();
-		timeLeavingWorks.addAll(newAttendanceLeave);
 		
-		return this;
+		return new TimeLeavingOfDailyPerformance(this.getEmployeeId(), 
+												 this.getWorkTimes(), 
+												 newAttendanceLeave, 
+												 this.getYmd());
 	}
 
 	/**
@@ -139,13 +141,13 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @param timeSpan　範囲時間
 	 * @return 重複していない時間
 	 */
-	public Optional<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
-		Optional<TimeSpanForCalc> notDuplicatedRange = Optional.of(timeSpan);
+	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
+		if(timeSpan == null) return Collections.emptyList();
+		List<TimeSpanForCalc> returnList = new ArrayList<>();
 		for(TimeLeavingWork tlw : this.timeLeavingWorks ) {
-			if(!notDuplicatedRange.isPresent()) return Optional.empty(); 
 			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
-			notDuplicatedRange = notDuplicatedRange.get().getNotDuplicationWith(tlw.getTimespan());
+			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
 		}
-		return notDuplicatedRange;
+		return returnList;
 	}
 }

@@ -116,8 +116,8 @@ module nts.uk.pr.view.qmm011.f.viewmodel {
                 nts.uk.ui.errors.removeByElement($("#F1_9"));
                 return false;
             }
-            if ((self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || 
-                    Number(self.startLastYearMonth()) > Number(self.startYearMonth())) && (this.methodEditing() == EDIT_METHOD.UPDATE)){
+            if (self.startYearMonth() == self.endYearMonth() || Number(self.startYearMonth()) > Number(self.endYearMonth()) || 
+                    (Number(self.startLastYearMonth()) > Number(self.startYearMonth()) && (this.methodEditing() == EDIT_METHOD.UPDATE))){
                 $('#F1_9').ntsError('set', { messageId: "Msg_107" });
                 return true;
             }

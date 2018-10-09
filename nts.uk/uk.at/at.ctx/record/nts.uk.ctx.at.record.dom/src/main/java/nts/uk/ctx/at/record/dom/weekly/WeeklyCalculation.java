@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.weekly;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -13,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
@@ -309,6 +312,24 @@ public class WeeklyCalculation implements Cloneable {
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
 		}
 		
+		// フレックス法定内時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
+			int flexLegalMinutes = 0;
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+		}
+		
+		// フレックス法定外時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+			val flexIllegalMinutes = this.flexTime.getFlexExcessTime().v();
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+		}
+		
 		// フレックス超過時間　（フレックス時間のプラス分）
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value){
 			val flexExcessMinutes = this.flexTime.getFlexTime().v();
@@ -338,5 +359,16 @@ public class WeeklyCalculation implements Cloneable {
 		}
 		
 		return notExistTime;
+	}
+	
+	/**
+	 * エラー情報の取得
+	 * @return エラー情報リスト
+	 */
+	public List<MonthlyAggregationErrorInfo> getErrorInfos(){
+		
+		List<MonthlyAggregationErrorInfo> results = new ArrayList<>();
+		results.addAll(this.regAndIrgTime.getErrorInfos());
+		return results;
 	}
 }

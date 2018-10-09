@@ -27,7 +27,7 @@
 					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
 				<!-- C1_2 -->
 				<button id="register-button" class="proceed" tabindex="2"
-					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: saveData, timeClick: 1000" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="screen-d">

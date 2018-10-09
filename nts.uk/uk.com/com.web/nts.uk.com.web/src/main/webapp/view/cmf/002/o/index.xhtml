@@ -24,20 +24,26 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<a class="goback"
-					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_430')}</a>
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
+				<div style="float: right;padding-top: 5px; padding-right: 10px" class="column-1">#{i18n.getText('CMF002_25')}</div>
+
 			</div>
+
 			<div id="contents-area">
 				<div id="ex_output_wizard"
 					data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}"
 					class="cf">
+
 					<div class="header">
 						<div class="image" data-icon="../resource/外部出力アイコンA1.jpg"></div>
 						<div class="content">#{i18n.getText('CMF002_25')}</div>
 					</div>
+
 					<div class="steps">
 						<div class="step-1"></div>
 						<div class="step-2">
+
 							<span>#{i18n.getText('CMF002_215')}</span><br />
 							└#{i18n.getText('CMF002_216')}
 						</div>
@@ -45,13 +51,16 @@
 						<div class="end step-4">#{i18n.getText('CMF002_218')}</div>
 					</div>
 					<div class="contents">
+
 						<div class="step-1">
 							<ui:include src="o.xhtml" />
 						</div>
 						<div class="step-2">
 							<ui:include src="p.xhtml" />
 						</div>
+
 						<div class="step-3">
+
 							<ui:include src="q.xhtml" />
 						</div>
 						<div class="step-4">

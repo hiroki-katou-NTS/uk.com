@@ -75,7 +75,8 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = this.recreateSpecifiedBonusPayListBeforeBase(baseTime, isDateBefore);
 		Optional<MidNightTimeSheetForCalc>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
 		TimeSpanForCalc renewSpan = decisionNewSpan(this.getCalcrange(),baseTime,isDateBefore);
-		return Optional.of(new MidNightTimeSheetForCalc(this.getTimeSheet(),renewSpan,deductionTimeSheets,recordTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
+		TimeZoneRounding roundingset = new TimeZoneRounding(renewSpan.getStart(), renewSpan.getEnd(), this.timeSheet.getRounding());
+		return Optional.of(new MidNightTimeSheetForCalc(roundingset,renewSpan,deductionTimeSheets,recordTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet));
 	}
 	
 	

@@ -25,6 +25,8 @@ public interface AttendanceTimeRepository {
 	
 	void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
 	
+	List<Integer> findAtt(String employeeId, List<GeneralDate> ymd);
+	
 	List<AttendanceTimeOfDailyPerformance> find(String employeeId, List<GeneralDate> ymd);
 	
 }
