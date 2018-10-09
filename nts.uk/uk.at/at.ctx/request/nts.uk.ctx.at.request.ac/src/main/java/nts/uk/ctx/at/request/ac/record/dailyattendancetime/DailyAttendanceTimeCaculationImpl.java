@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
@@ -42,9 +43,14 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setWorkTimeCode(workTimeCode== null ? null : new WorkTimeCode(workTimeCode));
 		dailyAttendanceTimePubImport.setWorkStartTime( workStartTime == null ? null : new AttendanceTime(workStartTime));
 		dailyAttendanceTimePubImport.setWorkEndTime(workEndTime == null? null: new AttendanceTime( workEndTime));
-		dailyAttendanceTimePubImport.setBreakStartTime(breakStartTimes.stream().map(x->new AttendanceTime(x)).collect(Collectors.toList()));
-		dailyAttendanceTimePubImport.setBreakEndTime(breakEndTime.stream().map(x->new AttendanceTime(x)).collect(Collectors.toList()));
-		
+		if (!CollectionUtil.isEmpty(breakStartTimes)) {
+			dailyAttendanceTimePubImport.setBreakStartTime(
+					breakStartTimes.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList()));
+		}
+		if (!CollectionUtil.isEmpty(breakEndTime)) {
+			dailyAttendanceTimePubImport.setBreakEndTime(
+					breakEndTime.stream().map(x -> new AttendanceTime(x)).collect(Collectors.toList()));
+		}
 		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		
