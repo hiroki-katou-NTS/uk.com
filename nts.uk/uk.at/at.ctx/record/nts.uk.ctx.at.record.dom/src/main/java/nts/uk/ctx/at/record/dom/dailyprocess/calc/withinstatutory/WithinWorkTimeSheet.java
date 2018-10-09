@@ -197,7 +197,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					deductionTimeSheet,
 					workTimeCommonSet.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet(),
 					timeLeavingWork,
-					coreTimeSetting,workType);
+					coreTimeSetting,workType,breakTimeList);
 			//早退判断時刻を求める
 			leaveEarlyDesClock = LeaveEarlyDecisionClock.create(
 					workNo,
@@ -205,7 +205,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					deductionTimeSheet,
 					workTimeCommonSet.getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet(),
 					timeLeavingWork,
-					coreTimeSetting,workType);
+					coreTimeSetting,workType,breakTimeList);
 				
 			//就業時間内枠の作成
 			timeFrames = isWeekDayProcess(
