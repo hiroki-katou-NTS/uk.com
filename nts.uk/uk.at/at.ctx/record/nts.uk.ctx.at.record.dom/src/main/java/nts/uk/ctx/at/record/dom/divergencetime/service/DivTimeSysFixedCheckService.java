@@ -341,7 +341,6 @@ public class DivTimeSysFixedCheckService {
 			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
 			List<DivergenceTime> divTimeErAlMs, MasterShareContainer<String> shareContainer) {
-		List<DivergenceCheckResult> checkR = new ArrayList<>(); 
 		boolean checkByWT = shareContainer.getShared(join(WORK_TYPE_SETTING, SEPERATOR, comId),
 								() -> isCheckWithWorkType(comId));
 		boolean isToday = shareContainer.getShared(TODAY_KEY, () -> GeneralDate.today()).equals(tarD);
@@ -367,6 +366,7 @@ public class DivTimeSysFixedCheckService {
 		if(hisItem == null){
 			return new ArrayList<>();
 		}
+		List<DivergenceCheckResult> checkR = new ArrayList<>(); 
 		shareDivRefTime(isWHis, hisItem.identifier(), divCheckNos, bsCode, shareContainer);
 		shareDivMesTime(isWHis, comId, divCheckNos, bsCode, shareContainer);
 		erAls.stream().sorted((e1, e2) -> e1.getCode().compareTo(e2.getCode())).forEach(erAl -> {
