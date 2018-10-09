@@ -79,12 +79,10 @@ public class PayrollUnitPriceHisWebService extends WebService {
         return null;
     }
 
-
-
     @POST
     @Path("addPayrollUnitPriceHis")
     public Object addPayrollUnitPriceHis(PayrollUnitPriceHistoryCommand command) {
         String result = addPayrollUnitPriceHistoryCommandHandler.handle(command);
-        return new Object[] { result };
+        return new Object[]{result};
     }
 }

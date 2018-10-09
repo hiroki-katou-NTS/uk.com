@@ -51,6 +51,9 @@ public class PayrollUnitPriceHistoryService {
         Optional<YearMonthHistoryItem> itemToBeDelete = accInsurHis.get().getHistory().stream()
                 .filter(h -> h.identifier().equals(hisId))
                 .findFirst();
+        if (!itemToBeDelete.isPresent()) {
+            return;
+        }
         accInsurHis.get().remove(itemToBeDelete.get());
         this.mPayrollUnitPriceSettingRepository.remove(hisId);
         mPayrollUnitPriceHistoryRepository.remove(cId,code, hisId);
