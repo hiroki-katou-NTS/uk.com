@@ -343,7 +343,8 @@ public class AppHolidayWorkFinder {
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				appHolidayWorkDto.setDisplayCaculationTime(true);
-				WorkType workType = workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).isPresent() ?  workTypeRepository.findByPK(companyID, appHolidayWork.getWorkTypeCode().v()).get() : null ;
+				String workTypeCD = appHolidayWork.getWorkTypeCode() == null ? "" : appHolidayWork.getWorkTypeCode().v();
+				WorkType workType = workTypeRepository.findByPK(companyID, workTypeCD).orElse(null) ;
 				if(workType != null){
 					appHolidayWorkDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
 				}
@@ -355,7 +356,8 @@ public class AppHolidayWorkFinder {
 				// 5_a.就業時間帯を取得する（詳細）
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, appHolidayWork.getApplication().getEmployeeID(),appHolidayWork.getApplication().getAppDate());
 				appHolidayWorkDto.setWorkTimes(listWorkTimeCodes);
-				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString()).isPresent() ? workTimeRepository.findByCode(companyID,appHolidayWork.getWorkTimeCode().toString()).get() : null;
+				String workTimeCD = appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().v();
+				WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID, workTimeCD).orElse(null);
 				if(workTime != null){
 					appHolidayWorkDto.setWorkTime(new SiftType(appHolidayWork.getWorkTimeCode().toString(),workTime.getWorkTimeDisplayName().getWorkTimeName().toString()));
 				}
@@ -412,7 +414,7 @@ public class AppHolidayWorkFinder {
 					appHolidayWork.getApplication().getAppDate(),
 					ApplicationType.BREAK_TIME_APPLICATION.value,
 					appHolidayWork.getApplication().getEmployeeID(), 
-					companyID, appHolidayWork.getWorkTimeCode().toString());
+					companyID, appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().v());
 			holidayWorkInputDtos.forEach(x -> {
 				breakTimeCal.forEach(breakTime -> {
 					if(x.getAttendanceType() == breakTime.getAttendanceID()){

@@ -670,14 +670,15 @@
                                                     <div tabindex ="3" style="margin-left: 15px;"  class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: viewModel.listSpecialholidayframe,
-                                                optionsValue: 'specialHdFrameNo',
+                                                optionsValue: 'specialHolidayCode',
                                                 visibleItemsCount: 5,
                                                 value: listItemID,
-                                                optionsText: 'specialHdFrameName',
+                                                optionsText: 'specialHolidayName',
                                                 editable: false,
                                                 enable: checkVacation() === 6,
                                                 columns: [
-                                                    { prop: 'specialHdFrameName', length: 16 }
+                                                	{ prop: 'specialHolidayCode', length: 3 },
+                                                    { prop: 'specialHolidayName', length: 16 }
                                                 ]}">
                                                 <!-- enable: checkVacation() === 2 &amp;&amp; checkVacation() !== 3 &amp;&amp; checkVacation() !== 5 &amp;&amp; checkVacation() !== 6 &amp;&amp; checkVacation() !== 7, -->
                                                     </div>
@@ -1355,7 +1356,7 @@
 												tabindex = "6"
 													data-bind="ntsNumberEditor: {
 					                                     name: '#[KAL003_61]',
-					                                     value: continuonsMonths,
+					                                     value: continuousMonths,
 					                                     required: true,
 					                                     constraint: 'CheckedNumberMonthsValue',
 					                                     enable: true,

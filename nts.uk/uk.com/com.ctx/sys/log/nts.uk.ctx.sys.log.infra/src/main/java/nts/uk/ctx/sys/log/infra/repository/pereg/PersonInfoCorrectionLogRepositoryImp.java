@@ -228,6 +228,13 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 					ctgs, perCorrectionLog.remark);
 		}).filter(f -> f != null && f.getCategoryCorrections() != null).collect(Collectors.toList());
 	}
+	
+
+	@Override
+	public List<PersonInfoCorrectionLog> findByTargetAndDate(List<String> operationIds, List<String> listEmployeeId)
+	{
+		return this.findByTargetAndDate(operationIds, listEmployeeId, new DatePeriod(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9999, 12, 31)));
+	}
 
 	@Override
 	public void save(List<PersonInfoCorrectionLog> correctionLogs) {

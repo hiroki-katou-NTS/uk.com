@@ -78,7 +78,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author sonnh1
  *
  */
-@Transactional(value=TxType.NOT_SUPPORTED)
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject
@@ -355,7 +355,11 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				this.addScheMaster(companyId, bSchedule);
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
-
+				
+				// delete truoc khi insert de tranh truong hop data sai
+				// co data cua con ma k co data cua cha
+				basicScheduleRepo.delete(employeeId, date, bSchedule);
+				
 				basicScheduleRepo.insert(bSchedule); 
 			}
 			

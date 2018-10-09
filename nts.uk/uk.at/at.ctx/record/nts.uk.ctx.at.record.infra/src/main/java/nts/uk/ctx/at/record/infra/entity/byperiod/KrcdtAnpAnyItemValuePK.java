@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * プライマリキー：集計任意項目
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Embeddable
 @EqualsAndHashCode

@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
@@ -237,5 +239,15 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				this.remarks.stream().map(s -> s.toDomain(employeeId, ym, closureID, closureDate)).collect(Collectors.toList()),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
+	}
+	
+	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain){
+		MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
+		if(domain != null) {
+			dto.setAttendanceTime(!domain.getAttendanceTime().isPresent() ? null : AttendanceTimeOfMonthlyDto.from(domain.getAttendanceTime().get()));
+			dto.setAffiliation(!domain.getAffiliationInfo().isPresent() ? null : AffiliationInfoOfMonthlyDto.from(domain.getAffiliationInfo().get()));
+            //TO DO convert continue
+		}
+		return dto;
 	}
 }

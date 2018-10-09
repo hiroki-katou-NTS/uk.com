@@ -186,6 +186,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.settingEnableComparisonMaxValueFieldExtra();
                         if (self.comparisonRange().comparisonOperator() > 5) {
                             $(".nts-input").ntsError("clear");
+                            self.comparisonRange().maxAmountOfMoneyValue(0);
+                            self.comparisonRange().maxTimeValue(0);
+                            self.comparisonRange().maxTimesValue(0);
                             if(self.comparisonRange().comparisonOperator() ==7 || self.comparisonRange().comparisonOperator() ==9){
                                  setTimeout(() => {
                                     if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
@@ -228,7 +231,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     break;
                 case sharemodel.CATEGORY.MONTHLY:
 
-                    $.when(self.getAllEnums(), self.getSpecialholidayframe()).done(function() {
+                    $.when(self.getAllEnums(), self.getSpecialHoliday()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -806,7 +809,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.getListItemByAtr(6).done((lstItem) => {
                             let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                             //Open dialog KDL021
-                            nts.uk.ui.windows.setShared('Multiple', false);
+                            nts.uk.ui.windows.setShared('Multiple', true);
                             nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
                             nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemCondition.uncountableAtdItem()]);
                             nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
@@ -1009,15 +1012,28 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             return service.getAttdItemMonByAtr(atr);
         }
-        getSpecialholidayframe(): JQueryPromise<any> {
+        
+        //Update ticket #100187
+//        getSpecialholidayframe(): JQueryPromise<any> {
+//            let self = this,
+//                dfd = $.Deferred<any>();
+//            service.getSpecialholidayframe().done(function(data) {
+//                self.listSpecialholidayframe = data;
+//                dfd.resolve();
+//            });
+//            return dfd.promise();
+//        }
+        
+        getSpecialHoliday(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred<any>();
-            service.getSpecialholidayframe().done(function(data) {
+            service.getSpecialHoliday().done(function(data) {
                 self.listSpecialholidayframe = data;
                 dfd.resolve();
             });
             return dfd.promise();
         }
+        //End update ticket #100187
 
         fillTextDisplayTarget(defered, currentAtdItemCondition) {
             

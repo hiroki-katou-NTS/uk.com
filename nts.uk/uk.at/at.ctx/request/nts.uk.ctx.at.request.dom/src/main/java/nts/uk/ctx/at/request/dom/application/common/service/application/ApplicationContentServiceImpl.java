@@ -265,7 +265,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 								type = "残業時間";
 								List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
 								Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+								Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 								if(!CollectionUtil.isEmpty(normalLst)){
 									List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 									if (!lstFramOt.isEmpty()){
@@ -294,8 +294,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-						+ I18NText.getText("CMM045_230", frameInfo);
+				content += " " + frameInfo;
 				break;
 			}
 			case POSTERIOR: {
@@ -331,6 +330,9 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						count++;
 					}
 					for (val x : preOverTime.getOverTimeInput()) {
+						if(x.getApplicationTime()==null){
+							continue;
+						}
 						if (x.getApplicationTime().v() > 0) {
 							totalWorkUnit += x.getApplicationTime().v();
 							if (count < 3) {
@@ -360,7 +362,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 									type = "残業時間";
 									List<Integer> normalLst = listFrame.stream().filter(nO -> nO <= 10).collect(Collectors.toList());
 									Optional<Integer> plusNo11 = listFrame.stream().filter(nO -> nO == 11).findAny();
-									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 11).findAny();
+									Optional<Integer> plusNo12 = listFrame.stream().filter(nO -> nO == 12).findAny();
 									if(!CollectionUtil.isEmpty(normalLst)){
 										List<OvertimeWorkFrame> lstFramOt = repoOverTimeFr.getOvertimeWorkFrameByFrameNos(cid, normalLst);
 										if (!lstFramOt.isEmpty()){
@@ -389,8 +391,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					}
 					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-					content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-							+ I18NText.getText("CMM045_230", frameInfo);
+					content += " " + frameInfo;
 				}
 
 				// AFTER
@@ -479,8 +480,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				}
 				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
 //				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
-				content += " " + I18NText.getText("CMM045_269") + " " + repoAppDetailInfo.convertTime(totalWorkUnit)
-						+ I18NText.getText("CMM045_230", frameInfo);
+				content += " " + frameInfo;
 			}
 			case NONE: {
 				
@@ -659,13 +659,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			if (!Objects.isNull(appWork.getApplication())) {
 				switch (appWork.getApplication().getPrePostAtr()) {
 				case PREDICT: {//don xin truoc
-					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
-					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
+					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
+					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.get().getName().v() : ""))
+					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									: (workTime.isPresent() ? " " + workTime.get()
-											.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+									: (workTime.isPresent() ? " " + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {
@@ -757,13 +757,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 					AppHolidayWork preAppWork = !Objects.isNull(preApp)
 							? holidayRepo.getAppHolidayWork(companyID, preApp.getAppID()).orElse(null) : null;
 					if (!Objects.isNull(preAppWork)) {
-						Optional<WorkType> workType =  repoWorkType.findByPK(companyID, preAppWork.getWorkTypeCode().v());
-						Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, preAppWork.getWorkTimeCode().v());
+						Optional<WorkType> workType =  repoWorkType.findByPK(companyID, preAppWork.getWorkTypeCode() == null ? "" : preAppWork.getWorkTypeCode().v());
+						Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, preAppWork.getWorkTimeCode() == null ? "" : preAppWork.getWorkTimeCode().v());
 						content += I18NText.getText("CMM045_272") + I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-						: (workType.isPresent() ? " " +  workType.get().getName().v() : ""))
+						: (workType.isPresent() ? " " +  workType.map(x -> x.getName().v()).orElse("") : ""))
 								+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-										: (workTime.isPresent() ? " " +  workTime.get()
-												.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+										: (workTime.isPresent() ? " " +  workTime.map(x -> 
+												x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 						if (!Objects.isNull(preAppWork.getWorkClock1())) {
 							if (!Objects.isNull(preAppWork.getWorkClock1().getStartTime())
 									&& !Objects.isNull(preAppWork.getWorkClock1().getEndTime())) {
@@ -846,13 +846,13 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							}
 						}
 					}
-					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode().v());
-					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode().v());
+					Optional<WorkType> workType =  repoWorkType.findByPK(companyID, appWork.getWorkTypeCode() == null ? "" : appWork.getWorkTypeCode().v());
+					Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(companyID, appWork.getWorkTimeCode() == null ? "" : appWork.getWorkTimeCode().v());
 					content += I18NText.getText("CMM045_275") + " " + (Objects.isNull(appWork.getWorkTypeCode()) ? ""
-					:  (workType.isPresent() ? " " + workType.get().getName().v() : ""))
+					:  (workType.isPresent() ? " " + workType.map(x -> x.getName().v()).orElse("") : ""))
 							+ (Objects.isNull(appWork.getWorkTimeCode()) ? ""
-									:  (workTime.isPresent() ? " " + workTime.get()
-											.getWorkTimeDisplayName().getWorkTimeName() : "")) + " ";
+									:  (workTime.isPresent() ? " " + workTime.map(x ->
+											x.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("") : "")) + " ";
 					if (!Objects.isNull(appWork.getWorkClock1())) {
 						if (!Objects.isNull(appWork.getWorkClock1().getStartTime())
 								&& !Objects.isNull(appWork.getWorkClock1().getEndTime())) {

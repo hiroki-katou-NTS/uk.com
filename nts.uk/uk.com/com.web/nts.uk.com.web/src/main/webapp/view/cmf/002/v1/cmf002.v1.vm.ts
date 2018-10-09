@@ -10,49 +10,93 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        listCategoryItem: KnockoutObservableArray<model.ItemModel>;
-        selectedCategoryItem: KnockoutObservable<number>;
-        
-        
+        roleAuthority: any;
+        listCategoryItem: KnockoutObservableArray<Category> = ko.observableArray([]);
+        selectedCategoryCode: KnockoutObservable<Category>;
+        currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
-            self.listCategoryItem = ko.observableArray([
-                new model.ItemModel(1, "Item 1"),
-                new model.ItemModel(2, "Item 2"),
-                new model.ItemModel(3, "Item 3"),
-                new model.ItemModel(4, "Item 4"),
-                new model.ItemModel(5, "Item 5"),
-                new model.ItemModel(6, "Item 6"),
-                new model.ItemModel(7, "Item 7"),
-                new model.ItemModel(8, "Item 8"),
-                new model.ItemModel(9, "Item 9"),
-                new model.ItemModel(10, "Item 10"),
-                new model.ItemModel(11, "Item 11"),
-            ]);
-            self.selectedCategoryItem = ko.observable(1);
+            self.selectedCategoryCode = ko.observable(new Category('', 0, '', 0, 0, 0, 0, 0, '', '', 0, true));
+            
+            let params = getShared("CMF002_V_PARAMS");
+            if (params.categoryId !== '') {
+                self.currentCode(params.categoryId);
+            }        
+            self.roleAuthority = params.roleAuthority;
+            
+            self.currentCode.subscribe( categoryId => {
+                let getCategoryId = _.find(self.listCategoryItem(), function(x) { return x.categoryId == categoryId; });
+                self.selectedCategoryCode(getCategoryId);
+            });
+
         }
         start(): JQueryPromise<any> {
-            //block.invisible();
             var self = this;
             var dfd = $.Deferred();
-            dfd.resolve();
-//            service.getCharacterDataFormatSetting().done(function(charFormat) {
-//                if (charFormat) {
-//                    let characterDataFormatSetting = new model.CharacterDataFormatSetting(charFormat.effectDigitLength, 
-//                    charFormat.startDigit, charFormat.endDigit, charFormat.codeEditing, charFormat.codeEditDigit, 
-//                    charFormat.codeEditingMethod, charFormat.spaceEditing, charFormat.codeConvertCode, charFormat.nullValueReplace, 
-//                    charFormat.valueOfNullValueReplace, charFormat.fixedValue, charFormat.valueOfFixedValue);
-//                    self.characterDataFormatSetting(characterDataFormatSetting);
-//                }
-//                block.clear();
-//                dfd.resolve();
-//            }).fail(function(error) {
-//                alertError(error);
-//                block.clear();
-//                dfd.reject();
-//            });
+            block.invisible();
+
+            service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
+                if (data && data.length) {
+                    let sortCategory = _.sortBy(data, ['categoryId']);
+                    sortCategory.forEach(x => self.listCategoryItem.push(x));
+                    if (self.currentCode() == '') {
+                        self.currentCode(self.listCategoryItem()[0].categoryId);
+                    }
+                }
+                else {
+                    alertError({ messageId: "Msg_656" });
+                }
+                dfd.resolve();
+            }).fail(err => {
+                alertError(err);
+                dfd.reject();
+            }).always(function() {
+                block.clear();
+            });
+
             return dfd.promise();
         }
-        
+        selectCategoryItem() {
+            let self = this;
+            setShared('CMF002_B_PARAMS', {
+                categoryName: self.selectedCategoryCode().categoryName,
+                categoryId: self.selectedCategoryCode().categoryId
+            });
+            nts.uk.ui.windows.close();
+        }
+        cancelSelectCategoryItem() {
+            nts.uk.ui.windows.close();
+        }
+    }
+    export class Category {
+        categoryId: string;
+        officeHelperSysAtr: number;
+        categoryName: string;
+        categorySet: number;
+        personSysAtr: number;
+        attendanceSysAtr: number;
+        payrollSysAtr: number;
+        functionNo: number;
+        functionName: string;
+        explanation: string;
+        displayOrder: number;
+        defaultValue: boolean;
+        constructor(categoryId: string, officeHelperSysAtr: number, categoryName: string,
+            categorySet: number, personSysAtr: number, attendanceSysAtr: number,
+            payrollSysAtr: number, functionNo: number, functionName: string,
+            explanation: string, displayOrder: number, defaultValue: boolean) {
+            this.categoryId = categoryId;
+            this.officeHelperSysAtr = officeHelperSysAtr;
+            this.categoryName = categoryName;
+            this.categorySet = categorySet;
+            this.personSysAtr = personSysAtr;
+            this.attendanceSysAtr = attendanceSysAtr;
+            this.payrollSysAtr = payrollSysAtr;
+            this.functionNo = functionNo;
+            this.functionName = functionName;
+            this.explanation = explanation;
+            this.displayOrder = displayOrder;
+            this.defaultValue = defaultValue;
+        }
     }
 }
