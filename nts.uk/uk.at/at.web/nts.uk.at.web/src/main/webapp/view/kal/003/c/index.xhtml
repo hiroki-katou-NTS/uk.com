@@ -56,8 +56,13 @@
 				</div>
 				<div class="valign-center control-group"
 					style="display: inline-flex">
-					<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_95')}</div>
-					<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_96')}</div>
+					<!-- <div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_95')}</div>
+					<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_96')}</div> -->
+					
+					<div style="margin-right: 5px; margin-top: 7px; max-width: 143px; min-width: 90px;">
+						<label>#{i18n.getText('KDW007_95')} </label>
+						<label>#{i18n.getText('KDW007_96')}</label>
+					</div>
 					<button style="margin-right: 5px"
 						data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KDW007_73')}</button>
 					<input style="width: 100px;" id="display-target-item"
@@ -102,7 +107,11 @@
 							]}"></div>
 					</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionType() == 1">
-						<div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_96')}</div>
+						<!-- <div style="margin-right: 20px; margin-top: 7px">#{i18n.getText('KDW007_96')}</div> -->
+						<div style="margin-right: 5px; margin-top: 7px; max-width: 75px; min-width: 43px;">
+							<label>#{i18n.getText('KDW007_96')}</label>
+						</div>
+						
 						<button style="margin-right: 5px"
 							data-bind="click: openSelectAtdItemDialogComparison">#{i18n.getText('KDW007_73')}</button>
 						<input id="display-compare-item"

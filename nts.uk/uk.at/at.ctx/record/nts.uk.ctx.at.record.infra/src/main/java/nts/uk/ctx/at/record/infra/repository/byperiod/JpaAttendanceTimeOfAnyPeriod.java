@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.byperiod;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,9 +43,28 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 @Stateless
 public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements AttendanceTimeOfAnyPeriodRepository {
 
+	private static final String WHERE_PK = "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.frameCode = :frameCode ";
+	
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtAnpAttendanceTime a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
 			+ "AND a.PK.frameCode = :frameCode ";
+	
+	private static final List<String> DELETE_TABLES = Arrays.asList(
+			"DELETE FROM KrcdtAnpAttendanceTime a ",
+			"DELETE FROM KrcdtAnpAggrOverTime a ",
+			"DELETE FROM KrcdtAnpAggrHdwkTime a ",
+			"DELETE FROM KrcdtAnpAggrAbsnDays a ",
+			"DELETE FROM KrcdtAnpAggrSpecDays a ",
+			"DELETE FROM KrcdtAnpAggrSpvcDays a ",
+			"DELETE FROM KrcdtAnpAggrBnspyTime a ",
+			"DELETE FROM KrcdtAnpAggrDivgTime a ",
+			"DELETE FROM KrcdtAnpAggrGoout a ",
+			"DELETE FROM KrcdtAnpAggrPremTime a ",
+			"DELETE FROM KrcdtAnpMedicalTime a ",
+			"DELETE FROM KrcdtAnpExcoutTime a ",
+			"DELETE FROM KrcdtAnpTotalTimes a ",
+			"DELETE FROM KrcdtAnpAnyItemValue a ");
 
 	/** 検索 */
 	@Override
@@ -358,7 +378,11 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 	@Override
 	public void remove(String employeeId, String frameCode) {
 		
-		this.commandProxy().remove(KrcdtAnpAttendanceTime.class,
-				new KrcdtAnpAttendanceTimePK(employeeId, frameCode));
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_PK)
+					.setParameter("employeeId", employeeId)
+					.setParameter("frameCode", frameCode)
+					.executeUpdate();
+		}
 	}
 }

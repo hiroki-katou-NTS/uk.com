@@ -106,7 +106,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	/** 集計期間 */
 	private DatePeriod aggrPeriod;
 	/** モード */
-	private TempAnnualLeaveMngMode mode;
+	private InterimRemainMngMode mode;
 	/** 翌月管理データ取得フラグ */
 	private boolean isGetNextMonthData;
 	/** 出勤率計算フラグ */
@@ -181,7 +181,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			String companyId,
 			String employeeId,
 			DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode,
+			InterimRemainMngMode mode,
 			GeneralDate criteriaDate,
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
@@ -219,7 +219,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			String companyId,
 			String employeeId,
 			DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode,
+			InterimRemainMngMode mode,
 			GeneralDate criteriaDate,
 			boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate,
@@ -627,7 +627,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		List<TmpAnnualLeaveMngWork> results = new ArrayList<>();
 		
 		// 「モード」をチェック
-		if (this.mode == TempAnnualLeaveMngMode.MONTHLY){
+		if (this.mode == InterimRemainMngMode.MONTHLY){
 			// 月次モード
 			
 			// 月別実績用の暫定残数管理データを作成する
@@ -643,7 +643,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				results.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
 		}
-		if (this.mode == TempAnnualLeaveMngMode.OTHER){
+		if (this.mode == InterimRemainMngMode.OTHER){
 			// その他モード
 			
 			// 「暫定年休管理データ」を取得する

@@ -12,6 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KrcstDisplayAndInputMonthly;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -70,20 +71,38 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 				.setParameter("companyID", monthlyItemControlByAuthority.getCompanyId())
 				.setParameter("authorityMonthlyID", monthlyItemControlByAuthority.getAuthorityMonthlyId())
 				.getList();
-		for(int i=0;i<newEntity.size();i++) {
-			for(int j =0;j<updateEntity.size();j++) {
-				if(newEntity.get(i).krcstDisplayAndInputMonthlyPK.itemMonthlyID ==updateEntity.get(j).krcstDisplayAndInputMonthlyPK.itemMonthlyID) {
-					updateEntity.get(j).toUse = newEntity.get(i).toUse;
-					if(newEntity.get(i).toUse == 1) {
-						updateEntity.get(j).canBeChangedByOthers = newEntity.get(i).canBeChangedByOthers;
-						updateEntity.get(j).youCanChangeIt = newEntity.get(i).youCanChangeIt;
+		
+		for(int i=0;i<updateEntity.size();i++) {
+			boolean checkExist = false;
+			for(int j =0;j<newEntity.size();j++) {
+				if(updateEntity.get(i).krcstDisplayAndInputMonthlyPK.itemMonthlyID ==newEntity.get(j).krcstDisplayAndInputMonthlyPK.itemMonthlyID) {
+					updateEntity.get(i).toUse = newEntity.get(j).toUse;
+					if(newEntity.get(j).toUse == 1) {
+						updateEntity.get(i).canBeChangedByOthers = newEntity.get(j).canBeChangedByOthers;
+						updateEntity.get(i).youCanChangeIt = newEntity.get(j).youCanChangeIt;
 					}
-					this.commandProxy().update(updateEntity.get(j));
+					this.commandProxy().update(updateEntity.get(i));
+					checkExist = true;
 					break;
 				}
 			}
+			if(!checkExist) {
+				this.commandProxy().remove(KrcstDisplayAndInputMonthly.class,updateEntity.get(i).krcstDisplayAndInputMonthlyPK);
+			}
 		}
 		
+		for(int i=0;i<newEntity.size();i++) {
+			boolean checkExist = false;
+			for(int j =0;j<updateEntity.size();j++) {
+				if(newEntity.get(i).krcstDisplayAndInputMonthlyPK.itemMonthlyID ==updateEntity.get(j).krcstDisplayAndInputMonthlyPK.itemMonthlyID) {
+					checkExist = true;
+					break;
+				}
+			}
+			if(!checkExist) {
+				this.commandProxy().insert(newEntity.get(i));
+			}
+		}
 	}
 
 	@Override

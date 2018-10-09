@@ -117,8 +117,7 @@ public class CheckShortageFlex {
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
-		return this.closureService.getClosurePeriod(
-				closure.get().getClosureId().value, currentMonth.getProcessingYm());
+		return this.closureService.getClosurePeriod(closure.get(), currentMonth.getProcessingYm());
 	}
 	
 	/**

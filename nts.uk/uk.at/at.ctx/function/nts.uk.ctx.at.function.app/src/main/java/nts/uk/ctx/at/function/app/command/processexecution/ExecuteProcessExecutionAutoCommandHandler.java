@@ -28,6 +28,8 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
+import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.AlarmCategoryFn;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogAdapterFn;
@@ -208,6 +210,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	@Inject
 	private EmployeeManageAdapter employeeManageAdapter;
 
+	@Inject
+	private AppReflectManagerAdapter appReflectManagerAdapter;
 	/**
 	 * 更新処理を開始する
 	 * 
@@ -1326,51 +1330,57 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				if (procExec.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION) {
 					String typeExecution = "日別作成";
 					// 日別実績の作成
-					boolean dailyPerformanceCreation = this.dailyPerformanceCreation(companyId, context, procExec,
-							empCalAndSumExeLog, empIds, calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds,
-							typeExecution, dailyCreateLog);
-
-					if (dailyPerformanceCreation) {
-						return false;
+					try {
+						boolean dailyPerformanceCreation = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
+								calculateDailyPeriod.getDailyCreationPeriod(), workPlaceIds, typeExecution,dailyCreateLog);
+						
+						if(dailyPerformanceCreation){
+							return false;
+						}
+					}catch (CreateDailyException ex) {
+						isHasCreateDailyException=true;
 					}
-
+				
 					typeExecution = "日別計算";
 					// 日別実績の計算
-					boolean dailyPerformanceCreation2 = this.dailyPerformanceCreation(companyId, context, procExec,
-							empCalAndSumExeLog, empIds, calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds,
-							typeExecution, dailyCalLog);
-					if (dailyPerformanceCreation2) {
-						return false;
+					try {
+						boolean dailyPerformanceCreation2 = this.dailyPerformanceCreation( companyId,context, procExec, empCalAndSumExeLog, empIds,
+								calculateDailyPeriod.getDailyCalcPeriod(), workPlaceIds, typeExecution,dailyCalLog);
+						if(dailyPerformanceCreation2){
+							return false;
+						}
+					}catch (DailyCalculateException ex) {
+						isHasDailyCalculateException=true;
 					}
 
 				} else {
-					DatePeriod maxPeriodBetweenCalAndCreate = this.getMaxPeriodBetweenCalAndCreate(
-							calculateDailyPeriod.getDailyCreationPeriod(), calculateDailyPeriod.getDailyCalcPeriod());
-					// 異動者・勤務種別変更者リスト作成処理
-					ListLeaderOrNotEmpOutput createProcessForChangePerOrWorktype = this
-							.createProcessForChangePerOrWorktype(closure.getClosureId().value, companyId, empIds,
-									maxPeriodBetweenCalAndCreate, procExec);
-					// 勤務種別変更者を再作成 =true
-					if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification()
-							.isRecreateTypeChangePerson()) {
-						DatePeriod maxDatePeriod = this.getMaxDatePeriod(calculateDailyPeriod.getDailyCreationPeriod(),
-								calculateDailyPeriod.getDailyCalcPeriod());
-						// 再作成処理
-						boolean recreateProcess = this.recreateProcess(context, closure.getClosureId().value,
-								empCalAndSumExeLog, maxDatePeriod, workPlaceIds,
-								createProcessForChangePerOrWorktype.getLeaderEmpIdList(), companyId, procExecLog,
-								procExec, dailyCreateLog);
-						if (recreateProcess) {
-							return false;
+					DatePeriod maxPeriodBetweenCalAndCreate = this.getMaxPeriodBetweenCalAndCreate(calculateDailyPeriod.getDailyCreationPeriod(), calculateDailyPeriod.getDailyCalcPeriod());
+					//異動者・勤務種別変更者リスト作成処理
+					ListLeaderOrNotEmpOutput createProcessForChangePerOrWorktype = this.createProcessForChangePerOrWorktype(closure.getClosureId().value, companyId, empIds, maxPeriodBetweenCalAndCreate, procExec);
+					GeneralDate calculateDate = this.calculatePeriod(closure.getClosureId().value, period, companyId);
+					
+					boolean isHasInterrupt = false;
+					for(String empLeader : createProcessForChangePerOrWorktype.getLeaderEmpIdList()) {
+						//ドメインモデル「日別実績の勤務情報」を取得する
+						List<WorkInfoOfDailyPerFnImport> listWorkInfo = recordWorkInfoFunAdapter.findByPeriodOrderByYmd(empLeader);
+						if(listWorkInfo.isEmpty())
+							continue;
+						//日別実績処理の再実行
+						//「作成した開始日」～「取得した日別実績の勤務情報.年月日」を対象期間とする
+						GeneralDate maxDate =  listWorkInfo.stream().map(u -> u.getYmd()).max(GeneralDate::compareTo).get();
+						isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId, empLeader, new DatePeriod(calculateDate, maxDate),
+								empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog);
+						if (isHasInterrupt) {
+							break;
 						}
 					}
 				}
 
 			}
-		} catch (CreateDailyException ex) {
-			isHasCreateDailyException = true;
-		} catch (DailyCalculateException ex) {
-			isHasDailyCalculateException = true;
+//		} catch (CreateDailyException ex) {
+//			isHasCreateDailyException = true;
+//		} catch (DailyCalculateException ex) {
+//			isHasDailyCalculateException = true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -1438,7 +1448,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
 			// ドメインモデル「エラーメッセージ情報」を取得する
 			List<ErrMessageInfo> listErrMessageInfo = errMessageInfoRepository.getAllErrMessageInfoByID(execId,
-					ExecutionContent.DAILY_CREATION.value);
+					ExecutionContent.DAILY_CALCULATION.value);
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
 			// 会社ID ＝ パラメータ.更新処理自動実行.会社ID
@@ -1514,31 +1524,28 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	// 異動者・勤務種別変更者リスト作成処理
 	private ListLeaderOrNotEmpOutput createProcessForChangePerOrWorktype(int closureId, String companyId,
 			List<String> empIds, DatePeriod period, ProcessExecution procExec) {
-		// 期間を計算
-		GeneralDate p = this.calculatePeriod(closureId, period, companyId);
-		List<String> newEmpIdList = new ArrayList<>();
-		List<String> wplEmpIdList = new ArrayList<>();
-		// ・社員ID（異動者、勤務種別変更者のみ）（List）
-		List<String> leaderEmpIdList = new ArrayList<>();
-		// ・社員ID（異動者、勤務種別変更者のみ）（List）
-		List<String> noLeaderEmpIdList = empIds;
-		// check 異動者を再作成する
-		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()) {
-			// 異動者の絞り込み todo request list 189
-			List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter
-					.getWplByListSidAndPeriod(empIds, new DatePeriod(p, GeneralDate.ymd(9999, 12, 31)));
-			wplByListSidAndPeriod.forEach(x -> {
-				wplEmpIdList.add(x.getEmployeeId());
-			});
-		}
-		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
-			// 勤務種別の絞り込み
-			newEmpIdList = this.refineWorkType(companyId, empIds, p);
-		}
-		leaderEmpIdList.addAll(wplEmpIdList);
-		leaderEmpIdList.addAll(newEmpIdList);
-		noLeaderEmpIdList.removeAll(leaderEmpIdList);
-		return new ListLeaderOrNotEmpOutput(leaderEmpIdList, noLeaderEmpIdList);
+		//期間を計算	
+				GeneralDate p = this.calculatePeriod(closureId, period, companyId);
+				List<String> newEmpIdList = new ArrayList<>();
+				//・社員ID（異動者、勤務種別変更者のみ）（List）
+				Set<String> setEmpIds = new HashSet<String>();
+				//・社員ID（異動者、勤務種別変更者のみ）（List）
+				List<String> noLeaderEmpIdList = empIds;
+				// check  異動者を再作成する
+				if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()){
+					//異動者の絞り込み todo request list 189
+					List<WorkPlaceHistImport> wplByListSidAndPeriod = this.workplaceWorkRecordAdapter.getWplByListSidAndPeriod(empIds, new DatePeriod(p,GeneralDate.ymd(9999, 12, 31)));
+					wplByListSidAndPeriod.forEach(x->{
+						setEmpIds.add(x.getEmployeeId());
+					});
+				}
+				if(procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()){
+				// 勤務種別の絞り込み
+					 newEmpIdList = this.refineWorkType(companyId, empIds, p);
+				}
+				setEmpIds.addAll(newEmpIdList);
+				noLeaderEmpIdList.removeAll(new ArrayList<>(newEmpIdList));
+				return new ListLeaderOrNotEmpOutput(new ArrayList<>(setEmpIds),noLeaderEmpIdList);
 	}
 
 	private DatePeriod findClosureMinMaxPeriod(String companyId, List<Closure> closureList) {
@@ -2020,16 +2027,20 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				for (int j = 0; j < sizeEmployee; j++) {
 					RegulationInfoEmployeeAdapterDto regulationInfoEmployeeAdapterDto = lstRegulationInfoEmployee
 							.get(j);
+					//期間を作成する
 					// 社員に対応する締め期間を取得す
 					DatePeriod datePeriod = this.closureEmploymentService
 							.findClosurePeriod(regulationInfoEmployeeAdapterDto.getEmployeeId(), GeneralDate.today());
-
+					//outputされた期間の終了日を「9999/12/31」に変更する
 					DatePeriod newDatePeriod = new DatePeriod(datePeriod.start(), GeneralDate.ymd(9999, 12, 31));
 
 					// 社員の申請を反映 cua chi du
 					// AppReflectManager.reflectEmployeeOfApp
+					ProcessStateReflectImport processStateReflectImport = appReflectManagerAdapter.reflectAppOfEmployeeTotal(execId, regulationInfoEmployeeAdapterDto.getEmployeeId(), newDatePeriod);
 					// fixed endStatusIsInterrupt =true (終了状態 ＝ 中断)
-					endStatusIsInterrupt = true;
+					if(processStateReflectImport == ProcessStateReflectImport.INTERRUPTION ) {
+						endStatusIsInterrupt = true;
+					}
 					if (endStatusIsInterrupt) {
 						break;
 					}

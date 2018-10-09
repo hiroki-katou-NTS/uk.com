@@ -199,7 +199,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
 			List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
@@ -356,7 +356,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
 			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,

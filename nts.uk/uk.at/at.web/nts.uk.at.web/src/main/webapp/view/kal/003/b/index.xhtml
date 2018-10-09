@@ -184,7 +184,7 @@
                                                 <!-- BA2-2 -->
                                                 <button id="btnSettingBA2_2" tabindex="4" data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                 <!-- BA2-3 -->
-                                                <input  
+                                                <input  id="display-target-item_category5"
                                                 class="display-list-label" data-bind="ntsTextEditor: {
                                                 name:'#[KAL003_59]',
                                          value: $parent.displayAttendanceItemSelections_BA2_3,
@@ -1355,7 +1355,7 @@
 												tabindex = "6"
 													data-bind="ntsNumberEditor: {
 					                                     name: '#[KAL003_61]',
-					                                     value: continuonsMonths,
+					                                     value: continuousMonths,
 					                                     required: true,
 					                                     constraint: 'CheckedNumberMonthsValue',
 					                                     enable: true,

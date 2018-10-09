@@ -10,6 +10,7 @@
 		<div class="contentR">
 			<!--R3 テキスト出力を行う-->
 			<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMF002_229')}</div>
+			
 			<table style="margin-bottom: 15px">
 				<tr>
 					<td style="padding: 5px 20px 5px 0px;">
@@ -31,8 +32,9 @@
 					<td>
 						<!--R5_1 条件設定名-->
 						<div class="label">
-							<span data-bind="text: selectedConditionCd"></span> <span
-								data-bind="text: selectedConditionName"></span>
+							<span data-bind="text: selectedConditionCd"></span>
+							<span> </span>
+							<span data-bind="text: selectedConditionName"></span>
 						</div>
 					</td>
 				</tr>
@@ -54,12 +56,12 @@
 						<!--R6_1 出力項目一覧-->
 						<table id="single-list"
 							data-bind="ntsGridList: {								
-								height: 408,
+								rows: 8,
+								name: '#{i18n.getText('CMF002_346')}',
 								dataSource: listOutputItem,
-								primaryKey: 'dispOutputItemCode',
 								columns: [ 
-									{ headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 60},
-                					{ headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 170}
+									{ headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 60},
+                					{ headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 170}
                 				],
 								multiple: false,
 								value: selectedOutputItemCode
@@ -67,14 +69,16 @@
 					</td>
 					<td style="vertical-align: top">
 						<!--R7_1 出力条件一覧-->
-						<table id="single-list"
+						<table id="single-list2"
 							data-bind="ntsGridList: {								
-								height: 168,
+								rows: 5,
+								name: '#{i18n.getText('CMF002_351')}',
 								dataSource: listOutputCondition,
-								primaryKey: 'itemName',
+								primaryKey: 'seriNum',
 								columns: [ 
-									{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 100},
-                					{ headerText: '#{i18n.getText('CMF002_232')}', key: 'condition', width: 380}
+									{ headerText: '', key: 'seriNum', width: 0, hidden: true},
+									{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 120},
+                					{ headerText: '#{i18n.getText('CMF002_232')}', key: 'conditions', width: 380}
                 				],
 								multiple: false,
 								value: selectedOutputConditionItem
@@ -82,15 +86,23 @@
 					</td>
 				</tr>
 			</table>
-
 			<table style="width: 100%; margin-top: 20px">
 				<tr>
 					<td>
 						<!--R20_1 ←前の処理に戻る-->
-						<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
+						<com:ko-if bind="isPNextToR()">
+							<button class="large" tabindex="2" data-bind="click: backFromR">
+								#{i18n.getText('CMF002_227')}
+							</button>
+						</com:ko-if>
+						<com:ko-if bind="!isPNextToR()">
+							<button class="large" tabindex="2" data-bind="click: backFromR">
+								#{i18n.getText('CMF002_233')}
+							</button>
+						</com:ko-if>
 						<!--R20_2 テキストを出力する-->
-						<button class="proceed x-large" style="margin-left: 10px"
-							data-bind="click: next">#{i18n.getText('CMF002_234')}</button>
+						<button class="proceed x-large createExOutText" tabindex="3" style="margin-left: 10px"
+							data-bind="click: createExOutText">#{i18n.getText('CMF002_234')}</button>
 					</td>
 				</tr>
 			</table>
