@@ -1,5 +1,6 @@
 package nts.uk.ctx.core.app.command.socialinsurance.salaryhealth;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,10 +86,10 @@ public class WelfarePensionStandardMonthlyFeeFinder {
 			if(check && welfarePensionInsuranceCls.isPresent()) {
 				employeesPensionMonthlyInsuranceFee.get().algorithmMonthlyWelfarePensionInsuranceFeeCalculation(welfarePensionStandardMonthlyFee, welfarePensionInsuranceCls.get());
 			}
-			salaryEmployeesPensionInsuranceRateDto = new SalaryEmployeesPensionInsuranceRateDto(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualBurdenRatio().v().toString(), 
-					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualBurdenRatio().v().toString(), 
-					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeContributionRatio().v().toString(), 
-					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeContributionRatio().v().toString(), 
+			salaryEmployeesPensionInsuranceRateDto = new SalaryEmployeesPensionInsuranceRateDto(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualBurdenRatio().v().subtract(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualExemptionRate().get().v() : new BigDecimal(0)).toString(),
+					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualBurdenRatio().v().subtract(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualExemptionRate().get().v() : new BigDecimal(0)).toString() ,
+					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeContributionRatio().v().subtract(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().get().v() : new BigDecimal(0)).toString(),
+					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeContributionRatio().v().subtract(employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getEmployeeExemptionRate().get().v() : new BigDecimal(0)).toString(),
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getIndividualExemptionRate().get().v().toString() : null, 
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getMaleContributionRate().getIndividualExemptionRate().get().v().toString() : null, 
 					employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().isPresent() ? employeesPensionMonthlyInsuranceFee.get().getSalaryEmployeesPensionInsuranceRate().getFemaleContributionRate().getEmployeeExemptionRate().get().v().toString() : null , 
