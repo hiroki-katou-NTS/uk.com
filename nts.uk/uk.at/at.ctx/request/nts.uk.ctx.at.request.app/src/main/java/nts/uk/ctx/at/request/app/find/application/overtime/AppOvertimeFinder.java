@@ -244,11 +244,11 @@ public class AppOvertimeFinder {
 			if (!CollectionUtil.isEmpty(breakTime.getLstTimezone())) {
 				startTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getStart().v()).collect(Collectors.toList());
 
-				startTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getEnd().v()).collect(Collectors.toList());
+				endTimeRests = breakTime.getLstTimezone().stream().map(x->  x.getEnd().v()).collect(Collectors.toList());
 			}
 		}
 		
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRests, startTimeRests);
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeCode, siftCD, startTime, endTime, startTimeRests, endTimeRests);
 		Map<Integer,TimeWithCalculationImport> overTime = dailyAttendanceTimeCaculationImport.getOverTime();
 		List<OvertimeInputCaculation> overtimeInputCaculations = convertMaptoList(overTime,dailyAttendanceTimeCaculationImport.getFlexTime(),dailyAttendanceTimeCaculationImport.getMidNightTime());
 		// 06-01_色表示チェック
