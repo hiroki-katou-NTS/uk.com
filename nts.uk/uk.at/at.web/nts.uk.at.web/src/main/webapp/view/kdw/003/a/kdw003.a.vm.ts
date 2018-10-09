@@ -3739,8 +3739,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //selected items
                         setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
                         modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                            var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                            if (lst != undefined && lst[0].code != "") {
+                            let lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                            if (lst != undefined && lst.length > 0 && lst[0].code != "") {
                                 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());
                             } else {
                                 self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
