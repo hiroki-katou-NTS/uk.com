@@ -33,7 +33,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
  * @author nampt
  *
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class DeleteWorkInfoOfDaiPerService {
 	
@@ -94,7 +94,7 @@ public class DeleteWorkInfoOfDaiPerService {
 	@Inject
 	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {
     	this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
 		this.deleteApprovalStaOfDailyPerforService.deleteApprovalStaOfDailyPerforService(employeeId, day);

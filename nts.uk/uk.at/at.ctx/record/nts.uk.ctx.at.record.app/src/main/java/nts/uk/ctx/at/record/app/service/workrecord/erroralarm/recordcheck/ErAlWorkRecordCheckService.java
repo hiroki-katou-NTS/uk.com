@@ -167,15 +167,7 @@ public class ErAlWorkRecordCheckService {
 	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
 			List<String> EACheckID) {
 		
-		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
-		if(checkConditions.isEmpty()){
-			EACheckID = workRecordExtraRepo.getAllWorkRecordExtraConByListID(EACheckID).stream()
-					.filter(c -> c.isUseAtr()).map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
-			if(EACheckID.isEmpty()){
-				return toEmptyResultList();
-			}
-			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
-		}
+		List<ErrorAlarmCondition> checkConditions = getCheckConditions(EACheckID);
 		
 		if(checkConditions.isEmpty()){
 			return toEmptyResultList();
@@ -193,21 +185,28 @@ public class ErAlWorkRecordCheckService {
 			return toEmptyResultList();
 		}
 		
-		GeneralDate start = workingDate.start();
-		List<ErrorRecord> result = new ArrayList<>();
-		while (start.beforeOrEquals(workingDate.end())) {
-			GeneralDate temp = start;
-			List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(temp)).collect(Collectors.toList());
-			if (cdRecors.isEmpty()) {
-				continue;
+		return workingDate.datesBetween().stream().map(current -> {
+			List<DailyRecordDto> cdRecors = record.stream().filter(r -> r.workingDate().equals(current)).collect(Collectors.toList());
+			if (!cdRecors.isEmpty()) {
+				return checkConditions.stream().map(c -> {
+					return finalCheck(current, c, cdRecors, employeeIds);
+				}).flatMap(List::stream).collect(Collectors.toList());
 			}
-			result.addAll(checkConditions.stream().map(c -> {
-				return finalCheck(temp, c, cdRecors, employeeIds);
-			}).flatMap(List::stream).collect(Collectors.toList()));
-			start = start.addDays(1);
+			return new ArrayList<ErrorRecord>();
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+
+	private List<ErrorAlarmCondition> getCheckConditions(List<String> EACheckID) {
+		List<ErrorAlarmCondition> checkConditions = errorRecordRepo.findConditionByListErrorAlamCheckId(EACheckID);
+		if(checkConditions.isEmpty()){
+			EACheckID = workRecordExtraRepo.getAllWorkRecordExtraConByListID(EACheckID).stream()
+					.filter(c -> c.isUseAtr()).map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
+			if(EACheckID.isEmpty()){
+				return toEmptyResultList();
+			}
+			checkConditions = errorAlarmConditionRepo.findConditionByListErrorAlamCheckId(EACheckID);
 		}
-		return result;
-			
+		return checkConditions;
 	}
 	
 	

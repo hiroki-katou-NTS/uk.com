@@ -130,7 +130,7 @@ module nts.uk.ui.jqueryExtentions {
         let border = 2;
         
         $this.mouseenter(e => {
-            if (!$this.prop("readonly") || !$this.isOverflowContent(border)) {
+            if (!$this.prop("readonly") || !$this.isOverflow()) {
                 return;
             }
             
@@ -142,6 +142,29 @@ module nts.uk.ui.jqueryExtentions {
         let $this = $(this);
         return $this.prop("offsetWidth") - border < $this.prop("scrollWidth");
     };
+    
+    $.fn.isOverflow = function() {
+        let $label = $(this); 
+        if ($label[0].nodeName === "INPUT" 
+            && (window.navigator.userAgent.indexOf("MSIE") > -1
+            || !!window.navigator.userAgent.match(/trident/i))) {
+            let $div = $("<div/>").appendTo($(document.body));
+            let style = $label[0].currentStyle;
+            if (style) {
+                for (let p in style) {
+                    $div[0].style[p] = style[p];
+                }
+            }
+            
+            $div.html($label.val());
+            let width = $div.outerWidth();
+            let scrollWidth = $div[0].scrollWidth;
+            $div.remove();
+            return width < scrollWidth;
+        }
+        
+        return $label.outerWidth() < $label[0].scrollWidth;
+    }
     
     $.fn.showTextContentAsTooltip = function (textContentGetter) {
         

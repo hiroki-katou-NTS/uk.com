@@ -8,12 +8,13 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 500 };</script>
-			<!-- 			<com:ValidatorScript> -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed -->
-			<!--             </com:ValidatorScript> -->
+			<script>var dialogSize = { width: 575, height: 500 };</script>
+			<com:ValidatorScript>
+			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatCharacterDigit
+			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
+			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
+			
+			             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.j.vm.js" />
@@ -33,29 +34,14 @@
 						<div class="div-table-col-medium">
 							<div id="J2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_164')}</div>
 						</div>
-						<div id="J2_1" tabindex="1" class="div-table-col-standard">
-							<div id="J2_1_1" tabindex="-1" class="div-table-col-standard"
-								data-bind="ntsRadioButton: {
-									checked: effectDigitLength, 
-									option: $parent.effectDigitLengthItem()[0], 
-									optionValue: 'code', 
-									enable: $parent.enableEffectDigitLengthCls(), 
-									name: '#{i18n.getText('CMF002_164')}', 
-									optionText: 'name', 
-									group: 'minorityDigitCls' 
-									}">
-							</div>
-							<div id="J2_1_2" tabindex="-1" class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: effectDigitLength, 
-									option: $parent.effectDigitLengthItem()[1], 
-									optionValue: 'code', 
-									enable: $parent.enableEffectDigitLengthCls(), 
-									name: '#{i18n.getText('CMF002_164')}', 
-									optionText: 'name', 
-									group: 'minorityDigitCls' 
-									}">
-							</div>
+						<div class="div-table-col-standard">
+							<div id="J2_1" tabindex="1" class="div-table-col-standard"
+								data-bind="ntsRadioBoxGroup: {
+									options: $vm.effectDigitLengthItem,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: effectDigitLength,
+									enable: $vm.effectDigitLengthCls()}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J2_2_1" tabindex="2"
@@ -63,9 +49,9 @@
 								value: startDigit,
 								name:'#{i18n.getText('CMF002_167')}',
 								required: true,
-								constraint: 'AcceptedDigit',
+								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
-								enable: $parent.enableEffectDigitLength()}" />
+								enable: $vm.enableEffectDigitLength()}" />
 							<div id="J2_2_2" class="label" style="display: inline">#{i18n.getText('CMF002_169')}</div>
 						</div>
 						<div class="div-table-col">
@@ -74,9 +60,9 @@
 								value: endDigit,
 								name:'#{i18n.getText('CMF002_168')}',
 								required: true,
-								constraint: 'AcceptedDigit',
+								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
-								enable: $parent.enableEffectDigitLength()}" />
+								enable: $vm.enableEffectDigitLength()}" />
 							<div id="H2_8" class=" label" style="display: inline">#{i18n.getText('CMF002_169')}</div>
 						</div>
 					</div>
@@ -86,38 +72,23 @@
 							<div id="J3" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_170')}</div>
 						</div>
 						<div id="J3_1" tabindex="4" class="div-table-col-standard">
-							<div id="J3_1_1" tabindex="-1" class="div-table-col-standard"
-								data-bind="ntsRadioButton: {
-									checked: codeEditing, 
-									option: $parent.codeEditingItem()[0], 
-									optionValue: 'code', 
-									enable: $parent.enableCodeEditingCls(), 
-									name: '#{i18n.getText('CMF002_170')}', 
-									optionText: 'name', 
-									group: 'codeEditingCls' 
-									}">
-							</div>
-							<div id="J3_1_2" tabindex="-1" class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: codeEditing, 
-									option: $parent.codeEditingItem()[1], 
-									optionValue: 'code', 
-									enable: $parent.enableCodeEditingCls(), 
-									name: '#{i18n.getText('CMF002_170')}', 
-									optionText: 'name', 
-									group: 'codeEditingCls' 
-									}">
-							</div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vm.codeEditingItem,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: cdEditting,
+									enable: $vm.CdEditting()}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J3_2_1" tabindex="5"
 								data-bind="ntsNumberEditor: {
-								value: codeEditDigit,
+								value: cdEditDigit,
 								name:'#{i18n.getText('CMF002_171')}',
 								required: true,
-								constraint: 'AcceptedDigit',
+								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
-								enable: $parent.enableCodeEditing()}" />
+								enable: $vm.enableCodeEditing()}" />
 							<div id="J3_2_2" class="label" style="display: inline">#{i18n.getText('CMF002_173')}</div>
 						</div>
 						<div class="div-table-col">
@@ -125,12 +96,12 @@
 								style="display: inline-block; width: 150px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_172')}',
-									options: $parent.codeEditingMethodItem,
+									options: $vm.codeEditingMethodItem,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
-									value: codeEditingMethod,
+									value: cdEdittingMethod,
 									optionsText: 'name',
-									enable: $parent.enableCodeEditing()}">
+									enable: $vm.enableCodeEditing()}">
 							</div>
 						</div>
 					</div>
@@ -144,26 +115,28 @@
 								style="display: inline-block; width: 200px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_172')}',
-									options: $parent.spaceEditingItem,
+									options: $vm.spaceEditingItem,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
-									value: spaceEditing,
+									value: spaceEditting,
 									optionsText: 'name',
-									enable: $parent.enableSpaceEditing()}">
+									enable: $vm.enableSpaceEdditingCls()}">
 							</div>
 						</div>
 					</div>
 					<!-- J5 - スペース編集(ラベル) -->
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
-							<div id="J5" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_250')}</div>
+							<div id="J5" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_176')}</div>
 						</div>
 						<div class="div-table-col-standard">
 							<button id="J5_1" tabindex="8"
-								data-bind="click: function() {$parent.open002_V2($data)}, enable: $parent.enableConvertCode()">#{i18n.getText('CMF002_177')}</button>
+								data-bind="click: $vm.open002_V2, enable: $vm.enableSpaceEditting()">#{i18n.getText('CMF002_177')}</button>
 						</div>
-						<div id="J5_2" class="label-vertical-align-center"
-							data-bind="text: $parent.dispConvertName"></div>
+						<div id="J5_2" class="div-table-col-standard" style = "margin-top: 5px;"
+							data-bind="text: cdConvertCd"></div>
+							<div id="J5_23" class="div-table-col-standard" style = "margin-top: 5px;"
+							data-bind="text: cdConvertName"></div>
 					</div>
 					<!--  J6 - NULL値置き換え(ラベル)  -->
 					<div class="div-table-row">
@@ -171,38 +144,23 @@
 							<div id="J6" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_157')}</div>
 						</div>
 						<div id="J6_1" tabindex="9" class="div-table-col-standard">
-							<div id="J6_1_1" tabindex="-1"
-								data-bind="ntsRadioButton: {
-									checked: nullValueReplace, 
-									option: $parent.nullValueReplaceItem()[0], 
-									optionValue: 'code', 
-									enable: $parent.enableNullValueReplaceCls(), 
-									name: '#{i18n.getText('CMF002_157')}', 
-									optionText: 'name', 
-									group: 'nullValueReplaceCls' 
-									}">
-							</div>
-							<div id="J6_1_2" tabindex="-1" class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: nullValueReplace, 
-									option: $parent.nullValueReplaceItem()[1], 
-									optionValue: 'code', 
-									enable: $parent.enableNullValueReplaceCls(), 
-									name: '#{i18n.getText('CMF002_157')}', 
-									optionText: 'name', 
-									group: 'nullValueReplaceCls' 
-									}">
-							</div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+									options: $vm.nullValueReplaceItem,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: nullValueReplace,
+									enable: $vm.nullValueReplaceItemcls()}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J6_2" tabindex="10"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfNullValueReplace,
 								name:'#{i18n.getText('CMF002_158')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataFormatNullReplacement', 
 								required: false,
-								enable: $parent.enableNullValueReplace(),
-								option : {width : '150px'}}" />
+								enable: $vm.enableNullValueReplace(),
+								option : {width : '260px'}}" />
 						</div>
 					</div>
 					<!--  J7 - 固定値(ラベル)  -->
@@ -210,48 +168,33 @@
 						<div class="div-table-col-medium">
 							<div id="J7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_159')}</div>
 						</div>
-						<div id="J7_1" tabindex="11" class="div-table-col-standard">
-							<div id="J7_1_1" tabindex="-1"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $parent.fixedValueItem()[0], 
-									optionValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
-									name: '#{i18n.getText('CMF002_159')}', 
-									optionText: 'name', 
-									group: 'fixedValueCls' 
-									}">
-							</div>
-							<div id="J7_1_2" tabindex="-1" class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $parent.fixedValueItem()[1], 
-									optionValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
-									name: '#{i18n.getText('CMF002_159')}', 
-									optionText: 'name', 
-									group: 'fixedValueCls' 
-									}">
-							</div>
+						<div class="div-table-col-standard">
+							<div id="J7_1" tabindex="11"
+								data-bind="ntsRadioBoxGroup: {
+									options: $vm.fixedValueItem,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: fixedValue,
+									enable: true}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J7_2" tabindex="12"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataTypeFixedValue', 
 								required: false,
-								enable: $parent.enableFixedValue(),
-								option : {width : '150px'}}" />
+								enable: $vm.enableFixedValue(),
+								option : {width : '260px'}}" />
 						</div>
 					</div>
 				</div>
 			</div>
 			<!--  I20  -->
 			<div id="functions-area-bottom">
-				<button tabindex="13" id="I20_1" class="x-large proceed "
-					data-bind="click: saveCharacterSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
-				<button tabindex="14" id="I20_2" class="large"
+				<button tabindex="13" id="J20_1" class="x-large proceed "
+					data-bind="click: saveCharacterSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
+				<button tabindex="14" id="J20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>

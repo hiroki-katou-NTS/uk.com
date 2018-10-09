@@ -108,6 +108,15 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriodV2(List<String> employeeIDLst, DatePeriod period,
+			Integer rootType) {
+		String companyID = AppContexts.user().companyId();
+		
+		return appRootInstanceService.getAppRootStatusByEmpsPeriod(companyID, employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			.stream().map(x -> convertStatusFromDomain(x)).collect(Collectors.toList());
+	}
+	
 	private AppRootStateStatusSprExport convertStatusFromDomain(ApprovalRootStateStatus approvalRootStateStatus){
 		return new AppRootStateStatusSprExport(
 				approvalRootStateStatus.getDate(), 

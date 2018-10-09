@@ -38,8 +38,8 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
 			+ "AND o.sptstOptionalWidgetPK.companyID = t.ccgmtTopPagePartPK.companyID ";
 	
-	private static final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
-	private static final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
+	private static final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID AND o.sptstOptionalWidgetPK.companyID =:companyID";
+	private static final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID AND d.sptstWidgetDisplayPK.companyID =:companyID";
 	
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID";
 			
@@ -177,21 +177,23 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		}
 		return this.queryProxy().query(SELECT_IN, Object[].class)
 				.setParameter("topPagePartID", listOptionalWidgetID)
+				.setParameter("companyID", companyId)
 				.getList(c -> joinObjectToDomain(c));
 	}
 
 	private OptionalWidget joinObjectToDomain(Object[] entity) {
 		SptstOptionalWidget OptionalWidget = (SptstOptionalWidget) entity[0];
 		CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
-		List<WidgetDisplayItem> wDisplayItems = widgetDisplayItems(OptionalWidget.sptstOptionalWidgetPK.topPagePartID);
+		List<WidgetDisplayItem> wDisplayItems = widgetDisplayItems(OptionalWidget.sptstOptionalWidgetPK.topPagePartID, OptionalWidget.sptstOptionalWidgetPK.companyID);
 		return new OptionalWidget(OptionalWidget.sptstOptionalWidgetPK.companyID, OptionalWidget.sptstOptionalWidgetPK.topPagePartID, 
 				new TopPagePartCode(topPagePart.code), new TopPagePartName(topPagePart.name), TopPagePartType.valueOf(topPagePart.topPagePartType),
 				Size.createFromJavaType(topPagePart.width, topPagePart.height), wDisplayItems);
 	}
 	
-	private List<WidgetDisplayItem> widgetDisplayItems(String topPagePartId){
+	private List<WidgetDisplayItem> widgetDisplayItems(String topPagePartId, String companyID){
 		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS, SptstWidgetDisplay.class)
 				.setParameter("topPagePartID", topPagePartId)
+				.setParameter("companyID", companyID)
 				.getList(c ->c.toDomain());
 	}
 

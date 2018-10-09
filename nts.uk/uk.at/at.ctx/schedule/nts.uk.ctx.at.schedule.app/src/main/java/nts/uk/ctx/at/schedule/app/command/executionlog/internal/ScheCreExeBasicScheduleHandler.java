@@ -66,7 +66,7 @@ import nts.uk.shr.com.i18n.TextResource;
 /**
  * The Class ScheCreExeBasicScheduleHandler.
  */
-@Transactional(value = TxType.NOT_SUPPORTED)
+@Transactional(value = TxType.SUPPORTS)
 @Stateless
 public class ScheCreExeBasicScheduleHandler {
 
@@ -347,7 +347,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param BasicScheduleResetCommand,
 	 *            GeneralDate
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
@@ -593,7 +593,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
 		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
-			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i-1)));
+			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i - 1)));
 		}
 		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
@@ -616,7 +616,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param baseDate
 	 *            the base date (input from screen A)
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void registerBasicScheduleSaveCommand(String companyId, Optional<BasicSchedule> optBasicSchedule,
 			Optional<PrescribedTimezoneSetting> optPrescribedSetting, WorkTimeSetGetterCommand command,
 			String employeeId, GeneralDate baseDate, WorkType workType) {
