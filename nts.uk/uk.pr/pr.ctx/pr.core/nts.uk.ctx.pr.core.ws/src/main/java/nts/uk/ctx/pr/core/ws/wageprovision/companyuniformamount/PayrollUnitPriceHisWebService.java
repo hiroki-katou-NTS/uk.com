@@ -86,7 +86,7 @@ public class PayrollUnitPriceHisWebService extends WebService {
     @POST
     @Path("addPayrollUnitPriceHis")
     public String addPayrollUnitPriceHis(PayrollUnitPriceHistoryCommand command) {
-        return addPayrollUnitPriceHistoryCommandHandler.handle(command);
+        return "";
     }
 
 }

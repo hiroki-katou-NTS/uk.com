@@ -19,10 +19,10 @@ public class AddPayrollUnitPriceHistoryCommandHandler extends CommandHandler<Pay
 
 
     @Override
-    protected String handle(CommandHandlerContext<PayrollUnitPriceHistoryCommand> context) {
+    protected void handle(CommandHandlerContext<PayrollUnitPriceHistoryCommand> context) {
         PayrollUnitPriceHistoryCommand command = context.getCommand();
         YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
         YearMonth endYearMonth = new YearMonth(command.getEndYearMonth());
-        return payrollUnitPriceHistoryService.addPayrollUnitPriceHistory(command.getCode(), startYearMonth, endYearMonth);
+//        return payrollUnitPriceHistoryService.addPayrollUnitPriceHistory(command.getCode(), startYearMonth, endYearMonth);
     }
 }

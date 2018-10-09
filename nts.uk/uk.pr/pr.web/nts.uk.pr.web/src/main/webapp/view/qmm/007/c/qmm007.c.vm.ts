@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import model = qmm007.share.model;
+    import service = nts.uk.pr.view.qmm007.c.service;
     export class ScreenModel {
         startYearMonth:         KnockoutObservable<number> = ko.observable();
         endYearMonth:           KnockoutObservable<number> = ko.observable();
@@ -23,11 +24,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         code :KnockoutObservable<string> = ko.observable('項目移送');
         constructor() {
             let self = this;
-
-            self.innitView();
-
-
-
+            self.initView();
         }
         submit(){
             let self = this;
@@ -66,12 +63,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                         dialog.alertError(res);
                 });
             }
-
-
-
         }
 
-        innitView() {
+        initView() {
             let self = this;
             // start
             let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
@@ -83,35 +77,10 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             self.code(params.code);
             self.startYearMonth(params.startYearMonth);
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
-            self.isFirst(true);
+            self.isFirst(params.isFirst);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
-            if(self.isFirst()){
-                $('#C1_6').focus();
-            }
-            else{
-                $('#C1_9').focus();
-            }
-
-
-
         }
-        // getPayrollUnitPriceHis(hisId: string, code: string) {
-        //     let self = this;
-        //     let data: any = {
-        //         cId: '',
-        //         hisId: hisId,
-        //         code: code
-        //     };
-        //     service.getPayrollUnitPriceHis(data).done((data: PayrollUnitPriceHistoryDto) => {
-        //        self.mPayrollUnitPriceHis = ko.observableArray(data);
-        //     }).fail(function (res: any) {
-        //         if (res)
-        //             dialog.alertError(res);
-        //     });
-        //
-        // }
-
-        hasRequired(){
+       hasRequired(){
             if(this.methodEditing() != EDIT_METHOD.UPDATE) {
 
                 return false;
