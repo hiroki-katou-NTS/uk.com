@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituat
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -56,6 +57,8 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
+import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
@@ -149,6 +152,9 @@ public class MonthlyPerformanceReload {
 	@Inject 
 	private ApprovalProcessRepository approvalRepo;
 	
+	@Inject
+	MonthlyItemControlByAuthFinder monthlyItemControlByAuthFinder;
+	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
 		String companyId = AppContexts.user().companyId();
@@ -174,17 +180,25 @@ public class MonthlyPerformanceReload {
 		List<String> employeeIds = param.getLstEmployees().stream().map(e -> e.getId())
 				.collect(Collectors.toList());
 		
+		List<Integer> itemIds = new ArrayList<>(param.getLstAtdItemUnique().keySet());
+		MonthlyItemControlByAuthDto monthlyItemAuthDto = monthlyItemControlByAuthFinder
+				.getMonthlyItemControlByToUse(AppContexts.user().companyId(), AppContexts.user().roles().forAttendance(), itemIds, 1);
+		// 取得したドメインモデル「権限別月次項目制御」でパラメータ「表示する項目一覧」をしぼり込む
+		// Filter param 「表示する項目一覧」 by domain 「権限別月次項目制御」
+		screenDto.setAuthDto(monthlyItemAuthDto);
+		
 		// アルゴリズム「ロック状態をチェックする」を実行する - set lock
 		List<MonthlyPerformaceLockStatus> lstLockStatus = checkLockStatus(companyId, employeeIds,
 				param.getYearMonth(), param.getClosureId(),
-				new DatePeriod(param.getActualTime().getStartDate(), param.getActualTime().getEndDate()), param.getInitScreenMode());
-		
+				new DatePeriod(param.getActualTime().getStartDate(), param.getActualTime().getEndDate()), param.getInitScreenMode());		
 		param.setLstLockStatus(lstLockStatus);
+		
 		screenDto.setParam(param);
 		screenDto.setLstEmployee(param.getLstEmployees());
 
 		// アルゴリズム「月別実績を表示する」を実行する(Hiển thị monthly actual result)
 		displayMonthlyResult(screenDto, param.getYearMonth(), param.getClosureId(), optApprovalProcessingUseSetting.get(), companyId);
+		screenDto.createAccessModifierCellState();
 		return screenDto;
 	}
 
@@ -291,7 +305,7 @@ public class MonthlyPerformanceReload {
 			} else if (param.getInitMenuMode() == 2) {
 				// *8 request list 534
 				approvalRootOfEmloyee = this.approvalStatusAdapter.getApprovalEmpStatusMonth(
-						AppContexts.user().userId(), new YearMonth(yearMonth), closureId,
+						AppContexts.user().employeeId(), new YearMonth(yearMonth), closureId,
 						screenDto.getClosureDate().toDomain(), screenDto.getSelectedActualTime().getEndDate());
 			}
 		}
@@ -326,11 +340,14 @@ public class MonthlyPerformanceReload {
 		for (int i = 0; i < param.getLstEmployees().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = param.getLstEmployees().get(i);
 			String employeeId = employee.getId();
+			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
+			if (rowData == null) continue;
+			
 			// lock check box1 identify
 			if (!employeeIdLogin.equals(employeeId) || param.getInitMenuMode() == 2) {
 				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
 			}
-			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) ? ""
+			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) || param.getInitMenuMode() == 1 ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 
 			// set state approval
@@ -382,12 +399,13 @@ public class MonthlyPerformanceReload {
 					// *10
 					if (approvalByListEmplAndListApprovalRecordDate != null) {
 						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
-							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)) {
-								// 承認状況 ＝ 承認済 or 承認中 の場合
-								if (approvalApprovalRecordDate.getApprovalStatus().value == 1
-										|| approvalApprovalRecordDate.getApprovalStatus().value == 2) {
-									approve = true;
-								}
+							// 承認状況 ＝ 承認済 or 承認中 の場合
+							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)
+									&& approvalApprovalRecordDate
+											.getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL
+									|| approvalApprovalRecordDate
+											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
+								approve = true;
 							}
 						}
 					}
@@ -411,8 +429,6 @@ public class MonthlyPerformanceReload {
 					employeeId, "", identify, approve, dailyConfirm, "");
 
 			// Setting data for dynamic column
-			MonthlyModifyResult rowData = employeeDataMap.get(employeeId);
-
 			List<EditStateOfMonthlyPerformanceDto> newList = editStateOfMonthlyPerformanceDtos.stream()
 					.filter(item -> item.getEmployeeId().equals(employeeId)).collect(Collectors.toList());
 			if (null != rowData) {
@@ -527,9 +543,6 @@ public class MonthlyPerformanceReload {
 		// 「List＜所属職場履歴項目＞」の件数ループしてください
 		MonthlyPerformaceLockStatus monthlyLockStatus = null;
 		
-		/**
-		 * Fix response kmw003
-		 */
 		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(empIds, closureTime.end());
 		
 		Optional<IdentityProcess> identityOp = identityProcessRepo.getIdentityProcessById(cid);
@@ -537,7 +550,7 @@ public class MonthlyPerformanceReload {
 		//対応するドメインモデル「本人確認処理の利用設定」を取得する
 		if(!identityOp.isPresent()) {
 			checkIdentityOp = true;
-		}else {
+		} else {
 			//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
 			if(identityOp.get().getUseDailySelfCk() == 0){
 				checkIdentityOp = true;
@@ -551,12 +564,14 @@ public class MonthlyPerformanceReload {
 		Optional<ApprovalProcess> approvalProcOp = approvalRepo.getApprovalProcessById(cid);
 		
 		for (AffAtWorkplaceImport affWorkplaceImport : affWorkplaceLst) {
+			
 			List<Identification> listIdenByEmpID = new ArrayList<>();
 			for(Identification iden : listIdentification) {
 				if(iden.getEmployeeId().equals(affWorkplaceImport.getEmployeeId())) {
 					listIdenByEmpID.add(iden);
 				}
 			}
+			
 			boolean checkExistRecordErrorListDate = false;
 			for(EmployeeDailyPerError employeeDailyPerError : listEmployeeDailyPerError) {
 				if(employeeDailyPerError.getEmployeeID().equals(affWorkplaceImport.getEmployeeId())) {
@@ -573,6 +588,7 @@ public class MonthlyPerformanceReload {
 			// Output「月の実績の状況」を元に「ロック状態一覧」をセットする
 			monthlyLockStatus = new MonthlyPerformaceLockStatus(
 					monthlymonthlyActualStatusOutput.getEmployeeClosingInfo().getEmployeeId(),
+					// TODO
 					LockStatus.UNLOCK,
 					// 職場の就業確定状態
 					monthlymonthlyActualStatusOutput.getEmploymentFixedStatus().equals(EmploymentFixedStatus.CONFIRM)
@@ -588,7 +604,9 @@ public class MonthlyPerformanceReload {
 					// 日の実績が存在する
 					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyAchievementsExist()
 							? LockStatus.UNLOCK : LockStatus.LOCK,
-					LockStatus.UNLOCK);
+					// エラーが0件である
+					monthlymonthlyActualStatusOutput.getDailyActualSituation().isDailyRecordError() ? LockStatus.LOCK
+							: LockStatus.UNLOCK);
 			monthlyLockStatusLst.add(monthlyLockStatus);
 		}
 		// 過去実績の修正ロック

@@ -23,7 +23,7 @@ public class KrcdtWekAggrDivgTimePK implements Serializable {
 
 	/** 社員ID */
 	@Column(name = "SID")
-	public String employeeID;
+	public String employeeId;
 	/** 年月 */
 	@Column(name = "YM")
 	public int yearMonth;

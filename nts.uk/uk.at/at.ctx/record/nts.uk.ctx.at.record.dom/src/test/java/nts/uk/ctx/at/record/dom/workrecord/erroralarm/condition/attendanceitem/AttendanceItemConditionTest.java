@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
@@ -20,25 +21,25 @@ public class AttendanceItemConditionTest {
 	@Test
 	public void test() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.AND, false);
-		assertTrue(!condition.check(c -> c));
+		assertTrue(condition.check(c -> c) != WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test1() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.OR, false);
-		assertTrue(condition.check(c -> c));
+		assertTrue(condition.check(c -> c) == WorkCheckResult.ERROR);
 	}
 
 	@Test
 	public void test2() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.AND, true);
-		assertTrue(!condition.check(c -> c));
+		assertTrue(condition.check(c -> c) != WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test3() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.OR, true);
-		assertTrue(condition.check(c -> c));
+		assertTrue(condition.check(c -> c) == WorkCheckResult.ERROR);
 	}
 
 	private AttendanceItemCondition createAttendanceItemCondition(LogicalOperator logic, boolean isUseGroup2){

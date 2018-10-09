@@ -313,6 +313,15 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 dateValue = self.multiDate() ? self.datePeriod().endDate : self.dateSingle();
             return moment.utc(dateValue, self.dateFormat).toISOString();
         }
+        enableTime() {
+            let self = this;
+            let result = self.editable() && self.requiredCheckTime();
+            if (!result) {
+                self.appWorkChange().workChange().workTimeStart1(null);
+                self.appWorkChange().workChange().workTimeEnd1(null);
+            }
+            return result;
+        }
 
 
 
@@ -404,11 +413,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             service.getRecordWorkInfoByDate(moment(endDate === null ? startDate : endDate).format(self.dateFormat)).done((recordWorkInfo) => {
                 //Binding data
                 ko.mapping.fromJS(recordWorkInfo, {}, self.recordWorkInfo);
-                if(self.appChangeSetting().initDisplayWorktime()===0){
+                if(self.appChangeSetting().initDisplayWorktime()===0 && self.enableTime()){
                     self.appWorkChange().workChange().workTimeStart1(recordWorkInfo.startTime1);
                     self.appWorkChange().workChange().workTimeEnd1(recordWorkInfo.endTime1);
-                    self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime1);
-                    self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
+                    //self.appWorkChange().workChange().workTimeStart2(recordWorkInfo.startTime2);
+                    //self.appWorkChange().workChange().workTimeEnd2(recordWorkInfo.endTime2);
                 }
                 dfd.resolve();
             }).fail((res) => {

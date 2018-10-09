@@ -1,6 +1,7 @@
 .dialog-title {
   margin-left: 20px; 
   margin-top: 10px;
+  font-size: 1.4em;
 } 
 .div-table {
   display: table;         
@@ -14,7 +15,6 @@
 .div-table-row {
   display: table-row;
   width: 800px;
-  height:70px;
   clear: both;
 }
 .div-table-row-small {
@@ -31,7 +31,7 @@
 .div-table-col-standard {
   float: left; 
   display: table-column;         
-  width: 110px;   
+  width: 100px;
 }
 .div-table-col-big {
   float: left; 
@@ -67,4 +67,9 @@
 .cell-label{
     display: inline;
 } 
-
+div.form-label{
+	height: 30px;
+}
+#master-wrapper {
+    overflow: hidden;
+}

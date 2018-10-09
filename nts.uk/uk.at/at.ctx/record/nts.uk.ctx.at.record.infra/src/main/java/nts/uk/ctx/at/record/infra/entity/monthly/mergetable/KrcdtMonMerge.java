@@ -2472,7 +2472,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 					excessOutsideTime = breakdown.get(excessNo);
 				}
 			}
-			switch (i){
+			switch (i + 1){
 			case 1:
 				toEntityExcessOutsideWork1(excessOutsideTime);
 				break;
@@ -4928,16 +4928,16 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	
 	public void resetAffiliationInfo() {
 
-		this.firstEmploymentCd = null;
-		this.firstWorkplaceId = null;
-		this.firstJobTitleId = null;
-		this.firstClassCd = null;
-		this.firstBusinessTypeCd = null;
-		this.lastEmploymentCd = null;
-		this.lastWorkplaceId = null;
-		this.lastJobTitleId = null;
-		this.lastClassCd = null;
-		this.lastBusinessTypeCd = null;
+		this.firstEmploymentCd = "";
+		this.firstWorkplaceId = "";
+		this.firstJobTitleId = "";
+		this.firstClassCd = "";
+		this.firstBusinessTypeCd = "";
+		this.lastEmploymentCd = "";
+		this.lastWorkplaceId = "";
+		this.lastJobTitleId = "";
+		this.lastClassCd = "";
+		this.lastBusinessTypeCd = "";
 	}
 
 	/**
