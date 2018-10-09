@@ -463,7 +463,7 @@ public class AppHolidayWorkFinder {
 					appHolidayWork.getApplication().getPrePostAtr().value,
 					appHolidayWork.getApplication().getInputDate(), appHolidayWork.getApplication().getAppDate(),
 					ApplicationType.BREAK_TIME_APPLICATION.value, appHolidayWork.getApplication().getEmployeeID(),
-					companyID, appHolidayWork.getWorkTimeCode().toString());
+					companyID, appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().v());
 			holidayWorkInputDtos.forEach(x -> {
 				breakTimeCalforApprover.forEach(breakTime -> {
 					if(x.getAttendanceType() == breakTime.getAttendanceID()){
