@@ -256,9 +256,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 	@Override
 	public List<ApproverRemandImport> getListApproverRemand(String appID) {
-		return approvalRootStatePub.getListApproverRemand(appID).stream()
-				.map(c-> new ApproverRemandImport(c.getPhaseOrder(), c.getSID(), c.isAgent()))
-				.collect(Collectors.toList());
+		return null;
 	}
 	@Override
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber) {

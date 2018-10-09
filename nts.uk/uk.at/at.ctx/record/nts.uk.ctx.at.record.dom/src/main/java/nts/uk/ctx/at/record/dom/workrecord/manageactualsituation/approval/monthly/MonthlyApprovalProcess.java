@@ -49,14 +49,14 @@ public class MonthlyApprovalProcess {
 		//社員が対象月の承認処理を利用できるかチェックする
 		if(!canUseMonthlyApprovalCheck(cId, employeeId, closureDate,approvalProcOp,listShareAff)){
 			//利用できない場合
-			return ApprovalStatus.APPROVAL;
+			return ApprovalStatus.UNAPPROVAL;
 		}
 		// [No.533](中間データ版)承認対象者リストと日付リストから承認状況を取得する（月別）
 		EmpPerformMonthParamImport param = new EmpPerformMonthParamImport(new YearMonth(processDateYM), closureId,
 				new ClosureDate(closureDate.day(), closureDate.day() == closureDate.lastDateInMonth()), closureDate,
 				employeeId);
 		List<ApproveRootStatusForEmpImport> lstApprovalState = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(Arrays.asList(param));
-		if(!CollectionUtil.isEmpty(lstApprovalState) && lstApprovalState.get(0).getApprovalStatus() == ApprovalStatusForEmployee.APPROVED){
+		if(!CollectionUtil.isEmpty(lstApprovalState) && (lstApprovalState.get(0).getApprovalStatus() == ApprovalStatusForEmployee.APPROVED || lstApprovalState.get(0).getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL)){
 			return ApprovalStatus.APPROVAL;
 		}
 		return ApprovalStatus.UNAPPROVAL;
@@ -72,16 +72,16 @@ public class MonthlyApprovalProcess {
 		// 対応するドメインモデル「承認処理の利用設定」を取得する
 		if (approvalProcOp.isPresent()) {
 			// 「月の承認者確認を利用する」をチェックする
-			if (approvalProcOp.get().getUseMonthBossChk() == 0)
-				return false;
+			if (approvalProcOp.get().getUseMonthBossChk() == 1)
+				return true;
 			// Imported「（就業）所属職位履歴」を取得する
 			// 承認処理が必要な職位かチェックする
 			// パラメータ「社員の職位ID」がドメインモデル「承認処理の利用設定．承認処理が必要な職位」に該当するかチェックする
-			for (SharedAffJobTitleHisImport sharedAffJobTitleHisImport : listShareAff) {
-				if (sharedAffJobTitleHisImport.getEmployeeId().equals(employeeId) && approvalProcOp.get().getJobTitleId().equals(sharedAffJobTitleHisImport.getJobTitleId())) {
-					return true;
-				}
-			}
+//			for (SharedAffJobTitleHisImport sharedAffJobTitleHisImport : listShareAff) {
+//				if (sharedAffJobTitleHisImport.getEmployeeId().equals(employeeId) && approvalProcOp.get().getJobTitleId().equals(sharedAffJobTitleHisImport.getJobTitleId())) {
+//					return true;
+//				}
+//			}
 		}
 		return false;
 	}

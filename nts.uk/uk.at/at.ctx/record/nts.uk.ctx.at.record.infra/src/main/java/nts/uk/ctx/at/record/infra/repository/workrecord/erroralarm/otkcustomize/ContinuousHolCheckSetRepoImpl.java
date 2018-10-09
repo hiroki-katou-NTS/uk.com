@@ -45,7 +45,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 	
 	@Override
 	public Optional<ContinuousHolCheckSet> findSpecial(String companyId) {
-		try {/** TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
+		try {/* TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
 //			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
 //			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
 //			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
@@ -84,6 +84,8 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			throw new RuntimeException(e);
 		}
 	}
+
+
 
 	private List<WorkTypeCode> getType(final List<Map<String, Object>> result, String column) {
 		return result.stream().filter(c -> c.get(column) != null).map(c -> c.get(column).toString().trim())

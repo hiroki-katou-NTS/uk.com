@@ -208,13 +208,13 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Integer annleaUnusedMinutes;
 	/** 所定日数 */
 	@Column(name = "AL_PREDETERMINED_DAYS")
-	public int annleaPredeterminedDays;
+	public double annleaPredeterminedDays;
 	/** 労働日数 */
 	@Column(name = "AL_LABOR_DAYS")
-	public int annleaLaborDays;
+	public double annleaLaborDays;
 	/** 控除日数 */
 	@Column(name = "AL_DEDUCTION_DAYS")
-	public int annleaDeductionDays;
+	public double annleaDeductionDays;
 
 	/** 半日年休使用回数 */
 	@Column(name = "AL_HALF_USED_TIMES")
@@ -281,19 +281,19 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 	public Double annleaGrantDays;
 	/** 付与所定日数 */
 	@Column(name = "AL_GRANT_PREDETERMINED_DAYS")
-	public Integer annleaGrantPredeterminedDays;
+	public Double annleaGrantPredeterminedDays;
 	/** 付与労働日数 */
 	@Column(name = "AL_GRANT_LABOR_DAYS")
-	public Integer annleaGrantLaborDays;
+	public Double annleaGrantLaborDays;
 	/** 付与控除日数 */
 	@Column(name = "AL_GRANT_DEDUCTION_DAYS")
-	public Integer annleaGrantDeductionDays;
+	public Double annleaGrantDeductionDays;
 	/** 控除日数付与前 */
 	@Column(name = "AL_DEDUCTION_DAYS_BEFORE")
-	public Integer annleaDeductionDaysBefore;
+	public Double annleaDeductionDaysBefore;
 	/** 控除日数付与後 */
 	@Column(name = "AL_DEDUCTION_DAYS_AFTER")
-	public Integer annleaDeductionDaysAfter;
+	public Double annleaDeductionDaysAfter;
 	/** 出勤率 */
 	@Column(name = "AL_ATTENDANCE_RATE")
 	public Double annleaAttendanceRate;
@@ -1896,12 +1896,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (domain.getAnnualLeaveGrant().isPresent()) {
 			val grantInfo = domain.getAnnualLeaveGrant().get();
 			this.annleaGrantDays = grantInfo.getGrantDays().v();
-			this.annleaGrantPredeterminedDays = grantInfo.getGrantPrescribedDays().v().intValue();
-			this.annleaGrantLaborDays = grantInfo.getGrantWorkingDays().v().intValue();
-			this.annleaGrantDeductionDays = grantInfo.getGrantDeductedDays().v().intValue();
-			this.annleaDeductionDaysBefore = grantInfo.getDeductedDaysBeforeGrant().v().intValue();
-			this.annleaDeductionDaysAfter = grantInfo.getDeductedDaysAfterGrant().v().intValue();
-			this.annleaAttendanceRate = grantInfo.getAttendanceRate().v().doubleValue();
+			this.annleaGrantPredeterminedDays = grantInfo.getGrantPrescribedDays().v();
+			this.annleaGrantLaborDays = grantInfo.getGrantWorkingDays().v();
+			this.annleaGrantDeductionDays = grantInfo.getGrantDeductedDays().v();
+			this.annleaDeductionDaysBefore = grantInfo.getDeductedDaysBeforeGrant().v();
+			this.annleaDeductionDaysAfter = grantInfo.getDeductedDaysAfterGrant().v();
+			this.annleaAttendanceRate = grantInfo.getAttendanceRate().v() == null? null: grantInfo.getAttendanceRate().v().doubleValue();
 		}
 	}
 
