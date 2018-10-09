@@ -5,16 +5,14 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import model = qmm007.share.model;
-    import service = nts.uk.pr.view.qmm007.c.service;
     export class ScreenModel {
         startYearMonth:         KnockoutObservable<number> = ko.observable();
         endYearMonth:           KnockoutObservable<number> = ko.observable();
         startLastYearMonth:     KnockoutObservable<number> = ko.observable();
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
-        selectedId:             KnockoutObservable<string> = ko.observable('');
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         insurrance:             KnockoutObservable<number> = ko.observable();
-        hisId:                  KnockoutObservable<string> = ko.observable('');
+
         // validate disable item
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
         insuranceName:          KnockoutObservable<string> = ko.observable('');
