@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         insurrance:             KnockoutObservable<number> = ko.observable();
         hisId:                  KnockoutObservable<string> = ko.observable('');
         // validate disable item
-        isHisFirst:              KnockoutObservable<boolean> = ko.observable(true);
+        isFirst:              KnockoutObservable<boolean> = ko.observable(true);
         insuranceName:          KnockoutObservable<string> = ko.observable('');
         mPayrollUnitPriceHis : KnockoutObservableArray<PayrollUnitPriceHistoryDto> = ko.observableArray(null);
         // data
@@ -23,6 +23,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         code :KnockoutObservable<string> = ko.observable('項目移送');
         constructor() {
             let self = this;
+
             self.innitView();
 
 
@@ -32,10 +33,10 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             let self = this;
             let data: any = {
                 cId: '',
-                hisId: self.mPayrollUnitPriceHis()[0].hisId,
-                code: self.mPayrollUnitPriceHis()[0].code,
+                hisId: self.mPayrollUnitPriceHis().hisId,
+                code: self.mPayrollUnitPriceHis().code,
                 startYearMonth: Number(self.startYearMonth()),
-                endYearMonth: self.mPayrollUnitPriceHis()[0].endYearMonth,
+                endYearMonth: self.mPayrollUnitPriceHis().endYearMonth,
                 isMode:this.methodEditing()
             }
             if(this.methodEditing() == EDIT_METHOD.DELETE){
@@ -70,35 +71,45 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
 
         }
 
-        innitView(){
+        innitView() {
             let self = this;
             // start
             let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
-            if (params) {
-                self.name(params.name);
-                self.code(params.code);
-                self.startYearMonth(params.startYearMonth);
-                self.isHisFirst(params.isHisFirst);
-                self.getPayrollUnitPriceHis(params.hisId,params.code);
+            let to = getText('QMM011_9');
+            if (!params) {
+               return;
             }
-            // self.getPayrollUnitPriceHis("8f4befef-29a0-4e0c-bfca-517c370df452",'001');
-        }
+            self.name(params.name);
+            self.code(params.code);
+            self.startYearMonth(params.startYearMonth);
+            self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
+            self.isFirst(params.isFirst);
+            self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
+            if(self.isFirst()){
+                $('#C1_6').focus();
+            }
+            else{
+                $('#C1_9').focus();
+            }
 
-        getPayrollUnitPriceHis(hisId: string, code: string) {
-            let self = this;
-            let data: any = {
-                cId: '',
-                hisId: hisId,
-                code: code
-            };
-            service.getPayrollUnitPriceHis(data).done((data: PayrollUnitPriceHistoryDto) => {
-               self.mPayrollUnitPriceHis = ko.observableArray(data);
-            }).fail(function (res: any) {
-                if (res)
-                    dialog.alertError(res);
-            });
+
 
         }
+        // getPayrollUnitPriceHis(hisId: string, code: string) {
+        //     let self = this;
+        //     let data: any = {
+        //         cId: '',
+        //         hisId: hisId,
+        //         code: code
+        //     };
+        //     service.getPayrollUnitPriceHis(data).done((data: PayrollUnitPriceHistoryDto) => {
+        //        self.mPayrollUnitPriceHis = ko.observableArray(data);
+        //     }).fail(function (res: any) {
+        //         if (res)
+        //             dialog.alertError(res);
+        //     });
+        //
+        // }
 
         hasRequired(){
             if(this.methodEditing() != EDIT_METHOD.UPDATE) {

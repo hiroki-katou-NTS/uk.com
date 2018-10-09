@@ -1,4 +1,4 @@
-package wageprovision.companyuniformamount;
+package nts.uk.ctx.pr.core.ws.wageprovision.companyuniformamount;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceDto;

@@ -276,7 +276,7 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             let self = this;
             let params = self.singleSelectedCode().split(';');
             let index;
-            index = _.findIndex(self.payrollUnitPriceHistory(), (o) =>{
+            index = _.findIndex(self.payrollUnitPriceHistory()[0], (o) =>{
                 return o.hisId === params[1];
             });
             setShared('QMM007_PARAMS_TO_SCREEN_C', {
