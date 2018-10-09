@@ -25,7 +25,7 @@ module nts.uk.pr.view.qmm008.d {
             isEditable: KnockoutObservable<boolean>;
 
             isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
-            isEnableBtnDelete: KnockoutObservable<boolean> = ko.observable(true);
+            isEnableBtnDelete: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnCreate: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -39,6 +39,7 @@ module nts.uk.pr.view.qmm008.d {
                     block.invisible();
                     for (let i = 0; i < response.listCodeName.length; i++) {
                         self.items.push(new SocialOfficeOverView(response.listCodeName[i].code, response.listCodeName[i].name));
+                        self.isEnableBtnDelete(true);
                     }
                     self.detail(new SocialOfficeDetail(response.sociaInsuOfficeDetail));
                     self.currentCode(response.sociaInsuOfficeDetail.code);
@@ -81,10 +82,10 @@ module nts.uk.pr.view.qmm008.d {
 
                 self.currentCode.subscribe(function(codeId) {
                     nts.uk.ui.errors.clearAll();
-                    self.isEnableBtnDelete(true);
                     if (codeId) {
                         self.setTabIndex();
                         nts.uk.pr.view.qmm008.d.service.findByCode(codeId).done(function(response) {
+                            self.isEnableBtnDelete(true);
                             self.detail(new SocialOfficeDetail(response));
                             let selectedNo35 = _.find(self.itemList(), { no: response.healthInsurancePrefectureNo });
                             if (response.healthInsurancePrefectureNo)
