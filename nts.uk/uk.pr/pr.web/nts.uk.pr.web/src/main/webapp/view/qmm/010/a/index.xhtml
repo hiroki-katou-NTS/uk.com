@@ -9,50 +9,201 @@
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
         <com:ValidatorScript>
-            nts.uk.ctx.core.dom.socialinsurance.InsuranceRate
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeCode
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeName
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.RepresentativeName
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.RepresentativePosition
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.PostalCode
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.Address1
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.AddressKana1
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.Address2
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.AddressKana2
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.PhoneNumber
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.Memo
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.OfficeCode
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.CityCode
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.EmploymentInsuranceBusinessOfficeNumber1
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.EmploymentInsuranceBusinessOfficeNumber2
+            nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.EmploymentInsuranceBusinessOfficeNumber3
         </com:ValidatorScript>
-        <com:scriptfile path="../share/model.js" />
+        <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm010.a.service.js"/>
         <com:scriptfile path="qmm010.a.vm.js"/>
         <com:scriptfile path="qmm010.a.start.js"/>
+        <com:stylefile path="qmm010.a.style.css"/>
 
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
             <div id="">
-                <button id="A1_1" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_1')}</button>
-                <button id="A1_2" class="proceed" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_2')}</button>
-                <button id="A1_3" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_3')}</button>
-                <button id="A1_4" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_4')}</button>
-                <button id="A1_5" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_5')}</button>
-                <button id="A1_6" class="danger" tabindex="1" data-bind="click: ">#{i18n.getText('QMM010_6')}</button>
+                <button id="A1_1" tabindex="1" data-bind="click: createNewOffice">#{i18n.getText('QMM010_1')}</button>
+                <button id="A1_2" class="proceed" tabindex="2"
+                        data-bind="click: registerOffice">#{i18n.getText('QMM010_2')}</button>
+                <button id="A1_3" tabindex="3"
+                        data-bind="click: printPDF, enable: screenMode() == 1">#{i18n.getText('QMM010_3')}</button>
+                <button id="A1_4" tabindex="4"
+                        data-bind="click: readFromSocialInsuranceOffice">#{i18n.getText('QMM010_4')}</button>
+                <button id="A1_5" tabindex="5" data-bind="click: masterCorrection">#{i18n.getText('QMM010_5')}</button>
+                <div style = "display: inline" data-bind="if: screenMode() == 1">
+                    <button id="A1_6" class="danger" tabindex="6"
+                            data-bind="click: deleteOffice">#{i18n.getText('QMM010_6')}</button>
+                </div>
+                <button data-bind="click: changeMode">Change mode</button>
             </div>
 
 
         </div>
-        <div class="contents-area">
-            <div class="fixed-flex-layout">
-                <div style = "margin-left: 25px; margin-top: 40px;" class="fixed-flex-layout-left">
-                    <div data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
-                         id="D2_1" style="margin-left: 10px;">
-                        <div id="D2_2" style="width: 330px" tabindex="7"
-                             data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'laborOfficeCode', comId: 'A2_3',
+        <div id="contents-area" class="fixed-flex-layout">
+            <div style="margin-left: 20px; margin-top: 25px;" class="fixed-flex-layout-left">
+                <div data-bind="ntsPanel:{width: '335px', height: '530px', direction: 'right', showIcon: true, visible: true}"
+                     style="margin-left: 10px;">
+                    <div style="width: 330px" tabindex="7"
+                         data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'laborOfficeCode', comId: 'A2_3',
                         items: laborInsuranceOfficeList, selected: selectedLaborOfficeCode, selectedKey: 'laborOfficeCode', fields: ['laborOfficeCode', 'officeName'], mode: 'igGrid'}"/>
-                        <table id="A2_3" tabindex="8"
-                               data-bind="ntsGridList: {
+                    <table id="A2_3" tabindex="8"
+                           data-bind="ntsGridList: {
                             rows: 20,
-                            name: '#[QMM008_109]',
+                            name: '#[QMM010_7]',
                             options: laborInsuranceOfficeList,
                             optionsValue: 'laborOfficeCode',
                             columns: [
                                 { headerText: '#{i18n.getText('QMM010_8')}', key: 'laborOfficeCode', width: 120, formatter: _.escape},
-                                { headerText: '#{i18n.getText('QMM010_9')}', key: 'officeName', width: 200, formatter: _.escape }
+                                { headerText: '#{i18n.getText('QMM010_9')}', key: 'laborOfficeName', width: 200, formatter: _.escape }
                             ],
                             multiple: false,
                             value: selectedLaborOfficeCode
                         }"></table>
-                    </div>
                 </div>
+            </div>
+            <div style="margin-left: 15px; margin-top: 25px;" class="fixed-flex-layout-right"
+                 data-bind="with: selectedLaborOffice">
+                <div class="flex valign-center">
+                    <!--A3_1 コード/名称-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: {required: true, constraint: ['LaborInsuranceOfficeCode', 'LaborInsuranceOfficeName']}">#{i18n.getText('QMM010_10')}</div>
+                    <!--A3_2 コード-->
+                    <input tabindex="10"
+                           data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeCode', value: laborOfficeCode, name: '#[QMM010_8]', required: true , enable: $vm.screenMode() == 1}"/>
+                    <!--A3_3 名称 -->
+                    <input style="margin-left: 5px;" tabindex="11" width="230px"
+                           data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeName',value: laborOfficeName, name: '#[QMM010_9]', required: true}"/>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_6 代表者名-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'RepresentativeName', required: false }">#{i18n.getText('QMM010_12')}</div>
+                    <!--A3_7 代表者名-->
+                    <input tabindex="12"
+                           data-bind="ntsTextEditor: {constraint: 'RepresentativeName',value: representativeName, name: '#[QMM010_12]'}"/>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_8 代表者職位-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'RepresentativePosition', required: true }">#{i18n.getText('QMM010_013')}</div>
+                    <!--A3_9 代表者職位-->
+                    <input tabindex="13"
+                           data-bind="ntsTextEditor: {constraint: 'RepresentativePosition',value: representativePosition , name: '#[QMM010_013]'}"/>
+                </div>
+
+                <hr></hr>
+
+                <div class="flex valign-center row">
+                    <!--A3_11 郵便番号-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'PostalCode', required: false }">#{i18n.getText('QMM010_14')}</div>
+                    <!--A3_12 郵便番号-->
+                    <input tabindex="14"
+                           data-bind="ntsTextEditor: {constraint: 'PostalCode',value: postalCode , name: '#[QMM010_14]'}"/>
+                    <!--A3_13 郵便番号検索-->
+                    <button style="margin-left: 5px;" tabindex="15"
+                            data-bind="click: $vm.searchPostalCode ">#{i18n.getText('QMM010_15')}</button>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_14 住所1-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'Address1', required: false }">#{i18n.getText('QMM010_16')}</div>
+                    <!--A3_15 住所1-->
+                    <input class="column-md-5" tabindex="16"
+                           data-bind="ntsTextEditor: {constraint: 'Address1',value: address1, name: '#[QMM010_16]'}"/>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_16 カナ1-->
+                    <div class="column-1">#{i18n.getText('QMM010_17')}</div>
+                    <!--A3_17 住所カナ1-->
+                    <input class="column-md-5" tabindex="17"
+                           data-bind="ntsTextEditor: {constraint: 'AddressKana1',value: addressKana1, name: '#[QMM010_17]'}"/>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_18 住所2-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'Address2', required: false }">#{i18n.getText('QMM010_18')}</div>
+                    <!--A3_19 住所2-->
+                    <input tabindex="18"
+                           data-bind="ntsTextEditor: {constraint: 'Address2',value: address2, name: '#[QMM010_18]'}"/>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_20 カナ2-->
+                    <div class="column-1">#{i18n.getText('QMM010_19')}</div>
+                    <!--A3_21 住所カナ2-->
+                    <input id="D4_21" tabindex="19"
+                           data-bind="ntsTextEditor: {constraint: 'AddressKana2',value: addressKana2, name: '#[QMM010_19]'}"/>
+                </div>
+
+                <div class="flex valign-center row">
+                    <!--A3_22 電話番号-->
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'PhoneNumber', required: false }">#{i18n.getText('QMM010_20')}</div>
+                    <!--A3_23 電話番号-->
+                    <input tabindex="20"
+                           data-bind="ntsTextEditor: {constraint: 'PhoneNumber',value: phoneNumber, name: '#[QMM010_20]'}"/>
+                </div>
+                <div class="column-1">#{i18n.getText('QMM010_21')}</div>
+                <hr></hr>
+
+                <div class="flex valign-center row">
+                    <!--A4_3 磁気媒体・e-Gov用：	-->
+                    <div class="column-md-3"
+                         data-bind="ntsFormLabel: { constraint: ['CityCode', 'OfficeCode'], required: false }">#{i18n.getText('QMM010_22')}</div>
+                    <!--A4_4 都市区符号：-->
+                    <div>#{i18n.getText('QMM010_23')}</div>
+                    <!--A4_5 雇用保険都市区符号-->
+                    <input style="margin-left: 5px;" tabindex="21"
+                           data-bind="ntsTextEditor: {constraint: 'CityCode',value: cityCode, name: '#[QMM010_24]'}"/>
+                    <!--A4_6 事業所記号：-->
+                    <div style="margin-left: 5px;">#{i18n.getText('QMM010_25')}</div>
+                    <!--A4_7 雇用保険事業所記号-->
+                    <input style="margin-left: 5px;" tabindex="22"
+                           data-bind="ntsTextEditor: {constraint: 'OfficeCode',value: employmentOfficeCode, name: '#[QMM010_26]'}"/>
+                </div>
+                <div class="flex valign-center row">
+                    <!--A4_8 事業所整理番号-->
+                    <div class="column-md-3"
+                         data-bind="ntsFormLabel: { constraint: ['EmploymentInsuranceBusinessOfficeNumber1', 'EmploymentInsuranceBusinessOfficeNumber2', 'EmploymentInsuranceBusinessOfficeNumber3'], required: false }">#{i18n.getText('QMM010_27')}</div>
+                    <!--A4_9 雇用保険事業所整理番号1-->
+                    <input tabindex="23"
+                           data-bind="ntsTextEditor: {constraint: 'EmploymentInsuranceBusinessOfficeNumber1',value: employmentOfficeNumber1, name: '#[QMM010_27]'}"/>
+                    <div style="margin-left: 5px;">#{i18n.getText('QMM010_28')}</div>
+                    <!--A4_11 雇用保険事業所整理番号2-->
+                    <input style="margin-left: 5px;" tabindex="24"
+                           data-bind="ntsTextEditor: {constraint: 'EmploymentInsuranceBusinessOfficeNumber2',value: employmentOfficeNumber2, name: '#[QMM010_27]'}"/>
+                    <div style="margin-left: 5px;">#{i18n.getText('QMM010_28')}</div>
+                    <!--A4_11 雇用保険事業所整理番号2-->
+                    <input style="margin-left: 5px;" tabindex="25"
+                           data-bind="ntsTextEditor: {constraint: 'EmploymentInsuranceBusinessOfficeNumber3',value: employmentOfficeNumber3, name: '#[QMM010_27]'}"/>
+                </div>
+                <div class="flex row">
+                    <div class="column-1"
+                         data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM010_29')}</div>
+                    <textarea style="height: 100px; width: 300px;" tabindex="26"
+                              data-bind="ntsMultilineEditor: { constraint: 'Memo', value: notes, name: '#[QMM010_29]'}"/>
+                </div>
+
             </div>
         </div>
     </ui:define>

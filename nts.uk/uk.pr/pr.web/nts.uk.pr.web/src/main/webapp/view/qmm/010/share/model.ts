@@ -1,4 +1,10 @@
 module nts.uk.pr.view.qmm010.share.model {
+
+    export enum SCREEN_MODE {
+        NEW = 0,
+        UPDATE = 1
+    }
+
     // 社会保険事業所
     export interface ISocialInsuranceOffice {
         socialInsuranceCode: string;
@@ -56,16 +62,11 @@ module nts.uk.pr.view.qmm010.share.model {
         }
     }
 
-
-
-
-
-
-
+    // 労働保険事業所
     export interface ILaborInsuranceOffice {
         companyId: string;
         laborOfficeCode: string;
-        officeName: string;
+        laborOfficeName: string;
         notes: string;
         representativePosition: string;
         representativeName: string;
@@ -75,16 +76,17 @@ module nts.uk.pr.view.qmm010.share.model {
         addressKana2: string;
         phoneNumber: string;
         postalCode: string;
-        officeCode: string;
-        officeNumber1: number;
-        officeNumber2: number;
-        officeNumber3: number;
+        employmentOfficeCode: string;
+        employmentOfficeNumber1: number;
+        employmentOfficeNumber2: number;
+        employmentOfficeNumber3: number;
         cityCode: string;
     }
+    // 労働保険事業所
     export class LaborInsuranceOffice {
         companyId: KnockoutObservable<string> = ko.observable(null);
         laborOfficeCode: KnockoutObservable<string> = ko.observable(null);
-        officeName: KnockoutObservable<string> = ko.observable(null);
+        laborOfficeName: KnockoutObservable<string> = ko.observable(null);
         notes: KnockoutObservable<string> = ko.observable(null);
         representativePosition: KnockoutObservable<string> = ko.observable(null);
         representativeName: KnockoutObservable<string> = ko.observable(null);
@@ -94,15 +96,15 @@ module nts.uk.pr.view.qmm010.share.model {
         addressKana2: KnockoutObservable<string> = ko.observable(null);
         phoneNumber: KnockoutObservable<string> = ko.observable(null);
         postalCode: KnockoutObservable<string> = ko.observable(null);
-        officeCode: KnockoutObservable<string> = ko.observable(null);
-        officeNumber1: KnockoutObservable<number> = ko.observable(null);
-        officeNumber2: KnockoutObservable<number> = ko.observable(null);
-        officeNumber3: KnockoutObservable<number> = ko.observable(null);
+        employmentOfficeCode: KnockoutObservable<string> = ko.observable(null);
+        employmentOfficeNumber1: KnockoutObservable<number> = ko.observable(null);
+        employmentOfficeNumber2: KnockoutObservable<number> = ko.observable(null);
+        employmentOfficeNumber3: KnockoutObservable<number> = ko.observable(null);
         cityCode: KnockoutObservable<string> = ko.observable(null);
         constructor(params: ILaborInsuranceOffice) {
             this.companyId(params ? params.companyId : null);
             this.laborOfficeCode(params ? params.laborOfficeCode : null);
-            this.officeName(params ? params.officeName : null);
+            this.laborOfficeName(params ? params.laborOfficeName : null);
             this.notes(params ? params.notes : null);
             this.representativePosition(params ? params.representativePosition : null);
             this.representativeName(params ? params.representativeName : null);
@@ -112,10 +114,10 @@ module nts.uk.pr.view.qmm010.share.model {
             this.addressKana2(params ? params.addressKana2 : null);
             this.phoneNumber(params ? params.phoneNumber : null);
             this.postalCode(params ? params.postalCode : null);
-            this.officeCode(params ? params.officeCode : null);
-            this.officeNumber1(params ? params.officeNumber1 : null);
-            this.officeNumber2(params ? params.officeNumber2 : null);
-            this.officeNumber3(params ? params.officeNumber3 : null);
+            this.employmentOfficeCode(params ? params.employmentOfficeCode : null);
+            this.employmentOfficeNumber1(params ? params.employmentOfficeNumber1 : null);
+            this.employmentOfficeNumber2(params ? params.employmentOfficeNumber2 : null);
+            this.employmentOfficeNumber3(params ? params.employmentOfficeNumber3 : null);
             this.cityCode(params ? params.cityCode : null);
         }
     }
