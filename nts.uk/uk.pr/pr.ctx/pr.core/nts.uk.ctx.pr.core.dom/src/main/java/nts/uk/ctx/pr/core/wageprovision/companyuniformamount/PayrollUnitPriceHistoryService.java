@@ -16,15 +16,19 @@ import java.util.Optional;
 public class PayrollUnitPriceHistoryService {
 
     @Inject
-    private PayrollUnitPriceHistoryRepository mPayrollUnitPriceHistoryRepository;
+    private PayrollUnitPriceHistoryRepository payrollUnitPriceHistoryRepository;
 
-    public void addPayrollUnitPriceHistory(YearMonth start, YearMonth end ){
+    public String addPayrollUnitPriceHistory(String code, YearMonth start, YearMonth end ){
         String cId = AppContexts.user().companyId();
         String newHistID = IdentifierUtil.randomUniqueId();
-        String newCode = IdentifierUtil.randomUniqueId();;
         YearMonthHistoryItem yearMonthItem = new YearMonthHistoryItem(newHistID, new YearMonthPeriod(start, end));
-
-//        this.mPayrollUnitPriceHistoryRepository.add(new PayrollUnitPriceHistory(newCode,cId,yearMonthItem));
+        PayrollUnitPriceHistory itemtoBeAdded = new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code), cId, new ArrayList<>());
+        Optional<PayrollUnitPriceHistory> payrollUnitPriceHistory = payrollUnitPriceHistoryRepository.getPayrollUnitPriceHistoryByCidCode(cId, code);
+        if (payrollUnitPriceHistory.isPresent()) {
+            itemtoBeAdded = payrollUnitPriceHistory.get();
+        }
+        itemtoBeAdded.add(yearMonthItem);
+        return newHistID;
     }
 
     public void updatePayrollUnitPriceHistory(String hisId,String code, YearMonth startYearMonth,YearMonth endYearMonth ){
