@@ -140,10 +140,28 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
                 {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
                 {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                {
+                    id: '10',
+                    code: 'A000000000010',
+                    businessName: '日通　純一郎10',
+                    workplaceName: '名古屋支店',
+                    depName: 'Dep Name'
+                },
+                {
+                    id: '11',
+                    code: 'A000000000011',
+                    businessName: '日通　純一郎11',
+                    workplaceName: '名古屋支店',
+                    depName: 'Dep Name'
+                },
                 {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
+                {
+                    id: '03',
+                    code: 'A000000000003',
+                    businessName: '日通　純一郎3',
+                    workplaceName: '名古屋支店',
+                    depName: 'Dep Name'
+                }]);
 
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(false);
@@ -214,10 +232,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 isMutipleCheck: self.isMutipleCheck(), // 選択モード
 
                 /** Return data */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.selectedEmployee(data.listEmployee);
                     self.applyKCP005ContentSearch(data.listEmployee).done(() => {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $("#employeeSearch").find("div[id *= 'scrollContainer']").scrollTop(0);
                         }, 1000);
                     });
@@ -234,7 +252,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedEmployeeCode([]);
             for (let i = 0; i < dataList.length; i++) {
                 let employeeSearch = dataList[i];
-                let employee : UnitModel = {
+                let employee: UnitModel = {
                     code: employeeSearch.employeeCode,
                     name: employeeSearch.employeeName,
                     workplaceName: employeeSearch.workplaceName,
@@ -253,12 +271,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             return dfd.promise();
         }
 
-        public toScreenB(): void{
+        public toScreenB(): void {
             let self = this;
             let params = {
                 historyID: self.salHis.historyID(),
-                periodStartYm: self.salHis.periodStartYm(),
-                periodEndYm: self.salHis.periodEndYm()
+                period: {
+                    periodStartYm: self.salHis.periodStartYm(),
+                    periodEndYm: self.salHis.periodEndYm()
+                }
             }
             setShared("QMM039_A_PARAMS", params);
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
@@ -332,8 +352,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     }
 
 
-
-
     export interface ComponentOption {
         systemReference: SystemType;
         isDisplayOrganizationName: boolean;
@@ -360,6 +378,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     class Node {
         code: string;
         name: string;
+
         constructor(code: string, name: string) {
             var self = this;
             self.code = code;
