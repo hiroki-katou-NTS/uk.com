@@ -82,7 +82,8 @@ module nts.uk.at.view.kdw001.c {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: false
+                    isShowSelectAllButton: false,
+                    maxRows: 10
                 };
 
 
