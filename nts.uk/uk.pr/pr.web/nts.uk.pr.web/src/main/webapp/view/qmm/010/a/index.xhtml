@@ -38,17 +38,16 @@
             <div id="">
                 <button id="A1_1" tabindex="1" data-bind="click: createNewOffice">#{i18n.getText('QMM010_1')}</button>
                 <button id="A1_2" class="proceed" tabindex="2"
-                        data-bind="click: registerOffice">#{i18n.getText('QMM010_2')}</button>
+                        data-bind="click: registerOffice, enable: $root.errors.isEmpty">#{i18n.getText('QMM010_2')}</button>
                 <button id="A1_3" tabindex="3"
-                        data-bind="click: printPDF, enable: screenMode() == 1">#{i18n.getText('QMM010_3')}</button>
+                        data-bind="click: printPDF, enable: false">#{i18n.getText('QMM010_3')}</button>
                 <button id="A1_4" tabindex="4"
                         data-bind="click: readFromSocialInsuranceOffice">#{i18n.getText('QMM010_4')}</button>
-                <button id="A1_5" tabindex="5" data-bind="click: masterCorrection">#{i18n.getText('QMM010_5')}</button>
+                <button id="A1_5" tabindex="5" data-bind="click: masterCorrection, enable: false">#{i18n.getText('QMM010_5')}</button>
                 <div style = "display: inline" data-bind="if: screenMode() == 1">
                     <button id="A1_6" class="danger" tabindex="6"
                             data-bind="click: deleteOffice">#{i18n.getText('QMM010_6')}</button>
                 </div>
-                <button data-bind="click: changeMode">Change mode</button>
             </div>
 
 
@@ -82,10 +81,10 @@
                     <div class="column-1"
                          data-bind="ntsFormLabel: {required: true, constraint: ['LaborInsuranceOfficeCode', 'LaborInsuranceOfficeName']}">#{i18n.getText('QMM010_10')}</div>
                     <!--A3_2 コード-->
-                    <input tabindex="10"
-                           data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeCode', value: laborOfficeCode, name: '#[QMM010_8]', required: true , enable: $vm.screenMode() == 1}"/>
+                    <input tabindex="10" id = "A3_2"
+                           data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeCode', value: laborOfficeCode, name: '#[QMM010_8]', required: true , enable: $vm.screenMode() == 0}"/>
                     <!--A3_3 名称 -->
-                    <input style="margin-left: 5px;" tabindex="11" width="230px"
+                    <input style="margin-left: 5px;" tabindex="11" id = "A3_3"
                            data-bind="ntsTextEditor: {constraint: 'LaborInsuranceOfficeName',value: laborOfficeName, name: '#[QMM010_9]', required: true}"/>
                 </div>
 
@@ -101,10 +100,10 @@
                 <div class="flex valign-center row">
                     <!--A3_8 代表者職位-->
                     <div class="column-1"
-                         data-bind="ntsFormLabel: { constraint: 'RepresentativePosition', required: true }">#{i18n.getText('QMM010_013')}</div>
+                         data-bind="ntsFormLabel: { constraint: 'RepresentativePosition', required: true }">#{i18n.getText('QMM010_13')}</div>
                     <!--A3_9 代表者職位-->
                     <input tabindex="13"
-                           data-bind="ntsTextEditor: {constraint: 'RepresentativePosition',value: representativePosition , name: '#[QMM010_013]'}"/>
+                           data-bind="ntsTextEditor: {constraint: 'RepresentativePosition',value: representativePosition, required: true, name: '#[QMM010_13]'}"/>
                 </div>
 
                 <hr></hr>
@@ -118,7 +117,7 @@
                            data-bind="ntsTextEditor: {constraint: 'PostalCode',value: postalCode , name: '#[QMM010_14]'}"/>
                     <!--A3_13 郵便番号検索-->
                     <button style="margin-left: 5px;" tabindex="15"
-                            data-bind="click: $vm.searchPostalCode ">#{i18n.getText('QMM010_15')}</button>
+                            data-bind="click: $vm.searchPostalCode, enable: false ">#{i18n.getText('QMM010_15')}</button>
                 </div>
 
                 <div class="flex valign-center row">

@@ -8,6 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
 * 労働保険事業所
@@ -23,12 +24,12 @@ public class LaborInsuranceOffice extends AggregateRoot {
     /**
     * コード
     */
-    private LaborInsuranceOfficeCode officeCode;
+    private LaborInsuranceOfficeCode laborOfficeCode;
     
     /**
     * 名称
     */
-    private LaborInsuranceOfficeName officeName;
+    private LaborInsuranceOfficeName laborOfficeName;
     
     /**
     * 基本情報
@@ -40,12 +41,12 @@ public class LaborInsuranceOffice extends AggregateRoot {
     */
     private EmploymentInsuranceInfomation employmentInsuranceInfomation;
     
-    public LaborInsuranceOffice(String cid, String officeCode, String officeName, String notes, String representativePosition, String representativeName, String address1, String address2, String addressKana1, String addressKana2, String phoneNumber, String postalCode, String employmentOffficeCode, String employmentOfficeNumber1, String employmentOfficeNumber2, String employmentOfficeNumber3, String cityCode) {
-        this.companyId = cid;
-        this.officeCode = new LaborInsuranceOfficeCode(officeCode);
-        this.officeName = new LaborInsuranceOfficeName(officeName);
+    public LaborInsuranceOffice(String cid, String laborOfficeCode, String laborOfficeName, String notes, String representativePosition, String representativeName, String address1, String address2, String addressKana1, String addressKana2, String phoneNumber, String postalCode, String employmentOfficeCode, String employmentOfficeNumber1, String employmentOfficeNumber2, String employmentOfficeNumber3, String cityCode) {
+        this.companyId = AppContexts.user().companyId();
+        this.laborOfficeCode = new LaborInsuranceOfficeCode(laborOfficeCode);
+        this.laborOfficeName = new LaborInsuranceOfficeName(laborOfficeName);
         this.basicInfomation = new BasicInfomation(notes, representativePosition, representativeName, phoneNumber, postalCode, address1, addressKana1, address2, addressKana2);
-        this.employmentInsuranceInfomation = new EmploymentInsuranceInfomation(employmentOffficeCode, employmentOfficeNumber1, employmentOfficeNumber2, employmentOfficeNumber3, cityCode);
+        this.employmentInsuranceInfomation = new EmploymentInsuranceInfomation(employmentOfficeCode, employmentOfficeNumber1, employmentOfficeNumber2, employmentOfficeNumber3, cityCode);
     }
     
 }

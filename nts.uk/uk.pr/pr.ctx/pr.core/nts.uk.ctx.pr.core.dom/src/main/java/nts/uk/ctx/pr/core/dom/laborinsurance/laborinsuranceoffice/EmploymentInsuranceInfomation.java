@@ -43,12 +43,12 @@ public class EmploymentInsuranceInfomation extends DomainObject
     */
     private Optional<CityCode> cityCode;
     
-    public EmploymentInsuranceInfomation(String employmentOffficeCode, String employmentOfficeNumber1, String employmentOfficeNumber2, String employmentOfficeNumber3, String cityCode) {
+    public EmploymentInsuranceInfomation(String employmentOfficeCode, String employmentOfficeNumber1, String employmentOfficeNumber2, String employmentOfficeNumber3, String cityCode) {
         this.officeNumber1 = employmentOfficeNumber1 == null ? Optional.empty() : Optional.of(new EmploymentInsuranceBusinessOfficeNumber1(employmentOfficeNumber1));
         this.officeNumber2 = employmentOfficeNumber2 == null ? Optional.empty() : Optional.of(new EmploymentInsuranceBusinessOfficeNumber2(employmentOfficeNumber2));
         this.officeNumber3 = employmentOfficeNumber3 == null ? Optional.empty() : Optional.of(new EmploymentInsuranceBusinessOfficeNumber3(employmentOfficeNumber3));
         this.cityCode = cityCode == null ? Optional.empty() : Optional.of(new CityCode(cityCode));
-        this.officeCode = officeCode == null ? Optional.empty() : Optional.of(new OfficeCode(employmentOffficeCode));
+        this.officeCode = employmentOfficeCode == null ? Optional.empty() : Optional.of(new OfficeCode(employmentOfficeCode));
     }
     
 }

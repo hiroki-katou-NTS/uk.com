@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.労働保険.労働保険事業所;
+package nts.uk.ctx.pr.core.app.command.laborinsurance.laborinsuranceoffice;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -6,6 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOfficeRepository;
+
 import javax.transaction.Transactional;
 
 @Stateless
@@ -18,6 +20,6 @@ public class RemoveLaborInsuranceOfficeCommandHandler extends CommandHandler<Lab
     
     @Override
     protected void handle(CommandHandlerContext<LaborInsuranceOfficeCommand> context) {
-        repository.remove();
+        repository.remove(context.getCommand().getLaborOfficeCode());
     }
 }

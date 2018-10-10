@@ -85,4 +85,9 @@ public class SocialOfficeService {
 		return deleteSocialOfficeCommandHandler.handle(findSocialOfficeCommand);
 	}
 	
+	@POST
+	@Path("/findAll")
+	public List<SociaInsuOfficeDto> findAllIncludeInfo(){
+		return socialSuranOfficeFinder.findAllIncludeInfo();
+	}
 }

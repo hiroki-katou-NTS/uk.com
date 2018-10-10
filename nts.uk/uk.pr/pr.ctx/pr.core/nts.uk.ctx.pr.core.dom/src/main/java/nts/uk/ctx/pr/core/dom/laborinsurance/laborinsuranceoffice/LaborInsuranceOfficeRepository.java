@@ -11,12 +11,12 @@ public interface LaborInsuranceOfficeRepository
 
     List<LaborInsuranceOffice> getAllLaborInsuranceOffice();
 
-    Optional<LaborInsuranceOffice> getLaborInsuranceOfficeById();
+    Optional<LaborInsuranceOffice> getLaborInsuranceOfficeById(String laborOfficeCode);
 
     void add(LaborInsuranceOffice domain);
 
     void update(LaborInsuranceOffice domain);
 
-    void remove();
+    void remove(String laborOfficeCode);
 
 }

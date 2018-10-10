@@ -1,9 +1,10 @@
-package nts.uk.ctx.pr.core.app.find.労働保険.労働保険事業所;
+package nts.uk.ctx.pr.core.app.find.laborinsurance.laborinsuranceoffice;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.pr.core.dom.laborinsurance.laborinsuranceoffice.LaborInsuranceOffice;
 
 /**
 * 労働保険事業所: DTO
@@ -21,87 +22,84 @@ public class LaborInsuranceOfficeDto
     /**
     * コード
     */
-    private String officeCode;
-    
+    private String laborOfficeCode;
+
     /**
-    * 名称
-    */
-    private String officeName;
-    
+     * 名称
+     */
+    public String laborOfficeName;
+
     /**
-    * メモ
-    */
-    private String notes;
-    
+     * メモ
+     */
+    public String notes;
+
     /**
-    * 代表者職位
-    */
-    private String representativePosition;
-    
+     * 代表者職位
+     */
+    public String representativePosition;
+
     /**
-    * 労働保険事業所代表者名
-    */
-    private String ;
-    
+     * 労働保険事業所代表者名
+     */
+    public String representativeName;
+
     /**
-    * 住所１
-    */
-    private String ;
-    
+     * 住所１
+     */
+    public String address1;
+
     /**
-    * 住所２
-    */
-    private String ;
-    
+     * 住所２
+     */
+    public String address2;
+
     /**
-    * 住所カナ１
-    */
-    private String ;
-    
+     * 住所カナ１
+     */
+    public String addressKana1;
+
     /**
-    * 住所カナ２
-    */
-    private String ;
-    
+     * 住所カナ２
+     */
+    public String addressKana2;
+
     /**
-    * 電話番号
-    */
-    private String phoneNumber;
-    
+     * 電話番号
+     */
+    public String phoneNumber;
+
     /**
-    * 郵便番号
-    */
-    private String postalCode;
-    
+     * 郵便番号
+     */
+    public String postalCode;
+
     /**
-    * 事業所記号
-    */
-    private String ;
-    
+     * 事業所記号
+     */
+    public String employmentOfficeCode;
+
     /**
-    * 事業所番号1
-    */
-    private Integer ;
-    
+     * 事業所番号1
+     */
+    public String employmentOfficeNumber1;
+
     /**
-    * 事業所番号2
-    */
-    private Integer ;
-    
+     * 事業所番号2
+     */
+    public String employmentOfficeNumber2;
+
     /**
-    * 事業所番号3
-    */
-    private Integer ;
-    
+     * 事業所番号3
+     */
+    public String employmentOfficeNumber3;
+
     /**
-    * 都市区符号
-    */
-    private String ;
-    
-    
-    public static LaborInsuranceOfficeDto fromDomain(LaborInsuranceOffice domain)
-    {
-        return new LaborInsuranceOfficeDto(domain.getCompanyId(), domain.getOfficeCode().v(), domain.getOfficeName().v(), domain.getNotes().map(i->i.v()).orElse(null), domain.getRepresentativePosition().v(), domain.get(), domain.get(), domain.get(), domain.get(), domain.get(), domain.getPhoneNumber(), domain.getPostalCode().map(i->i.v()).orElse(null), domain.get(), domain.get(), domain.get(), domain.get(), domain.get());
+     * 都市区符号
+     */
+    public String cityCode;
+
+    public static LaborInsuranceOfficeDto fromDomainToDto (LaborInsuranceOffice domain) {
+        return new LaborInsuranceOfficeDto(domain.getCompanyId(), domain.getLaborOfficeCode().v(), domain.getLaborOfficeName().v(), domain.getBasicInfomation().getNotes().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getRepresentativePosition().v(), domain.getBasicInfomation().getRepresentativeName().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddress1().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddress2().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddressKana1().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getAddressKana2().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getPhoneNumber().map(i -> i.v()).orElse(null), domain.getBasicInfomation().getStreetAddress().getPostalCode().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeCode().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber1().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber2().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getOfficeNumber3().map(i -> i.v()).orElse(null), domain.getEmploymentInsuranceInfomation().getCityCode().map(i -> i.v()).orElse(null));
     }
-    
 }

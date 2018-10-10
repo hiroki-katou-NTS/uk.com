@@ -20,5 +20,19 @@ import lombok.NoArgsConstructor;
 public class QpbmtLaborInsuOfficePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * コード
+     */
+    @Basic(optional = false)
+    @Column(name = "LABOR_OFFICE_CODE")
+    public String laborOfficeCode;
+
 }
