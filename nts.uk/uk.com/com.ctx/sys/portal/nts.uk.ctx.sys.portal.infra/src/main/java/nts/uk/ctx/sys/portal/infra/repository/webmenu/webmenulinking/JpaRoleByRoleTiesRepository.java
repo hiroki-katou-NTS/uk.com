@@ -45,13 +45,6 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 	}
 
 
-    @Override
-    public void insertAll(List<RoleByRoleTies> roleTies) {
-        List<SacmtRoleByRoleTies> entities= roleTies.stream().map(c -> SacmtRoleByRoleTies.toEntity(c)).collect(Collectors.toList());
-        this.commandProxy().insertAll(entities);
-         
-    }
-
 
 
 }
