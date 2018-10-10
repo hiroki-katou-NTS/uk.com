@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,8 +19,7 @@ public class SalIndAmountHisFinder
     private SalIndAmountHisRepository finder;
 
     public List<SalIndAmountHisDto> getAllSalIndAmountHis(){
-        return finder.getAllSalIndAmountHis().stream().map(item -> SalIndAmountHisDto.fromDomain(item))
-                .collect(Collectors.toList());
+        return null;
     }
 
 }

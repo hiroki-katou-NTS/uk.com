@@ -9,6 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 /**
  * 給与個人別金額履歴

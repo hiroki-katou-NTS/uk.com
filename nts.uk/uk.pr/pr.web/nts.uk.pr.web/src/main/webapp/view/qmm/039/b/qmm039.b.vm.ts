@@ -12,7 +12,8 @@ module nts.uk.pr.view.qmm039.b.viewmodel {
 
 
         constructor() {
-            var self = this;
+            let self = this;
+            let params = getShared("QMM039_A_PARAMS");
 
         }
 

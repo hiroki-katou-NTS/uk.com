@@ -2,14 +2,19 @@ package nts.uk.ctx.pr.core.infra.repository.individualwagecontract;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.infra.entity.individualwagecontract.QpbmtSalIndAmountHis;
 import nts.uk.ctx.pr.core.infra.entity.individualwagecontract.QpbmtSalIndAmountHisPk;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIndAmountHisRepository
@@ -18,19 +23,37 @@ public class JpaSalIndAmountHisRepository extends JpaRepository implements SalIn
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountHisPk.historyId =:historyId AND  f.salIndAmountHisPk.perValCode =:perValCode AND  f.salIndAmountHisPk.empId =:empId ";
 
+
+    private Optional<SalIndAmountHis> toDomain(List<QpbmtSalIndAmountHis> entity) {
+        if (entity.size() > 0) {
+            String historyId = entity.get(0).salIndAmountHisPk.historyId;
+            String perValCode = entity.get(0).salIndAmountHisPk.perValCode;
+            String empId = entity.get(0).salIndAmountHisPk.empId;
+            int cateIndicator = entity.get(0).cateIndicator;
+            int salBonusCate =  entity.get(0).salBonusCate;
+            List<GenericHistYMPeriod> history = entity.stream()
+                    .map(item -> new GenericHistYMPeriod(item.salIndAmountHisPk.historyId,
+                            new YearMonthPeriod(new YearMonth(item.periodStartYm), new YearMonth(item.periodEndYm))))
+                    .collect(Collectors.toList());
+            return Optional.of(new SalIndAmountHis(historyId,empId, cateIndicator,history, salBonusCate ));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+
     @Override
-    public List<SalIndAmountHis> getAllSalIndAmountHis(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSalIndAmountHis.class)
-                .getList(item -> item.toDomain());
+    public List<SalIndAmountHis> getAllSalIndAmountHis() {
+        return null;
     }
 
     @Override
     public Optional<SalIndAmountHis> getSalIndAmountHisById(String historyId, String perValCode, String empId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSalIndAmountHis.class)
+        return this.toDomain(this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtSalIndAmountHis.class)
         .setParameter("historyId", historyId)
         .setParameter("perValCode", perValCode)
         .setParameter("empId", empId)
-        .getSingle(c->c.toDomain());
+        .getList());
     }
 
     @Override

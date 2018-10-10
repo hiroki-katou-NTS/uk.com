@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
