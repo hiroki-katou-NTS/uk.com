@@ -38,10 +38,9 @@
 						data-bind="click: editHistory, enable: $vm.viewmodelB.isUpdateMode() ? $vm.viewmodelB.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
 				</div>
 				<div id="B1_5" tabindex="1"
-					style="background-color: white; margin-top: 15px;"
+					style="background-color: white; margin-top: 15px; height: 585px;"
 					data-bind="ntsTreeDragAndDrop:{
 										width: 290,
-										rows: 20,
 										dataSource: healthInsuranceRateTreeList,
 										value: selectedHealthInsurance,
 										primaryKey: 'code',

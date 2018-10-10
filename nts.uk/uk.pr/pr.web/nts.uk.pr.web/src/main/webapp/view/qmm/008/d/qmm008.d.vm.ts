@@ -226,6 +226,7 @@ module nts.uk.pr.view.qmm008.d {
                                     }
                                 }
                             }
+                            $("tr[data-id='code'] ").focus();
                         });
                         block.clear();
                     });
