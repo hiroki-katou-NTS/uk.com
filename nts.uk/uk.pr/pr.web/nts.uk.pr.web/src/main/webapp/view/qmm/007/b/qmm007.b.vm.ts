@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
+        startLastYearMonth: KnockoutObservable<number> = ko.observable();
         endYearMonth: KnockoutObservable<number> = ko.observable(999912);
         monthlyCalendar: KnockoutObservable<string> = ko.observable('');
 
@@ -25,11 +26,21 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
                 self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(data).toString().split(' ').join('')]));
             });
             if(params) {
+                self.startLastYearMonth(params.startYearMonth);
                 self.code(params.code);
                 self.name(params.name);
                 self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM007_34', [self.convertMonthYearToString(params.startYearMonth)]));
             }
             block.clear();
+        }
+
+        validateYearMonth(){
+            let self = this;
+            if(!(self.startLastYearMonth() < self.startYearMonth())) {
+                dialog.error({ messageId: "Msg_79"});
+                return true;
+            }
+            return false;
         }
 
         convertMonthYearToString(yearMonth: any) {
@@ -47,6 +58,9 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
 
         register(){
             let self =this;
+            if(self.validateYearMonth()) {
+                return;
+            }
             let data: any = {
                 code: self.code(),
                 startYearMonth: self.startYearMonth(),
