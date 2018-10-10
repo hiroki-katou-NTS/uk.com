@@ -27,7 +27,7 @@ module nts.uk.pr.view.qmm008.d {
             isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnDelete: KnockoutObservable<boolean> = ko.observable(false);
             isEnableBtnPdf: KnockoutObservable<boolean> = ko.observable(false);
-            isEnableBtnCreate: KnockoutObservable<boolean> = ko.observable(true);
+            isEnableBtnCreate: KnockoutObservable<boolean> = ko.observable(false);
 
             values: KnockoutObservable<string>;
 
@@ -37,9 +37,11 @@ module nts.uk.pr.view.qmm008.d {
                 self.itemList = ko.observableArray([]);
                 nts.uk.pr.view.qmm008.d.service.defaultData().done(function(response) {
                     block.invisible();
+
                     for (let i = 0; i < response.listCodeName.length; i++) {
                         self.items.push(new SocialOfficeOverView(response.listCodeName[i].code, response.listCodeName[i].name));
                         self.isEnableBtnDelete(true);
+                        self.isEnableBtnCreate(true);
                     }
                     self.detail(new SocialOfficeDetail(response.sociaInsuOfficeDetail));
                     self.currentCode(response.sociaInsuOfficeDetail.code);
