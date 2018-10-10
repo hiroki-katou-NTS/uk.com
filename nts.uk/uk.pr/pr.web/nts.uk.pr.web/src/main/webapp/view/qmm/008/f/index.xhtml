@@ -22,7 +22,7 @@
 
 	<ui:define name="content">
 		<div id="functions-area">
-			<div style="margin-bottom: 15px;margin-left: 40px;">
+			<div style="margin-bottom: 15px;margin-left: 10px;">
 				<button class="proceed" id="F1_1" tabindex="1"
 						data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('QMM008_1')}</button>
 				<button id="F1_2" tabindex="2" data-bind="enable: $vm.isEnableBtnPdf()">#{i18n.getText('QMM008_2')}</button>
@@ -30,7 +30,7 @@
 				<button id="F1_4" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM008_108')}</button>
 			</div>
 		</div>
-		<div id="contents-area" style="margin-left: 50px;">
+		<div id="contents-area" style="margin-left: 20px;">
 			<div style="min-width: 1000px;">
 				<div id="F2_1" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM008_142')}</div>
 				<span style="margin-bottom: 15px;" id="F2_2"
