@@ -1,0 +1,65 @@
+#functions-area {
+	width: 1200px;
+}
+
+#contents-area {
+	width: 1200px;
+	overflow-y: inherit !important;
+    padding-bottom: 2px !important;
+}
+
+.fixed-flex-layout-left {
+	padding: 10px 10px 0 10px;
+	float: left;
+	width: 420px;
+}
+
+.fixed-flex-layout-right {
+	width: 700px;
+	padding: 10px 10px 0 10px;
+	float: left;
+}
+
+.panel.ntsPanel {
+	padding-top: 15px;
+}
+
+.space1, .space2, .space3 {
+	display: inline-block;
+}
+
+.space2, #A3_14 .ntsRadioBox {
+	width: 230px;
+}
+
+.space3 {
+	margin-left: 24px;
+	width: 120px;
+}
+
+#A2_2 {
+	margin-left: 225px;
+}
+
+#A3_1, #A3_6, #A3_1, #A3_13,
+#A3_24, #A3_27, .space1 {
+	width: 180px;
+}
+
+#A3_4 {
+	margin-left: 20px;
+}
+
+#A3_15 {
+	margin-left: 25px;
+	margin-right: 95px;
+	width: 110px;
+}
+
+#A3_27 {
+	vertical-align: top;
+}
+
+#A3_28 {
+	height: 90px;
+}
