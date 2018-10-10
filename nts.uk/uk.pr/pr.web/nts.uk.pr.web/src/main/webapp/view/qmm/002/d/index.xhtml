@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 900, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../a/qmm002.a.service.js" />
+			<com:scriptfile path="qmm002.d.vm.js" />
+			<com:ValidatorScript>
+		        nts.uk.ctx.pr.transfer.dom.bank.BankCode
+		        nts.uk.ctx.pr.transfer.dom.bank.BankName
+		        nts.uk.ctx.pr.transfer.dom.bank.BankNameKana
+		        nts.uk.shr.com.primitive.Memo
+		    </com:ValidatorScript>
+			<com:scriptfile path="qmm002.d.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex = "1" data-bind="click: createNew">#{i18n.getText('QMM002_1')}</button>
+				<button tabindex = "2" class="proceed" data-bind="click: register">#{i18n.getText('QMM002_2')}</button>
+				<button tabindex = "3" data-bind="click: close">#{i18n.getText('QMM002_23')}</button>
+			</div>
+			<div class="contents-area dialog-content fixed-flex-layout" style="padding: 20px 25px">
+				<div class="fixed-flex-layout-left">
+					<table id="single-list" 
+						data-bind="ntsGridList: {								
+							rows: 15,
+							dataSource: bankList,
+							primaryKey: 'code',
+							columns: [
+				                { headerText: 'code', key: 'code', hidden: true, formatter: _.escape },
+				                { headerText: '#{i18n.getText('QMM002_11')}', key: 'displayText', width: 250, formatter: _.escape }
+				            ],
+							multiple: false,
+							value: selectedCode
+						}"></table>
+				</div>
+				<div class="fixed-flex-layout-right">
+					<div data-bind="with: selectedBank">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {  required: true, constraint: ['BankCode', 'BankName'] }">#{i18n.getText('QMM002_16')}</div>
+							<input tabindex="13" data-bind="ntsTextEditor: {
+								name: '#[QMM002_17]',
+								value: code,
+								constraint: 'BankCode',
+								option: {width: '40px'},
+								required: true}" />
+							<input tabindex="14" data-bind="ntsTextEditor: {
+								name: '#[QMM002_18]',
+								value: name,
+								constraint: 'BankName',
+								required: true}" />
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { constraint: 'BankNameKana' }">#{i18n.getText('QMM002_19')}</div>
+							<input tabindex="15" data-bind="ntsTextEditor: {
+								name: '#[QMM002_19]',
+								value: kanaName,
+								constraint: 'BankNameKana',
+								required: false}" />
+						</div>
+					</div>
+					<hr/>
+					<div data-bind="with: selectedBank">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('QMM002_14')}</div>
+							<textarea style="height: 150px" tabindex="16" data-bind="ntsMultilineEditor: {
+								value: memo,
+								name: '#[QMM002_14]',
+								constraint: 'Memo',
+								option: {width: '327px'},
+								readonly: false}" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<style>
+				.form-label{width: 182px}
+			</style>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
