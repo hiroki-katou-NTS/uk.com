@@ -59,7 +59,7 @@
                     <div class="cell group-master">
                         <!--A4_1 項目選択パネル-->
                         <div class="panel" style="margin-left: 30px"
-                             data-bind="ntsPanel:{width: '220px', height: '300px',showIcon: true, direction: 'bottom', visible: true}">
+                             data-bind="ntsPanel:{width: '220px', height: '220px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
                             <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
 			                    searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
@@ -104,14 +104,14 @@
                             <!--A5_6 金額-->
                             <div id="list-box" tabindex="9" data-bind="ntsListBox: {
                                     options: itemList,
-                                    optionsValue: 'code',
+                                    optionsValue: 'historyID',
                                     optionsText: 'period',
-                                    multiple: true,
-                                    value: selectedCodes,
+                                    multiple: false,
+                                    value: singleSelectedCode,
                                     enable: isEnable(),
                                     rows: 9,
                                     columns: [
-                                        { key: 'code', length: 0, hidden: true},
+                                        { key: 'historyID', length: 0, hidden: true},
                                         { key: 'period', length: 8 },
                                         { key: 'amount', length: 6 }
                                     ]}"></div>

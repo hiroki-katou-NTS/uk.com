@@ -2,17 +2,21 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     import SalIndAmountHis = nts.uk.pr.view.qmm039.share.model.SalIndAmountHis;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
+    import format = nts.uk.text.format;
+    import GenericHistYMPeriod = nts.uk.pr.view.qmm039.share.model.GenericHistYMPeriod;
+    import SalIndAmount = nts.uk.pr.view.qmm039.share.model.SalIndAmount;
     export class ScreenModel {
-        itemList: KnockoutObservableArray<ItemModel>;
-        selectedCodes: KnockoutObservableArray<string>;
+        itemList: KnockoutObservableArray<>;
         isEnable: KnockoutObservable<boolean>;
+        salHis: any;
+
         dataSource: any;
         singleSelectedCode: any;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
-        SalIndAmountHisFix: any;
 
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
@@ -66,12 +70,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.setDefaultCcg001Option();
             // Init component.
             self.reloadCcg001();
-            self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
+            self.salHis = new SalIndAmountHis({historyID: 1, periodStartYm: 201801, periodEndYm: 201806});
+            let sal = new SalIndAmount({amountOfMoney: 2013});
             self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給', "description"),
-                new ItemModel('2', '役職手当', "description"),
-                new ItemModel('3', '基本給', "description")
+                new ItemModel(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm(), format(getText("QMM039_18"), self.salHis.periodStartYm(), self.salHis.periodEndYm()), sal.amountOfMoney()),
             ]);
             self.dataSource = ko.observableArray([new Node('code1', 'name1'), new Node('code2', 'name3')]);
             self.singleSelectedCode = ko.observable(null);
@@ -87,14 +90,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            self.SalIndAmountHisFix = new SalIndAmountHis({
-                perValCode: "string",
-                cateIndicator: 1,
-                historyID: 1,
-                periodYearMonth: "string",
-                empId: "string",
-                salBonusCate: 1,
-            });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -260,7 +255,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
         public toScreenB(): void{
             let self = this;
-            setShared("QMM039_A_PARAMS", self.SalIndAmountHisFix);
+            setShared("QMM039_A_PARAMS", new GenericHistYMPeriod(self.salHis.historyID(), self.salHis.periodStartYm(), self.salHis.periodEndYm()));
             modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
 
             });
@@ -367,12 +362,16 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         }
     }
     class ItemModel {
-        code: string;
+        historyID: string;
+        periodStartYm: number;
+        periodEndYm: number;
         period: string;
-        amount: string;
+        amount: number;
 
-        constructor(code: string, period: string, amount: string) {
-            this.code = code;
+        constructor(historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: number) {
+            this.historyID = historyID;
+            this.periodStartYm = periodStartYm;
+            this.periodEndYm = periodEndYm;
             this.period = period;
             this.amount = amount;
         }
