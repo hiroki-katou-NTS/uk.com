@@ -485,12 +485,12 @@ input[type=text]::-ms-clear {
 
 /* line 16, ../sass/components/_color.scss */
 .bg-daily-error {
-  background-color: #FEC6C6 !important;
+  background-color: #FD4D4D !important;
 }
 
 /* line 17, ../sass/components/_color.scss */
 .bg-daily-alarm {
-  background-color: #E3F385 !important;
+  background-color: #F6F636 !important;
 }
 
 /* line 18, ../sass/components/_color.scss */
@@ -4560,7 +4560,7 @@ button.nts-switch-button[disabled].selected {
 .extable td .column-icon {
   position: absolute;
   left: 6px;
-  top: 50%;
+  /**top: 50%;**/
   margin-top: -8px;
 }
 
