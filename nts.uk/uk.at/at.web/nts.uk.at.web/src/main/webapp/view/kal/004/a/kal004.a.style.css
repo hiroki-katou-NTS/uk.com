@@ -47,6 +47,15 @@
 	
 }
 
-/* #swap-list-grid1_horizontalScrollContainer {
+ #swap-list-grid1_horizontalScrollContainer {
 	overflow: hidden !important; 
-} */
+}
+
+#swap-list-grid1_displayContainer {
+	min-height: 210.6px !important;
+	
+} 
+
+#swap-list-grid1_scrollContainer {
+	min-height: 212.6px !important;
+}
