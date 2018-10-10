@@ -4560,7 +4560,7 @@ button.nts-switch-button[disabled].selected {
 .extable td .column-icon {
   position: absolute;
   left: 6px;
-  top: 50%;
+  /**top: 50%;**/
   margin-top: -8px;
 }
 
