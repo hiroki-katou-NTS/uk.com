@@ -104,7 +104,7 @@ module nts.uk.pr.view.qmm008.d {
                     }
                     setTimeout(function () {
                         $("tr[data-id="+ self.currentCode()+"] ").focus();
-                    }, 100);
+                    }, 500);
                 });
 
             }
@@ -233,7 +233,7 @@ module nts.uk.pr.view.qmm008.d {
                             }
                             setTimeout(function () {
                                 $("tr[data-id="+ self.currentCode()+"] ").focus();
-                            }, 100);
+                            }, 500);
                         });
                         block.clear();
                     });
