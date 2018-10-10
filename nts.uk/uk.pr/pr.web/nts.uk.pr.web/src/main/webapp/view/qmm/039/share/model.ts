@@ -116,4 +116,18 @@ module nts.uk.pr.view.qmm039.share.model {
             this.numberWorkDay(params ? params.numberWorkDay : null);
         }
     }
+
+    export class EnumModel {
+        value: number;
+        name: string;
+        constructor(value, name) {
+            this.value = value;
+            this.name = name;
+        }
+    }
+
+    export enum INHERITANCE_CLS {
+        NO_HISTORY = 0,
+        WITH_HISTORY = 1
+    }
 }
