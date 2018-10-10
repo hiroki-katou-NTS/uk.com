@@ -5525,7 +5525,6 @@ var nts;
              */
             var block;
             (function (block) {
-                var counter = 0;
                 function invisible() {
                     var rect = calcRect();
                     $.blockUI({
@@ -5536,7 +5535,6 @@ var nts;
                             left: rect.left
                         }
                     });
-                    counter++;
                 }
                 block.invisible = invisible;
                 function grayout() {
@@ -5549,16 +5547,12 @@ var nts;
                             left: rect.left
                         }
                     });
-                    counter++;
                 }
                 block.grayout = grayout;
                 function clear() {
-                    counter--;
-                    if (counter <= 0) {
-                        $.unblockUI({
-                            fadeOut: 200
-                        });
-                    }
+                    $.unblockUI({
+                        fadeOut: 200
+                    });
                 }
                 block.clear = clear;
                 function calcRect() {
