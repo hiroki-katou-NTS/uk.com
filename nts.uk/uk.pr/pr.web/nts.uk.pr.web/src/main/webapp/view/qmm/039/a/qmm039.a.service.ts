@@ -6,6 +6,11 @@ module nts.uk.pr.view.qmm039.a.service {
         get: "#",
     }
 
+
+    // service 1
+    // domain PerProcessClsSet
+
+
     export function get (param: string): JQueryPromise<any> {
         let _path = format(paths.get, param);
         return ajax(_path);

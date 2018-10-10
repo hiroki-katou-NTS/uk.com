@@ -55,13 +55,13 @@
                         <button>#{i18n.getText('QMM039_11')}</button>
                     </div>
                 </div>
-                <div class="row group-master">
-                    <div class="cell">
+                <div class="row">
+                    <div class="cell group-master">
                         <!--A4_1 項目選択パネル-->
-                        <div class="panel"
-                             data-bind="ntsPanel:{width: '250px', height: '300px',showIcon: true, direction: 'bottom', visible: true}">
+                        <div class="panel" style="margin-left: 30px"
+                             data-bind="ntsPanel:{width: '220px', height: '300px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
-                            <div tabindex="5" style="width: 250px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
+                            <div tabindex="5" style="width: 220px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource,
 			                    searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}"/>
                             <!--A4_4 項目リスト-->
                             <!--A4_5 コード-->
@@ -70,9 +70,13 @@
                             <!--A4_8 名称-->
                             <table tabindex="6" id="treegrid1"
                                    data-bind="ntsTreeGridView:{
-                                width: 250,
-                                height: 250,
+                                width: 220,
+                                height: 150,
                                 options: dataSource,
+                                columns: [
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 3},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 3}
+                                ],
                                 value: singleSelectedCode,
                                 optionsValue: 'code',
                                 optionsChild: 'childs',
@@ -84,26 +88,32 @@
                         </div>
                         <!--A5_1 履歴選択パネル-->
                         <div class="panel"
-                             data-bind="ntsPanel:{width: '250px', height: '300px', direction: 'none', visible: true}">
-                            <!--A5_2 履歴追加-->
-                            <button tabindex="7">#{i18n.getText('QMM039_15')}</button>
-                            <!--A5_3 履歴編集-->
-                            <button tabindex="8">#{i18n.getText('QMM039_16')}</button>
+                             data-bind="ntsPanel:{width: '270px', height: '300px', direction: 'none', visible: true}">
+                            <div class="row margin-bottom-12">
+                                <div class="cell left">
+                                    <!--A5_2 履歴追加-->
+                                    <button tabindex="7" data-bind="click: toScreenB">#{i18n.getText('QMM039_15')}</button>
+                                </div>
+                                <div class="cell right">
+                                    <!--A5_3 履歴編集-->
+                                    <button tabindex="8">#{i18n.getText('QMM039_16')}</button>
+                                </div>
+                            </div>
                             <!--A5_4 履歴リスト-->
                             <!--A5_5 履歴-->
                             <!--A5_6 金額-->
-                            <div style="width: 260px;" id="list-box" tabindex="9" data-bind="ntsListBox: {
+                            <div id="list-box" tabindex="9" data-bind="ntsListBox: {
                                     options: itemList,
                                     optionsValue: 'code',
                                     optionsText: 'period',
                                     multiple: true,
                                     value: selectedCodes,
                                     enable: isEnable(),
-                                    rows: 10,
+                                    rows: 9,
                                     columns: [
                                         { key: 'code', length: 0, hidden: true},
-                                        { key: 'period', length: 9 },
-                                        { key: 'amount', length: 7 }
+                                        { key: 'period', length: 8 },
+                                        { key: 'amount', length: 6 }
                                     ]}"></div>
                         </div>
                     </div>
@@ -166,7 +176,7 @@
                                             required: required,
                                             enable: enable,
                                             readonly: readonly,
-                                            immediate: false}" />
+                                            immediate: false}"/>
                                 </div>
                             </div>
                         </div>

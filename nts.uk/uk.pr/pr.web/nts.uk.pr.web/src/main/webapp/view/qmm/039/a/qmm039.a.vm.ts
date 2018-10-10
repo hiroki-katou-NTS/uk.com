@@ -1,4 +1,7 @@
 module nts.uk.pr.view.qmm039.a.viewmodel {
+    import SalIndAmountHis = nts.uk.pr.view.qmm039.share.model.SalIndAmountHis;
+    import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCodes: KnockoutObservableArray<string>;
@@ -9,6 +12,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
+        SalIndAmountHisFix: any;
 
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
@@ -65,20 +69,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給', "description 1"),
-                new ItemModel('2', '役職手当', "description 2"),
-                new ItemModel('3', '基本給', "description 3")
+                new ItemModel('1', '基本給', "description"),
+                new ItemModel('2', '役職手当', "description"),
+                new ItemModel('3', '基本給', "description")
             ]);
-            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                new Node('0003', 'Bangkok Thailand', []),
-                new Node('0004', 'Tokyo Japan', []),
-                new Node('0005', 'Jakarta Indonesia', []),
-                new Node('0002', 'Seoul Korea', []),
-                new Node('0006', 'Paris France', []),
-                new Node('0007', 'United States', [new Node('0008', 'Washington US', [new Node('0008-1', 'Wasford US', []),new Node('0008-2', 'Newmece US', [])]),new Node('0009', 'Newyork US', [])]),
-                new Node('0010', 'Beijing China', []),
-                new Node('0011', 'London United Kingdom', []),
-                new Node('0012', '', [])]);
+            self.dataSource = ko.observableArray([new Node('code1', 'name1'), new Node('code2', 'name3')]);
             self.singleSelectedCode = ko.observable(null);
             self.currencyeditor = {
                 value: ko.observable(1200),
@@ -92,6 +87,14 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.SalIndAmountHisFix = new SalIndAmountHis({
+                perValCode: "string",
+                cateIndicator: 1,
+                historyID: 1,
+                periodYearMonth: "string",
+                empId: "string",
+                salBonusCate: 1,
+            });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -132,9 +135,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.showAllClosure = ko.observable(false); // 全締め表示
             self.showPeriod = ko.observable(false); // 対象期間利用
             self.periodFormatYM = ko.observable(false); // 対象期間精度
-
-
-
+            self.selectedEmployee = ko.observableArray([]);
+            self.selectedEmployeeCode = ko.observableArray([]);
             self.employeeInputList = ko.observableArray([
                 {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'},
                 {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
@@ -163,6 +165,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 tabIndex: self.tabindex
             };
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+            console.log(JSON.stringify(self.listComponentOption));
         }
 
         public reloadCcg001(): void {
@@ -255,10 +258,13 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             return dfd.promise();
         }
 
+        public toScreenB(): void{
+            let self = this;
+            setShared("QMM039_A_PARAMS", self.SalIndAmountHisFix);
+            modal('/view/qmm/039/b/index.xhtml', {title: '',}).onClosed(function (): any {
 
-
-
-
+            });
+        }
     }
     export interface GroupOption {
         /** Common properties */
@@ -354,14 +360,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
     class Node {
         code: string;
         name: string;
-        nodeText: string;
-        childs: any;
-        constructor(code: string, name: string, childs: Array<Node>) {
+        constructor(code: string, name: string) {
             var self = this;
             self.code = code;
             self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
-            self.childs = childs;
         }
     }
     class ItemModel {

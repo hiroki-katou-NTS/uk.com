@@ -8,7 +8,7 @@
 }
 
 .group-master {
-    margin-left: 80px;
+    padding-left: 45px;
 }
 
 .cell {
@@ -23,4 +23,21 @@
 .label-space {
     padding: 6px;
     width: 150px;
+}
+.left {
+    float: left !important;
+}
+
+.right {
+    float: right !important;
+}
+
+.margin-bottom-12 {
+    margin-bottom: 12px;
+}
+
+.caret-background.caret-bottom:after {
+    left: 59px;
+    top: 100%;
+    border-width: 35px 70px;
 }
