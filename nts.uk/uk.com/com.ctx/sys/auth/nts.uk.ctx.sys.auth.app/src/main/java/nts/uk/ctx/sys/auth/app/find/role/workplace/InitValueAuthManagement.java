@@ -6,12 +6,10 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 //Event：権限管理の初期値登録 - Tuy la event nhưng thực tế đang viết dạng publish
