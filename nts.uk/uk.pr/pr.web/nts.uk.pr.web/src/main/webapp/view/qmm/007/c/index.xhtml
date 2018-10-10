@@ -2,12 +2,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
->
+      xmlns:com="http://xmlns.jcp.org/jsf/component">
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 430, height: 400 };</script>
+        <script>var dialogSize = { width: 670, height: 450 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm007.c.vm.js" />
@@ -15,7 +14,6 @@
         <com:scriptfile path="qmm007.c.service.js" />
         <com:stylefile path="qmm007.c.style.css" />
     </ui:define>
-
     <ui:define name="content">
         <div id="contents-area">
             <div id="title" style="margin-bottom: 10px">
@@ -49,11 +47,10 @@
 										optionText: 'name',
 										group: 'periodOption'}">
                             </div>
-
                             <br/>
                             <div style="margin: 10px 10px 10px 20px;">
                                 <span class="label warning"
-                                      style="">#{i18n.getText('QMM007_42')}</span>
+                                      data-bind="text :textResourceRadioFirt "></span>
                             </div>
                             <div class="cell" style=""
                                  data-bind="ntsRadioButton: {
@@ -64,23 +61,14 @@
 										optionText: 'name',
 										group: 'periodOption'}">
                             </div>
-
-
                         </div>
-
                     </td>
-
-
                 </tr>
-
-
             </table>
-
-
             <div class = "C1_8"  style="margin: 10px 0px 0px 165px;">
-                <!-- F1_8 期間 -->
+                <!-- C1_8 期間 -->
                 <div id = "C1_8" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM007_32')}</div>
-                <!-- F1_9 最新の履歴から引き継ぐ -->
+                <!-- C1_9 最新の履歴から引き継ぐ -->
                 <div id = "C1_9" tabindex = "2" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM011_45')}',
 												value: startYearMonth,
@@ -89,7 +77,7 @@
 												valueFormat: 'YYYYMM',
 												dateFormat: 'yearmonth'}">
                 </div>
-                <!-- F1_10 初めから作成する。 -->
+                <!-- C1_10 初めから作成する。 -->
                 <span id="C1_10" class="label" data-bind="text :endYearMonth "></span>
             </div>
 

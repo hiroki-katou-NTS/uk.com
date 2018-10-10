@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         // data
         name :KnockoutObservable<string> = ko.observable('項目移送');
         code :KnockoutObservable<string> = ko.observable('項目移送');
+        textResourceRadioFirt :KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
             self.initView();
@@ -75,6 +76,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             self.code(params.code);
             self.startYearMonth(params.startYearMonth);
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
+            self.textResourceRadioFirt(getText('QMM007_42',[self.convertMonthYearToString(self.startYearMonth())]));
             self.isFirst(params.isFirst);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
         }
