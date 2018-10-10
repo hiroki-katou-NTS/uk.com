@@ -77,10 +77,10 @@ public class EmployeesPensionMonthlyInsuranceFee extends AggregateRoot {
             BigDecimal insuredFemaleExemptionInsurance = null;
 
             //事業主負担
-            BigDecimal employeeMaleInsurancePremium     = null;
-            BigDecimal employeeMaleExemptionInsurance   = null;
-            BigDecimal employeeFemaleInsurancePremium   = null;
-            BigDecimal employeeFemaleExemptionInsurance = null;
+            BigDecimal employerMaleInsurancePremium     = null;
+            BigDecimal employerMaleExemptionInsurance   = null;
+            BigDecimal employerFemaleInsurancePremium   = null;
+            BigDecimal employerFemaleExemptionInsurance = null;
 
             //男子負担率
             val maleContributionRate                = this.salaryEmployeesPensionInsuranceRate.getMaleContributionRate();
@@ -118,33 +118,33 @@ public class EmployeesPensionMonthlyInsuranceFee extends AggregateRoot {
 
             //「厚生年金基金加入区分」で「無」を選択している場合,「事業主負担率を用いて計算する」が選択されている場合
             if (FundClassification.NOT_JOIN.equals(welfarePensionInsuranceCls.getFundClassification()) && EmployeeShareAmountMethod.EMPLOYEE_CONTRIBUTION_RATIO.equals(employeeShareAmountMethod)) {
-                employeeMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleEmployeeContributionRatio, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleEmployeeContributionRatio, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerMaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, maleEmployeeContributionRatio, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerFemaleInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee, femaleEmployeeContributionRatio, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             }
             //「厚生年金基金加入区分」で「無」を選択している場合,「全体の保険料から被保険者分を差し引く」が選択されている場合
             else if (FundClassification.NOT_JOIN.equals(welfarePensionInsuranceCls.getFundClassification()) && EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod)) {
-                employeeMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryIndividualInsuranceRate.add(maleSalaryEmployerInsuranceRate).subtract(maleIndividualBurdenRatio), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryIndividualInsuranceRate.add(femaleSalaryEmployerInsuranceRate).subtract(femaleIndividualBurdenRatio), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerMaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryIndividualInsuranceRate.add(maleSalaryEmployerInsuranceRate).subtract(maleIndividualBurdenRatio), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerFemaleInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryIndividualInsuranceRate.add(femaleSalaryEmployerInsuranceRate).subtract(femaleIndividualBurdenRatio), businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             }
             //「厚生年金基金加入区分」で「有」を選択している場合,「事業主負担率を用いて計算する」が選択されている場合
             else if (FundClassification.JOIN.equals(welfarePensionInsuranceCls.getFundClassification()) && EmployeeShareAmountMethod.EMPLOYEE_CONTRIBUTION_RATIO.equals(employeeShareAmountMethod)) {
-                employeeMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeMaleExemptionInsurance   = RoundCalculatedValue.calculation(standardMonthlyFee, maleEmployeeExemptionRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleExemptionInsurance = RoundCalculatedValue.calculation(standardMonthlyFee, femaleEmployeeExemptionRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerMaleExemptionInsurance   = RoundCalculatedValue.calculation(standardMonthlyFee, maleEmployeeExemptionRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerFemaleExemptionInsurance = RoundCalculatedValue.calculation(standardMonthlyFee, femaleEmployeeExemptionRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             }
             //「厚生年金基金加入区分」で「有」を選択している場合,「全体の保険料から被保険者分を差し引く」が選択されている場合
             else if (FundClassification.JOIN.equals(welfarePensionInsuranceCls.getFundClassification()) && EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod)) {
-                employeeMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryIndividualInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeMaleExemptionInsurance   = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryIndividualInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                employeeFemaleExemptionInsurance = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerMaleInsurancePremium     = RoundCalculatedValue.calculation(standardMonthlyFee, maleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerMaleExemptionInsurance   = RoundCalculatedValue.calculation(standardMonthlyFee, maleEmployeeExemptionRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerFemaleInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, femaleSalaryEmployerInsuranceRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                employerFemaleExemptionInsurance = RoundCalculatedValue.calculation(standardMonthlyFee, femaleEmployeeExemptionRate, businessOwnerFraction, RoundCalculatedValue.ROUND_1_AFTER_DOT);
             }
 
             pensionInsurancePremium.add(new GradeWelfarePensionInsurancePremium(
                     healthInsuranceGrade,
                     new ContributionFee(insuredFemaleInsurancePremium, insuredMaleInsurancePremium, insuredFemaleExemptionInsurance, insuredMaleExemptionInsurance),
-                    new ContributionFee(employeeFemaleInsurancePremium, employeeMaleInsurancePremium, employeeFemaleExemptionInsurance, employeeMaleExemptionInsurance)
+                    new ContributionFee(employerFemaleInsurancePremium, employerMaleInsurancePremium, employerFemaleExemptionInsurance, employerMaleExemptionInsurance)
             ));
         }));
     }
