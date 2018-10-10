@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm001.c {
          * define path to service
          */
         var path: any = {
-          
+
         };
 
 
