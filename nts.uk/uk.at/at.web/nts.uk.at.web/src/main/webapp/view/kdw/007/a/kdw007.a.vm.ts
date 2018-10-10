@@ -362,6 +362,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         updateTab() {
             let self = this;
+            self.tabs()[0].visible(false);
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
@@ -375,7 +376,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                var data = ko.mapping.toJS(self.selectedErrorAlarm());
+                let data = ko.mapping.toJS(self.selectedErrorAlarm());
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;

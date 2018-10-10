@@ -22,6 +22,6 @@ public class ConvertFactory implements AttendanceItemConvertFactory {
 
 	@Override
 	public MonthlyRecordToAttendanceItemConverter createMonthlyConverter() {
-		return MonthlyRecordToAttendanceItemConverterImpl.builder().completed();
+		return MonthlyRecordToAttendanceItemConverterImpl.builder(optionalItem).completed();
 	}
 }

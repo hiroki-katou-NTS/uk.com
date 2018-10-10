@@ -4227,7 +4227,7 @@ var nts;
                             $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
                             var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                             $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("ログアウト")];
+                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト")];
                             var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                             _.forEach(userOptions, function (option, i) {
                                 var $li = $("<li class='menu-item'/>").text(option.name);
@@ -4235,6 +4235,14 @@ var nts;
                                 if (i === 0) {
                                     $li.on(constants.CLICK, function () {
                                         // TODO: Jump to personal information settings.
+                                    });
+                                    return;
+                                }
+                                if (i === 1) {
+                                    $li.on(constants.CLICK, function () {
+                                        // jump to index page of manual
+                                        var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                                        window.open(path);
                                     });
                                     return;
                                 }
@@ -5898,6 +5906,8 @@ var nts;
                         }
                         // resize error's position
                         this.changePositionOfError($dialog);
+                        // resize combo-box-dropdown's positions
+                        setTimeout(this.changePositionComboBoxDropDown.bind(this, $dialog), 500);
                     };
                     ScreenWindow.prototype.changePositionOfError = function ($dialog) {
                         var $iframeDoc = $($dialog.find("iframe")[0].contentWindow.document);
@@ -5909,6 +5919,19 @@ var nts;
                                     .position({ my: 'left+5 top+48', at: 'left top', of: $functionsAreaBottom });
                             });
                         }
+                    };
+                    ScreenWindow.prototype.changePositionComboBoxDropDown = function ($dialog) {
+                        var $iframeDoc = $($dialog.find("iframe")[0].contentWindow.document);
+                        var $dropDownElements = $iframeDoc.find('.ui-igcombo-dropdown.ui-igcombo-no-border');
+                        if ($dropDownElements.length <= 0) {
+                            return;
+                        }
+                        $dropDownElements.each(function () {
+                            $(this).css({
+                                top: '-99999px',
+                                left: '-99999px'
+                            });
+                        });
                     };
                     return ScreenWindow;
                 }());
@@ -6882,7 +6905,7 @@ var nts;
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
-                var DISTANCE = 3;
+                var DISTANCE = 1;
                 var SPACE = 10;
                 var HEADER = "xheader";
                 var HEADER_PRF = "ex-header-";
@@ -8051,7 +8074,9 @@ var nts;
                             left: left,
                             width: width,
                             height: height,
-                            border: "solid 1px #CCC"
+                            borderTop: "solid 1px #AAB7B8",
+                            borderRight: "solid 1px #AAB7B8",
+                            borderLeft: "solid 1px #AAB7B8"
                         };
                         if (maxWidth) {
                             style.maxWidth = maxWidth;
@@ -8071,8 +8096,15 @@ var nts;
                             var maxWidth = calcWidth(options.columns);
                             style = wrapperStyles(top, left, options.width, options.height, maxWidth + "px");
                         }
+                        else if (options.containerClass === BODY_PRF + LEFTMOST) {
+                            style = wrapperStyles(top, left, options.width, options.height);
+                            style.borderBottom = "solid 1px #AAB7B8";
+                        }
                         else {
                             style = wrapperStyles(top, left, options.width, options.height);
+                        }
+                        if (!options.isHeader) {
+                            style.paddingRight = "1px";
                         }
                         return selector.create("div").data(internal.EX_PART, options.containerClass)
                             .addClass(options.containerClass)
@@ -8190,6 +8222,9 @@ var nts;
                                     }
                                     else
                                         touched = mTouch;
+                                    if (mTouch && !mTouch.dirty) {
+                                        events.popChange(x, rowIdx, cellObj);
+                                    }
                                     if (updateMode === EDIT) {
                                         validation.validate($grid, $c, rowIdx, columnKey, i, val);
                                     }
@@ -8200,6 +8235,9 @@ var nts;
                                 $c.textContent = value;
                                 var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, innerIdx);
                                 touched = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                                if (touched && !touched.dirty) {
+                                    events.popChange(x, rowIdx, cellObj);
+                                }
                                 if (updateMode === EDIT) {
                                     validation.validate($grid, $c, rowIdx, columnKey, innerIdx, value);
                                 }
@@ -8226,6 +8264,9 @@ var nts;
                             }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                            if (touched && !touched.dirty) {
+                                events.popChange(x, rowIdx, cellObj);
+                            }
                             if (updateMode === EDIT) {
                                 validation.validate($grid, $cell, rowIdx, columnKey, -1, value);
                             }
@@ -8300,12 +8341,18 @@ var nts;
                                                 if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                                     touched = mTouch;
                                                 }
+                                                if (mTouch && !mTouch.dirty) {
+                                                    events.popChange(x, rowIdx, cellObj_1);
+                                                }
                                             });
                                             return false;
                                         }
                                         childCells_1[1].textContent = data[key];
                                         cellObj_1 = new selection.Cell(rowIdx, key, data[key], 1);
                                         touched = trace(origDs, childCells_1[1], cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                        if (touched && !touched.dirty) {
+                                            events.popChange(x, rowIdx, cellObj_1);
+                                        }
                                         if (updateMode === EDIT) {
                                             validation.validate($exTable, $grid, childCells_1[1], rowIdx, key, 1, data[key]);
                                         }
@@ -8317,6 +8364,9 @@ var nts;
                                         $target.textContent = cData;
                                         cellObj_1 = new selection.Cell(rowIdx, key, data[key], -1);
                                         touched = trace(origDs, $target, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                        if (touched && !touched.dirty) {
+                                            events.popChange(x, rowIdx, cellObj_1);
+                                        }
                                         if (updateMode === EDIT) {
                                             validation.validate($exTable, $grid, $target, rowIdx, key, -1, data[key]);
                                         }
@@ -9556,7 +9606,7 @@ var nts;
                         if (changedCells.length > 0) {
                             changedCells.forEach(function (c) { return c.setTarget(touched.updateTarget); });
                             pushStickHistory($grid, changedCells);
-                            events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData));
+                            events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData, _.cloneDeep(changedCells)));
                         }
                     }
                     update.stickGridRowOw = stickGridRowOw;
@@ -12267,9 +12317,15 @@ var nts;
                             if (!exTable)
                                 return;
                             var ui = evt.detail;
-                            if (ui.value.constructor === Array && (uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
-                                pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                                pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                            if ((uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                                if (ui.value.constructor === Array) {
+                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
+                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                                }
+                                else {
+                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 0));
+                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 1));
+                                }
                                 return;
                             }
                             pushChange(exTable, ui.rowIndex, ui);
@@ -12280,14 +12336,21 @@ var nts;
                                 return;
                             var ui = evt.detail;
                             var cells = [];
-                            _.forEach(Object.keys(ui.data), function (k, i) {
-                                if (ui.data[k].constructor === Array && ui.data[k].length === 2) {
-                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][0], 0));
-                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][1], 1));
-                                    return;
-                                }
-                                cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k], -1));
-                            });
+                            if (ui.changed) {
+                                _.forEach(ui.changed, function (c, i) {
+                                    cells.push(new selection.Cell(c.rowIndex, c.columnKey, ui.data[c.columnKey], c.innerIdx));
+                                });
+                            }
+                            else {
+                                _.forEach(Object.keys(ui.data), function (k, i) {
+                                    if (ui.data[k].constructor === Array && ui.data[k].length === 2) {
+                                        cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][0], 0));
+                                        cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k][1], 1));
+                                        return;
+                                    }
+                                    cells.push(new selection.Cell(ui.rowIndex, k, ui.data[k], -1));
+                                });
+                            }
                             _.forEach(cells, function (c, i) {
                                 pushChange(exTable, c.rowIndex, c);
                             });
@@ -12321,13 +12384,24 @@ var nts;
                             modifies[rowIdx].push(cell);
                         }
                     }
+                    function popChange(exTable, rowIdx, cell) {
+                        var modifies = exTable.modifications;
+                        if (!modifies || _.keys(modifies).length === 0)
+                            return;
+                        _.remove(modifies[rowIdx], function (c, i) {
+                            if (helper.areSameCells(c, cell))
+                                return true;
+                        });
+                    }
+                    events.popChange = popChange;
                     /**
                      * Create row ui.
                      */
-                    function createRowUi(rowIdx, data) {
+                    function createRowUi(rowIdx, data, changed) {
                         return {
                             rowIndex: rowIdx,
-                            data: data
+                            data: data,
+                            changed: changed
                         };
                     }
                     events.createRowUi = createRowUi;
@@ -12991,11 +13065,12 @@ var nts;
                         if (exTable.updateMode === mode)
                             return;
                         exTable.setUpdateMode(mode);
+                        exTable.modifications = {};
                         if (occupation) {
                             events.trigger($container[0], events.OCCUPY_UPDATE, occupation);
                         }
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
-                        render.begin($grid[0], internal.getDataSource($grid[0]), exTable.detailContent);
+                        render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
                         selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                         if (mode === COPY_PASTE) {
                             selection.checkUp($container[0]);
@@ -13018,6 +13093,7 @@ var nts;
                         if (exTable.viewMode === mode)
                             return;
                         var table = helper.getMainTable($container[0]);
+                        exTable.modifications = {};
                         if (exTable.updateMode === EDIT) {
                             //                if (errors.occurred($container[0])) return;
                             var editor = $container.data(update.EDITOR);
@@ -13071,6 +13147,7 @@ var nts;
                         }
                         var table = helper.getMainTable($container[0]), updateViewMode = false;
                         var ds = helper.getOrigDS(table);
+                        exTable.modifications = {};
                         if (viewMode && exTable.viewMode !== viewMode) {
                             if (exTable.updateMode === EDIT) {
                                 //                if (errors.occurred($container[0])) return;
@@ -13799,6 +13876,26 @@ var nts;
                                     ;
                                     if (k === "maxWidth") {
                                         e.style.setProperty("max-width", style[k]);
+                                        return;
+                                    }
+                                    else if (k === "paddingRight") {
+                                        e.style.setProperty("padding-right", style[k]);
+                                        return;
+                                    }
+                                    else if (k === "borderTop") {
+                                        e.style.setProperty("border-top", style[k]);
+                                        return;
+                                    }
+                                    else if (k === "borderBottom") {
+                                        e.style.setProperty("border-bottom", style[k]);
+                                        return;
+                                    }
+                                    else if (k === "borderRight") {
+                                        e.style.setProperty("border-right", style[k]);
+                                        return;
+                                    }
+                                    else if (k === "borderLeft") {
+                                        e.style.setProperty("border-left", style[k]);
                                         return;
                                     }
                                     e.style.setProperty(k, style[k]);
