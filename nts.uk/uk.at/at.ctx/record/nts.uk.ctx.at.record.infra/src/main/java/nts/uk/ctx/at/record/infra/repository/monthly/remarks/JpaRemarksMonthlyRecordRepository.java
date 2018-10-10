@@ -15,12 +15,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
-<<<<<<< HEAD
-=======
 import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksNo;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
->>>>>>> pj/at/dev/team_C/KFP001
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecord;
 import nts.uk.ctx.at.record.infra.entity.monthly.remarks.KrcdtRemarksMonthlyRecordPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
