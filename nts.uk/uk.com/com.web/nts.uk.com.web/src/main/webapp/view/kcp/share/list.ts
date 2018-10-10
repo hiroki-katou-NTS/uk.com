@@ -478,7 +478,7 @@ module kcp.share.list {
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
-                if (self.itemList().length == self.selectedCodes().length) {
+                if ((!_.isEmpty(self.selectedCodes())) && (self.itemList().length == self.selectedCodes().length)) {
                     gridList.igGrid("virtualScrollTo", '0px');
                 }
             });
