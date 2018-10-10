@@ -89,9 +89,8 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
      * アルゴリズム「月額健康保険料計算処理」を実行する
      *
      * @param healthInsuranceStandardMonthlyOptional HealthInsuranceStandardMonthly
-     * @param bonusHealthInsuranceRate               BonusHealthInsuranceRate
      */
-    public void algorithmMonthlyHealthInsurancePremiumCalculation(Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional, BonusHealthInsuranceRate bonusHealthInsuranceRate) {
+    public void algorithmMonthlyHealthInsurancePremiumCalculation(Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional) {
         // ドメインモデル「健康保険標準月額」を全て取得する
         this.healthInsurancePerGradeFee.clear();
         if (healthInsuranceStandardMonthlyOptional.isPresent()) {
@@ -104,20 +103,13 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
                 val individualBurdenRatio = this.getHealthInsuranceRate().getIndividualBurdenRatio();
                 val employeeBurdenRatio = this.getHealthInsuranceRate().getEmployeeBurdenRatio();
                 val individualFractionCls = individualBurdenRatio.getFractionCls();
-                HealthContributionRate bonusHealthInsuranceRateIndividualBurden = null;
-                if (!Objects.isNull(bonusHealthInsuranceRate)) {
-                    bonusHealthInsuranceRateIndividualBurden = bonusHealthInsuranceRate.getIndividualBurdenRatio();
-                }
+                val employerFractionCls = employeeBurdenRatio.getFractionCls();
 
                 // 取得した値と画面上の値を元に、「健康保険月額保険料額.等級毎健康保険料.被保険者負担」の計算処理を実施する
-                val insuredHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                        individualBurdenRatio.getHealthInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                val insuredNursingCare = RoundCalculatedValue.calculation(standardMonthlyFee,
-                        individualBurdenRatio.getLongCareInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                val insuredSpecInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                        individualBurdenRatio.getSpecialInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
-                val insuredBasicInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                        individualBurdenRatio.getBasicInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
+                val insuredHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee, individualBurdenRatio.getHealthInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                val insuredNursingCare            = RoundCalculatedValue.calculation(standardMonthlyFee, individualBurdenRatio.getLongCareInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                val insuredSpecInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, individualBurdenRatio.getSpecialInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
+                val insuredBasicInsurancePremium  = RoundCalculatedValue.calculation(standardMonthlyFee, individualBurdenRatio.getBasicInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
 
                 val employeeShareAmountMethod = this.getHealthInsuranceRate().getEmployeeShareAmountMethod();
                 BigDecimal employeeHealthInsurancePremium;
@@ -127,48 +119,31 @@ public class HealthInsuranceMonthlyFee extends AggregateRoot {
 
                 // 取得した値と画面上の値を元に、「健康保険月額保険料額.等級毎健康保険料.事業主負担」の計算処理を実施する
                 // 「事業主負担率を用いて計算する」が選択されている場合
-                if (EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod) && !Objects.isNull(bonusHealthInsuranceRateIndividualBurden)) {
-                    employeeHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            bonusHealthInsuranceRateIndividualBurden.getHealthInsuranceRate().v(),
-                            individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                    employeeNursingCare = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            bonusHealthInsuranceRateIndividualBurden.getLongCareInsuranceRate().v(),
-                            individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                    employeeSpecInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            bonusHealthInsuranceRateIndividualBurden.getSpecialInsuranceRate().v(),
-                            individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
-                    employeeBasicInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            bonusHealthInsuranceRateIndividualBurden.getBasicInsuranceRate().v(), individualFractionCls,
-                            RoundCalculatedValue.ROUND_3_AFTER_DOT);
-                } else {
-                    employeeHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            employeeBurdenRatio.getHealthInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                    employeeNursingCare = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            employeeBurdenRatio.getLongCareInsuranceRate().v(), individualFractionCls,
-                            RoundCalculatedValue.ROUND_1_AFTER_DOT);
-                    employeeSpecInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            employeeBurdenRatio.getSpecialInsuranceRate().v(), individualFractionCls,
-                            RoundCalculatedValue.ROUND_3_AFTER_DOT);
-                    employeeBasicInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee,
-                            employeeBurdenRatio.getBasicInsuranceRate().v(), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
+                if (EmployeeShareAmountMethod.SUBTRACT_INSURANCE_PREMIUM.equals(employeeShareAmountMethod)) {
+                    BigDecimal employeeHealthInsurancePremiumTemp = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getHealthInsuranceRate().v().add(individualBurdenRatio.getHealthInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT).subtract(insuredHealthInsurancePremium);
+                    BigDecimal employeeNursingCareTemp            = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getLongCareInsuranceRate().v().add(individualBurdenRatio.getLongCareInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT).subtract(insuredNursingCare);
+                    BigDecimal employeeSpecInsurancePremiumTemp   = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getSpecialInsuranceRate().v().add(individualBurdenRatio.getSpecialInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT).subtract(insuredSpecInsurancePremium);
+                    BigDecimal employeeBasicInsurancePremiumTemp  = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getBasicInsuranceRate().v().add(individualBurdenRatio.getBasicInsuranceRate().v()), individualFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT).subtract(insuredBasicInsurancePremium);
+
+                    employeeHealthInsurancePremium = RoundCalculatedValue.roundCalculation(employeeHealthInsurancePremiumTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                    employeeNursingCare            = RoundCalculatedValue.roundCalculation(employeeNursingCareTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                    employeeSpecInsurancePremium   = RoundCalculatedValue.roundCalculation(employeeSpecInsurancePremiumTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
+                    employeeBasicInsurancePremium  = RoundCalculatedValue.roundCalculation(employeeBasicInsurancePremiumTemp.doubleValue(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
+                }
+                else {
+                    employeeHealthInsurancePremium = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getHealthInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                    employeeNursingCare            = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getLongCareInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+                    employeeSpecInsurancePremium   = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getSpecialInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
+                    employeeBasicInsurancePremium  = RoundCalculatedValue.calculation(standardMonthlyFee, employeeBurdenRatio.getBasicInsuranceRate().v(), employerFractionCls, RoundCalculatedValue.ROUND_3_AFTER_DOT);
                 }
 
                 this.healthInsurancePerGradeFee.add(new HealthInsurancePerGradeFee(healthInsuranceGrade,
-                        employeeHealthInsurancePremium, employeeNursingCare, employeeSpecInsurancePremium,
-                        employeeBasicInsurancePremium, insuredHealthInsurancePremium, insuredNursingCare,
-                        insuredSpecInsurancePremium, insuredBasicInsurancePremium));
+                        employeeHealthInsurancePremium, employeeNursingCare, employeeSpecInsurancePremium, employeeBasicInsurancePremium,
+                        insuredHealthInsurancePremium, insuredNursingCare, insuredSpecInsurancePremium, insuredBasicInsurancePremium));
             });
         }
     }
 
-    /**
-     * アルゴリズム「月額健康保険料計算処理」を実行する
-     *
-     * @param healthInsuranceStandardMonthlyOptional HealthInsuranceStandardMonthly
-     */
-    public void algorithmMonthlyHealthInsurancePremiumCalculation(Optional<HealthInsuranceStandardMonthly> healthInsuranceStandardMonthlyOptional) {
-        this.algorithmMonthlyHealthInsurancePremiumCalculation(healthInsuranceStandardMonthlyOptional, null);
-    }
 
     public void updateGradeFee(List<HealthInsurancePerGradeFee> healthInsurancePerGradeFee) {
         this.healthInsurancePerGradeFee = healthInsurancePerGradeFee;

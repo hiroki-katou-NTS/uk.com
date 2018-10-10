@@ -21,6 +21,10 @@ public class RoundCalculatedValue {
     public static BigDecimal calculation(long standardMonthlyFee, BigDecimal rate,
                                          InsurancePremiumFractionClassification fractionCls, int scale) {
         Double calculation = standardMonthlyFee * rate.doubleValue() / 1000;
+        return roundCalculation(calculation, fractionCls, scale);
+    }
+
+    public static BigDecimal roundCalculation(Double calculation, InsurancePremiumFractionClassification fractionCls, int scale) {
         switch (fractionCls) {
             // 切り捨て
             case TRUNCATION:
