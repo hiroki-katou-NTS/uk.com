@@ -539,7 +539,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     $(this.individualExemptionRateId).ntsError('clear');
                 }
                 if (this.individualBurdenRatio() != null && this.individualExemptionRate() != null){
-                    return this.formatThreeDigit(this.formatThreeDigit(this.individualBurdenRatio()) - this.formatThreeDigit(this.individualExemptionRate()));
+                    return (this.formatThreeDigit(this.individualBurdenRatio()) - this.formatThreeDigit(this.individualExemptionRate())).toFixed(3);
                 }
                 return (this.individualBurdenRatio() - this.individualExemptionRate());
             }, this);
@@ -574,7 +574,7 @@ module nts.uk.pr.view.qmm008.share.model {
                     $(this.employeeExemptionRateId).ntsError('clear');
                 }
                 if (this.employeeContributionRatio() != null && this.employeeExemptionRate() != null){
-                    return this.formatThreeDigit(this.formatThreeDigit(this.employeeContributionRatio()) - this.formatThreeDigit(this.employeeExemptionRate()));
+                    return (this.formatThreeDigit(this.employeeContributionRatio()) - this.formatThreeDigit(this.employeeExemptionRate())).toFixed(3);
                 }
                 return (this.employeeContributionRatio() - this.employeeExemptionRate());
             }, this);
