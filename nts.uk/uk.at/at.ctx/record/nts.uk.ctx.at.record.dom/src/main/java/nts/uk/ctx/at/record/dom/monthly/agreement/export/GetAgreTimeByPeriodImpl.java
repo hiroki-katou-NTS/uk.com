@@ -59,6 +59,7 @@ public class GetAgreTimeByPeriodImpl implements GetAgreTimeByPeriod {
 			// 36協定時間を取得
 			val agreementTimeList =
 					this.agreementTimeOfMngPrdRepo.findBySidsAndYearMonths(employeeIds, periodYmList);
+			if (agreementTimeList.size() == 0) continue;
 			
 			// 期間をセット
 			AgreementTimeByPeriod result = new AgreementTimeByPeriod(

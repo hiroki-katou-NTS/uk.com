@@ -67,6 +67,9 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 月次処理用の暫定残数管理データを作成する */
 	@Inject
 	private InterimRemainOffMonthProcess interimRemOffMonth;
+	/** 暫定年休管理データを作成する */
+	@Inject
+	private CreateInterimAnnualMngData createInterimAnnual;
 	/** 暫定残数管理データ */
 	@Inject
 	private InterimRemainRepository interimRemainRepo;
@@ -95,7 +98,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 期間中の年休残数を取得 */
 	@Override
 	public Optional<AggrResultOfAnnualLeave> algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWriteOpt, Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt, Optional<Boolean> noCheckStartDate) {
@@ -111,6 +114,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getClosureStartForEmployee,
 				this.calcNextAnnualLeaveGrantDate,
 				this.interimRemOffMonth,
+				this.createInterimAnnual,
 				this.interimRemainRepo,
 				this.tmpAnnualLeaveMng,
 				this.attendanceTimeOfMonthlyRepo,
@@ -127,7 +131,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 期間中の年休残数を取得　（月別集計用） */
 	@Override
 	public Optional<AggrResultOfAnnualLeave> algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWriteOpt,
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
@@ -147,6 +151,7 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.getClosureStartForEmployee,
 				this.calcNextAnnualLeaveGrantDate,
 				this.interimRemOffMonth,
+				this.createInterimAnnual,
 				this.interimRemainRepo,
 				this.tmpAnnualLeaveMng,
 				this.attendanceTimeOfMonthlyRepo,

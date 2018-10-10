@@ -18,6 +18,8 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
@@ -28,7 +30,6 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayGrantDate;
@@ -49,9 +50,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	@Inject
 	private ClosureService closureService;
 	@Inject
-	private PublicHolidaySettingRepository publicHolidaySettingRepo; 
+	private PublicHolidaySettingRepository publicHolidaySettingRepo;
 	@Inject
-	private CompanyAdapter companyAdapter;
+	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 	
 
 	@Override
@@ -130,24 +131,24 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				
 			}else if(extractBase instanceof AYear) {
 				AYear extraction = (AYear) extractBase;
-				int firstMonth=  companyAdapter.getFirstMonth(AppContexts.user().companyId()).getStartMonth();
-				
+				Optional<AgreementOperationSettingImport> agreementOperationSettingImport =  agreementOperationSettingAdapter.find(AppContexts.user().companyId());
+				int firstMonth = agreementOperationSettingImport.isPresent() ? agreementOperationSettingImport.get().getStartingMonth().value + 1 : 0;
 				if(extraction.isToBeThisYear()){
 					if(firstMonth <= yearMonth.month()) {
-						startMonth = yearMonth.addMonths(firstMonth);
+						startMonth = YearMonth.of( yearMonth.year(),firstMonth);
 						firstMonth = firstMonth-1;
-						endMonth = YearMonth.of( yearMonth.year()+1, yearMonth.month()).addMonths(firstMonth);
+						endMonth = YearMonth.of( yearMonth.year()+1,firstMonth);
 						year = yearMonth.year();
 					}else {
-						startMonth = YearMonth.of( yearMonth.year()-1, yearMonth.month()).addMonths(firstMonth);
+						startMonth = YearMonth.of( yearMonth.year()-1,firstMonth);
 						firstMonth = firstMonth-1;
-						endMonth = yearMonth.addMonths(firstMonth);
+						endMonth = YearMonth.of( yearMonth.year(),firstMonth);
 						year = yearMonth.year()-1;
 					}
 				}else {
-					startMonth = YearMonth.of( extraction.getYear(),firstMonth);
+					startMonth = YearMonth.of( yearMonth.year(),firstMonth);
 					firstMonth = firstMonth-1;
-					endMonth = YearMonth.of( extraction.getYear()+1,firstMonth);
+					endMonth = YearMonth.of( yearMonth.year()+1,firstMonth);
 					year = extraction.getYear();
 				}
 				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );

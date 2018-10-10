@@ -67,7 +67,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * ドメインサービス：日別計算　（社員の日別実績を計算）
  * @author keisuke_hoshina
  */
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmployeeService {
 
@@ -176,7 +176,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param executionType 実行種別　（通常、再実行）
 	 */
 	@Override
-	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod,Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID) {
 		//日別実績(WORK取得)
 		List<IntegrationOfDaily> createList = createIntegrationList(employeeId,datePeriod);
@@ -209,7 +209,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	}
 	
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void updateRecord(IntegrationOfDaily value) {
 		// データ更新
 		if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
@@ -222,6 +222,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	}
 	
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
 		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
 		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
@@ -284,7 +285,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * データ更新
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
 		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
 	}

@@ -143,7 +143,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	
 	private final static String DELETE_SPEC_EMP = "DELETE FROM KshstSpecEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
-			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String DELETE_GRANT_DATE = "DELETE FROM KshstGrantDateTbl a "
+			+ "WHERE a.pk.companyId = :companyID "
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+	
+	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
+			+ "WHERE e.pk.companyId =:companyID "
+			+ "AND e.pk.specialHolidayCode =:specialHolidayCD ";
+	
 	
 	/**
 	 * For delete releated domain of KDR001 (team G)
@@ -449,6 +458,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			.executeUpdate();
 		
 		this.getEntityManager().createQuery(DELETE_SPEC_EMP)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_GRANT_DATE)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
 			.setParameter("companyID", companyId)
 			.setParameter("specialHolidayCD", specialHolidayCode)
 			.executeUpdate();

@@ -65,7 +65,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomainService {
 
@@ -132,7 +132,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void resetDailyPerformance(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, PeriodInMasterList periodInMasterList,
@@ -419,28 +419,15 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							
 							// ---------------------
 							// neu nhu attItemIdStateOfTimeLeaving chua gia tri cua Id nao, thi Id do lay
-							// gia tri cua Old, còn nếu k chua thì lấy New
-							// try!
-							// example id 75
-//							if (attItemIdStateOfTimeLeaving.contains(75)) {
-//								// get itemValue of Id
-//								Optional<ItemValue> id75 = converter.convert(75);
-//								// mergr value of Id to converter2
-//								if (id75.isPresent()) {
-//									converter2.merge(id75.orElse(null));
-//								}								
-//								
-//							}
-							
+							// gia tri cua Old, còn nếu k chua thì lấy New							
 							for(int itemId : attItemIds){
 								if (attItemIdStateOfTimeLeaving.contains(itemId)) {
 									// get itemValue of Id
 									Optional<ItemValue> itemValue = converter.convert(itemId);
-									// mergr value of Id to converter2
+									// merge value of Id to converter2
 									if (itemValue.isPresent()) {
 										converter2.merge(itemValue.get());
 									}								
-									
 								}
 							}
 							

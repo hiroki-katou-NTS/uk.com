@@ -13,8 +13,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.i18n.I18NResources;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -46,7 +46,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
@@ -58,6 +57,8 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.Ident
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -234,7 +235,7 @@ public class DivTimeSysFixedCheckService {
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
 			GeneralDate tarD, List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
-			List<DivergenceTime> divTimeErAlMs, MasterShareContainer shareContainer){
+			List<DivergenceTime> divTimeErAlMs, MasterShareContainer<String> shareContainer){
 		
 		List<EmployeeDailyPerError> result = divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, null, 
 				tl, erAls, divTimeErAlMs, shareContainer);
@@ -262,7 +263,7 @@ public class DivTimeSysFixedCheckService {
 			GeneralDate tarD, List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divTime, 
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl, 
 			List<ErrorAlarmWorkRecord> erAls, List<DivergenceTime> divTimeErAlMs){
-		MasterShareContainer shareContainer = MasterShareBus.open();
+		MasterShareContainer<String> shareContainer = MasterShareBus.open();
 		List<EmployeeDailyPerError> result = divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, 
 				iPUS, tl, erAls, divTimeErAlMs, shareContainer);
 		shareContainer.clearAll();
@@ -274,7 +275,7 @@ public class DivTimeSysFixedCheckService {
 			GeneralDate tarD, List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divTime, 
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl, 
 			List<ErrorAlarmWorkRecord> erAls, List<DivergenceTime> divTimeErAlMs,
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 		boolean isNotShare = shareContainer == null;
 		if(isNotShare){
 			shareContainer = MasterShareBus.open();
@@ -296,7 +297,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 確認解除 */
 	private List<EmployeeDailyPerError> removeconfirm(String comId, String empId, GeneralDate tarD, 
-			List<EmployeeDailyPerError> errors, IdentityProcessUseSet iPUS, MasterShareContainer shareContainer) {
+			List<EmployeeDailyPerError> errors, IdentityProcessUseSet iPUS, MasterShareContainer<String> shareContainer) {
 		List<EmployeeDailyPerError> divEr67 = errors.stream().filter(c -> c.getErrorAlarmWorkRecordCode() != null
 				&& (c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_6.value)
 				|| c.getErrorAlarmWorkRecordCode().v().equals(SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.value))
@@ -339,8 +340,7 @@ public class DivTimeSysFixedCheckService {
 	private List<EmployeeDailyPerError> check(String comId, String empId, GeneralDate tarD,
 			List<nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
-			List<DivergenceTime> divTimeErAlMs, MasterShareContainer shareContainer) {
-		List<EmployeeDailyPerError> checkR = new ArrayList<>(); 
+			List<DivergenceTime> divTimeErAlMs, MasterShareContainer<String> shareContainer) {
 		boolean checkByWT = shareContainer.getShared(join(WORK_TYPE_SETTING, SEPERATOR, comId),
 								() -> isCheckWithWorkType(comId));
 		boolean isToday = shareContainer.getShared(TODAY_KEY, () -> GeneralDate.today()).equals(tarD);
@@ -350,55 +350,97 @@ public class DivTimeSysFixedCheckService {
 					() -> erAlConditionRepo.getListErAlByListCode(comId, SYSTEM_FIXED_DIVERGENCE_CHECK_CODE));
 		}
 		if(erAls.isEmpty()) {
-			return checkR;
+			return new ArrayList<>();
 		}
 		List<Integer> divCheckNos = erAls.stream().map(c -> getDivNo(c.getCode()))
 													.distinct().collect(Collectors.toList());
 
 		List<DivergenceTime> divTimeErAls = getDivergenceTimeErAl(comId, divCheckNos, divTimeErAlMs, shareContainer);
 		if(divTimeErAls.isEmpty()) {
-			return checkR;
+			return new ArrayList<>();
 		}
 		val historyR = getHistory(checkByWT, empId, tarD, comId, shareContainer); 
 		boolean isWHis = historyR.get(WORKTYPE_HISTORY_ITEM) != null;
 		DateHistoryItem  hisItem = getHisItem(historyR, isWHis);
 		BusinessTypeCode bsCode = isWHis ? (BusinessTypeCode) historyR.get(WORKTYPE_CODE) : null; 
 		if(hisItem == null){
-			return checkR;
+			return new ArrayList<>();
 		}
+		List<DivergenceCheckResult> checkR = new ArrayList<>(); 
 		shareDivRefTime(isWHis, hisItem.identifier(), divCheckNos, bsCode, shareContainer);
 		shareDivMesTime(isWHis, comId, divCheckNos, bsCode, shareContainer);
 		erAls.stream().sorted((e1, e2) -> e1.getCode().compareTo(e2.getCode())).forEach(erAl -> {
 			int numberIn = getNumber(erAl.getCode().v()),
 				divNo = getNo(numberIn);
 			boolean isAlarm = numberIn % 2 == 0;
-            if(!checkR.stream().filter(cr -> getDivNo(cr.getErrorAlarmWorkRecordCode()) == divNo).findFirst().isPresent()){
+//            if(!checkR.stream().filter(cr -> getDivNo(cr.getErrorAlarmWorkRecordCode()) == divNo).findFirst().isPresent()){
             	divTimeErAls.stream().filter(d -> d.getDivergenceTimeNo() == divNo).findFirst().ifPresent(de -> {
     				divTime.stream().filter(dt -> dt.getDivTimeId() == de.getDivergenceTimeNo()).findFirst().ifPresent(dt -> {
-    					boolean isPcLogOffDiv = dt.getDivTimeId() == LOGOFF_DIV_NO && isToday;
     					// add DivResonCode to check Thanh
+    					boolean isPcLogOffDiv = dt.getDivTimeId() == LOGOFF_DIV_NO && isToday;
+    					
     					InternalCheckStatus status = evaluateDivTime(divNo, isAlarm, isWHis, hisItem.identifier(), bsCode, de, shareContainer, dt,
 					 			getDivTimeValue(empId, tarD, tl, dt, isPcLogOffDiv, shareContainer));
     					
-    					if(status == InternalCheckStatus.ERROR || status == InternalCheckStatus.NO_ERROR_WITH_REASON){
+    					if(status != InternalCheckStatus.NO_ERROR){
     						
-    						String message = status == InternalCheckStatus.NO_ERROR_WITH_REASON ? getWarning(shareContainer) :
-    								getMessage(isWHis, isPcLogOffDiv, comId, divNo, isAlarm, bsCode, shareContainer);
     						
-    						checkR.add(newError(comId, empId, tarD, erAl, message));
+    						checkR.add(new DivergenceCheckResult(erAl.getCode(), erAl.getErrorDisplayItem(), 
+												erAl.getCancelableAtr(), status, isAlarm, divNo));
+//    						checkR.add(newError(comId, empId, tarD, erAl, message));
     					}
 						
     					
     				});
     			});
-            }
+//            }
 		});
 		//TODO: comment
 //		shareContainer.share("LAST_TIME_CHECK_NO", divCheckNos);
-		return checkR;
+//		return checkR
+		return checkR.stream().collect(Collectors.groupingBy(c -> c.no, Collectors.toList())).entrySet().stream().map(c -> {
+			if(c.getValue().size() >= 2){
+				DivergenceCheckResult alarm = c.getValue().stream().filter(x -> x.isAlarm).findFirst().get();
+				DivergenceCheckResult error = c.getValue().stream().filter(x -> !x.isAlarm).findFirst().get();
+				if(error.status == InternalCheckStatus.ERROR){
+					return error;
+				} else if(alarm.status == InternalCheckStatus.ERROR){
+					return alarm;
+				} else if(error.status == InternalCheckStatus.NO_ERROR_WITH_REASON && alarm.status != InternalCheckStatus.ERROR_CLEARED){
+					return error;
+				} else if(alarm.status == InternalCheckStatus.NO_ERROR_WITH_REASON && error.status != InternalCheckStatus.ERROR_CLEARED){
+					return alarm;
+				}
+				return null;
+			} 
+			if(c.getValue().size() == 1){
+				if(c.getValue().get(0).status == InternalCheckStatus.ERROR || c.getValue().get(0).status == InternalCheckStatus.NO_ERROR_WITH_REASON){
+					return c.getValue().get(0);
+				}
+			}
+			return null;
+		}).filter(c -> c != null).map(c -> {
+			boolean isPcLogOffDiv = c.no == LOGOFF_DIV_NO && isToday;
+			String message = getMessage(comId, shareContainer, isWHis, bsCode, c.no, c.isAlarm,
+					isPcLogOffDiv, c.status);
+			return newError(comId, empId, tarD, c, message);
+		}).collect(Collectors.toList());
+	}
+
+	private String getMessage(String comId, MasterShareContainer<String> shareContainer, boolean isWHis,
+			BusinessTypeCode bsCode, int divNo, boolean isAlarm, boolean isPcLogOffDiv, InternalCheckStatus status) {
+		if(status == InternalCheckStatus.NO_ERROR_WITH_REASON){
+			return getWarning(shareContainer);
+		}
+		
+		if(status == InternalCheckStatus.ERROR){
+			return getMessage(isWHis, isPcLogOffDiv, comId, divNo, isAlarm, bsCode, shareContainer);
+		}
+		
+		return EMPTY_STRING;
 	}
 	
-	private String getWarning(MasterShareContainer shareContainer){
+	private String getWarning(MasterShareContainer<String> shareContainer){
 		return shareContainer.getShared(MSG_1298_KEY, () -> resources.localize(MSG_1298_KEY).orElse(EMPTY_STRING));
 	} 
 
@@ -408,7 +450,7 @@ public class DivTimeSysFixedCheckService {
 
 	private int getDivTimeValue(String empId, GeneralDate tarD, Optional<TimeLeavingOfDailyPerformance> tl,
 			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime dt, boolean isPcDivergence,
-			MasterShareContainer shareContainer) {
+			MasterShareContainer<String> shareContainer) {
 		if(isPcDivergence) {
 			return calcCurrentDivergenceTime(empId, tarD, tl, shareContainer);
 		} 
@@ -421,7 +463,7 @@ public class DivTimeSysFixedCheckService {
 
 	/** 上記の計算で求めた時間を発生した乖離時間として処理を進める */
 	private int calcCurrentDivergenceTime(String employeeId, GeneralDate workingDate, 
-			Optional<TimeLeavingOfDailyPerformance> timeLeave, MasterShareContainer shareContainer) {
+			Optional<TimeLeavingOfDailyPerformance> timeLeave, MasterShareContainer<String> shareContainer) {
 		if(!timeLeave.isPresent()){
 			timeLeave = shareContainer.getShared(join(TIME_LEAVE_RECORD_KEY, SEPERATOR, employeeId, SEPERATOR, workingDate.toString()), 
 					() -> timeLeaveRepo.findByKey(employeeId, workingDate));
@@ -441,7 +483,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 履歴項目を取得する */
 	private Map<String, Object> getHistory(boolean isCheckByWT, String empId, GeneralDate tarD, String comId,
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 		if (!isCheckByWT) {
 			return getComHistory(tarD, comId, shareContainer);
 		}
@@ -462,7 +504,7 @@ public class DivTimeSysFixedCheckService {
 		return res;
 	}
 
-	private Map<String, Object> getComHistory(GeneralDate tarD, String comId, MasterShareContainer shrContainer) {
+	private Map<String, Object> getComHistory(GeneralDate tarD, String comId, MasterShareContainer<String> shrContainer) {
 		Map<String, Object> res = new HashMap<>();
 		CompanyDivergenceReferenceTimeHistory hisM = shrContainer.getShared(join(COM_DIV_REF_TIME_HIS_KEY, SEPERATOR, comId), 
 																() -> comDivHisRepo.findAll(comId));
@@ -475,7 +517,7 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	private BusinessTypeCode getWorkInfo(String comId, boolean isGet, String empId, GeneralDate tarD,
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 		BusinessTypeOfEmployeeHistory bteHis = !isGet ? null : shareContainer.getShared(
 											join(BUSINESS_TYPE_HISTORY_KEY, SEPERATOR, comId, SEPERATOR, empId), 
 													() -> bteHisRepo.findByEmployee(comId, empId).orElse(null));
@@ -487,7 +529,7 @@ public class DivTimeSysFixedCheckService {
 	}
 
 	private BusinessTypeCode getBusinessType(GeneralDate tarD, BusinessTypeOfEmployeeHistory bteHis,
-			MasterShareContainer shareContainer) {
+			MasterShareContainer<String> shareContainer) {
 		DateHistoryItem hisItem = bteHis.getHistory().stream().filter(c -> c.contains(tarD)).findFirst().orElse(null);
 		if(hisItem == null){
 			return null;
@@ -499,7 +541,7 @@ public class DivTimeSysFixedCheckService {
 
 	/** 「乖離時間」を取得する */
 	private List<DivergenceTime> getDivergenceTimeErAl(String comId, List<Integer> divCheckNos, 
-			List<DivergenceTime> divTimeErAlMs, MasterShareContainer shareContainer) {
+			List<DivergenceTime> divTimeErAlMs, MasterShareContainer<String> shareContainer) {
 		if(divTimeErAlMs != null && !divTimeErAlMs.isEmpty()){
 			return divTimeErAlMs;
 		}
@@ -515,7 +557,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間のチェック */
 	private InternalCheckStatus evaluateDivTime(int divNo, boolean isAlarm, boolean isCheckByWorkType, String history, 
-			BusinessTypeCode bsCode, DivergenceTime divTimeEr, MasterShareContainer shareContainer, 
+			BusinessTypeCode bsCode, DivergenceTime divTimeEr, MasterShareContainer<String> shareContainer, 
 			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime, int divergenceTime){
 		if(divTime == null){
 			return InternalCheckStatus.NO_ERROR;
@@ -532,7 +574,7 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	private void shareDivRefTime(boolean isBussiness, String hisId, List<Integer> divNos, BusinessTypeCode bsCode, 
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 //		List<Integer> lastNos = shareContainer.getShared("LAST_TIME_CHECK_NO", () -> new ArrayList<>());
 		if(isBussiness){
 			String key = join(WT_DIV_REF_TIME_KEY, SEPERATOR, hisId);
@@ -548,7 +590,7 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	private void shareDivMesTime(boolean isBussiness, String comId, List<Integer> divNos, BusinessTypeCode bsCode, 
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 		if(!isBussiness){
 			String key = join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId);
 			if(!shareContainer.isShared(key)){
@@ -566,7 +608,7 @@ public class DivTimeSysFixedCheckService {
 	private InternalCheckStatus evaluateByWorkType(int divNo, String history, int divergenceTime, 
 			boolean isAlarm, BusinessTypeCode bsCode, DivergenceTime divTimeEr, 
 			nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime, 
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 		
 		WorkTypeDivergenceReferenceTime divTimeBaseByWT = getWTDivRefTime(divNo, history, bsCode, shareContainer);
 		
@@ -581,7 +623,7 @@ public class DivTimeSysFixedCheckService {
 	/** 会社の履歴項目でチェックする */
 	private InternalCheckStatus evaluateByCompany(int divNo,  int divergenceTime, boolean isAlarm, String history,
 			DivergenceTime divTimeEr, nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime divTime, 
-			MasterShareContainer shareContainer){
+			MasterShareContainer<String> shareContainer){
 		
 		CompanyDivergenceReferenceTime divTimeBaseByCom = getComDivRefTime(divNo, history, shareContainer);
 		if(divTimeBaseByCom == null || !divTimeBaseByCom.getDivergenceReferenceTimeValue().isPresent()){
@@ -593,14 +635,14 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	private WorkTypeDivergenceReferenceTime getWTDivRefTime(int divNo, String hisId, BusinessTypeCode bsCode, 
-			MasterShareContainer shareContainer) {
+			MasterShareContainer<String> shareContainer) {
 		List<WorkTypeDivergenceReferenceTime> lst = shareContainer.getShared(join(WT_DIV_REF_TIME_KEY, SEPERATOR, hisId));
 		
 		return lst.stream().filter(d -> d.getDivergenceTimeNo() == divNo).findFirst().orElse(null);
 	}
 
 	private CompanyDivergenceReferenceTime getComDivRefTime(int divNo, String hisId,
-			MasterShareContainer shareContainer) {
+			MasterShareContainer<String> shareContainer) {
 		List<CompanyDivergenceReferenceTime> lst = shareContainer.getShared(join(COM_DIV_REF_TIME_KEY, SEPERATOR, hisId));
 		
 		return lst.stream().filter(d -> d.getDivergenceTimeNo() == divNo).findFirst().orElse(null);
@@ -619,12 +661,12 @@ public class DivTimeSysFixedCheckService {
 				if(divTimeEr.getErrorCancelMedthod().isReasonSelected()) {
 					
 					if(isReasonSelected(divTime)) {
-						return InternalCheckStatus.NO_ERROR;
+						return InternalCheckStatus.ERROR_CLEARED;
 					}
 				}
 				if(divTimeEr.getErrorCancelMedthod().isReasonInputed()) {
 					if(isReasonInputed(divTime)) {
-						return InternalCheckStatus.NO_ERROR;
+						return InternalCheckStatus.ERROR_CLEARED;
 					}
 				}
 				return InternalCheckStatus.ERROR;
@@ -659,7 +701,7 @@ public class DivTimeSysFixedCheckService {
 
 	/** ドメインモデル「勤務種別ごとの乖離時間のエラーアラームメッセージ」を取得する */
 	private String getMessage(boolean isByWt, boolean isWithBonusText, String comId, int divNo, 
-			boolean isAlarm, BusinessTypeCode wtCode, MasterShareContainer shareContainer) {
+			boolean isAlarm, BusinessTypeCode wtCode, MasterShareContainer<String> shareContainer) {
 		ErrorAlarmMessage message = null;
 		if(!isByWt) {
 			List<DivergenceTimeErrorAlarmMessage> mesL = shareContainer.getShared(join(DIVERGENCE_MESSAGE_KEY, SEPERATOR, comId));
@@ -698,10 +740,20 @@ public class DivTimeSysFixedCheckService {
 		return Integer.parseInt(number);
 	}
 
-	private EmployeeDailyPerError newError(String comId, String empId, GeneralDate tarD, ErrorAlarmWorkRecord erAl, String mes) {
-		return new EmployeeDailyPerError(comId, empId, tarD, erAl.getCode(), 
-										Arrays.asList(erAl.getErrorDisplayItem()), 
-										erAl.getCancelableAtr() ? 1 : 0, mes);
+	private EmployeeDailyPerError newError(String comId, String empId, GeneralDate tarD, DivergenceCheckResult erAl, String mes) {
+		return new EmployeeDailyPerError(comId, empId, tarD, erAl.errorCode, 
+										Arrays.asList(erAl.displayItem), 
+										erAl.cancelable ? 1 : 0, mes);
+	}
+	
+	@AllArgsConstructor
+	private class DivergenceCheckResult {
+		ErrorAlarmWorkRecordCode errorCode;
+		Integer displayItem;
+		Boolean cancelable;
+		InternalCheckStatus status;
+		boolean isAlarm;
+		Integer no;
 	}
 	
 	private enum InternalCheckStatus {
@@ -711,7 +763,9 @@ public class DivTimeSysFixedCheckService {
 		/**　正常　*/
 		NO_ERROR,
 		/**　正常（理由入力）*/
-		NO_ERROR_WITH_REASON;
+		NO_ERROR_WITH_REASON,
+		/**　エラー（理由入力あり）*/
+		ERROR_CLEARED;
 	}
 	
 /** 日の本人確認を登録する */

@@ -26,7 +26,11 @@ module nts.uk.at.view.kal003.b.service {
             getEnumLogicalOperator:         "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
             //monthly
             getAttdItemMonByAtr:         "at/record/attendanceitem/monthly/findbyatr/{0}",
-            getSpecialholidayframe : "at/share/worktype/specialholidayframe/findspecbyabolish",
+            
+            //Update ticket #101187
+//            getSpecialholidayframe : "at/share/worktype/specialholidayframe/findspecbyabolish",
+            getSpecialHoliday : "shared/specialholiday/findByCid",
+            //End Update ticket #101187
             
             getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
             getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
@@ -120,9 +124,15 @@ module nts.uk.at.view.kal003.b.service {
         return nts.uk.request.ajax("at", paths.getAttdItemMonByAtr,atr);
     }
     
-    export function getSpecialholidayframe() : JQueryPromise<any>  {
-        return nts.uk.request.ajax("at", paths.getSpecialholidayframe);
+    //Update ticket #100187
+//    export function getSpecialholidayframe() : JQueryPromise<any>  {
+//        return nts.uk.request.ajax("at", paths.getSpecialholidayframe);
+//    }
+    
+    export function getSpecialHoliday() : JQueryPromise<any>  {
+        return nts.uk.request.ajax("at", paths.getSpecialHoliday);
     }
+    //End ticket #100187
     
      export function getAttendanceItemByCodesNew(codes, mode) {
         if (mode == 1) //monthly

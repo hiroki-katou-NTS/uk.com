@@ -74,7 +74,7 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.employeeID = employeeID;
 		this.date = date;
 		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
-		this.attendanceItemList = attendanceItemList;
+		this.attendanceItemList = attendanceItemList == null ? new ArrayList<>() : attendanceItemList;;
 		this.errorCancelAble = errorCancelAble;
 		this.errorAlarmMessage = Optional.empty();
 	}
@@ -86,7 +86,7 @@ public class EmployeeDailyPerError extends AggregateRoot {
 		this.employeeID = employeeID;
 		this.date = date;
 		this.errorAlarmWorkRecordCode = errorAlarmWorkRecordCode;
-		this.attendanceItemList = attendanceItemList;
+		this.attendanceItemList = attendanceItemList == null ? new ArrayList<>() : attendanceItemList;
 		this.errorCancelAble = 0;
 		this.errorAlarmMessage = Optional.empty();
 	}

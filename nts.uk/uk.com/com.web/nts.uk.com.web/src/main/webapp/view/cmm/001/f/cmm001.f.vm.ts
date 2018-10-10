@@ -196,7 +196,6 @@ module nts.uk.com.view.cmm001.f {
                 $('.countdown').stopCount();
                 self.isFinish(false);
                 self.executionState(nts.uk.resource.getText("CMM001_57"));
-                service.pause();
             }
 
             public getExecutionStartDate() {
