@@ -8,7 +8,6 @@ import nts.uk.shr.com.context.AppContexts;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ public class PayrollUnitPriceHistoryFinder {
 
     @Inject
     private PayrollUnitPriceHistoryRepository finder;
-
+    
     public List<PayrollUnitPriceHistoryDto> getPayrollUnitPriceHis(String hisId,String code){
         String cId = AppContexts.user().companyId();
         Optional<PayrollUnitPriceHistory> mPayrollUnitPriceHistory =  finder.getPayrollUnitPriceHistoryById(cId,code,hisId);
@@ -58,5 +57,6 @@ public class PayrollUnitPriceHistoryFinder {
         }
         return Optional.empty();
     }
+
 
 }

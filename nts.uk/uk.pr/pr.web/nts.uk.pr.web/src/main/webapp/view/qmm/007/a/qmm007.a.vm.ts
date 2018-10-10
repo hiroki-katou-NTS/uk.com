@@ -1,10 +1,12 @@
 module nts.uk.pr.view.qmm007.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
+    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
+        tempDataSource: KnockoutObservableArray<Node> = ko.observableArray([]);
         isExist:  KnockoutObservable<boolean> = ko.observable(false);
         mode: KnockoutObservable<number> = ko.observable(null);
         currentSelected: KnockoutObservable<string> = ko.observable('');
@@ -22,8 +24,6 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-
-
 
         //formlable
         constraint: string = 'LayoutCode';
@@ -56,15 +56,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         targetClassBySalaryConType: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        selectedClassification: any;
         selectedTargetClass: any;
+
+        selectedClassification: any;
         selectedMonthSalaryPerDay: any;
         selectedADayPayee:any;
         selectedHourlyPay:any;
         selectedMonthlySalary: any;
-
-
-
 
         //
         multilineeditor: any;
@@ -85,35 +83,41 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                     self.enableTargetClassification(true);
                 }
             });
-            self.singleSelectedCode.subscribe((data)=>{
-                let params = data.split(';');
+            self.singleSelectedCode.subscribe((o)=>{
+                let params = o.split('_');
                 let code = params[0];
                 let hisId = params[1];
                 self.mode(MODE.UPDATE);
                 $("#A3_2").focus();
-                service.getPayrollUnitPriceById(code).done((data)=>{
-                    self.code(data.code);
-                    self.name(data.name);
-                });
-                service.getPayrollUnitPriceHisById(code,hisId).done((data)=>{
-                    self.yearMonth(data.startYearMonth);
-                    self.endYearMonth(data.endYearMonth);
-                });
-                service.getPayrollUnitPriceSettingById(hisId).done((data) =>{
-                    if(data != undefined){
-                        self.amountOfMoney(data.amountOfMoney);
-                        self.selectedId(data.targetClass);
-                        self.selectedMonthlySalary(data.monthlySalary);
-                        self.selectedADayPayee(data.adayPayee);
-                        self.selectedHourlyPay(data.hourlyPay)
-                        self.notes(data.notes);
-                    }
-                });
+                if(hisId === undefined){
+                    self.singleSelectedCode(self.currentSelected());
+                }else {
+                    self.currentSelected(self.singleSelectedCode());
+                    service.getPayrollUnitPriceById(code).done((data) => {
+                        self.code(data.code);
+                        self.name(data.name);
+                    });
+                    service.getPayrollUnitPriceHisById(code, hisId).done((data) => {
+                        self.yearMonth(data.startYearMonth);
+                        self.endYearMonth(data.endYearMonth);
+                    });
+                    service.getPayrollUnitPriceSettingById(hisId).done((data) => {
+                        if (data != undefined) {
+                            self.amountOfMoney(data.amountOfMoney);
+                            self.selectedId(data.targetClass);
+                            self.selectedMonthlySalary(data.monthlySalary);
+                            self.selectedADayPayee(data.adayPayee);
+                            self.selectedHourlyPay(data.hourlyPay)
+                            self.notes(data.notes);
+                        }
+                    });
 
-                service.getPayrollUnitPriceHistoryByCidCode(code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory> )=>{
-                    self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
-                });
+                    service.getPayrollUnitPriceHistoryByCidCode(code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>) => {
+                        self.payrollUnitPriceHistory(_.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']));
+                    });
+                }
             });
+
             //
             self.multilineeditor = {
                 value: self.notes,
@@ -229,36 +233,36 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             this.currentCodeList = ko.observableArray([]);
         }
 
-
-        init(){
+        init(): JQueryPromise<any> {
             let self = this;
             let db = [];
             let code = '';
             let child = {};
-            service.getAllPayrollUnitPriceByCID().done((list: Array<PayrollUnitPrice> )=>{
+            return service.getAllPayrollUnitPriceByCID().done((list: Array<PayrollUnitPrice>)=>{
                 if(list.length > 0){
                     self.payrollUnitPrice(list);
                     _.each(self.payrollUnitPrice(),(value)=>{
-                        let node = new Node(value.code + ';' + '0000' + ';' + value.name, value.code + value.name, []);
+                        let node = new Node(value.code, value.code + ' ' +value.name, []);
                         service.getPayrollUnitPriceHistoryByCidCode(value.code).done((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>)=>{
                             if(listPayrollUnitPriceHistory.length > 0){
                                 listPayrollUnitPriceHistory = _.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']);
                                 _.each(listPayrollUnitPriceHistory,(val)=>{
-                                    let childs = new Node(val.code + ';' + val.hisId + ';' + value.name, '' + val.startYearMonth + '～' + val.endYearMonth , []);
+                                    let childs = new Node(val.code + '_' + val.hisId + '_' + value.name, '' + val.startYearMonth + '～' + val.endYearMonth , []);
                                     node.childs.push(childs);
                                     if(self.code() == val.code){
                                         code = childs.code;
-                                        this.singleSelectedCode(code);
+                                        self.currentSelected(code);
+                                        self.singleSelectedCode(code);
                                     }
                                 });
                                 db.push(node);
                                 self.dataSource(db);
-                                if(self.dataSource().length > 0 && self.dataSource()[0].childs.length > 0 && self.mode() == null){
-                                    this.singleSelectedCode(self.dataSource()[0].childs[0].code);
+                                if(self.mode() === null || self.mode() === MODE.ADD_HISTORY){
+                                    self.tempDataSource(self.dataSource());
                                 }
-                                /*if(self.mode() == MODE.NEW){
-                                    this.singleSelectedCode(code);
-                                }*/
+                                if(self.tempDataSource().length > 0 && self.tempDataSource()[0].childs.length > 0 && self.mode() == null){
+                                    self.singleSelectedCode(self.tempDataSource()[0].childs[0].code);
+                                }
 
                             }
                         });
@@ -279,19 +283,50 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
         openBscreen(){
             let self = this;
             let fistHistory = self.payrollUnitPriceHistory()[0];
-
+            setShared('QMM007_PARAMS_TO_SCREEN_B', {
+                code: self.code(),
+                name: self.name(),
+                startYearMonth: fistHistory.startYearMonth,
+            });
             modal("/view/qmm/007/b/index.xhtml").onClosed( ()=> {
                 if(self.mode() === MODE.ADD_HISTORY){
                     if(self.historyTakeover() === HISTORYTAKEOVER.EXTENDS_LAST_HISTORY){
-
+                        service.getPayrollUnitPriceById(self.code()).done((data)=>{
+                            self.code(data.code);
+                            self.name(data.name);
+                        });
+                        service.getPayrollUnitPriceHisById(self.code(),fistHistory.hisId).done((data)=>{
+                            self.yearMonth(data.startYearMonth);
+                            self.endYearMonth(data.endYearMonth);
+                        });
+                        service.getPayrollUnitPriceSettingById(fistHistory.hisId).done((data) =>{
+                            if(data != undefined){
+                                self.amountOfMoney(data.amountOfMoney);
+                                self.selectedId(data.targetClass);
+                                self.selectedMonthlySalary(data.monthlySalary);
+                                self.selectedADayPayee(data.adayPayee);
+                                self.selectedHourlyPay(data.hourlyPay)
+                                self.notes(data.notes);
+                            }
+                        });
                     }
+                }else{
+                    self.amountOfMoney(null);
+                    self.yearMonth(null);
+                    self.notes(null);
+                    self.selectedTargetClass(0);
+                    self.selectedClassification(0);
+                    self.selectedMonthSalaryPerDay(0);
+                    self.selectedADayPayee(0);
+                    self.selectedHourlyPay(0);
+                    self.selectedMonthlySalary(0);
                 }
             });
         }
 
         openCscreen(){
             let self = this;
-            let params = self.singleSelectedCode().split(';');
+            let params = self.singleSelectedCode().split('_');
             let index;
             index = _.findIndex(self.payrollUnitPriceHistory(), (o) =>{
                 return o.hisId === params[1];
@@ -319,7 +354,50 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
             self.amountOfMoney(null);
             self.yearMonth(null);
             self.notes(null);
+            self.selectedTargetClass(0);
+            self.selectedClassification(0);
+            self.selectedMonthSalaryPerDay(0);
+            self.selectedADayPayee(0);
+            self.selectedHourlyPay(0);
+            self.selectedMonthlySalary(0);
             self.mode(MODE.NEW);
+        }
+        test(){
+            let self = this;
+            let db = [];
+            let code = '';
+            let child = {};
+            service.getAllPayrollUnitPriceByCID().then((data)=>{
+                self.payrollUnitPrice(data);
+                return data;
+            }).then((rs)=>{
+                _.each(rs,(value)=>{
+                    let node = new Node(value.code + ';' + HISTORY.NEW + ';' + value.name, value.code + value.name, []);
+                    service.getPayrollUnitPriceHistoryByCidCode(value.code).then((listPayrollUnitPriceHistory: Array<PayrollUnitPriceHistory>)=>{
+                        if(listPayrollUnitPriceHistory.length > 0){
+                            listPayrollUnitPriceHistory = _.orderBy(listPayrollUnitPriceHistory, ['endYearMonth',], ['desc']);
+                            _.each(listPayrollUnitPriceHistory,(val)=>{
+                                let childs = new Node(val.code + ';' + val.hisId + ';' + value.name, '' + val.startYearMonth + '～' + val.endYearMonth , []);
+                                node.childs.push(childs);
+                                if(self.code() == val.code){
+                                    code = childs.code;
+                                    self.currentSelected(code);
+                                }
+                            });
+                            db.push(node);
+                            self.dataSource(db);
+                        }
+                    }).then(()=>{
+                        if(self.dataSource().length > 0 && self.dataSource()[0].childs.length > 0 && self.mode() == null){
+                            self.singleSelectedCode(self.dataSource()[0].childs[0].code);
+                        }
+                    });
+                });
+            }).then((data)=>{
+                if(self.dataSource().length > 0 && self.dataSource()[0].childs.length > 0 && self.mode() == null){
+                    self.singleSelectedCode(self.dataSource()[0].childs[0].code);
+                }
+            });
         }
         register(){
             let self = this;
@@ -331,13 +409,13 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                 ),
                 payrollUnitPriceHistoryCommand: new PayrollUnitPriceHistory({'cId':'',
                     'code':self.code(),
-                    'hisId': self.singleSelectedCode().split(';')[1],
+                    'hisId': self.singleSelectedCode().split('_')[1],
                     'startYearMonth':self.yearMonth(),
                     'endYearMonth': self.mode() === MODE.NEW || self.mode() === MODE.ADD_HISTORY  ? 999912 : self.endYearMonth(),
                     'isMode': self.mode()
                 }),
                 payrollUnitPriceSettingCommand: new PayrollUnitPriceSetting({
-                    historyId: self.singleSelectedCode().split(';')[1],
+                    historyId: self.singleSelectedCode().split('_')[1],
                     amountOfMoney: self.amountOfMoney(),
                     targetClass: self.selectedId(),
                     monthSalaryPerDay: self.selectedMonthSalaryPerDay(),
@@ -371,10 +449,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
                             dialog.alertError(res);
                     });
                 }
-
-
             });
-
+            self.isExist(false);
         }
     }
     export interface IPayrollUnitPrice {
@@ -506,5 +582,8 @@ module nts.uk.pr.view.qmm007.a.viewmodel {
     export  enum  HISTORYTAKEOVER{
         CREATE_NEW = 0,
         EXTENDS_LAST_HISTORY = 1
+    }
+    export enum HISTORY{
+        NEW = '000'
     }
 }
