@@ -42,8 +42,8 @@ public class InitValueAuthManagement {
 				listRoleCopy.add(initRole);
 				listRoleTiesID.add(roleID);
 				this.roleRepo.insert(initRole);
-				val roleEvent = new RoleByRoleTiesEvent(roleID, role.getCompanyId());
-				roleEvent.toBePublished();
+				//val roleEvent = new RoleByRoleTiesEvent(roleID, role.getCompanyId());
+				//roleEvent.toBePublished();
 			}
 		}
 	}
