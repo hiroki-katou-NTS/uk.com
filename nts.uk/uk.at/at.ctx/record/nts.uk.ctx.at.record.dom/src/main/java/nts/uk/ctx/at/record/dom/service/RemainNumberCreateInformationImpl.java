@@ -66,9 +66,9 @@ public class RemainNumberCreateInformationImpl implements RemainNumberCreateInfo
 		outputInfor.setLstVacationTimeInfor(this.getLstVacationTimeInfor());
 		outputInfor.setSid(workInfor.getEmployeeId());
 		outputInfor.setYmd(workInfor.getYmd());
-		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "000" 
+		outputInfor.setWorkTypeCode(workInfor.getRecordInfo().getWorkTypeCode() == null ? "" 
 				: workInfor.getRecordInfo().getWorkTypeCode().v());
-		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "000" 
+		outputInfor.setWorkTimeCode(Optional.of(workInfor.getRecordInfo().getSiftCode() == null ? "" 
 				: workInfor.getRecordInfo().getSiftCode().v()));
 		return outputInfor;
 	}
