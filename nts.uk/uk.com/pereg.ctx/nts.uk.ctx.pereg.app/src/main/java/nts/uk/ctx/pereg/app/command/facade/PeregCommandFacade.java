@@ -457,7 +457,7 @@ public class PeregCommandFacade {
 					case CONTINUOUS_HISTORY_FOR_ENDDATE:
 					case DUPLICATEHISTORY:
 					case NODUPLICATEHISTORY:
-						if(specialItemCode.contains(item.itemCode()) || item.itemCode().equals(dateRange.getStartDateCode())) {
+						if(specialItemCode.contains(item.itemCode()) || (isHistory == true && item.itemCode().equals(dateRange.getStartDateCode()))) {
 							stringKey = item.valueAfter();
 						}
 						if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE
