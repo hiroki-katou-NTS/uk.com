@@ -15,6 +15,8 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
         socialInsuranceOfficeList: KnockoutObservableArray<model.SocialInsuranceOffice> = ko.observableArray([]);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
         healthInsuranceRateTreeList: KnockoutObservableArray<model.TreeGridNode> = ko.observableArray([]);
+        // for fix grid height in ie
+        treeGridHeight: KnockoutObservable<number> = ko.observable(595);
         // Office and history info
         selectedOffice: any = null;
         selectedHistoryId: string = "";
@@ -30,6 +32,9 @@ module nts.uk.pr.view.qmm008.b.viewmodel {
             $("#B4").ntsFixedTable({});
             self.watchDataChanged();
             self.initBlankData();
+            if ((/Chrome/.test(navigator.userAgent)) && !(/Edge/.test(navigator.userAgent))) {
+                self.treeGridHeight(580);
+            }
         }
 
         initBlankData() {

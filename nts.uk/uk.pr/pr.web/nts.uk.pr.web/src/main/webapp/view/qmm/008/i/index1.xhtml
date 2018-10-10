@@ -26,7 +26,7 @@
 					data-bind="ntsSearchBox: {
 								targetKey: 'code',
 								mode:'igTreeDrag',
-								comId:'I1_5',
+								comId:'I1_5_content',
 								items: contributionRateTreeList,
 								selected: selectedHealthInsurance,
 								selectedKey: 'code',
@@ -38,20 +38,22 @@
 					<button style="float: right" id="I1_4" tabindex="3"
 						data-bind="click: editHistory, enable: $vm.viewmodelI.isUpdateMode() ? $vm.viewmodelI.isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
 				</div>
-				<div id="I1_5" tabindex="4"
-					style="background-color: white; margin-top: 15px;"
-					data-bind="ntsTreeDragAndDrop:{
-									width: 290,
-									rows: 20,
-									dataSource: contributionRateTreeList,
-									value: selectedHealthInsurance,
-									primaryKey: 'code',
-									childDataKey: 'child',
-									primaryText: 'displayText',
-									maxDeepLeaf: 1,
-									maxChildInNode: 12,
-									multiple: false,
-									enable: $vm.viewmodelI.isSelectedHistory}">
+				<div id="I1_5" tabindex="4">
+					<div id="I1_5_content"
+						style="background-color: white; margin-top: 15px;"
+						data-bind="ntsTreeDragAndDrop:{
+										width: 290,
+										height: treeGridHeight,
+										dataSource: contributionRateTreeList,
+										value: selectedHealthInsurance,
+										primaryKey: 'code',
+										childDataKey: 'child',
+										primaryText: 'displayText',
+										maxDeepLeaf: 1,
+										maxChildInNode: 12,
+										multiple: false,
+										enable: $vm.viewmodelI.isSelectedHistory}">
+					</div>
 				</div>
 			</div>
 		</div>
