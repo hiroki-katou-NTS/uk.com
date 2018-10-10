@@ -170,7 +170,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.updateDate(value);
             });
             $(document).mouseup(function(e) {
-                var container = $(".ui-tooltip");
+                let container = $(".ui-tooltip");
                 if (!container.is(e.target) &&
                     container.has(e.target).length === 0) {
                     $("#tooltip").hide();
@@ -897,7 +897,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 userId: self.employIdLogin,
                 getUserId: function(k) { return String(k); },
                 errorColumns: ["ruleCode"],
-                showErrorsOnPage: true,
+                errorsOnPage: true,
                 columns: self.headersGrid(),
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
@@ -1496,8 +1496,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let container = $("#setting-content");
             if (container.css("visibility") === 'hidden') {
                 container.css("visibility", "visible");
-                container.css("top", "-5px");
-                container.css("left", "255px");
+                container.css("top", "-1px");
+                container.css("left", "258px");
             }
             $(document).mouseup(function(e) {
                 // if the target of the click isn't the container nor a descendant of the container
