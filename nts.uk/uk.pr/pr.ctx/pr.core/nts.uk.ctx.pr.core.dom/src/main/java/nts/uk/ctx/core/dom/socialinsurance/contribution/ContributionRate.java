@@ -79,7 +79,7 @@ public class ContributionRate extends AggregateRoot {
 				BigDecimal childContribution = new BigDecimal(childCareContribution);
 				childContribution = RoundCalculatedValue.calculation(x.getStandardMonthlyFee(),
 						contributionRate.getChildContributionRatio().v(),
-						InsurancePremiumFractionClassification.ROUND_4_UP_5, RoundCalculatedValue.ROUND_1_AFTER_DOT);
+						InsurancePremiumFractionClassification.TRUNCATION, RoundCalculatedValue.ROUND_1_AFTER_DOT);
 				this.contributionByGrade.add(new ContributionByGrade(welfarePensionGrade, childContribution));
 			});
 		}
