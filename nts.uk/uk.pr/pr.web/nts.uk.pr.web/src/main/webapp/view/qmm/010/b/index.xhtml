@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 570, height: 420 };</script>
+			<script>var dialogSize = { width: 490, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm010.b.service.js" />
@@ -16,22 +16,28 @@
 			<com:scriptfile path="qmm010.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="contents-area" style="margin-left: 20px;">
+			<div class="contents-area" style="margin-left: 40px;">
 				<div class="label dialog-title">#{i18n.getText('QMM010_30')}</div>
-				<div style="margin-top: 20px; min-width: 550px">
-					<div id="D2_2" style="width: 330px" tabindex="7"
-						 data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'single-list',
-                        items: items, selected: currentCode, selectedKey: 'code', fields: ['code'], mode: 'igGrid'}"/>
-					<table id="single-list" tabindex="8"
+				<div style="margin-top: 20px; min-width: 330px">
+                    <i id = "B1_2"></i>
+					<div style="width: 330px; margin-left: 40px;" tabindex="1"
+						 data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'B2_1',
+                        items: socialInsuranceOfficeList, selected: selectedSocialInsuranceCode, selectedKey: 'code', fields: ['code', 'name'], mode: 'igGrid'}"/>
+					<div style = "margin-left: 40px;">
+					<table id="B2_1" tabindex="2"
 						   data-bind="ntsGridList: {
-                            rows: 20,
+                            rows: 15,
                             name: '#[QMM008_109]',
-                            options: items,
+                            options: socialInsuranceOfficeList,
                             optionsValue: 'code',
-                            columns: columns2,
+                            columns: [
+								{ headerText: '#{i18n.getText('QMM010_8')}', key: 'code', width: 120, formatter: _.escape},
+								{ headerText: '#{i18n.getText('QMM010_8')}', key: 'name', width: 200, formatter: _.escape }
+							],
                             multiple: false,
-                            value: currentCode
+                            value: selectedSocialInsuranceCode
                         }"></table>
+					</div>
 				</div>
 
 			</div>

@@ -150,9 +150,13 @@ module nts.uk.pr.view.qmm010.a.viewmodel {
         }
 
         readFromSocialInsuranceOffice () {
+            let self = this;
             modal("/view/qmm/010/b/index.xhtml").onClosed(() => {
                 let params = getShared("QMM010_A_PARAMS");
-
+                if (params){
+                    self.selectedLaborOffice(new model.LaborInsuranceOffice(_.extend(ko.toJS(self.selectedLaborOffice), params.socialOfficeInfo)));
+                    nts.uk.ui.errors.clearAll();
+                }
             });
         }
 

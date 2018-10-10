@@ -21,19 +21,21 @@ module nts.uk.pr.view.qmm010.b.viewmodel {
                 if (data.length == 0) {
                     dialog.alertError({messageId: 'Msg_37'});
                 } else {
-                    self.selectedSocialInsuranceCode(data[0].officeCode);
+                    self.selectedSocialInsuranceCode(data[0].code);
                 }
+                block.clear();
                 dfd.resolve();
             }).fail(function(err) {
-                dfd.reject();
-            }).always(function() {
                 block.clear();
+                dfd.reject();
             });
             return dfd.promise();
         }
         decideCloneData () {
             let self = this;
-            setShared('QMM010_A_PARAMS', {selectedSocialInsuranceCode: self.selectedSocialInsuranceCode()});
+            let selectedInsuranceOffice = _.find(ko.toJS(self.socialInsuranceOfficeList), {code: self.selectedSocialInsuranceCode()});
+            let socialOfficeInfo = _.pick(selectedInsuranceOffice, ['address1', 'address2', 'addressKana1', 'addressKana2', 'postalCode', 'phoneNumber', 'representativeName', 'representativePosition']);
+            setShared('QMM010_A_PARAMS', {socialOfficeInfo: socialOfficeInfo});
             nts.uk.ui.windows.close();
         }
 
