@@ -156,7 +156,9 @@ module nts.uk.at.view.kwr001.c {
                 self.items.removeAll();
                 self.currentCodeListSwap.removeAll();
                 _.forEach(data.lstDisplayedAttendance, function(value, index) {
-                    temp1.push({code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay});
+                    if (value.attendanceName) {
+                        temp1.push({ code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay });
+                    }
                 })
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);

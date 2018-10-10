@@ -7,7 +7,7 @@
 }
 
 #kcp005{
-	height: 355px;
+	height: 325px !important;
 	width: 562px;
     margin-left: 105px;
     margin-top: 2px;
@@ -29,7 +29,5 @@
 #component-items-list{
 	    margin-top: -25px;
 }
-#contents-area{
-	overflow-x: hidden;
-}
+
 

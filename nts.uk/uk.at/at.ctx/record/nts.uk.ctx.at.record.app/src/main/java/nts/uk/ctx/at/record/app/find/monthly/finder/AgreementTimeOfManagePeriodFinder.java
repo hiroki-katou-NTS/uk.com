@@ -10,8 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
@@ -20,26 +21,16 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class MonthlyRemarksFinder extends MonthlyFinderFacade {
+public class AgreementTimeOfManagePeriodFinder extends MonthlyFinderFacade {
 	
 	@Inject
-	private RemarksMonthlyRecordRepository repo;
+	private AgreementTimeOfManagePeriodRepository repo;
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public MonthlyRemarksDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
+	public AgreementTimeOfManagePeriodDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return MonthlyRemarksDto.from(this.repo.find(employeeId, closureId, null, yearMonth, closureDate).orElse(null));
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<MonthlyRemarksDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
-			ClosureDate closureDate) {
-		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
-				.filter(c -> c.getClosureId() == closureId && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
-							&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay())
-				.map(c -> MonthlyRemarksDto.from(c)).collect(Collectors.toList());
+		return AgreementTimeOfManagePeriodDto.from(repo.find(employeeId, yearMonth).orElse(null));
 	}
 	
 	@Override
@@ -55,7 +46,12 @@ public class MonthlyRemarksFinder extends MonthlyFinderFacade {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, Collection<YearMonth> yearMonth) {
-		return (List<T>) repo.findBySidsAndYearMonths(new ArrayList<>(employeeId), new ArrayList<>(yearMonth))
-				.stream().map(d -> MonthlyRemarksDto.from(d)).collect(Collectors.toList());
+		List<AgreementTimeOfManagePeriod> data = new ArrayList<>();
+		employeeId.stream().forEach(e -> {
+			yearMonth.stream().forEach(ym -> {
+				repo.find(e, ym).ifPresent(d -> data.add(d));
+			});
+		});
+		return (List<T>) data.stream().map(d -> AgreementTimeOfManagePeriodDto.from(d)).collect(Collectors.toList());
 	}
 }

@@ -209,8 +209,10 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				}
 			} else {
 				lstDate.add(appInfor.getAppDate());	
+			}	
+			if(outData.isRecordResult()) {
+				interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);	
 			}			
-			interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);
 			appRepo.updateWithVersion(appInfor);
 		}
 		

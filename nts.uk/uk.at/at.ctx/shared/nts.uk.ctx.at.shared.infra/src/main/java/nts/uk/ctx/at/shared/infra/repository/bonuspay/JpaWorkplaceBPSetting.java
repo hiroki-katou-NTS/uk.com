@@ -15,12 +15,12 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWPBonusPaySettingPK;
 @Stateless
 public class JpaWorkplaceBPSetting extends JpaRepository implements WPBonusPaySettingRepository {
 
-	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstWPBonusPaySetting c WHERE c.kbpstWPBonusPaySettingPK.workplaceId IN :workplaceIds";
+	private static final String SELECT_BY_LIST_ID = "SELECT c FROM KbpstWPBonusPaySetting c WHERE c.kbpstWPBonusPaySettingPK.workplaceId IN :workplaceIds AND c.kbpstWPBonusPaySettingPK.companyId = :companyId";
 
 	@Override
 	public List<WorkplaceBonusPaySetting> getListSetting(String companyId, List<WorkplaceId> ids) {
 		return queryProxy().query(SELECT_BY_LIST_ID, KbpstWPBonusPaySetting.class).setParameter("workplaceIds", ids)
-				.getList(m -> toDomain(m));
+				.setParameter("companyId", companyId).getList(m -> toDomain(m));
 	}
 
 	@Override
