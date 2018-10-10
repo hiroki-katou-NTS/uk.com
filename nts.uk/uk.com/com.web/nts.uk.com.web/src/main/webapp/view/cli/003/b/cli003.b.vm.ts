@@ -793,8 +793,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
-                rowVirtualization: true,
-                virtualization: true,
                 virtualizationMode: 'continuous',
                 columnLayouts: [
                     {
@@ -882,8 +880,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 hidePrimaryKey: true,
                 columns: self.columnsIgGrid(),
                 autoGenerateLayouts: false,
-                rowVirtualization: true,
-                virtualization: true,
                 virtualizationMode: 'continuous',
                 columnLayouts: [
                     {

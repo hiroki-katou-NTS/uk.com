@@ -503,10 +503,10 @@ public class WithinStatutoryTimeOfDaily {
 		//所定内時間
 		AttendanceTime withinPredTime = predTime.minusMinutes(this.getActualWorkTime().valueAsMinutes());
 		if(withinPredTime.greaterThan(unUseBreakTime.valueAsMinutes())) {
-			return withinPredTime;
+			return unUseBreakTime;
 		}
 		else {
-			return unUseBreakTime;
+			return withinPredTime;
 		}
 	}
 }

@@ -131,16 +131,16 @@ public class ItemValue {
 		return this.type;
 	}
 	
-	public String valueAfter() {
-		return this.value;
-	}
-	
 	public String valueBefore() {
 		return this.defValue;
 	}
 	
 	public String contentBefore() {
 		return this.defText;
+	}
+	
+	public String valueAfter() {
+		return this.value;
 	}
 	
 	public String contentAfter() {
@@ -201,10 +201,10 @@ public class ItemValue {
 	
 	public static ItemValue setContentForCPS001(ItemValue item) {
 		if(item.logType() == 2) {
-			item.setValueAfter(item.valueAfter() == ""? null: item.valueAfter());
-			item.setValueBefore(item.valueBefore() == ""? null: item.valueBefore());
-			item.setContentAfter(item.valueAfter() == ""? null: item.valueAfter());
-			item.setContentBefore(item.valueBefore() == ""? null: item.valueBefore());
+			item.setValueAfter((item.valueAfter() == "" || item.valueAfter() == null) ? null: item.valueAfter());
+			item.setContentAfter((item.contentAfter() == "" || item.contentAfter() == null) ? null: item.contentAfter());
+			item.setValueBefore((item.valueBefore() == "" || item.valueBefore() == null) ? null: item.valueBefore());
+			item.setContentBefore((item.contentBefore() == "" || item.contentBefore() == null) ? null: item.contentBefore());
 		}
 		
 		return item;

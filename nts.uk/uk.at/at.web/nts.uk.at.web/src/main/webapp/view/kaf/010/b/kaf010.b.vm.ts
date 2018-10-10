@@ -152,7 +152,6 @@ module nts.uk.at.view.kaf010.b {
             }
             
             startPage(appID: string): JQueryPromise<any> {
-                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 service.findByAppID(appID).done((data) => { 
@@ -461,6 +460,11 @@ module nts.uk.at.view.kaf010.b {
                 let self = this,
                 appReason: string,
                 divergenceReason: string;
+                if(self.displayCaculationTime()){
+                    if(!appcommon.CommonProcess.checkWorkTypeWorkTime(self.workTypeCd(), self.siftCD(), "kaf010-workType-workTime-div")){
+                        return;    
+                    }
+                }
                 if (self.displayCaculationTime()) {
                     $("#inpStartTime1").trigger("validate");
                     $("#inpEndTime1").trigger("validate");
@@ -631,6 +635,8 @@ module nts.uk.at.view.kaf010.b {
                 }, true);
     
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+                    $("#kaf010-workType-workTime-div").ntsError('clear');
+                    $("#kaf010-workType-workTime-div").css("border","none");
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {

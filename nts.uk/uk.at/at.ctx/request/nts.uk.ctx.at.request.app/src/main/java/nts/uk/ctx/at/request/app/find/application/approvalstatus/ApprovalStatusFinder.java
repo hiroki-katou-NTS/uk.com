@@ -528,7 +528,6 @@ public class ApprovalStatusFinder {
 			appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
 			appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
 		}
-		appContent += I18NText.getText("CMM045_269");
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
@@ -542,7 +541,7 @@ public class ApprovalStatusFinder {
 				if (countItem > 2) {
 					time += overFrame.getApplicationTime();
 				} else {
-					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+					frameName += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
 					time += overFrame.getApplicationTime();
 					countItem++;
 				}
@@ -551,8 +550,8 @@ public class ApprovalStatusFinder {
 		}
 		int countTemp = countRest -3;
 		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
-		String otherFull = (frameName != "" || other != "") ? "（" + frameName + other + "）" : "";
-		appContent += clockShorHm(time) + "　" + otherFull;
+		String otherFull = (frameName != "" || other != "") ? frameName + other : "";
+		appContent += otherFull;
 		return appContent;
 	}
 
