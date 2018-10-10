@@ -14,13 +14,30 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         startYearMonth: KnockoutObservable<number> = ko.observable();
+        endYearMonth: KnockoutObservable<number> = ko.observable(999912);
+        monthlyCalendar: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
+            block.invisible()
             let self = this;
-            self.code('001');
-            self.name('KKKK');
-            self.startYearMonth(201802);
-            self.startLastYearMonth(201801);
+            let params = getShared('QMM007_PARAMS_TO_SCREEN_B');
+            if(params) {
+                self.monthlyCalendar(getText('QMM007_12', [nts.uk.time.yearmonthInJapanEmpire(params.startYearMonth).toString().split(' ').join('')]));
+                self.code(params.code);
+                self.name(params.name);
+                self.startYearMonth(params.startYearMonth);
+                self.listTakeOver()[0] = new model.ItemModel(0,getText('QMM007_34', [self.convertMonthYearToString(self.startYearMonth())]));
+            }
+            block.clear();
+        }
+
+        convertMonthYearToString(yearMonth: any) {
+            let self = this;
+            let year: string, month: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            return year + "/" + month;
         }
 
         cancel(){
@@ -30,12 +47,17 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
         register(){
             let self =this;
             let data: any = {
-                code: self.code,
+                code: self.code(),
                 startYearMonth: self.startYearMonth(),
                 endYearMonth:  self.endYearMonth()
             }
-            service.register(data).done(() => {
+            service.addPayrollUnitPriceHis(data).done((historyId: any) => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
+                    setShared('QMM007_B_PARAMS_OUTPUT', {
+                        hisId: historyId,
+                        startYearMonth: self.startYearMonth(),
+                        takeOver: self.takeOver()
+                    });
                     close();
                 });
             }).fail(function(res: any) {
@@ -49,6 +71,7 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
     class PayrollUnitPriceHis{
         cId :string;
         code :string;
+        hisId: string;
         startYearMonth:number;
         endYearMonth: number;
 
@@ -56,8 +79,8 @@ module nts.uk.pr.view.qmm007.b.viewmodel {
 
     export function getListtakeOver(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText('QMM011_48')),
-            new model.ItemModel(1, getText('QMM011_49'))
+            new model.ItemModel(0, getText('QMM007_34')),
+            new model.ItemModel(1, getText('QMM007_35'))
         ];
     }
 

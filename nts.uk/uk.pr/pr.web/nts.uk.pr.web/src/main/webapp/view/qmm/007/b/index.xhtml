@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 430 };</script>
+			<script>var dialogSize = { width: 440, height: 450 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm007.b.vm.js" />
@@ -42,7 +42,7 @@
 																required: true
 																}" tabindex="1"></div>
 					<!-- B1_7 開始年月和暦 -->
-					<span id="B1_7" class="label" style="margin-left: 10px">#{i18n.getText('QMM007_12')}</span>
+					<span id="B1_7" class="label"  data-bind = "text: monthlyCalendar"></span>
 					<!-- B1_8 9999/12 -->
 					<span class="label">#{i18n.getText('QMM007_33')}</span>
 				</div>

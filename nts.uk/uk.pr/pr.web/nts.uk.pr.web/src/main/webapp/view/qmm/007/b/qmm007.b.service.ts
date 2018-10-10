@@ -4,13 +4,12 @@ module nts.uk.pr.view.qmm007.b {
          * define path to service
          */
         var path: any = {
-            register: "core/wageprovision/companyuniformamount/addPayrollUnitPriceHis"
+            addPayrollUnitPriceHis: "core/wageprovision/companyuniformamount/addPayrollUnitPriceHis"
         };
 
 
-        export function register(data :any): JQueryPromise<any> {
-            let _path = nts.uk.text.format(path.register, data);
-            return nts.uk.request.ajax('pr', _path);
+        export function addPayrollUnitPriceHis(data :any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.addPayrollUnitPriceHis, data);
         }
     }
 }

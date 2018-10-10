@@ -4,15 +4,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceHistoryService;
 
 
 @Stateless
 @Transactional
-public class AddPayrollUnitPriceHistoryCommandHandler extends CommandHandler<PayrollUnitPriceHistoryCommand> {
+public class AddPayrollUnitPriceHistoryCommandHandler extends CommandHandlerWithResult<PayrollUnitPriceHistoryCommand, String> {
 
     @Inject
     private PayrollUnitPriceHistoryService payrollUnitPriceHistoryService;

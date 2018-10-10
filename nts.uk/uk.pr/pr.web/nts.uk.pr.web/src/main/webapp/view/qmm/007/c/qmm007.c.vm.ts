@@ -10,10 +10,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         endYearMonth:           KnockoutObservable<number> = ko.observable();
         startLastYearMonth:     KnockoutObservable<number> = ko.observable();
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod());
-        selectedId:             KnockoutObservable<string> = ko.observable('');
         methodEditing:          KnockoutObservable<number> = ko.observable(1);
         insurrance:             KnockoutObservable<number> = ko.observable();
-        hisId:                  KnockoutObservable<string> = ko.observable('');
+
         // validate disable item
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
         insuranceName:          KnockoutObservable<string> = ko.observable('');
@@ -23,11 +22,7 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
         code :KnockoutObservable<string> = ko.observable('項目移送');
         constructor() {
             let self = this;
-
-            self.innitView();
-
-
-
+            self.initView();
         }
         submit(){
             let self = this;
@@ -66,12 +61,9 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
                         dialog.alertError(res);
                 });
             }
-
-
-
         }
 
-        innitView() {
+        initView() {
             let self = this;
             // start
             let params: any = getShared('QMM007_PARAMS_TO_SCREEN_C');
@@ -83,35 +75,10 @@ module nts.uk.pr.view.qmm007.c.viewmodel {
             self.code(params.code);
             self.startYearMonth(params.startYearMonth);
             self.endYearMonth(' '+ to + ' ' + self.convertMonthYearToString(params.endYearMonth));
-            self.isFirst(true);
+            self.isFirst(params.isFirst);
             self.mPayrollUnitPriceHis(new PayrollUnitPriceHistoryDto('',params.hisId,params.code,params.startYearMonth,params.endYearMonth));
-            if(self.isFirst()){
-                $('#C1_6').focus();
-            }
-            else{
-                $('#C1_9').focus();
-            }
-
-
-
         }
-        // getPayrollUnitPriceHis(hisId: string, code: string) {
-        //     let self = this;
-        //     let data: any = {
-        //         cId: '',
-        //         hisId: hisId,
-        //         code: code
-        //     };
-        //     service.getPayrollUnitPriceHis(data).done((data: PayrollUnitPriceHistoryDto) => {
-        //        self.mPayrollUnitPriceHis = ko.observableArray(data);
-        //     }).fail(function (res: any) {
-        //         if (res)
-        //             dialog.alertError(res);
-        //     });
-        //
-        // }
-
-        hasRequired(){
+       hasRequired(){
             if(this.methodEditing() != EDIT_METHOD.UPDATE) {
 
                 return false;

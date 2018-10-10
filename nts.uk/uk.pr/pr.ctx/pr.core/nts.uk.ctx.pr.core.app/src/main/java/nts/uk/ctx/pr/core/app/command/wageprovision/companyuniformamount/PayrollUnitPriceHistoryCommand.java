@@ -2,8 +2,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount;
 
 import lombok.Value;
 @Value
-public class PayrollUnitPriceHistoryCommand
-{
+public class PayrollUnitPriceHistoryCommand {
     
     /**
     * 会社ID
